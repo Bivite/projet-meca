@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.69</title>
+<title>Projet MECA V0.01.70</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2751,7 +2751,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.69 : cartes =================== */
+  /* =================== V0.01.70 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3019,25 +3019,42 @@
   /* Réutilise volontairement le même découpage en biais que l'onglet MENU (s-a/s-b/s-c/s-d). */
   .mode-tile.forge{background:linear-gradient(160deg, #ffe2b4, #e0972a 45%, #5a3208); filter:drop-shadow(0 0 14px rgba(255,180,60,.4));}
   .mode-tile.forge .mt-inner{background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(255,180,60,.34), transparent 70%), linear-gradient(180deg, rgba(255,255,255,.08), transparent 40%), linear-gradient(180deg, #2a1708, #0c0704);}
-  .mt-tirage-ico{width:42px; height:42px; color:#fff; filter:drop-shadow(0 0 10px rgba(255,210,120,.9));}
   .mt-tirage-ico svg{width:100%; height:100%;}
+  /* Logo en incrustation plein cadre (même traitement que l'icône DOME de l'Ordre de mission) */
+  .mode-tile:not(.soon) .mt-tirage-ico{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:80%; height:80%; max-width:none; max-height:none; margin:0;
+    pointer-events:none; z-index:0; color:#ffe0b0; opacity:.16;
+    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
+    animation:none !important;
+  }
   #fabDrawBackBtn{visibility:hidden; pointer-events:none;}
 
   /* =================== CARTE : sous-menu à 4 cases (découpage différent, V0.01.69) =================== */
   .mode-tile.cardmgmt{background:linear-gradient(160deg, #d8e4ff, #5468e0 45%, #1a1f6e); filter:drop-shadow(0 0 14px rgba(90,110,255,.4));}
   .mode-tile.cardmgmt .mt-inner{background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(90,110,255,.36), transparent 70%), linear-gradient(180deg, rgba(255,255,255,.1), transparent 40%), linear-gradient(180deg, #171c4a, #060814);}
-  .mt-cardmgmt-ico{width:44px; height:44px; color:#fff; filter:drop-shadow(0 0 10px rgba(140,160,255,.9));}
   .mt-cardmgmt-ico svg{width:100%; height:100%;}
+  /* Logo en incrustation plein cadre, même traitement que TIRAGE ci-dessus */
+  .mode-tile:not(.soon) .mt-cardmgmt-ico{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:80%; height:80%; max-width:none; max-height:none; margin:0;
+    pointer-events:none; z-index:0; color:#dbe4ff; opacity:.16;
+    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
+    animation:none !important;
+  }
   /* Rangée 1 : deux cases en pointe qui s'emboîtent (comme les modes ORDRE DE MISSION, mais en 2 colonnes) */
   .cx-grid .mode-tile.cx-a, .cx-grid .mode-tile.cx-b{height:150px;}
   .cx-a{--clip:polygon(0 0, calc(100% - 26px) 0, 100% 50%, calc(100% - 26px) 100%, 0 100%);}
   .cx-b{--clip:polygon(0 0, 100% 0, 100% 100%, 0 100%, 26px 50%);}
   .cx-grid .mode-row > .cx-a:first-child{margin-right:-22px;}
   .cx-grid .cx-a .mt-inner{padding-right:42px !important;} .cx-grid .cx-b .mt-inner{padding-left:42px !important;}
-  /* Rangée 2 : deux petites cases à simple coupe (une seule diagonale, pas un chevron comme dans le MENU) */
+  /* Rangée 2 : deux petites cases à simple coupe (une seule diagonale, pas un chevron comme dans le MENU).
+     Les deux coupes doivent pencher dans le MÊME sens (ici : coin haut-droit de cx-c + coin bas-gauche
+     de cx-d) pour rester parallèles - sinon (comme la 1ère version, coupées toutes les deux en haut) les
+     deux bords divergent et laissent un décalage en triangle au lieu d'un simple liseré régulier. */
   .cx-grid .mode-tile.cx-c, .cx-grid .mode-tile.cx-d{height:118px;}
   .cx-c{--clip:polygon(0 0, calc(100% - 20px) 0, 100% 100%, 0 100%);}
-  .cx-d{--clip:polygon(20px 0, 100% 0, 100% 100%, 0 100%);}
+  .cx-d{--clip:polygon(0 0, 100% 0, 100% 100%, 20px 100%);}
   .cx-grid .mode-row > .cx-c:first-child{margin-right:-14px;}
   .cx-grid .cx-c .mt-inner, .cx-grid .cx-d .mt-inner{padding:8px 18px !important;}
   #codexMgmtBackBtn{visibility:hidden; pointer-events:none;}
@@ -3746,7 +3763,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.69</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.70</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3987,9 +4004,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.69';
+var BUILD_VERSION = 'V0.01.70';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.70', items:[
+    'Les cases « TIRAGE » et « GESTION DE CARTE » affichent maintenant leur logo en grand, incrusté dans toute la case, comme les autres cases du jeu.',
+    'Correction d’un petit décalage entre les deux dernières cases (en bas) du menu de l’onglet CARTE.'
+  ]},
   { v:'V0.01.69', items:[
     'Les onglets FABRIQUE et CARTE s’ouvrent maintenant sur un petit menu (comme l’onglet MENU) : « TIRAGE » et « GESTION DE CARTE » retrouvent tout ce qu’ils contenaient avant, et 3 nouvelles cases « Prochainement » annoncent du contenu à venir sur ces deux onglets.'
   ]},
