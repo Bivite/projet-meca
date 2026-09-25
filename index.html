@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.64</title>
+<title>Projet MECA V0.01.65</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2748,7 +2748,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.64 : cartes =================== */
+  /* =================== V0.01.65 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3668,7 +3668,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.64</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.65</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3779,6 +3779,14 @@
     <div class="opt-row"><span>EFFETS SONORES <b id="optVfxV"></b></span><input type="range" min="0" max="100" step="5" id="optVfx"></div>
     <div class="opt-row"><span>ÉCONOMIE D'ÉNERGIE</span><div class="opt-seg" id="optEco"><button data-v="1">ACTIVÉE</button><button data-v="0">DÉSACTIVÉE</button></div></div>
     <div class="opt-row"><span>IMAGES / SECONDE</span><div class="opt-seg" id="optFps"><button data-v="30">30 Hz</button><button data-v="60">60 Hz</button><button data-v="120">120 Hz</button></div></div>
+    <div class="opt-row">
+      <span>SAUVEGARDE AVANCÉE</span>
+      <div class="acc-text small">Code à copier/coller pour transférer ta progression sans compte en ligne, ou comme secours indépendant.</div>
+      <div class="controls" style="width:100%;">
+        <button id="optExportBtn">EXPORTER</button>
+        <button id="optImportBtn">IMPORTER</button>
+      </div>
+    </div>
     <div class="opt-note" id="optNote"></div>
   </div>
 </div>
@@ -3848,9 +3856,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.64';
+var BUILD_VERSION = 'V0.01.65';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.65', items:[
+    'Fiche du joueur : l\'encadré de transfert de sauvegarde (EXPORTER/IMPORTER) a été déplacé dans les Options, sous « Sauvegarde avancée » — la fiche du joueur reste concentrée sur le compte en ligne.'
+  ]},
   { v:'V0.01.64', items:[
     'Nouveau : compte en ligne indépendant (e-mail + mot de passe), dans la fiche du joueur. Il permet de retrouver sa progression sur un autre appareil, en plus de la sauvegarde locale qui continue de fonctionner pour tout le monde sans compte.',
     'L’ancienne carte cadeau offerte automatiquement au propriétaire du jeu a été retirée (elle ne s’appliquait qu’à l’ancien système de connexion).'
@@ -9124,15 +9135,6 @@ function renderPlayerSheet(){
     <div class="pv-card pv-account" id="pvSaveStatus"></div>
 
     <div class="pv-card pv-cloud-account" id="pvCloudStatus"></div>
-
-    <div class="pv-card pv-backup">
-      <div class="team-label player">TRANSFÉRER LA SAUVEGARDE</div>
-      <div class="acc-text">Pour récupérer ta progression sur un autre appareil, ou la garder au cas où avant une mise à jour : EXPORTER en code à copier, puis IMPORTER ce code ailleurs (ou plus tard, ici).</div>
-      <div class="controls" style="width:100%;">
-        <button id="pvExportBtn">EXPORTER</button>
-        <button id="pvImportBtn">IMPORTER</button>
-      </div>
-    </div>
   `;
   renderAfterSheet();
 }
@@ -9248,10 +9250,6 @@ function renderAfterSheet(){
   if(n) n.textContent = player.name;
   const e = document.getElementById('pvEditName');
   if(e) e.onclick = () => openNameModal(false);
-  const expBtn = document.getElementById('pvExportBtn');
-  if(expBtn) expBtn.onclick = exportSaveFile;
-  const impBtn = document.getElementById('pvImportBtn');
-  if(impBtn) impBtn.onclick = openImportChooser;
 }
 function enterPlayerView(){
   player.stats.sheetVisits++;
@@ -10286,6 +10284,8 @@ document.querySelectorAll('#optFps button').forEach(b => b.onclick = () => { SET
 document.querySelectorAll('#optEco button').forEach(b => b.onclick = () => { SETTINGS.eco = b.dataset.v === '1'; saveSettings(); renderOptions(); ecoWake(); });
 document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); };
 document.getElementById('optVfx').oninput = e => { SETTINGS.vfx = +e.target.value; saveSettings(); renderOptions(); };
+document.getElementById('optExportBtn').onclick = exportSaveFile;
+document.getElementById('optImportBtn').onclick = openImportChooser;
 
 // ----- Démarrage : restaure la copie locale, puis la sauvegarde en ligne -----
 (async function bootSave(){
