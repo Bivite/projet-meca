@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.65</title>
+<title>Projet MECA V0.01.66</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1399,7 +1399,7 @@
   .nm-sub{font-size:12.5px; color:var(--text-dim);}
   .nm-input{
     width:100%; padding:14px; border-radius:12px; text-align:center;
-    font-family:var(--font-title); font-size:15px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    font-family:var(--font-title); font-size:15px; font-weight:700; letter-spacing:2px;
     color:#fff; background:#07060b; border:1px solid rgba(139,92,246,.5);
     box-shadow:0 2px 6px rgba(0,0,0,.8) inset; outline:none;
     user-select:text; -webkit-user-select:text;
@@ -1415,6 +1415,9 @@
   .backup-txt:focus{border-color:var(--violet-hi);}
   .nm-err{font-size:11px; color:var(--ember); min-height:13px; margin-top:-6px;}
   .nm-link{background:none; border:none; color:var(--violet-hi); font-family:var(--font-ui); font-size:12px; font-weight:700; text-decoration:underline; cursor:pointer; padding:0;}
+  .nm-step{width:100%; display:flex; flex-direction:column; gap:12px;}
+  .nm-login{font-size:12px; color:var(--text-dim); text-align:center;}
+  .nm-login a{color:var(--violet-hi); font-weight:700; text-decoration:underline; cursor:pointer;}
   /* ---------- Fusion ---------- */
   .codex-fuse-btn{
     width:100%;
@@ -2748,7 +2751,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.65 : cartes =================== */
+  /* =================== V0.01.66 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3668,7 +3671,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.65</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.66</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3816,13 +3819,25 @@
 <div class="codex-modal" id="nameModal">
   <div class="codex-modal-inner name-modal-inner">
     <div class="nm-title" id="nmTitle">BIENVENUE, COMMANDANT</div>
-    <div class="nm-sub" id="nmSub">Choisis ton nom de joueur</div>
-    <input id="nmInput" class="nm-input" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Ton nom">
-    <div class="nm-err" id="nmErr"></div>
-    <div class="nm-login" id="nmLogin"></div>
-    <div class="controls" style="width:100%;">
-      <button id="nmCancel">ANNULER</button>
-      <button id="nmOk" class="primary-btn">VALIDER</button>
+    <div class="nm-sub" id="nmSub">Crée ton compte pour commencer</div>
+
+    <div class="nm-step" id="nmAccountStep">
+      <input id="nmEmail" class="acc-input" type="email" autocomplete="email" placeholder="Adresse e-mail" spellcheck="false">
+      <input id="nmPass" class="acc-input" type="password" autocomplete="new-password" placeholder="Mot de passe (6 caractères min.)">
+      <div class="acc-msg" id="nmAccMsg"></div>
+      <div class="nm-login" id="nmLoginToggle">Déjà un compte&nbsp;? <a href="#" id="nmSwitchMode">Se connecter</a></div>
+      <div class="controls" style="width:100%;">
+        <button id="nmAccOk" class="primary-btn">CRÉER MON COMPTE</button>
+      </div>
+    </div>
+
+    <div class="nm-step" id="nmNameStep" style="display:none;">
+      <input id="nmInput" class="nm-input" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Ton nom">
+      <div class="nm-err" id="nmErr"></div>
+      <div class="controls" style="width:100%;">
+        <button id="nmCancel">ANNULER</button>
+        <button id="nmOk" class="primary-btn">VALIDER</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3856,9 +3871,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.65';
+var BUILD_VERSION = 'V0.01.66';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.66', items:[
+    'Premier lancement : il faut maintenant créer son compte (e-mail + mot de passe) avant de choisir son nom de joueur — les deux ne font plus qu’une seule inscription.',
+    'Le nom de joueur accepte enfin les majuscules, les minuscules ET les chiffres (il n’est plus transformé automatiquement en majuscules).',
+    'Aux prochaines connexions, plus aucune fenêtre ne réapparaît : le compte se reconnecte tout seul et la fiche du joueur affiche directement l’e-mail connecté.',
+    'Sur un nouvel appareil, un lien « Déjà un compte ? » permet de se connecter à un compte existant au lieu d’en recréer un.'
+  ]},
   { v:'V0.01.65', items:[
     'Fiche du joueur : l\'encadré de transfert de sauvegarde (EXPORTER/IMPORTER) a été déplacé dans les Options, sous « Sauvegarde avancée » — la fiche du joueur reste concentrée sur le compte en ligne.'
   ]},
@@ -9249,7 +9270,7 @@ function renderAfterSheet(){
   const n = document.getElementById('pvName');
   if(n) n.textContent = player.name;
   const e = document.getElementById('pvEditName');
-  if(e) e.onclick = () => openNameModal(false);
+  if(e) e.onclick = () => openNameModal();
 }
 function enterPlayerView(){
   player.stats.sheetVisits++;
@@ -9718,7 +9739,9 @@ async function connectCloud(){
       applySave(best);
       writeLocalSave(best);
     }
-    if(best){ nameModalFirst = false; closeNameModal(true); }
+    // Si la fenêtre obligatoire (compte -> nom) est en cours, c'est elle qui pilote les étapes :
+    // on ne referme/débloque pas la fenêtre depuis ici pour ne pas sauter l'étape du nom.
+    if(best && !nmGateActive){ nameModalFirst = false; closeNameModal(true); }
     cloud.status = 'online';
     saveNow();
     return true;
@@ -9732,16 +9755,27 @@ async function connectCloud(){
 // même à la déconnexion du compte en ligne. La synchronisation cloud (ci-dessus) reste un
 // bonus en arrière-plan qui ne conditionne jamais le chargement de la sauvegarde locale.
 
-// ----- Choix du nom -----
+// ----- Choix du nom (changement volontaire depuis la fiche joueur) -----
+// nameModalFirst : vrai tant que le joueur n'a pas terminé l'inscription (compte + nom) au tout premier lancement.
+// nmGateActive : vrai pendant que la fenêtre obligatoire (compte -> nom) pilote elle-même l'affichage de #nameModal ;
+// sert à empêcher connectCloud() de refermer la fenêtre à notre place pendant cette séquence à étapes.
+// nmGateIsNewPlayer : vrai seulement si aucune sauvegarde locale n'existait déjà à ce lancement (vraiment nouveau
+// joueur) — sert uniquement à décider si on saute le rattrapage du changelog à la fin de la séquence.
 var nameModalFirst = false;
-function openNameModal(first){
-  nameModalFirst = !!first;
-  document.getElementById('nmTitle').textContent = first ? 'BIENVENUE, COMMANDANT' : 'CHANGER DE NOM';
-  document.getElementById('nmSub').textContent = first ? 'Choisis ton nom de joueur pour commencer' : 'Ton nouveau nom de joueur';
-  document.getElementById('nmCancel').style.display = first ? 'none' : '';
-  document.getElementById('nmOk').textContent = first ? 'COMMENCER' : 'VALIDER';
+var nmGateActive = false;
+var nmGateIsNewPlayer = false;
+var nmGateMode = 'signup';
+function openNameModal(){
+  nameModalFirst = false;
+  nmGateActive = false;
+  document.getElementById('nmAccountStep').style.display = 'none';
+  document.getElementById('nmNameStep').style.display = '';
+  document.getElementById('nmTitle').textContent = 'CHANGER DE NOM';
+  document.getElementById('nmSub').textContent = 'Ton nouveau nom de joueur';
+  document.getElementById('nmCancel').style.display = '';
+  document.getElementById('nmOk').textContent = 'VALIDER';
   const input = document.getElementById('nmInput');
-  input.value = first ? '' : player.name;
+  input.value = player.name || '';
   document.getElementById('nmErr').textContent = '';
   document.getElementById('nameModal').classList.add('show');
   setTimeout(() => input.focus(), 50);
@@ -9750,20 +9784,101 @@ function closeNameModal(force){
   if(force || !nameModalFirst) document.getElementById('nameModal').classList.remove('show');
 }
 function submitName(){
-  const v = document.getElementById('nmInput').value.replace(/\s+/g, ' ').trim();
-  if(v.length < 2){ document.getElementById('nmErr').textContent = 'Au moins 2 caractères.'; return; }
-  player.name = v.toUpperCase();
+  const raw = document.getElementById('nmInput').value.replace(/\s+/g, ' ').trim();
+  if(raw.length < 2){ document.getElementById('nmErr').textContent = 'Au moins 2 caractères.'; return; }
+  if(!/^[A-Za-z0-9À-ÖØ-öø-ÿ ]+$/.test(raw)){ document.getElementById('nmErr').textContent = 'Lettres et chiffres uniquement.'; return; }
+  player.name = raw;
   const wasFirst = nameModalFirst;
   nameModalFirst = false;
-  if(wasFirst) player.lastSeenVersion = BUILD_VERSION; // partie toute neuve : pas de changelog à rattraper
+  nmGateActive = false;
+  if(wasFirst && nmGateIsNewPlayer) player.lastSeenVersion = BUILD_VERSION; // vraiment nouveau : pas de changelog à rattraper
   closeNameModal(true);
   renderPlayerTile();
   if(document.getElementById('playerView').classList.contains('active')) renderPlayerSheet();
   saveNow();
+  if(wasFirst) checkChangelogOnLogin();
 }
 document.getElementById('nmOk').onclick = submitName;
 document.getElementById('nmCancel').onclick = () => closeNameModal(true);
 document.getElementById('nmInput').addEventListener('keydown', e => { if(e.key === 'Enter') submitName(); });
+
+// ----- Fenêtre obligatoire au premier lancement (ou tant qu'aucun compte n'est relié sur cet appareil) :
+// étape 1 = compte (e-mail + mot de passe, création ou connexion), étape 2 = nom de joueur. -----
+function openAccountGateModal(){
+  nameModalFirst = true;
+  nmGateActive = true;
+  nmGateMode = 'signup';
+  document.getElementById('nmAccountStep').style.display = '';
+  document.getElementById('nmNameStep').style.display = 'none';
+  renderNmGateStep();
+  document.getElementById('nameModal').classList.add('show');
+  setTimeout(() => { const e = document.getElementById('nmEmail'); if(e) e.focus(); }, 50);
+}
+function renderNmGateStep(){
+  const isLogin = nmGateMode === 'login';
+  document.getElementById('nmTitle').textContent = 'BIENVENUE, COMMANDANT';
+  document.getElementById('nmSub').textContent = isLogin ? 'Connecte-toi à ton compte' : 'Crée ton compte pour commencer';
+  document.getElementById('nmPass').autocomplete = isLogin ? 'current-password' : 'new-password';
+  document.getElementById('nmAccOk').textContent = isLogin ? 'SE CONNECTER' : 'CRÉER MON COMPTE';
+  document.getElementById('nmLoginToggle').innerHTML = isLogin
+    ? 'Pas encore de compte&nbsp;? <a href="#" id="nmSwitchMode">Créer un compte</a>'
+    : 'Déjà un compte&nbsp;? <a href="#" id="nmSwitchMode">Se connecter</a>';
+  document.getElementById('nmSwitchMode').onclick = e => { e.preventDefault(); nmGateMode = isLogin ? 'signup' : 'login'; renderNmGateStep(); };
+  const msg = document.getElementById('nmAccMsg'); if(msg) msg.textContent = '';
+}
+function nmGateGoToNameStep(){
+  document.getElementById('nmAccountStep').style.display = 'none';
+  document.getElementById('nmNameStep').style.display = '';
+  document.getElementById('nmTitle').textContent = 'BIENVENUE, COMMANDANT';
+  document.getElementById('nmSub').textContent = 'Choisis ton nom de joueur pour commencer';
+  document.getElementById('nmCancel').style.display = 'none';
+  document.getElementById('nmOk').textContent = 'COMMENCER';
+  const input = document.getElementById('nmInput');
+  // Vraiment nouveau joueur : champ vide (le "COMMANDANT" par défaut n'est qu'un nom-témoin interne,
+  // pas un nom à proposer). Joueur déjà existant qui vient de créer/relier son compte : on prérempli
+  // avec son nom actuel, qu'il peut garder ou changer.
+  input.value = nmGateIsNewPlayer ? '' : (player.name || '');
+  document.getElementById('nmErr').textContent = '';
+  setTimeout(() => input.focus(), 50);
+}
+(function(){
+  const emailEl = document.getElementById('nmEmail'), passEl = document.getElementById('nmPass'), msgEl = document.getElementById('nmAccMsg');
+  const setMsg = (t, isErr) => { if(msgEl){ msgEl.textContent = t || ''; msgEl.style.color = isErr ? 'var(--ember)' : 'var(--text-dim)'; } };
+  const busy = on => { const b = document.getElementById('nmAccOk'); if(b) b.disabled = on; };
+  document.getElementById('nmAccOk').onclick = async () => {
+    const email = (emailEl.value || '').trim(), pass = passEl.value || '';
+    if(!email || !pass){ setMsg('Renseigne ton e-mail et ton mot de passe.', true); return; }
+    if(nmGateMode === 'signup' && pass.length < 6){ setMsg('Le mot de passe doit faire au moins 6 caractères.', true); return; }
+    busy(true); setMsg(nmGateMode === 'login' ? 'Connexion…' : 'Création du compte…');
+    try{
+      if(nmGateMode === 'login'){
+        await supaSignIn(email, pass);
+        await connectCloud();
+        if(cloud.status !== 'online'){ setMsg('Connexion au compte impossible pour le moment. Réessaie.', true); busy(false); return; }
+        // Connexion réussie sur un compte existant : le joueur retrouve directement sa partie, pas d'étape en plus.
+        nameModalFirst = false; nmGateActive = false;
+        closeNameModal(true);
+        renderPlayerTile();
+        if(document.getElementById('playerView').classList.contains('active')) renderPlayerSheet();
+        saveNow(); // connectCloud() n'a pas pu pousser en ligne tant que nameModalFirst bloquait saveNow() : on le fait maintenant
+        checkChangelogOnLogin();
+      } else {
+        const data = await supaSignUp(email, pass);
+        if(data && data.access_token){
+          await connectCloud();
+          if(cloud.status !== 'online'){ setMsg('Connexion au compte impossible pour le moment. Réessaie.', true); busy(false); return; }
+          nmGateGoToNameStep();
+        } else {
+          // confirmation par e-mail activée côté projet Supabase : pas de session immédiate
+          nmGateMode = 'login'; renderNmGateStep();
+          setMsg('Compte créé ! Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi ici.', false);
+          busy(false); return;
+        }
+      }
+    }catch(e){ setMsg(supaErrMsg(e), true); }
+    busy(false);
+  };
+})();
 
 document.getElementById('collectBtn').onclick = openLootModal;
 document.getElementById('lootModal').addEventListener('click', e => { if(e.target.id === 'lootModal') e.currentTarget.classList.remove('show'); });
@@ -10287,19 +10402,26 @@ document.getElementById('optVfx').oninput = e => { SETTINGS.vfx = +e.target.valu
 document.getElementById('optExportBtn').onclick = exportSaveFile;
 document.getElementById('optImportBtn').onclick = openImportChooser;
 
-// ----- Démarrage : restaure la copie locale, puis la sauvegarde en ligne -----
+// ----- Démarrage : restaure la copie locale, puis tente une reconnexion silencieuse au compte -----
 (async function bootSave(){
-  // Chargement de la sauvegarde locale : INCONDITIONNEL, pour tout le monde, sur tout appareil.
+  // Chargement de la sauvegarde locale : INCONDITIONNEL, pour tout le monde, sur tout appareil —
+  // qu'un compte soit relié ou non, cette copie reste toujours le filet de sécurité de la partie.
   let local = readLocalSave();
   const bestLocal = readBestSave();       // copie de secours locale plus avancée ? on la reprend
   if(bestLocal && saveProgress(bestLocal) > saveProgress(local)) local = bestLocal;
-  // applySave() peut renvoyer false (sauvegarde corrompue/format inconnu) : dans ce cas il faut
-  // quand même proposer la création d'un compte, sinon le joueur reste bloqué sur un état vide.
-  if(!(local && applySave(local))) openNameModal(true);
+  // applySave() peut renvoyer false (sauvegarde corrompue/format inconnu) : dans ce cas on traite
+  // la partie comme un vrai nouveau joueur (pas de changelog à rattraper une fois inscrit).
+  nmGateIsNewPlayer = !(local && applySave(local));
   updateLogin(); renderLoginBonus();
   renderNotifs();
-  await connectCloud();   // bonus silencieux en arrière-plan (ne bloque jamais la sauvegarde locale)
-  checkChangelogOnLogin();
+  // Tente de retrouver une session de compte déjà enregistrée sur cet appareil, en silence.
+  const connected = await connectCloud();
+  if(!connected){
+    // Aucun compte relié sur cet appareil : fenêtre obligatoire (compte -> nom) avant de pouvoir jouer.
+    openAccountGateModal();
+  } else {
+    checkChangelogOnLogin();
+  }
   // Le temps de jeu est sauvegardé régulièrement et quand on quitte l'app
   // (le pagehide est déjà écouté plus haut dans le fichier - inutile de le brancher deux fois)
   setInterval(() => saveNow(), 60000);
