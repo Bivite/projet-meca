@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.68</title>
+<title>Projet MECA V0.01.69</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2751,7 +2751,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.68 : cartes =================== */
+  /* =================== V0.01.69 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3014,6 +3014,33 @@
   .ord-grid .o-a .mt-inner, .ord-grid .o-b .mt-inner, .ord-grid .o-c .mt-inner{padding:8px 16px !important;}
   .ord-grid .o-a .mt-soon, .ord-grid .o-b .mt-soon, .ord-grid .o-c .mt-soon{font-size:7.5px; letter-spacing:1px;}
   #ordBackBtn{visibility:hidden; pointer-events:none;}
+
+  /* =================== FABRIQUE : sous-menu à 4 cases (V0.01.69) =================== */
+  /* Réutilise volontairement le même découpage en biais que l'onglet MENU (s-a/s-b/s-c/s-d). */
+  .mode-tile.forge{background:linear-gradient(160deg, #ffe2b4, #e0972a 45%, #5a3208); filter:drop-shadow(0 0 14px rgba(255,180,60,.4));}
+  .mode-tile.forge .mt-inner{background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(255,180,60,.34), transparent 70%), linear-gradient(180deg, rgba(255,255,255,.08), transparent 40%), linear-gradient(180deg, #2a1708, #0c0704);}
+  .mt-tirage-ico{width:42px; height:42px; color:#fff; filter:drop-shadow(0 0 10px rgba(255,210,120,.9));}
+  .mt-tirage-ico svg{width:100%; height:100%;}
+  #fabDrawBackBtn{visibility:hidden; pointer-events:none;}
+
+  /* =================== CARTE : sous-menu à 4 cases (découpage différent, V0.01.69) =================== */
+  .mode-tile.cardmgmt{background:linear-gradient(160deg, #d8e4ff, #5468e0 45%, #1a1f6e); filter:drop-shadow(0 0 14px rgba(90,110,255,.4));}
+  .mode-tile.cardmgmt .mt-inner{background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(90,110,255,.36), transparent 70%), linear-gradient(180deg, rgba(255,255,255,.1), transparent 40%), linear-gradient(180deg, #171c4a, #060814);}
+  .mt-cardmgmt-ico{width:44px; height:44px; color:#fff; filter:drop-shadow(0 0 10px rgba(140,160,255,.9));}
+  .mt-cardmgmt-ico svg{width:100%; height:100%;}
+  /* Rangée 1 : deux cases en pointe qui s'emboîtent (comme les modes ORDRE DE MISSION, mais en 2 colonnes) */
+  .cx-grid .mode-tile.cx-a, .cx-grid .mode-tile.cx-b{height:150px;}
+  .cx-a{--clip:polygon(0 0, calc(100% - 26px) 0, 100% 50%, calc(100% - 26px) 100%, 0 100%);}
+  .cx-b{--clip:polygon(0 0, 100% 0, 100% 100%, 0 100%, 26px 50%);}
+  .cx-grid .mode-row > .cx-a:first-child{margin-right:-22px;}
+  .cx-grid .cx-a .mt-inner{padding-right:42px !important;} .cx-grid .cx-b .mt-inner{padding-left:42px !important;}
+  /* Rangée 2 : deux petites cases à simple coupe (une seule diagonale, pas un chevron comme dans le MENU) */
+  .cx-grid .mode-tile.cx-c, .cx-grid .mode-tile.cx-d{height:118px;}
+  .cx-c{--clip:polygon(0 0, calc(100% - 20px) 0, 100% 100%, 0 100%);}
+  .cx-d{--clip:polygon(20px 0, 100% 0, 100% 100%, 0 100%);}
+  .cx-grid .mode-row > .cx-c:first-child{margin-right:-14px;}
+  .cx-grid .cx-c .mt-inner, .cx-grid .cx-d .mt-inner{padding:8px 18px !important;}
+  #codexMgmtBackBtn{visibility:hidden; pointer-events:none;}
 
   /* =================== OMEGA =================== */
   .mode-tile.omega{background:linear-gradient(160deg, #d6fbff, #20b9d6 45%, #07384a); filter:drop-shadow(0 0 14px rgba(60,220,255,.4));}
@@ -3393,18 +3420,58 @@
   </div>
 
   <div id="fabriqueView" class="view">
-    <div class="team-label player" style="margin-top:2px;">OFFRE DE LA FABRIQUE</div>
-    <div class="res-panel" id="fabResources"></div>
-    <div class="fab-timer">RENOUVELLEMENT DANS <span id="fabTimerVal">30:00</span></div>
-    <div class="fab-grid" id="fabGrid"></div>
-    <div class="press-hint">Reste appuyé sur une carte pour la voir en grand</div>
-    <div class="fab-rates" id="fabRates"></div>
-    <div class="controls">
-      <button id="buyAllBtn">ACHETER TOUT<small class="fab-cost" id="buyAllCost"></small></button>
-      <button id="buyOneBtn">ACHETER UNITÉ<small class="fab-cost" id="buyOneCost"></small></button>
+    <div id="fabHubView" class="sub-view active">
+      <div class="team-label player" style="margin-top:2px;">FABRIQUE</div>
+      <div class="mode-grid fab-hub-grid">
+        <div class="mode-row">
+          <div class="mode-tile forge s-a" id="tileFabTirage">
+            <div class="mt-inner">
+              <div class="mt-tirage-ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><rect x="9" y="15" width="20" height="28" rx="3" transform="rotate(-9 19 29)"/><rect x="18" y="10" width="20" height="28" rx="3"/></svg></div>
+              <div class="mt-title">TIRAGE</div>
+              <div class="mt-sub">Les cartes de la Fabrique</div>
+            </div>
+          </div>
+          <div class="mode-tile soon s-b">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+        </div>
+        <div class="mode-row">
+          <div class="mode-tile soon s-c">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+          <div class="mode-tile soon s-d">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="controls">
-      <button type="button" class="fab-refresh-full" id="fabRefreshBtn" aria-label="Actualiser l’offre">⟳ ACTUALISER<small class="fab-cost" id="refreshCost"></small></button>
+
+    <div id="fabDrawView" class="sub-view">
+      <header class="inf-header">
+        <button class="back-btn" id="fabDrawBackBtn">‹ FABRIQUE</button>
+        <div class="wave">TIRAGE</div>
+      </header>
+      <div class="res-panel" id="fabResources"></div>
+      <div class="fab-timer">RENOUVELLEMENT DANS <span id="fabTimerVal">30:00</span></div>
+      <div class="fab-grid" id="fabGrid"></div>
+      <div class="press-hint">Reste appuyé sur une carte pour la voir en grand</div>
+      <div class="fab-rates" id="fabRates"></div>
+      <div class="controls">
+        <button id="buyAllBtn">ACHETER TOUT<small class="fab-cost" id="buyAllCost"></small></button>
+        <button id="buyOneBtn">ACHETER UNITÉ<small class="fab-cost" id="buyOneCost"></small></button>
+      </div>
+      <div class="controls">
+        <button type="button" class="fab-refresh-full" id="fabRefreshBtn" aria-label="Actualiser l’offre">⟳ ACTUALISER<small class="fab-cost" id="refreshCost"></small></button>
+      </div>
     </div>
   </div>
 
@@ -3679,7 +3746,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.68</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.69</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3742,37 +3809,78 @@
   <button class="fuse-auto-btn" id="fuseAutoBtn">AUTO</button>
 
   <div id="codexView" class="view">
-    <div class="res-panel" id="codexResources"></div>
-    <div class="codex-tools">
-      <button type="button" class="codex-tool-btn destroy" id="destroyToggle">DÉTRUIRE</button>
-      <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DÉ-FUSIONNER</button>
+    <div id="codexHubView" class="sub-view active">
+      <div class="team-label player" style="margin-top:2px;">CARTE</div>
+      <div class="mode-grid cx-grid">
+        <div class="mode-row">
+          <div class="mode-tile cardmgmt cx-a" id="tileCardMgmt">
+            <div class="mt-inner">
+              <div class="mt-cardmgmt-ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><rect x="6" y="8" width="16" height="22" rx="2.5"/><rect x="26" y="8" width="16" height="22" rx="2.5"/><path d="M6 38h36"/></svg></div>
+              <div class="mt-title">GESTION DE CARTE</div>
+              <div class="mt-sub">Classe, fusionne, détruis</div>
+            </div>
+          </div>
+          <div class="mode-tile soon cx-b">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+        </div>
+        <div class="mode-row">
+          <div class="mode-tile soon cx-c">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+          <div class="mode-tile soon cx-d">
+            <div class="mt-inner">
+              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+              <div class="mt-soon">PROCHAINEMENT</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
-    <details class="codex-filter" id="codexFilterDetails">
-      <summary>FILTRES <span id="codexFilterLabel">· Toutes</span></summary>
-      <div class="filter-options">
-        <button type="button" class="filter-opt" data-filter="vit">VIT</button>
-        <button type="button" class="filter-opt" data-filter="atk">ATQ</button>
-        <button type="button" class="filter-opt" data-filter="def">DEF</button>
-        <button type="button" class="filter-opt" data-filter="hp">PV</button>
-        <button type="button" class="filter-opt active" data-filter="all">TOUTES LES CARTES</button>
+
+    <div id="codexMgmtView" class="sub-view">
+      <header class="inf-header">
+        <button class="back-btn" id="codexMgmtBackBtn">‹ CARTE</button>
+        <div class="wave">GESTION DE CARTE</div>
+      </header>
+      <div class="res-panel" id="codexResources"></div>
+      <div class="codex-tools">
+        <button type="button" class="codex-tool-btn destroy" id="destroyToggle">DÉTRUIRE</button>
+        <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DÉ-FUSIONNER</button>
       </div>
-      <div class="sort-title">CLASSEMENT</div>
-      <div class="filter-options sort-options">
-        <button type="button" class="sort-opt active" data-sort="group">PAR GROUPE</button>
-        <button type="button" class="sort-opt" data-sort="rarity">PAR RARETÉ</button>
-        <button type="button" class="sort-opt" data-sort="level">PAR NIVEAU</button>
+      <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
+      <details class="codex-filter" id="codexFilterDetails">
+        <summary>FILTRES <span id="codexFilterLabel">· Toutes</span></summary>
+        <div class="filter-options">
+          <button type="button" class="filter-opt" data-filter="vit">VIT</button>
+          <button type="button" class="filter-opt" data-filter="atk">ATQ</button>
+          <button type="button" class="filter-opt" data-filter="def">DEF</button>
+          <button type="button" class="filter-opt" data-filter="hp">PV</button>
+          <button type="button" class="filter-opt active" data-filter="all">TOUTES LES CARTES</button>
+        </div>
+        <div class="sort-title">CLASSEMENT</div>
+        <div class="filter-options sort-options">
+          <button type="button" class="sort-opt active" data-sort="group">PAR GROUPE</button>
+          <button type="button" class="sort-opt" data-sort="rarity">PAR RARETÉ</button>
+          <button type="button" class="sort-opt" data-sort="level">PAR NIVEAU</button>
+        </div>
+      </details>
+
+      <div class="team-label player" style="margin-top:2px;" id="codexListLabel">PERSONNAGES DÉBLOQUÉS</div>
+      <div class="press-hint">Reste appuyé sur une carte pour la voir en grand</div>
+      <div class="codex-grid" id="codexList"></div>
+
+
+      <div id="fusionSection" style="display:none;">
+        <div class="team-label player" style="margin-top:10px;">UPGRADE</div>
+        <div class="zone fusion-zone" id="fusionZone"></div>
       </div>
-    </details>
-
-    <div class="team-label player" style="margin-top:2px;" id="codexListLabel">PERSONNAGES DÉBLOQUÉS</div>
-    <div class="press-hint">Reste appuyé sur une carte pour la voir en grand</div>
-    <div class="codex-grid" id="codexList"></div>
-
-
-    <div id="fusionSection" style="display:none;">
-      <div class="team-label player" style="margin-top:10px;">UPGRADE</div>
-      <div class="zone fusion-zone" id="fusionZone"></div>
     </div>
   </div>
 </div>
@@ -3879,9 +3987,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.68';
+var BUILD_VERSION = 'V0.01.69';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.69', items:[
+    'Les onglets FABRIQUE et CARTE s’ouvrent maintenant sur un petit menu (comme l’onglet MENU) : « TIRAGE » et « GESTION DE CARTE » retrouvent tout ce qu’ils contenaient avant, et 3 nouvelles cases « Prochainement » annoncent du contenu à venir sur ces deux onglets.'
+  ]},
   { v:'V0.01.68', items:[
     'Correction visuelle : sur certaines cartes (dont NEUTRON), l’image du personnage laissait apparaître un petit liseré sombre au bord du portrait rond (près de la gemme, de l’engrenage, ou sur les côtés). C’est corrigé pour toutes les raretés de carte, et ça s’appliquera automatiquement à toutes les futures cartes.'
   ]},
@@ -7167,11 +7278,39 @@ function teamStarHtml(targetIdx){
     </div>`;
 }
 
+// ---------- Sous-menus FABRIQUE et CARTE (V0.01.69) ----------
+// Même principe que le hub du MENU : une page d'accueil à 4 cases, une seule fonctionnelle pour l'instant.
+function showFabHub(){
+  document.getElementById('fabHubView').classList.add('active');
+  document.getElementById('fabDrawView').classList.remove('active');
+}
+function enterFabDraw(){
+  document.getElementById('fabHubView').classList.remove('active');
+  document.getElementById('fabDrawView').classList.add('active');
+  renderFabrique();
+}
+function showCodexHub(){
+  document.getElementById('codexHubView').classList.add('active');
+  document.getElementById('codexMgmtView').classList.remove('active');
+}
+function enterCodexMgmt(){
+  document.getElementById('codexHubView').classList.remove('active');
+  document.getElementById('codexMgmtView').classList.add('active');
+  renderCodex();
+  renderCodexResources();
+}
+document.getElementById('tileFabTirage').onclick = enterFabDraw;
+document.getElementById('fabDrawBackBtn').onclick = showFabHub;
+document.getElementById('tileCardMgmt').onclick = enterCodexMgmt;
+document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
+
 // ---------- Navigation onglets ----------
 // Retour d'un niveau depuis un sous-menu de l'onglet actif (le bouton de l'onglet devient une flèche)
 function navBackAction(){
   if(currentView === 'combat' && activeSubView()) return () => goBack(activeSubView());
   if(currentView === 'codex' && typeof codexMode !== 'undefined' && codexMode !== 'normal') return () => setCodexMode('normal');
+  if(currentView === 'fabrique' && document.getElementById('fabDrawView').classList.contains('active')) return () => showFabHub();
+  if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   return null;
 }
 function updateNavBack(){
@@ -7183,6 +7322,9 @@ function switchView(view){
   // Toucher MENU (ou changer d'onglet) ferme le sous-menu ouvert et ramène à la page principale du MENU.
   // Une mission en cours continue de tourner en fond.
   if(typeof showHub === 'function') showHub();
+  // Idem pour les sous-menus FABRIQUE et CARTE : on revient toujours à la page d'accueil à 4 cases.
+  if(typeof showFabHub === 'function') showFabHub();
+  if(typeof showCodexHub === 'function') showCodexHub();
   const fromI = NAV_VIEWS.indexOf(currentView), toI = NAV_VIEWS.indexOf(view);
   if(fromI !== toI){
     const el = document.getElementById({ fabrique:'fabriqueView', combat:'battleView', codex:'codexView' }[view]);
