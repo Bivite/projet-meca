@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.82</title>
+<title>Projet MECA V0.01.83</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.82 : cartes =================== */
+  /* =================== V0.01.83 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.82</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.83</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4003,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.82';
+var BUILD_VERSION = 'V0.01.83';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.83', items:[
+    'Fenêtre DÉTRUIRE : possibilité de choisir combien d\'exemplaires détruire d\'un coup (sélecteur +/−) dès que tu en possèdes plus de deux, au lieu de devoir détruire une carte à la fois.'
+  ]},
   { v:'V0.01.82', items:[
     'Correction d\'un bug important : monter de niveau une carte faisait aussi monter de niveau toutes ses autres versions de rareté (rare, épique, légendaire...) du même personnage. Chaque carte est maintenant unique et indépendante : monter une rareté n\'affecte plus les autres.',
     'Lors d\'une fusion (ex. 3 cartes rares → 1 épique), la nouvelle carte hérite maintenant du niveau le plus haut entre l\'ancienne carte fusionnée et celle déjà possédée à la rareté supérieure : aucune progression n\'est jamais perdue.'
@@ -5989,6 +5992,7 @@ let fusionBase = null;      // { name, rar } : la carte posée dans le slot de f
 let fusionPicked = 0;       // nombre de cartes identiques sélectionnées en plus de celle du slot
 let fuseAutoMode = false;   // sélection multiple auto (bouton AUTO -> TERMINER) active
 let fuseAutoSel = {};       // { "nom|rareté": true } cartes sélectionnées pour l'upgrade groupé
+let destroyQty = 1;         // nombre d'exemplaires choisis dans la fenêtre DÉTRUIRE (V0.01.83)
 
 function codexCardHtml(def, rar, opts){
   const level = cardLevel(def.name, rar);
@@ -6653,49 +6657,83 @@ function openDestroyModal(def, rar){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
   if(isHolo(rar)){ showToast('CARTE HOLOGRAPHIQUE : INDESTRUCTIBLE'); return; }
   if(isFav(def.name, rar)){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
+  destroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture, quelle que soit la carte précédente
+  renderDestroyModal(def, rar);
+  document.getElementById('actionModal').classList.add('show');
+}
+// Réaffiche le contenu de la fenêtre DÉTRUIRE pour la quantité `destroyQty` actuelle (V0.01.83).
+// Un sélecteur +/- n'apparaît que si le joueur possède plus de 2 exemplaires de cette carte/rareté ;
+// avec 1 ou 2 exemplaires, la fenêtre reste simple (toujours 1 seul exemplaire détruit à la fois).
+function renderDestroyModal(def, rar){
   const n = stackCount(def.name, rar);
-  const last = copiesOf(def) === 1;
-  const inTeam = usedInTeam(def, rar) && stackCount(def.name, rar) === 1;
+  if(n <= 0){ closeActionModal(); return; }
+  // Si cette carte est engagée dans une mission en arrière-plan, il faut toujours en laisser au moins 1.
+  const busy = keyInMission(sqKey(def.name, rar));
+  const maxQty = Math.max(1, busy ? n - 1 : n);
+  const showStepper = n > 2;
+  const qty = showStepper ? Math.max(1, Math.min(destroyQty, maxQty)) : 1;
+  destroyQty = qty;
+  const unit = salvageValue(def, rar);
+  const totMat = unit.mat * qty, totGold = unit.gold * qty;
+  const last = (copiesOf(def) - qty) <= 0;
+  const inTeam = usedInTeam(def, rar) && (n - qty) === 0;
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">DÉTRUIRE UNE CARTE</div>
+    <div class="team-label player" style="margin:0;">DÉTRUIRE ${qty > 1 ? 'DES CARTES' : 'UNE CARTE'}</div>
     ${actionCardHtml(def, rar, { badge: n > 1 ? '×' + n : '' })}
+    ${showStepper ? `<div class="fuse-stepper" id="destroyStepper" style="width:100%;">
+      <button type="button" data-d="-1">−</button><span><b>${qty}</b> / ${maxQty}</span><button type="button" data-d="1">+</button>
+    </div>` : ''}
     <div class="salvage-box">
       <div class="salvage-title">RECYCLAGE</div>
       <div class="salvage-row">
-        <span class="salv r-${rar}"><i>${matIcon(rar)}</i>+${salvageValue(def, rar).mat} <small>${RARITIES[rar].label}</small></span>
-        <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(salvageValue(def, rar).gold)}</span>
+        <span class="salv r-${rar}"><i>${matIcon(rar)}</i>+${totMat} <small>${RARITIES[rar].label}</small></span>
+        <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
       </div>
     </div>
-    <div class="action-text">1 exemplaire de <b>${def.name} ${RARITIES[rar].label}</b> sera détruit définitivement.
+    <div class="action-text">${qty > 1 ? qty + ' exemplaires' : '1 exemplaire'} de <b>${def.name} ${RARITIES[rar].label}</b> ser${qty > 1 ? 'ont' : 'a'} détruit${qty > 1 ? 's' : ''} définitivement.
       ${last ? '<br><span class="warn">C\u2019est ton dernier exemplaire de ce personnage.</span>' : ''}
       ${inTeam ? '<br><span class="warn">Cette carte sera retirée de ton escouade.</span>' : ''}</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
-      <button id="actGo" class="danger-btn">DÉTRUIRE LA CARTE</button>
+      <button id="actGo" class="danger-btn">DÉTRUIRE ${qty > 1 ? 'LES CARTES' : 'LA CARTE'}</button>
     </div>`;
   document.getElementById('actClose').onclick = closeActionModal;
   document.getElementById('actCancel').onclick = closeActionModal;
+  const stepper = document.getElementById('destroyStepper');
+  if(stepper){
+    stepper.querySelectorAll('button').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        destroyQty = Math.max(1, Math.min(maxQty, destroyQty + parseInt(btn.dataset.d)));
+        renderDestroyModal(def, rar);
+      };
+    });
+  }
   document.getElementById('actGo').onclick = () => {
+    const q = qty;
     closeActionModal();
     const doIt = () => {
-      if(stackCount(def.name, rar) <= 0) return;
+      const have = stackCount(def.name, rar);
+      const realQty = Math.min(q, have);
+      if(realQty <= 0) return;
       const gain = salvageValue(def, rar);
-      cardCopies[def.name][rar] -= 1;
-      player.stats.destroyed++;
-      if(rar === 'legendaire') player.stats.destroyedLeg++;
+      const gainMat = gain.mat * realQty, gainGold = gain.gold * realQty;
+      cardCopies[def.name][rar] -= realQty;
+      player.stats.destroyed += realQty;
+      if(rar === 'legendaire') player.stats.destroyedLeg += realQty;
       if(stackCount(def.name, rar) === 0 && squad.includes(sqKey(def.name, rar))){
         // validateSquad() (comme pour la défusion/fusion) permet de retomber sur une autre rareté
         // possédée du même personnage au lieu de vider systématiquement l'emplacement d'escouade.
         validateSquad();
       }
-      player.res.mat[rar] = (player.res.mat[rar] || 0) + gain.mat;
-      player.res.gold += gain.gold;
-      addTotals(gain.gold, 0, { [rar]: gain.mat }, 0);
-      showToast('CARTE RECYCLÉE : +' + gain.mat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gain.gold) + ' OR');
+      player.res.mat[rar] = (player.res.mat[rar] || 0) + gainMat;
+      player.res.gold += gainGold;
+      addTotals(gainGold, 0, { [rar]: gainMat }, 0);
+      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold) + ' OR');
       renderResources();
       renderCodexResources();
-      flashResources(rar, gain);
+      flashResources(rar, { mat: gainMat, gold: gainGold });
       saveNow();                 // sauvegarde immédiate des ressources gagnées
       renderCodex();
       saveSoon();
@@ -6704,7 +6742,6 @@ function openDestroyModal(def, rar){
     const withFx = () => playDestroyFx(def, rar, doIt);
     if(usedInTeam(def, rar)) guardTeamChange(withFx, 'Cette carte est dans ton escouade actuelle : la détruire'); else withFx();
   };
-  document.getElementById('actionModal').classList.add('show');
 }
 function openDefuseModal(def, rar){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
