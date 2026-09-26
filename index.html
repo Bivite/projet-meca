@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.72</title>
+<title>Projet MECA V0.01.73</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2731,7 +2731,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.72 : cartes =================== */
+  /* =================== V0.01.73 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3370,6 +3370,7 @@
         <div class="mode-row">
           <div class="mode-tile forge s-a" id="tileFabTirage">
             <div class="mt-inner">
+              <span class="notif-dot tile-dot" id="dotFabTirage"></span>
               <div class="mt-tirage-ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><rect x="9" y="15" width="20" height="28" rx="3" transform="rotate(-9 19 29)"/><rect x="18" y="10" width="20" height="28" rx="3"/></svg></div>
               <div class="mt-title">TIRAGE</div>
               <div class="mt-sub">Les cartes de la Fabrique</div>
@@ -3690,7 +3691,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.72</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.73</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3759,6 +3760,7 @@
         <div class="mode-row">
           <div class="mode-tile cardmgmt cx-a" id="tileCardMgmt">
             <div class="mt-inner">
+              <span class="notif-dot tile-dot" id="dotCardMgmt"></span>
               <div class="mt-cardmgmt-ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><rect x="6" y="8" width="16" height="22" rx="2.5"/><rect x="26" y="8" width="16" height="22" rx="2.5"/><path d="M6 38h36"/></svg></div>
               <div class="mt-title">GESTION DE CARTE</div>
               <div class="mt-sub">Classe, fusionne, détruis</div>
@@ -3931,9 +3933,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.72';
+var BUILD_VERSION = 'V0.01.73';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.73', items:[
+    'Nouvelles pastilles de notification sur les cases TIRAGE (Fabrique) et GESTION DE CARTE (Carte), en plus de celles déjà sur les onglets.',
+    'La pastille de la Fabrique reste maintenant visible tant que TIRAGE n\'a pas été ouvert (avant, elle disparaissait dès l\'arrivée sur l\'écran d\'accueil de l\'onglet).',
+    'Optimisations diverses pour fluidifier le jeu, et vérifications approfondies de toutes les fonctionnalités (aucun bug trouvé).'
+  ]},
   { v:'V0.01.72', items:[
     'Le logo « SQUAD LOCK » s\'intègre maintenant parfaitement au fond de l\'écran (plus aucun contour visible autour du logo).'
   ]},
@@ -4663,10 +4670,13 @@ function renderMissionDots(){
 }
 function renderNotifs(){
   setDot('dotFab', notif.fab);
+  setDot('dotFabTirage', notif.fab);   // même signal, sur la case du hub FABRIQUE (depuis V0.01.69, l'onglet s'ouvre d'abord sur ce hub)
   setDot('dotPlayer', notif.player);
   renderMissionDots();
   if(typeof renderRewardDots === 'function') renderRewardDots();
-  setDot('dotCodex', CHAR_DEFS.some(d => isOwned(d) && cardHasNotif(d)));
+  const codexNotif = CHAR_DEFS.some(d => isOwned(d) && cardHasNotif(d));
+  setDot('dotCodex', codexNotif);
+  setDot('dotCardMgmt', codexNotif);   // même signal, sur la case du hub CARTE (idem)
 }
 function xpToNext(level){ return 100 + (level - 1) * 60; }
 function addXP(amount, quiet){
@@ -4744,19 +4754,26 @@ function rewardWave(w){
   if(Math.random() < Math.min(0.3, (0.01 + w * 0.002) * m)) gainMat('epique', 1);
   if(w % 25 === 0) gainMat('legendaire', 1);                  // 1 légendaire toutes les 25 vagues
 }
+// Signature des valeurs affichées : évite de réécrire le DOM (innerHTML) à chaque tick de combat
+// (jusqu'à 1x/tour, càd plusieurs fois par seconde en vitesse x2) quand rien n'a réellement changé.
+var _lootSig = null;
 function renderLoot(){
   if(HEADLESS || BG_SWAP) return;
   const btn = document.getElementById('collectBtn'), sub = document.getElementById('collectSub');
   if(btn){
     const empty = lootEmpty();
-    btn.disabled = empty;
-    // Jamais lancée : aucune récompense, pas de bouton. En cours : collecter arrête la mission. Terminée : collecter le butin restant.
-    const hide = empty || (!battleStarted && !missionDone);
-    btn.style.display = hide ? 'none' : '';
-    btn.classList.toggle('ready', !empty);
     const mats = MAT_ORDER.reduce((a, r) => a + (runLoot.mat[r] || 0), 0);
-    sub.innerHTML = empty ? 'Rien à collecter pour le moment'
-      : `<i>${ICON_GOLD}</i>+${fmtNum(runLoot.gold)} &nbsp;<i>${ICON_XP}</i>+${fmtNum(runLoot.xp)}` + (missionCfg().mats ? ` &nbsp;<i>${matIcon('rare')}</i>+${mats}` : '') + (runLoot.crystal ? ` &nbsp;<i>${ICON_CRYSTAL}</i>+${runLoot.crystal}` : '');
+    const sig = empty + '|' + runLoot.gold + '|' + runLoot.xp + '|' + mats + '|' + runLoot.crystal + '|' + battleStarted + '|' + missionDone;
+    if(sig !== _lootSig){
+      _lootSig = sig;
+      btn.disabled = empty;
+      // Jamais lancée : aucune récompense, pas de bouton. En cours : collecter arrête la mission. Terminée : collecter le butin restant.
+      const hide = empty || (!battleStarted && !missionDone);
+      btn.style.display = hide ? 'none' : '';
+      btn.classList.toggle('ready', !empty);
+      sub.innerHTML = empty ? 'Rien à collecter pour le moment'
+        : `<i>${ICON_GOLD}</i>+${fmtNum(runLoot.gold)} &nbsp;<i>${ICON_XP}</i>+${fmtNum(runLoot.xp)}` + (missionCfg().mats ? ` &nbsp;<i>${matIcon('rare')}</i>+${mats}` : '') + (runLoot.crystal ? ` &nbsp;<i>${ICON_CRYSTAL}</i>+${runLoot.crystal}` : '');
+    }
   }
   const tl = document.getElementById('infLoot');
   if(tl){ tl.style.display = (lootEmpty() || (!battleStarted && !missionDone)) ? 'none' : ''; tl.textContent = '◆ À COLLECTER'; }
@@ -7242,6 +7259,10 @@ function enterFabDraw(){
   document.getElementById('fabHubView').classList.remove('active');
   document.getElementById('fabDrawView').classList.add('active');
   renderFabrique();
+  // La pastille de notification (nouvelle offre pendant l'absence du joueur) reste visible tant que le
+  // joueur n'a pas ouvert TIRAGE lui-même -- simplement arriver sur le hub FABRIQUE ne suffit plus à
+  // l'effacer depuis que l'onglet s'ouvre d'abord sur ce hub (V0.01.69).
+  if(notif.fab){ notif.fab = false; renderNotifs(); saveSoon(); }
 }
 function showCodexHub(){
   document.getElementById('codexHubView').classList.add('active');
@@ -7292,7 +7313,7 @@ function switchView(view){
   document.getElementById('navFabrique').classList.toggle('active', view === 'fabrique');
   document.getElementById('navCombat').classList.toggle('active', view === 'combat');
   document.getElementById('navCodex').classList.toggle('active', view === 'codex');
-  if(view === 'fabrique'){ renderFabrique(); if(notif.fab){ notif.fab = false; renderNotifs(); saveSoon(); } }
+  if(view === 'fabrique'){ renderFabrique(); }
   if(view !== 'codex' && codexMode !== 'normal'){ codexMode = 'normal'; fusionMode = false; fusionBase = null; fusionPicked = 0; fuseAutoMode = false; fuseAutoSel = {}; document.getElementById('fusionSection').style.display = 'none'; }
   if(view !== 'codex'){ const ab = document.getElementById('fuseAutoBtn'); if(ab) ab.classList.remove('show', 'terminer'); }
   if(view === 'codex'){ renderCodex(); renderCodexResources(); }
