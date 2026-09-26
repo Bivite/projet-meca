@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.81</title>
+<title>Projet MECA V0.01.82</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.81 : cartes =================== */
+  /* =================== V0.01.82 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.81</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.82</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4003,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.81';
+var BUILD_VERSION = 'V0.01.82';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.82', items:[
+    'Correction d\'un bug important : monter de niveau une carte faisait aussi monter de niveau toutes ses autres versions de rareté (rare, épique, légendaire...) du même personnage. Chaque carte est maintenant unique et indépendante : monter une rareté n\'affecte plus les autres.',
+    'Lors d\'une fusion (ex. 3 cartes rares → 1 épique), la nouvelle carte hérite maintenant du niveau le plus haut entre l\'ancienne carte fusionnée et celle déjà possédée à la rareté supérieure : aucune progression n\'est jamais perdue.'
+  ]},
   { v:'V0.01.81', items:[
     'Nouveau look pour le tutoriel d\'accueil : le nom du joueur remplace "Commandant" sur la page de bienvenue, l\'escouade et la capacité ultime sont maintenant illustrées avec de vrais aperçus de cartes, la fusion est expliquée avec un exemple visuel (deux cartes et une flèche), les raretés sont montrées avec de simples carrés de couleur, et les icônes correspondent maintenant exactement à celles du jeu. Texte des descriptions agrandi pour une meilleure lisibilité, et boutons "Précédent"/"Suivant" ajustés pour tenir sur une seule ligne.',
     'Correction d\'un bug d\'affichage : les petites cartes de combat pouvaient perdre leur cadre circulaire lorsqu\'elles apparaissaient dans une fenêtre superposée (comme le tutoriel).'
@@ -4211,7 +4215,7 @@ function tutUltimateMock(){
   // cbtPreviewHtml(), la même fonction que celle du pentagone d'escouade (voir plus bas dans le fichier)
   const def = CHAR_DEFS.find(c => c.name === 'NEUTRON');
   if(!def) return '';
-  return `<div class="tut-cbt-mock">${cbtPreviewHtml(def, def.rarity, playerLevels[def.name] || 1)}</div>`;
+  return `<div class="tut-cbt-mock">${cbtPreviewHtml(def, def.rarity, cardLevel(def.name, def.rarity))}</div>`;
 }
 function tutFusionMock(){
   // Exemple de fusion : la même carte, avant/après, avec la vraie flèche et les vrais encadrés de rareté
@@ -4790,9 +4794,11 @@ function rollRarity(){
   return 'rare';
 }
 
-// Niveau courant de chaque carte (1 à 100). En mémoire pour l'instant.
+// Niveau courant de chaque carte (1 à 100), PAR EXEMPLAIRE DE RARETÉ -- une carte Rare et sa version
+// Épique du même personnage sont deux cartes distinctes, chacune avec son propre niveau (V0.01.82).
+// Clé = sqKey(nom, rareté) ("NOM|rareté"), la même clé que celle utilisée pour les emplacements d'escouade.
+// En mémoire pour l'instant.
 const playerLevels = {};
-CHAR_DEFS.forEach(c => playerLevels[c.name] = 1);
 
 // ---------- Expérience des cartes ----------
 // Chaque carte qui participe à un combat gagne de l'XP (moins en cas de défaite).
@@ -4801,23 +4807,35 @@ const CARD_MAX_LEVEL = 300;
 const LEVEL_CAP = { rare: 100, epique: 150, legendaire: 250, holo: 300 };
 function levelCap(def){ return LEVEL_CAP[effRarity(def)] || CARD_MAX_LEVEL; }
 const CARD_XP = { winBase: 3, winPerWave: 1, lossRatio: 0.4 };   // XP versée au butin par vague gagnée
+// cardXp suit la même clé par rareté que playerLevels (voir ci-dessus).
 const cardXp = {};
-CHAR_DEFS.forEach(c => cardXp[c.name] = 0);
 function cardXpToNext(level){ return 40 + (level - 1) * 12; }
-function cardXpInfo(name){
-  const lvl = playerLevels[name] || 1;
+function cardLevel(name, rar){ return playerLevels[sqKey(name, rar)] || 1; }
+function cardXpInfo(name, rar){
+  const lvl = cardLevel(name, rar);
   if(lvl >= CARD_MAX_LEVEL) return { lvl, xp:0, need:0, pct:100, max:true };
-  const need = cardXpToNext(lvl), xp = cardXp[name] || 0;
+  const need = cardXpToNext(lvl), xp = cardXp[sqKey(name, rar)] || 0;
   return { lvl, xp, need, pct: Math.min(100, xp / need * 100), max:false };
 }
-// Ajoute de l'XP à une carte ; renvoie le nombre de niveaux gagnés.
-function addCardXP(name, amount){
-  let lvl = playerLevels[name] || 1, xp = (cardXp[name] || 0) + amount, ups = 0;
+// Ajoute de l'XP à une carte (à une rareté précise) ; renvoie le nombre de niveaux gagnés.
+function addCardXP(name, rar, amount){
+  const key = sqKey(name, rar);
+  let lvl = cardLevel(name, rar), xp = (cardXp[key] || 0) + amount, ups = 0;
   while(lvl < CARD_MAX_LEVEL && xp >= cardXpToNext(lvl)){ xp -= cardXpToNext(lvl); lvl++; ups++; }
   if(lvl >= CARD_MAX_LEVEL) xp = 0;
-  playerLevels[name] = lvl;
-  cardXp[name] = xp;
+  playerLevels[key] = lvl;
+  cardXp[key] = xp;
   return ups;
+}
+// Fusion : la nouvelle carte hérite du niveau le plus haut entre l'ancienne rareté fusionnée et une
+// éventuelle carte de la rareté supérieure déjà possédée -- jamais de perte de progression à l'upgrade
+// (décision d'Alex, V0.01.82). Remet à zéro l'XP de la rareté cible si son niveau a bougé.
+function inheritFusionLevel(name, fromRar, toRar){
+  const fromLvl = cardLevel(name, fromRar), toKey = sqKey(name, toRar);
+  if(fromLvl > (playerLevels[toKey] || 1)){
+    playerLevels[toKey] = fromLvl;
+    cardXp[toKey] = 0;
+  }
 }
 
 // Nombre d'exemplaires possédés de chaque carte (0 = jamais obtenue).
@@ -5286,7 +5304,7 @@ function statsAtLevel(def, level, rar){
 
 function makePlayerFromDef(def, rar){
   rar = rar || effRarity(def);
-  const level = playerLevels[def.name] || 1;
+  const level = cardLevel(def.name, rar);
   const s = statsAtLevel(def, level, rar);
   return {
     name:def.name, color:def.color, shape:def.shape,
@@ -5417,7 +5435,7 @@ function initBattle(){
     player.bestWave = {
       wave,
       at: new Date(),
-      team: team.map(e => ({ name:e.def.name, color:e.def.color, shape:e.def.shape, level:playerLevels[e.def.name] || 1, rarity:e.rar, power:cardPower(e.def, e.rar) })),
+      team: team.map(e => ({ name:e.def.name, color:e.def.color, shape:e.def.shape, level:cardLevel(e.def.name, e.rar), rarity:e.rar, power:cardPower(e.def, e.rar) })),
       power: team.reduce((a, e) => a + cardPower(e.def, e.rar), 0)
     };
     saveSoon();
@@ -5772,7 +5790,7 @@ function endBattle(won){
   // Les cartes ne gagnent plus d'XP en mission : cette XP rejoint le butin (stock d'XP à distribuer plus tard)
   const results = playerTeam.map(u => {
     const def = CHAR_DEFS.find(d => d.name === u.name);
-    return { def, ups: 0, info: cardXpInfo(u.name) };
+    return { def, ups: 0, info: cardXpInfo(u.name, u.rarity) };
   });
   if(won) gainXpGradual(cardGain * runMult());
   if(!HEADLESS) document.getElementById('overlayCards').innerHTML = `
@@ -5852,7 +5870,7 @@ function harvestTick(){
   runLoot.seconds += (BASE_TICK / speed) / 1000;
   const m = runMult();
   let vit = 0;
-  try{ squadEntries(curSquad).forEach(e => { vit += statsAtLevel(e.def, playerLevels[e.def.name] || 1, e.rar).vit; }); }catch(_){}
+  try{ squadEntries(curSquad).forEach(e => { vit += statsAtLevel(e.def, cardLevel(e.def.name, e.rar), e.rar).vit; }); }catch(_){}
   const vitBonus = 1 + Math.min(2, vit / 1400);            // jusqu'à ×3 selon la VIT totale
   const rate = m * vitBonus;
   if(Math.random() < 0.020 * rate) gainMat('rare', 1);
@@ -5950,7 +5968,7 @@ function toggleFav(name, rar){
 function sortStacks(list){
   const g = st => GROUP_ORDER.indexOf(categoryOf(st.def));
   const r = st => tierOf(st.rar);
-  const l = st => playerLevels[st.def.name] || 1;
+  const l = st => cardLevel(st.def.name, st.rar);
   const cmp = {
     group:  (a, b) => g(a) - g(b) || r(b) - r(a) || l(b) - l(a) || a.def.name.localeCompare(b.def.name),
     rarity: (a, b) => r(b) - r(a) || g(a) - g(b) || l(b) - l(a) || a.def.name.localeCompare(b.def.name),
@@ -5973,7 +5991,7 @@ let fuseAutoMode = false;   // sélection multiple auto (bouton AUTO -> TERMINER
 let fuseAutoSel = {};       // { "nom|rareté": true } cartes sélectionnées pour l'upgrade groupé
 
 function codexCardHtml(def, rar, opts){
-  const level = playerLevels[def.name] || 1;
+  const level = cardLevel(def.name, rar);
   return `
       ${opts.unlock ? '<span class="notif-dot on card-dot"></span>' : ''}
       ${opts.badge ? `<div class="cx-copy-badge">${opts.badge}</div>` : ''}
@@ -6085,7 +6103,7 @@ function affilEmblem(k){
 // dédiée (champ `art` absent) -- V0.01.74, en remplacement du hublot vide/sombre du cadre.
 const GREY_ART = 'data:image/webp;base64,UklGRsoCAABXRUJQVlA4IL4CAAAQKwCdASosAaQBPmEwlkikIqIhIAgAgAwJaW7hIqnLF4ZAP/1yL/2r+RFET50ACfefdx5Orl8WVgEjM+HTZInrp9NtgKh/3nVKn7zo0rAVD/vPSRX3OAVP3m+u9WPEOrwGV2skK8hriOjYMt5b6lF6PEOstoh/YyWG3QKwjmr96vriHXTV5Ey/QfKfaP0H1YtuukHGJgiRh2pIbQoSN0vSWzmzsBwh8lU4mLwW3WLPh9nNF/Ieyp7f8u6ExYN73zqEElGvaWbHNEdEIzyQg6g6UPY5YqFipWKrEYGMblFETWGRKR4t196UAhzgEjR8eauBbqqsw5LH8G5EqDqVflne2iau1PziITQ4kve0foCWTENjur1xZMDQVYOwQyURLfFjPgiwV8bI8JSd8oxVgOUnrhcVP3gejqASNH3XHSxXdNk1zQbJtqdTRPuvuI4yGR693ah6nZ6g/ex4qzaihX7MgAD+53anZus2beXIE0XCl4nn2yShklmWVLv61gy/tJpaRu+659Sf/oxaBjqLZfJtSj/R9uApmNfFcXFlqAKo+CCzgg/puIufpuXi++BKuilyMnek9cJefq4C2Dhv9NSAy6hPJOOS6rRAm4JbkHvro8ZN/IylXKvt6J2nAIgA443fpPCwffOTetgqH3dWdCcfvjjKsVeCEuNgl+rBFX1h8fVUMM0x0Gcha+wzev0TL8kxhF2JsAUJomcY+SjIg8U8RGY/TYzWZ3WBAiWxBwFfmr95sSAp/lRcJdW3NdVG7vlM2ZZWyXIRaG1RIXQ49kEyQBrnbL7thqLUHaTk8AcFHG/ZpLxTkRr7c6/G2QQFrUWzruIkoPsL/VVcXcY2Iy+yMBtGsrYM7DLoiQVhNRH0MJvX9tqVOcUPc//ov0lF/xVdlLAQgJtY8LMKR9L6nT2i+RaS9Djw/B4WDbR54AA=';
 function lgLayerHtml(def, rar, ids){
-  const level = playerLevels[def.name] || 1, s = statsAtLevel(def, level, rar), k = categoryOf(def);
+  const level = cardLevel(def.name, rar), s = statsAtLevel(def, level, rar), k = categoryOf(def);
   const id = x => ids ? ` id="${x}"` : '';
   const artHtml = `<img class="lg-art-img" src="${def.art || GREY_ART}" alt="">`;
   return `<div class="lg-layer f-${rar}">
@@ -6272,6 +6290,7 @@ function doFusion(){
   const next = RARITY_ORDER[tierOf(rar) + 1];
   cardCopies[name][rar] -= need;
   cardCopies[name][next] += 1;
+  inheritFusionLevel(name, rar, next);
   // La carte upgradée remplace l'ancienne version dans l'escouade si celle-ci n'existe plus
   const si = squad.indexOf(sqKey(name, rar));
   if(si >= 0 && stackCount(name, rar) === 0 && !squad.includes(sqKey(name, next))) squad[si] = sqKey(name, next);
@@ -6330,6 +6349,7 @@ function doFusionSilent(name, rar){
   const next = RARITY_ORDER[tierOf(rar) + 1];
   cardCopies[name][rar] -= need;
   cardCopies[name][next] += 1;
+  inheritFusionLevel(name, rar, next);
   const si = squad.indexOf(sqKey(name, rar));
   if(si >= 0 && stackCount(name, rar) === 0 && !squad.includes(sqKey(name, next))) squad[si] = sqKey(name, next);
   player.fusions = (player.fusions || 0) + 1;
@@ -6512,7 +6532,7 @@ function actionCardHtml(def, rar, extra){
 // Le gain augmente avec le niveau du personnage.
 const SALVAGE = { rare:{ mat:3, gold:50 }, epique:{ mat:3, gold:250 }, legendaire:{ mat:3, gold:1200 } };
 function salvageValue(def, rar){
-  const lvl = playerLevels[def.name] || 1, base = SALVAGE[rar];
+  const lvl = cardLevel(def.name, rar), base = SALVAGE[rar];
   return { mat: bonusN(base.mat + Math.floor(lvl / 10)), gold: bonusN(Math.round(base.gold * (1 + (lvl - 1) / 20))) };
 }
 // Met en évidence les ressources qui viennent d'augmenter (panneau du Codex + bandeau Combat)
@@ -6804,7 +6824,8 @@ function acquireCard(def, rar){
   if(isHolo(rar)) showToast('✦ CARTE HOLOGRAPHIQUE : ' + def.name + ' ✦');
   if(isFirstCopy){
     def.seen = false;
-    if(!playerLevels[def.name]) playerLevels[def.name] = 1;
+    const lk = sqKey(def.name, rar);
+    if(!playerLevels[lk]) playerLevels[lk] = 1;
     addXP(XP_REWARDS.newCard);
     renderNotifs();
   }
@@ -6974,11 +6995,11 @@ function toggleLevelPanel(def, rar){
   if(panel.classList.contains('show')){
     panel.classList.remove('show');
     if(md) md.classList.remove('lvl-open');
-    const cur = playerLevels[def.name] || 1, st = statsAtLevel(def, cur, rar);
+    const cur = cardLevel(def.name, rar), st = statsAtLevel(def, cur, rar);
     showStatGains(st, null);
     return;
   }
-  const cur = playerLevels[def.name] || 1;
+  const cur = cardLevel(def.name, rar);
   lvlTarget = Math.min(cur + 1, levelCap(def));   // par défaut : un seul niveau
   panel.classList.add('show');
   // Panneau ouvert : on masque le bouton de montée de niveau et la croix,
@@ -6991,7 +7012,7 @@ function toggleLevelPanel(def, rar){
 function renderLevelPanel(def, rar){
   const panel = document.getElementById('lvlPanel');
   if(!panel) return;
-  const cur = playerLevels[def.name] || 1;
+  const cur = cardLevel(def.name, rar);
   const cap = levelCap(def);
   const maxAff = maxAffordableLevel(cur, cap);
   lvlTarget = Math.min(Math.max(lvlTarget, cur + 1), cap);
@@ -7028,14 +7049,14 @@ function showStatGains(a, b){
 }
 function doLevelUp(def, rar){
   if(lvlAnimating) return;
-  const cur = playerLevels[def.name] || 1, target = Math.min(lvlTarget, levelCap(def));
+  const cur = cardLevel(def.name, rar), target = Math.min(lvlTarget, levelCap(def));
   const cost = lvlCost(cur, target);
   if(target <= cur || cost.gold > Math.floor(player.res.gold || 0) || cost.xp > Math.floor(player.res.xp || 0)) return;
   player.res.gold -= cost.gold;
   player.res.xp -= cost.xp;
-  playerLevels[def.name] = target;
+  playerLevels[sqKey(def.name, rar)] = target;
   player.stats.levelUps += target - cur;
-  cardXp[def.name] = 0;
+  cardXp[sqKey(def.name, rar)] = 0;
   saveNow();
   renderResources();
   // Animation : le niveau et les stats montent progressivement jusqu'au niveau visé
@@ -7089,7 +7110,7 @@ function openCodexModal(name, rar, opts){
   document.getElementById('codexModal').classList.remove('lvl-open');
   const def = CHAR_DEFS.find(c => c.name === name);
   rar = rar || effRarity(def);
-  const level = playerLevels[name] || 1;
+  const level = cardLevel(name, rar);
   const s = statsAtLevel(def, level, rar);
   const nStack = stackCount(name, rar);
   const inner = document.getElementById('codexModalInner');
@@ -7153,7 +7174,7 @@ function openCodexModal(name, rar, opts){
   const lvlBtn = document.getElementById('lvlOpenBtn');
   if(lvlBtn){
     // Pas assez d'or / d'XP pour gagner au moins 1 niveau : bouton grisé
-    const cur = playerLevels[def.name] || 1, c1 = lvlStepCost(cur);
+    const cur = cardLevel(def.name, rar), c1 = lvlStepCost(cur);
     const lackGold = c1.gold > Math.floor(player.res.gold || 0), lackXp = c1.xp > Math.floor(player.res.xp || 0);
     if(lackGold || lackXp){
       lvlBtn.classList.add('off');
@@ -7200,7 +7221,7 @@ function renderTeamSlots(){
     const rar = def ? effRarity(def) : null;
     slot.className = 'team-slot' + (def ? ' filled ' + rarCls(rar) : '');
     if(def){
-      const level = playerLevels[def.name] || 1;
+      const level = cardLevel(def.name, rar);
       // Même petite carte que celle utilisée en combat, jauges affichées pleines (hors combat)
       slot.innerHTML = `
         <div class="unit cbt f-${rar}">
@@ -7223,8 +7244,9 @@ function renderTeamSlots(){
 // ---------- Puissance d'escouade ----------
 // Puissance d'une carte = mélange pondéré de ses 4 stats au niveau actuel.
 function cardPower(def, rar){
+  rar = rar || effRarity(def);
   const POWER_WEIGHTS = { hp:0.2, atk:2, def:1.5, vit:0.5 };
-  const s = statsAtLevel(def, playerLevels[def.name] || 1, rar);
+  const s = statsAtLevel(def, cardLevel(def.name, rar), rar);
   return Math.round(s.hp*POWER_WEIGHTS.hp + s.atk*POWER_WEIGHTS.atk + s.def*POWER_WEIGHTS.def + s.vit*POWER_WEIGHTS.vit);
 }
 function renderTeamPower(){
@@ -7234,7 +7256,7 @@ function renderTeamPower(){
   const tot = { hp:0, atk:0, def:0, vit:0 };
   let power = 0;
   defs.forEach(e => {
-    const s = statsAtLevel(e.def, playerLevels[e.def.name] || 1, e.rar);
+    const s = statsAtLevel(e.def, cardLevel(e.def.name, e.rar), e.rar);
     STAT_KEYS.forEach(k => tot[k] += s[k]);
     power += cardPower(e.def, e.rar);
   });
@@ -7259,7 +7281,7 @@ var sqFilter = 'all', sqSort = 'power';
 // Liste des cartes disponibles : une seule version par personnage ET par rareté possédée,
 // sans les cartes déjà placées dans l'escouade.
 function squadAvailable(){
-  const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar), l = e => playerLevels[e.def.name] || 1, pw = e => cardPower(e.def, e.rar);
+  const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar), l = e => cardLevel(e.def.name, e.rar), pw = e => cardPower(e.def, e.rar);
   const cmp = {
     power:  (a, b) => pw(b) - pw(a),
     group:  (a, b) => g(a) - g(b) || r(b) - r(a) || pw(b) - pw(a),
@@ -7495,7 +7517,7 @@ function teamStarHtml(targetIdx){
         <span class="ts-num">${i + 1}</span>
         ${def ? `<button class="ts-remove" data-rm="${i}" aria-label="Retirer">✕</button>` : ''}
         ${def ? `
-          ${cbtPreviewHtml(def, srar, playerLevels[def.name] || 1)}
+          ${cbtPreviewHtml(def, srar, cardLevel(def.name, srar))}
           <div class="ts-pw">⚡ ${pw}</div>
         ` : `<span class="plus">+</span>`}
       </div>`);
@@ -8571,7 +8593,9 @@ const TROPHY_TIERS = {
   4: { label:'PLATINE', rew:{ gold:3500, xp:2000, card:'epique' } },
   5: { label:'DIAMANT', rew:{ gold:5000, card:'legendaire' } }
 };
-function tMaxLevel(){ return Math.max(1, ...CHAR_DEFS.filter(isOwned).map(d => playerLevels[d.name] || 1)); }
+// Niveau max d'un personnage : la plus haute des raretés qu'il possède réellement (chaque rareté a son propre niveau).
+function maxOwnedLevel(d){ return Math.max(1, ...RARITY_ORDER.filter(r => stackCount(d.name, r) > 0).map(r => cardLevel(d.name, r))); }
+function tMaxLevel(){ return Math.max(1, ...CHAR_DEFS.filter(isOwned).map(maxOwnedLevel)); }
 function tRarCount(r){ return CHAR_DEFS.filter(d => stackCount(d.name, r) > 0).length; }
 function tSeriesCopies(){ return CHAR_DEFS.reduce((a, d) => a + MAT_ORDER.reduce((b, r) => b + stackCount(d.name, r), 0), 0); }
 function tFavs(){ return Object.keys(favorites || {}).filter(k => favorites[k]).length; }
@@ -8704,7 +8728,7 @@ var TROPHIES = [
   { id:'h_night', hidden:true, name:'Heure fantôme',  desc:'Jouer entre 3 h et 4 h du matin',          target:1, val:() => player.stats.night },
   { id:'h_engine',hidden:true, name:'Surchauffe',     desc:'Faire tourner le moteur du titre 25 fois',  target:1, val:() => player.stats.engine },
   { id:'h_mono',  hidden:true, name:'Monochrome',     desc:'Une escouade de 5 cartes du même type',     target:1, val:() => player.stats.mono },
-  { id:'h_42',    hidden:true, name:'La réponse',     desc:'Avoir une carte exactement au niveau 42',   target:1, val:() => CHAR_DEFS.some(d => isOwned(d) && playerLevels[d.name] === 42) ? 1 : 0 },
+  { id:'h_42',    hidden:true, name:'La réponse',     desc:'Avoir une carte exactement au niveau 42',   target:1, val:() => CHAR_DEFS.some(d => RARITY_ORDER.some(r => stackCount(d.name, r) > 0 && cardLevel(d.name, r) === 42)) ? 1 : 0 },
   { id:'h_sacr',  hidden:true, name:'Sacrifice',      desc:'Détruire une carte LÉGENDAIRE',             target:1, val:() => player.stats.destroyedLeg }
 ];
 function tTarget(t){ return typeof t.target === 'function' ? t.target() : t.target; }
@@ -9869,8 +9893,20 @@ function applySave(data){
     // pouvait en contenir une) : on la retire silencieusement au chargement.
     if(!d.holoOnly) st.holo = 0;
     cardCopies[d.name] = st;
-    if(data.playerLevels && data.playerLevels[d.name]) playerLevels[d.name] = data.playerLevels[d.name];
-    cardXp[d.name] = (data.cardXp && data.cardXp[d.name]) || 0;
+    // Niveau/XP PAR RARETÉ (V0.01.82) : clé sqKey(nom, rareté). Migration depuis l'ancien format (un seul
+    // niveau partagé par personnage, clé = juste le nom) -- chaque rareté déjà possédée reprend ce niveau
+    // au chargement (rien n'est perdu), puis elles évoluent ensuite chacune de leur côté.
+    const legacyLvl = data.playerLevels && data.playerLevels[d.name];
+    const legacyXp = data.cardXp && data.cardXp[d.name];
+    RARITY_ORDER.forEach(r => {
+      const key = sqKey(d.name, r);
+      const lvl = data.playerLevels && data.playerLevels[key];
+      if(lvl) playerLevels[key] = lvl;
+      else if(legacyLvl && st[r] > 0) playerLevels[key] = legacyLvl;
+      const xp = data.cardXp && data.cardXp[key];
+      if(xp) cardXp[key] = xp;
+      else if(legacyXp && st[r] > 0) cardXp[key] = legacyXp;
+    });
     d.seen = !(data.unseen || []).includes(d.name);
   });
   if(Array.isArray(data.squad)){
@@ -9902,7 +9938,7 @@ function applySave(data){
   }
   if(!data.m58){
     // Remise à zéro demandée : toutes les cartes repartent au niveau 1 (une seule fois)
-    CHAR_DEFS.forEach(d => { playerLevels[d.name] = 1; cardXp[d.name] = 0; });
+    CHAR_DEFS.forEach(d => { RARITY_ORDER.forEach(r => { playerLevels[sqKey(d.name, r)] = 1; cardXp[sqKey(d.name, r)] = 0; }); });
     if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevel(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; u.vit = st.vit; } });
   }
   if(data.favorites) favorites = Object.assign({}, data.favorites);
