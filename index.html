@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.77</title>
+<title>Projet MECA V0.01.78</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2731,7 +2731,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.77 : cartes =================== */
+  /* =================== V0.01.78 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3691,7 +3691,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.77</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.78</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3933,9 +3933,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.77';
+var BUILD_VERSION = 'V0.01.78';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.78', items:[
+    'Correction d\'un bug de sauvegarde : une carte de série (non-holographique) pouvait se retrouver avec un exemplaire holographique alors que c\'est impossible normalement (les holographiques sont exclusivement les 6 personnages hors-série, jamais une évolution d\'une carte légendaire). Les exemplaires illégitimes de ce type sont désormais retirés automatiquement à la connexion, sans toucher au reste de la collection.'
+  ]},
   { v:'V0.01.77', items:[
     'Nom des cartes (rare, épique, légendaire, holo) : correction d\'un léger décalage horizontal (le nom n\'était pas parfaitement centré dans le bandeau), et le logo d\'affiliation est maintenant plus grand sans être coupé en haut et en bas.',
     'Sur les cartes holo, la lueur autour du nom est passée du bleu clair au noir pour qu\'il ressorte bien sur le bandeau blanc (avant, il se fondait un peu dedans).'
@@ -9609,6 +9612,11 @@ function applySave(data){
     const st = emptyStack();
     if(typeof saved === 'number') st[rarityOf(d)] = saved;          // ancienne sauvegarde (avant les raretés par exemplaire)
     else if(saved) RARITY_ORDER.forEach(r => { st[r] = saved[r] || 0; });
+    // Sécurité : le holo est réservé aux 6 cartes hors-série (holoOnly) -- ce ne sont pas des upgrades
+    // de légendaire, mais des exemplaires uniques à part. Une carte de série ne doit jamais détenir de
+    // copie holo (impossible par le jeu actuel, mais une sauvegarde issue d'une ancienne version buggée
+    // pouvait en contenir une) : on la retire silencieusement au chargement.
+    if(!d.holoOnly) st.holo = 0;
     cardCopies[d.name] = st;
     if(data.playerLevels && data.playerLevels[d.name]) playerLevels[d.name] = data.playerLevels[d.name];
     cardXp[d.name] = (data.cardXp && data.cardXp[d.name]) || 0;
