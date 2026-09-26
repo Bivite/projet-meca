@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.85</title>
+<title>Projet MECA V0.01.86</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.85 : cartes =================== */
+  /* =================== V0.01.86 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.85</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.86</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4003,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.85';
+var BUILD_VERSION = 'V0.01.86';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.86', items:[
+    'Diagnostic complet du jeu : 3 cartes (FULGUR, SOLARIS, MIRAGE) avaient un ultime qui fonctionnait par un filet de sécurité générique au lieu d\'un effet propre — corrigé, sans changement visible (même effet).',
+    'Optimisation : 4 minuteurs internes qui se réveillaient chacun séparément toutes les secondes ont été regroupés en un seul, pour réduire la charge CPU en arrière-plan.'
+  ]},
   { v:'V0.01.85', items:[
     'Artwork de CATER-PILLARD retravaillé : le mécha remplit maintenant tout le cadre de la carte.'
   ]},
@@ -4430,11 +4434,14 @@ function ecoLowFps(){
     }catch(_){}
   }
 }
-setInterval(() => {
-  if(document.hidden || !ecoOn()) return;
+// Regroupée avec les 3 autres boucles à 1 s dans un seul setInterval (voir heartbeat1s(), plus bas dans le
+// fichier) : 4 minuteurs séparés qui se réveillaient chacun toutes les secondes coûtaient 4x plus d'appels
+// de fonction et de vérifications document.hidden que nécessaire pour un gain nul (diagnostic du 27/09/2026).
+function ecoHeartbeat1s(){
+  if(!ecoOn()) return;
   ecoLowFps();
   if(Date.now() - ECO.last > ECO.idleMs){ ECO.idle = true; ecoPauseLoops(); }   // repasse aussi sur les animations apparues entre-temps
-}, 1000);
+}
 function wakeScenes(){
   const on = id => { const e = document.getElementById(id); return e && e.classList.contains('active'); };
   if(on('dailyView') && typeof d3Start === 'function') d3Start();
@@ -5180,12 +5187,12 @@ function formatPlayTime(sec){
   if(h > 0) return h + ' h ' + String(m).padStart(2,'0') + ' min';
   return m + ' min ' + String(s).padStart(2,'0') + ' s';
 }
-setInterval(() => {
-  if(document.hidden) return;
+// Regroupée dans heartbeat1s() (voir plus bas) — même raison que ecoHeartbeat1s() ci-dessus.
+function playtimeHeartbeat1s(){
   player.playSeconds++;
   const el = document.getElementById('pvPlayTime');
   if(el) el.textContent = formatPlayTime(player.playSeconds);
-}, 1000);
+}
 
 // ---------- Fabrique ----------
 // fabriqueOffer a toujours exactement 3 emplacements : soit une carte à acheter,
@@ -5249,7 +5256,7 @@ function tickFabTimer(){
   const el = document.getElementById('fabTimerVal');
   if(el) el.textContent = formatCountdown(fabResetAt - Date.now());
 }
-setInterval(() => { if(!document.hidden) tickFabTimer(); }, 1000);
+// tickFabTimer() est aussi appelée depuis heartbeat1s() (voir plus bas) — même raison que ci-dessus.
 rollFabriqueOffer();
 scheduleFabReset();
 tickFabTimer();
@@ -5701,6 +5708,13 @@ const ULT_EFFECTS = {
   'NÉBULA':  (u, T) => { healSquad(0.2); playerTeam.filter(p => p.alive).forEach(p => { p.vit = Math.round((p.vit || 0) * 1.15); }); },   // soigne toute l'escouade et accélère
   CHROMA:    (u, T) => { hitAll(u, T, u.ultMult * 0.4); T.forEach(t => { if(t.alive) t.stun = 1; }); },   // étourdit tous les ennemis et frappe
   NEUTRON:   (u, T) => { u.taunt = 2; u.shield = 2; },  // dévie les attaques ennemies sur lui (taunt) et encaisse mieux
+  // ---- Corrigé (diagnostic du 27/09/2026) : ces 3 cartes n'avaient pas d'entrée ici et retombaient
+  // silencieusement sur le repli générique de useUltimate() (une frappe simple à ultMult plein) — leur
+  // description ("frappe massive/dévastatrice/éclair") correspond bien à ce comportement, rendu explicite
+  // ici pour ne plus dépendre d'un repli non documenté.
+  FULGUR:    (u, T) => hitOne(u, T, u.ultMult),                                          // frappe massive sur un ennemi
+  SOLARIS:   (u, T) => hitOne(u, T, u.ultMult),                                          // frappe dévastatrice sur un ennemi
+  MIRAGE:    (u, T) => hitOne(u, T, u.ultMult),                                          // frappe éclair difficile à parer
   'CATER-PILLARD': (u, T) => {                          // partage une valeur fixe de DEF avec le reste de l'escouade pendant 10 s (temps réel, voir armorShareTick)
     const amount = Math.max(1, Math.round((u.def || 0) * 0.55));
     playerTeam.filter(p => p.alive && p !== u).forEach(p => {
@@ -7780,7 +7794,11 @@ function renderMissionTimer(){
   const tb = document.getElementById('missionTimeBar'), sc = (r / missionMs()).toFixed(3);
   if(tb.dataset.sc !== sc){ tb.dataset.sc = sc; tb.style.transform = 'scaleX(' + sc + ')'; }
 }
-setInterval(() => { if(!HEADLESS && !document.hidden){ if(!checkMissionEnd()){ renderMissionTimer(); updateInfRecord(); } } }, 1000);
+// Regroupée dans heartbeat1s() (voir plus bas) — même raison que ecoHeartbeat1s() ci-dessus.
+function missionHeartbeat1s(){
+  if(HEADLESS) return;
+  if(!checkMissionEnd()){ renderMissionTimer(); updateInfRecord(); }
+}
 function syncOrdersTile(){
   const a = document.getElementById(missionMode === 'omega' ? 'omegaLive' : 'infLive'), b = document.getElementById('ordLive');
   if(a && b){
@@ -9402,6 +9420,16 @@ document.getElementById('tasksBackBtn').onclick = () => { updateRewardTiles(); o
     if(taps.length >= 25 && !player.stats.engine){ player.stats.engine = 1; checkTrophies(); }
   });
 })();
+// 4 boucles à 1 s (éco, temps de jeu, minuteur Fabrique, minuteur de mission) regroupées ici en un seul
+// setInterval au lieu de 4 séparés — un seul réveil et une seule vérification document.hidden par seconde
+// au lieu de 4, pour le même résultat (optimisation CPU, diagnostic du 27/09/2026).
+setInterval(() => {
+  if(document.hidden) return;
+  ecoHeartbeat1s();
+  playtimeHeartbeat1s();
+  tickFabTimer();
+  missionHeartbeat1s();
+}, 1000);
 setInterval(() => {
   if(document.hidden) return;
   updateLogin();
