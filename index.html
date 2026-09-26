@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.79</title>
+<title>Projet MECA V0.01.80</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2731,7 +2731,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.79 : cartes =================== */
+  /* =================== V0.01.80 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3731,7 +3731,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.79</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.80</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3991,9 +3991,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.79';
+var BUILD_VERSION = 'V0.01.80';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.80', items:[
+    'Correction du bouton "RÉCUPÉRER TOUT" des trophées : récupérer un trophée pouvait en débloquer un autre dans la foulée (ex. un trophée de cristaux cumulés), sans que celui-ci soit pris dans le même clic — il fallait parfois cliquer une seconde fois, voire aller le récupérer individuellement. Le bouton vide maintenant toute la cascade en un seul clic.'
+  ]},
   { v:'V0.01.79', items:[
     'Nouveau tutoriel d\'accueil : à la toute première création de compte, une série de pages explique rapidement les bases du jeu (escouade, missions, fabrique, codex, fusion, raretés, récompenses...). Possibilité de le passer avec le bouton "Passer", et de le revoir à tout moment depuis les Options ("Revoir le tutoriel").',
     'Ajout de l\'historique du pilote de NEUTRON, consultable comme les autres personnages via le bouton "i" sur sa fiche (appui maintenu).'
@@ -8688,15 +8691,24 @@ function mergeRewardItems(items){
   return order.map(k => sums[k]).concat(cards);
 }
 function claimAllTrophies(){
-  const list = TROPHIES.filter(trophyClaimable);
-  if(!list.length) return;
-  let allItems = [];
-  list.forEach(t => {
-    player.troph.c[t.id] = Date.now();
-    allItems = allItems.concat(grantReward(tReward(t)));
-  });
-  showRewardModal(list.length + ' TROPHÉES RÉCUPÉRÉS', mergeRewardItems(allItems));
-  checkTrophies(true);
+  // Récupérer un trophée peut en débloquer un nouveau dans la foulée (ex. un trophée de cristaux
+  // totaux franchi grâce aux cristaux qu'on vient d'obtenir) : on boucle tant que de nouveaux
+  // trophées deviennent disponibles, pour que "RÉCUPÉRER TOUT" les prenne vraiment tous d'un coup,
+  // au lieu de laisser les trophées en cascade pour un clic suivant. Le nombre de trophées étant
+  // fini, la boucle se termine forcément ; la limite ci-dessous est une simple sécurité.
+  let allItems = [], claimedCount = 0, guard = TROPHIES.length + 1;
+  let list = TROPHIES.filter(trophyClaimable);
+  while(list.length && guard-- > 0){
+    list.forEach(t => {
+      player.troph.c[t.id] = Date.now();
+      allItems = allItems.concat(grantReward(tReward(t)));
+    });
+    claimedCount += list.length;
+    checkTrophies(true); // marque "atteints" les trophées tout juste débloqués par ces récompenses
+    list = TROPHIES.filter(trophyClaimable);
+  }
+  if(!claimedCount) return;
+  showRewardModal(claimedCount + ' TROPHÉES RÉCUPÉRÉS', mergeRewardItems(allItems));
   renderTrophies();
   renderNotifs();
   saveNow();
