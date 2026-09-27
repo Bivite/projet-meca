@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.87</title>
+<title>Projet MECA V0.01.88</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.87 : cartes =================== */
+  /* =================== V0.01.88 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.87</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.88</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4003,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.87';
+var BUILD_VERSION = 'V0.01.88';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.88', items:[
+    'Chaque exemplaire d\'une carte garde maintenant son propre niveau : monter de niveau une carte que tu possèdes en plusieurs exemplaires ne fait plus progresser que le meilleur d\'entre eux, les autres restent inchangés.',
+    'GESTION DE CARTE : quand tu possèdes une carte à plusieurs niveaux différents, chaque niveau a maintenant sa propre tuile dans la liste (les exemplaires du même niveau restent groupés ensemble) — pratique pour upgrader, détruire ou dé-fusionner précisément l\'exemplaire voulu.',
+    'Fenêtres UPGRADE, DÉTRUIRE et DÉ-FUSIONNER simplifiées : moins de texte, l\'essentiel se lit directement sur les cartes et les badges.'
+  ]},
   { v:'V0.01.87', items:[
     'Fenêtre UPGRADE : possibilité de choisir combien de groupes upgrader d\'un coup (sélecteur +/−), comme pour la fenêtre DÉTRUIRE — par exemple avec 6 exemplaires d\'une carte (upgrade à 3), tu peux upgrader les deux groupes en une seule confirmation.',
     'Upgrader une carte actuellement engagée dans une mission affiche maintenant un avertissement clair : continuer arrête cette mission.'
@@ -4831,7 +4836,10 @@ const CARD_XP = { winBase: 3, winPerWave: 1, lossRatio: 0.4 };   // XP versée a
 // cardXp suit la même clé par rareté que playerLevels (voir ci-dessus).
 const cardXp = {};
 function cardXpToNext(level){ return 40 + (level - 1) * 12; }
-function cardLevel(name, rar){ return playerLevels[sqKey(name, rar)] || 1; }
+function cardLevel(name, rar){
+  const key = sqKey(name, rar);
+  return stackCount(name, rar) > 0 ? topOwnedLevel(name, rar) : (playerLevels[key] || 1);
+}
 function cardXpInfo(name, rar){
   const lvl = cardLevel(name, rar);
   if(lvl >= CARD_MAX_LEVEL) return { lvl, xp:0, need:0, pct:100, max:true };
@@ -4841,31 +4849,30 @@ function cardXpInfo(name, rar){
 // Ajoute de l'XP à une carte (à une rareté précise) ; renvoie le nombre de niveaux gagnés.
 function addCardXP(name, rar, amount){
   const key = sqKey(name, rar);
-  let lvl = cardLevel(name, rar), xp = (cardXp[key] || 0) + amount, ups = 0;
+  let cur = cardLevel(name, rar), lvl = cur, xp = (cardXp[key] || 0) + amount, ups = 0;
   while(lvl < CARD_MAX_LEVEL && xp >= cardXpToNext(lvl)){ xp -= cardXpToNext(lvl); lvl++; ups++; }
   if(lvl >= CARD_MAX_LEVEL) xp = 0;
-  playerLevels[key] = lvl;
+  advanceTopCopy(name, rar, cur, lvl);   // (V0.01.88) seul le meilleur exemplaire de la pile progresse
   cardXp[key] = xp;
   return ups;
 }
-// Fusion : la nouvelle carte hérite du niveau le plus haut entre l'ancienne rareté fusionnée et une
-// éventuelle carte de la rareté supérieure déjà possédée -- jamais de perte de progression à l'upgrade
-// (décision d'Alex, V0.01.82). Remet à zéro l'XP de la rareté cible si son niveau a bougé.
-function inheritFusionLevel(name, fromRar, toRar){
-  const fromLvl = cardLevel(name, fromRar), toKey = sqKey(name, toRar);
-  if(fromLvl > (playerLevels[toKey] || 1)){
-    playerLevels[toKey] = fromLvl;
-    cardXp[toKey] = 0;
-  }
-}
+// (V0.01.82, remplacé par consumeForFusion() plus bas en V0.01.88 -- chaque exemplaire garde maintenant
+// son propre niveau, donc l'ancienne notion d'« héritage » d'un niveau partagé ne s'applique plus :
+// consumeForFusion() calcule directement le niveau du nouvel exemplaire à partir de ceux fusionnés.)
 
 // Nombre d'exemplaires possédés de chaque carte (0 = jamais obtenue).
 // On peut désormais obtenir plusieurs fois la même carte (Fabrique, futures récompenses...).
 // Chaque carte est comptée par rareté : une carte peut exister en Rare, Épique et Légendaire
 // (les raretés supérieures s'obtiennent par fusion).
 const cardCopies = {};
+// Répartition des exemplaires par niveau, par carte+rareté (V0.01.88) -- clé sqKey(nom, rareté),
+// valeur { niveau: nombre_d_exemplaires_à_ce_niveau }. Chaque exemplaire garde désormais son propre
+// niveau : monter de niveau, fusionner ou détruire ne concerne plus toute la pile, seulement les
+// exemplaires réellement choisis (voir levelDist()/advanceTopCopy()/consumeForFusion() etc. plus bas).
+const cardLevelDist = {};
 function emptyStack(){ return { rare:0, epique:0, legendaire:0, holo:0 }; }
 CHAR_DEFS.forEach(c => { cardCopies[c.name] = emptyStack(); if(c.owned) cardCopies[c.name][rarityOf(c)] = 1; });
+CHAR_DEFS.forEach(c => { if(c.owned) cardLevelDist[sqKey(c.name, rarityOf(c))] = { 1: 1 }; });
 // Cartes de série (rare/épique/légendaire) vs les 6 holographiques uniques
 const SERIES_DEFS = CHAR_DEFS.filter(d => !d.holoOnly);
 const HOLO_DEFS   = CHAR_DEFS.filter(d => d.holoOnly);
@@ -4898,9 +4905,119 @@ function ownedStacks(){
   }));
   return out;
 }
+// Éclate une liste de piles (def,rar) en une entrée par PALIER DE NIVEAU réellement possédé (V0.01.88) --
+// utilisé uniquement pour l'affichage de la liste GESTION DE CARTE, afin que chaque niveau distinct
+// obtienne sa propre tuile (les exemplaires d'un même niveau restent regroupés dans une seule tuile).
+// Le reste du jeu (escouade, missions, upgrade AUTO) continue d'utiliser ownedStacks() tel quel.
+function levelSplitStacks(stacks){
+  const out = [];
+  stacks.forEach(st => {
+    const d = levelDist(st.def.name, st.rar);
+    const tiers = levelTiers(st.def.name, st.rar).slice().reverse();   // du plus haut niveau au plus bas
+    tiers.forEach(l => out.push({ def: st.def, rar: st.rar, level: l, count: d[l] }));
+  });
+  return out;
+}
 // Fusion : nombre de cartes identiques nécessaires pour monter d'une rareté.
 const FUSION_NEED = { rare:3, epique:5 };
 
+// ---------- Répartition des exemplaires par niveau (V0.01.88) ----------
+// Paliers de niveau distincts réellement possédés pour une carte+rareté, triés croissant.
+function levelTiers(name, rar){
+  const d = levelDist(name, rar);
+  return Object.keys(d).map(Number).filter(l => d[l] > 0).sort((a, b) => a - b);
+}
+// Répartition par niveau d'une pile -- initialisée à la volée si elle n'existe pas encore (tous les
+// exemplaires déjà possédés regroupés au niveau qu'ils partageaient jusqu'ici, voir migration applySave()).
+function levelDist(name, rar){
+  const key = sqKey(name, rar), n = stackCount(name, rar);
+  let d = cardLevelDist[key];
+  if(!d){
+    d = {};
+    if(n > 0) d[playerLevels[key] || 1] = n;
+    cardLevelDist[key] = d;
+  }
+  return d;
+}
+// Niveau du meilleur exemplaire réellement possédé (celui qui progresse quand on monte de niveau,
+// et celui utilisé en escouade/affichage) -- 1 (ou le dernier niveau connu) si aucun exemplaire.
+function topOwnedLevel(name, rar){
+  const tiers = levelTiers(name, rar);
+  return tiers.length ? tiers[tiers.length - 1] : (playerLevels[sqKey(name, rar)] || 1);
+}
+// Fait progresser UN SEUL exemplaire (toujours celui du palier le plus haut de la pile, décision
+// d'Alex V0.01.88) de `cur` à `target`, sans jamais toucher aux autres exemplaires de la pile.
+function advanceTopCopy(name, rar, cur, target){
+  if(target <= cur) return;
+  const key = sqKey(name, rar), d = levelDist(name, rar);
+  d[cur] = (d[cur] || 1) - 1;
+  if(d[cur] <= 0) delete d[cur];
+  d[target] = (d[target] || 0) + 1;
+  playerLevels[key] = target;
+}
+// Répartition par défaut quand aucun choix manuel n'est fait (fusion/destruction automatiques, ex.
+// bouton AUTO) : consomme les paliers les plus bas d'abord, pour toujours protéger en priorité les
+// exemplaires les plus investis.
+function defaultSelection(name, rar, need){
+  const d = levelDist(name, rar), tiers = levelTiers(name, rar);
+  const sel = {}; let left = need;
+  for(const l of tiers){
+    if(left <= 0) break;
+    const take = Math.min(d[l], left);
+    if(take > 0){ sel[l] = take; left -= take; }
+  }
+  return sel;
+}
+function selectionTotal(sel){ return Object.keys(sel || {}).reduce((a, l) => a + (sel[l] || 0), 0); }
+// Consomme `need` exemplaires de `fromRar` (selon `selection`, ou par défaut les plus bas niveaux)
+// et produit 1 exemplaire de `toRar` -- son niveau est le plus haut parmi les exemplaires effectivement
+// fusionnés, jamais un simple retour à 1 (V0.01.88, remplace inheritFusionLevel() de V0.01.82 : chaque
+// exemplaire ayant maintenant son propre niveau, les autres copies de la pile cible ne sont de toute
+// façon jamais affectées -- cardLevel()/topOwnedLevel() renvoient toujours le meilleur niveau possédé).
+function consumeForFusion(name, fromRar, toRar, need, selection){
+  const sel = (selection && selectionTotal(selection) === need) ? selection : defaultSelection(name, fromRar, need);
+  const fromD = levelDist(name, fromRar);
+  let lvl = 1;
+  Object.keys(sel).forEach(l => {
+    const nn = sel[l]; if(nn <= 0) return;
+    const ln = Number(l);
+    if(ln > lvl) lvl = ln;
+    fromD[ln] = (fromD[ln] || 0) - nn;
+    if(fromD[ln] <= 0) delete fromD[ln];
+  });
+  cardCopies[name][fromRar] -= need;
+  const toD = levelDist(name, toRar);
+  toD[lvl] = (toD[lvl] || 0) + 1;
+  cardCopies[name][toRar] += 1;
+  playerLevels[sqKey(name, toRar)] = topOwnedLevel(name, toRar);
+}
+// Détruit `qty` exemplaires de `name`/`rar` selon `selection` (ou par défaut les plus bas niveaux).
+function consumeForDestroy(name, rar, qty, selection){
+  const sel = (selection && selectionTotal(selection) === qty) ? selection : defaultSelection(name, rar, qty);
+  const d = levelDist(name, rar);
+  Object.keys(sel).forEach(l => {
+    const nn = sel[l]; if(nn <= 0) return;
+    const ln = Number(l);
+    d[ln] = (d[ln] || 0) - nn;
+    if(d[ln] <= 0) delete d[ln];
+  });
+  cardCopies[name][rar] -= qty;
+  playerLevels[sqKey(name, rar)] = topOwnedLevel(name, rar);
+}
+// Dé-fusionne 1 exemplaire de `rar` (celui du palier `chosenLevel`, ou le plus bas par défaut) en
+// `back` exemplaires de `lower`, qui entrent tous au niveau 1 (des exemplaires neufs, V0.01.88).
+function consumeForDefuse(name, rar, lower, back, chosenLevel){
+  const d = levelDist(name, rar), tiers = levelTiers(name, rar);
+  const lvl = (chosenLevel && d[chosenLevel] > 0) ? chosenLevel : (tiers[0] || 1);
+  d[lvl] = (d[lvl] || 1) - 1;
+  if(d[lvl] <= 0) delete d[lvl];
+  cardCopies[name][rar] -= 1;
+  playerLevels[sqKey(name, rar)] = topOwnedLevel(name, rar);
+  const lowD = levelDist(name, lower);
+  lowD[1] = (lowD[1] || 0) + back;
+  cardCopies[name][lower] += back;
+  playerLevels[sqKey(name, lower)] = topOwnedLevel(name, lower);
+}
 // ---------- Profil joueur : niveau, XP et statistiques ----------
 // (en mémoire pour l'instant : remis à zéro au rechargement de la page)
 const player = {
@@ -6042,9 +6159,15 @@ let fuseAutoMode = false;   // sélection multiple auto (bouton AUTO -> TERMINER
 let fuseAutoSel = {};       // { "nom|rareté": true } cartes sélectionnées pour l'upgrade groupé
 let destroyQty = 1;         // nombre d'exemplaires choisis dans la fenêtre DÉTRUIRE (V0.01.83)
 let upgradeQty = 1;         // nombre de groupes d'upgrade choisis dans la fenêtre UPGRADE (V0.01.87)
+// Depuis V0.01.88, la liste GESTION DE CARTE affiche une tuile PAR PALIER DE NIVEAU (levelSplitStacks()) :
+// le niveau concerné est donc déjà déterminé par la tuile que le joueur a touchée, et les fenêtres
+// UPGRADE/DÉTRUIRE/DÉ-FUSIONNER n'agissent que sur ce palier précis -- plus besoin de sélecteur manuel
+// de répartition (l'ancien tierPickerHtml()/tierChoiceHtml() de la version précédente a été retiré).
 
 function codexCardHtml(def, rar, opts){
-  const level = cardLevel(def.name, rar);
+  // `opts.level` permet d'afficher un palier de niveau précis (tuile de la liste GESTION DE CARTE
+  // désormais scindée par niveau, V0.01.88) plutôt que toujours le meilleur niveau de la pile.
+  const level = opts.level != null ? opts.level : cardLevel(def.name, rar);
   return `
       ${opts.unlock ? '<span class="notif-dot on card-dot"></span>' : ''}
       ${opts.badge ? `<div class="cx-copy-badge">${opts.badge}</div>` : ''}
@@ -6053,8 +6176,8 @@ function codexCardHtml(def, rar, opts){
       ${rarTag(rar)}
       <div class="cx-lvl-tag ${opts.showCap ? 'cap' : ''}">${opts.showCap ? 'Nv. ' + level + ' → ' + LEVEL_CAP[rar] + ' max' : 'Nv. ' + level}</div>
       <div class="cx-badge ${categoryOf(def)}">${categoryLabel(def)}</div>
-      ${powerTag(def, rar)}
-      ${isLgFrame(rar) ? lgLayerHtml(def, rar) : ''}`;
+      ${powerTag(def, rar, level)}
+      ${isLgFrame(rar) ? lgLayerHtml(def, rar, null, level) : ''}`;
 }
 // Puissance générale de la carte (mélange de toutes ses stats), en bas à droite de chaque carte
 function fmtPow(n){ return n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace('.', ',') + 'k' : String(n); }
@@ -6155,8 +6278,9 @@ function affilEmblem(k){
 // Artwork gris neutre utilisé par défaut sur toute carte qui n'a pas encore d'illustration
 // dédiée (champ `art` absent) -- V0.01.74, en remplacement du hublot vide/sombre du cadre.
 const GREY_ART = 'data:image/webp;base64,UklGRsoCAABXRUJQVlA4IL4CAAAQKwCdASosAaQBPmEwlkikIqIhIAgAgAwJaW7hIqnLF4ZAP/1yL/2r+RFET50ACfefdx5Orl8WVgEjM+HTZInrp9NtgKh/3nVKn7zo0rAVD/vPSRX3OAVP3m+u9WPEOrwGV2skK8hriOjYMt5b6lF6PEOstoh/YyWG3QKwjmr96vriHXTV5Ey/QfKfaP0H1YtuukHGJgiRh2pIbQoSN0vSWzmzsBwh8lU4mLwW3WLPh9nNF/Ieyp7f8u6ExYN73zqEElGvaWbHNEdEIzyQg6g6UPY5YqFipWKrEYGMblFETWGRKR4t196UAhzgEjR8eauBbqqsw5LH8G5EqDqVflne2iau1PziITQ4kve0foCWTENjur1xZMDQVYOwQyURLfFjPgiwV8bI8JSd8oxVgOUnrhcVP3gejqASNH3XHSxXdNk1zQbJtqdTRPuvuI4yGR693ah6nZ6g/ex4qzaihX7MgAD+53anZus2beXIE0XCl4nn2yShklmWVLv61gy/tJpaRu+659Sf/oxaBjqLZfJtSj/R9uApmNfFcXFlqAKo+CCzgg/puIufpuXi++BKuilyMnek9cJefq4C2Dhv9NSAy6hPJOOS6rRAm4JbkHvro8ZN/IylXKvt6J2nAIgA443fpPCwffOTetgqH3dWdCcfvjjKsVeCEuNgl+rBFX1h8fVUMM0x0Gcha+wzev0TL8kxhF2JsAUJomcY+SjIg8U8RGY/TYzWZ3WBAiWxBwFfmr95sSAp/lRcJdW3NdVG7vlM2ZZWyXIRaG1RIXQ49kEyQBrnbL7thqLUHaTk8AcFHG/ZpLxTkRr7c6/G2QQFrUWzruIkoPsL/VVcXcY2Iy+yMBtGsrYM7DLoiQVhNRH0MJvX9tqVOcUPc//ov0lF/xVdlLAQgJtY8LMKR9L6nT2i+RaS9Djw/B4WDbR54AA=';
-function lgLayerHtml(def, rar, ids){
-  const level = cardLevel(def.name, rar), s = statsAtLevel(def, level, rar), k = categoryOf(def);
+function lgLayerHtml(def, rar, ids, level){
+  level = level != null ? level : cardLevel(def.name, rar);
+  const s = statsAtLevel(def, level, rar), k = categoryOf(def);
   const id = x => ids ? ` id="${x}"` : '';
   const artHtml = `<img class="lg-art-img" src="${def.art || GREY_ART}" alt="">`;
   return `<div class="lg-layer f-${rar}">
@@ -6165,7 +6289,7 @@ function lgLayerHtml(def, rar, ids){
       <div class="lg-box">
         ${affilEmblem(k)}
         <div class="lg-gem"${id('cxLvlTag')}${inkStyle(level)}><b>${level}</b></div>
-        <div class="lg-pow">${powLogo()}<b${id('cxPow')}${inkStyle(cardPower(def, rar).toLocaleString('fr-FR'))}>${cardPower(def, rar).toLocaleString('fr-FR')}</b></div>
+        <div class="lg-pow">${powLogo()}<b${id('cxPow')}${inkStyle(cardPower(def, rar, level).toLocaleString('fr-FR'))}>${cardPower(def, rar, level).toLocaleString('fr-FR')}</b></div>
       </div>
       <div class="lg-st big s-atk"><b${id('cxStatk')}${inkStyle(s.atk)}>${s.atk}</b></div>
       <div class="lg-st s-vit"><b${id('cxStvit')}${inkStyle(s.vit)}>${s.vit}</b></div>
@@ -6173,7 +6297,7 @@ function lgLayerHtml(def, rar, ids){
       <div class="lg-st big s-hp"><b${id('cxSthp')}${inkStyle(s.hp)}>${s.hp}</b></div>
     </div>`;
 }
-function powerTag(def, rar){ return `<div class="cx-pow" title="Puissance"><i>⚡</i>${fmtPow(cardPower(def, rar))}</div>`; }
+function powerTag(def, rar, level){ return `<div class="cx-pow" title="Puissance"><i>⚡</i>${fmtPow(cardPower(def, rar, level))}</div>`; }
 function renderCodex(){
   const list = document.getElementById('codexList');
   list.innerHTML = '';
@@ -6205,7 +6329,7 @@ function renderCodex(){
     document.getElementById('codexListLabel').textContent = destroy
       ? 'CHOISIS UNE CARTE À DÉTRUIRE'
       : 'CARTES FUSIONNÉES';
-    const shown = destroy ? stacks : stacks.filter(st => canDefuse(st.def, st.rar));
+    const shown = levelSplitStacks(destroy ? stacks : stacks.filter(st => canDefuse(st.def, st.rar)));
     if(shown.length === 0){
       list.innerHTML = `<div class="fab-empty">${destroy ? 'Aucune carte dans cette catégorie.' : "Aucune carte fusionnée pour l'instant.<br>Seules les cartes obtenues par fusion peuvent être dé-fusionnées."}</div>`;
     }
@@ -6214,26 +6338,28 @@ function renderCodex(){
       card.className = 'codex-card ' + rarCls(st.rar) + (destroy ? ((isFav(st.def.name, st.rar) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy') : ' tool-defuse');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
-      card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '' });
-      card.onclick = () => destroy ? openDestroyModal(st.def, st.rar) : openDefuseModal(st.def, st.rar);
-      addPreviewPress(card, st.def, st.rar);
+      card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
+      card.onclick = () => destroy ? openDestroyModal(st.def, st.rar, st.level) : openDefuseModal(st.def, st.rar, st.level);
+      addPreviewPress(card, st.def, st.rar, { level: st.level });
       list.appendChild(card);
     });
     return;
   }
 
   if(!fusionMode){
-    if(stacks.length === 0) list.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
-    stacks.forEach(st => {
+    const tiles = levelSplitStacks(stacks);
+    if(tiles.length === 0) list.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
+    tiles.forEach(st => {
       const card = document.createElement('div');
       card.className = 'codex-card ' + rarCls(st.rar);
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
       card.innerHTML = codexCardHtml(st.def, st.rar, {
-        unlock: cardHasNotif(st.def) && st.rar === effRarity(st.def),
-        badge: st.count > 1 ? '×' + st.count : ''
+        unlock: cardHasNotif(st.def) && st.rar === effRarity(st.def) && st.level === topOwnedLevel(st.def.name, st.rar),
+        badge: st.count > 1 ? '×' + st.count : '',
+        level: st.level
       });
-      addPreviewPress(card, st.def, st.rar);
+      addPreviewPress(card, st.def, st.rar, { level: st.level });
       list.appendChild(card);
     });
     renderTeamSlots();
@@ -6242,17 +6368,18 @@ function renderCodex(){
 
   // --- Mode fusion : mêmes tuiles que le Codex (une par pile, avec le nombre d'exemplaires) ---
   if(!fusionBase){
-    if(stacks.length === 0) list.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
-    stacks.forEach(st => {
+    const tiles = levelSplitStacks(stacks);
+    if(tiles.length === 0) list.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
+    tiles.forEach(st => {
       const maxed = !FUSION_NEED[st.rar];
-      const lacking = !maxed && st.count < FUSION_NEED[st.rar];   // pas assez de cartes identiques
+      const lacking = !maxed && st.count < FUSION_NEED[st.rar];   // pas assez de cartes identiques à CE niveau
       const key = sqKey(st.def.name, st.rar);
       const picked = fuseAutoMode && !!fuseAutoSel[key];
       const card = document.createElement('div');
       card.className = 'codex-card ' + rarCls(st.rar) + (maxed || lacking ? ' fuse-off' : '') + (picked ? ' fuse-picked' : '');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
-      card.innerHTML = codexCardHtml(st.def, st.rar, { badge: maxed ? 'MAX' : '×' + st.count, showCap:true })
+      card.innerHTML = codexCardHtml(st.def, st.rar, { badge: maxed ? 'MAX' : (st.count > 1 ? '×' + st.count : ''), showCap:true, level: st.level })
         + (picked ? '<div class="fuse-sel-badge">✓ SÉLECTIONNÉE</div>' : '');
       card.onclick = () => {
         if(maxed){ showToast(isHolo(st.rar) ? 'CARTE HOLOGRAPHIQUE : UPGRADE IMPOSSIBLE' : 'RARETÉ MAXIMALE'); return; }
@@ -6262,9 +6389,9 @@ function renderCodex(){
           renderCodex();
           return;
         }
-        openUpgradeConfirm(st.def, st.rar);
+        openUpgradeConfirm(st.def, st.rar, st.level);
       };
-      addPreviewPress(card, st.def, st.rar);
+      addPreviewPress(card, st.def, st.rar, { level: st.level });
       list.appendChild(card);
     });
   } else {
@@ -6335,15 +6462,13 @@ function renderFusionZone(){
   document.getElementById('fuseGoBtn').onclick = doFusion;
 }
 
-function doFusion(){
+function doFusion(selection){
   if(!fusionBase) return;
   const { name, rar } = fusionBase;
   const need = FUSION_NEED[rar];
   if(!need || 1 + fusionPicked < need || stackCount(name, rar) < need) return;
   const next = RARITY_ORDER[tierOf(rar) + 1];
-  cardCopies[name][rar] -= need;
-  cardCopies[name][next] += 1;
-  inheritFusionLevel(name, rar, next);
+  consumeForFusion(name, rar, next, need, selection);
   // La carte upgradée remplace l'ancienne version dans l'escouade si celle-ci n'existe plus
   const si = squad.indexOf(sqKey(name, rar));
   if(si >= 0 && stackCount(name, rar) === 0 && !squad.includes(sqKey(name, next))) squad[si] = sqKey(name, next);
@@ -6360,21 +6485,21 @@ function doFusion(){
   playCardToss('fusion', { banner: 'UPGRADE ' + RARITIES[next].label, sub: name, cardKey: name + '|' + rar, onImpact: () => openCodexModal(name, next) });
 }
 // Confirmation d'upgrade (remplace l'ancien cadre du bas)
-function openUpgradeConfirm(def, rar){
+function openUpgradeConfirm(def, rar, level){
   const key = sqKey(def.name, rar);
-  if(keyInMission(key)){ openUpgradeMissionWarning(def, rar); return; }
+  if(keyInMission(key)){ openUpgradeMissionWarning(def, rar, level); return; }
   upgradeQty = 1;   // repart toujours de 1 groupe à l'ouverture, quelle que soit la carte précédente (V0.01.87)
-  renderUpgradeConfirm(def, rar);
+  renderUpgradeConfirm(def, rar, level);
   document.getElementById('actionModal').classList.add('show');
 }
 // Avertissement affiché quand la carte à upgrader est engagée dans une mission en cours (V0.01.87) :
 // upgrader consomme ses exemplaires (et peut la faire disparaître de l'escouade), donc on prévient
 // le joueur que continuer arrêtera cette mission, avant d'ouvrir la fenêtre d'upgrade normale.
-function openUpgradeMissionWarning(def, rar){
+function openUpgradeMissionWarning(def, rar, level){
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">CARTE ENGAGÉE EN MISSION</div>
-    ${actionCardHtml(def, rar)}
+    ${actionCardHtml(def, rar, { level })}
     <div class="action-text"><b>${def.name}</b> est actuellement engagée dans une mission en cours.<br>Continuer l’upgrade <b>arrêtera cette mission</b>.</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
@@ -6385,7 +6510,7 @@ function openUpgradeMissionWarning(def, rar){
   document.getElementById('actGo').onclick = () => {
     stopMissionsUsingKey(sqKey(def.name, rar));
     upgradeQty = 1;
-    renderUpgradeConfirm(def, rar);
+    renderUpgradeConfirm(def, rar, level);
   };
   document.getElementById('actionModal').classList.add('show');
 }
@@ -6401,12 +6526,14 @@ function stopMissionsUsingKey(key){
   });
 }
 // Réaffiche le contenu de la fenêtre UPGRADE pour la quantité `upgradeQty` actuelle (V0.01.87).
-// Un sélecteur +/- n'apparaît que si le joueur possède assez d'exemplaires pour plus d'un groupe
-// d'upgrade à la fois (ex. 6 exemplaires avec un coût de 3 -> jusqu'à 2 groupes) ; sinon la fenêtre
-// reste simple (toujours 1 seul groupe upgradé à la fois), même logique que renderDestroyModal().
-function renderUpgradeConfirm(def, rar){
+// Un sélecteur +/- de GROUPES n'apparaît que si le joueur possède assez d'exemplaires DE CE PALIER DE
+// NIVEAU (`level`, celui de la tuile touchée dans GESTION DE CARTE, V0.01.88) pour plus d'un groupe
+// d'upgrade à la fois ; sinon la fenêtre reste simple (toujours 1 seul groupe upgradé à la fois), même
+// logique que renderDestroyModal(). Chaque tuile ne représentant qu'un seul niveau, tous les exemplaires
+// consommés ici proviennent forcément de ce même palier -- plus d'ambiguïté sur le niveau du résultat.
+function renderUpgradeConfirm(def, rar, level){
   const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
-  const n = stackCount(def.name, rar);
+  const n = levelDist(def.name, rar)[level] || 0;
   if(!need || n < need){ closeActionModal(); return; }
   // Si la mission a été arrêtée juste avant (avertissement ci-dessus), la carte n'est plus "engagée" ;
   // ce filet de sécurité laisse quand même 1 exemplaire si jamais elle l'était encore.
@@ -6421,14 +6548,13 @@ function renderUpgradeConfirm(def, rar){
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">${qty > 1 ? 'UPGRADES' : 'UPGRADE'}</div>
     <div class="defuse-row">
-      ${actionCardHtml(def, rar, { badge: '×' + totalNeed })}
+      ${actionCardHtml(def, rar, { badge: '×' + totalNeed, level })}
       <div class="fusion-arrow ready">➜</div>
       ${actionCardHtml(def, next, { badge: qty > 1 ? '×' + qty : '' })}
     </div>
     ${showStepper ? `<div class="fuse-stepper" id="upgradeStepper" style="width:100%;">
       <button type="button" data-d="-1">−</button><span><b>${qty}</b> / ${maxGroups}</span><button type="button" data-d="1">+</button>
     </div>` : ''}
-    <div class="action-text"><b>${totalNeed} ${def.name}</b> identiques deviennent <b>${qty} ${def.name}</b> de rareté supérieure${qty > 1 ? ' (' + qty + ' upgrades d’un coup)' : ''}.</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
       <button id="actGo" class="primary-btn">UPGRADER</button>
@@ -6441,14 +6567,14 @@ function renderUpgradeConfirm(def, rar){
       btn.onclick = (e) => {
         e.stopPropagation();
         upgradeQty = Math.max(1, Math.min(maxGroups, upgradeQty + parseInt(btn.dataset.d)));
-        renderUpgradeConfirm(def, rar);
+        renderUpgradeConfirm(def, rar, level);
       };
     });
   }
   document.getElementById('actGo').onclick = () => {
-    const q = qty;
+    const q = qty, sel = { [level]: totalNeed };
     closeActionModal();
-    const go = () => doFusionMulti(def, rar, q);
+    const go = () => doFusionMulti(def, rar, q, sel);
     if(usedInTeam(def, rar) && stackCount(def.name, rar) <= totalNeed) guardTeamChange(go, 'Cette carte est dans ton escouade actuelle : l’upgrader'); else go();
   };
 }
@@ -6456,11 +6582,11 @@ function renderUpgradeConfirm(def, rar){
 // qty === 1 : identique à avant, anime le retournement de carte classique (doFusion()).
 // qty > 1 : upgrade silencieusement chaque groupe (doFusionSilent, même mécanique que le bouton AUTO)
 // puis affiche le récapitulatif groupé (openUpgradeRecap), plus lisible que qty animations à la suite.
-function doFusionMulti(def, rar, qty){
+function doFusionMulti(def, rar, qty, selection){
   if(qty <= 1){
     fusionBase = { name: def.name, rar };
     fusionPicked = FUSION_NEED[rar] - 1;
-    doFusion();
+    doFusion(selection);
     return;
   }
   const results = [];
@@ -6486,13 +6612,11 @@ function fuseAutoEligible(){
     return true;
   });
 }
-function doFusionSilent(name, rar){
+function doFusionSilent(name, rar, selection){
   const need = FUSION_NEED[rar];
   if(!need || stackCount(name, rar) < need) return null;
   const next = RARITY_ORDER[tierOf(rar) + 1];
-  cardCopies[name][rar] -= need;
-  cardCopies[name][next] += 1;
-  inheritFusionLevel(name, rar, next);
+  consumeForFusion(name, rar, next, need, selection);
   const si = squad.indexOf(sqKey(name, rar));
   if(si >= 0 && stackCount(name, rar) === 0 && !squad.includes(sqKey(name, next))) squad[si] = sqKey(name, next);
   player.fusions = (player.fusions || 0) + 1;
@@ -6674,8 +6798,8 @@ function actionCardHtml(def, rar, extra){
 // Recyclage : détruire une carte rapporte des matériaux de SA rareté + de l'or (pas d'XP).
 // Le gain augmente avec le niveau du personnage.
 const SALVAGE = { rare:{ mat:3, gold:50 }, epique:{ mat:3, gold:250 }, legendaire:{ mat:3, gold:1200 } };
-function salvageValue(def, rar){
-  const lvl = cardLevel(def.name, rar), base = SALVAGE[rar];
+function salvageValue(def, rar, level){
+  const lvl = level != null ? level : cardLevel(def.name, rar), base = SALVAGE[rar];
   return { mat: bonusN(base.mat + Math.floor(lvl / 10)), gold: bonusN(Math.round(base.gold * (1 + (lvl - 1) / 20))) };
 }
 // Met en évidence les ressources qui viennent d'augmenter (panneau du Codex + bandeau Combat)
@@ -6792,19 +6916,20 @@ function playDestroyFx(def, rar, done){
   });
 }
 
-function openDestroyModal(def, rar){
+function openDestroyModal(def, rar, level){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
   if(isHolo(rar)){ showToast('CARTE HOLOGRAPHIQUE : INDESTRUCTIBLE'); return; }
   if(isFav(def.name, rar)){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
   destroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture, quelle que soit la carte précédente
-  renderDestroyModal(def, rar);
+  renderDestroyModal(def, rar, level);
   document.getElementById('actionModal').classList.add('show');
 }
 // Réaffiche le contenu de la fenêtre DÉTRUIRE pour la quantité `destroyQty` actuelle (V0.01.83).
-// Un sélecteur +/- n'apparaît que si le joueur possède plus de 2 exemplaires de cette carte/rareté ;
-// avec 1 ou 2 exemplaires, la fenêtre reste simple (toujours 1 seul exemplaire détruit à la fois).
-function renderDestroyModal(def, rar){
-  const n = stackCount(def.name, rar);
+// Un sélecteur +/- n'apparaît que si le joueur possède plus de 2 exemplaires DE CE PALIER DE NIVEAU
+// (`level`, celui de la tuile touchée dans GESTION DE CARTE, V0.01.88) ; avec 1 ou 2 exemplaires à ce
+// niveau, la fenêtre reste simple (toujours 1 seul exemplaire détruit à la fois).
+function renderDestroyModal(def, rar, level){
+  const n = levelDist(def.name, rar)[level] || 0;
   if(n <= 0){ closeActionModal(); return; }
   // Si cette carte est engagée dans une mission en arrière-plan, il faut toujours en laisser au moins 1.
   const busy = keyInMission(sqKey(def.name, rar));
@@ -6812,14 +6937,12 @@ function renderDestroyModal(def, rar){
   const showStepper = n > 2;
   const qty = showStepper ? Math.max(1, Math.min(destroyQty, maxQty)) : 1;
   destroyQty = qty;
-  const unit = salvageValue(def, rar);
+  const unit = salvageValue(def, rar, level);
   const totMat = unit.mat * qty, totGold = unit.gold * qty;
-  const last = (copiesOf(def) - qty) <= 0;
-  const inTeam = usedInTeam(def, rar) && (n - qty) === 0;
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">DÉTRUIRE ${qty > 1 ? 'DES CARTES' : 'UNE CARTE'}</div>
-    ${actionCardHtml(def, rar, { badge: n > 1 ? '×' + n : '' })}
+    ${actionCardHtml(def, rar, { badge: n > 1 ? '×' + n : '', level })}
     ${showStepper ? `<div class="fuse-stepper" id="destroyStepper" style="width:100%;">
       <button type="button" data-d="-1">−</button><span><b>${qty}</b> / ${maxQty}</span><button type="button" data-d="1">+</button>
     </div>` : ''}
@@ -6830,9 +6953,6 @@ function renderDestroyModal(def, rar){
         <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
       </div>
     </div>
-    <div class="action-text">${qty > 1 ? qty + ' exemplaires' : '1 exemplaire'} de <b>${def.name} ${RARITIES[rar].label}</b> ser${qty > 1 ? 'ont' : 'a'} détruit${qty > 1 ? 's' : ''} définitivement.
-      ${last ? '<br><span class="warn">C\u2019est ton dernier exemplaire de ce personnage.</span>' : ''}
-      ${inTeam ? '<br><span class="warn">Cette carte sera retirée de ton escouade.</span>' : ''}</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
       <button id="actGo" class="danger-btn">DÉTRUIRE ${qty > 1 ? 'LES CARTES' : 'LA CARTE'}</button>
@@ -6845,20 +6965,20 @@ function renderDestroyModal(def, rar){
       btn.onclick = (e) => {
         e.stopPropagation();
         destroyQty = Math.max(1, Math.min(maxQty, destroyQty + parseInt(btn.dataset.d)));
-        renderDestroyModal(def, rar);
+        renderDestroyModal(def, rar, level);
       };
     });
   }
   document.getElementById('actGo').onclick = () => {
-    const q = qty;
+    const q = qty, sel = { [level]: q };
     closeActionModal();
     const doIt = () => {
-      const have = stackCount(def.name, rar);
+      const have = levelDist(def.name, rar)[level] || 0;
       const realQty = Math.min(q, have);
       if(realQty <= 0) return;
-      const gain = salvageValue(def, rar);
+      const gain = salvageValue(def, rar, level);
       const gainMat = gain.mat * realQty, gainGold = gain.gold * realQty;
-      cardCopies[def.name][rar] -= realQty;
+      consumeForDestroy(def.name, rar, realQty, sel);
       player.stats.destroyed += realQty;
       if(rar === 'legendaire') player.stats.destroyedLeg += realQty;
       if(stackCount(def.name, rar) === 0 && squad.includes(sqKey(def.name, rar))){
@@ -6882,21 +7002,25 @@ function renderDestroyModal(def, rar){
     if(usedInTeam(def, rar)) guardTeamChange(withFx, 'Cette carte est dans ton escouade actuelle : la détruire'); else withFx();
   };
 }
-function openDefuseModal(def, rar){
+function openDefuseModal(def, rar, level){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
   if(!canDefuse(def, rar)) return;
+  renderDefuseModal(def, rar, level);
+  document.getElementById('actionModal').classList.add('show');
+}
+// `level` : le palier de niveau de la tuile touchée dans GESTION DE CARTE (V0.01.88) -- exactement
+// l'exemplaire dé-fusionné, plus besoin de choix manuel puisque chaque tuile ne représente qu'un niveau.
+function renderDefuseModal(def, rar, level){
   const lower = RARITY_ORDER[tierOf(rar) - 1];
   const back = FUSION_NEED[lower];
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">DÉ-FUSIONNER</div>
     <div class="defuse-row">
-      ${actionCardHtml(def, rar)}
+      ${actionCardHtml(def, rar, { level })}
       <div class="fusion-arrow ready">➜</div>
       ${actionCardHtml(def, lower, { badge: '×' + back })}
     </div>
-    <div class="action-text">1 <b>${def.name} ${RARITIES[rar].label}</b> redevient
-      <b>${back} ${def.name} ${RARITIES[lower].label}${back > 1 ? 'S' : ''}</b> identiques.</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
       <button id="actGo" class="primary-btn">DÉ-FUSIONNER</button>
@@ -6907,8 +7031,7 @@ function openDefuseModal(def, rar){
     closeActionModal();
     const doIt = () => {
       if(stackCount(def.name, rar) <= 0) return;
-      cardCopies[def.name][rar] -= 1;
-      cardCopies[def.name][lower] += back;
+      consumeForDefuse(def.name, rar, lower, back, level);
       validateSquad();
       showToast('DÉ-FUSION : ' + back + ' × ' + def.name);
       renderCodex();
@@ -6996,11 +7119,13 @@ function renderFabrique(){
 function acquireCard(def, rar){
   const isFirstCopy = copiesOf(def) === 0;
   rar = rar || rarityOf(def);
+  const lk = sqKey(def.name, rar);
+  const d = levelDist(def.name, rar);   // capture la répartition existante avant d'ajouter la copie
   cardCopies[def.name][rar] = (cardCopies[def.name][rar] || 0) + 1;
+  d[1] = (d[1] || 0) + 1;   // toute nouvelle copie entre au niveau 1 (V0.01.88)
   if(isHolo(rar)) showToast('✦ CARTE HOLOGRAPHIQUE : ' + def.name + ' ✦');
   if(isFirstCopy){
     def.seen = false;
-    const lk = sqKey(def.name, rar);
     if(!playerLevels[lk]) playerLevels[lk] = 1;
     addXP(XP_REWARDS.newCard);
     renderNotifs();
@@ -7230,7 +7355,7 @@ function doLevelUp(def, rar){
   if(target <= cur || cost.gold > Math.floor(player.res.gold || 0) || cost.xp > Math.floor(player.res.xp || 0)) return;
   player.res.gold -= cost.gold;
   player.res.xp -= cost.xp;
-  playerLevels[sqKey(def.name, rar)] = target;
+  advanceTopCopy(def.name, rar, cur, target);   // (V0.01.88) seul le meilleur exemplaire de la pile monte
   player.stats.levelUps += target - cur;
   cardXp[sqKey(def.name, rar)] = 0;
   saveNow();
@@ -7286,7 +7411,9 @@ function openCodexModal(name, rar, opts){
   document.getElementById('codexModal').classList.remove('lvl-open');
   const def = CHAR_DEFS.find(c => c.name === name);
   rar = rar || effRarity(def);
-  const level = cardLevel(name, rar);
+  // `opts.level` : aperçu ouvert depuis une tuile de niveau précis de GESTION DE CARTE (V0.01.88) --
+  // sinon, comportement inchangé : le meilleur niveau réellement possédé de la pile.
+  const level = (opts && opts.level != null) ? opts.level : cardLevel(name, rar);
   const s = statsAtLevel(def, level, rar);
   const nStack = stackCount(name, rar);
   const inner = document.getElementById('codexModalInner');
@@ -7301,7 +7428,7 @@ function openCodexModal(name, rar, opts){
   if(lg){
     // Légendaire : la carte seule au centre, favori en haut à gauche, historique (i) en haut à droite
     inner.className = 'codex-modal-inner ' + rarCls(rar) + ' lg-modal';
-    inner.innerHTML = lgLayerHtml(def, rar, true);
+    inner.innerHTML = lgLayerHtml(def, rar, true, level);
     topEl.innerHTML = `
       ${isOwned(def) && stackCount(def.name, rar) > 0 && !(opts && opts.noFav) ? `<button class="cx-fav ${isFav(def.name, rar) ? 'on' : ''}" id="cxFavBtn" aria-label="Favori">${isFav(def.name, rar) ? '★' : '☆'}</button>` : ''}
       ${CHAR_LORE[def.name] && !(opts && opts.noInfo) ? `<button class="cx-info" id="cxInfoBtn" aria-label="Historique">i</button>
@@ -7419,10 +7546,10 @@ function renderTeamSlots(){
 
 // ---------- Puissance d'escouade ----------
 // Puissance d'une carte = mélange pondéré de ses 4 stats au niveau actuel.
-function cardPower(def, rar){
+function cardPower(def, rar, level){
   rar = rar || effRarity(def);
   const POWER_WEIGHTS = { hp:0.2, atk:2, def:1.5, vit:0.5 };
-  const s = statsAtLevel(def, cardLevel(def.name, rar), rar);
+  const s = statsAtLevel(def, level != null ? level : cardLevel(def.name, rar), rar);
   return Math.round(s.hp*POWER_WEIGHTS.hp + s.atk*POWER_WEIGHTS.atk + s.def*POWER_WEIGHTS.def + s.vit*POWER_WEIGHTS.vit);
 }
 function renderTeamPower(){
@@ -10038,6 +10165,7 @@ function serializeSave(){
     cardCopies: JSON.parse(JSON.stringify(cardCopies)),
     playerLevels: Object.assign({}, playerLevels),
     cardXp: Object.assign({}, cardXp),
+    cardLevelDist: JSON.parse(JSON.stringify(cardLevelDist)),   // répartition par niveau (V0.01.88)
     unseen: CHAR_DEFS.filter(d => !d.seen).map(d => d.name),
     notif: JSON.parse(JSON.stringify(notif)),
     squad: squad.slice(),
@@ -10096,6 +10224,20 @@ function applySave(data){
       const xp = data.cardXp && data.cardXp[key];
       if(xp) cardXp[key] = xp;
       else if(legacyXp && st[r] > 0) cardXp[key] = legacyXp;
+      // Répartition par niveau (V0.01.88) : si la sauvegarde la contient déjà, on la reprend telle
+      // quelle ; sinon (sauvegarde d'avant cette version), tous les exemplaires déjà possédés sont
+      // regroupés au niveau qu'ils partageaient jusqu'ici -- rien ne change avant la 1re opération qui
+      // distingue vraiment les exemplaires (montée de niveau, fusion, destruction, dé-fusion).
+      const savedDist = data.cardLevelDist && data.cardLevelDist[key];
+      if(savedDist && typeof savedDist === 'object'){
+        const dd = {};
+        Object.keys(savedDist).forEach(l => { const nn = savedDist[l]; if(nn > 0) dd[l] = nn; });
+        cardLevelDist[key] = dd;
+      } else if(st[r] > 0){
+        cardLevelDist[key] = { [playerLevels[key] || 1]: st[r] };
+      } else {
+        delete cardLevelDist[key];
+      }
     });
     d.seen = !(data.unseen || []).includes(d.name);
   });
@@ -10128,7 +10270,12 @@ function applySave(data){
   }
   if(!data.m58){
     // Remise à zéro demandée : toutes les cartes repartent au niveau 1 (une seule fois)
-    CHAR_DEFS.forEach(d => { RARITY_ORDER.forEach(r => { playerLevels[sqKey(d.name, r)] = 1; cardXp[sqKey(d.name, r)] = 0; }); });
+    CHAR_DEFS.forEach(d => { RARITY_ORDER.forEach(r => {
+      const key = sqKey(d.name, r);
+      playerLevels[key] = 1; cardXp[key] = 0;
+      const cnt = stackCount(d.name, r);
+      if(cnt > 0) cardLevelDist[key] = { 1: cnt }; else delete cardLevelDist[key];
+    }); });
     if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevel(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; u.vit = st.vit; } });
   }
   if(data.favorites) favorites = Object.assign({}, data.favorites);
