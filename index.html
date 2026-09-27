@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.88</title>
+<title>Projet MECA V0.01.89</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.88 : cartes =================== */
+  /* =================== V0.01.89 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3225,8 +3225,8 @@
   .lg-gem{position:relative; z-index:1; display:flex; align-items:baseline; justify-content:center; gap:.3em;
     white-space:nowrap; margin-bottom:.6cqw;
     font-family:var(--font-ui); font-weight:700;}
-  .lg-gem::before{content:"NV."; font-size:2.6cqw; letter-spacing:.16em; color:rgba(255,255,255,.5);}
-  .lg-gem b{font-family:var(--font-title); font-weight:900; font-size:4.6cqw; letter-spacing:0;
+  .lg-gem::before{content:"NV."; font-size:3.2cqw; letter-spacing:.16em; color:rgba(255,255,255,.5);}
+  .lg-gem b{font-family:var(--font-title); font-weight:900; font-size:6.4cqw; letter-spacing:0;
     color:var(--c2); background:linear-gradient(180deg, var(--c1) 0%, var(--c2) 45%, var(--c3) 100%);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     filter:drop-shadow(0 -.18cqw .04cqw rgba(0,0,0,.95)) drop-shadow(0 .24cqw .08cqw var(--cdk)) drop-shadow(0 0 1cqw var(--cglow));}
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.88</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.89</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -3850,7 +3850,7 @@
       <div class="res-panel" id="codexResources"></div>
       <div class="codex-tools">
         <button type="button" class="codex-tool-btn destroy" id="destroyToggle">DÉTRUIRE</button>
-        <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DÉ-FUSIONNER</button>
+        <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DOWNGRADE</button>
       </div>
       <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
       <details class="codex-filter" id="codexFilterDetails">
@@ -4003,9 +4003,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.88';
+var BUILD_VERSION = 'V0.01.89';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.89', items:[
+    'Le niveau de la carte (« NV. X ») est maintenant affiché plus grand dans son encadré, pour mieux le voir d\'un coup d\'œil.',
+    'DÉ-FUSIONNER devient DOWNGRADE, pour coller au même vocabulaire qu\'UPGRADE.',
+    'ORDRE DE MISSION : le bouton RÉCOLTER ET RELANCER affiche maintenant une fenêtre avec les récompenses gagnées, avec un bouton RELANCER en dessous — au lieu de tout relancer d\'un coup en silence.'
+  ]},
   { v:'V0.01.88', items:[
     'Chaque exemplaire d\'une carte garde maintenant son propre niveau : monter de niveau une carte que tu possèdes en plusieurs exemplaires ne fait plus progresser que le meilleur d\'entre eux, les autres restent inchangés.',
     'GESTION DE CARTE : quand tu possèdes une carte à plusieurs niveaux différents, chaque niveau a maintenant sa propre tuile dans la liste (les exemplaires du même niveau restent groupés ensemble) — pratique pour upgrader, détruire ou dé-fusionner précisément l\'exemplaire voulu.',
@@ -5207,19 +5212,27 @@ function openLootModal(){
     <div class="loot-note">${battleStarted ? 'La mission sera arrêtée. Tu pourras la relancer à la vague 1 avec le bouton RELANCER LA MISSION.' : ''}</div>
     <div class="controls" style="width:100%;"><button id="lootGo" class="primary-btn">${battleStarted ? 'COLLECTER ET STOPPER' : 'COLLECTER'}</button></div>`;
   document.getElementById('lootClose').onclick = () => document.getElementById('lootModal').classList.remove('show');
-  document.getElementById('lootGo').onclick = collectLoot;
+  document.getElementById('lootGo').onclick = () => collectLoot();
   document.getElementById('lootModal').classList.add('show');
 }
-function collectLoot(){
+// `silent` (V0.01.89) : appelé en lot par collectAndRelaunchAll(), qui affiche son propre récapitulatif
+// (fenêtre de récompenses) au lieu du toast individuel -- et renvoie les items collectés au même format
+// que grantReward()/mergeRewardItems(), pour pouvoir les fusionner entre plusieurs missions.
+function collectLoot(silent){
   const L = runLoot;
   const gold = bonusN(Math.floor(L.gold)), mats = {};
   MAT_ORDER.forEach(r => { mats[r] = bonusN(L.mat[r] || 0); });
+  const xp = bonusN(Math.floor(L.xp));
+  const cry = L.crystal || 0;
+  const items = [];
+  if(gold) items.push({ t:'gold', n:gold });
+  if(xp) items.push({ t:'xp', n:xp });
+  if(cry) items.push({ t:'crystal', n:cry });
+  MAT_ORDER.forEach(r => { if(mats[r]) items.push({ t:'mat', r, n:mats[r] }); });
   player.res.gold += gold;
   player.stats.goldEarned += gold;
   player.stats.collects++;
   MAT_ORDER.forEach(r => { player.res.mat[r] = (player.res.mat[r] || 0) + mats[r]; });
-  const xp = bonusN(Math.floor(L.xp));
-  const cry = L.crystal || 0;
   if(cry) player.res.crystal = (player.res.crystal || 0) + cry;
   addTotals(gold, xp, mats, cry);
   runLoot = newLoot();
@@ -5232,8 +5245,9 @@ function collectLoot(){
   document.getElementById('overlay').classList.remove('show');
   absenceReport = null; renderAbsenceReport();
   renderInfState(); renderLoot(); updateMissionTiles();
-  showToast('RÉCOMPENSES COLLECTÉES');
+  if(!silent) showToast('RÉCOMPENSES COLLECTÉES');
   saveNow();
+  return items;
 }
 function fmtNum(n){
   n = Math.floor(n);
@@ -6309,7 +6323,7 @@ function renderCodex(){
   dBtn.classList.toggle('active', codexMode === 'destroy');
   uBtn.classList.toggle('active', codexMode === 'defuse');
   dBtn.textContent = codexMode === 'destroy' ? 'QUITTER' : 'DÉTRUIRE';
-  uBtn.textContent = codexMode === 'defuse' ? 'QUITTER' : 'DÉ-FUSIONNER';
+  uBtn.textContent = codexMode === 'defuse' ? 'QUITTER' : 'DOWNGRADE';
   document.getElementById('fusionSection').style.display = 'none';
   document.getElementById('codexResources').style.display = fusionMode ? 'none' : '';
   const autoBtn = document.getElementById('fuseAutoBtn');
@@ -6331,7 +6345,7 @@ function renderCodex(){
       : 'CARTES FUSIONNÉES';
     const shown = levelSplitStacks(destroy ? stacks : stacks.filter(st => canDefuse(st.def, st.rar)));
     if(shown.length === 0){
-      list.innerHTML = `<div class="fab-empty">${destroy ? 'Aucune carte dans cette catégorie.' : "Aucune carte fusionnée pour l'instant.<br>Seules les cartes obtenues par fusion peuvent être dé-fusionnées."}</div>`;
+      list.innerHTML = `<div class="fab-empty">${destroy ? 'Aucune carte dans cette catégorie.' : "Aucune carte fusionnée pour l'instant.<br>Seules les cartes obtenues par fusion peuvent être downgradées."}</div>`;
     }
     shown.forEach(st => {
       const card = document.createElement('div');
@@ -7015,7 +7029,7 @@ function renderDefuseModal(def, rar, level){
   const back = FUSION_NEED[lower];
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">DÉ-FUSIONNER</div>
+    <div class="team-label player" style="margin:0;">DOWNGRADE</div>
     <div class="defuse-row">
       ${actionCardHtml(def, rar, { level })}
       <div class="fusion-arrow ready">➜</div>
@@ -7023,7 +7037,7 @@ function renderDefuseModal(def, rar, level){
     </div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
-      <button id="actGo" class="primary-btn">DÉ-FUSIONNER</button>
+      <button id="actGo" class="primary-btn">DOWNGRADER</button>
     </div>`;
   document.getElementById('actClose').onclick = closeActionModal;
   document.getElementById('actCancel').onclick = closeActionModal;
@@ -7033,11 +7047,11 @@ function renderDefuseModal(def, rar, level){
       if(stackCount(def.name, rar) <= 0) return;
       consumeForDefuse(def.name, rar, lower, back, level);
       validateSquad();
-      showToast('DÉ-FUSION : ' + back + ' × ' + def.name);
+      showToast('DOWNGRADE : ' + back + ' × ' + def.name);
       renderCodex();
       saveSoon();
     };
-    if(usedInTeam(def, rar)) guardTeamChange(doIt, 'Cette carte est dans ton escouade actuelle : la dé-fusionner'); else doIt();
+    if(usedInTeam(def, rar)) guardTeamChange(doIt, 'Cette carte est dans ton escouade actuelle : la downgrader'); else doIt();
   };
   document.getElementById('actionModal').classList.add('show');
 }
@@ -8371,7 +8385,12 @@ function rewardChips(rew, small){
   if(rew.mat) MAT_ORDER.forEach(r => { if(rew.mat[r]) out.push(`<span class="rw-chip"><i>${matIcon(r)}</i>${rew.mat[r]}</span>`); });
   return out.join('');
 }
-function showRewardModal(title, items){
+// `opts.actionLabel`/`opts.onAction` (V0.01.89) : permet à un appelant (ex. RÉCOLTER ET RELANCER sur
+// ORDRE DE MISSION) de remplacer le bouton générique « SUPER ! » par une action propre (ex. « RELANCER »),
+// exécutée à la fermeture de la fenêtre -- comportement par défaut inchangé pour tous les autres appels
+// (récompense journalière, trophées, tâches) qui n'utilisent pas ces options.
+function showRewardModal(title, items, opts){
+  opts = opts || {};
   const inner = document.getElementById('rewardInner');
   const res = items.filter(i => i.t !== 'card').map((it, k) => {
     const ico = it.t === 'gold' ? ICON_GOLD : it.t === 'xp' ? ICON_XP : it.t === 'crystal' ? ICON_CRYSTAL : matIcon(it.r);
@@ -8387,8 +8406,11 @@ function showRewardModal(title, items){
     <div class="rw-title">${title}</div>
     ${cards}
     ${res ? `<div class="rw-items">${res}</div>` : ''}
-    <div class="controls" style="width:100%;"><button class="primary-btn" id="rwOk">SUPER !</button></div>`;
-  document.getElementById('rwOk').onclick = () => document.getElementById('rewardModal').classList.remove('show');
+    <div class="controls" style="width:100%;"><button class="primary-btn" id="rwOk">${opts.actionLabel || 'SUPER !'}</button></div>`;
+  document.getElementById('rwOk').onclick = () => {
+    document.getElementById('rewardModal').classList.remove('show');
+    if(opts.onAction) opts.onAction();
+  };
   document.getElementById('rewardModal').classList.add('show');
   if(navigator.vibrate) try{ navigator.vibrate([20, 40, 30]); }catch(_){}
 }
@@ -11060,14 +11082,33 @@ function updateOrdCollectBtn(){
   const onOrders = document.getElementById('ordersView').classList.contains('active');
   btn.classList.toggle('show', onOrders && n > 1);
 }
-// Collecte le butin de toutes les missions terminées et les relance aussitôt avec la même escouade,
-// sans avoir à ouvrir chacune d'elles individuellement.
+// Collecte le butin de toutes les missions terminées, puis affiche un récapitulatif des récompenses
+// gagnées (même fenêtre que pour les trophées/tâches) avec un bouton RELANCER : c'est seulement à ce
+// clic que chaque mission collectée est effectivement relancée avec la même escouade -- depuis V0.01.89,
+// le joueur voit d'abord ce qu'il a gagné avant de relancer, au lieu que tout se fasse d'un coup en silence.
+let pendingMissionRelaunch = [];
 function collectAndRelaunchAll(){
   const targets = Object.keys(MISSIONS).filter(m => missionState(m).missionDone);
   if(!targets.length) return;
+  let allItems = [];
+  targets.forEach(mode => withMission(mode, () => {
+    if(!lootEmpty()) allItems = allItems.concat(collectLoot(true));
+  }));
+  updateMissionTiles();
+  renderLoot();
+  renderResources();
+  saveNow();
+  pendingMissionRelaunch = targets;
+  const title = targets.length > 1 ? targets.length + ' MISSIONS RÉCOLTÉES' : MISSIONS[targets[0]].name + ' RÉCOLTÉE';
+  showRewardModal(title, mergeRewardItems(allItems), { actionLabel:'RELANCER', onAction: relaunchCollectedMissions });
+}
+// Relance chaque mission mise de côté par collectAndRelaunchAll() (bouton RELANCER de la fenêtre de
+// récompenses) : revérifiée au moment du clic, pas au moment de la collecte, pour tenir compte d'un
+// éventuel changement de collection entre les deux (carte détruite/fusionnée/engagée ailleurs).
+function relaunchCollectedMissions(){
+  const targets = pendingMissionRelaunch; pendingMissionRelaunch = [];
   let relaunched = 0;
   targets.forEach(mode => withMission(mode, () => {
-    if(!lootEmpty()) collectLoot();
     // Écarte les cartes de l'escouade qui ne sont plus disponibles (détruites, fusionnées, engagées ailleurs)
     const busy = busyKeys(mode);
     curSquad = curSquad.map(k => (k && !busy[k] && sqEntry(k) && stackCount(sqEntry(k).def.name, sqEntry(k).rar) > 0) ? k : null);
@@ -11075,11 +11116,10 @@ function collectAndRelaunchAll(){
   }));
   updateMissionTiles();
   renderLoot();
-  renderResources();
   saveNow();
   showToast(relaunched
-    ? 'RÉCOMPENSES COLLECTÉES · ' + relaunched + ' MISSION' + (relaunched > 1 ? 'S' : '') + ' RELANCÉE' + (relaunched > 1 ? 'S' : '')
-    : 'RÉCOMPENSES COLLECTÉES');
+    ? relaunched + ' MISSION' + (relaunched > 1 ? 'S' : '') + ' RELANCÉE' + (relaunched > 1 ? 'S' : '')
+    : 'AUCUNE MISSION RELANCÉE (ESCOUADE INDISPONIBLE)');
 }
 document.getElementById('ordCollectBtn').onclick = collectAndRelaunchAll;
 
