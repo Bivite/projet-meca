@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.86</title>
+<title>Projet MECA V0.01.87</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2732,7 +2732,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.86 : cartes =================== */
+  /* =================== V0.01.87 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3743,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.86</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.87</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4003,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.86';
+var BUILD_VERSION = 'V0.01.87';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.87', items:[
+    'Fenêtre UPGRADE : possibilité de choisir combien de groupes upgrader d\'un coup (sélecteur +/−), comme pour la fenêtre DÉTRUIRE — par exemple avec 6 exemplaires d\'une carte (upgrade à 3), tu peux upgrader les deux groupes en une seule confirmation.',
+    'Upgrader une carte actuellement engagée dans une mission affiche maintenant un avertissement clair : continuer arrête cette mission.'
+  ]},
   { v:'V0.01.86', items:[
     'Diagnostic complet du jeu : 3 cartes (FULGUR, SOLARIS, MIRAGE) avaient un ultime qui fonctionnait par un filet de sécurité générique au lieu d\'un effet propre — corrigé, sans changement visible (même effet).',
     'Optimisation : 4 minuteurs internes qui se réveillaient chacun séparément toutes les secondes ont été regroupés en un seul, pour réduire la charge CPU en arrière-plan.'
@@ -6037,6 +6041,7 @@ let fusionPicked = 0;       // nombre de cartes identiques sélectionnées en pl
 let fuseAutoMode = false;   // sélection multiple auto (bouton AUTO -> TERMINER) active
 let fuseAutoSel = {};       // { "nom|rareté": true } cartes sélectionnées pour l'upgrade groupé
 let destroyQty = 1;         // nombre d'exemplaires choisis dans la fenêtre DÉTRUIRE (V0.01.83)
+let upgradeQty = 1;         // nombre de groupes d'upgrade choisis dans la fenêtre UPGRADE (V0.01.87)
 
 function codexCardHtml(def, rar, opts){
   const level = cardLevel(def.name, rar);
@@ -6356,29 +6361,119 @@ function doFusion(){
 }
 // Confirmation d'upgrade (remplace l'ancien cadre du bas)
 function openUpgradeConfirm(def, rar){
-  if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= FUSION_NEED[rar]){ showToast('CARTE ENGAGÉE EN MISSION : TERMINE LA MISSION D\u2019ABORD'); return; }
-  const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
+  const key = sqKey(def.name, rar);
+  if(keyInMission(key)){ openUpgradeMissionWarning(def, rar); return; }
+  upgradeQty = 1;   // repart toujours de 1 groupe à l'ouverture, quelle que soit la carte précédente (V0.01.87)
+  renderUpgradeConfirm(def, rar);
+  document.getElementById('actionModal').classList.add('show');
+}
+// Avertissement affiché quand la carte à upgrader est engagée dans une mission en cours (V0.01.87) :
+// upgrader consomme ses exemplaires (et peut la faire disparaître de l'escouade), donc on prévient
+// le joueur que continuer arrêtera cette mission, avant d'ouvrir la fenêtre d'upgrade normale.
+function openUpgradeMissionWarning(def, rar){
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">UPGRADE</div>
+    <div class="team-label player" style="margin:0;">CARTE ENGAGÉE EN MISSION</div>
+    ${actionCardHtml(def, rar)}
+    <div class="action-text"><b>${def.name}</b> est actuellement engagée dans une mission en cours.<br>Continuer l’upgrade <b>arrêtera cette mission</b>.</div>
+    <div class="controls" style="width:100%;">
+      <button id="actCancel">ANNULER</button>
+      <button id="actGo" class="primary-btn">CONTINUER</button>
+    </div>`;
+  document.getElementById('actClose').onclick = closeActionModal;
+  document.getElementById('actCancel').onclick = closeActionModal;
+  document.getElementById('actGo').onclick = () => {
+    stopMissionsUsingKey(sqKey(def.name, rar));
+    upgradeQty = 1;
+    renderUpgradeConfirm(def, rar);
+  };
+  document.getElementById('actionModal').classList.add('show');
+}
+// Arrête toute mission en cours (active ou en arrière-plan) qui utilise cette carte (V0.01.87) —
+// utilisé quand le joueur choisit de continuer un upgrade malgré l'avertissement ci-dessus.
+function stopMissionsUsingKey(key){
+  Object.keys(MISSIONS).forEach(m => {
+    const st = missionState(m);
+    if(st.started && (st.squad || []).includes(key)){
+      if(m === activeMission) abortBattle();
+      else MSTATE[m] = blankMission(m);
+    }
+  });
+}
+// Réaffiche le contenu de la fenêtre UPGRADE pour la quantité `upgradeQty` actuelle (V0.01.87).
+// Un sélecteur +/- n'apparaît que si le joueur possède assez d'exemplaires pour plus d'un groupe
+// d'upgrade à la fois (ex. 6 exemplaires avec un coût de 3 -> jusqu'à 2 groupes) ; sinon la fenêtre
+// reste simple (toujours 1 seul groupe upgradé à la fois), même logique que renderDestroyModal().
+function renderUpgradeConfirm(def, rar){
+  const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
+  const n = stackCount(def.name, rar);
+  if(!need || n < need){ closeActionModal(); return; }
+  // Si la mission a été arrêtée juste avant (avertissement ci-dessus), la carte n'est plus "engagée" ;
+  // ce filet de sécurité laisse quand même 1 exemplaire si jamais elle l'était encore.
+  const busy = keyInMission(sqKey(def.name, rar));
+  const avail = Math.max(need, busy ? n - 1 : n);
+  const maxGroups = Math.max(1, Math.floor(avail / need));
+  const showStepper = maxGroups > 1;
+  const qty = showStepper ? Math.max(1, Math.min(upgradeQty, maxGroups)) : 1;
+  upgradeQty = qty;
+  const totalNeed = need * qty;
+  document.getElementById('actionInner').innerHTML = `
+    <button class="cx-close" id="actClose">✕</button>
+    <div class="team-label player" style="margin:0;">${qty > 1 ? 'UPGRADES' : 'UPGRADE'}</div>
     <div class="defuse-row">
-      ${actionCardHtml(def, rar, { badge: '×' + need })}
+      ${actionCardHtml(def, rar, { badge: '×' + totalNeed })}
       <div class="fusion-arrow ready">➜</div>
-      ${actionCardHtml(def, next)}
+      ${actionCardHtml(def, next, { badge: qty > 1 ? '×' + qty : '' })}
     </div>
-    <div class="action-text"><b>${need} ${def.name}</b> identiques deviennent <b>1 ${def.name}</b> de rareté supérieure.</div>
+    ${showStepper ? `<div class="fuse-stepper" id="upgradeStepper" style="width:100%;">
+      <button type="button" data-d="-1">−</button><span><b>${qty}</b> / ${maxGroups}</span><button type="button" data-d="1">+</button>
+    </div>` : ''}
+    <div class="action-text"><b>${totalNeed} ${def.name}</b> identiques deviennent <b>${qty} ${def.name}</b> de rareté supérieure${qty > 1 ? ' (' + qty + ' upgrades d’un coup)' : ''}.</div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
       <button id="actGo" class="primary-btn">UPGRADER</button>
     </div>`;
   document.getElementById('actClose').onclick = closeActionModal;
   document.getElementById('actCancel').onclick = closeActionModal;
+  const stepper = document.getElementById('upgradeStepper');
+  if(stepper){
+    stepper.querySelectorAll('button').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        upgradeQty = Math.max(1, Math.min(maxGroups, upgradeQty + parseInt(btn.dataset.d)));
+        renderUpgradeConfirm(def, rar);
+      };
+    });
+  }
   document.getElementById('actGo').onclick = () => {
+    const q = qty;
     closeActionModal();
-    const go = () => { fusionBase = { name: def.name, rar }; fusionPicked = need - 1; doFusion(); };
-    if(usedInTeam(def, rar) && stackCount(def.name, rar) <= need) guardTeamChange(go, 'Cette carte est dans ton escouade actuelle : l\u2019upgrader'); else go();
+    const go = () => doFusionMulti(def, rar, q);
+    if(usedInTeam(def, rar) && stackCount(def.name, rar) <= totalNeed) guardTeamChange(go, 'Cette carte est dans ton escouade actuelle : l’upgrader'); else go();
   };
-  document.getElementById('actionModal').classList.add('show');
+}
+// Effectue `qty` groupes d'upgrade d'un coup (sélectionnés via le sélecteur +/- ci-dessus, V0.01.87).
+// qty === 1 : identique à avant, anime le retournement de carte classique (doFusion()).
+// qty > 1 : upgrade silencieusement chaque groupe (doFusionSilent, même mécanique que le bouton AUTO)
+// puis affiche le récapitulatif groupé (openUpgradeRecap), plus lisible que qty animations à la suite.
+function doFusionMulti(def, rar, qty){
+  if(qty <= 1){
+    fusionBase = { name: def.name, rar };
+    fusionPicked = FUSION_NEED[rar] - 1;
+    doFusion();
+    return;
+  }
+  const results = [];
+  for(let i = 0; i < qty; i++){
+    const r = doFusionSilent(def.name, rar);
+    if(!r) break;
+    results.push(r);
+  }
+  fusionBase = null;
+  fusionPicked = 0;
+  validateSquad();
+  renderCodex();
+  if(results.length){ saveNow(); openUpgradeRecap(results); }
 }
 // ----- Upgrade groupé (bouton AUTO du mode UPGRADE) -----
 // Cartes upgradables : mêmes règles que le clic manuel (rareté non maximale, assez d'exemplaires,
