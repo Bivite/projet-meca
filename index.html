@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.01.89</title>
+<title>Projet MECA V0.01.90</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1493,6 +1493,11 @@
     background:linear-gradient(180deg, #2a2340, #141020); border:1px solid var(--line-strong); box-shadow:0 3px 0 #06050b;
   }
   .fuse-stepper button:active{transform:translateY(2px); box-shadow:0 1px 0 #06050b;}
+  /* Sélection manuelle multi-niveaux pour l'UPGRADE (V0.01.90) */
+  .lvlpick-list{width:100%; display:flex; flex-direction:column; gap:6px; max-height:38vh; overflow-y:auto;}
+  .lvlpick-row{display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%;}
+  .lvlpick-lbl{font-size:11px; font-weight:700; color:#fff;}
+  .lvlpick-lbl small{font-weight:400; color:var(--text-dim);}
   .cx-fuse-bonus{
     font-size:10px; font-weight:700; letter-spacing:1.5px; color:var(--rc);
     padding:3px 10px; border-radius:20px; border:1px solid var(--rc); background:rgba(0,0,0,.35);
@@ -2732,7 +2737,7 @@
   .pv-totals .tot small{font-size:7.5px; letter-spacing:1px; color:var(--text-dim); font-weight:700; text-align:center;}
   .pv-totals .tot-note{margin-top:6px; font-size:9.5px; color:var(--text-dim); text-align:center;}
 
-  /* =================== V0.01.89 : cartes =================== */
+  /* =================== V0.01.90 : cartes =================== */
   /* La couleur de la carte indique sa rareté : plus de texte */
   .rar-tag{display:none !important;}
   /* Halo lumineux sur toute la carte agrandie */
@@ -3743,7 +3748,7 @@
       <div class="wave">FICHE DU JOUEUR</div>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.89</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.01.90</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -4003,9 +4008,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.01.89';
+var BUILD_VERSION = 'V0.01.90';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.01.90', items:[
+    'UPGRADE : plus besoin que tous les exemplaires soient au même niveau. Si un seul niveau n\'en a pas assez, une fenêtre s\'ouvre pour choisir toi-même quels exemplaires (d\'autres niveaux) complètent la fusion — la carte obtenue hérite du niveau le plus élevé parmi ceux choisis.',
+    'DOWNGRADE et DÉTRUIRE : si la carte consommée avait été montée de niveau, l\'or et l\'XP dépensés pour ça te sont maintenant remboursés (en plus du recyclage habituel pour DÉTRUIRE).'
+  ]},
   { v:'V0.01.89', items:[
     'Le niveau de la carte (« NV. X ») est maintenant affiché plus grand dans son encadré, pour mieux le voir d\'un coup d\'œil.',
     'DÉ-FUSIONNER devient DOWNGRADE, pour coller au même vocabulaire qu\'UPGRADE.',
@@ -6386,7 +6395,10 @@ function renderCodex(){
     if(tiles.length === 0) list.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
     tiles.forEach(st => {
       const maxed = !FUSION_NEED[st.rar];
-      const lacking = !maxed && st.count < FUSION_NEED[st.rar];   // pas assez de cartes identiques à CE niveau
+      // (V0.01.90) L'éligibilité à l'UPGRADE se base sur le total d'exemplaires de cette rareté,
+      // tous niveaux confondus -- le niveau individuel d'un exemplaire n'a plus d'incidence sur la
+      // possibilité de fusionner, seulement sur le niveau hérité par le résultat (voir openUpgradeConfirm).
+      const lacking = !maxed && stackCount(st.def.name, st.rar) < FUSION_NEED[st.rar];
       const key = sqKey(st.def.name, st.rar);
       const picked = fuseAutoMode && !!fuseAutoSel[key];
       const card = document.createElement('div');
@@ -6397,7 +6409,7 @@ function renderCodex(){
         + (picked ? '<div class="fuse-sel-badge">✓ SÉLECTIONNÉE</div>' : '');
       card.onclick = () => {
         if(maxed){ showToast(isHolo(st.rar) ? 'CARTE HOLOGRAPHIQUE : UPGRADE IMPOSSIBLE' : 'RARETÉ MAXIMALE'); return; }
-        if(lacking){ showToast('IL FAUT ' + FUSION_NEED[st.rar] + ' CARTES IDENTIQUES (' + st.count + '/' + FUSION_NEED[st.rar] + ')'); return; }
+        if(lacking){ showToast('IL FAUT ' + FUSION_NEED[st.rar] + ' CARTES IDENTIQUES (' + stackCount(st.def.name, st.rar) + '/' + FUSION_NEED[st.rar] + ')'); return; }
         if(fuseAutoMode){
           if(fuseAutoSel[key]) delete fuseAutoSel[key]; else fuseAutoSel[key] = true;
           renderCodex();
@@ -6502,9 +6514,24 @@ function doFusion(selection){
 function openUpgradeConfirm(def, rar, level){
   const key = sqKey(def.name, rar);
   if(keyInMission(key)){ openUpgradeMissionWarning(def, rar, level); return; }
-  upgradeQty = 1;   // repart toujours de 1 groupe à l'ouverture, quelle que soit la carte précédente (V0.01.87)
-  renderUpgradeConfirm(def, rar, level);
+  startUpgradeFlow(def, rar, level);
   document.getElementById('actionModal').classList.add('show');
+}
+// (V0.01.90) Décide, une fois l'éventuel avertissement mission passé, quelle fenêtre ouvrir :
+// si la tuile tapée possède à elle seule assez d'exemplaires, la fenêtre simple habituelle (avec son
+// sélecteur de groupes) suffit -- comportement inchangé depuis V0.01.87/88. Sinon, il manque des
+// exemplaires à CE niveau précis mais le total de la rareté (tous niveaux confondus) est suffisant :
+// on ouvre l'écran de sélection manuelle multi-niveaux (openUpgradePicker) pour que le joueur choisisse
+// lui-même quels exemplaires (d'autres niveaux) complètent la fusion.
+function startUpgradeFlow(def, rar, level){
+  const need = FUSION_NEED[rar];
+  const n = levelDist(def.name, rar)[level] || 0;
+  if(n >= need){
+    upgradeQty = 1;   // repart toujours de 1 groupe à l'ouverture, quelle que soit la carte précédente (V0.01.87)
+    renderUpgradeConfirm(def, rar, level);
+  } else {
+    openUpgradePicker(def, rar, level);
+  }
 }
 // Avertissement affiché quand la carte à upgrader est engagée dans une mission en cours (V0.01.87) :
 // upgrader consomme ses exemplaires (et peut la faire disparaître de l'escouade), donc on prévient
@@ -6523,8 +6550,7 @@ function openUpgradeMissionWarning(def, rar, level){
   document.getElementById('actCancel').onclick = closeActionModal;
   document.getElementById('actGo').onclick = () => {
     stopMissionsUsingKey(sqKey(def.name, rar));
-    upgradeQty = 1;
-    renderUpgradeConfirm(def, rar, level);
+    startUpgradeFlow(def, rar, level);
   };
   document.getElementById('actionModal').classList.add('show');
 }
@@ -6590,6 +6616,75 @@ function renderUpgradeConfirm(def, rar, level){
     closeActionModal();
     const go = () => doFusionMulti(def, rar, q, sel);
     if(usedInTeam(def, rar) && stackCount(def.name, rar) <= totalNeed) guardTeamChange(go, 'Cette carte est dans ton escouade actuelle : l’upgrader'); else go();
+  };
+}
+// ----- Sélection manuelle multi-niveaux pour l'UPGRADE (depuis V0.01.90) -----
+// Utilisée quand la tuile tapée n'a pas, à elle seule, assez d'exemplaires pour l'upgrade (need), mais
+// que le total de la rareté (tous niveaux confondus) en a assez : le joueur choisit lui-même, niveau
+// par niveau, quels exemplaires précis participent à la fusion. Le niveau hérité par la carte obtenue
+// est toujours le plus haut parmi les exemplaires réellement choisis (voir consumeForFusion()).
+let upgradePickerSel = {};   // { niveau: nombre_choisi }, état du picker actuellement ouvert
+function openUpgradePicker(def, rar, level){
+  const dist = levelDist(def.name, rar);
+  upgradePickerSel = {};
+  if((dist[level] || 0) > 0) upgradePickerSel[level] = 1;   // pré-sélectionne 1 exemplaire de la tuile tapée
+  renderUpgradePicker(def, rar, level);
+}
+function renderUpgradePicker(def, rar, level){
+  const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
+  const dist = levelDist(def.name, rar);
+  const tiers = levelTiers(def.name, rar).slice().sort((a, b) => b - a);   // niveau le plus haut en premier
+  let total = 0;
+  tiers.forEach(l => {
+    upgradePickerSel[l] = Math.min(upgradePickerSel[l] || 0, dist[l] || 0);
+    total += upgradePickerSel[l];
+  });
+  const ready = total === need;
+  const rows = tiers.map(l => {
+    const have = dist[l] || 0, picked = upgradePickerSel[l] || 0;
+    return `<div class="lvlpick-row">
+      <span class="lvlpick-lbl">NV. ${l} <small>×${have} dispo</small></span>
+      <div class="fuse-stepper">
+        <button type="button" data-lvl="${l}" data-d="-1" ${picked <= 0 ? 'disabled' : ''}>−</button>
+        <span><b>${picked}</b></span>
+        <button type="button" data-lvl="${l}" data-d="1" ${(picked >= have || total >= need) ? 'disabled' : ''}>+</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('actionInner').innerHTML = `
+    <button class="cx-close" id="actClose">✕</button>
+    <div class="team-label player" style="margin:0;">CHOISIS LES EXEMPLAIRES</div>
+    <div class="defuse-row">
+      ${actionCardHtml(def, rar, {})}
+      <div class="fusion-arrow ${ready ? 'ready' : ''}">➜</div>
+      ${actionCardHtml(def, next, {})}
+    </div>
+    <div class="lvlpick-list">${rows}</div>
+    <div class="fusion-count"><b>${total}</b> / ${need} exemplaires sélectionnés</div>
+    <div class="controls" style="width:100%;">
+      <button id="actCancel">ANNULER</button>
+      <button id="actGo" class="primary-btn" ${ready ? '' : 'disabled'}>UPGRADER</button>
+    </div>`;
+  document.getElementById('actClose').onclick = closeActionModal;
+  document.getElementById('actCancel').onclick = closeActionModal;
+  document.getElementById('actionInner').querySelectorAll('.lvlpick-row .fuse-stepper button').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const l = parseInt(btn.dataset.lvl), d = parseInt(btn.dataset.d);
+      const have = dist[l] || 0, cur = upgradePickerSel[l] || 0;
+      if(d > 0 && total >= need) return;
+      const next2 = Math.max(0, Math.min(have, cur + d));
+      upgradePickerSel[l] = next2;
+      renderUpgradePicker(def, rar, level);
+    };
+  });
+  document.getElementById('actGo').onclick = () => {
+    if(total !== need) return;
+    const sel = {};
+    Object.keys(upgradePickerSel).forEach(l => { if(upgradePickerSel[l] > 0) sel[l] = upgradePickerSel[l]; });
+    closeActionModal();
+    const go = () => { fusionBase = { name: def.name, rar }; fusionPicked = need - 1; doFusion(sel); };
+    if(usedInTeam(def, rar) && stackCount(def.name, rar) <= need) guardTeamChange(go, 'Cette carte est dans ton escouade actuelle : l’upgrader'); else go();
   };
 }
 // Effectue `qty` groupes d'upgrade d'un coup (sélectionnés via le sélecteur +/- ci-dessus, V0.01.87).
@@ -6953,6 +7048,11 @@ function renderDestroyModal(def, rar, level){
   destroyQty = qty;
   const unit = salvageValue(def, rar, level);
   const totMat = unit.mat * qty, totGold = unit.gold * qty;
+  // (V0.01.90) Si l'exemplaire détruit avait été monté de niveau, l'or/XP investis dans cette montée
+  // de niveau sont remboursés en plus du recyclage habituel -- sinon cette progression serait perdue
+  // sans contrepartie. lvlCost(1, level) = coût cumulé pour atteindre `level` depuis le niveau 1.
+  const lvlRefund = level > 1 ? lvlCost(1, level) : { gold:0, xp:0 };
+  const totRefundGold = lvlRefund.gold * qty, totRefundXp = lvlRefund.xp * qty;
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">DÉTRUIRE ${qty > 1 ? 'DES CARTES' : 'UNE CARTE'}</div>
@@ -6966,6 +7066,11 @@ function renderDestroyModal(def, rar, level){
         <span class="salv r-${rar}"><i>${matIcon(rar)}</i>+${totMat} <small>${RARITIES[rar].label}</small></span>
         <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
       </div>
+      ${(totRefundGold || totRefundXp) ? `<div class="salvage-title">NIVEAU REMBOURSÉ</div>
+      <div class="salvage-row">
+        <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totRefundGold)}</span>
+        <span class="salv"><i data-lbl="XP">${ICON_XP}</i>+${fmtNum(totRefundXp)}</span>
+      </div>` : ''}
     </div>
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
@@ -6992,6 +7097,9 @@ function renderDestroyModal(def, rar, level){
       if(realQty <= 0) return;
       const gain = salvageValue(def, rar, level);
       const gainMat = gain.mat * realQty, gainGold = gain.gold * realQty;
+      // (V0.01.90) Remboursement de l'investissement de niveau perdu (voir aperçu dans renderDestroyModal).
+      const refund = level > 1 ? lvlCost(1, level) : { gold:0, xp:0 };
+      const refundGold = refund.gold * realQty, refundXp = refund.xp * realQty;
       consumeForDestroy(def.name, rar, realQty, sel);
       player.stats.destroyed += realQty;
       if(rar === 'legendaire') player.stats.destroyedLeg += realQty;
@@ -7001,12 +7109,13 @@ function renderDestroyModal(def, rar, level){
         validateSquad();
       }
       player.res.mat[rar] = (player.res.mat[rar] || 0) + gainMat;
-      player.res.gold += gainGold;
-      addTotals(gainGold, 0, { [rar]: gainMat }, 0);
-      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold) + ' OR');
+      player.res.gold += gainGold + refundGold;
+      player.res.xp = (player.res.xp || 0) + refundXp;
+      addTotals(gainGold + refundGold, refundXp, { [rar]: gainMat }, 0);
+      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold + refundGold) + ' OR' + (refundXp ? ' · +' + fmtNum(refundXp) + ' XP' : ''));
       renderResources();
       renderCodexResources();
-      flashResources(rar, { mat: gainMat, gold: gainGold });
+      flashResources(rar, { mat: gainMat, gold: gainGold + refundGold });
       saveNow();                 // sauvegarde immédiate des ressources gagnées
       renderCodex();
       saveSoon();
@@ -7027,6 +7136,10 @@ function openDefuseModal(def, rar, level){
 function renderDefuseModal(def, rar, level){
   const lower = RARITY_ORDER[tierOf(rar) - 1];
   const back = FUSION_NEED[lower];
+  // (V0.01.90) L'exemplaire dé-fusionné redevient `back` exemplaires neufs au niveau 1 (déjà le cas
+  // depuis V0.01.88, voir consumeForDefuse) -- l'or/XP investis dans sa montée de niveau sont en plus
+  // remboursés au joueur, pour ne pas perdre cette progression sans contrepartie.
+  const lvlRefund = level > 1 ? lvlCost(1, level) : { gold:0, xp:0 };
   document.getElementById('actionInner').innerHTML = `
     <button class="cx-close" id="actClose">✕</button>
     <div class="team-label player" style="margin:0;">DOWNGRADE</div>
@@ -7035,6 +7148,13 @@ function renderDefuseModal(def, rar, level){
       <div class="fusion-arrow ready">➜</div>
       ${actionCardHtml(def, lower, { badge: '×' + back })}
     </div>
+    ${(lvlRefund.gold || lvlRefund.xp) ? `<div class="salvage-box">
+      <div class="salvage-title">NIVEAU REMBOURSÉ</div>
+      <div class="salvage-row">
+        <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(lvlRefund.gold)}</span>
+        <span class="salv"><i data-lbl="XP">${ICON_XP}</i>+${fmtNum(lvlRefund.xp)}</span>
+      </div>
+    </div>` : ''}
     <div class="controls" style="width:100%;">
       <button id="actCancel">ANNULER</button>
       <button id="actGo" class="primary-btn">DOWNGRADER</button>
@@ -7046,8 +7166,15 @@ function renderDefuseModal(def, rar, level){
     const doIt = () => {
       if(stackCount(def.name, rar) <= 0) return;
       consumeForDefuse(def.name, rar, lower, back, level);
+      if(lvlRefund.gold || lvlRefund.xp){
+        player.res.gold += lvlRefund.gold;
+        player.res.xp = (player.res.xp || 0) + lvlRefund.xp;
+        addTotals(lvlRefund.gold, lvlRefund.xp, {}, 0);
+      }
       validateSquad();
-      showToast('DOWNGRADE : ' + back + ' × ' + def.name);
+      showToast('DOWNGRADE : ' + back + ' × ' + def.name + ((lvlRefund.gold || lvlRefund.xp) ? ' · +' + fmtNum(lvlRefund.gold) + ' OR +' + fmtNum(lvlRefund.xp) + ' XP' : ''));
+      renderResources();
+      renderCodexResources();
       renderCodex();
       saveSoon();
     };
