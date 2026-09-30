@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.32</title>
+<title>Projet MECA V0.02.33</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5019,7 +5019,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.32</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.33</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -5321,9 +5321,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.32';
+var BUILD_VERSION = 'V0.02.33';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.33', items:[
+    'Correction d\'affichage : le "k" des grands compteurs (or, xp, cristaux, matériaux) ne saute plus tout seul à la ligne suivante.'
+  ]},
   { v:'V0.02.32', items:[
     'Fenêtre "Attention combat en cours" (changement d\'escouade pendant une mission en fond) : nouveau style "verre" biseauté.',
     'Écrans de connexion, de création de compte et de choix du nom de joueur : nouveau style "verre" biseauté.'
@@ -6743,8 +6746,8 @@ function collectLoot(silent){
 }
 function fmtNum(n){
   n = Math.floor(n);
-  if(n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace('.', ',') + ' M';
-  if(n >= 1e4) return Math.floor(n / 1e3) + ' k';
+  if(n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace('.', ',') + ' M';
+  if(n >= 1e4) return Math.floor(n / 1e3) + ' k';
   return n.toLocaleString('fr-FR');
 }
 const ICON_GOLD = '<i class="ico-goldbar"></i>';
