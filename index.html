@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.94</title>
+<title>Projet MECA V0.02.95</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6172,7 +6172,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.94</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.95</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6516,9 +6516,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.94';
+var BUILD_VERSION = 'V0.02.95';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.95', items:[
+    'BOOSTERS : remise à zéro ponctuelle du stock de boosters de tout le monde, pour repartir sur une base propre.'
+  ]},
   { v:'V0.02.94', items:[
     'BOOSTERS : les nouveaux joueurs démarrent sans booster (le cadeau de 50 de la phase de test est retiré) -- ils s\'obtiennent en jouant (trophées, tâches, récompenses) ou en BOUTIQUE.',
     'BOOSTERS : un petit compteur réapparaît sous chaque case pour suivre son stock restant.'
@@ -8060,6 +8063,11 @@ const player = {
   // sont désormais gagnables (trophées/tâches/récompenses journalières, V0.02.93), donc plus besoin du
   // cadeau de départ : un NOUVEAU joueur démarre à 0 partout.
   boosters: { res: 0, cards: 0, modules: 0 },
+  // Correctif ponctuel (V0.02.94, demande d'Alex : "remet les compteurs de tout les joueurs à 0 sur les
+  // 3 boosters") : remet le stock de boosters de TOUT joueur -- nouveau ou déjà existant -- à 0/0/0 une
+  // seule fois, à sa prochaine connexion après cette mise à jour (cf bootSave(), même mécanique que
+  // player.modCopiesFix ci-dessous) ; passe à true une fois appliqué pour ne jamais rejouer ce correctif.
+  boostersResetV94: false,
   bestWave: null,   // { wave, at:Date, team:[{name,level,rarity,power}], power }
   giftHolo: false,  // ancien cadeau réservé au propriétaire (système retiré) ; champ gardé pour compat. des sauvegardes existantes
   giftPrawn: false, // idem
@@ -17241,6 +17249,23 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
     player.prokIemGift = true;    // évite tout second don si ce correctif tourne avant le bloc ci-dessus
     player.modCopiesFix = true;
     validateSquad();              // revalide squadModule : vide le slot si un module retiré y était équipé
+    saveSoon();
+  }
+  // Correctif ponctuel boosters (V0.02.94, demande d'Alex : "remet les compteurs de tout les joueurs à 0
+  // sur les 3 boosters") : les nouveaux joueurs démarrent déjà à 0/0/0 depuis cette version (cf
+  // player.boosters plus haut), mais une sauvegarde EXISTANTE garde le stock qu'elle avait déjà (50/50/50
+  // de la phase de test, ou plus après avoir joué) -- Alex veut repartir sur une base propre pour tout le
+  // monde : à la prochaine connexion après la maj, TOUT joueur (nouveau ou non) est remis à 0/0/0, une
+  // seule fois (cf player.boostersResetV94). Même emplacement que le correctif modules ci-dessus (après
+  // connectCloud(), sur l'état définitivement réconcilié) pour la même raison : ne pas se faire écraser
+  // par une sauvegarde distante plus avancée récupérée entre-temps.
+  if(!player.boostersResetV94){
+    player.boosters = { res: 0, cards: 0, modules: 0 };
+    player.boostersResetV94 = true;
+    if(typeof renderBoost === 'function'){
+      const bv = document.getElementById('boostView');
+      if(bv && bv.classList.contains('active')) renderBoost();
+    }
     saveSoon();
   }
   // Le temps de jeu est sauvegardé régulièrement et quand on quitte l'app
