@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.93</title>
+<title>Projet MECA V0.02.94</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -4441,6 +4441,12 @@
   .bb-cross{position:absolute; inset:0; pointer-events:none; filter:drop-shadow(0 2px 4px rgba(0,0,0,.65)) drop-shadow(0 0 5px rgba(255,56,56,.5));}
   .bb-cross line{stroke:#ff3b3b; stroke-width:8; stroke-linecap:round;}
   .bb-title{font-family:var(--font-title); font-size:9.5px; font-weight:900; letter-spacing:1px; color:#fff; text-align:center; line-height:1.15;}
+  /* V0.02.94, correctif : le retrait du badge ×N (V0.02.92) laissait la case sans aucun indicateur de
+     stock -- le visuel dédié coloré restait identique qu'il reste 1 ou 50 exemplaires, donnant
+     l'impression (signalée par Alex) d'un stock illimité jusqu'à tomber d'un coup à la croix rouge.
+     Remplacé par un petit compteur discret sous le titre (pas le gros badge ×50 d'origine que Alex
+     avait demandé à retirer) -- masqué à 0 exemplaire, où la croix rouge suffit déjà à le signaler. */
+  .bb-count{font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.5px; color:var(--violet-hi); line-height:1;}
   /* Socle poussé vers le bas de l'espace disponible (V0.02.86, demande d'Alex : "place le socle vraiment
      plus bas") -- align-items:flex-end au lieu de center, avec un peu de marge basse (le padding-bottom
      de #app réservé à la navbar fixe, cf plus haut, évite déjà qu'il ne passe derrière).
@@ -6166,7 +6172,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.93</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.94</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6510,9 +6516,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.93';
+var BUILD_VERSION = 'V0.02.94';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.94', items:[
+    'BOOSTERS : les nouveaux joueurs démarrent sans booster (le cadeau de 50 de la phase de test est retiré) -- ils s\'obtiennent en jouant (trophées, tâches, récompenses) ou en BOUTIQUE.',
+    'BOOSTERS : un petit compteur réapparaît sous chaque case pour suivre son stock restant.'
+  ]},
   { v:'V0.02.93', items:[
     'TUTORIEL : nouvelle étape qui explique le fonctionnement des boosters.',
     'TROPHÉES : 11 nouveaux trophées liés aux boosters (ouvrir des boosters ressources / cartes mechs / cartes modules / tous types confondus) ; les plus difficiles à obtenir donnent des boosters en bonus.',
@@ -8044,9 +8054,12 @@ const player = {
   playSeconds: 0,
   res: { gold: 0, xp: 0, crystal: 0, mat: { rare: 0, epique: 0, legendaire: 0 } },   // or + XP stockée + matériaux
   // Inventaire de boosters non ouverts, par type -- x50 chacun le temps de la phase de test (demande
-  // d'Alex, V0.02.84 : pas encore de prix/case d'achat, cf BOOST_LABEL plus bas), à revoir une fois la
-  // case d'achat ajoutée.
-  boosters: { res: 50, cards: 50, modules: 50 },
+  // d'Alex, V0.02.84 : pas encore de prix/case d'achat). V0.02.94, demande d'Alex suite au signalement
+  // "les booster sont en mode infini" : "au lancement de la maj le joueur ne doit pas avoir de booster,
+  // il doit les gagner ou les payer" -- la case d'achat (BOUTIQUE) existe depuis V0.02.90 et les boosters
+  // sont désormais gagnables (trophées/tâches/récompenses journalières, V0.02.93), donc plus besoin du
+  // cadeau de départ : un NOUVEAU joueur démarre à 0 partout.
+  boosters: { res: 0, cards: 0, modules: 0 },
   bestWave: null,   // { wave, at:Date, team:[{name,level,rarity,power}], power }
   giftHolo: false,  // ancien cadeau réservé au propriétaire (système retiré) ; champ gardé pour compat. des sauvegardes existantes
   giftPrawn: false, // idem
@@ -8083,9 +8096,10 @@ function normalizePlayerExtras(){
   player.troph = { r: Object.assign({}, (player.troph && player.troph.r) || {}), c: Object.assign({}, (player.troph && player.troph.c) || {}) };
   player.daily = Object.assign({ day:0, last:'', total:0, cycle:0 }, player.daily || {});
   // Boosters (V0.02.84) : inventaire par type -- Object.assign comble les champs manquants sur une
-  // sauvegarde antérieure à cette version (x50 chacun le temps de la phase de test, cf player.boosters
-  // plus haut -- une sauvegarde qui a DÉJÀ cette version garde son propre compte, rien n'est réinitialisé).
-  player.boosters = Object.assign({ res:50, cards:50, modules:50 }, player.boosters || {});
+  // sauvegarde antérieure à cette version (0 chacun depuis V0.02.94, cf player.boosters plus haut --
+  // une sauvegarde qui a DÉJÀ un champ boosters garde son propre compte, rien n'est réinitialisé ici :
+  // seule une sauvegarde n'ayant JAMAIS eu de boosters reçoit ce 0 par défaut).
+  player.boosters = Object.assign({ res:0, cards:0, modules:0 }, player.boosters || {});
 }
 normalizePlayerExtras();
 const XP_REWARDS = { draw: 10, newCard: 25, waveBase: 30, wavePerLevel: 10, fusion: 40 };
@@ -12253,12 +12267,14 @@ function renderBoost(){
     box.className = 'boost-box ' + type + (n === 0 ? ' empty' : '');
     box.dataset.type = type;
     // V0.02.92, demande d'Alex : "supprime les booster ×50 des 3 versions dans la case booster" --
-    // le badge ×N (.cx-copy-badge) a été retiré de cette case ; la quantité possédée reste visible
-    // ailleurs (ex. case FABRIQUE) mais plus ici, pour un visuel plus épuré.
+    // le gros badge ×N (.cx-copy-badge) a été retiré. V0.02.94, correctif (cf .bb-count ci-dessus) :
+    // sans aucun chiffre, la case semblait avoir un stock illimité -- un petit compteur discret est
+    // réaffiché sous le titre (masqué à 0, où la croix rouge suffit déjà).
     const icon = n === 0 ? BOOST_EMPTY_IMG : (type === 'res' ? BOOST_RES_IMG : type === 'cards' ? BOOST_CARDS_IMG : BOOST_MODULES_IMG);
     box.innerHTML = `
       <div class="bb-icon">${icon}${n === 0 ? '<svg class="bb-cross" viewBox="0 0 100 100"><line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></svg>' : ''}</div>
       <div class="bb-title">${BOOST_LABEL[type]}</div>
+      ${n > 0 ? `<div class="bb-count">${n}</div>` : ''}
     `;
     attachBoostDrag(box, type);
     row.appendChild(box);
