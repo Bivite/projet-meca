@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.97</title>
+<title>Projet MECA V0.02.98</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6172,7 +6172,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.97</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.98</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6516,9 +6516,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.97';
+var BUILD_VERSION = 'V0.02.98';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.98', items:[
+    'FABRIQUE : le bouton du bandeau du bas passe maintenant bien en "RETOUR" (et fonctionne comme tel) quand on est dans BOOSTER ou BOUTIQUE, comme c\'était déjà le cas pour TIRAGE et LABO.',
+    'BOUTIQUE : les quantités choisies avec les boutons +/- (XP, cristaux, matériaux, boosters) reviennent à leur valeur de départ chaque fois qu\'on rentre dans la boutique, au lieu de rester sur le dernier réglage utilisé.'
+  ]},
   { v:'V0.02.97', items:[
     'MISSIONS : "RÉCOLTER ET RELANCER" propose maintenant de choisir l\'escouade de chaque mission avant de la relancer (au lieu de reprendre automatiquement l\'ancienne composition).',
     'CORRECTIF : le bouton "COLLECTER & STOPPER LA MISSION" pouvait rester affiché à tort après l\'arrêt forcé d\'une mission (upgrade d\'une carte engagée dans cette mission).'
@@ -12584,6 +12588,13 @@ document.getElementById('boostBackBtn').onclick = showFabHub;
 function enterShopView(){
   document.getElementById('fabHubView').classList.remove('active');
   document.getElementById('shopView').classList.add('active');
+  // V0.02.98, demande d'Alex : "une fois que le joueur quitte la fenêtre et qu'il y revient, il faut que
+  // les choses qu'il a changé (en appuyant sur + ou -) reviennent par défaut" -- sans ça, un cran monté
+  // sur un encadré (XP, cristaux, matériaux, ou les 3 cases BOOSTER) restait figé tel quel même après être
+  // ressorti de la BOUTIQUE puis y être revenu. resetShopAmounts() (définie plus bas, une fois tous les
+  // paliers par défaut déclarés) remet chaque compteur à son propre point de départ à chaque entrée dans
+  // l'écran -- avant renderShop(), pour que l'affichage initial reflète déjà les valeurs réinitialisées.
+  if(typeof resetShopAmounts === 'function') resetShopAmounts();
   renderShop();
 }
 document.getElementById('tileFabShop').onclick = enterShopView;
@@ -12756,6 +12767,17 @@ BOOST_TYPES.forEach(type => {
     showToast('+' + fmtNum(shopBoostAmount[type]) + ' BOOSTER ' + BOOST_LABEL[type] + ' · -' + fmtNum(price) + ' ' + (price > 1 ? 'CRISTAUX' : 'CRISTAL'));
   };
 });
+
+// V0.02.98, demande d'Alex : remet chaque compteur +/- de la BOUTIQUE à son palier de départ -- appelée
+// depuis enterShopView() à chaque entrée dans l'écran (cf son commentaire), jamais pendant qu'on y est
+// (un achat ne doit pas réinitialiser le cran choisi pour l'achat suivant). Un seul point d'entretien si
+// un nouvel encadré est ajouté plus tard : ajouter sa ligne ici plutôt que dans enterShopView() lui-même.
+function resetShopAmounts(){
+  shopXpAmount = SHOP_XP_STEP;
+  shopCrystalAmount = SHOP_CRYSTAL_STEP;
+  MAT_ORDER.forEach(rar => { shopMatAmount[rar] = SHOP_MAT_STEP; });
+  BOOST_TYPES.forEach(type => { shopBoostAmount[type] = 1; });
+}
 
 // ---------- Appui long = prévisualisation de la carte ----------
 // Rester appuyé ~0,4 s ouvre la carte en grand ; relâcher la referme.
@@ -13611,7 +13633,14 @@ document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
 function navBackAction(){
   if(currentView === 'combat' && activeSubView()) return () => goBack(activeSubView());
   if(currentView === 'codex' && typeof codexMode !== 'undefined' && codexMode !== 'normal') return () => setCodexMode('normal');
-  if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active'))) return () => showFabHub();
+  // V0.02.98, correctif bug signalé par Alex ("le bouton fabrique ne passe pas en retour quand je suis dans
+  // la case booster et boutique") : cette condition ne vérifiait que fabDrawView/labDrawView, pas
+  // boostView/shopView -- pourtant ces 2 écrans sont bien des sous-vues de l'onglet FABRIQUE au même titre
+  // que TIRAGE/LABO (cf showFabHub(), qui les désactive tous les 4 ensemble), et leur propre bouton retour
+  // en haut d'écran est volontairement invisible depuis la V0.02.24 (cf CSS #boostBackBtn, #shopBackBtn) --
+  // le label RETOUR du bandeau du bas était donc le SEUL indice visuel de retour possible pour ces 2 écrans,
+  // et il ne s'affichait jamais.
+  if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
