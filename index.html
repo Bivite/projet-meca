@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.98</title>
+<title>Projet MECA V0.02.99</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6172,7 +6172,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.98</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.99</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6516,9 +6516,18 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.98';
+var BUILD_VERSION = 'V0.02.99';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.99', items:[
+    'COLLECTION : le niveau affiché sur une carte correspond maintenant toujours au bon exemplaire -- plus de décalage donnant l\'impression qu\'une montée de niveau n\'a pas été prise en compte.',
+    'TÂCHES JOURNALIÈRES : la tâche "DÉMONTAGE" (détruire un module) ne peut plus être tirée si tu ne possèdes qu\'un seul module.',
+    'ORDRE DE MISSION : le bouton "RÉCOLTER ET RELANCER" se masque pendant que la fenêtre de récompense/relance est ouverte, pour ne plus faire doublon avec son propre bouton.',
+    'BOOSTERS : le compteur sous le titre est remplacé par l\'encadré ×N en haut à droite (comme sur les cartes), affiché seulement à partir de 2 exemplaires.',
+    'MODULES : la fiche de prévisualisation affiche "×X exemplaires" quand tu en possèdes plusieurs au même niveau.',
+    'TIRAGE/LABO : à l\'achat groupé de plusieurs cartes ou modules légendaires (ou de cartes holographiques), chaque révélation s\'enchaîne maintenant à ton clic plutôt qu\'automatiquement.',
+    'TIRAGE/LABO : l\'achat d\'une carte épique affiche un simple aperçu de la carte, à fermer d\'un clic.'
+  ]},
   { v:'V0.02.98', items:[
     'FABRIQUE : le bouton du bandeau du bas passe maintenant bien en "RETOUR" (et fonctionne comme tel) quand on est dans BOOSTER ou BOUTIQUE, comme c\'était déjà le cas pour TIRAGE et LABO.',
     'BOUTIQUE : les quantités choisies avec les boutons +/- (XP, cristaux, matériaux, boosters) reviennent à leur valeur de départ chaque fois qu\'on rentre dans la boutique, au lieu de rester sur le dernier réglage utilisé.'
@@ -8477,6 +8486,12 @@ function modCopiesOf(name){
   const st = moduleCopies[name] || {};
   return RARITY_ORDER.reduce((a, r) => a + (st[r] || 0), 0);
 }
+// Total de modules possédés, toutes sortes et raretés confondues (V0.02.99, demande d'Alex -- cf
+// TASK_POOL plus bas, tâche 'moddest') : utilisé pour ne jamais proposer la tâche "détruire un module"
+// quand ce serait forcément le SEUL module du joueur.
+function totalModulesOwned(){
+  return MODULE_DEFS.reduce((s, d) => s + modCopiesOf(d.name), 0);
+}
 // Équivalent de ownedStacks() pour les modules (V0.02.48, demande d'Alex) : une entrée par (module,
 // rareté) RÉELLEMENT possédée -- jusqu'ici la grille ne montrait que la rareté effective (la plus
 // haute) de chaque module, si bien que des exemplaires restants d'une rareté inférieure après un
@@ -9037,18 +9052,31 @@ function openModuleModal(name, rar, level, opts){
   // opts.noClear sur openCodexModal() pour la prévisualisation TIRAGE : masque complètement la section
   // AMÉLIORER (le joueur ne possède encore aucun exemplaire de ce module à cette rareté).
   const cap = moduleLevelCap(rar);
+  // V0.02.99, demande d'Alex : "si le joueur en a plusieurs exemplaires alors met un petit encadré
+  // entre la carte et le texte avec ×X exemplaires" -- compte précisément à CE niveau+CETTE rareté
+  // (celui de la tuile depuis laquelle la fiche a été ouverte), comme le badge ×N déjà affiché sur la
+  // tuile elle-même (cf renderModulesGrid()/.cx-copy-badge), pas le total toutes raretés/niveaux confondus.
+  const nAtLevel = (modLevelDist(name, rar)[level] || 0);
   inner.innerHTML = `
     <div class="mod-big">${modCardFaceHtml(def, level, rar)}</div>
+    ${nAtLevel > 1 ? `<div class="cx-lvl-tag-big">×${nAtLevel} exemplaires</div>` : ''}
     <div class="mod-desc" id="modDescText">${def.descFor(val)}</div>
     ${(opts && opts.noClear) ? '' : (level >= cap
       ? '<div class="lvl-max">NIVEAU MAX ATTEINT</div>'
-      : '<div class="lvl-panel" id="modLvlPanel"></div><button class="lvl-btn" id="modLvlOpenBtn">▲ AMÉLIORER</button>')}
+      // V0.02.99, même correctif que les cartes classiques (cf openCodexModal()) : AMÉLIORER fait
+      // toujours progresser le meilleur exemplaire de la pile (moduleLevel()/advanceTopModCopy()),
+      // jamais celui de la tuile précise ouverte -- le bouton ne s'affiche donc que sur la tuile qui EST
+      // ce meilleur exemplaire, pour ne jamais donner l'impression qu'améliorer n'a rien changé.
+      : (level === topOwnedModLevel(name, rar)
+        ? '<div class="lvl-panel" id="modLvlPanel"></div><button class="lvl-btn" id="modLvlOpenBtn">▲ AMÉLIORER</button>'
+        : '<div class="lvl-max">SEUL LE MEILLEUR EXEMPLAIRE PROGRESSE</div>'))}
   `;
   const lvlBtn = document.getElementById('modLvlOpenBtn');
   if(lvlBtn) lvlBtn.onclick = () => toggleModuleLevelPanel(def, rar);
   document.getElementById('moduleModal').classList.add('show');
 }
 function closeModuleModal(){
+  if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   document.getElementById('moduleModal').classList.remove('show', 'lvl-open');
   const panel = document.getElementById('modLvlPanel');
   if(panel) panel.classList.remove('show');
@@ -11914,37 +11942,100 @@ document.getElementById('fabRefreshBtn').onclick = () => {
   saveNow();
   showToast('OFFRE ACTUALISÉE · -' + fmtNum(FAB_REFRESH_GOLD) + ' OR');
 };
-// ---------- Révélation automatique des cartes/modules LÉGENDAIRES obtenus (V0.02.82, demande d'Alex :
-// "rajouter un effet quand on achete une carte légendaire (carte classique et carte modules), il
-// faudrait qu'une fois acheter la carte s'affiche en prévisualisation et fasse la même animation que
-// les upgrade") -- dès qu'un achat (unité ou "ACHETER TOUT") fait sortir au moins une carte/un module de
-// rareté légendaire, sa fiche s'ouvre automatiquement et joue la même animation que playCardToss('fusion',
-// ...) (celle de l'upgrade de rareté) : rayons, onde de choc, éclats, bannière, secousse. Pas d'onImpact
-// ici puisque la rareté n'a pas besoin de changer en cours d'animation, c'est juste le flash d'obtention.
-// "ACHETER TOUT" peut faire sortir plusieurs légendaires d'un coup (3 emplacements, chacun ~5% de
-// chance) : playCardToss()/les fiches ne gèrent qu'une seule carte à la fois (une seule fiche #codexModal
-// / #moduleModal globale), donc on les affiche l'une après l'autre (file d'attente) plutôt que de les
-// superposer ou d'en ignorer certaines.
+// ---------- Révélation automatique des cartes/modules LÉGENDAIRES (+ HOLOGRAPHIQUES et ÉPIQUES, voir
+// plus bas) obtenus (V0.02.82, demande d'Alex : "rajouter un effet quand on achete une carte légendaire
+// (carte classique et carte modules), il faudrait qu'une fois acheter la carte s'affiche en
+// prévisualisation et fasse la même animation que les upgrade") -- dès qu'un achat (unité ou "ACHETER
+// TOUT") fait sortir au moins une carte/un module de rareté légendaire, sa fiche s'ouvre automatiquement
+// et joue la même animation que playCardToss('fusion', ...) (celle de l'upgrade de rareté) : rayons,
+// onde de choc, éclats, bannière, secousse. Pas d'onImpact ici puisque la rareté n'a pas besoin de
+// changer en cours d'animation, c'est juste le flash d'obtention.
+// V0.02.99, 2 demandes d'Alex sur cette même file d'attente :
+// 1) "Prend en compte aussi pour les cartes classiques de méchs holographique" -- les tirages
+//    HOLOGRAPHIQUES (fabSlotRar() === 'holo', cartes classiques uniquement, jamais les modules) rejoignent
+//    maintenant la file au même titre que les légendaires (`item.special`), avec leur propre bannière.
+// 2) "fais la première animation puis laisse le joueur cliquer une fois pour lancer la deuxième
+//    animation" -- "ACHETER TOUT" peut faire sortir plusieurs cartes spéciales d'un coup (3 emplacements) ;
+//    au lieu d'enchaîner automatiquement après un délai fixe (ancien comportement), on attend maintenant
+//    un clic du joueur n'importe où sur la fiche avant de révéler la suivante -- le délai ci-dessous ne
+//    sert plus qu'à laisser l'animation se jouer entièrement avant d'armer ce clic (pour ne pas pouvoir
+//    la couper en plein vol).
+// Profite aussi de cette même file pour le nouvel aperçu ÉPIQUE (demande d'Alex : "affiche la carte en
+// mode prévisualisation mais sans effet, il a juste à cliquer sur l'écran pour quitter cette vue") --
+// `item.special = false` ouvre la fiche nue (pas d'animation, pas de favori/historique) et arme le clic
+// de fermeture/suite presque immédiatement (pas d'animation à laisser jouer).
 const LEGENDARY_REVEAL_GAP = 2500; // durée de l'animation 'fusion' (2100ms, cf playCardToss) + marge de lecture
 function revealLegendaryQueue(queue, idx){
   idx = idx || 0;
   if(idx >= queue.length) return;
   const item = queue[idx];
+  const isHoloItem = item.rar === 'holo';
+  const modalId = item.kind === 'module' ? 'moduleModal' : 'codexModal';
+  const modalEl = document.getElementById(modalId);
+  const hasNext = idx + 1 < queue.length;
   // opts.noClear (V0.02.82, demande d'Alex : "enleve le bouton améliorer") -- masque la section
   // AMÉLIORER/MONTÉE DE NIVEAU sur cette fiche de révélation, même mécanisme que la prévisualisation
   // LABO d'une offre pas encore achetée (cf addModPreviewPress ci-dessus) : on vient de recevoir la
   // carte/le module à l'instant, pas besoin de proposer de l'améliorer tout de suite sur cet écran.
-  if(item.kind === 'module'){
-    openModuleModal(item.def.name, item.rar, undefined, { noClear: true });
-    playCardToss('fusion', {
-      banner: 'MODULE LÉGENDAIRE', sub: item.def.name,
-      modalId: 'moduleModal', innerId: 'moduleModalInner'
-    });
+  // `item.special` par défaut à true (!== false, pas juste falsy) : avant V0.02.99, cette file ne
+  // servait QUE pour les légendaires/holo (toujours avec animation) -- un appel direct existant qui
+  // omettrait encore ce champ doit garder ce comportement d'origine ; seul l'aperçu ÉPIQUE (nouveau,
+  // toujours explicite dans les 4 points d'achat) demande `special:false`.
+  if(item.special !== false){
+    if(item.kind === 'module'){
+      openModuleModal(item.def.name, item.rar, undefined, { noClear: true });
+      playCardToss('fusion', {
+        banner: isHoloItem ? 'MODULE HOLOGRAPHIQUE' : 'MODULE LÉGENDAIRE', sub: item.def.name,
+        modalId: 'moduleModal', innerId: 'moduleModalInner'
+      });
+    } else {
+      openCodexModal(item.def.name, item.rar, { noClear: true });
+      playCardToss('fusion', { banner: isHoloItem ? 'CARTE HOLOGRAPHIQUE' : 'CARTE LÉGENDAIRE', sub: item.def.name });
+    }
+    // Dernier élément d'une carte/module spécial : pas de clic à armer, les fermetures habituelles
+    // (✕, clic hors fiche) suffisent déjà, comme avant V0.02.99 pour une seule légendaire.
+    if(hasNext) setTimeout(() => armQueueAdvance(modalEl, queue, idx, false), LEGENDARY_REVEAL_GAP);
   } else {
-    openCodexModal(item.def.name, item.rar, { noClear: true });
-    playCardToss('fusion', { banner: 'CARTE LÉGENDAIRE', sub: item.def.name });
+    // Aperçu ÉPIQUE : pas d'animation, pas de favori/historique/montée de niveau -- juste la carte,
+    // qu'un simple clic n'importe où sur l'écran ferme (ou enchaîne sur la suivante s'il y en a une).
+    if(item.kind === 'module') openModuleModal(item.def.name, item.rar, undefined, { noClear: true });
+    else openCodexModal(item.def.name, item.rar, { noClear: true, noFav: true, noInfo: true });
+    setTimeout(() => armQueueAdvance(modalEl, queue, idx, !hasNext), 60);
   }
-  setTimeout(() => revealLegendaryQueue(queue, idx + 1), LEGENDARY_REVEAL_GAP);
+}
+// Arme un clic unique, capturé avant tout bouton interne de la fiche (favori, historique...), qui fait
+// avancer la file vers l'élément suivant -- ou, quand `closeInstead` est vrai (dernier élément d'un
+// aperçu ÉPIQUE), ferme simplement la fiche au lieu d'essayer d'avancer vers un élément inexistant.
+// Attaché sur `document` (et non sur la fiche elle-même) : la fiche possède déjà son propre écouteur de
+// fermeture au clic sur le fond (enregistré directement sur le même élément), et deux écouteurs portés
+// par le MÊME nœud ne se garantissent pas de s'exécuter dans l'ordre capture-avant-bulle -- seulement
+// l'ordre d'enregistrement. En l'attachant sur `document`, un ancêtre réel des deux fiches, la phase de
+// capture s'exécute avant d'atteindre quelque écouteur que ce soit posé sur la fiche, de façon fiable.
+// `pendingQueueAdvance` retient l'écouteur en cours (un seul à la fois, une seule fiche affichée en même
+// temps) pour pouvoir le désarmer explicitement : si la fiche venait à se fermer par un autre chemin que
+// le clic qu'on attend (aucun cas réel actuel -- closeCodexModal()/closeModuleModal() ne sont aujourd'hui
+// appelées QUE depuis un clic, cf leurs propres écouteurs -- mais un appel direct/programmatique, par ex.
+// depuis un script de test), l'écouteur `{once:true}` resterait sinon armé sur `document` et intercepterait
+// (et avancerait/fermerait à tort) le tout premier clic suivant, n'importe où ailleurs dans le jeu.
+let pendingQueueAdvance = null;
+function clearPendingQueueAdvance(){
+  if(pendingQueueAdvance){
+    document.removeEventListener('click', pendingQueueAdvance, { capture:true });
+    pendingQueueAdvance = null;
+  }
+}
+function armQueueAdvance(modalEl, queue, idx, closeInstead){
+  if(!modalEl) return;
+  const kind = queue[idx].kind;
+  clearPendingQueueAdvance();
+  const advance = (e) => {
+    pendingQueueAdvance = null;
+    e.stopPropagation();
+    if(closeInstead){ if(kind === 'module') closeModuleModal(); else closeCodexModal(); }
+    else revealLegendaryQueue(queue, idx + 1);
+  };
+  pendingQueueAdvance = advance;
+  document.addEventListener('click', advance, { once:true, capture:true });
 }
 document.getElementById('buyAllBtn').onclick = () => {
   const toBuy = fabriqueOffer.map((d, i) => d ? { d, rar: fabSlotRar(i) } : null).filter(Boolean);
@@ -11962,8 +12053,11 @@ document.getElementById('buyAllBtn').onclick = () => {
   saveNow();
   renderFabrique();
   renderCodex();
-  const legendaries = toBuy.filter(x => x.rar === 'legendaire').map(x => ({ def: x.d, rar: x.rar, kind: 'card' }));
-  if(legendaries.length) revealLegendaryQueue(legendaries);
+  // V0.02.99, demande d'Alex : la file couvre maintenant aussi les cartes HOLOGRAPHIQUES et, en aperçu
+  // simple (`special:false`), les cartes ÉPIQUES (cf revealLegendaryQueue() ci-dessus).
+  const reveal = toBuy.filter(x => x.rar === 'legendaire' || x.rar === 'holo' || x.rar === 'epique')
+    .map(x => ({ def: x.d, rar: x.rar, kind: 'card', special: x.rar !== 'epique' }));
+  if(reveal.length) revealLegendaryQueue(reveal);
 };
 
 document.getElementById('buyOneBtn').onclick = () => {
@@ -11987,7 +12081,7 @@ document.getElementById('buyOneBtn').onclick = () => {
   }
   renderFabrique();
   renderCodex();
-  if(rar === 'legendaire') revealLegendaryQueue([{ def: pick.d, rar, kind: 'card' }]);
+  if(rar === 'legendaire' || rar === 'holo' || rar === 'epique') revealLegendaryQueue([{ def: pick.d, rar, kind: 'card', special: rar !== 'epique' }]);
 };
 
 renderFabrique();
@@ -12070,8 +12164,12 @@ document.getElementById('labBuyAllBtn').onclick = () => {
   saveNow();
   renderLab();
   renderModulesGrid();
-  const legendaries = toBuy.filter(x => x.rar === 'legendaire').map(x => ({ def: x.d, rar: x.rar, kind: 'module' }));
-  if(legendaries.length) revealLegendaryQueue(legendaries);
+  // V0.02.99, demande d'Alex : aperçu simple (`special:false`) pour les modules ÉPIQUES, même principe
+  // que pour les cartes classiques ci-dessus (pas de holo pour les modules, cf FUSION_NEED/commentaire
+  // plus haut : "un module ne va jamais jusqu'à holo").
+  const reveal = toBuy.filter(x => x.rar === 'legendaire' || x.rar === 'epique')
+    .map(x => ({ def: x.d, rar: x.rar, kind: 'module', special: x.rar !== 'epique' }));
+  if(reveal.length) revealLegendaryQueue(reveal);
 };
 document.getElementById('labBuyOneBtn').onclick = () => {
   const available = labOffer
@@ -12094,7 +12192,7 @@ document.getElementById('labBuyOneBtn').onclick = () => {
   }
   renderLab();
   renderModulesGrid();
-  if(rar === 'legendaire') revealLegendaryQueue([{ def: pick.d, rar, kind: 'module' }]);
+  if(rar === 'legendaire' || rar === 'epique') revealLegendaryQueue([{ def: pick.d, rar, kind: 'module', special: rar !== 'epique' }]);
 };
 renderLab();
 
@@ -12361,10 +12459,14 @@ function renderBoost(){
     // sans aucun chiffre, la case semblait avoir un stock illimité -- un petit compteur discret est
     // réaffiché sous le titre (masqué à 0, où la croix rouge suffit déjà).
     const icon = n === 0 ? BOOST_EMPTY_IMG : (type === 'res' ? BOOST_RES_IMG : type === 'cards' ? BOOST_CARDS_IMG : BOOST_MODULES_IMG);
+    // V0.02.99, demande d'Alex : retire le compteur texte sous le titre (.bb-count, V0.02.94) et remet
+    // à la place l'encadré ×N en haut à droite de la case (.cx-copy-badge, même badge que sur les
+    // cartes/modules -- cf codexCardHtml()), affiché seulement à partir de 2 exemplaires (comme sur les
+    // cartes, où le badge ×N n'apparaît lui aussi qu'au-delà d'1 exemplaire).
     box.innerHTML = `
+      ${n > 1 ? `<div class="cx-copy-badge">×${n}</div>` : ''}
       <div class="bb-icon">${icon}${n === 0 ? '<svg class="bb-cross" viewBox="0 0 100 100"><line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></svg>' : ''}</div>
       <div class="bb-title">${BOOST_LABEL[type]}</div>
-      ${n > 0 ? `<div class="bb-count">${n}</div>` : ''}
     `;
     attachBoostDrag(box, type);
     row.appendChild(box);
@@ -13056,7 +13158,18 @@ function openCodexModal(name, rar, opts){
       <div class="cx-ult-big">${def.ultName}<div class="cx-ult-desc-big">${def.ultDesc}</div></div>
       ${isOwned(def) && !(opts && (opts.noClear || opts.noLevel)) ? (level >= levelCap(def)
         ? '<div class="lvl-max">NIVEAU MAX ATTEINT</div>'
-        : '<div class="lvl-panel" id="lvlPanel"></div><button class="lvl-btn" id="lvlOpenBtn">▲ MONTÉE DE NIVEAU</button>') : ''}`;
+        // V0.02.99, correctif bug signalé par Alex ("les cartes de la collection [doivent être] avec le
+        // bon niveau... ce décalage peut donner l'impression que l'amélioration n'a pas été prise en
+        // compte") : toggleLevelPanel()/doLevelUp() font TOUJOURS progresser le meilleur exemplaire de la
+        // pile (cardLevel(), décision V0.01.88), jamais celui de la tuile précise qu'on vient d'ouvrir. Si
+        // on affichait ce bouton sur une tuile de niveau plus bas (un doublon frais à côté d'un exemplaire
+        // déjà monté), cliquer AMÉLIORER montait l'AUTRE exemplaire en coulisses : la tuile regardée ne
+        // changeait jamais, donnant l'impression que rien ne s'était passé. Le bouton n'apparaît donc plus
+        // que sur la tuile qui EST le meilleur exemplaire (level === topOwnedLevel) ; les autres affichent
+        // une mention plutôt qu'un bouton qui agirait sur une carte différente de celle affichée.
+        : (level === topOwnedLevel(def.name, rar)
+          ? '<div class="lvl-panel" id="lvlPanel"></div><button class="lvl-btn" id="lvlOpenBtn">▲ MONTÉE DE NIVEAU</button>'
+          : '<div class="lvl-max">SEUL LE MEILLEUR EXEMPLAIRE PROGRESSE</div>')) : ''}`;
   } else {
   inner.className = 'codex-modal-inner ' + rarCls(rar) + ' shape-' + categoryOf(def);
   inner.innerHTML = `
@@ -13082,7 +13195,11 @@ function openCodexModal(name, rar, opts){
     </div>
     ${isOwned(def) && !(opts && (opts.noClear || opts.noLevel)) ? (level >= levelCap(def)
       ? '<div class="lvl-max">NIVEAU MAX ATTEINT</div>'
-      : '<div class="lvl-panel" id="lvlPanel"></div><button class="lvl-btn" id="lvlOpenBtn">▲ MONTÉE DE NIVEAU</button>') : ''}
+      // V0.02.99, même correctif que la branche légendaire ci-dessus (cf son commentaire) : le bouton ne
+      // s'affiche que sur la tuile qui est réellement le meilleur exemplaire de la pile.
+      : (level === topOwnedLevel(def.name, rar)
+        ? '<div class="lvl-panel" id="lvlPanel"></div><button class="lvl-btn" id="lvlOpenBtn">▲ MONTÉE DE NIVEAU</button>'
+        : '<div class="lvl-max">SEUL LE MEILLEUR EXEMPLAIRE PROGRESSE</div>')) : ''}
   `;
   }
   const cxCloseBtn = document.getElementById('cxCloseBtn');
@@ -13118,6 +13235,7 @@ function openCodexModal(name, rar, opts){
   }
 }
 function closeCodexModal(){
+  if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   const m = document.getElementById('codexModal');
   m.classList.remove('show', 'lvl-open');
   const lb = document.getElementById('loreBubble'); if(lb) lb.classList.remove('show');
@@ -15126,7 +15244,14 @@ function tasksOfWeek(){
   const w = calWeek(), lvl = player.level || 1;
   if(taskWeekCache && taskWeekCache.w === w && taskWeekCache.lvl === lvl) return taskWeekCache.list;
   const rnd = d3Rng(w * 3571 + 101);
-  const core = TASK_POOL.filter(t => t.core), rest = TASK_POOL.filter(t => !t.core).map(t => [rnd(), t]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const core = TASK_POOL.filter(t => t.core);
+  // V0.02.99, demande d'Alex ("je proposerais... des objectifs qui permettent de progresser sans
+  // sacrifier l'équipement de départ") : la tâche 'moddest' ("détruire un module") ne doit jamais être
+  // proposée à un joueur qui n'a qu'un seul module (ou aucun) -- sinon la terminer veut dire se retrouver
+  // sans aucun équipement, juste pour débloquer le bonus des 10 tâches. Elle redevient éligible dès que
+  // le joueur possède au moins 2 modules (il en a alors un à sacrifier sans tout perdre).
+  const eligible = TASK_POOL.filter(t => !t.core && (t.id !== 'moddest' || totalModulesOwned() > 1));
+  const rest = eligible.map(t => [rnd(), t]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   const m = 1 + .1 * (lvl - 1);
   const kinds = ['gold', 'xp', 'goldxp', 'matR', 'matE', 'gold', 'xp'];
   const list = core.concat(rest.slice(0, 10 - core.length)).map(t => {
@@ -17026,6 +17151,15 @@ document.getElementById('rbLogin').onclick = () => showToast('BONUS DE CONNEXION
   // effectivement affiché : on le réévalue avec la flèche retour, à chaque changement de sous-vue.
   const obs = new MutationObserver(() => { updateNavBack(); updateOrdCollectBtn(); });
   document.querySelectorAll('.sub-view, .view').forEach(v => obs.observe(v, { attributes:true, attributeFilter:['class'] }));
+  // V0.02.99, correctif bug signalé par Alex ("quand la fenêtre [de récompenses/relance] s'ouvre, le
+  // bouton RÉCOLTER ET RELANCER doit disparaître, il fait doublon avec le bouton RELANCER dans la
+  // fenêtre") : rewardModal/launchModal ne font pas partie de .sub-view/.view ci-dessus, donc leur
+  // ouverture/fermeture (classe "show") n'était jamais vue par cet observateur -- le bouton flottant
+  // restait affiché derrière, en double de celui de la fenêtre. On les observe aussi ici.
+  ['rewardModal', 'launchModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) obs.observe(el, { attributes:true, attributeFilter:['class'] });
+  });
 })();
 
 // =================== MISSIONS SIMULTANÉES ===================
@@ -17185,7 +17319,12 @@ function updateOrdCollectBtn(){
   if(!btn) return;
   const n = Object.keys(MISSIONS).filter(m => missionState(m).missionDone).length;
   const onOrders = document.getElementById('ordersView').classList.contains('active');
-  btn.classList.toggle('show', onOrders && n > 1);
+  // V0.02.99, demande d'Alex : masqué tant que la fenêtre de récompenses (bouton RELANCER) ou la
+  // fenêtre de choix d'escouade (bouton LANCER) ouverte par collectAndRelaunchAll() est affichée --
+  // sinon ce bouton flottant reste visible derrière et fait doublon avec celui de la fenêtre.
+  const rm = document.getElementById('rewardModal'), lm = document.getElementById('launchModal');
+  const modalOpen = (rm && rm.classList.contains('show')) || (lm && lm.classList.contains('show'));
+  btn.classList.toggle('show', onOrders && n > 1 && !modalOpen);
 }
 // Collecte le butin de toutes les missions terminées, puis affiche un récapitulatif des récompenses
 // gagnées (même fenêtre que pour les trophées/tâches) avec un bouton RELANCER : c'est seulement à ce
