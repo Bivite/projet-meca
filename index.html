@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.02.96</title>
+<title>Projet MECA V0.02.97</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6172,7 +6172,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.96</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.02.97</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6516,9 +6516,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.02.96';
+var BUILD_VERSION = 'V0.02.97';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.02.97', items:[
+    'MISSIONS : "RÉCOLTER ET RELANCER" propose maintenant de choisir l\'escouade de chaque mission avant de la relancer (au lieu de reprendre automatiquement l\'ancienne composition).',
+    'CORRECTIF : le bouton "COLLECTER & STOPPER LA MISSION" pouvait rester affiché à tort après l\'arrêt forcé d\'une mission (upgrade d\'une carte engagée dans cette mission).'
+  ]},
   { v:'V0.02.96', items:[
     'TECHNIQUE : toutes les images du jeu sont désormais hébergées en ligne au lieu d\'être intégrées dans le fichier -- le jeu est beaucoup plus léger (environ 13 fois plus petit), sans aucun changement visuel ni de gameplay.'
   ]},
@@ -8229,6 +8233,10 @@ function rewardWave(w){
 }
 // Signature des valeurs affichées : évite de réécrire le DOM (innerHTML) à chaque tick de combat
 // (jusqu'à 1x/tour, càd plusieurs fois par seconde en vitesse x2) quand rien n'a réellement changé.
+// V0.02.97 : activeMission ajouté à la signature par robustesse (empêche en théorie une mission A et
+// une mission B dont l'état serait coïncidemment identique de partager le même cache) -- vérifié que ça
+// ne change aucun comportement visible : le vrai correctif du bouton qui reste figé est dans
+// abortBattle() (cf son commentaire), pas ici.
 var _lootSig = null;
 function renderLoot(){
   if(HEADLESS || BG_SWAP) return;
@@ -8236,7 +8244,7 @@ function renderLoot(){
   if(btn){
     const empty = lootEmpty();
     const mats = MAT_ORDER.reduce((a, r) => a + (runLoot.mat[r] || 0), 0);
-    const sig = empty + '|' + runLoot.gold + '|' + runLoot.xp + '|' + mats + '|' + runLoot.crystal + '|' + runLoot.cardReward + '|' + runLoot.moduleReward + '|' + battleStarted + '|' + missionDone;
+    const sig = activeMission + '|' + empty + '|' + runLoot.gold + '|' + runLoot.xp + '|' + mats + '|' + runLoot.crystal + '|' + runLoot.cardReward + '|' + runLoot.moduleReward + '|' + battleStarted + '|' + missionDone;
     if(sig !== _lootSig){
       _lootSig = sig;
       btn.disabled = empty;
@@ -13445,6 +13453,15 @@ function abortBattle(){
   document.getElementById('overlay').classList.remove('show');
   if(typeof updateInfRecord === 'function') updateInfRecord();
   if(typeof renderInfState === 'function') renderInfState();
+  // V0.02.97, correctif bug signalé par Alex ("le bouton collecter et stopper la mission n'apparaît pas
+  // des fois") : abortBattle() change battleStarted (donc change aussi ce que le bouton COLLECTER &
+  // STOPPER LA MISSION devrait afficher -- il n'a plus lieu d'être, le combat est interrompu) sans
+  // jamais appeler renderLoot(). Cas concret où ça arrive : upgrader/fusionner une carte engagée dans
+  // LA mission actuellement affichée (cf stopMissionsUsingKey()) -- le panneau "PRÊT POUR LA MISSION"
+  // réapparaît bien (renderInfState() ci-dessus), mais le bouton flottant restait figé sur son dernier
+  // état affiché (visible, avec l'ancien butin) jusqu'à la prochaine action qui, par coïncidence,
+  // déclenchait un renderLoot() -- d'où l'incohérence vue "parfois", sur n'importe quelle mission.
+  if(typeof renderLoot === 'function') renderLoot();
   if(typeof saveNow === 'function') saveNow();
 }
 
@@ -17019,6 +17036,13 @@ function withMission(mode, fn){
     BG_SWAP = false;
     loadFields(prev);
     if(battleStarted) ensureBattleLoop();
+    // V0.02.97 : filet de sécurité -- si fn() a changé l'état de la mission d'arrière-plan d'une façon
+    // qui aurait dû faire bouger le bouton COLLECTER & STOPPER LA MISSION, renderLoot() n'a pas pu le
+    // voir pendant BG_SWAP (il bloque volontairement tout rendu pendant qu'une AUTRE mission est
+    // chargée en mémoire). Une fois `prev` restaurée ci-dessus, on revérifie explicitement : sans ça,
+    // le bouton pourrait rester figé sur un état obsolète jusqu'à la prochaine action qui, par
+    // coïncidence, redéclencherait un renderLoot(). Sans effet si rien n'a changé (cache _lootSig).
+    renderLoot();
   }
 }
 function missionState(mode){
@@ -17155,23 +17179,27 @@ function collectAndRelaunchAll(){
   showRewardModal(title, mergeRewardItems(allItems), { actionLabel:'RELANCER', onAction: relaunchCollectedMissions });
 }
 // Relance chaque mission mise de côté par collectAndRelaunchAll() (bouton RELANCER de la fenêtre de
-// récompenses) : revérifiée au moment du clic, pas au moment de la collecte, pour tenir compte d'un
-// éventuel changement de collection entre les deux (carte détruite/fusionnée/engagée ailleurs).
+// récompenses). V0.02.97, correctif bug signalé par Alex ("les escouades ne sont pas enregistrées, je me
+// retrouve avec une ancienne composition") : auparavant, cette fonction reprenait en silence la DERNIÈRE
+// escouade utilisée par chaque mission (figée dans MSTATE[mode].squad), sans jamais demander -- donc
+// aucune mise à jour de la Death Squad n'était jamais prise en compte ici. Désormais (choix d'Alex,
+// cf discussion), la fenêtre de choix d'escouade s'ouvre pour CHAQUE mission collectée, une par une
+// (file d'attente `relaunchQueue`), préremplie avec la dernière escouade connue de cette mission comme
+// avant -- mais le joueur peut la changer avant de confirmer. S'il ferme la fenêtre sans lancer, cette
+// mission reste simplement non relancée (butin déjà collecté, relançable plus tard comme n'importe
+// quelle mission terminée) et on passe à la mission suivante de la file.
+var relaunchQueue = [];
 function relaunchCollectedMissions(){
   const targets = pendingMissionRelaunch; pendingMissionRelaunch = [];
-  let relaunched = 0;
-  targets.forEach(mode => withMission(mode, () => {
-    // Écarte les cartes de l'escouade qui ne sont plus disponibles (détruites, fusionnées, engagées ailleurs)
-    const busy = busyKeys(mode);
-    curSquad = curSquad.map(k => (k && !busy[k] && sqEntry(k) && stackCount(sqEntry(k).def.name, sqEntry(k).rar) > 0) ? k : null);
-    if(curSquad.some(Boolean)){ startMission(); relaunched++; }
-  }));
-  updateMissionTiles();
-  renderLoot();
-  saveNow();
-  showToast(relaunched
-    ? relaunched + ' MISSION' + (relaunched > 1 ? 'S' : '') + ' RELANCÉE' + (relaunched > 1 ? 'S' : '')
-    : 'AUCUNE MISSION RELANCÉE (ESCOUADE INDISPONIBLE)');
+  if(!targets.length) return;
+  relaunchQueue = targets.slice();
+  processNextRelaunch();
+}
+function processNextRelaunch(){
+  const mode = relaunchQueue.shift();
+  if(mode === undefined){ updateMissionTiles(); renderLoot(); saveNow(); return; }
+  switchActive(mode);
+  openLaunchPicker(curSquad.some(Boolean) ? curSquad : squad, processNextRelaunch);
 }
 document.getElementById('ordCollectBtn').onclick = collectAndRelaunchAll;
 
@@ -17187,6 +17215,15 @@ function openLaunchPicker(prefill, after){
   document.getElementById('launchModal').classList.add('show');
 }
 function closeLaunchPicker(){ document.getElementById('launchModal').classList.remove('show'); }
+// Fermeture SANS lancer (croix / clic hors fenêtre) : contrairement à closeLaunchPicker() ci-dessus
+// (utilisée aussi par le chemin "LANCER", juste après avoir fixé curSquad -- y déclencher `after` ferait
+// passer à la mission suivante de relaunchQueue AVANT même startMission(), cf processNextRelaunch())
+// -- celle-ci fait avancer la file d'attente de relanceCollectedMissions() le cas échéant : la mission
+// qu'on vient de fermer reste simplement non relancée, et on passe à la suivante.
+function cancelLaunchPicker(){
+  closeLaunchPicker();
+  if(launchAfter){ const cb = launchAfter; launchAfter = null; cb(); }
+}
 function pickAdd(key){
   if(launchPick.includes(key)){ launchPick[launchPick.indexOf(key)] = null; renderLaunchPicker(); return; }
   const free = launchPick.indexOf(null);
@@ -17238,7 +17275,7 @@ function renderLaunchPicker(){
     <div class="lp-list">${list}</div>
     <div class="controls" style="width:100%;"><button class="primary-btn" id="lpLaunchGo" ${launchPick.some(Boolean) ? '' : 'disabled'}>LANCER ${missionCfg().name}</button></div>`;
   const newList = inner.querySelector('.lp-list'); if(newList) newList.scrollTop = keepList; inner.scrollTop = keepInner;
-  document.getElementById('lpClose').onclick = closeLaunchPicker;
+  document.getElementById('lpClose').onclick = cancelLaunchPicker;
   document.getElementById('lpDeath').onclick = pickFillDeath;
   document.getElementById('lpAuto').onclick = pickFillAuto;
   inner.querySelectorAll('.lp-slot').forEach(el => el.onclick = () => { const i = +el.dataset.i; if(launchPick[i]){ launchPick[i] = null; renderLaunchPicker(); } });
@@ -17258,9 +17295,13 @@ function renderLaunchPicker(){
     renderLoot();
     updateMissionTiles();
     showToast(missionCfg().name + ' LANCÉE');
+    // File d'attente de relaunchCollectedMissions() (V0.02.97) : passe à la mission suivante APRÈS
+    // avoir lancé celle-ci (jamais avant -- closeLaunchPicker() ci-dessus ne déclenche pas `after`,
+    // contrairement à l'annulation via cancelLaunchPicker(), précisément pour ça).
+    if(launchAfter){ const cb = launchAfter; launchAfter = null; cb(); }
   };
 }
-document.getElementById('launchModal').addEventListener('click', e => { if(e.target.id === 'launchModal') closeLaunchPicker(); });
+document.getElementById('launchModal').addEventListener('click', e => { if(e.target.id === 'launchModal') cancelLaunchPicker(); });
 
 // ----- Fenêtre Options -----
 function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(_){} applySettings(); saveSoon(); }
