@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.07</title>
+<title>Projet MECA V0.03.08</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -364,25 +364,29 @@
   .unit.cbt .cbt-name{ position:absolute; left:50%; top:66%; transform:translate(-50%,0); max-width:74%; font-family:var(--font-ui); font-size:8cqw; font-weight:700; letter-spacing:.2px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; text-shadow:0 1px 2px #000,0 0 3px #000,0 0 5px #000; pointer-events:none; }
   /* jauges circulaires à remplissage vertical : PV (droite) descend, ulti (gauche) monte */
   .unit.cbt .cbt-g{ position:absolute; transform:translate(-50%,-50%); width:var(--gd); aspect-ratio:1; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.05), rgba(0,0,0,.62)); box-shadow:0 0 0 1px rgba(0,0,0,.55), inset 0 0 5px rgba(0,0,0,.78); }
-  /* V0.03.05 (transform:scaleY) puis V0.03.06 (clip-path:inset) : deux tentatives, Alex a confirmé
-     que le bug persiste À L'IDENTIQUE sur tous les écrans de combat des missions dans les deux cas --
-     toujours vide. Les deux reposaient sur une case dont la TAILLE ou la ZONE PEINTE dépend d'un calcul
-     (calc(var(--p))*1%, scaleY(calc(...)), clip-path:inset(calc(...))) évalué à l'intérieur d'un
-     `.unit.cbt` avec container-type:inline-size -- comme ça échoue de façon identique quelle que soit
-     la mécanique CSS utilisée, le point commun suspect est ce calcul lui-même (var()/calc() dans ce
-     contexte), pas la propriété animée. V0.03.07 : on élimine complètement ce calcul CSS. La case
-     `i` garde DÉSORMAIS TOUJOURS sa taille pleine (ancrée aux 4 coins en dur, sans % ni calc : voir
-     règle juste en dessous) -- plus aucune dépendance à une résolution de taille. Le niveau de
-     remplissage n'est plus piloté par la taille/la zone peinte de la case mais par son `background`,
-     calculé et posé directement en JS (voir setCbtGaugeFill() et son appel dans renderRoster()) sous
-     forme d'un dégradé à arrêt net (couleur jusqu'à --p%, transparent au-dessus) -- aucune variable
-     CSS, aucun calc(), aucun transform, aucun clip-path, aucune containment : juste un background-image
-     ordinaire, le mécanisme CSS le plus basique et le plus universellement fiable qui soit. Les petites
-     cartes hors combat (escouade, pentagone, tutoriel) n'ont jamais besoin que du dégradé plein -- elles
-     gardent donc simplement les 2 règles .cbt-hp>i/.cbt-ult>i ci-dessous telles quelles, sans aucun JS. */
+  /* V0.03.05/06/07 : trois tentatives (transform:scaleY, clip-path:inset, puis un simple
+     background-image en dégradé CSS posé en JS), Alex a confirmé à chaque fois que le bug persiste
+     À L'IDENTIQUE. Diagnostic en direct le 04/10 (prise de contrôle du PC d'Alex, vrai Chrome/Windows,
+     via les outils navigateur) : la case `i` a bien le BON `background-image` calculé (confirmé par
+     getComputedStyle -- dégradé correct, bonne taille, bon élément au premier plan, aucun recouvrement)
+     mais ce dégradé n'est PEINT À L'ÉCRAN que pour certaines cases (confirmé pixel par pixel) -- un vrai
+     bug de PEINTURE du moteur sur CE PC (GPU/pilote), pas un bug de calcul CSS : le cascade/containment
+     (var(), calc(), container-type:inline-size) a été écarté par le test (désactivé en direct sans
+     effet). En revanche, un remplissage posé en JS avec une COULEUR UNIE (sans dégradé) se peint
+     correctement sur ce même PC -- le dégradé `background-image` semble être le déclencheur spécifique
+     dans ce contexte (case circulaire avec overflow:hidden + transform, dégradé qui change via JS).
+     V0.03.08 : on arrête complètement de compter sur le `background` CSS pour la jauge dynamique et on
+     peint le remplissage directement en pixels avec un <canvas> (voir setCbtGaugeFill() + buildRoster()
+     dans le JS) -- un canvas est un bitmap explicite, pas un calque CSS composé : il n'y a plus de
+     `background-image` à peinturer du tout pour les jauges en combat, donc plus de prise pour ce bug
+     précis, quel qu'en soit le mécanisme exact côté moteur. Les petites cartes hors combat (escouade,
+     pentagone, tutoriel) n'ont jamais besoin que du dégradé plein -- elles gardent donc simplement les
+     2 règles .cbt-hp>i/.cbt-ult>i ci-dessous telles quelles (avec `i`, pas `canvas`), sans aucun JS. */
   .unit.cbt .cbt-g > i{ position:absolute; top:0; right:0; bottom:0; left:0; display:block; transition:background .3s ease; }
+  .unit.cbt .cbt-g > canvas{ position:absolute; inset:0; display:block; width:100%; height:100%; }
   .unit.cbt .cbt-hp{ left:var(--ux); top:var(--uy); --gd:var(--ud); }
   .unit.cbt .cbt-hp > i{ background:linear-gradient(180deg,#ff6060,#c81c1c); box-shadow:inset 0 2px 3px rgba(255,120,120,.5); }
+  .unit.cbt .cbt-hp > canvas{ box-shadow:inset 0 2px 3px rgba(255,120,120,.5); }
   .unit.cbt .cbt-ult{ left:var(--hx); top:var(--hy); --gd:var(--hd); }
   .unit.cbt .cbt-ult > i{ background:linear-gradient(180deg,#c2a038,#8a6a18); }
   .unit.cbt .cbt-ult.ready{ cursor:pointer; pointer-events:auto; box-shadow:0 0 0 1.4px #d8bd5c, inset 0 0 5px rgba(0,0,0,.6); }
@@ -6612,7 +6616,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.07</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.08</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6956,11 +6960,11 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.07';
+var BUILD_VERSION = 'V0.03.08';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
-  { v:'V0.03.07', items:[
-    'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains téléphones (notamment iPhone) -- elles restaient vides au lieu de suivre les PV/l\'énergie réels.'
+  { v:'V0.03.08', items:[
+    'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains PC/téléphones -- elles restaient vides au lieu de suivre les PV/l\'énergie réels. Le remplissage est maintenant dessiné en pixels (plus via une couleur de fond) pour éviter ce bug d\'affichage.'
   ]},
   { v:'V0.03.04', items:[
     'BOSS DE RAID : la case du MENU reste fermée (non cliquable) tant que l\'évènement n\'est pas ouvert -- elle ne s\'ouvrait auparavant qu\'en dehors de la fenêtre de 5 jours, ce qui n\'avait pas de sens.',
@@ -10545,20 +10549,37 @@ var ROSTER_DOM = {};
 function rosterSig(team, isPlayer){
   return (isPlayer ? 'P' : 'E') + team.map(u => u.name + '~' + (u.rarity || '') + '~' + u.level + '~' + u.color + '~' + u.shape + '~' + (u.category || '')).join(';');
 }
-// V0.03.07 : remplissage des jauges PV/ulti peint directement en JS (voir note CSS plus haut sur
-// .unit.cbt .cbt-g > i) -- dégradé à arrêt net, couleur jusqu'à pct%, transparent au-dessus. `i` est
-// mis en cache sur l'élément .cbt-g (évite un querySelector à chaque frame de combat).
+// V0.03.08 : remplissage des jauges PV/ulti peint en PIXELS dans un <canvas> (voir note CSS plus
+// haut sur .unit.cbt .cbt-g > canvas) -- un dégradé CSS (`background-image`) posé en JS s'est avéré
+// ne pas se peindre à l'écran sur certains PC malgré un getComputedStyle correct (bug de rendu
+// confirmé en direct sur le PC d'Alex) ; un canvas est un bitmap explicite écrit via ctx.fillRect,
+// il n'y a plus de `background-image` du tout à peinturer pour la jauge dynamique. `canvas` est mis
+// en cache sur l'élément .cbt-g (évite un querySelector à chaque frame de combat). La résolution
+// interne du canvas suit la taille réellement affichée (× devicePixelRatio) pour rester nette, et
+// n'est retouchée que si elle a changé (évite de vider le canvas pour rien à chaque appel).
 function setCbtGaugeFill(gEl, pct){
   if(!gEl) return;
-  let i = gEl.__fillEl;
-  if(i === undefined){ i = gEl.querySelector('i'); gEl.__fillEl = i || null; }
-  if(!i) return;
+  let cv = gEl.__fillEl;
+  if(cv === undefined){ cv = gEl.querySelector('canvas'); gEl.__fillEl = cv || null; }
+  if(!cv) return;
   const p = Math.max(0, Math.min(100, pct));
-  if(p <= 0){ i.style.background = 'transparent'; return; }
+  const dpr = window.devicePixelRatio || 1;
+  const rect = gEl.getBoundingClientRect();
+  const w = Math.max(1, Math.round(rect.width * dpr));
+  const h = Math.max(1, Math.round(rect.height * dpr));
+  if(cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  if(p <= 0) return;
   const isUlt = gEl.classList.contains('cbt-ult');
   const top = isUlt ? '#c2a038' : '#ff6060';
   const bot = isUlt ? '#8a6a18' : '#c81c1c';
-  i.style.background = p >= 100 ? '' /* repli sur le dégradé plein défini en CSS */ : `linear-gradient(0deg, ${bot} 0%, ${top} ${p}%, transparent ${p}%)`;
+  const fillH = Math.max(1, Math.round(h * (p / 100)));
+  const grad = ctx.createLinearGradient(0, h - fillH, 0, h);
+  grad.addColorStop(0, top);
+  grad.addColorStop(1, bot);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, h - fillH, w, fillH);
 }
 // Cadre de combat circulaire (une rareté par cadre) : anneau + mech au centre,
 // gemme = niveau, jauge PV rouge (gauche) qui se vide, jauge ulti jaune (droite) qui se remplit.
@@ -10583,8 +10604,8 @@ function buildRoster(el, team, isPlayer, elId){
       <div class="cbt-ring"></div>
       <img class="cbt-art-img" src="${uArt || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
       <div class="cbt-gem"><b>${u.level}</b></div>
-      <div class="cbt-g cbt-hp"><i></i></div>
-      <div class="cbt-g cbt-ult"${isPlayer ? ` title="${escapeHtml((u.ultName || '') + (u.ultDesc ? ' — ' + u.ultDesc : ''))}"` : ''}><i></i></div>
+      <div class="cbt-g cbt-hp"><canvas></canvas></div>
+      <div class="cbt-g cbt-ult"${isPlayer ? ` title="${escapeHtml((u.ultName || '') + (u.ultDesc ? ' — ' + u.ultDesc : ''))}"` : ''}><canvas></canvas></div>
       ${isPlayer ? '<div class="respawn-tag" style="display:none;">RETOUR<b>0 s</b></div>' : ''}
     `;
     div.onclick = (e) => {
