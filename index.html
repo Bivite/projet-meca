@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.04</title>
+<title>Projet MECA V0.03.05</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -364,7 +364,14 @@
   .unit.cbt .cbt-name{ position:absolute; left:50%; top:66%; transform:translate(-50%,0); max-width:74%; font-family:var(--font-ui); font-size:8cqw; font-weight:700; letter-spacing:.2px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; text-shadow:0 1px 2px #000,0 0 3px #000,0 0 5px #000; pointer-events:none; }
   /* jauges circulaires à remplissage vertical : PV (droite) descend, ulti (gauche) monte */
   .unit.cbt .cbt-g{ position:absolute; transform:translate(-50%,-50%); width:var(--gd); aspect-ratio:1; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.05), rgba(0,0,0,.62)); box-shadow:0 0 0 1px rgba(0,0,0,.55), inset 0 0 5px rgba(0,0,0,.78); }
-  .unit.cbt .cbt-g > i{ position:absolute; left:0; right:0; bottom:0; height:calc(var(--p,100)*1%); display:block; transition:height .3s ease; }
+  /* V0.03.05, bug remonté par Alex : avec height:calc(var(--p,100)*1%), le remplissage ne s'affichait
+     plus du tout en prod (toujours bloqué à la même hauteur quelle que soit --p) -- `.unit.cbt` a un
+     container-type:inline-size (pour ses cqw internes, voir plus bas) qui casse la résolution des
+     hauteurs en pourcentage/calc() sur ses descendants dans certains moteurs (confirmé en conditions
+     réelles : le navigateur intégré ET, d'après la capture d'Alex, Safari iOS). transform:scaleY() ne
+     dépend pas de cette résolution de hauteur et n'est donc pas affecté -- mêmes réglages visuels
+     (translate(-50%,-50%) du parent inchangé, scaleY indépendant sur l'enfant). */
+  .unit.cbt .cbt-g > i{ position:absolute; inset:0; transform-origin:bottom; transform:scaleY(calc(var(--p,100)/100)); display:block; transition:transform .3s ease; }
   .unit.cbt .cbt-hp{ left:var(--ux); top:var(--uy); --gd:var(--ud); }
   .unit.cbt .cbt-hp > i{ background:linear-gradient(180deg,#ff6060,#c81c1c); box-shadow:inset 0 2px 3px rgba(255,120,120,.5); }
   .unit.cbt .cbt-ult{ left:var(--hx); top:var(--hy); --gd:var(--hd); }
@@ -6596,7 +6603,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.04</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.05</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6940,9 +6947,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.04';
+var BUILD_VERSION = 'V0.03.05';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.05', items:[
+    'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains téléphones (notamment iPhone) -- elles restaient bloquées au lieu de suivre les PV/l\'énergie réels. Corrigé.'
+  ]},
   { v:'V0.03.04', items:[
     'BOSS DE RAID : la case du MENU reste fermée (non cliquable) tant que l\'évènement n\'est pas ouvert -- elle ne s\'ouvrait auparavant qu\'en dehors de la fenêtre de 5 jours, ce qui n\'avait pas de sens.',
     'BOSS DE RAID : la barre de vie du boss sur la case ne s\'affiche plus que lorsque l\'évènement est disponible et que tu peux attaquer (plus de barre vide hors combat).',
