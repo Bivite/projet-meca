@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.05</title>
+<title>Projet MECA V0.03.07</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -364,14 +364,23 @@
   .unit.cbt .cbt-name{ position:absolute; left:50%; top:66%; transform:translate(-50%,0); max-width:74%; font-family:var(--font-ui); font-size:8cqw; font-weight:700; letter-spacing:.2px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; text-shadow:0 1px 2px #000,0 0 3px #000,0 0 5px #000; pointer-events:none; }
   /* jauges circulaires à remplissage vertical : PV (droite) descend, ulti (gauche) monte */
   .unit.cbt .cbt-g{ position:absolute; transform:translate(-50%,-50%); width:var(--gd); aspect-ratio:1; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.05), rgba(0,0,0,.62)); box-shadow:0 0 0 1px rgba(0,0,0,.55), inset 0 0 5px rgba(0,0,0,.78); }
-  /* V0.03.05, bug remonté par Alex : avec height:calc(var(--p,100)*1%), le remplissage ne s'affichait
-     plus du tout en prod (toujours bloqué à la même hauteur quelle que soit --p) -- `.unit.cbt` a un
-     container-type:inline-size (pour ses cqw internes, voir plus bas) qui casse la résolution des
-     hauteurs en pourcentage/calc() sur ses descendants dans certains moteurs (confirmé en conditions
-     réelles : le navigateur intégré ET, d'après la capture d'Alex, Safari iOS). transform:scaleY() ne
-     dépend pas de cette résolution de hauteur et n'est donc pas affecté -- mêmes réglages visuels
-     (translate(-50%,-50%) du parent inchangé, scaleY indépendant sur l'enfant). */
-  .unit.cbt .cbt-g > i{ position:absolute; inset:0; transform-origin:bottom; transform:scaleY(calc(var(--p,100)/100)); display:block; transition:transform .3s ease; }
+  /* V0.03.05 (transform:scaleY) puis V0.03.06 (clip-path:inset) : deux tentatives, Alex a confirmé
+     que le bug persiste À L'IDENTIQUE sur tous les écrans de combat des missions dans les deux cas --
+     toujours vide. Les deux reposaient sur une case dont la TAILLE ou la ZONE PEINTE dépend d'un calcul
+     (calc(var(--p))*1%, scaleY(calc(...)), clip-path:inset(calc(...))) évalué à l'intérieur d'un
+     `.unit.cbt` avec container-type:inline-size -- comme ça échoue de façon identique quelle que soit
+     la mécanique CSS utilisée, le point commun suspect est ce calcul lui-même (var()/calc() dans ce
+     contexte), pas la propriété animée. V0.03.07 : on élimine complètement ce calcul CSS. La case
+     `i` garde DÉSORMAIS TOUJOURS sa taille pleine (ancrée aux 4 coins en dur, sans % ni calc : voir
+     règle juste en dessous) -- plus aucune dépendance à une résolution de taille. Le niveau de
+     remplissage n'est plus piloté par la taille/la zone peinte de la case mais par son `background`,
+     calculé et posé directement en JS (voir setCbtGaugeFill() et son appel dans renderRoster()) sous
+     forme d'un dégradé à arrêt net (couleur jusqu'à --p%, transparent au-dessus) -- aucune variable
+     CSS, aucun calc(), aucun transform, aucun clip-path, aucune containment : juste un background-image
+     ordinaire, le mécanisme CSS le plus basique et le plus universellement fiable qui soit. Les petites
+     cartes hors combat (escouade, pentagone, tutoriel) n'ont jamais besoin que du dégradé plein -- elles
+     gardent donc simplement les 2 règles .cbt-hp>i/.cbt-ult>i ci-dessous telles quelles, sans aucun JS. */
+  .unit.cbt .cbt-g > i{ position:absolute; top:0; right:0; bottom:0; left:0; display:block; transition:background .3s ease; }
   .unit.cbt .cbt-hp{ left:var(--ux); top:var(--uy); --gd:var(--ud); }
   .unit.cbt .cbt-hp > i{ background:linear-gradient(180deg,#ff6060,#c81c1c); box-shadow:inset 0 2px 3px rgba(255,120,120,.5); }
   .unit.cbt .cbt-ult{ left:var(--hx); top:var(--hy); --gd:var(--hd); }
@@ -6603,7 +6612,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.05</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.07</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6947,11 +6956,11 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.05';
+var BUILD_VERSION = 'V0.03.07';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
-  { v:'V0.03.05', items:[
-    'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains téléphones (notamment iPhone) -- elles restaient bloquées au lieu de suivre les PV/l\'énergie réels. Corrigé.'
+  { v:'V0.03.07', items:[
+    'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains téléphones (notamment iPhone) -- elles restaient vides au lieu de suivre les PV/l\'énergie réels.'
   ]},
   { v:'V0.03.04', items:[
     'BOSS DE RAID : la case du MENU reste fermée (non cliquable) tant que l\'évènement n\'est pas ouvert -- elle ne s\'ouvrait auparavant qu\'en dehors de la fenêtre de 5 jours, ce qui n\'avait pas de sens.',
@@ -10536,6 +10545,21 @@ var ROSTER_DOM = {};
 function rosterSig(team, isPlayer){
   return (isPlayer ? 'P' : 'E') + team.map(u => u.name + '~' + (u.rarity || '') + '~' + u.level + '~' + u.color + '~' + u.shape + '~' + (u.category || '')).join(';');
 }
+// V0.03.07 : remplissage des jauges PV/ulti peint directement en JS (voir note CSS plus haut sur
+// .unit.cbt .cbt-g > i) -- dégradé à arrêt net, couleur jusqu'à pct%, transparent au-dessus. `i` est
+// mis en cache sur l'élément .cbt-g (évite un querySelector à chaque frame de combat).
+function setCbtGaugeFill(gEl, pct){
+  if(!gEl) return;
+  let i = gEl.__fillEl;
+  if(i === undefined){ i = gEl.querySelector('i'); gEl.__fillEl = i || null; }
+  if(!i) return;
+  const p = Math.max(0, Math.min(100, pct));
+  if(p <= 0){ i.style.background = 'transparent'; return; }
+  const isUlt = gEl.classList.contains('cbt-ult');
+  const top = isUlt ? '#c2a038' : '#ff6060';
+  const bot = isUlt ? '#8a6a18' : '#c81c1c';
+  i.style.background = p >= 100 ? '' /* repli sur le dégradé plein défini en CSS */ : `linear-gradient(0deg, ${bot} 0%, ${top} ${p}%, transparent ${p}%)`;
+}
 // Cadre de combat circulaire (une rareté par cadre) : anneau + mech au centre,
 // gemme = niveau, jauge PV rouge (gauche) qui se vide, jauge ulti jaune (droite) qui se remplit.
 function cbtFrameClass(u, isPlayer){
@@ -10600,8 +10624,8 @@ function renderRoster(elId, team, isPlayer){
     const L = n.last;
     const hpPct = Math.round(Math.max(0, u.hp / u.maxHp * 100) * 10) / 10;
     const nrgPct = Math.round(Math.min(100, u.energy));
-    if(L.hp !== hpPct){ L.hp = hpPct; n.hp.style.setProperty('--p', hpPct); }
-    if(L.nrg !== nrgPct){ L.nrg = nrgPct; if(n.ult) n.ult.style.setProperty('--p', nrgPct); }
+    if(L.hp !== hpPct){ L.hp = hpPct; setCbtGaugeFill(n.hp, hpPct); }
+    if(L.nrg !== nrgPct){ L.nrg = nrgPct; if(n.ult) setCbtGaugeFill(n.ult, nrgPct); }
     if(n.gem && L.lvl !== u.level){ L.lvl = u.level; n.gem.textContent = u.level; }
     const dead = !u.alive;
     if(L.dead !== dead){ L.dead = dead; n.root.classList.toggle('dead', dead); }
