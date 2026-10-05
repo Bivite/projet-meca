@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.21</title>
+<title>Projet MECA V0.03.22</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6769,7 +6769,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.21</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.22</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7112,9 +7112,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.21';
+var BUILD_VERSION = 'V0.03.22';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.22', items:[
+    'NOUVELLE CARTE : BEAST remplace PYLON -- carte RARE, Tank colosse blindé très résistant en DÉF, nouvel ultime "ÉTREINTE D\'ACIER" (broie sa cible puis se recouvre de plaques blindées).'
+  ]},
   { v:'V0.03.21', items:[
     'MINI-JEU DE BULLES : si une ou plusieurs colonnes sont entièrement grisées (plus aucune carte vivante de cette statistique), le joueur peut maintenant sauter la ou les colonnes manquantes et terminer sa ligne quand même, avec moins de bulles.',
     'MINI-JEU DE BULLES : en mode manuel, l\'état grisé/disponible des bulles ne change plus en cours de tracé -- il ne se met à jour qu\'une fois la ligne en cours terminée, pour ne jamais faire bouger les bulles sous le doigt du joueur.'
@@ -8252,7 +8255,7 @@ const MECH_CONFIGS = {
   'MOG-AI':  { head:'vfin',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'wings',    arms:'std',   weapon:'blade',   emblem:'none' },
   GRAVITON:  { head:'small',   shoulders:'big',   torso:'core',  legs:'heavy',    back:'none',     arms:'thick', weapon:'none',    emblem:'none' },
   'STAR-HUNTER': { head:'visor',   shoulders:'block', torso:'box',   legs:'standard', back:'none',     arms:'std',   weapon:'rifle',   emblem:'star' },
-  PYLON:     { head:'helm',    shoulders:'block', torso:'heavy', legs:'heavy',    back:'none',     arms:'thick', weapon:'shield',  weaponSide:'L', emblem:'stripes' },
+  BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   'GAPIX':  { head:'crest',   shoulders:'slim',  torso:'vcut',  legs:'reverse',  back:'boosters', arms:'std',   weapon:'pistol',  emblem:'chevron' },
   ARKHAUL:   { head:'hood',    shoulders:'round', torso:'box',   legs:'standard', back:'halo',     arms:'std',   weapon:'staff',   emblem:'none' },
   'EXO-MKX': { head:'small',   shoulders:'big',   torso:'heavy', legs:'heavy',    back:'cannons',  arms:'thick', weapon:'cannon',  emblem:'star' },
@@ -8294,7 +8297,7 @@ const CHAR_LORE = {
   'MED-07':   { pilot:'Lt. Maria Delgado', text:"Mech de soutien médical de l'unité « Blue Cross » des Marines, indicatif MED-EVAC 07. Ses réservoirs dorsaux transportent un nanogel réparateur. Delgado n'a jamais laissé un équipier derrière elle." },
   'MOG-AI':  { pilot:'Cpt. Ava Sinclair', text:"Prototype d'intercepteur du programme secret « Oracle ». Ses ailes à poussée vectorielle lui permettent de frapper plusieurs cibles avant même d'apparaître sur leurs radars." },
   GRAVITON:  { pilot:'Sgt-chef Marcus « Anchor » Reed', text:"Mech de défense lourd construit autour d'un cœur gravitique expérimental. Ancien joueur de football américain, Reed tient la ligne comme sur le terrain : personne ne passe." },
-  PYLON:     { pilot:'Lt. Rosa « Wall » Martinez', text:"Mech bouclier de la Garde nationale, conçu pour escorter les convois civils. Son bouclier-tour a encaissé à lui seul le bombardement de Denver." },
+  BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   ARKHAUL:   { pilot:'Cmdt. Dariusz Kessler', text:"Commandant du blindé volant T-99, Kessler ne recule jamais : son vaisseau encaisse les tirs ennemis pendant que ses quatre tourelles pilonnent le champ de bataille et que ses rampes larguent du renfort en pleine tempête." },
   'EXO-MKX':  { pilot:'Col. Frank « Big Frank » Kowalski', text:"Dixième variante du programme d'exosquelettes lourds EXO, blindée pour encaisser les assauts les plus violents. Ses lance-roquettes jumelés pilonnent plusieurs cibles à la fois. Kowalski n'a jamais reculé d'un mètre à son bord." },
   'BRI-KB-ROCK':{ pilot:'Lt. Grace Holloway', text:"Officière de transmissions de la Navy. Sa parabole relaie les ordres et synchronise l'escouade, accélérant chaque unité alliée." },
@@ -8358,9 +8361,9 @@ const CHAR_DEFS = [
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/star-hunter-art.webp' },
 
   // ---- Cartes à récupérer dans la Fabrique ----
-  { name:"PYLON", rarity:"epique", color:"#ff4f81", shape:"PYLON", role:"Tank — bouclier avancé",
-    ultName:"BARRIÈRE ÉCARLATE", ultMult:1.6, ultDesc:"Absorbe les dégâts et riposte",
-    base:{atk:16, def:31, hp:530, vit:37}, max:{atk:117, def:329, hp:3020, vit:350}, owned:false, seen:false },
+  { name:"BEAST", rarity:"rare", color:"#c97a3f", shape:"BEAST", role:"Tank — colosse blindé",
+    ultName:"ÉTREINTE D'ACIER", ultMult:1.6, ultDesc:"Broie sa cible dans ses griffes blindées puis se recouvre de plaques renforcées (bouclier)",
+    base:{atk:12, def:32, hp:540, vit:26}, max:{atk:80, def:332, hp:2520, vit:190}, owned:false, seen:false },
   { name:"GAPIX", rarity:"rare", color:"#4aa8ff", shape:"GAPIX", role:"Attaquant — frappe rapide",
     ultName:"RAFALE SUPERSONIQUE", ultMult:1.6, ultDesc:"Largue une rafale de missiles sur toute l'escouade ennemie, puis active ses réacteurs pour esquiver totalement toute attaque pendant 3 secondes",
     base:{atk:30, def:9, hp:280, vit:140}, max:{atk:180, def:105, hp:1200, vit:990}, owned:false, seen:false,
@@ -10571,7 +10574,7 @@ const BBL_COLS = 6, BBL_ROWS = 3, BBL_TYPES = ['atq', 'vit', 'def', 'pv'];
 const BBL_TYPE_TO_CAT = { atq:'atk', vit:'vit', def:'def', pv:'hp' };
 const BBL_ATK_MULT = 1;        // force des frappes bonus ATQ/VIT (relatif à une attaque auto normale)
 const BBL_HEAL_PCT = 0.08;     // bulle PV : soin de la carte la plus forte en PV (8% de ses PV MAX)
-const BBL_SHIELD_TURNS = 2;    // bulle DEF : bouclier (-50% dégâts) sur la carte la plus forte en DEF, 2 tours -- réutilise le mécanisme u.shield déjà utilisé par plusieurs ultimes (PYLON, HARKO...)
+const BBL_SHIELD_TURNS = 2;    // bulle DEF : bouclier (-50% dégâts) sur la carte la plus forte en DEF, 2 tours -- réutilise le mécanisme u.shield déjà utilisé par plusieurs ultimes (BEAST, HARKO...)
 const BBL_CYCLE_TICKS = 3;     // cadence (en nombre de tours de combat) du cycle ennemi invisible + du cycle AUTO du joueur
 const BBL_HOLD_MS = 1000;      // durée pendant laquelle la ligne complète reste affichée avant d'exploser (demande d'Alex : "reste une seconde")
 const BBL_POP_MS = 350;        // durée de l'animation d'explosion des bulles de la ligne (doit correspondre à @keyframes bblPop en CSS)
@@ -11032,7 +11035,7 @@ const ULT_EFFECTS = {
   'MED-07':  (u, T) => healSquad(0.2),                                                 // soigne toute l'escouade
   GRAVITON:  (u, T) => { const t = hitOne(u, T, u.ultMult); t.stun = 1; },               // étourdit la cible (perd 1 action)
   'STAR-HUNTER': (u, T) => { hitStrongest(u, T, u.ultMult); },   // cible toujours le mécha ennemi le plus puissant
-  PYLON:     (u, T) => { hitOne(u, T, u.ultMult); u.shield = 2; },                       // bouclier : -50 % de dégâts pendant 2 tours
+  BEAST:     (u, T) => { hitOne(u, T, u.ultMult); u.shield = 2; },                       // broie une cible puis se recouvre de plaques blindées -- bouclier : -50 % de dégâts pendant 2 tours
   GAPIX:     (u, T) => { hitAll(u, T, u.ultMult * 0.3); u.deflectT = 3; },             // rafale de missiles sur toute l'escouade ennemie puis esquive totale (3s réelles)
   ARKHAUL:   (u, T) => { hitAll(u, T, u.ultMult * 0.3); selfHeal(u, 0.1); },             // bombardement de toute l'escouade ennemie puis auto-réparation de coque (10% de ses PV MAX)
   'EXO-MKX':  (u, T) => hitThree(u, T, u.ultMult * 0.55),                              // tire de barrage sur 3 ennemis à la fois
@@ -15360,7 +15363,7 @@ document.getElementById('squadBackBtn').onclick = showCodexHub;
 // Chaque personnage a un numéro fixe (les futurs personnages prendront les numéros suivants).
 const CARD_NUMBERS = {
   'CATER-PILLARD':1, 'STAR-HUNTER':2, 'GRAVITON':3, 'MED-07':4, 'BRI-KB-ROCK':5,
-  'PYLON':6, 'ARKHAUL':7, 'MOG-AI':8,
+  'BEAST':6, 'ARKHAUL':7, 'MOG-AI':8,
   'MORPHE':9, 'EXO-MKX':10, 'GAPIX':11
 };
 (function(){ let n = Math.max(0, ...Object.values(CARD_NUMBERS)); CHAR_DEFS.forEach(d => { if(!CARD_NUMBERS[d.name]) CARD_NUMBERS[d.name] = ++n; }); })();
