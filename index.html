@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.08</title>
+<title>Projet MECA V0.03.10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6616,7 +6616,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.08</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.10</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6960,9 +6960,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.08';
+var BUILD_VERSION = 'V0.03.10';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.10', items:[
+    'CORRECTIF : en TIRAGE, les 3 cartes proposées à l\'achat s\'affichaient parfois au niveau déjà atteint par le joueur sur cette carte, au lieu du niveau 1 réellement obtenu à l\'achat. Corrigé (LABO affichait déjà correctement le niveau 1).'
+  ]},
+  { v:'V0.03.09', items:[
+    'CORRECTIF : toucher la case de récompense journalière (ou d\'une tâche) ne faisait parfois rien, alors qu\'elle était prête -- il fallait parfois retoucher plusieurs fois. Corrigé.',
+    'OPTIMISATION : fluidité améliorée sur les écrans "récompense journalière" et "tâches" (la case qui suit le décor était recalculée inutilement à chaque image).'
+  ]},
   { v:'V0.03.08', items:[
     'CORRECTIF : en combat (missions), les jauges de PV et d\'énergie/ultime sur les cartes ne s\'affichaient plus correctement sur certains PC/téléphones -- elles restaient vides au lieu de suivre les PV/l\'énergie réels. Le remplissage est maintenant dessiné en pixels (plus via une couleur de fond) pour éviter ce bug d\'affichage.'
   ]},
@@ -12372,15 +12379,22 @@ function renderFabrique(){
       card.className = 'fab-card ' + rarCls(rar);
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(rar));
-      addPreviewPress(card, def, rar, { noClear:true });
+      // V0.03.10, demande d'Alex : les 3 cartes proposées en TIRAGE doivent toujours s'afficher au
+      // NIVEAU 1 (celui auquel la copie sera réellement ajoutée à la pile, cf acquireCard()), jamais au
+      // niveau actuel du meilleur exemplaire déjà possédé par le joueur -- sinon une carte déjà montée
+      // haut en niveau s'affichait ici avec ce niveau élevé, ce qui ne correspond pas à ce que l'achat
+      // donne réellement. Même principe que LABO (modCardFaceHtml(def, 1, rar) / openModuleModal(...,1,...)
+      // dans addModPreviewPress ci-dessous), qui le faisait déjà correctement -- seul TIRAGE avait l'oubli :
+      // niveau forcé à 1 ici (aperçu au clic long) et sur powerTag()/lgLayerHtml() juste en dessous.
+      addPreviewPress(card, def, rar, { noClear:true, level:1 });
       const copies = copiesOf(def);
       card.innerHTML = `
         <div class="cx-portrait ${catCls(def)}">${catEmblem(def)}${unitSVG(def.color, def.shape)}</div>
         <div class="cx-name" style="color:${def.color}">${def.name}</div>
         ${rarTag(rar)}
         <div class="cx-badge ${categoryOf(def)}">${categoryLabel(def)}</div>
-        ${powerTag(def, rar)}
-        ${isLgFrame(rar) ? lgLayerHtml(def, rar) : ''}
+        ${powerTag(def, rar, 1)}
+        ${isLgFrame(rar) ? lgLayerHtml(def, rar, false, 1) : ''}
       `;
     } else {
       card.className = 'fab-card fab-card-empty';
@@ -15060,19 +15074,32 @@ function sceneInput(view, cam, proj, getPath, linear){
     e.preventDefault();
     const P = getPath(); cam.s = Math.max(0, Math.min(P.L, cam.s + e.deltaY * .9)); cam.v = 0; cam.moved = true;
   }, { passive:false });
-  let lx = 0, ly = 0, lastT = 0, pid = null, dir = null;
+  let lx = 0, ly = 0, lastT = 0, pid = null, dir = null, captured = false;
   view.addEventListener('pointerdown', e => {
     pid = e.pointerId; lx = e.clientX; ly = e.clientY; lastT = performance.now(); cam.drag = true; cam.v = 0; cam.dragDist = 0; dir = dirAt();
-    // Sans setPointerCapture, relâcher le bouton hors du canvas ne déclenche pas pointerup (souris
-    // uniquement, le tactile capture déjà implicitement) : cam.drag restait bloqué à true et la boucle
-    // de rendu 60fps continuait de tourner pour rien.
-    try{ view.setPointerCapture(e.pointerId); }catch(_){}
+    captured = false;
+    // V0.03.09, correctif bug trouvé en test (session QA multi-jours) : la capture se posait auparavant ICI,
+    // dès le pointerdown, inconditionnellement -- mais capturer le pointeur avant tout mouvement retargete
+    // le click qui suit vers `view` (le conteneur de la scène) au lieu de l'élément réellement sous le doigt.
+    // Résultat concret : un simple tap sur une case de récompense (journalière OU tâches, les deux passent
+    // par sceneInput()) ne déclenchait JAMAIS le onclick de la case -- le bouton semblait ne rien faire.
+    // La capture est désormais posée plus bas, dans pointermove, seulement une fois un vrai glissement
+    // amorcé (cf commentaire d'origine conservé à cet endroit).
   });
   view.addEventListener('pointermove', e => {
     if(e.pointerId !== pid || !cam.drag) return;
     const dx = e.clientX - lx, dy = e.clientY - ly, now = performance.now();
     lx = e.clientX; ly = e.clientY;
     cam.dragDist += Math.hypot(dx, dy);
+    if(!captured && cam.dragDist > 8){
+      captured = true;
+      // Sans setPointerCapture, relâcher le bouton hors du canvas ne déclenche pas pointerup (souris
+      // uniquement, le tactile capture déjà implicitement) : cam.drag restait bloqué à true et la boucle
+      // de rendu 60fps continuait de tourner pour rien. On ne la pose donc qu'ici, une fois le geste
+      // confirmé comme un glissement (seuil de 8px, identique à celui utilisé par le onclick des cases
+      // de récompense pour distinguer un tap d'un glissement).
+      try{ view.setPointerCapture(e.pointerId); }catch(_){}
+    }
     if(cam.dragDist > 30) dir = dirAt();                   // la direction change dans les virages
     const ds = linear ? dy * 1.7                          // défilement linéaire : le doigt vers le bas fait avancer (le décor suit le doigt)
       : -(dx * dir.x + dy * dir.y) * 1.7;                 // le décor suit le doigt (on « tire » le tracé vers soi pour avancer)
@@ -15097,6 +15124,10 @@ function sceneFrameCheck(now, refit){
   SCENE_Q.lastT = now;
 }
 let d3Cam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false }, d3Raf = null, d3State = { done:0, claimIdx:-1 };
+// V0.03.09, optimisation fluidité : cache des cases de récompense + de leur point de tracé, reconstruit
+// une seule fois par renderDaily() (le nombre de cases ne change qu'une fois par semaine) au lieu de
+// refaire un document.querySelectorAll() + un Array.find() à CHAQUE frame dans d3Draw() (jusqu'à 60/s).
+let D3_BOX_CACHE = [];
 const D3_SC = .62, D3_C45 = Math.SQRT1_2, D3_CS = Math.cos(58 * Math.PI / 180), D3_SN = Math.sin(58 * Math.PI / 180), D3_D = 1100;
 function d3P(x, y, z){
   const wx = x - d3Cam.x, wy = y - d3Cam.y;
@@ -15284,8 +15315,8 @@ function d3Draw(){
   // brume sur l'horizon
   ctx.drawImage(layers.fog, 0, 0, W, H);
   // cases de récompense (HTML) collées au-dessus des plateformes
-  document.querySelectorAll('#d3Boxes .d3-bill').forEach(el => {
-    const p = D3_PATH.find(q => q[2] === +el.dataset.day);
+  // (D3_BOX_CACHE : liste + point de tracé déjà résolus par renderDaily(), cf déclaration plus haut)
+  D3_BOX_CACHE.forEach(({ el, p }) => {
     const a = d3P(p[0], p[1], 82);
     const vis = a.y > -60 && a.y < H + 160;
     el.style.display = vis ? '' : 'none';
@@ -15333,6 +15364,8 @@ function renderDaily(keepPos){
     const i = +b.dataset.i;
     if(i === claimIdx) claimDaily();                   // les autres jours : rien ne se passe
   });
+  // Cache reconstruit ici (une fois par rendu) : cf commentaire sur D3_BOX_CACHE plus haut.
+  D3_BOX_CACHE = Array.from(box.querySelectorAll('.d3-bill')).map(el => ({ el, p: D3_PATH.find(q => q[2] === +el.dataset.day) }));
   if(!keepPos){
     const focus = claimIdx >= 0 ? claimIdx + 1 : Math.max(1, done);
     const P = d3PathInfo(), ni = Math.max(0, D3_PATH.findIndex(p => p[2] === focus));
@@ -15857,6 +15890,9 @@ document.getElementById('tasksClaimAllBtn').onclick = claimAllTasks;
 // ----- Vue isométrique dans l'espace (canvas) -----
 const SPV = { W:0, H:0, dpr:1, ctx:null, t0:performance.now() };
 let spCam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false, dragDist:0 }, spRaf = null, spWorld = null;
+// V0.03.09, optimisation fluidité : même principe que D3_BOX_CACHE ci-dessus pour la scène des tâches --
+// cache reconstruit une seule fois par renderTasks() au lieu d'un querySelectorAll() à chaque frame.
+let SP_BOX_CACHE = [];
 const SP_STEP = 400;
 function spP(x, y, z){
   const wx = x - spCam.x, wy = y - spCam.y;
@@ -16006,8 +16042,9 @@ function spDraw(){
   // vignette
   ctx.drawImage(L.vig, 0, 0, W, H);
   // cases des tâches
+  // (SP_BOX_CACHE : liste déjà résolue par renderTasks(), cf déclaration plus haut)
   const pinCount = { top:0, bot:0 };
-  document.querySelectorAll('#spBoxes .sp-bill').forEach(el => {
+  SP_BOX_CACHE.forEach(el => {
     const n = N[+el.dataset.i], a = spP(n.x, n.y, n.z + (+el.dataset.i === 10 ? 175 : 64));
     const vis = a.y > H * .14 && a.y < H + 170;
     const near = a.y > H * .24 && a.y < H + 60;
@@ -16082,6 +16119,8 @@ function renderTasks(keepPos){
     if(open) b.classList.add('expanded');
     renderTasks.expanded = open ? i : -1;
   });
+  // Cache reconstruit ici (une fois par rendu) : cf commentaire sur SP_BOX_CACHE plus haut.
+  SP_BOX_CACHE = Array.from(box.querySelectorAll('.sp-bill'));
   if(renderTasks.expanded >= 0){ const e = box.querySelector(`.task-box[data-i="${renderTasks.expanded}"]:not(.ready)`); if(e) e.classList.add('expanded'); }
   // Toucher à côté d'une bulle agrandie la remet en taille normale
   if(!renderTasks.outsideBound){
@@ -18463,6 +18502,10 @@ function raidStartAttempt(){
   document.getElementById('raidCombat').hidden = false;
   document.getElementById('raidCombatPhaseNum').textContent = raidPhaseIdx + 1;
   raidRenderCombat();
+  // V0.03.09 : clearInterval défensif avant d'en reposer un, comme startLoop() le fait déjà pour tickHandle --
+  // aucun chemin de sortie connu n'omet raidEndAttempt() (qui nettoie raidTickHandle), mais c'est désormais
+  // cohérent avec le reste du fichier et évite tout risque de double-interval si un futur appel y dérogeait.
+  clearInterval(raidTickHandle);
   raidTickHandle = setInterval(raidTick, BASE_TICK);
 }
 function raidRefillBench(){
