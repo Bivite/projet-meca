@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.19</title>
+<title>Projet MECA V0.03.20</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -353,6 +353,15 @@
   .bbl-board.auto-locked{ pointer-events:none; }
   .bbl-board.auto-locked .bbl-bubble{ opacity:.32; filter:grayscale(1) brightness(.65); cursor:default; }
   .bbl-board.auto-locked .bbl-bubble.t-ult{ animation:none; }
+  /* V0.03.20 (demande d'Alex : "lorsqu'une carte ATQ, vit, DEF ou pv tombe au combat, il faut que les
+     boules qui correspondent à ces stats soient grisées aussi et que le joueur ne peux pas passer
+     dessus, sauf si il reste une autre carte du même attribut") -- même traitement visuel que le
+     grisage du mode AUTO ci-dessus (opacité réduite + niveaux de gris), mais posé bulle par bulle
+     (.bbl-cell.dead-type, cf bblRenderBoard()/bblTypeAlive()) plutôt que sur le plateau entier :
+     pointer-events:none ici aussi, en doublon défensif des garde-fous JS dans bblStartDrag()/
+     bblDragTo() (même raison que .auto-locked juste au-dessus). */
+  .bbl-cell.dead-type{ pointer-events:none; }
+  .bbl-cell.dead-type .bbl-bubble{ opacity:.32; filter:grayscale(1) brightness(.65); cursor:default; }
 
   /* ---------- Unités en combat ---------- */
   .roster{
@@ -1993,6 +2002,12 @@
   @keyframes ovUp{50%{transform:translateY(-4px); box-shadow:0 0 16px rgba(255,200,60,.8);}}
   .ov-portrait{width:70%; aspect-ratio:1/1;}
   .ov-portrait svg{width:100%; height:100%;}
+  /* V0.03.20 : vraie carte illustrée (lgLayerHtml(), même gabarit que partout ailleurs dans le jeu)
+     réutilisée ici à la place de l'icône générique -- .lg-layer vaut 100% de large par défaut (cf sa
+     règle de base), on la réduit donc à une taille comparable à l'ancien .ov-portrait (70%) pour
+     qu'elle tienne dans le cadre existant de .ov-card (déjà vu dans .br-slot/.br-card pour la révélation
+     des boosters, qui affiche aussi plusieurs lgLayerHtml() côte à côte en plus petit). */
+  .ov-card > .lg-layer{width:72%;}
   .ov-name{font-size:7.5px; font-weight:700; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .ov-lvl{font-size:9px; font-weight:700; color:#fff;}
   .ov-lvl span{color:#ffd65c;}
@@ -4531,12 +4546,18 @@
      sombre = actualiser) sont conservées, seuls le contour et le fond changent de recette.
      Étendu aux boutons de LABO (#labBuyAllBtn/#labBuyOneBtn/#labRefreshBtn, V0.02.67, demande
      d'Alex "applique le nouveau design sur les boutons") : LABO était resté sur l'ancien style
-     à coins arrondis, n'ayant été ajouté qu'après ce changement (même raison que #labRates ci-dessus). */
-  #buyAllBtn, #buyOneBtn, #fabRefreshBtn, #labBuyAllBtn, #labBuyOneBtn, #labRefreshBtn{
+     à coins arrondis, n'ayant été ajouté qu'après ce changement (même raison que #labRates ci-dessus).
+     Étendu au bouton de fin de combat #overlayBtn/.overlay button (V0.03.20, demande d'Alex : "met le
+     bouton réessayer avec le bon design aussi. Utilise uniquement le dernier design le bon pas
+     l'ancien") : CONTINUER/RÉESSAYER (même bouton, seul son texte change selon victoire/défaite,
+     cf endBattle()) était resté lui aussi sur l'ancien style à coins arrondis -- il partageait déjà le
+     même dégradé violet que #buyAllBtn/#labBuyAllBtn (cf règle plus haut), il ne lui manquait que la
+     géométrie à coins coupés et le reflet diagonal "verre" ci-dessous. */
+  #buyAllBtn, #buyOneBtn, #fabRefreshBtn, #labBuyAllBtn, #labBuyOneBtn, #labRefreshBtn, .overlay button{
     --cut:10px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
   }
-  #buyAllBtn, #labBuyAllBtn{
+  #buyAllBtn, #labBuyAllBtn, .overlay button{
     background:
       linear-gradient(160deg, rgba(255,255,255,.32) 0%, transparent 42%),
       linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%);
@@ -6748,7 +6769,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.19</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.20</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7091,9 +7112,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.19';
+var BUILD_VERSION = 'V0.03.20';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.20', items:[
+    'CORRECTIF : l\'écran "ESCOUADE HORS SERVICE" (fin de combat perdu) affichait encore les cartes avec l\'ancien visuel générique. Il utilise maintenant la vraie carte illustrée, comme partout ailleurs dans le jeu.',
+    'MINI-JEU DE BULLES : quand toutes les cartes d\'une même statistique (ATQ, VIT, DEF ou PV) sont hors service, les bulles correspondantes se grisent et deviennent impossibles à utiliser, jusqu\'au retour d\'une carte de cette statistique.',
+    'CORRECTIF : le bouton RÉESSAYER (écran de fin de combat) était resté sur l\'ancien style de bouton. Il a maintenant le même habillage "verre" biseauté à coins coupés que les autres boutons principaux du jeu.'
+  ]},
   { v:'V0.03.19', items:[
     'CORRECTIF : la grande fiche qui s\'affiche quand une carte lance son ultime utilisait encore l\'ancien visuel (icône simple, sans artwork). Elle utilise maintenant la vraie carte illustrée, comme partout ailleurs dans le jeu.'
   ]},
@@ -10532,6 +10558,13 @@ let enemyTeam = [];
 // "les bulles s'ajoutent aux attaques auto"). Même système invisible côté ennemi (bblEnemyCycle()), et
 // le bouton AUTO existant fait aussi jouer les lignes du joueur automatiquement (bblAutoPlayerCycle()).
 const BBL_COLS = 6, BBL_ROWS = 3, BBL_TYPES = ['atq', 'vit', 'def', 'pv'];
+// V0.03.20 (demande d'Alex : "lorsqu'une carte ATQ, vit, DEF ou pv tombe au combat, il faut que les
+// boules qui correspondent à ces stats soient grisées aussi... sauf si il reste une autre carte du
+// même attribut") -- fait le lien entre le code des bulles (atq/vit/def/pv, repris des libellés FR) et
+// le code des catégories de carte (atk/vit/def/hp, cf STAT_LABELS/categoryOf plus haut) : les deux jeux
+// de clés diffèrent uniquement pour ATQ (bulle 'atq' / catégorie 'atk') et PV (bulle 'pv' / catégorie
+// 'hp'). Voir bblTypeAlive() plus bas (section "logique" du mini-jeu de bulles).
+const BBL_TYPE_TO_CAT = { atq:'atk', vit:'vit', def:'def', pv:'hp' };
 const BBL_ATK_MULT = 1;        // force des frappes bonus ATQ/VIT (relatif à une attaque auto normale)
 const BBL_HEAL_PCT = 0.08;     // bulle PV : soin de la carte la plus forte en PV (8% de ses PV MAX)
 const BBL_SHIELD_TURNS = 2;    // bulle DEF : bouclier (-50% dégâts) sur la carte la plus forte en DEF, 2 tours -- réutilise le mécanisme u.shield déjà utilisé par plusieurs ultimes (PYLON, HARKO...)
@@ -11263,7 +11296,13 @@ function endBattle(won){
   // Les cartes ne gagnent plus d'XP en mission : cette XP rejoint le butin (stock d'XP à distribuer plus tard)
   const results = playerTeam.map(u => {
     const def = CHAR_DEFS.find(d => d.name === u.name);
-    return { def, ups: 0, info: cardXpInfo(u.name, u.rarity) };
+    // V0.03.20 (demande d'Alex : "il faut changer ça pour mettre les bonne carte et pas les
+    // ancienne", écran "ESCOUADE HORS SERVICE") -- rareté de l'EXEMPLAIRE qui a réellement combattu
+    // (u.rarity), pas la rareté "effective"/la plus haute possédée du personnage (effRarity(def),
+    // utilisée par ailleurs pour la couleur du cadre .ov-card -- volontairement laissée telle quelle
+    // ci-dessous) : sinon la visuelle de carte affichée pourrait ne pas correspondre à l'exemplaire
+    // qui a vraiment pris part au combat. Même logique que bblShowUltCardReveal() (V0.03.19).
+    return { def, rar: u.rarity, ups: 0, info: cardXpInfo(u.name, u.rarity) };
   });
   if(won) gainXpGradual(cardGain * runMult());
   if(!HEADLESS) document.getElementById('overlayCards').innerHTML = `
@@ -11271,7 +11310,9 @@ function endBattle(won){
     <div class="ov-cards-grid">
       ${results.map(r => `
         <div class="ov-card rar ${rarityCls(r.def)} ${r.ups ? 'up' : ''}">
-          <div class="ov-portrait ${catCls(r.def)}">${unitSVG(r.def.color, r.def.shape)}</div>
+          ${isLgFrame(r.rar)
+            ? lgLayerHtml(r.def, r.rar, false, r.info.lvl)
+            : `<div class="ov-portrait ${catCls(r.def)}">${unitSVG(r.def.color, r.def.shape)}</div>`}
           <div class="ov-name" style="color:${r.def.color}">${r.def.name}</div>
           <div class="ov-lvl">Nv. ${r.info.lvl}${r.ups ? ' <span>▲</span>' : ''}</div>
           <div class="cx-xp"><div style="width:${r.info.pct}%"></div></div>
@@ -11449,6 +11490,20 @@ function bblStrongest(team, stat){
   return alive.reduce((best, u) => (u[stat] || 0) > (best[stat] || 0) ? u : best, alive[0]);
 }
 
+// V0.03.20 (demande d'Alex, cf BBL_TYPE_TO_CAT plus haut) -- une bulle de type `type` (atq/vit/def/pv)
+// est "vivante" (utilisable) tant qu'AU MOINS une carte de l'escouade du joueur, encore en vie, a la
+// catégorie correspondante ; dès que la dernière carte de cette catégorie tombe, elle redevient vivante
+// seulement si une autre carte de la même catégorie est toujours debout, et le reste tant qu'aucune ne
+// l'est (elle se "réactive" automatiquement dès qu'une carte de cette catégorie revient au combat, ex.
+// après son respawn). La bulle ULT ('ult', absente de BBL_TYPE_TO_CAT) n'est jamais concernée par cette
+// règle : elle n'apparaît sur le plateau que si la carte correspondante est déjà vivante
+// (bblFindReadyPlayer), et bblReleasePlayerChain revérifie u.alive au moment de l'utiliser.
+function bblTypeAlive(type){
+  const cat = BBL_TYPE_TO_CAT[type];
+  if(!cat) return true;
+  return playerTeam.some(u => u.alive && u.category === cat);
+}
+
 // Carte du joueur dont l'ultime est prêt (énergie pleine) et qui n'est pas déjà représentée par la
 // bulle ULT actuellement sur le plateau -- sert à savoir si une nouvelle bulle ULT doit apparaître.
 function bblFindReadyPlayer(){
@@ -11499,6 +11554,11 @@ function bblRenderBoard(){
     if(inChain) cls += ' sel';
     if(bblResolving && !inChain) cls += ' fading';
     if(bblPhase === 'popping' && inChain) cls += ' popping';
+    // V0.03.20 (demande d'Alex) : bulle grisée dès que plus aucune carte vivante de la catégorie
+    // correspondante n'est sur le terrain (bblTypeAlive()) -- jamais sur une bulle déjà sélectionnée
+    // (inChain), pour ne pas griser en plein tracé une bulle que le joueur a déjà incluse dans sa
+    // ligne si sa dernière carte de cette catégorie venait justement à tomber à cet instant.
+    if(cell && !inChain && !bblTypeAlive(cell.type)) cls += ' dead-type';
     const ord = inChain ? ' data-ord="' + (selPos + 1) + '"' : '';
     const bubble = cell ? `<div class="bbl-bubble t-${cell.type}">${bblIcon(cell.type)}</div>` : '';
     return `<div class="${cls}" data-i="${i}"${ord}>${bubble}</div>`;
@@ -11554,6 +11614,11 @@ function bblCellAt(x, y){
 function bblStartDrag(i, pointerId){
   if(battleOver || bblActivePointerId != null || bblResolving || auto) return;   // ignore un second doigt pendant un geste en cours, pendant la séquence de relâchement (V0.03.13), ou tant que le mode AUTO joue les lignes tout seul (V0.03.15) -- doublon défensif de pointer-events:none (.bbl-board.auto-locked), au cas où ce guard serait atteint autrement
   if(!bblBoard[i]) return;
+  // V0.03.20 (demande d'Alex) : impossible de démarrer une ligne sur une bulle grisée (plus aucune
+  // carte vivante de la catégorie correspondante, cf bblTypeAlive()/.dead-type) -- doublon défensif de
+  // pointer-events:none posé par CSS sur .bbl-cell.dead-type (voir plus bas), même principe que
+  // .auto-locked ci-dessus.
+  if(!bblTypeAlive(bblBoard[i].type)) return;
   bblActivePointerId = pointerId;
   bblDragging = true;
   bblChain = [i];
@@ -11568,6 +11633,10 @@ function bblDragTo(i){
     bblRenderBoard();
     return;
   }
+  // V0.03.20 (demande d'Alex : "...que le joueur ne peux pas passer dessus") : impossible d'étendre la
+  // ligne EN PASSANT sur une bulle grisée -- seule l'étape de retour en arrière ci-dessus (sur une
+  // bulle déjà dans la ligne, donc déjà validée vivante au moment où elle a été ajoutée) y échappe.
+  if(!bblTypeAlive(bblBoard[i].type)) return;
   const lastCol = bblCellCol(bblChain[bblChain.length - 1]);
   if(bblCellCol(i) !== lastCol + 1) return;            // doit être la colonne immédiatement suivante (gauche -> droite, sans saut)
   bblChain.push(i);
