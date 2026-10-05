@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.20</title>
+<title>Projet MECA V0.03.21</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6769,7 +6769,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.20</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.21</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7112,9 +7112,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.20';
+var BUILD_VERSION = 'V0.03.21';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.21', items:[
+    'MINI-JEU DE BULLES : si une ou plusieurs colonnes sont entièrement grisées (plus aucune carte vivante de cette statistique), le joueur peut maintenant sauter la ou les colonnes manquantes et terminer sa ligne quand même, avec moins de bulles.',
+    'MINI-JEU DE BULLES : en mode manuel, l\'état grisé/disponible des bulles ne change plus en cours de tracé -- il ne se met à jour qu\'une fois la ligne en cours terminée, pour ne jamais faire bouger les bulles sous le doigt du joueur.'
+  ]},
   { v:'V0.03.20', items:[
     'CORRECTIF : l\'écran "ESCOUADE HORS SERVICE" (fin de combat perdu) affichait encore les cartes avec l\'ancien visuel générique. Il utilise maintenant la vraie carte illustrée, comme partout ailleurs dans le jeu.',
     'MINI-JEU DE BULLES : quand toutes les cartes d\'une même statistique (ATQ, VIT, DEF ou PV) sont hors service, les bulles correspondantes se grisent et deviennent impossibles à utiliser, jusqu\'au retour d\'une carte de cette statistique.',
@@ -10581,6 +10585,13 @@ let bblActivePointerId = null; // id du pointeur qui trace actuellement la ligne
 let bblResolving = false;      // true pendant toute la séquence de relâchement (attente + explosion) -- bloque un nouveau tracé
 let bblPhase = 'idle';         // 'idle' | 'holding' (ligne figée, le reste du plateau s'efface) | 'popping' (la ligne explose) -- pilote bblRenderBoard()
 let bblUltRevealToken = 0;     // incrémenté à chaque fiche ULT ouverte (bblShowUltCardReveal) : la fermeture auto programmée ne ferme que si elle correspond toujours au dernier jeton (évite de fermer une fiche que le joueur a rouverte lui-même entre-temps)
+// V0.03.21 (demande d'Alex : "les bulles restent, ne changent jamais tant que le joueur n'a pas
+// complété une ligne") -- état vivant/mort de chaque type de bulle (atq/vit/def/pv), figé au moment où
+// le plateau est généré (bblGenBoard -- début de vague ou juste après une ligne relâchée) plutôt que
+// recalculé en direct à chaque rendu. Sans ce figeage, une carte qui meurt (ou revient) PENDANT que le
+// joueur trace sa ligne changerait les bulles disponibles sous son doigt en plein geste. Voir
+// bblSnapshotAliveTypes()/bblTypeAliveFrozen() plus bas.
+let bblAliveSnap = { atq:true, vit:true, def:true, pv:true };
 
 function freshPlayerTeam(){
   const team = squadEntries(curSquad).map(e => makePlayerFromDef(e.def, e.rar));
@@ -11504,6 +11515,41 @@ function bblTypeAlive(type){
   return playerTeam.some(u => u.alive && u.category === cat);
 }
 
+// V0.03.21 (demande d'Alex) : recalcule bblAliveSnap pour les 4 types -- appelé UNIQUEMENT par
+// bblGenBoard() (donc à chaque nouveau plateau : début de vague ou ligne du joueur relâchée). Entre deux
+// appels, l'état grisé/vivant d'un type ne bouge plus, même si une carte meurt ou revient au combat
+// entre-temps -- c'est bblTypeAliveFrozen() (jamais bblTypeAlive() directement) qui doit être utilisé
+// partout dans le rendu/l'interaction du plateau manuel pour respecter ça.
+function bblSnapshotAliveTypes(){
+  BBL_TYPES.forEach(t => { bblAliveSnap[t] = bblTypeAlive(t); });
+}
+function bblTypeAliveFrozen(type){
+  return type in bblAliveSnap ? bblAliveSnap[type] : true;   // 'ult' (hors BBL_TYPE_TO_CAT) : toujours vivante
+}
+
+// Une colonne est "jouable" si au moins une de ses 3 cases porte un type encore vivant (snapshot figé,
+// cf ci-dessus) -- une colonne peut être partiellement grisée (ex. 1 bulle vivante + 2 mortes) sans être
+// sautée : seule une colonne ENTIÈREMENT grisée est considérée morte.
+function bblColAlive(col){
+  for(let row = 0; row < BBL_ROWS; row++){
+    const cell = bblBoard[row * BBL_COLS + col];
+    if(cell && bblTypeAliveFrozen(cell.type)) return true;
+  }
+  return false;
+}
+
+// Prochaine colonne jouable après `fromCol`, en sautant toute colonne entièrement grisée -- ou -1 s'il
+// n'en reste plus (fin du plateau ou tout le reste est mort). V0.03.21 (demande d'Alex : "il doit pouvoir
+// sauter la colonne manquante et la finir quand même avec 1 de moins, même si plusieurs colonnes sont
+// grisées") -- utilisé à la fois pour savoir quelle case le tracé manuel peut viser ensuite
+// (bblDragTo) et pour savoir si la ligne est complète (bblEndDrag : plus rien à sauter = ligne complète).
+function bblNextAliveCol(fromCol){
+  for(let c = fromCol + 1; c < BBL_COLS; c++){
+    if(bblColAlive(c)) return c;
+  }
+  return -1;
+}
+
 // Carte du joueur dont l'ultime est prêt (énergie pleine) et qui n'est pas déjà représentée par la
 // bulle ULT actuellement sur le plateau -- sert à savoir si une nouvelle bulle ULT doit apparaître.
 function bblFindReadyPlayer(){
@@ -11525,6 +11571,7 @@ function bblGenBoard(){
     bblBoard[slot] = { type:'ult', ultIdx: readyIdx };
     bblUltIdx = readyIdx;
   }
+  bblSnapshotAliveTypes();   // V0.03.21 : fige l'état vivant/mort de chaque type pour toute la durée de ce plateau
 }
 
 // Icônes des bulles : réutilise les tracés SVG déjà définis pour les badges de stat (CAT_ICONS, voir
@@ -11558,7 +11605,7 @@ function bblRenderBoard(){
     // correspondante n'est sur le terrain (bblTypeAlive()) -- jamais sur une bulle déjà sélectionnée
     // (inChain), pour ne pas griser en plein tracé une bulle que le joueur a déjà incluse dans sa
     // ligne si sa dernière carte de cette catégorie venait justement à tomber à cet instant.
-    if(cell && !inChain && !bblTypeAlive(cell.type)) cls += ' dead-type';
+    if(cell && !inChain && !bblTypeAliveFrozen(cell.type)) cls += ' dead-type';
     const ord = inChain ? ' data-ord="' + (selPos + 1) + '"' : '';
     const bubble = cell ? `<div class="bbl-bubble t-${cell.type}">${bblIcon(cell.type)}</div>` : '';
     return `<div class="${cls}" data-i="${i}"${ord}>${bubble}</div>`;
@@ -11606,11 +11653,12 @@ function bblCellAt(x, y){
 // ---- Traçage en un seul geste (V0.03.12, demande d'Alex) ----
 // Le joueur doit tracer la ligne complète d'une seule pression continue, sans relever le doigt :
 // bblStartDrag() au pointerdown, bblDragTo() à chaque pointermove pendant que le doigt glisse sur le
-// plateau, bblEndDrag() au relâchement (pointerup/cancel). Tant que les 6 bulles (une par colonne,
-// colonnes consécutives 0->1->2->3->4->5) n'ont pas toutes été touchées, relâcher le doigt annule la
-// ligne (elle se réinitialise) SANS toucher aux bulles du plateau, qui restent en place pour retenter.
-// Une fois les 6 touchées, relâcher le doigt envoie la ligne automatiquement -- plus besoin d'un bouton
-// RELÂCHER séparé.
+// plateau, bblEndDrag() au relâchement (pointerup/cancel). Tant que toutes les colonnes JOUABLES (une par
+// colonne, colonnes consécutives 0->1->2->3->4->5 -- V0.03.21 : une colonne entièrement grisée, cf
+// bblColAlive()/bblNextAliveCol(), est automatiquement sautée) n'ont pas toutes été touchées, relâcher le
+// doigt annule la ligne (elle se réinitialise) SANS toucher aux bulles du plateau, qui restent en place
+// pour retenter. Une fois la dernière colonne jouable touchée, relâcher le doigt envoie la ligne
+// automatiquement -- plus besoin d'un bouton RELÂCHER séparé.
 function bblStartDrag(i, pointerId){
   if(battleOver || bblActivePointerId != null || bblResolving || auto) return;   // ignore un second doigt pendant un geste en cours, pendant la séquence de relâchement (V0.03.13), ou tant que le mode AUTO joue les lignes tout seul (V0.03.15) -- doublon défensif de pointer-events:none (.bbl-board.auto-locked), au cas où ce guard serait atteint autrement
   if(!bblBoard[i]) return;
@@ -11618,7 +11666,13 @@ function bblStartDrag(i, pointerId){
   // carte vivante de la catégorie correspondante, cf bblTypeAlive()/.dead-type) -- doublon défensif de
   // pointer-events:none posé par CSS sur .bbl-cell.dead-type (voir plus bas), même principe que
   // .auto-locked ci-dessus.
-  if(!bblTypeAlive(bblBoard[i].type)) return;
+  if(!bblTypeAliveFrozen(bblBoard[i].type)) return;
+  // V0.03.21 (demande d'Alex) : le tracé doit démarrer dans la toute première colonne JOUABLE du plateau
+  // (colonne 0, ou la première après si la 0 est entièrement grisée -- bblNextAliveCol(-1)), jamais plus
+  // loin : sans ce garde-fou, un joueur pourrait volontairement démarrer au milieu du plateau et finir sa
+  // ligne "complète" en sautant des colonnes pourtant bien vivantes, ce qui n'est pas le but (sauter une
+  // colonne doit rester réservé aux colonnes réellement grisées, cf bblDragTo/bblEndDrag).
+  if(bblCellCol(i) !== bblNextAliveCol(-1)) return;
   bblActivePointerId = pointerId;
   bblDragging = true;
   bblChain = [i];
@@ -11636,9 +11690,14 @@ function bblDragTo(i){
   // V0.03.20 (demande d'Alex : "...que le joueur ne peux pas passer dessus") : impossible d'étendre la
   // ligne EN PASSANT sur une bulle grisée -- seule l'étape de retour en arrière ci-dessus (sur une
   // bulle déjà dans la ligne, donc déjà validée vivante au moment où elle a été ajoutée) y échappe.
-  if(!bblTypeAlive(bblBoard[i].type)) return;
+  if(!bblTypeAliveFrozen(bblBoard[i].type)) return;
+  // V0.03.21 (demande d'Alex : "il doit pouvoir sauter la colonne manquante et la finir quand même avec
+  // 1 de moins ou même si plusieurs colonnes sont grisées") -- la case visée doit être dans la PROCHAINE
+  // colonne JOUABLE après la dernière de la chaîne (bblNextAliveCol), pas forcément lastCol+1 : une ou
+  // plusieurs colonnes entièrement grisées entre les deux sont automatiquement sautées.
   const lastCol = bblCellCol(bblChain[bblChain.length - 1]);
-  if(bblCellCol(i) !== lastCol + 1) return;            // doit être la colonne immédiatement suivante (gauche -> droite, sans saut)
+  const nextCol = bblNextAliveCol(lastCol);
+  if(nextCol === -1 || bblCellCol(i) !== nextCol) return;
   bblChain.push(i);
   bblRenderBoard();
 }
@@ -11646,8 +11705,13 @@ function bblEndDrag(){
   if(!bblDragging) return;
   bblDragging = false;
   bblActivePointerId = null;
-  if(bblChain.length === BBL_COLS){
-    bblReleasePlayerChain();      // les 6 bulles ont été tracées : la ligne s'envoie d'elle-même
+  // V0.03.21 (demande d'Alex) : la ligne est complète dès qu'il n'y a plus AUCUNE colonne jouable après
+  // la dernière bulle tracée (bblNextAliveCol === -1) -- c'est le cas normal à la colonne 6 (rien après),
+  // et aussi le cas "écourté" où toute(s) la/les colonne(s) restante(s) sont entièrement grisées : la
+  // ligne se relâche quand même, avec moins de 6 bulles.
+  const lastCol = bblChain.length ? bblCellCol(bblChain[bblChain.length - 1]) : -1;
+  if(bblChain.length && bblNextAliveCol(lastCol) === -1){
+    bblReleasePlayerChain();      // plus aucune colonne à ajouter : la ligne s'envoie d'elle-même
   } else if(bblChain.length){
     const board = document.getElementById('bblBoard');
     if(board){ board.classList.remove('invalid'); void board.offsetWidth; board.classList.add('invalid'); }
