@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.17</title>
+<title>Projet MECA V0.03.19</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6748,7 +6748,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.17</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.19</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7091,9 +7091,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.17';
+var BUILD_VERSION = 'V0.03.19';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.19', items:[
+    'CORRECTIF : la grande fiche qui s\'affiche quand une carte lance son ultime utilisait encore l\'ancien visuel (icône simple, sans artwork). Elle utilise maintenant la vraie carte illustrée, comme partout ailleurs dans le jeu.'
+  ]},
+  { v:'V0.03.18', items:[
+    'CORRECTIF : quand une carte déclenchait son ultime via la bulle ULT, la grande fiche qui s\'affiche pouvait parfois montrer une autre carte que celle qui venait réellement de lancer son ultime (si une fiche était déjà ouverte juste avant). Corrigé : c\'est maintenant toujours la bonne carte qui est montrée.'
+  ]},
   { v:'V0.03.17', items:[
     'MINI-JEU DE BULLES : le petit numéro affiché au-dessus des bulles sélectionnées a été retiré (le surlignage blanc suffit à montrer la ligne en cours).'
   ]},
@@ -11624,14 +11630,48 @@ function bblShowUltCardReveal(idx){
   if(!u) return;
   const modal = document.getElementById('battleModal'), inner = document.getElementById('battleModalInner');
   if(!modal || !inner) return;
-  inner.className = 'codex-modal-inner' + (u.rarity ? ' rar r-' + u.rarity : '') + (u.category ? ' shape-' + u.category : '');
-  inner.innerHTML = `
-    <div class="cx-name-big" style="color:${u.color}">${u.name}</div>
-    ${u.rarity ? `<div class="rar-tag rar-big">${RARITIES[u.rarity].label}</div>` : ''}
-    ${u.level ? `<div class="cx-lvl-tag-big">Nv. ${u.level}</div>` : ''}
-    ${u.category ? `<div class="cx-badge ${u.category}">${STAT_LABELS[u.category]}</div>` : ''}
-    <div class="cx-portrait-big ${u.category ? 'cat-' + u.category : ''}">${u.category ? catEmblem(u.category) : ''}${unitSVG(u.color, u.shape)}</div>
-  `;
+  // V0.03.18 (demande d'Alex : "tu as laissé une vielle carte faire l'animation, il faut que ça soit
+  // la bonne carte qui la fasse") -- si le joueur avait déjà une fiche d'unité ouverte à la main
+  // (openBattleTarget non nul, ex. il inspectait une autre carte juste avant que l'ultime se
+  // déclenche), refreshBattleModalIfOpen() -- appelée à CHAQUE tick de combat depuis renderRoster()
+  // -- réécrivait #battleModalInner avec les données LIVE de cette fiche-là au tick suivant,
+  // effaçant en plein vol le contenu de la révélation qu'on vient d'écrire ci-dessous : c'était donc
+  // bien "une vielle carte" (celle déjà ouverte avant) qui finissait par jouer l'animation, pas
+  // forcément celle qui lance réellement l'ultime. On coupe ce lien AVANT d'écrire le contenu de la
+  // révélation, pour qu'aucun rafraîchissement automatique ne puisse plus la remplacer tant qu'elle
+  // est affichée -- la fiche que le joueur avait ouverte se referme simplement, reprise par la
+  // révélation, cohérent avec le fait que le combat continue malgré tout en arrière-plan.
+  openBattleTarget = null;
+  battleModalSig = '';
+  // V0.03.19 (demande d'Alex : "il faut que ça soit bien une carte avec le modèle actuel, celle avec
+  // les artwork qui s'affiche lors de l'animation") -- le gabarit écrit ci-dessous était jusqu'ici un
+  // gabarit minimal maison (portrait en simple icône vectorielle via unitSVG()), hérité de l'ancienne
+  // fiche d'inspection de combat (#battleModal, qui existait avant même le mini-jeu de bulles) --
+  // jamais le VRAI gabarit de carte utilisé partout ailleurs dans le jeu depuis V0.01.74 (CODEX,
+  // offres TIRAGE/LABO, révélation légendaire à l'achat...) : cadre illustré par rareté + véritable
+  // artwork du personnage (lgLayerHtml(), déjà utilisé par openCodexModal() dès que isLgFrame(rar) est
+  // vrai -- en pratique pour toutes les raretés possédées). On réutilise donc directement lgLayerHtml()
+  // ici, exactement comme openCodexModal() le fait pour la fiche CODEX normale, plutôt que de garder un
+  // second gabarit "maison" qui finit par désynchroniser visuellement de la vraie carte. `ids=false`
+  // (pas de 3e argument) : cette fiche est un instantané jetable, jamais ciblée par id ailleurs --
+  // mettre les mêmes id que #codexModalInner créerait des doublons dans le DOM si les deux fiches
+  // étaient ouvertes en même temps. Repli sur l'ancien gabarit minimal uniquement si la carte est
+  // introuvable dans CHAR_DEFS ou sans rareté exploitable (cas qui ne devrait jamais survenir en jeu
+  // réel, gardé par simple prudence plutôt que de ne rien afficher du tout).
+  const ultDef = CHAR_DEFS.find(c => c.name === u.name);
+  if(ultDef && u.rarity && isLgFrame(u.rarity)){
+    inner.className = 'codex-modal-inner ' + rarCls(u.rarity) + ' lg-modal';
+    inner.innerHTML = lgLayerHtml(ultDef, u.rarity, false, u.level);
+  } else {
+    inner.className = 'codex-modal-inner' + (u.rarity ? ' rar r-' + u.rarity : '') + (u.category ? ' shape-' + u.category : '');
+    inner.innerHTML = `
+      <div class="cx-name-big" style="color:${u.color}">${u.name}</div>
+      ${u.rarity ? `<div class="rar-tag rar-big">${RARITIES[u.rarity].label}</div>` : ''}
+      ${u.level ? `<div class="cx-lvl-tag-big">Nv. ${u.level}</div>` : ''}
+      ${u.category ? `<div class="cx-badge ${u.category}">${STAT_LABELS[u.category]}</div>` : ''}
+      <div class="cx-portrait-big ${u.category ? 'cat-' + u.category : ''}">${u.category ? catEmblem(u.category) : ''}${unitSVG(u.color, u.shape)}</div>
+    `;
+  }
   modal.classList.add('show');
   const myToken = ++bblUltRevealToken;
   playCardToss('fusion', { modalId:'battleModal', innerId:'battleModalInner', banner:'ULTIME', sub:u.name });
