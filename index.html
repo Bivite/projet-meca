@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.10</title>
+<title>Projet MECA V0.03.17</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -204,33 +204,155 @@
   /* Espace entre le cadre VOTRE ESCOUADE et le bouton AUTO, scopé pour ne pas changer .controls ailleurs. */
   #infArena > .controls{margin-top:14px;}
 
-  /* ---------- Champ de bataille ---------- */
+  /* ---------- Champ de bataille : mini-jeu de bulles (V0.03.11/12) ----------
+     Remplace l'ancien encadré purement décoratif ("CHAMP DE BATAILLE") par une grille de 3 lignes x
+     6 colonnes de bulles colorées (ATQ/VIT/DEF/PV + ULT) que le joueur trace de gauche à droite, EN UN
+     SEUL GESTE (appui-maintenu, sans relever le doigt -- voir pointerdown/move/up sur #bblBoard dans le
+     JS), pour déclencher des actions bonus, en plus (pas à la place) des attaques automatiques
+     existantes. Voir le bloc JS "Mini-jeu de bulles" (const BBL_*, fonctions bbl*) pour la logique.
+     V0.03.12 (demande d'Alex) : plus de bouton RELÂCHER séparé -- la ligne s'envoie d'elle-même en
+     relâchant le doigt une fois les 6 bulles touchées, et se réinitialise (sans toucher aux bulles du
+     plateau) si le doigt est relâché avant. L'encadré et les bulles reprennent le matériau "verre"
+     déjà utilisé par les cadres HOSTILES/VOTRE ESCOUADE juste au-dessus/en-dessous (#infArena .zone :
+     coins biseautés via --cut, backdrop-filter:blur) plutôt que les panneaux pleins utilisés avant --
+     même famille visuelle, bulles en verre teinté par couleur de stat. */
   .battlefield{
     position:relative;
-    height:44px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:4px 0;
+  }
+  .bbl-frame{
+    --cut:10px;
+    position:relative;
+    width:100%;
+    padding:9px 8px;
+    border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.10) 0%, transparent 32%),
+      linear-gradient(180deg, rgba(139,92,246,.26), rgba(30,20,50,.45) 55%, rgba(8,6,16,.82));
+    border:1px solid rgba(176,140,255,.55);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.2) inset, 0 0 24px -6px rgba(139,92,246,.75), 0 10px 22px rgba(0,0,0,.5);
+  }
+  .bbl-board{
+    position:relative;   /* ancre .bbl-line-svg (V0.03.13), qui se superpose à toute la grille */
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    grid-template-rows:repeat(3,1fr);
+    gap:5px;
+    touch-action:none;   /* le geste de traçage gère lui-même le défilement : on empêche le navigateur d'interférer */
+  }
+  .bbl-cell{
+    position:relative;
+    z-index:1;
+    aspect-ratio:1/1;
+    border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
   }
-  .battlefield .bf-line{
+  /* Ligne visible entre les bulles déjà tracées (V0.03.13, demande d'Alex : "le joueur puisse voir sa
+     ligne entre les bulles qui ce crée"). Superposée à toute la grille (inset:0), jamais interactive
+     (pointer-events:none) pour ne pas gêner le geste de traçage. viewBox en unités "case" (voir
+     bblLineSvg() en JS) : le trait et la lueur sont donc réglés en unités de grille, mais la lueur
+     externe (filter, en CSS) s'applique elle en pixels réels.
+     PAR-DESSUS les bulles (z-index:2 > 1), pas en-dessous : passer en-dessous semblait plus naturel au
+     premier essai, mais les bulles sont en verre translucide avec leur propre backdrop-filter:blur()
+     (V0.03.12) -- place juste derrière une lueur aussi vive, ce flou d'arrière-plan RÉCHANTILLONNE et
+     étale cette lueur sur toute la bulle, qui finit presque entièrement "délavée" en blanc (repéré aux
+     captures d'écran, pas qu'un détail). En passant au-dessus, et puisque chaque segment est de toute
+     façon raccourci pour s'arrêter dans l'espace ENTRE les bulles (BBL_LINE_GAP, voir bblLineSvg()), le
+     trait ne recouvre jamais le disque de la bulle : seule sa lueur peut légèrement déborder sur le
+     bord, en alpha-blending normal, sans jamais être ré-échantillonnée par un flou. */
+  .bbl-line-svg{
     position:absolute;
-    left:4%; right:4%; top:50%;
-    height:2px;
-    background:linear-gradient(90deg, transparent, rgba(255,90,78,.5), rgba(139,92,246,.8), rgba(106,168,255,.5), transparent);
-    box-shadow:0 0 12px rgba(139,92,246,.6);
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:2;
+    pointer-events:none;
+    overflow:visible;
+    filter:drop-shadow(0 0 4px rgba(255,255,255,.8)) drop-shadow(0 0 9px rgba(176,140,255,.85));
   }
-  .battlefield .bf-vs{
+  .bbl-line-svg line{
+    stroke:#fff;
+    stroke-width:.1;
+    stroke-linecap:round;
+    opacity:.95;
+  }
+  /* Bulles en verre teinté : fond radial translucide + flou (matière verre, cohérente avec les cadres
+     HOSTILES/VOTRE ESCOUADE juste au-dessus/en-dessous) + reflet glacé (::before) + halo coloré. */
+  .bbl-bubble{
     position:relative;
-    font-family:var(--font-title);
-    font-size:9px;
-    letter-spacing:3px;
-    color:var(--text);
-    padding:6px 14px;
-    border-radius:20px;
-    background:linear-gradient(180deg, #1d1730, #0e0b17);
-    border:1px solid rgba(139,92,246,.45);
-    box-shadow:0 4px 12px rgba(0,0,0,.6);
+    width:85%;
+    height:85%;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:#fff;
+    overflow:hidden;
+    backdrop-filter:blur(5px) saturate(165%); -webkit-backdrop-filter:blur(5px) saturate(165%);
+    box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 -4px 7px rgba(0,0,0,.3) inset, 0 3px 7px rgba(0,0,0,.45);
+    transition:transform .12s;
   }
+  .bbl-bubble::before{   /* reflet glacé, façon bille de verre */
+    content:"";
+    position:absolute;
+    top:9%; left:16%;
+    width:40%; height:28%;
+    border-radius:50%;
+    background:rgba(255,255,255,.6);
+    filter:blur(2.5px);
+    pointer-events:none;
+  }
+  .bbl-bubble svg{ position:relative; z-index:1; width:50%; height:50%; filter:drop-shadow(0 1px 2px rgba(0,0,0,.55)); }
+  .bbl-bubble:active{ transform:scale(.9); }
+  .bbl-bubble.t-atq{ background:radial-gradient(circle at 36% 30%, rgba(255,205,160,.88), rgba(255,154,61,.5) 55%, rgba(150,66,8,.34) 100%); border:1px solid rgba(255,164,80,.7); }
+  .bbl-bubble.t-vit{ background:radial-gradient(circle at 36% 30%, rgba(224,206,255,.88), rgba(176,140,255,.5) 55%, rgba(92,48,190,.34) 100%); border:1px solid rgba(188,154,255,.7); }
+  .bbl-bubble.t-def{ background:radial-gradient(circle at 36% 30%, rgba(205,228,255,.88), rgba(124,172,255,.5) 55%, rgba(30,74,170,.34) 100%); border:1px solid rgba(140,185,255,.7); }
+  .bbl-bubble.t-pv{  background:radial-gradient(circle at 36% 30%, rgba(205,255,222,.88), rgba(124,232,163,.5) 55%, rgba(18,112,62,.34) 100%); border:1px solid rgba(140,235,175,.7); }
+  .bbl-bubble.t-ult{ background:radial-gradient(circle at 36% 30%, rgba(255,243,208,.92), rgba(255,212,104,.55) 55%, rgba(156,104,10,.36) 100%); border:1px solid rgba(255,221,130,.78); animation:bblUltPulse 1s infinite; }
+  @keyframes bblUltPulse{
+    0%,100%{ box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 -4px 7px rgba(0,0,0,.3) inset, 0 3px 7px rgba(0,0,0,.45), 0 0 0 rgba(255,220,100,.7); }
+    50%{ box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 -4px 7px rgba(0,0,0,.3) inset, 0 3px 7px rgba(0,0,0,.45), 0 0 11px rgba(255,220,100,.9); }
+  }
+  .bbl-cell.sel .bbl-bubble{ transform:scale(1.1); box-shadow:0 0 0 2px #fff, 0 2px 8px rgba(0,0,0,.6); }
+  /* V0.03.17 (demande d'Alex) : le badge numéroté (1,2,3...) affiché au-dessus des bulles sélectionnées a été retiré, jugé inutile -- le surlignage (scale + liseré blanc ci-dessus) suffit à montrer quelles bulles sont dans la ligne. */
+  .bbl-cell.popping .bbl-bubble{ animation:bblPop .35s ease forwards; }
+  @keyframes bblPop{
+    0%{ transform:scale(1); opacity:1; }
+    100%{ transform:scale(1.9); opacity:0; }
+  }
+  /* Bulles non utilisées pour la ligne : se réduisent et disparaissent pendant que la ligne reste
+     affichée (V0.03.13, demande d'Alex : "les bulles qui ne sont pas utilisées pour faire la ligne ce
+     réduisent et disparaissent"). Durée alignée sur le début de la phase "holding" (voir BBL_HOLD_MS). */
+  .bbl-cell.fading .bbl-bubble{ animation:bblFadeShrink .35s ease forwards; }
+  @keyframes bblFadeShrink{
+    0%{ transform:scale(1); opacity:1; }
+    100%{ transform:scale(.25); opacity:0; }
+  }
+  /* Ligne relâchée trop tôt (moins de 6 bulles touchées) : secouement de feedback, puis la ligne (pas
+     les bulles) se réinitialise -- voir bblEndDrag(). */
+  .bbl-board.invalid{ animation:bblShake .3s; }
+  @keyframes bblShake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-4px); }
+    75%{ transform:translateX(4px); }
+  }
+  /* V0.03.15 (demande d'Alex : "quand c'est en combat auto grise les bulles pour que le joueur n'y
+     touche pas") : tant que le mode AUTO est actif, les lignes se jouent toutes seules
+     (bblAutoPlayerCycle()) -- les bulles sont grisées (même traitement que les cartes hors service
+     ailleurs dans le jeu, cf .unit.dead) et pointer-events:none sur le plateau entier empêche tout
+     geste de traçage d'être capté pendant ce temps. */
+  .bbl-board.auto-locked{ pointer-events:none; }
+  .bbl-board.auto-locked .bbl-bubble{ opacity:.32; filter:grayscale(1) brightness(.65); cursor:default; }
+  .bbl-board.auto-locked .bbl-bubble.t-ult{ animation:none; }
 
   /* ---------- Unités en combat ---------- */
   .roster{
@@ -3838,6 +3960,16 @@
      comme .mod-card partout ailleurs), d'où une largeur propre plutôt que la recette verticale de
      .tut-squad-mock/.tut-cbt-mock. */
   .tut-module-mock{width:220px; margin:0 auto;}
+  /* Mini plateau de bulles (V0.03.16, cf tutBubbleMock()) -- même grille 6x3 et mêmes classes que le
+     vrai combat (.bbl-board/.bbl-cell/.bbl-bubble/.bbl-line-svg), juste rétrécie pour tenir dans la
+     page ; .bbl-cell n'a pas de taille propre hors de son contexte de grid normal (le vrai #bblBoard),
+     donc width/aspect-ratio sont redonnés ici explicitement. */
+  .tut-bubble-mock{width:270px; margin:0 auto;}
+  .tut-bubble-mock .bbl-cell{width:100%; aspect-ratio:1/1;}
+  /* Bulle ULT seule, mise en avant (V0.03.16, cf tutUltBubbleMock()) -- même taille que les autres
+     badges ronds du tutoriel (.tut-badge/.tut-cbt-mock, 92px). */
+  .tut-ultbubble-mock{width:92px; margin:0 auto;}
+  .tut-ultbubble-mock .bbl-cell{width:92px; height:92px;}
   .tut-title{font-family:var(--font-title); font-size:15px; font-weight:900; letter-spacing:1.5px; color:#fff;}
   .tut-text{font-size:14.5px; line-height:1.55; color:var(--text-dim); max-width:300px;}
   .tut-dots{display:flex; gap:6px; justify-content:center; align-items:center; padding:8px 0;}
@@ -6616,7 +6748,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.10</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.17</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6652,8 +6784,7 @@
     </div>
 
     <div class="battlefield">
-      <div class="bf-line"></div>
-      <div class="bf-vs">CHAMP DE BATAILLE</div>
+      <div class="bbl-frame"><div class="bbl-board" id="bblBoard"></div></div>
     </div>
 
     <div class="zone player-zone">
@@ -6960,9 +7091,33 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.10';
+var BUILD_VERSION = 'V0.03.17';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.17', items:[
+    'MINI-JEU DE BULLES : le petit numéro affiché au-dessus des bulles sélectionnées a été retiré (le surlignage blanc suffit à montrer la ligne en cours).'
+  ]},
+  { v:'V0.03.16', items:[
+    'TUTORIEL : ajout de deux nouvelles pages qui expliquent le mini-jeu de bulles (comment relier les bulles, et ce que fait chaque type de bulle) pour mieux guider les nouveaux joueurs.'
+  ]},
+  { v:'V0.03.15', items:[
+    'MINI-JEU DE BULLES : les bulles sont maintenant grisées et impossibles à toucher tant que le mode AUTO est activé (les lignes se jouent déjà toutes seules dans ce mode).'
+  ]},
+  { v:'V0.03.14', items:[
+    'MINI-JEU DE BULLES : quand la bulle ULTIME de ta ligne explose, la carte de l\'unité s\'affiche maintenant en grand avec la même animation que pour un upgrade (envol, lueur, impact, étincelles), avant de se refermer toute seule juste après.'
+  ]},
+  { v:'V0.03.13', items:[
+    'MINI-JEU DE BULLES : le trait qui relie les bulles pendant le tracé est maintenant visible (ligne lumineuse entre chaque bulle touchée), pour mieux voir le chemin en train de se former.',
+    'MINI-JEU DE BULLES : au relâchement, les bulles non utilisées rétrécissent et disparaissent en douceur, tandis que les 6 bulles de la ligne restent affichées un court instant avant d\'exploser avec une animation.',
+    'MINI-JEU DE BULLES : le tracé peut désormais zigzaguer librement entre les 3 rangées (haut/milieu/bas) colonne par colonne, pas seulement en ligne droite.'
+  ]},
+  { v:'V0.03.12', items:[
+    'MINI-JEU DE BULLES : la ligne doit maintenant être tracée en un seul geste, doigt maintenu sur l\'écran (comme pour relier des points), sans le relever avant d\'avoir touché les 6 bulles. Relever le doigt avant la fin annule la ligne (les bulles du plateau restent en place pour retenter) ; une fois les 6 touchées, la ligne s\'envoie toute seule -- le bouton RELÂCHER a disparu, il n\'est plus nécessaire.',
+    'MINI-JEU DE BULLES : nouvel habillage -- l\'encadré et les bulles reprennent le style "verre" déjà utilisé pour les cadres HOSTILES / VOTRE ESCOUADE (coins biseautés, flou, bulles en verre teinté selon leur couleur de stat).'
+  ]},
+  { v:'V0.03.11', items:[
+    'NOUVEAU : en mission (combat), le "champ de bataille" devient un mini-jeu de bulles -- une grille de bulles colorées (ATQ/VIT/DEF/PV + ULT quand une carte a son ultime prêt) apparaît entre les deux escouades. Enchaîne jusqu\'à 6 bulles de gauche à droite puis relâche la ligne pour déclencher des actions bonus en plus des attaques automatiques (qui continuent normalement) : ATQ/VIT frappent l\'escouade ennemie, DEF pose un bouclier, PV soigne, et la bulle ULT déclenche l\'ultime complet de la carte. Le bouton AUTO joue aussi les lignes automatiquement, et l\'escouade ennemie fait de son côté le même mini-jeu, en fond, sans plateau visible.'
+  ]},
   { v:'V0.03.10', items:[
     'CORRECTIF : en TIRAGE, les 3 cartes proposées à l\'achat s\'affichaient parfois au niveau déjà atteint par le joueur sur cette carte, au lieu du niveau 1 réellement obtenu à l\'achat. Corrigé (LABO affichait déjà correctement le niveau 1).'
   ]},
@@ -7726,6 +7881,39 @@ function tutRaretesMock(){
   const cols = ['rare', 'epique', 'legendaire'].map(k => (RARITIES[k] || {}).color || '#888');
   return `<div class="tut-chip-row">${cols.map(c => `<div class="tut-rar-sq" style="--c:${c};"></div>`).join('')}</div>`;
 }
+// Mini plateau du combat en bulles (V0.03.16, demande d'Alex : "met à jour le tuto pour y inclure le
+// principe du nouveau combat avec les bulles") -- même grille 6x3, mêmes icônes (bblIcon()) et même
+// ligne connectée (bblLineSvg()) que le vrai plateau de combat, figées sur un tracé d'exemple en
+// zigzag (même tracé que les captures de validation de V0.03.13 : col0,row0 -> col1,row2 -> col2,row0
+// -> col3,row2 -> col4,row1 -> col5,row0) qui montre à la fois les 3 rangées et la bulle ULT dorée.
+// bblChain est sauvegardé puis restauré (même technique que tutSquadMock avec `squad`) : le tutoriel
+// peut être rouvert en pleine mission (bouton "Tutoriel" des OPTIONS), on ne doit donc jamais altérer
+// durablement l'état réel d'un combat en cours. On ne touche en revanche jamais à bblBoard ni à
+// #bblBoard lui-même (pas d'id "bblBoard" ici) : les cellules sont construites à la main, pas via
+// bblRenderBoard(), qui dessine spécifiquement le VRAI plateau.
+function tutBubbleMock(){
+  const types = ['atq','vit','def','pv','ult','vit','def','pv','atq','vit','def','pv','atq','vit','def','pv','atq','vit'];
+  const path = [0, 13, 2, 15, 10, 5];
+  const chainBackup = bblChain;
+  bblChain = path;
+  let line = '';
+  try{ line = bblLineSvg(); }catch(_){}
+  const cellsHtml = types.map((t, i) => {
+    const pos = path.indexOf(i);
+    const sel = pos !== -1 ? ' sel' : '';
+    const ord = pos !== -1 ? ` data-ord="${pos + 1}"` : '';
+    return `<div class="bbl-cell${sel}"${ord}><div class="bbl-bubble t-${t}">${bblIcon(t)}</div></div>`;
+  }).join('');
+  bblChain = chainBackup;
+  return `<div class="bbl-board tut-bubble-mock">${cellsHtml}${line}</div>`;
+}
+// Bulle ULT seule, mise en avant (V0.03.16) -- même rendu (classe t-ult, pulsation bblUltPulse) que sur
+// le vrai plateau, pour illustrer ce cas particulier sans redessiner toute la grille.
+function tutUltBubbleMock(){
+  let icon = '';
+  try{ icon = bblIcon('ult'); }catch(_){}
+  return `<div class="tut-ultbubble-mock"><div class="bbl-cell"><div class="bbl-bubble t-ult">${icon}</div></div></div>`;
+}
 var TUT_STEPS = [
   { title:() => 'BIENVENUE, ' + ((typeof player !== 'undefined' && player && player.name) ? player.name.toUpperCase() : 'COMMANDANT'),
     text:'Voici un tour rapide des fonctionnalités du jeu, en quelques pages. Tu peux le passer à tout moment avec le bouton « Passer ».',
@@ -7736,6 +7924,15 @@ var TUT_STEPS = [
     mock: tutSquadMock },
   { title:'ORDRE DE MISSION', text:'Lance une mission pour gagner de l\'expérience, de l\'or et des récompenses. Chaque mission comporte plusieurs vagues d\'ennemis.',
     mock: () => tutIconFrom('#tileOrders .mt-icon', 'amber') },
+  // V0.03.16, demande d'Alex : "met à jour le tuto pour y inclure le principe du nouveau combat avec
+  // les bulles, explique correctement pour un nouveau joueur" -- deux étapes (le geste de tracé, puis
+  // les effets) plutôt qu'une seule, pour rester digeste comme le reste du tutoriel ; placées juste
+  // après ORDRE DE MISSION (où ce plateau apparaît) et avant CAPACITÉS ULTIMES (que la 2e étape
+  // complète : comment on déclenche un ultime en pratique).
+  { title:'LE COMBAT EN BULLES', text:'En mission, une grille de bulles apparaît entre les deux escouades : glisse le doigt pour en relier jusqu\'à 6, une par colonne de gauche à droite (tu peux zigzaguer entre les 3 rangées). La ligne s\'envoie dès que les 6 sont touchées.',
+    mock: tutBubbleMock },
+  { title:'EFFETS DES BULLES', text:'Chaque bulle agit en plus de vos attaques automatiques : ATQ/VIT frappent l\'ennemi, DEF protège ta carte la plus résistante, PV soigne la plus vitale. La bulle dorée ULT déclenche l\'ultime complet du mech, et AUTO peut jouer les lignes à ta place.',
+    mock: tutUltBubbleMock },
   { title:'CAPACITÉS ULTIMES', text:'Chaque mech possède une capacité ultime : sa jauge se remplit en combat, puis se déclenche pour un effet puissant.',
     mock: tutUltimateMock },
   { title:'LA FABRIQUE', text:'Dépense de l\'or ou des cristaux à la Fabrique pour obtenir de nouvelles cartes de mechs à ajouter à ta collection.',
@@ -10320,6 +10517,32 @@ const BASE_TICK = 1400;
 let playerTeam = [];
 let enemyTeam = [];
 
+// ---------- Mini-jeu de bulles (V0.03.11, demande d'Alex) ----------
+// Grille de 3 lignes x 6 colonnes au-dessus du "champ de bataille" : des bulles colorées (ATQ/VIT/DEF/
+// PV aléatoires + une bulle ULT spéciale quand une carte a son ultime prêt) apparaissent dans les cases.
+// Le joueur enchaîne des bulles de gauche à droite (au plus une par colonne) puis relâche sa ligne :
+// chaque bulle déclenche une action BONUS, EN PLUS des attaques automatiques existantes de
+// combatRound()/playerAct()/enemyAct() qui continuent de tourner sans aucun changement (demande d'Alex :
+// "les bulles s'ajoutent aux attaques auto"). Même système invisible côté ennemi (bblEnemyCycle()), et
+// le bouton AUTO existant fait aussi jouer les lignes du joueur automatiquement (bblAutoPlayerCycle()).
+const BBL_COLS = 6, BBL_ROWS = 3, BBL_TYPES = ['atq', 'vit', 'def', 'pv'];
+const BBL_ATK_MULT = 1;        // force des frappes bonus ATQ/VIT (relatif à une attaque auto normale)
+const BBL_HEAL_PCT = 0.08;     // bulle PV : soin de la carte la plus forte en PV (8% de ses PV MAX)
+const BBL_SHIELD_TURNS = 2;    // bulle DEF : bouclier (-50% dégâts) sur la carte la plus forte en DEF, 2 tours -- réutilise le mécanisme u.shield déjà utilisé par plusieurs ultimes (PYLON, HARKO...)
+const BBL_CYCLE_TICKS = 3;     // cadence (en nombre de tours de combat) du cycle ennemi invisible + du cycle AUTO du joueur
+const BBL_HOLD_MS = 1000;      // durée pendant laquelle la ligne complète reste affichée avant d'exploser (demande d'Alex : "reste une seconde")
+const BBL_POP_MS = 350;        // durée de l'animation d'explosion des bulles de la ligne (doit correspondre à @keyframes bblPop en CSS)
+const BBL_ULT_REVEAL_MS = 2700; // V0.03.14 (demande d'Alex) : durée d'affichage de la fiche "carte en grand" quand la bulle ULT pop (laisse voir l'envol, l'impact et la bannière de playCardToss('fusion',...) avant de se refermer)
+let bblBoard = [];             // 18 cases (3x6) : chaque case est { type:'atq'|'vit'|'def'|'pv'|'ult', ultIdx? } ou null si vide
+let bblChain = [];             // indices (dans bblBoard) sélectionnés par le joueur, dans l'ordre du tracé
+let bblUltIdx = null;          // index (dans playerTeam) de la carte actuellement représentée par la bulle ULT sur le plateau, ou null
+let bblTickCounter = 0;        // compteur de tours de combat écoulés depuis le dernier cycle ennemi/AUTO
+let bblDragging = false;       // true pendant le geste de traçage (du pointerdown au pointerup/cancel)
+let bblActivePointerId = null; // id du pointeur qui trace actuellement la ligne (ignore un 2e doigt en cours de geste)
+let bblResolving = false;      // true pendant toute la séquence de relâchement (attente + explosion) -- bloque un nouveau tracé
+let bblPhase = 'idle';         // 'idle' | 'holding' (ligne figée, le reste du plateau s'efface) | 'popping' (la ligne explose) -- pilote bblRenderBoard()
+let bblUltRevealToken = 0;     // incrémenté à chaque fiche ULT ouverte (bblShowUltCardReveal) : la fermeture auto programmée ne ferme que si elle correspond toujours au dernier jeton (évite de fermer une fiche que le joueur a rouverte lui-même entre-temps)
+
 function freshPlayerTeam(){
   const team = squadEntries(curSquad).map(e => makePlayerFromDef(e.def, e.rar));
   applyModuleSquadBonus(team);
@@ -10446,6 +10669,7 @@ function initBattle(){
   saphyrTriggered = false;
   tArmsTriggered = false;
   battleOver = false;
+  bblChain = []; bblUltIdx = null; bblTickCounter = 0; bblBoard = [];
   updateDomeScene();
   if(missionCfg().harvest){
     enemyTeam = [];
@@ -10455,6 +10679,7 @@ function initBattle(){
   }
   enemyTeam = freshEnemyTeam(wave);
   document.getElementById('waveLabel').textContent = "VAGUE " + wave;
+  bblGenBoard();
   render();
   log("Vague " + wave + " — les hostiles apparaissent.");
   if(wave > bestWave){
@@ -10547,6 +10772,7 @@ function render(){
   updateDomeScene();
   renderRoster('playerRoster', playerTeam, true);
   renderRoster('enemyRoster', enemyTeam, false);
+  bblRenderBoard();
 }
 
 // Les cartes de combat sont construites UNE fois par vague, puis seulement mises à jour
@@ -11147,6 +11373,15 @@ function tick(){
   playerStatusTick();
   enemyStatusTick();
   combatRound();
+  bblCheckUltSpawn();
+  if(!battleOver && aliveList(enemyTeam).length && aliveList(playerTeam).length){
+    bblTickCounter++;
+    if(bblTickCounter >= BBL_CYCLE_TICKS){
+      bblTickCounter = 0;
+      bblEnemyCycle();
+      if(auto) bblAutoPlayerCycle();
+    }
+  }
   render();
   checkEnd();
 }
@@ -11194,6 +11429,310 @@ function enemyAct(a){
   dealDamage(a, t, mult, 'playerRoster', playerTeam.indexOf(t));
 }
 
+// ---------- Mini-jeu de bulles : logique (V0.03.11) ----------
+// Voir le commentaire au-dessus de "let bblBoard = []" (déclarations d'état) pour le principe général.
+// Tout ce bloc est ADDITIF : combatRound()/playerAct()/enemyAct() ci-dessus ne sont pas modifiées, les
+// bulles ajoutent simplement des actions bonus par-dessus (demande d'Alex).
+function bblRandType(){ return BBL_TYPES[Math.floor(Math.random() * BBL_TYPES.length)]; }
+
+// Carte vivante d'une équipe avec la plus haute valeur d'une stat donnée ('atk'/'vit'/'def'/'maxHp') --
+// générique, réutilisé pour cibler la bulle correspondante côté joueur ET côté ennemi.
+function bblStrongest(team, stat){
+  const alive = aliveList(team);
+  if(!alive.length) return null;
+  return alive.reduce((best, u) => (u[stat] || 0) > (best[stat] || 0) ? u : best, alive[0]);
+}
+
+// Carte du joueur dont l'ultime est prêt (énergie pleine) et qui n'est pas déjà représentée par la
+// bulle ULT actuellement sur le plateau -- sert à savoir si une nouvelle bulle ULT doit apparaître.
+function bblFindReadyPlayer(){
+  return playerTeam.findIndex((u, i) => u.alive && u.energy >= u.maxEnergy && i !== bblUltIdx);
+}
+
+function bblCellCol(i){ return i % BBL_COLS; }
+
+// Remplit les 18 cases du plateau avec des types aléatoires, puis injecte une bulle ULT (dans une case
+// libre au hasard) si une carte du joueur a son ultime prêt et n'est pas déjà représentée. Appelé au
+// début de chaque vague (initBattle()) et après chaque ligne relâchée (bblReleasePlayerChain()).
+function bblGenBoard(){
+  bblBoard = [];
+  for(let i = 0; i < BBL_COLS * BBL_ROWS; i++) bblBoard.push({ type: bblRandType() });
+  bblUltIdx = null;
+  const readyIdx = bblFindReadyPlayer();
+  if(readyIdx !== -1){
+    const slot = Math.floor(Math.random() * bblBoard.length);
+    bblBoard[slot] = { type:'ult', ultIdx: readyIdx };
+    bblUltIdx = readyIdx;
+  }
+}
+
+// Icônes des bulles : réutilise les tracés SVG déjà définis pour les badges de stat (CAT_ICONS, voir
+// plus haut dans le fichier), plus un éclair doré pour la bulle ULT (cohérent avec la jauge ultime
+// jaune existante, .cbt-ult).
+const BBL_ICON_PATHS = { atq: CAT_ICONS.atk, vit: CAT_ICONS.vit, def: CAT_ICONS.def, pv: CAT_ICONS.hp,
+  ult: '<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>' };
+function bblIcon(type){
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${BBL_ICON_PATHS[type] || ''}</svg>`;
+}
+
+// Reconstruit l'affichage du plateau à partir de bblBoard/bblChain -- rappelé à chaque étape du geste
+// de traçage, après chaque ligne relâchée, et depuis render() (comme le reste de l'écran de combat).
+// V0.03.13 (demande d'Alex) : affiche aussi la ligne visible entre les bulles tracées (bblLineSvg), et
+// pilote les deux phases de la séquence de relâchement via bblPhase/bblResolving -- 'fading' sur les
+// bulles hors-ligne (qui se réduisent et disparaissent), 'popping' sur les bulles de la ligne (qui
+// explosent après le temps de pause bblPhase==='holding').
+function bblRenderBoard(){
+  if(HEADLESS || BG_SWAP || !inInfinite) return;
+  const board = document.getElementById('bblBoard');
+  if(!board) return;
+  board.classList.toggle('auto-locked', auto);   // V0.03.15 : bulles grisées + non cliquables tant que le mode AUTO tourne
+  board.innerHTML = bblBoard.map((cell, i) => {
+    const selPos = bblChain.indexOf(i);
+    const inChain = selPos !== -1;
+    let cls = 'bbl-cell';
+    if(inChain) cls += ' sel';
+    if(bblResolving && !inChain) cls += ' fading';
+    if(bblPhase === 'popping' && inChain) cls += ' popping';
+    const ord = inChain ? ' data-ord="' + (selPos + 1) + '"' : '';
+    const bubble = cell ? `<div class="bbl-bubble t-${cell.type}">${bblIcon(cell.type)}</div>` : '';
+    return `<div class="${cls}" data-i="${i}"${ord}>${bubble}</div>`;
+  }).join('') + bblLineSvg();
+}
+
+// Ligne visible entre les bulles déjà tracées (demande d'Alex : "le joueur puisse voir sa ligne entre
+// les bulles qui ce crée") -- un simple SVG superposé au plateau, un point au centre de chaque case de
+// la chaîne, dans l'ordre du tracé. viewBox="0 0 BBL_COLS BBL_ROWS" (même proportions que la grille de
+// cases carrées) + preserveAspectRatio="none" pour que les coordonnées "case" (col+0.5, row+0.5) tombent
+// exactement au centre de chaque bulle quelle que soit la taille réelle à l'écran, sans déformer le
+// trait (l'habillage -- épaisseur, lueur -- est en CSS externe, qui s'applique en pixels réels).
+// Un segment <line> par paire de bulles consécutives, RACCOURCI aux deux bouts (BBL_LINE_GAP, en
+// unités de case) pour que le trait s'arrête DANS L'ESPACE entre les bulles, sans jamais passer sous
+// leur centre : les bulles sont en verre translucide (demande d'Alex, V0.03.12), et un trait relié
+// centre à centre (testé en premier) brille À TRAVERS elles -- sa lueur les "délave" complètement
+// pendant la pause d'affichage de la ligne, un vrai bug visuel repéré aux captures d'écran, pas
+// seulement une question de goût. D'où plusieurs petits segments plutôt qu'une seule polyline.
+const BBL_LINE_GAP = 0.46;   // un peu plus que la moitié du diamètre visuel d'une bulle (.85/2=.425)
+function bblLineSvg(){
+  if(bblChain.length < 2) return '';
+  const pt = i => { const col = bblCellCol(i), row = Math.floor(i / BBL_COLS); return [col + 0.5, row + 0.5]; };
+  const segs = [];
+  for(let k = 0; k < bblChain.length - 1; k++){
+    const [x1, y1] = pt(bblChain[k]), [x2, y2] = pt(bblChain[k + 1]);
+    const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len, uy = dy / len;
+    const ax = x1 + ux * BBL_LINE_GAP, ay = y1 + uy * BBL_LINE_GAP;
+    const bx = x2 - ux * BBL_LINE_GAP, by = y2 - uy * BBL_LINE_GAP;
+    segs.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`);
+  }
+  return `<svg class="bbl-line-svg" viewBox="0 0 ${BBL_COLS} ${BBL_ROWS}" preserveAspectRatio="none">${segs.join('')}</svg>`;
+}
+
+// Trouve la case (.bbl-cell) sous un point de l'écran -- sert à suivre le doigt pendant le geste de
+// traçage (pointermove), puisque le pointeur est capturé sur #bblBoard et ne cible donc plus
+// directement la bulle survolée (voir le bloc d'écouteurs plus bas : c'est voulu, ça permet au geste de
+// continuer même quand le doigt sort d'une case précise). Retourne -1 si rien sous le point.
+function bblCellAt(x, y){
+  const el = document.elementFromPoint(x, y);
+  const cell = el && el.closest ? el.closest('#bblBoard .bbl-cell') : null;
+  return cell ? +cell.dataset.i : -1;
+}
+
+// ---- Traçage en un seul geste (V0.03.12, demande d'Alex) ----
+// Le joueur doit tracer la ligne complète d'une seule pression continue, sans relever le doigt :
+// bblStartDrag() au pointerdown, bblDragTo() à chaque pointermove pendant que le doigt glisse sur le
+// plateau, bblEndDrag() au relâchement (pointerup/cancel). Tant que les 6 bulles (une par colonne,
+// colonnes consécutives 0->1->2->3->4->5) n'ont pas toutes été touchées, relâcher le doigt annule la
+// ligne (elle se réinitialise) SANS toucher aux bulles du plateau, qui restent en place pour retenter.
+// Une fois les 6 touchées, relâcher le doigt envoie la ligne automatiquement -- plus besoin d'un bouton
+// RELÂCHER séparé.
+function bblStartDrag(i, pointerId){
+  if(battleOver || bblActivePointerId != null || bblResolving || auto) return;   // ignore un second doigt pendant un geste en cours, pendant la séquence de relâchement (V0.03.13), ou tant que le mode AUTO joue les lignes tout seul (V0.03.15) -- doublon défensif de pointer-events:none (.bbl-board.auto-locked), au cas où ce guard serait atteint autrement
+  if(!bblBoard[i]) return;
+  bblActivePointerId = pointerId;
+  bblDragging = true;
+  bblChain = [i];
+  bblRenderBoard();
+}
+function bblDragTo(i){
+  if(!bblDragging || auto || i === -1 || !bblBoard[i]) return;   // V0.03.15 : doublon défensif (cf bblStartDrag) si le mode AUTO bascule en pleine manipulation
+  const pos = bblChain.indexOf(i);
+  if(pos !== -1){
+    if(pos === bblChain.length - 1) return;           // toujours sur la même bulle : rien à faire
+    bblChain = bblChain.slice(0, pos + 1);             // retour en arrière sur une bulle déjà tracée : on y retombe
+    bblRenderBoard();
+    return;
+  }
+  const lastCol = bblCellCol(bblChain[bblChain.length - 1]);
+  if(bblCellCol(i) !== lastCol + 1) return;            // doit être la colonne immédiatement suivante (gauche -> droite, sans saut)
+  bblChain.push(i);
+  bblRenderBoard();
+}
+function bblEndDrag(){
+  if(!bblDragging) return;
+  bblDragging = false;
+  bblActivePointerId = null;
+  if(bblChain.length === BBL_COLS){
+    bblReleasePlayerChain();      // les 6 bulles ont été tracées : la ligne s'envoie d'elle-même
+  } else if(bblChain.length){
+    const board = document.getElementById('bblBoard');
+    if(board){ board.classList.remove('invalid'); void board.offsetWidth; board.classList.add('invalid'); }
+    bblChain = [];                // incomplète : la ligne se réinitialise (les bulles du plateau restent)
+    bblRenderBoard();
+  }
+}
+
+// Résout UNE bulle (ATQ/VIT/DEF/PV) pour un camp donné -- générique, réutilisé à la fois pour la ligne
+// du joueur (bblReleasePlayerChain) et pour le cycle invisible de l'ennemi (bblEnemyCycle), en
+// inversant simplement team/foeTeam/elIdFoe. ATQ/VIT infligent une frappe bonus immédiate sur l'équipe
+// adverse (VIT frappe en se basant sur la VIT au lieu de l'ATQ, même procédé que hitAllByVit côté
+// ultimes) ; DEF pose un bouclier et PV soigne, sur la carte de SA PROPRE équipe la plus forte dans la
+// stat correspondante (demande d'Alex, clarifiée : "DEF = bouclier, PV = soin"). La bulle ULT n'est PAS
+// traitée ici : elle déclenche l'ultime complet de la carte (ULT_EFFECTS), voir bblReleasePlayerChain.
+function bblResolveType(type, team, foeTeam, elIdFoe){
+  if(type === 'atq' || type === 'vit'){
+    const atkU = bblStrongest(team, type === 'atq' ? 'atk' : 'vit');
+    const targets = aliveList(foeTeam);
+    if(!atkU || !targets.length) return;
+    const t = targets[Math.floor(Math.random() * targets.length)];
+    const realAtk = atkU.atk;
+    if(type === 'vit') atkU.atk = atkU.vit;
+    dealDamage(atkU, t, BBL_ATK_MULT, elIdFoe, foeTeam.indexOf(t));
+    if(type === 'vit') atkU.atk = realAtk;
+  } else if(type === 'def'){
+    const u = bblStrongest(team, 'def');
+    if(u) u.shield = Math.max(u.shield || 0, BBL_SHIELD_TURNS);
+  } else if(type === 'pv'){
+    const u = bblStrongest(team, 'maxHp');
+    if(u) selfHeal(u, BBL_HEAL_PCT);
+  }
+}
+
+// V0.03.14 (demande d'Alex : "lorsqu'il y a une bulle d'ulti que le joueur fait pop dans sa lignée,
+// mets l'animation de l'upgrade de la carte pour la montrer en gros, fais qu'elle disparaisse juste
+// après avoir fait l'animation") -- affiche la carte de l'unité en grand avec EXACTEMENT la même
+// animation "carte lancée en l'air" que lors d'un upgrade (playCardToss('fusion', ...) : envol 3D,
+// halo, impact, étincelles, bannière), rejouée sur la fiche de combat #battleModal/#battleModalInner
+// (grâce à o.modalId/o.innerId, déjà prévus pour rejouer cette animation ailleurs que sur #codexModal,
+// cf playCardToss()) plutôt que sur une nouvelle modale. Le contenu est un instantané écrit une seule
+// fois : on n'utilise PAS openBattleModal() (qui lie la fiche à openBattleTarget et la fait se
+// redessiner en continu via refreshBattleModalIfOpen() à chaque tick, ce qui couperait net les classes/
+// particules de l'animation en plein vol) -- openBattleTarget reste donc null tant que le joueur n'a
+// pas lui-même ouvert une fiche, et la fiche se referme toute seule après BBL_ULT_REVEAL_MS.
+function bblShowUltCardReveal(idx){
+  if(HEADLESS || BG_SWAP || !inInfinite) return;
+  const u = playerTeam[idx];
+  if(!u) return;
+  const modal = document.getElementById('battleModal'), inner = document.getElementById('battleModalInner');
+  if(!modal || !inner) return;
+  inner.className = 'codex-modal-inner' + (u.rarity ? ' rar r-' + u.rarity : '') + (u.category ? ' shape-' + u.category : '');
+  inner.innerHTML = `
+    <div class="cx-name-big" style="color:${u.color}">${u.name}</div>
+    ${u.rarity ? `<div class="rar-tag rar-big">${RARITIES[u.rarity].label}</div>` : ''}
+    ${u.level ? `<div class="cx-lvl-tag-big">Nv. ${u.level}</div>` : ''}
+    ${u.category ? `<div class="cx-badge ${u.category}">${STAT_LABELS[u.category]}</div>` : ''}
+    <div class="cx-portrait-big ${u.category ? 'cat-' + u.category : ''}">${u.category ? catEmblem(u.category) : ''}${unitSVG(u.color, u.shape)}</div>
+  `;
+  modal.classList.add('show');
+  const myToken = ++bblUltRevealToken;
+  playCardToss('fusion', { modalId:'battleModal', innerId:'battleModalInner', banner:'ULTIME', sub:u.name });
+  setTimeout(() => {
+    if(bblUltRevealToken !== myToken || openBattleTarget) return;   // le joueur a rouvert/consulté une fiche entre-temps -- on n'y touche pas
+    modal.classList.remove('show');
+  }, BBL_ULT_REVEAL_MS);
+}
+
+// Relâche la ligne du joueur. V0.03.13 (demande d'Alex) : séquence en trois temps au lieu d'une
+// résolution immédiate -- 1) "holding" : la ligne reste affichée, figée, pendant BBL_HOLD_MS (~1s)
+// tandis que les bulles non utilisées s'estompent (classe .fading, animation bblFadeShrink en CSS) ;
+// 2) "popping" : les bulles de la ligne jouent leur animation d'explosion (classe .popping, animation
+// bblPop déjà existante en CSS) pendant BBL_POP_MS ; 3) une fois l'animation terminée, les effets de
+// jeu s'appliquent enfin (même logique qu'avant : ATQ/VIT = frappe bonus, DEF = bouclier, PV = soin,
+// ULT = ultime complet de la carte via useUltimate()), puis le plateau se vide et se régénère. bblChain
+// n'est vidée qu'à cette dernière étape, pour que bblRenderBoard() puisse continuer à distinguer les
+// bulles de la ligne pendant toute la séquence visuelle. bblResolving bloque un nouveau tracé et les
+// cycles automatiques (AUTO, bulle ULT) tant que la séquence n'est pas terminée.
+function bblReleasePlayerChain(){
+  if(battleOver || !bblChain.length || bblResolving) return;
+  bblResolving = true;
+  bblPhase = 'holding';
+  bblRenderBoard();
+  setTimeout(() => {
+    if(battleOver){ bblResolving = false; bblPhase = 'idle'; bblChain = []; bblRenderBoard(); return; }
+    bblPhase = 'popping';
+    bblRenderBoard();
+    setTimeout(() => {
+      const order = bblChain.slice();
+      bblChain = [];
+      order.forEach(i => {
+        const cell = bblBoard[i];
+        if(!cell) return;
+        bblBoard[i] = null;   // "explose" : la case se vide
+        if(cell.type === 'ult'){
+          const u = cell.ultIdx != null ? playerTeam[cell.ultIdx] : null;
+          if(u && u.alive && u.energy >= u.maxEnergy){
+            bblShowUltCardReveal(cell.ultIdx);   // V0.03.14 : fiche carte en grand, animation d'upgrade, puis se referme seule
+            useUltimate(cell.ultIdx);
+          }
+        } else {
+          bblResolveType(cell.type, playerTeam, enemyTeam, 'enemyRoster');
+        }
+      });
+      bblGenBoard();
+      bblResolving = false;
+      bblPhase = 'idle';
+      bblRenderBoard();
+      render();
+      checkEnd();
+    }, BBL_POP_MS);
+  }, BBL_HOLD_MS);
+}
+
+// Le bouton AUTO existant (déjà câblé pour les attaques automatiques, cf document.getElementById
+// ('autoBtn').onclick ci-dessous) fait aussi jouer les lignes du joueur automatiquement : construit une
+// ligne complète en prenant une bulle par colonne (la ligne exacte n'a aucun effet de jeu) puis la
+// relâche, exactement comme le joueur le ferait à la main (demande d'Alex : "on garde la fonction et le
+// bouton auto qui font automatiquement les lignes").
+function bblAutoPlayerCycle(){
+  if(!bblBoard.length || bblResolving) return;   // V0.03.13 : ne pas lancer de nouvelle ligne pendant la séquence d'explosion en cours
+  bblChain = [];
+  for(let col = 0; col < BBL_COLS; col++){
+    for(let row = 0; row < BBL_ROWS; row++){
+      const i = row * BBL_COLS + col;
+      if(bblBoard[i]){ bblChain.push(i); break; }
+    }
+  }
+  if(bblChain.length) bblReleasePlayerChain();
+}
+
+// Côté ennemi, invisible pour le joueur (demande d'Alex : "en fond, pas visible pour le joueur,
+// l'escouade ennemi doit faire pareil aussi") : à chaque cycle, résout 6 bulles bonus aléatoires (une
+// par colonne, comme une ligne complète côté joueur) contre l'escouade du joueur. Les ultimes ennemis
+// ne sont pas concernés ici : ils se déclenchent déjà automatiquement, sans aucune gestion manuelle,
+// dans enemyAct() (inchangé) -- la bulle ULT n'existe que côté joueur, comme alternative au bouton
+// ultime manuel quand le mode AUTO est désactivé.
+function bblEnemyCycle(){
+  for(let col = 0; col < BBL_COLS; col++){
+    bblResolveType(bblRandType(), enemyTeam, playerTeam, 'playerRoster');
+  }
+}
+
+// Vérifie à chaque tour si une nouvelle carte du joueur a son ultime prêt (et n'est pas déjà
+// représentée par la bulle ULT sur le plateau) : si oui, une bulle ULT apparaît dans une case libre au
+// hasard (ni sélectionnée, ni déjà une bulle ULT) -- demande d'Alex : "une bulle apparaît ulti et le
+// joueur doit la mettre dans sa ligne pour la faire pop."
+function bblCheckUltSpawn(){
+  if(bblUltIdx != null || !bblBoard.length || bblResolving) return;   // V0.03.13 : pas de nouvelle bulle ULT pendant la séquence d'explosion en cours
+  const readyIdx = bblFindReadyPlayer();
+  if(readyIdx === -1) return;
+  const free = [];
+  bblBoard.forEach((c, i) => { if(c && c.type !== 'ult' && bblChain.indexOf(i) === -1) free.push(i); });
+  if(!free.length) return;
+  const slot = free[Math.floor(Math.random() * free.length)];
+  bblBoard[slot] = { type:'ult', ultIdx: readyIdx };
+  bblUltIdx = readyIdx;
+  bblRenderBoard();
+}
+
 function startLoop(){
   clearInterval(tickHandle); tickHandle = null;
   if(!HEADLESS && Date.now() - lastTickAt < (BASE_TICK / speed) * 3) lastTickAt = Date.now();
@@ -11204,8 +11743,45 @@ document.getElementById('autoBtn').onclick = (e) => {
   auto = !auto;
   e.target.textContent = "AUTO : " + (auto ? "ON" : "OFF");
   e.target.classList.toggle('auto-on', auto);
+  // V0.03.15 : si le joueur était en plein tracé au moment où l'AUTO bascule ON, on annule proprement
+  // ce tracé (plutôt que de le laisser continuer via un pointeur déjà capturé, qui ignorerait le
+  // pointer-events:none de .auto-locked -- la capture de pointeur contourne le hit-testing normal).
+  if(auto && bblDragging){
+    const board = document.getElementById('bblBoard');
+    if(board && bblActivePointerId != null){ try{ board.releasePointerCapture(bblActivePointerId); }catch(_){} }
+    bblDragging = false;
+    bblActivePointerId = null;
+    bblChain = [];
+  }
+  bblRenderBoard();   // grise/dégrise les bulles immédiatement au basculement, sans attendre le prochain tour
 };
 // (vitesse X2 retirée : la Mission ONE tourne toujours à vitesse normale)
+
+// Mini-jeu de bulles (V0.03.12) : geste de traçage en une seule pression continue, capturé sur
+// #bblBoard lui-même (stable), pas sur les cases individuelles -- elles sont reconstruites à chaque
+// bblRenderBoard() (donc à chaque étape du tracé), une capture posée sur une case serait donc perdue
+// dès le premier re-rendu pendant le geste. pointermove retrouve la case sous le doigt via
+// document.elementFromPoint (bblCellAt), puisque le pointeur capturé ne cible plus directement la
+// bulle survolée.
+(() => {
+  const board = document.getElementById('bblBoard');
+  board.addEventListener('pointerdown', (e) => {
+    const cell = e.target.closest('.bbl-cell');
+    if(!cell) return;
+    try{ board.setPointerCapture(e.pointerId); }catch(_){}
+    bblStartDrag(+cell.dataset.i, e.pointerId);
+  });
+  board.addEventListener('pointermove', (e) => {
+    if(!bblDragging || e.pointerId !== bblActivePointerId) return;
+    bblDragTo(bblCellAt(e.clientX, e.clientY));
+  });
+  const bblEndHandler = (e) => {
+    if(e.pointerId !== bblActivePointerId) return;
+    bblEndDrag();
+  };
+  board.addEventListener('pointerup', bblEndHandler);
+  board.addEventListener('pointercancel', bblEndHandler);
+})();
 
 // ---------- CODEX ----------
 let codexFilter = 'all';
