@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.41</title>
+<title>Projet MECA V0.03.42</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5022,6 +5022,13 @@
     border-color:#ffb0a9;
     box-shadow:0 3px 0 #5c1210, 0 0 18px -2px rgba(255,90,78,.7);
   }
+  /* #modUpgradeToggle appairé à RECHERCHE dans .codex-tools (V0.03.41, demande d'Alex "la même chose
+     que la gestion de carte avec upgrade/recherche") : annule le margin-top hérité de .mod-fuse-toggle
+     (pensé pour un usage plein-largeur autonome, toujours valable pour #sqModeToggle ailleurs) -- la
+     grille 1fr/1fr (.codex-tools) gère déjà l'espacement avec la rangée au-dessus, un margin-top ici
+     désaligne verticalement le bouton par rapport à l'encadré RECHERCHE juste à côté. min-width:0 pour
+     un vrai partage 50/50 de la largeur, comme UPGRADE/RECHERCHE sur GESTION DE CARTE. */
+  #modUpgradeToggle{margin:0; min-width:0;}
   .mod-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px 10px; padding:14px 5px 10px;}
   .mod-item{display:flex; flex-direction:column; align-items:center; gap:6px;}
   .mod-card, .mod-big{
@@ -5229,6 +5236,17 @@
      pour garder exactement le même rendu que les boutons voisins (le champ se vide normalement via
      le clavier ou la touche retour, inutile de dupliquer le contrôle). */
   .codex-search-input::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+  /* #modSearchInput (GESTION DE MODULE, V0.03.41) réutilise .codex-search-box/.codex-search-input tels
+     quels, mais surclasse la taille/graisse/espacement en 12px/13px pour matcher DÉTRUIRE et UPGRADE
+     SUR CET ÉCRAN (déjà cohérents entre eux à 12px/padding 13px, contrairement à GESTION DE CARTE où
+     10.5px a dû être choisi pour les réconcilier) -- même logique de cohérence, valeur adaptée à l'écran. */
+  #modSearchInput, #modSearchInput::placeholder{font-size:12px; letter-spacing:3px;}
+  #modSearchInput{padding:13px 0;}
+  /* Loupe réavancée pour cet écran (texte "RECHERCHER" plus large en 12px/3px qu'en 10.5px/2px sur
+     GESTION DE CARTE) : left:28px (calé sur le texte plus étroit de l'autre écran) chevauchait le
+     placeholder ici. Valeur recalculée pour garder le même espace loupe-texte (~6-7px) que sur
+     GESTION DE CARTE, en tenant compte de la largeur réelle du texte centré sur CET écran. */
+  #modulesView .codex-search-box .search-ico{left:19px;}
   /* RESSOURCES dépliant/repliant (V0.03.39, demande d'Alex "comme un <details>, clic pour afficher,
      reclic pour replier") : #codexResources passe de <div> à <details> (voir #codexMgmtView), même
      mécanique native que FILTRES juste en dessous (#codexFilterDetails) -- replié par défaut, comme
@@ -5266,6 +5284,20 @@
     transform:translateY(-50%) rotate(45deg); transition:transform .2s;
   }
   #codexResources[open] .res-toggle-chevron{transform:translateY(-50%) rotate(-135deg);}
+  /* Panneau MATÉRIAUX de GESTION DE MODULE dépliant/repliant (V0.03.41, demande d'Alex "comme le
+     bouton ressources qu'on vient de faire") : exactement la même recette que #codexResources
+     ci-dessus (chevron, centrage, correctif du gap réservé à tort quand fermé), simplement scopée à
+     #modulesResources/#modulesResBody. */
+  /* font-size remonté à 12px (V0.03.42, demande d'Alex "regarde les tailles des textes") : .team-label
+     (classe de base du <summary>) est à 10px, plus petit que DÉTRUIRE/UPGRADE/RECHERCHE/FILTRES juste
+     en dessous (tous à 12px sur cet écran) -- aligné ici pour un texte visuellement uniforme sur toute
+     la colonne de boutons. letter-spacing (3px) et graisse (700) étaient déjà identiques via .team-label. */
+  #modulesResources > summary{list-style:none; cursor:pointer; position:relative; margin:0; font-size:12px;}
+  #modulesResources > summary::-webkit-details-marker{display:none;}
+  #modulesResources > summary::marker{content:"";}
+  #modulesResources:not([open]) > #modulesResBody{display:none;}
+  #modulesResources:not([open]){gap:0;}
+  #modulesResources[open] .res-toggle-chevron{transform:translateY(-50%) rotate(-135deg);}
   /* Menu FILTRES : .codex-filter/.filter-opt/.sort-opt sont partagées avec les TROPHÉES (déjà
      beseautées, #trFilterDetails) et le sélecteur d'escouade (#sqFilterDetails, également beseauté
      plus bas, V0.02.31) — scopé à #codexFilterDetails pour ne toucher que GESTION DE CARTE. */
@@ -6853,7 +6885,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.41</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.42</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7061,10 +7093,24 @@
     </div>
 
     <div id="modulesView" class="sub-view">
-      <div class="res-panel mod-res-panel" id="modulesResources"></div>
-      <div id="modFilterBox"></div>
+      <!-- MATÉRIAUX en <details> dépliant/repliant + FILTRES déplacé tout en bas (après UPGRADE/RECHERCHE)
+           + RECHERCHE ajoutée à côté d'UPGRADE (V0.03.41, demande d'Alex "comme le bouton ressources
+           et la gestion de carte avec upgrade/recherche") : même recette que #codexResources/
+           #codexResBody et que la paire UPGRADE/RECHERCHE de GESTION DE CARTE, voir CSS plus haut
+           (règles scopées #modulesResources/#modulesResBody/#modSearchInput ci-dessous). -->
+      <details class="res-panel mod-res-panel" id="modulesResources">
+        <summary class="team-label player">MATÉRIAUX<span class="res-toggle-chevron"></span></summary>
+        <div id="modulesResBody"></div>
+      </details>
       <button type="button" class="codex-tool-btn destroy" id="modDestroyToggle">DÉTRUIRE</button>
-      <button type="button" class="mod-fuse-toggle" id="modUpgradeToggle">UPGRADE</button>
+      <div class="codex-tools">
+        <button type="button" class="mod-fuse-toggle" id="modUpgradeToggle">UPGRADE</button>
+        <div class="codex-search-box">
+          <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
+          <input type="text" id="modSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+        </div>
+      </div>
+      <div id="modFilterBox"></div>
       <div class="mod-grid" id="modulesList"></div>
     </div>
   </div>
@@ -7212,9 +7258,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.41';
+var BUILD_VERSION = 'V0.03.42';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.42', items:[
+    'GESTION DE MODULE : le bouton FILTRES est descendu tout en bas de la colonne de boutons.',
+    'GESTION DE MODULE : l\'encadré MATÉRIAUX se déplie/replie désormais au clic, comme RESSOURCES sur GESTION DE CARTE.',
+    'GESTION DE MODULE : nouvel encadré RECHERCHE à côté d\'UPGRADE pour filtrer la liste des modules par nom, au même style que GESTION DE CARTE.',
+    'GESTION DE MODULE : MATÉRIAUX, DÉTRUIRE, UPGRADE, RECHERCHE et FILTRES ont maintenant tous la même taille de texte.'
+  ]},
   { v:'V0.03.41', items:[
     'GESTION DE CARTE : DÉTRUIRE, DOWNGRADE, UPGRADE et RECHERCHE ont maintenant tous la même taille (hauteur et largeur) et le même style de texte.',
     'GESTION DE CARTE : le texte de l\'encadré RECHERCHE est maintenant centré et sa loupe repositionnée.',
@@ -9599,11 +9651,13 @@ function moduleEffIcon(kind){
     ${kind === 'malus' ? '<path d="M22 25 L32 38 L42 25"/><path d="M32 38 V49"/>' : '<path d="M22 38 L32 25 L42 38"/><path d="M32 25 V14"/>'}
   </svg>`;
 }
+// Panneau dépliable (V0.03.41, demande d'Alex) : #modulesResources est désormais le <details> lui-même
+// (le libellé "MATÉRIAUX" vit dans son <summary> statique, voir #modulesView) -- seul le contenu
+// (grille des matériaux) se régénère ici, dans #modulesResBody.
 function renderModulesResources(){
-  const el = document.getElementById('modulesResources');
+  const el = document.getElementById('modulesResBody');
   if(!el) return;
   el.innerHTML = `
-    <div class="team-label player" style="margin:0 0 8px;">MATÉRIAUX</div>
     <div class="res-mats">
       ${MAT_ORDER.map(r => `
         <div class="res-mat r-${r}">
@@ -9877,6 +9931,10 @@ function renderModulesGrid(){
   // cartes classiques (ownedStacks()) : après un upgrade partiel, les exemplaires restants d'une
   // rareté inférieure gardent leur propre tuile au lieu de disparaître derrière la nouvelle rareté.
   let stacks = modOwnedStacks();
+  // Recherche par nom (V0.03.41, demande d'Alex : encadré RECHERCHE à côté d'UPGRADE, comme sur
+  // GESTION DE CARTE) -- filtre AVANT le filtre de mode (UPGRADE/DÉTRUIRE), comme codexSearchQuery
+  // dans renderCodex() : s'applique uniformément quel que soit le mode actif.
+  if(modSearchQuery) stacks = stacks.filter(st => st.def.name.toLowerCase().includes(modSearchQuery));
   // En mode UPGRADE (V0.02.47, demande d'Alex) : plus d'encadré rouge -- la grille affiche directement
   // seulement les tuiles éligibles (assez d'exemplaires À CETTE rareté précise, tous niveaux confondus)
   // plutôt que de toutes les afficher en signalant lesquelles sont prêtes.
@@ -12165,6 +12223,9 @@ let codexFilter = 'all';
 // filtre la liste CARTES (quel que soit le mode : normal, DÉTRUIRE, DOWNGRADE, UPGRADE) par nom, en
 // plus du filtre par stat déjà existant (codexFilter ci-dessus). Vide par défaut = aucun filtre.
 let codexSearchQuery = '';
+// Recherche par nom (V0.03.41, demande d'Alex) : même principe que codexSearchQuery ci-dessus, mais
+// pour la grille GESTION DE MODULE (renderModulesGrid()).
+let modSearchQuery = '';
 // ----- Favoris & classement -----
 // Favori = une pile (personnage + rareté) : protégée contre la destruction et affichée en premier.
 var favorites = {};              // { "CATER-PILLARD|rare": true }
@@ -13303,6 +13364,12 @@ function renderDefuseModal(def, rar, level){
 document.getElementById('codexSearchInput').addEventListener('input', e => {
   codexSearchQuery = e.target.value.trim().toLowerCase();
   renderCodex();
+});
+// Recherche par nom de GESTION DE MODULE (V0.03.41, demande d'Alex) : même principe que
+// #codexSearchInput ci-dessus, pour modSearchQuery/renderModulesGrid().
+document.getElementById('modSearchInput').addEventListener('input', e => {
+  modSearchQuery = e.target.value.trim().toLowerCase();
+  renderModulesGrid();
 });
 document.querySelectorAll('.filter-opt').forEach(btn => {
   btn.onclick = () => {
