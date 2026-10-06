@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.37</title>
+<title>Projet MECA V0.03.41</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1901,11 +1901,17 @@
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
   }
   /* ---------- Fusion ---------- */
+  /* padding vertical ramené de 13px à 10px (V0.03.40, demande d'Alex "même longueur que DÉTRUIRE/
+     DOWNGRADE") : seul usage de .codex-fuse-btn = #fuseToggle (GESTION DE CARTE), aligné en hauteur
+     (38px) sur .codex-tool-btn juste au-dessus dans cet écran. font-size 12px->10.5px et letter-spacing
+     3px->2px (V0.03.40, demande d'Alex "même taille que les autres boutons") : repris tel quel sur
+     .codex-tool-btn (DÉTRUIRE/DOWNGRADE) pour un texte visuellement identique sur toute la rangée. */
   .codex-fuse-btn{
     width:100%;
-    padding:13px 14px;
+    min-width:0;
+    padding:10px 14px;
     border-radius:var(--radius);
-    font-family:var(--font-title); font-size:12px; font-weight:700; letter-spacing:3px;
+    font-family:var(--font-title); font-size:10.5px; font-weight:700; letter-spacing:2px;
     color:#fff; cursor:pointer;
     background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
     border:1px solid rgba(139,92,246,.55);
@@ -1913,11 +1919,9 @@
     display:flex; align-items:center; justify-content:center; gap:10px;
     transition:transform .08s;
   }
-  .codex-fuse-btn::before{
-    content:""; width:16px; height:16px; background:currentColor;
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3v6a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3'/%3E%3Cpath d='M12 15v6'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3v6a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3'/%3E%3Cpath d='M12 15v6'/%3E%3C/svg%3E") center/contain no-repeat;
-  }
+  /* icône retirée (V0.03.40, demande d'Alex "enlève le signe à côté de upgrade") : seul usage de
+     .codex-fuse-btn = #fuseToggle (GESTION DE CARTE), le texte UPGRADE reste seul, toujours centré. */
+  .codex-fuse-btn::before{display:none;}
   .codex-fuse-btn:active{transform:scale(.98);}
   .codex-fuse-btn.active{
     background:linear-gradient(180deg, #8f63ff, #6236e0);
@@ -5175,13 +5179,93 @@
   /* Boutons DÉTRUIRE/DOWNGRADE/UPGRADE : classes exclusives à cet écran (aucun autre usage dans le
      fichier), pas besoin de scope par ID — les couleurs par état (.destroy/.defuse/.active, plus
      haut dans la feuille) restent inchangées par-dessus, seuls le contour et le fond de base changent. */
-  .codex-tool-btn, .codex-fuse-btn{
+  .codex-tool-btn, .codex-fuse-btn, .codex-search-box{
     --cut:10px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     background:
       linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
       linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
   }
+  /* RECHERCHE : nouvel encadré à droite d'UPGRADE (V0.03.39, demande d'Alex), même découpe 2 colonnes
+     que DÉTRUIRE/DOWNGRADE juste au-dessus (.codex-tools, réutilisée telle quelle) et même "verre"
+     biseauté que les boutons de cet écran (.codex-search-box ajouté au sélecteur partagé ci-dessus) --
+     filtre la liste CARTES par nom au fil de la saisie (codexSearchQuery, voir renderCodex()). */
+  .codex-search-box{
+    position:relative;
+    border:1px solid var(--line-strong); box-shadow:var(--shadow-card);
+    display:flex; align-items:center; padding:0 12px;
+    min-width:0;
+  }
+  /* Icône loupe sortie du flux flex (V0.03.40, demande d'Alex "centre bien le texte recherche") : en
+     enfant flex normal (avec gap:8px) elle poussait le texte/placeholder vers la droite au lieu de le
+     laisser au centre réel de l'encadré -- même correctif que le chevron de RESSOURCES plus haut.
+     Épinglée près du bord gauche, l'input peut alors prendre toute la largeur et centrer son texte. */
+  .codex-search-box .search-ico{
+    position:absolute; left:28px; top:50%; transform:translateY(-50%);
+    width:15px; height:15px; color:var(--text-dim);
+  }
+  /* padding vertical ramené de 13px à 10.5px (V0.03.40, demande d'Alex "même longueur que DÉTRUIRE/
+     DOWNGRADE") : aligne la hauteur totale de l'encadré RECHERCHE (38px, bordure comprise) sur celle
+     de .codex-tool-btn juste au-dessus. min-width:0 ajouté au-dessus sur .codex-search-box (et sur
+     .codex-fuse-btn plus haut) : sans ça, la grille à 2 colonnes (.codex-tools, 1fr 1fr) répartit
+     l'espace selon le contenu minimal de chaque case au lieu d'un vrai 50/50, ce qui donnait à UPGRADE
+     et RECHERCHE deux largeurs différentes (contrairement à DÉTRUIRE/DOWNGRADE, déjà égales).
+     text-align:center ajouté (V0.03.40) : le texte (placeholder "RECHERCHER" et saisie) se centre
+     maintenant dans l'encadré, comme UPGRADE et RESSOURCES juste au-dessus. */
+  /* font-family/taille/graisse alignées sur .codex-tool-btn et .codex-fuse-btn (V0.03.40, demande
+     d'Alex "même taille que les autres boutons") : le champ utilisait encore font-ui/12.5px (texte
+     saisi) et le placeholder un 9.5px/1.5px à part -- les trois boutons voisins + le placeholder + la
+     saisie partagent maintenant exactement la même recette typographique. */
+  .codex-search-input{
+    flex:1; min-width:0; background:none; border:none; outline:none; padding:10.5px 0;
+    font-family:var(--font-title); font-size:10.5px; font-weight:700; letter-spacing:2px; color:#fff; text-align:center;
+    -webkit-appearance:none; appearance:none;
+  }
+  .codex-search-input::placeholder{
+    font-family:var(--font-title); font-size:10.5px; letter-spacing:2px; font-weight:700; color:var(--text-dim);
+    text-align:center;
+  }
+  /* webkit insère par défaut une petite croix d'effacement dans <input type="search"> : on la retire
+     pour garder exactement le même rendu que les boutons voisins (le champ se vide normalement via
+     le clavier ou la touche retour, inutile de dupliquer le contrôle). */
+  .codex-search-input::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+  /* RESSOURCES dépliant/repliant (V0.03.39, demande d'Alex "comme un <details>, clic pour afficher,
+     reclic pour replier") : #codexResources passe de <div> à <details> (voir #codexMgmtView), même
+     mécanique native que FILTRES juste en dessous (#codexFilterDetails) -- replié par défaut, comme
+     RESSOURCES de la BOUTIQUE (#shopResDetails). Le <summary> réutilise tel quel le style existant
+     (team-label.player : texte centré, lignes de part et d'autre) et gagne juste un chevron et un
+     curseur cliquable ; le triangle natif du navigateur est masqué.
+     margin:0 ajouté (V0.03.40, demande d'Alex "il est trop haut") : .team-label porte par défaut un
+     margin-bottom:8px (pensé pour séparer un titre du contenu sous lui) -- ici le <summary> est un
+     item du flex column de .res-panel (gap:10px), donc cette marge s'ajoutait EN PLUS du gap et restait
+     réservée même replié (#codexResBody en display:none ne l'annule pas), poussant visuellement le
+     texte vers le haut de l'encadré au lieu du centre. */
+  #codexResources > summary{list-style:none; cursor:pointer; position:relative; margin:0;}
+  #codexResources > summary::-webkit-details-marker{display:none;}
+  #codexResources > summary::marker{content:"";}
+  /* .res-panel passe #codexResources en display:flex (voir plus haut) -- ça court-circuite le masquage
+     natif du contenu replié que le navigateur applique normalement à <details> (qui ne fonctionne de
+     façon fiable que lorsque le display de <details> lui-même reste 'block'). Règle explicite pour ne
+     pas en dépendre : #codexResBody est masqué nous-même tant que [open] est absent. */
+  #codexResources:not([open]) > #codexResBody{display:none;}
+  /* .res-panel réserve un gap:10px entre ses 2 enfants flex (summary + #codexResBody), mais Chromium
+     continue à le compter même quand #codexResBody est display:none -- ces 10px restaient réservés
+     sous le texte replié (en plus du margin:0 ci-dessus), décalant "RESSOURCES" vers le haut de
+     l'encadré au lieu du centre vertical. Annulé explicitement tant que le panneau est fermé. */
+  #codexResources:not([open]){gap:0;}
+  /* Chevron sorti du flux flex (V0.03.40, demande d'Alex "centre correctement le texte ressource") :
+     en enfant flex normal, il se retrouvait dans le même groupe centré que le texte "RESSOURCES"
+     (les lignes ::before/::after de .team-label sont flex:1 chacune et centrent "RESSOURCES + chevron"
+     comme un seul bloc) -- ça décalait visuellement le mot du vrai centre de l'encadré. En le sortant
+     du flux (position:absolute, épinglé près du bord droit du <summary>), seul "RESSOURCES" reste
+     comme contenu flex entre les deux lignes, donc le texte se centre vraiment. */
+  .res-toggle-chevron{
+    position:absolute; right:4px; top:50%;
+    width:7px; height:7px;
+    border-right:2px solid rgba(139,92,246,.8); border-bottom:2px solid rgba(139,92,246,.8);
+    transform:translateY(-50%) rotate(45deg); transition:transform .2s;
+  }
+  #codexResources[open] .res-toggle-chevron{transform:translateY(-50%) rotate(-135deg);}
   /* Menu FILTRES : .codex-filter/.filter-opt/.sort-opt sont partagées avec les TROPHÉES (déjà
      beseautées, #trFilterDetails) et le sélecteur d'escouade (#sqFilterDetails, également beseauté
      plus bas, V0.02.31) — scopé à #codexFilterDetails pour ne toucher que GESTION DE CARTE. */
@@ -6769,7 +6853,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.37</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.41</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -6893,12 +6977,28 @@
         <button class="back-btn" id="codexMgmtBackBtn">‹ CARTE</button>
         <div class="wave">GESTION DE CARTE</div>
       </header>
-      <div class="res-panel" id="codexResources"></div>
+      <details class="res-panel" id="codexResources">
+        <summary class="team-label player">RESSOURCES<span class="res-toggle-chevron"></span></summary>
+        <div id="codexResBody"></div>
+      </details>
       <div class="codex-tools">
         <button type="button" class="codex-tool-btn destroy" id="destroyToggle">DÉTRUIRE</button>
         <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DOWNGRADE</button>
       </div>
-      <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
+      <div class="codex-tools">
+        <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
+        <div class="codex-search-box">
+          <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
+          <!-- type="text" au lieu de "search" (V0.03.40, demande d'Alex "centre bien le texte recherche") :
+               Chromium ignore text-align:center sur le PLACEHOLDER d'un <input type="search"> (un texte
+               saisi se centrait déjà correctement, seul le placeholder restait collé à gauche) -- en
+               type="text" le centrage s'applique normalement aux deux. enterkeyhint="search" gardé pour
+               que le clavier mobile affiche quand même "Rechercher" sur la touche d'entrée. La croix
+               d'effacement native disparaissait déjà avec type="search" (CSS ci-dessous, maintenant
+               inoffensif) ; le champ se vide toujours normalement au clavier. -->
+          <input type="text" id="codexSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+        </div>
+      </div>
       <details class="codex-filter" id="codexFilterDetails">
         <summary>FILTRES <span id="codexFilterLabel">· Toutes</span></summary>
         <div class="filter-options">
@@ -7112,9 +7212,25 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.37';
+var BUILD_VERSION = 'V0.03.41';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.41', items:[
+    'GESTION DE CARTE : DÉTRUIRE, DOWNGRADE, UPGRADE et RECHERCHE ont maintenant tous la même taille (hauteur et largeur) et le même style de texte.',
+    'GESTION DE CARTE : le texte de l\'encadré RECHERCHE est maintenant centré et sa loupe repositionnée.',
+    'GESTION DE CARTE : l\'icône à côté d\'UPGRADE a été retirée.'
+  ]},
+  { v:'V0.03.40', items:[
+    'GESTION DE CARTE : le texte RESSOURCES est maintenant parfaitement centré dans son encadré (horizontalement et verticalement).'
+  ]},
+  { v:'V0.03.39', items:[
+    'GESTION DE CARTE : l\'encadré RESSOURCES se déplie/replie maintenant au clic, comme sur la BOUTIQUE.',
+    'GESTION DE CARTE : nouvel encadré RECHERCHE à côté d\'UPGRADE pour filtrer la liste des cartes par nom, au même style que DÉTRUIRE/DOWNGRADE.'
+  ]},
+  { v:'V0.03.38', items:[
+    'Onglet CARTE : la puissance de la case DEATH SQUAD s\'abrège désormais (ex. "253 k") au-delà de 10 000 pour ne plus chevaucher l\'icône.',
+    'Onglet CARTE : la case COLLECTION n\'affiche plus le nombre d\'holo, seulement "x / x", correctement aligné.'
+  ]},
   { v:'V0.03.37', items:[
     'CARTE HOLO : PRISME devient GRIEVER -- reste holo (stats inchangées), nouvel ultime "QUADRI-FRAPPE ÉCLAIR" (décharge ses quatre bras sur quatre cibles ennemies distinctes, puis disparaît du champ de vision adverse grâce à sa vitesse fulgurante) et illustration dédiée.'
   ]},
@@ -10324,7 +10440,10 @@ function renderResources(){
   if(fv && fv.classList.contains('active')) renderFabResources();
 }
 function renderCodexResources(){
-  const el = document.getElementById('codexResources');
+  // Panneau dépliable (V0.03.39, demande d'Alex) : #codexResources est maintenant le <details> lui-même
+  // (le <summary>RESSOURCES</summary> est fixe dans le HTML, voir #codexMgmtView) -- seul son contenu,
+  // #codexResBody, est régénéré ici.
+  const el = document.getElementById('codexResBody');
   if(!el) return;
   // Les matériaux (.res-mats) ont été retirés d'ici (V0.02.55, demande d'Alex) : ils ne servent plus
   // qu'à l'amélioration des modules (GESTION DE MODULE, qui a déjà son propre encadré MATÉRIAUX via
@@ -10332,7 +10451,6 @@ function renderCodexResources(){
   // n'avaient plus leur place ici. flashResources() (ci-dessous) gère déjà l'absence de .res-mat sans
   // erreur -- seul l'or continue de clignoter sur ce panneau.
   el.innerHTML = `
-    <div class="team-label player" style="margin:0 0 8px;">RESSOURCES</div>
     <div class="res-top">
       <div class="res-big"><span class="res-ico" data-lbl="OR">${ICON_GOLD}</span><div><b>${fmtNum(player.res.gold)}</b></div></div>
       <div class="res-big"><span class="res-ico" data-lbl="EXPÉRIENCE">${ICON_XP}</span><div><b>${fmtNum(player.res.xp || 0)}</b></div></div>
@@ -12043,6 +12161,10 @@ document.getElementById('autoBtn').onclick = (e) => {
 
 // ---------- CODEX ----------
 let codexFilter = 'all';
+// Recherche par nom (V0.03.39, demande d'Alex) : encadré à droite d'UPGRADE dans GESTION DE CARTE --
+// filtre la liste CARTES (quel que soit le mode : normal, DÉTRUIRE, DOWNGRADE, UPGRADE) par nom, en
+// plus du filtre par stat déjà existant (codexFilter ci-dessus). Vide par défaut = aucun filtre.
+let codexSearchQuery = '';
 // ----- Favoris & classement -----
 // Favori = une pile (personnage + rareté) : protégée contre la destruction et affichée en premier.
 var favorites = {};              // { "CATER-PILLARD|rare": true }
@@ -12247,7 +12369,10 @@ function renderCodex(){
   document.getElementById('codexListLabel').textContent = fusionMode
     ? (fusionBase ? 'CARTES IDENTIQUES' : fuseAutoMode ? 'TOUCHE UNE CARTE POUR LA RETIRER' : 'CHOISIS UNE CARTE À UPGRADER')
     : 'CARTES';
-  const stacks = sortStacks(ownedStacks().filter(st => codexFilter === 'all' || categoryOf(st.def) === codexFilter));
+  const stacks = sortStacks(ownedStacks().filter(st =>
+    (codexFilter === 'all' || categoryOf(st.def) === codexFilter) &&
+    (!codexSearchQuery || st.def.name.toLowerCase().includes(codexSearchQuery))
+  ));
 
   // --- Modes Détruire / Dé-fusionner ---
   if(codexMode === 'destroy' || codexMode === 'defuse'){
@@ -13172,6 +13297,13 @@ function renderDefuseModal(def, rar, level){
 }
 
 // ---------- Filtres du CODEX ----------
+// Recherche par nom (V0.03.39, demande d'Alex : encadré à droite d'UPGRADE) : filtre la liste CARTES
+// en direct à la frappe (codexSearchQuery, voir renderCodex()). 'search' émet aussi 'input' sur la
+// croix native d'effacement -- un seul listener suffit.
+document.getElementById('codexSearchInput').addEventListener('input', e => {
+  codexSearchQuery = e.target.value.trim().toLowerCase();
+  renderCodex();
+});
 document.querySelectorAll('.filter-opt').forEach(btn => {
   btn.onclick = () => {
     codexFilter = btn.dataset.filter;
@@ -14857,9 +14989,14 @@ function squadPower(){
   return p;
 }
 function updateSquadTile(){
-  const p = squadPower().toLocaleString('fr-FR');
-  const t = document.getElementById('squadTilePower'); if(t) t.innerHTML = ICON_POWER + ' ' + p;
-  const g = document.getElementById('squadPowerTag'); if(g) g.innerHTML = ICON_POWER + ' ' + p;
+  const p = squadPower();
+  // Case DEATH SQUAD du hub uniquement (demande d'Alex) : au-delà de 10 000, le nombre complet
+  // ("253 535") chevauchait l'icône ⚡ dans l'espace réduit de la case -- fmtNum() l'abrège en "253 k"
+  // à partir de ce seuil (même format déjà utilisé pour l'or/l'XP/les matériaux ailleurs dans le jeu).
+  // squadPowerTag (affiché dans la fenêtre DEATH SQUAD elle-même, où la place ne manque pas) garde
+  // volontairement le nombre complet, inchangé.
+  const t = document.getElementById('squadTilePower'); if(t) t.innerHTML = ICON_POWER + ' ' + fmtNum(p);
+  const g = document.getElementById('squadPowerTag'); if(g) g.innerHTML = ICON_POWER + ' ' + p.toLocaleString('fr-FR');
 }
 function enterSquadView(idx){
   document.getElementById('resBar').style.display = 'none';
@@ -15479,8 +15616,10 @@ function collPages(){ return Math.max(1, Math.ceil(collSlots.length / COLL_PER_P
 function collOwnedCount(){ return SERIES_DEFS.filter(ownsSeries).length; }
 function collHoloCount(){ return CHAR_DEFS.filter(d => stackCount(d.name, 'holo') > 0).length; }
 function updateCollectionTile(){
+  // Case COLLECTION du hub (demande d'Alex) : affiche seulement "x / x", le compte d'holos
+  // (" · ✦N") n'est plus affiché ici.
   const t = document.getElementById('collTileCount');
-  if(t) t.textContent = collOwnedCount() + ' / ' + SERIES_DEFS.length + (collHoloCount() ? ' · ✦' + collHoloCount() : '');
+  if(t) t.textContent = collOwnedCount() + ' / ' + SERIES_DEFS.length;
 }
 function renderBinderPage(){
   const page = document.getElementById('binderPage');
