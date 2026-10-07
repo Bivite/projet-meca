@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.54</title>
+<title>Projet MECA V0.03.55</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7187,7 +7187,9 @@
        déverrouillée de defiView via openDefiPath(def) -- même nidification que rewards/tasksView :
        BACK_OF.defiPathView = 'defi' ramène sur defiView (grille des cartes), pas sur le hub.
        #defiPathTitle reçoit le nom de la carte, #defiPathTrack reçoit les 50 paliers générés par
-       renderDefiPath() (palier 50 en haut -> palier 1 en bas, cf la boucle décroissante). -->
+       renderDefiPath() (palier le plus haut du mode en cours en haut -> le plus bas en bas, cf la boucle
+       décroissante) : 50 en haut -> 1 en bas en vue normale, 100 en haut -> 51 en bas en vue ultimate
+       (V0.03.55, cf defiUltimateMode). -->
   <div id="defiPathView" class="sub-view">
     <header class="inf-header">
       <button class="back-btn" id="defiPathBackBtn">‹ DÉFI</button>
@@ -7264,7 +7266,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.54</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.55</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7642,9 +7644,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.54';
+var BUILD_VERSION = 'V0.03.55';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.55', items:[
+    'DÉFI : tant que le bouton ULTIMATE n\'est pas activé, les cases de la grille affichent ta progression sur /50 (le défi classique), et ouvrir la piste d\'une carte ne montre que ses paliers 1 à 50.',
+    'DÉFI : une fois ULTIMATE activé, les cases affichent /100 et la piste d\'une carte ne montre que ses paliers 51 à 100 -- les deux parcours ne se mélangent plus à l\'écran.'
+  ]},
   { v:'V0.03.54', items:[
     'DÉFI : nouvelle icône (écusson argenté) sur la case DÉFI du menu.',
     'GESTION DE CARTE : la pastille "DÉFI TERMINÉ" reprend ce nouvel écusson (doré), qui passe au rouge mat une fois le mode ultimate terminé par la carte.',
@@ -17993,7 +17999,12 @@ function renderDefi(){
     // V0.03.54 (demande d'Alex) : une fois les 100/100 faits, le coin biseauté disparaît -- le voile doré
     // devient le seul marqueur "terminé", il ne se superpose plus au coin rouge.
     const corner = ultimateDone ? '' : (defiCardCompleted(def) ? '<div class="defi-corner done"></div>' : '<div class="defi-corner"></div>');
-    const prog = defiCardProgress(def);
+    const rawDone = defiCardProgress(def).done;
+    // V0.03.55 (demande d'Alex) : "tant que le joueur n'a pas cliqué sur le mode ultimate, les cases
+    // affichent x/50" -- compteur borné au défi classique (plafonné à 50) tant que le filtre ultimate
+    // n'est pas actif ; une fois actif, le vrai compteur /100 (déjà >=50 ici, cf defiUltimateReady()).
+    const dispDone = defiUltimateMode ? rawDone : Math.min(rawDone, DEFI_CHALLENGES_PER_CARD);
+    const dispTotal = defiUltimateMode ? ULTIMATE_MAX_TIER : DEFI_CHALLENGES_PER_CARD;
     const shine = ultimateDone ? '<div class="defi-ultimate-shine"></div>' : '';
     return `
       <div class="defi-cell unlocked" data-name="${def.name}">
@@ -18001,7 +18012,7 @@ function renderDefi(){
         ${corner}
         <div class="defi-footer">
           <div class="defi-name">${def.name}</div>
-          <div class="defi-count">${prog.done}/${prog.total}</div>
+          <div class="defi-count">${dispDone}/${dispTotal}</div>
         </div>
         ${shine}
       </div>
@@ -18067,10 +18078,16 @@ function renderDefiPath(){
   document.getElementById('defiPathTitle').textContent = def.name;
   const done = defiCardProgress(def).done;
   const rows = [];
-  // V0.03.52 : la piste va maintenant jusqu'à ULTIMATE_MAX_TIER (100) -- les paliers 51-100 (mode
-  // ultimate) héritent naturellement du même verrouillage séquentiel (defiTierUnlockable) donc restent
-  // inaccessibles tant que le palier 50 n'est pas fait, sans garde spécifique à ajouter ici.
-  for(let tier = ULTIMATE_MAX_TIER; tier >= 1; tier--){
+  // V0.03.52 : la piste va jusqu'à ULTIMATE_MAX_TIER (100) -- les paliers 51-100 (mode ultimate)
+  // héritent naturellement du même verrouillage séquentiel (defiTierUnlockable) donc restent inaccessibles
+  // tant que le palier 50 n'est pas fait, sans garde spécifique à ajouter ici. V0.03.55 (demande d'Alex) :
+  // la piste AFFICHÉE reste toutefois bornée au mode en cours (défi classique 1-50, OU ultimate 51-100 une
+  // fois le bouton ULTIMATE cliqué dans le hub, cf defiUltimateMode) -- on ne voit jamais les deux à la
+  // fois. defiUltimateMode est lu au moment de chaque (re)rendu, donc la borne reste celle de la vue d'où
+  // la piste a été ouverte, y compris lors des rafraîchissements après combat (cf defiExitCombat()).
+  const rangeStart = defiUltimateMode ? DEFI_CHALLENGES_PER_CARD + 1 : 1;
+  const rangeEnd = defiUltimateMode ? ULTIMATE_MAX_TIER : DEFI_CHALLENGES_PER_CARD;
+  for(let tier = rangeEnd; tier >= rangeStart; tier--){
     const boss = defiTierIsBoss(tier);
     const ultimate = defiTierIsUltimate(tier);
     const cleared = tier <= done;
