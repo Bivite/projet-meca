@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.55</title>
+<title>Projet MECA V0.03.58</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1463,6 +1463,23 @@
   }
   @media (prefers-reduced-motion: reduce){ .defi-ultimate-shine{animation:none;} }
 
+  /* Titre (nom de la carte) de l'écran piste DÉFI (V0.03.56, demande d'Alex : "le bon design") -- le
+     pill violet générique (.inf-header .wave) ne convient pas à un nom de carte, qui mérite le même
+     traitement que les autres titres dynamiques d'écran : même recette "verre biseauté" que #raidView
+     .wave (nom du boss de raid), ici dans la teinte violette de DÉFI (--violet/--violet-hi/--violet-glow,
+     déjà utilisée par .defi-progress-box/.defi-ultimate-btn) plutôt que le rouge/or du raid. */
+  #defiPathView .wave{
+    --cut:12px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    padding:13px 30px; font-size:17px; letter-spacing:4.5px;
+    color:var(--violet-hi);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 42%),
+      linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--violet-glow);
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 20px -4px var(--violet-glow), 0 6px 14px rgba(0,0,0,.5);
+    text-shadow:0 0 10px var(--violet-glow);
+  }
   /* ---------- DÉFI : piste verticale des paliers d'une carte (V0.03.47, demande d'Alex) ----------
      Même recette "verre à coins coupés" (--cut, clip-path polygon) que .defi-progress-box/.rt-node
      pour les encadrés, et même langage visuel que .raid-track/.rt-node pour les noeuds (biseau sur
@@ -4820,8 +4837,18 @@
      --rc-glow, qui reste inchangée pour ses nombreux autres usages ailleurs dans le fichier) : le
      bleu (rare) et le violet (épique) étaient beaucoup moins visibles que l'orange (légendaire) sur
      le fond quasi noir de l'encadré (contraste chromatique plus faible), donc leur alpha est monté
-     à ~.78-.8 pour un rendu comparable à l'oeil ; légendaire et holo restent à leur valeur d'origine. */
-  #fabGrid .fab-card:has(> .lg-layer), #labGrid .fab-card:has(> .mod-card), #giftFrame .fab-card:has(> .mod-card){
+     à ~.78-.8 pour un rendu comparable à l'oeil ; légendaire et holo restent à leur valeur d'origine.
+     #fabGrid RETIRÉ de cette règle filter (V0.03.58, demande d'Alex : "le halo de lumière [est]
+     autour de l'artwork et le texte [mais] il faut que ça soit autour de la carte") -- le cadre
+     TIRAGE est maintenant une image de cadre complète (--lg-img, cf #fabGrid .lg-layer plus bas),
+     chargée en background sur .lg-layer, donc le canal alpha que suit filter:drop-shadow ne colle
+     plus forcément au rectangle plein de la carte (zones du cadre moins opaques) -- d'où un halo qui
+     semblait se refermer sur l'artwork/le texte au lieu d'entourer toute la carte. #fabGrid garde
+     donc son propre halo ci-dessous (box-shadow, qui suit cette fois le VRAI rectangle à coins
+     arrondis de .lg-layer, border-radius:3.6%/2.6%, plutôt que le canal alpha du cadre) ; #labGrid/
+     #giftFrame (cartes MODULE, .mod-card) restent sur filter:drop-shadow ci-dessous, inchangé --
+     leur cadre (modCardFaceHtml()) remplit déjà tout le rectangle, pas de ce problème là-bas. */
+  #labGrid .fab-card:has(> .mod-card), #giftFrame .fab-card:has(> .mod-card){
     /* #labGrid ajouté (V0.02.62, demande d'Alex : "le même halo de lumière derrière les cartes que
        sur tirage") -- --rc-halo est déjà posé par .r-rare/.r-epique/.r-legendaire (rarCls(rar),
        déjà appliqué sur .fab-card en JS pour LABO comme pour TIRAGE), rien d'autre à définir.
@@ -4834,6 +4861,20 @@
     filter:
       drop-shadow(0 0 16px var(--rc-halo, rgba(139,92,246,.55)))
       drop-shadow(0 0 16px var(--rc-halo, rgba(139,92,246,.55)));
+  }
+  /* Halo TIRAGE (V0.03.58, demande d'Alex, cf commentaire ci-dessus) : posé en box-shadow sur
+     .lg-layer lui-même (pas .fab-card, qui a déjà box-shadow:none !important plus bas sur
+     .fab-card:has(> .lg-layer)) -- box-shadow suit le rectangle à coins arrondis RÉEL de .lg-layer
+     (border-radius:3.6%/2.6%, la même forme que le cadre --lg-img dessiné dessus), donc le halo
+     entoure maintenant toute la carte quel que soit le contenu (artwork, texte, zones du cadre plus
+     ou moins opaques) au lieu de suivre le canal alpha. .lg-layer a overflow visible par défaut (pas
+     de contain:paint propre à container-type:inline-size, seul le filter en souffrait, cf plus haut)
+     donc ce box-shadow n'est pas rogné. Même rayon/intensité (deux flous superposés) que l'ancien
+     filter pour garder un rendu comparable. */
+  #fabGrid .fab-card:has(> .lg-layer) > .lg-layer{
+    box-shadow:
+      0 0 16px 0 var(--rc-halo, rgba(139,92,246,.55)),
+      0 0 28px 4px var(--rc-halo, rgba(139,92,246,.55));
   }
   /* Texte d'aide sous les cartes retiré (V0.02.24), demandé explicitement — .press-hint reste
      utilisé tel quel sur GESTION DE CARTE et en combat, retrait donc scopé par ID à cet écran.
@@ -7266,7 +7307,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.55</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.58</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7644,9 +7685,19 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.55';
+var BUILD_VERSION = 'V0.03.58';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.58', items:[
+    'LABO : correction d\'un bug d\'affichage où le halo de lumière de l\'offre précédente pouvait rester visible après avoir actualisé.',
+    'TIRAGE : le halo de lumière entoure maintenant toute la carte (il pouvait sembler se refermer sur l\'artwork/le nom au lieu du cadre entier).'
+  ]},
+  { v:'V0.03.57', items:[
+    'DÉFI : en combat, les 4 types de bulles (ATQ/VIT/DEF/PV) restent désormais tous actifs même si ta carte n\'a qu\'une seule catégorie -- chaque type déclenche un vrai effet sur ta carte avec sa propre statistique. Les autres combats (mission, raid...) n\'ont pas changé.'
+  ]},
+  { v:'V0.03.56', items:[
+    'DÉFI : nouvel encadré (verre biseauté violet) pour le nom de la carte sur l\'écran de la piste des paliers.'
+  ]},
   { v:'V0.03.55', items:[
     'DÉFI : tant que le bouton ULTIMATE n\'est pas activé, les cases de la grille affichent ta progression sur /50 (le défi classique), et ouvrir la piste d\'une carte ne montre que ses paliers 1 à 50.',
     'DÉFI : une fois ULTIMATE activé, les cases affichent /100 et la piste d\'une carte ne montre que ses paliers 51 à 100 -- les deux parcours ne se mélangent plus à l\'écran.'
@@ -12304,6 +12355,15 @@ function bblStrongest(team, stat){
 function bblTypeAlive(type){
   const cat = BBL_TYPE_TO_CAT[type];
   if(!cat) return true;
+  // V0.03.57 (demande d'Alex) : en combat DÉFI (une seule carte dans l'escouade, cf defiCombatActive),
+  // le filtre par catégorie grise quasi tout le plateau (3 types sur 4 n'ont jamais de propriétaire avec
+  // une seule carte) et casse le mini-jeu. Ce n'est pas nécessaire : bblResolveType() ne se sert QUE de
+  // la stat brute (atk/vit/def/maxHp) de la carte la plus forte de l'équipe, jamais de sa catégorie -- une
+  // carte répond donc très bien à un type hors de sa catégorie (ex. une carte ATK qui pop une bulle DEF
+  // se protège quand même avec sa propre stat def, bien réelle). En DÉFI uniquement, tous les types
+  // restent donc vivants tant que la carte est en vie, quelle que soit sa catégorie -- inchangé partout
+  // ailleurs (mission, raid, infini...), qui gardent le filtre par catégorie d'origine.
+  if(defiCombatActive) return playerTeam.some(u => u.alive);
   return playerTeam.some(u => u.alive && u.category === cat);
 }
 
@@ -14217,6 +14277,17 @@ function renderLab(){
   const grid = document.getElementById('labGrid');
   if(!grid) return;
   grid.innerHTML = '';
+  // V0.03.58, demande d'Alex : "le halo de lumière du premier pull de 3 cartes reste derrière et
+  // n'est pas supprimé après ACTUALISER". grid.innerHTML='' détruit bien les anciens .fab-card (pas
+  // de noeud DOM orphelin, vérifié), mais le halo de rareté est un filter:drop-shadow (cf #labGrid
+  // .fab-card:has(> .mod-card) plus haut), qui tourne sur son propre calque composité -- or ce fichier
+  // a déjà eu un bug Safari distinct sur des filtres CSS qui ne s'invalidaient pas proprement (cf
+  // V0.02.40, gravure retirée pour cette raison). Un vidage + reconstruction synchrones du conteneur
+  // peuvent laisser ce calque de l'ancienne offre visible derrière les nouvelles cartes le temps que
+  // le moteur le réconcilie. On force donc un reflow entre le vidage et la reconstruction (void
+  // grid.offsetWidth), exactement le même procédé que celui déjà utilisé ailleurs dans ce fichier pour
+  // repartir d'un état propre (ex. t.classList.remove('show'); void t.offsetWidth; ...).
+  void grid.offsetWidth;
   labOffer.forEach((def, i) => {
     const card = document.createElement('div');
     if(def){
