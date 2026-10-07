@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.42</title>
+<title>Projet MECA V0.03.50</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1351,6 +1351,204 @@
     cursor:not-allowed;
     pointer-events:none;
   }
+  /* ---------- DÉFI (V0.03.44, demande d'Alex "le positionnement des cartes doit correspondre au même
+     placement que celui de la collection") : même .codex-grid (3 colonnes) ET même proportion de case
+     que les vraies cartes de GESTION DE CARTE (.lg-layer{aspect-ratio:692/966}), pour que la grille de
+     défis tombe exactement sur la même mise en page -- mais case transparente, cadenas seul, sans nom
+     (reprend l'esprit "fermé" de .sleeve.locked/.sleeve.empty du classeur : bordure en pointillés plutôt
+     qu'un fond plein). ---------- */
+  .defi-cell{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    width:100%; aspect-ratio:692/966;
+    border-radius:3.6% / 2.6%;
+    background:transparent;
+    border:1px dashed var(--line-strong);
+    cursor:not-allowed;
+    overflow:hidden;
+    container-type:inline-size;
+  }
+  .defi-lock{width:24%; max-width:34px; color:rgba(255,255,255,.35);}
+  .defi-lock svg{width:100%; height:100%; display:block;}
+  /* ---------- DÉFI déverrouillé (V0.03.45, retouché V0.03.46 -- demande d'Alex) : une fois la carte
+     possédée, la case laisse place à son artwork « étendu » DÉDIÉ (def.artExt -- un asset à part entière,
+     distinct de def.art/def.artBig qui restent découpés pour la fenêtre du cadre illustré -- jamais une
+     version recadrée/zoomée par CSS de ces derniers), avec par-dessus le même reflet « verre » qui balaye
+     déjà .codex-card/.fab-card (::after, cardSheen), le nom en bas à gauche et "fait/total" en bas à
+     droite (.defi-footer). ---------- */
+  .defi-cell.unlocked{
+    border-style:solid;
+    border-color:var(--line-strong);
+    cursor:pointer;
+  }
+  .defi-art-img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; z-index:0; pointer-events:none;
+  }
+  .defi-cell.unlocked::after{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:2;
+    background:linear-gradient(115deg, transparent 38%, rgba(255,255,255,.0) 42%, rgba(255,255,255,.26) 50%, rgba(255,255,255,.0) 58%, transparent 62%);
+    background-size:250% 100%;
+    background-position:130% 0;
+    background-repeat:no-repeat;
+    mix-blend-mode:screen;
+    animation:cardSheen var(--sh-dur, 9s) ease-in-out infinite;
+    animation-delay:var(--sh-delay, 0s);
+  }
+  @media (prefers-reduced-motion: reduce){ .defi-cell.unlocked::after{animation:none;} }
+  /* Rangée du bas (V0.03.46) : nom à gauche (tronqué si trop long) + "fait/total" à droite, alignés
+     sur la même ligne -- cf defiCardProgress() plus bas pour la source de "fait/total". */
+  .defi-footer{
+    position:absolute; left:0; right:0; bottom:4%; z-index:3;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:4px; padding:0 6%;
+  }
+  .defi-name{
+    font-family:var(--font-title); font-weight:700; letter-spacing:.3px;
+    font-size:clamp(9px, 7.2cqw, 13px);
+    line-height:1.15;
+    color:#fff;
+    text-align:left;
+    text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 7px rgba(0,0,0,.7);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    min-width:0; flex:1 1 auto;
+  }
+  /* Même taille que .defi-name (demande d'Alex), seule la couleur violette distingue le compteur. */
+  .defi-count{
+    font-family:var(--font-title); font-weight:700; letter-spacing:.3px;
+    font-size:clamp(9px, 7.2cqw, 13px);
+    line-height:1.15;
+    color:var(--violet-hi);
+    text-align:right;
+    text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 7px rgba(0,0,0,.7);
+    white-space:nowrap; flex:0 0 auto;
+  }
+  /* Coin biseauté : bleu = défis de cette carte pas encore terminés, rouge = terminés
+     (cf defiCardCompleted()/defiCardProgress() -- aucun défi n'existe encore, donc toujours 0/50 et
+     bleu pour l'instant). */
+  .defi-corner{
+    position:absolute; top:0; left:0; z-index:3;
+    width:40%; height:40%;
+    clip-path:polygon(0 0, 100% 0, 0 100%);
+    background:linear-gradient(135deg, rgba(76,163,255,.65) 0%, rgba(76,163,255,.28) 55%, transparent 78%);
+    pointer-events:none;
+  }
+  .defi-corner.done{
+    background:linear-gradient(135deg, rgba(255,90,78,.68) 0%, rgba(255,90,78,.3) 55%, transparent 78%);
+  }
+
+  /* ---------- DÉFI : piste verticale des paliers d'une carte (V0.03.47, demande d'Alex) ----------
+     Même recette "verre à coins coupés" (--cut, clip-path polygon) que .defi-progress-box/.rt-node
+     pour les encadrés, et même langage visuel que .raid-track/.rt-node pour les noeuds (biseau sur
+     un ::before séparé pour ne pas rogner le numéro/l'icône posés en absolu dessus) -- adapté en
+     vertical : palier 50 en haut -> palier 1 en bas (cf la boucle décroissante de renderDefiPath()),
+     une ligne continue à gauche qui se dore par le bas au fur et à mesure de la progression. */
+  .defi-path-wrap{ padding:6px 4px 18px; }
+  .defi-path-track{ position:relative; display:flex; flex-direction:column; }
+  .dp-tier{ position:relative; display:flex; align-items:center; gap:12px; min-height:68px; padding:3px 0; }
+  .dp-tier.boss{ min-height:88px; }
+  /* Ligne de progression : un segment plein par palier, centré sur la colonne des noeuds (64px) ;
+     mis bout à bout ça forme une ligne continue qui se dore depuis le bas (paliers déjà remportés). */
+  .dp-tier::before{
+    content:""; position:absolute; left:32px; top:0; bottom:0; width:3px;
+    background:rgba(255,255,255,.14); z-index:1; transform:translateX(-1.5px); border-radius:2px;
+  }
+  .dp-tier.done::before{ background:linear-gradient(180deg,#f0a91c,#ffd873); }
+  .dp-tier.cur::before{ background:linear-gradient(180deg, rgba(255,255,255,.14), #f0a91c); }
+  .dp-tier:first-child::before{ top:50%; }
+  .dp-tier:last-child::before{ bottom:50%; }
+  .dp-node{
+    position:relative; z-index:2; flex:0 0 64px; width:64px; height:64px;
+    display:flex; align-items:center; justify-content:center; color:#aa98a0;
+  }
+  .dp-node::before{
+    content:""; position:absolute; inset:9px; z-index:-1;
+    --cut:9px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.14) 0%, transparent 42%),
+      linear-gradient(180deg,#241018,#120a0e);
+    border:1px solid rgba(255,255,255,.22);
+    box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 4px 10px rgba(0,0,0,.4);
+  }
+  .dp-node svg{ position:relative; width:40%; height:40%; }
+  .dp-num{
+    position:absolute; bottom:1px; right:1px; z-index:3;
+    font-family:var(--font-title); font-weight:800; font-size:9px; line-height:1.3;
+    background:#0d0f14; border:1px solid rgba(255,255,255,.22); border-radius:6px;
+    padding:1px 4px; color:#fff;
+  }
+  /* Paliers de dizaine = boss : plus gros et teinte rouge tant qu'ils ne sont pas remportés
+     (demande d'Alex : "Les paliers des dizaines est plus gros et rouge que les autres"). */
+  .dp-tier.boss .dp-node::before{ inset:2px; --cut:13px; border-color:rgba(255,90,78,.55); }
+  .dp-tier.boss .dp-node{ color:#ffb3a8; }
+  .dp-tier.boss .dp-num{ font-size:10px; border-color:rgba(255,90,78,.6); }
+  .dp-tier.done .dp-node{ color:#2a1700; }
+  .dp-tier.done .dp-node::before{
+    border-color:#ffe7a8;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.32) 0%, transparent 42%),
+      linear-gradient(180deg, #ffd873 0%, #f0a91c 55%, #b86f00 100%);
+    box-shadow:0 1px 0 rgba(255,255,255,.4) inset, 0 0 16px -2px rgba(232,196,104,.7), 0 4px 10px rgba(0,0,0,.4);
+  }
+  .dp-tier.cur .dp-node::before{
+    border-color:var(--violet-hi);
+    box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 0 16px -2px rgba(151,110,255,.8), 0 4px 10px rgba(0,0,0,.4);
+  }
+  .dp-tier.ahead .dp-node{ opacity:.5; }
+  .dp-side{
+    --cut:10px; flex:1 1 auto; min-width:0; min-height:62px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
+      linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--line-strong); box-shadow:var(--shadow-card);
+    display:flex; flex-direction:column; justify-content:center; gap:5px;
+    padding:9px 12px;
+  }
+  .dp-tier.boss .dp-side{ border-color:rgba(255,90,78,.5); min-height:80px; }
+  .dp-tier.cur .dp-side{ border-color:var(--violet-hi); }
+  .dp-tier.done .dp-side{ opacity:.78; }
+  .dp-tier.ahead .dp-side{ opacity:.6; }
+  .dp-label{
+    font-family:var(--font-title); font-weight:700; font-size:10.5px; letter-spacing:.4px;
+    color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .dp-tier.boss .dp-label{ font-size:12px; color:#ff9a8c; }
+  .dp-gate{
+    display:inline-block; margin-left:8px;
+    font-size:8.5px; font-weight:700; letter-spacing:.3px; color:var(--violet-hi);
+  }
+  .dp-gate.unmet{ color:#ff5a4e; }
+  .dp-rewards{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+
+  /* ---------- DÉFI : fenêtre de lancement d'un palier (carte + module, V0.03.47) ----------
+     Même recette que .launch-inner (fenêtre ESCOUADE) pour le cadre, .mod-slot/.mod-fuse-toggle/
+     .mod-grid/.mod-item pour le module (écran DEATH SQUAD), .codex-grid/.codex-card/.lp-card pour
+     les cartes -- aucun nouveau style de carte/bouton inventé, uniquement l'agencement propre à
+     cette fenêtre (compteur X/1, liste qui grise les cartes qui ne correspondent pas à la case). */
+  .dl-inner{ max-width:360px !important; }
+  .dl-count{
+    font-family:var(--font-title); font-weight:800; font-size:12px; letter-spacing:2px;
+    color:var(--violet-hi); margin-top:2px;
+  }
+  .dl-mod-row{ display:flex; justify-content:center; width:100%; padding:2px 0 0; }
+  .dl-list{ width:100%; max-height:32vh; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
+  /* V0.03.48 : aperçu de l'escouade ennemie (HOSTILES) -- même raison que .dl-mod-row/.dl-list ci-dessus,
+     #defiLaunchInner est en display:flex;align-items:center (cf .codex-modal-inner), donc un enfant direct
+     sans largeur explicite se réduit à son contenu (ici quasi 0, les tuiles .unit.cbt dérivent leur hauteur
+     de leur LARGEUR via aspect-ratio -- sans largeur, la rangée entière s'écrasait à presque rien). */
+  .dl-enemy-roster{ width:100%; align-self:stretch; margin-bottom:4px; }
+  .dl-card{ cursor:pointer; position:relative; }
+  .dl-card.sel{ outline:2px solid #4dff8a; outline-offset:1px; }
+  .dl-card.off{ filter:grayscale(.9) brightness(.55); cursor:default; }
+  .dl-off-tag{
+    position:absolute; inset:auto 0 28% 0; z-index:5; text-align:center;
+    font-family:var(--font-title); font-size:7px; letter-spacing:1px; color:#ff8a80;
+    background:rgba(0,0,0,.75); padding:3px 2px;
+  }
+  #defiLaunchInner .mod-item.sel .mod-card{ outline:2px solid #4dff8a; outline-offset:1px; }
+
   /* ---------- Étoile d'escouade (sélecteur) ---------- */
   .team-star{
     position:relative;
@@ -1566,6 +1764,10 @@
   #tasksView .wave{display:none;}
   #tasksView .inf-tag{display:none;}
   #tasksInfo{display:none;}
+  /* DÉFI (V0.03.44) : même principe que les écrans ci-dessus -- bandeau "DÉFI" du haut retiré (son rôle
+     est repris par l'encadré .defi-progress-box ci-dessous), bouton retour conservé (masqué, navigation
+     par balayage/réappui sur l'onglet MENU comme #rwBackBtn/#ordBackBtn). */
+  #defiView .wave{display:none;}
   /* GESTION DE CARTE (V0.02.26) : bandeau du haut retiré, bouton retour conservé — même principe que
      les autres écrans ci-dessus. Le texte d'aide sous le titre de liste est aussi retiré, scopé par
      ID puisque .press-hint est partagée avec l'écran de placement en combat (voir plus bas). */
@@ -2097,6 +2299,36 @@
   .codex-tool-btn.defuse{border-color:rgba(139,92,246,.55); color:var(--violet-hi);}
   .codex-tool-btn.destroy.active{color:#fff; background:linear-gradient(180deg,#ff7b70,#c42a20); border-color:#ffb0a9; box-shadow:0 3px 0 #5c1210, 0 0 16px -2px rgba(255,90,78,.7);}
   .codex-tool-btn.defuse.active{color:#fff; background:linear-gradient(180deg,#8f63ff,#6236e0); border-color:rgba(200,178,255,.7); box-shadow:0 3px 0 #2e1777, 0 0 16px -2px var(--violet-glow);}
+  /* ---------- DÉFI : encadré compteur + bouton ULTIMATE (V0.03.44) ----------
+     Même recette "verre à coins coupés" que .codex-tool-btn/.codex-search-box juste au-dessus (réécrite
+     ici plutôt que réutilisée telle quelle, ces deux éléments n'étant ni un bouton toggle ni un champ de
+     recherche). Encadré de gauche flex:1 (plus large, "à gauche de l'écran"), bouton ULTIMATE à sa
+     largeur de contenu ("à droite de défi"). Rouge d'ULTIMATE = même dégradé que DÉTRUIRE actif ci-dessus,
+     seul rouge déjà utilisé dans le jeu. */
+  .defi-header-row{display:flex; gap:10px; align-items:stretch;}
+  .defi-progress-box{
+    --cut:10px; border-radius:0; flex:1; min-width:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
+      linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--line-strong); box-shadow:var(--shadow-card);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:12px 14px;
+  }
+  .defi-progress-label{font-family:var(--font-title); font-size:12px; font-weight:700; letter-spacing:2px; color:#fff;}
+  .defi-progress-count{font-family:var(--font-title); font-size:12px; font-weight:700; letter-spacing:1px; color:var(--violet-hi);}
+  .defi-ultimate-btn{
+    --cut:10px; border-radius:0; flex:0 0 auto; cursor:pointer;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    padding:12px 18px;
+    font-family:var(--font-title); font-size:12px; font-weight:800; letter-spacing:2px; color:#fff;
+    background:linear-gradient(180deg,#ff7b70,#c42a20);
+    border:1px solid #ffb0a9;
+    box-shadow:0 3px 0 #5c1210, 0 0 16px -2px rgba(255,90,78,.7);
+    transition:transform .08s;
+  }
+  .defi-ultimate-btn:active{transform:translateY(2px) scale(.98); box-shadow:0 1px 0 #5c1210;}
   .codex-card.tool-destroy, .mod-card.tool-destroy{outline:1px dashed rgba(255,90,78,.45); outline-offset:3px;}
   /* Bouton DÉTRUIRE de l'écran MODULES (V0.02.54, demande d'Alex : "entre celui des filtres et celui
      upgrade, le bouton est rouge") : même classe que le bouton DÉTRUIRE de GESTION DE CARTE (même rouge,
@@ -2239,6 +2471,27 @@
      sinon le point tombe dans la zone découpée et disparaît (testé : à 8px il était invisible). */
   .mode-tile.s-c .tile-dot, .mode-tile.o-l .tile-dot{top:10px; right:26px; left:auto;}
   .card-dot{top:-5px; left:-5px; width:14px; height:14px;}
+  /* Pastille "DÉFI TERMINÉ" (V0.03.49, demande d'Alex : "un petit pentagone jaune orange qui brille,
+     comme si il était fait de lumière" -- sous le compteur d'exemplaires ×N, V0.03.50 retouche : d'abord
+     posée au coin bas-gauche, déplacée sous .cx-copy-badge (coin haut-droit, qui affiche le ×N) sur
+     demande d'Alex). Dégradé RADIAL (coeur blanc-chaud vers bord orange foncé) plutôt que linéaire plat,
+     pour un rendu "source de lumière" plutôt qu'un simple badge métallique plat -- halo à plusieurs
+     couches (blanc serré + orange large) façon lens flare, qui pulse plus fort que le badge d'origine. */
+  .defi-trophy-badge{
+    position:absolute; z-index:4; top:17px; right:-5px;
+    width:17px; height:17px;
+    clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    background:radial-gradient(circle at 50% 36%, #ffffff 0%, #fff6d2 18%, #ffd873 42%, #f0a91c 70%, #b86f00 100%);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:0 0 3px #fff, 0 0 9px rgba(255,214,110,.95), 0 0 16px rgba(255,170,40,.8);
+    animation:trophyGlow 1.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes trophyGlow{
+    0%,100%{ box-shadow:0 0 3px #fff, 0 0 9px rgba(255,214,110,.95), 0 0 16px rgba(255,170,40,.8); filter:brightness(1); }
+    50%{ box-shadow:0 0 5px #fff, 0 0 15px rgba(255,224,140,1), 0 0 26px rgba(255,185,60,.95); filter:brightness(1.4); }
+  }
+  @media (prefers-reduced-motion: reduce){ .defi-trophy-badge{animation:none;} }
   /* Bandeau de fin de vague (remplace le popup de victoire) */
   #infArena{position:relative;}
   .wave-banner{
@@ -3245,6 +3498,15 @@
   .mode-tile.rewards .mt-inner{background:
     linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
     linear-gradient(135deg, rgba(190,110,10,.95) 0%, rgba(190,110,10,.55) 40%, rgba(190,110,10,.2) 70%, transparent 100%);}
+  /* Case DÉFI (V0.03.43) : thème violet, réutilise --violet/--violet-glow déjà utilisés ailleurs dans
+     le jeu (sélection d'escouade, énergie d'ultime) plutôt qu'une teinte inédite. */
+  .mode-tile.defi{background:linear-gradient(160deg, #cdb4ff, var(--violet) 45%, #1c0a38); filter:drop-shadow(0 0 12px var(--violet-glow));}
+  .mode-tile.defi .mt-inner{background:
+    linear-gradient(160deg, rgba(255,255,255,.28) 0%, transparent 26%),
+    linear-gradient(0deg, rgba(0,0,0,.65) 0%, transparent 30%),
+    linear-gradient(160deg, #cdb4ff 0%, transparent 60%);}
+  .mt-defi-ico{width:40px; height:40px; color:#fff; filter:drop-shadow(0 0 10px var(--violet-glow));}
+  .mt-defi-ico svg{width:100%; height:100%; display:block;}
   .s-e .mt-inner{padding-right:38px;}
   .mt-gift-ico, .mt-cal-ico, .mt-cup-ico{width:40px; height:40px; color:#fff;}
   .mt-gift-ico{filter:drop-shadow(0 0 10px rgba(255,110,170,.9)); animation:giftWiggle 3s ease-in-out infinite;}
@@ -4030,7 +4292,7 @@
   @keyframes pinPulse{50%{box-shadow:0 5px 0 #6b4000, 0 0 30px rgba(255,214,92,1);}}
 
   /* Plus de boutons « retour » : on balaie l'écran de gauche à droite */
-  #squadBackBtn, #backToHubBtn, #playerBackBtn, #collBackBtn, #rwBackBtn, #dailyBackBtn, #trophyBackBtn, #tasksBackBtn{visibility:hidden; pointer-events:none;}
+  #squadBackBtn, #backToHubBtn, #playerBackBtn, #collBackBtn, #rwBackBtn, #dailyBackBtn, #trophyBackBtn, #tasksBackBtn, #defiBackBtn, #defiPathBackBtn{visibility:hidden; pointer-events:none;}
   .sub-view.back-in{animation:backIn .35s ease both !important;}
   @keyframes backIn{from{opacity:0; transform:translateX(-18px);} to{opacity:1; transform:none;}}
   .swipe-edge{display:none; position:fixed; left:0; top:50%; width:5px; height:64px; margin-top:-32px; border-radius:0 6px 6px 0; z-index:50; pointer-events:none;
@@ -6602,11 +6864,11 @@
           <div class="rew-status-ico" id="rewStatusIco" style="display:none;"></div>
         </div>
       </div>
-      <div class="mode-tile soon s-d">
+      <div class="mode-tile defi s-d" id="tileDefi">
         <div class="mt-inner">
-          <div class="mt-num">04</div>
-          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-          <div class="mt-soon">PROCHAINEMENT</div>
+          <div class="mt-defi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+          <div class="mt-title">DÉFI</div>
+          <div class="mt-sub" id="defiTileSub">Défis à débloquer</div>
         </div>
       </div>
       </div>
@@ -6820,6 +7082,46 @@
     </div>
   </div>
 
+  <!-- DÉFI (V0.03.43, demande d'Alex) : case 04 du MENU, convertie depuis l'ancienne case verrouillée
+       "PROCHAINEMENT" en s-d (même transformation déjà faite pour BOUTIQUE sur l'onglet FABRIQUE).
+       Grille d'un défi par carte de série (SERIES_DEFS, donc hors holographiques) générée par renderDefi()
+       -- chaque case reste verrouillée (cadenas) pour l'instant, le contenu réel de chaque défi sera
+       branché plus tard. -->
+  <div id="defiView" class="sub-view">
+    <header class="inf-header">
+      <button class="back-btn" id="defiBackBtn">‹ MENU</button>
+      <div class="wave">DÉFI</div>
+      <div class="inf-tag" style="visibility:hidden;">·</div>
+    </header>
+    <!-- V0.03.44, demande d'Alex : encadré DÉFI/compteur (gauche) + bouton ULTIMATE (droite), même
+         recette "verre à coins coupés" que DÉTRUIRE/UPGRADE/RECHERCHE sur GESTION DE CARTE/MODULE.
+         ULTIMATE n'a pas encore d'action -- Alex précisera son comportement plus tard. -->
+    <div class="defi-header-row">
+      <div class="defi-progress-box">
+        <span class="defi-progress-label">DÉFI</span>
+        <span class="defi-progress-count" id="defiProgressCount">0/0</span>
+      </div>
+      <button type="button" class="defi-ultimate-btn" id="defiUltimateBtn">ULTIMATE</button>
+    </div>
+    <div class="codex-grid" id="defiList"></div>
+  </div>
+
+  <!-- DÉFI : piste des paliers d'une carte (V0.03.47, demande d'Alex). S'ouvre depuis une case
+       déverrouillée de defiView via openDefiPath(def) -- même nidification que rewards/tasksView :
+       BACK_OF.defiPathView = 'defi' ramène sur defiView (grille des cartes), pas sur le hub.
+       #defiPathTitle reçoit le nom de la carte, #defiPathTrack reçoit les 50 paliers générés par
+       renderDefiPath() (palier 50 en haut -> palier 1 en bas, cf la boucle décroissante). -->
+  <div id="defiPathView" class="sub-view">
+    <header class="inf-header">
+      <button class="back-btn" id="defiPathBackBtn">‹ DÉFI</button>
+      <div class="wave" id="defiPathTitle">CARTE</div>
+      <div class="inf-tag" style="visibility:hidden;">·</div>
+    </header>
+    <div class="defi-path-wrap">
+      <div class="defi-path-track" id="defiPathTrack"></div>
+    </div>
+  </div>
+
   <div id="dailyView" class="sub-view">
     <div id="d3Track" class="d3-track">
       <div id="d3Stage" class="d3-stage">
@@ -6885,7 +7187,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.42</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.50</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7176,6 +7478,11 @@
 <div class="codex-modal" id="launchModal">
   <div class="codex-modal-inner launch-inner" id="launchInner"></div>
 </div>
+<!-- DÉFI : fenêtre de lancement d'un palier (V0.03.47, demande d'Alex) -- choix de la carte (une
+     seule, celle de la case défi) + module optionnel, cf openDefiLaunch()/renderDefiLaunch(). -->
+<div class="codex-modal" id="defiLaunchModal">
+  <div class="codex-modal-inner launch-inner dl-inner" id="defiLaunchInner"></div>
+</div>
 <div class="codex-modal" id="rewardModal">
   <div class="codex-modal-inner reward-inner" id="rewardInner"></div>
 </div>
@@ -7258,9 +7565,18 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.42';
+var BUILD_VERSION = 'V0.03.50';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.50', items:[
+    'GESTION DE CARTE : une fois les 50 paliers de défi d\'une carte terminés, une pastille pentagone dorée et lumineuse apparaît sur l\'exemplaire le plus rare de cette carte (et, à cette rareté, le plus haut niveau), juste sous le compteur d\'exemplaires -- un repère visuel pour les cartes dont tu as terminé tout le défi.'
+  ]},
+  { v:'V0.03.48', items:[
+    'DÉFI : nouveau mode de jeu (case 04 du menu) -- pour chaque carte possédée, une piste de 50 paliers où ta carte affronte seule une escouade ennemie fixe (un seul combat par palier). Les cartes déjà engagées en mission restent utilisables normalement en parallèle.',
+    'DÉFI : les paliers 10, 20, 30, 40 et 50 sont des paliers BOSS, qui demandent respectivement le niveau 25, 35, 50, 100 et 150 sur la carte pour être tentés.',
+    'DÉFI : un clic sur un palier affiche l\'escouade ennemie à affronter avant de lancer le combat (clique n\'importe où pour fermer).',
+    'DÉFI : chaque palier a sa propre escouade ennemie (jamais la même qu\'au palier précédent), et la difficulté grimpe palier après palier -- pensée pour rester un vrai défi, carte par carte, même une fois au niveau recommandé.'
+  ]},
   { v:'V0.03.42', items:[
     'GESTION DE MODULE : le bouton FILTRES est descendu tout en bas de la colonne de boutons.',
     'GESTION DE MODULE : l\'encadré MATÉRIAUX se déplie/replie désormais au clic, comme RESSOURCES sur GESTION DE CARTE.',
@@ -9088,6 +9404,10 @@ function normalizePlayerExtras(){
   // ne soit jamais pénalisé par l'arrivée de la fonctionnalité.
   player.raid = Object.assign({ cycleIndex:-1, phase:0, phaseHp:null, lockUntil:0, finalClaimed:false,
     tokens:3, tokenAt:0, squad15:[] }, player.raid || {});
+  // DÉFI (V0.03.47, demande d'Alex) : progression par carte -- player.defi[nom] = nombre de paliers
+  // déjà remportés (0-50, cf DEFI_TIERS). Object.assign comble les champs manquants sur une sauvegarde
+  // antérieure à cette fonctionnalité (aucune carte n'a de clé -> toutes à 0 via defiCardProgress()).
+  player.defi = Object.assign({}, player.defi || {});
 }
 normalizePlayerExtras();
 const XP_REWARDS = { draw: 10, newCard: 25, waveBase: 30, wavePerLevel: 10, fusion: 40 };
@@ -10914,6 +11234,107 @@ function freshEnemyTeam(w){
   return ENEMY_TPL.map((tpl, i) => makeEnemyFromDef(defs[i % defs.length], tpl, scale, lvl));
 }
 
+// ---------- Difficulté DÉFI (V0.03.48, demande d'Alex : "tu as adapté la difficulté inter-palier ?
+// il ne faut pas que ça soit trop simple... ce n'est pas grave si le joueur échoue") ----------
+// freshEnemyTeam() ci-dessus est calibrée pour les VAGUES DE MISSION : une escouade de 5 cartes du
+// joueur contre 5 ennemis. Le défi oppose UNE SEULE carte du joueur à la même escouade de 5 ennemis
+// (cf Alex : "ta carte contre une escouade ennemi fixe") -- un rapport de force totalement différent,
+// que reprendre directement freshEnemyTeam(tier) ignorait complètement. Diagnostic (simulation du
+// moteur réel, cf sim_defi_balance.py) : avec la formule de mission réutilisée telle quelle, le taux de
+// victoire mesuré était de 0% à TOUS les paliers testés (y compris le palier 1 au niveau 1) -- un
+// défi en réalité imbattable, pas seulement "trop simple" comme Alex le craignait dans l'autre sens.
+// Deux causes cumulées :
+//  1) Le plancher de VIT ennemie (40+niveau*2, dans makeEnemyFromDef) dépasse la VIT de BASE des cartes
+//     tank lentes (CATER-PILLARD:28, RHINO:34) dès le palier 1 -- combatRound() triant par VIT
+//     décroissante, les 5 ennemis agissaient alors TOUJOURS avant l'unique carte du joueur, qui subissait
+//     une frappe complète de l'escouade avant même d'avoir pu agir une seule fois.
+//  2) L'échelle PV/ATQ/DEF (scale) grimpe en supposant 5 attaquants côté joueur ; une seule carte ne peut
+//     pas suivre ce rythme face à 5 ennemis qui, eux, restent 5.
+// Remplacée par une courbe DÉDIÉE, calibrée par simulation (sim_defi_tune.py puis validée par
+// sim_defi_final.py) pour viser ~65-75% de victoires avec une carte AU NIVEAU EXACT requis par le
+// palier-boss correspondant (cf DEFI_BOSS_LEVEL_GATE) -- difficile mais largement gagnable au niveau
+// demandé, perdable si sous-levelé (ce qu'Alex a explicitement validé comme acceptable).
+// Ancrages mesurés (palier -> multiplicateur PV/ATQ/DEF) ; interpolation linéaire entre deux ancrages
+// pour les paliers intermédiaires (pas de jauge de niveau imposée entre deux boss, cf defiTierLevelGate()
+// -- la difficulté y grimpe progressivement plutôt que par palier).
+const DEFI_SCALE_ANCHORS = [[1,0.16],[10,0.45],[20,0.565],[30,0.75],[40,1.65],[50,2.6]];
+// Courbes PAR CARTE (V0.03.48, demande d'Alex : "adapte les ennemis en fonction [de la carte], en cas"
+// -- pour MOG-AI et MED-07, qui perdaient quasiment à 100% du temps avec la courbe de base ci-dessus,
+// calibrée sur CATER-PILLARD). Diagnostic : leur kit est pensé pour la synergie d'escouade et ne tient
+// pas seul face à 5 ennemis, quel que soit le niveau -- MOG-AI (éclaireur) a très peu de PV/DEF malgré un
+// gros ATQ (meurt avant de pouvoir enchaîner assez de frappes), MED-07 (soigneuse) a un ATQ quasi nul (son
+// ultime soigne l'escouade, inutile seule) et ne peut quasiment pas achever les ennemis. Chaque carte
+// listée ici a ses propres ancrages (mêmes paliers-boss, mêmes cibles ~65-75% de victoires au niveau exact
+// de la jauge, mesurés par simulation -- cf sim_defi_archetype.py) ; toute carte absente de cette liste
+// (CATER-PILLARD, RHINO, STAR-HUNTER...) utilise la courbe de base DEFI_SCALE_ANCHORS, qui leur convient
+// déjà bien.
+const DEFI_SCALE_ANCHORS_BY_CARD = {
+  'MOG-AI': [[1,0.083],[10,0.36],[20,0.44],[30,0.615],[40,1.25],[50,2.13]],
+  'MED-07': [[1,0.112],[10,0.31],[20,0.37],[30,0.48],[40,1.06],[50,1.61]]
+};
+function defiEnemyScale(tier, cardName){
+  const anchors = (cardName && DEFI_SCALE_ANCHORS_BY_CARD[cardName]) || DEFI_SCALE_ANCHORS;
+  for(let i=0;i<anchors.length-1;i++){
+    const a = anchors[i], b = anchors[i+1];
+    if(tier>=a[0] && tier<=b[0]) return a[1] + (b[1]-a[1])*(tier-a[0])/(b[0]-a[0]);
+  }
+  return anchors[anchors.length-1][1];
+}
+// VIT ennemie DÉDIÉE au défi (remplace le plancher 40+niveau*2 de makeEnemyFromDef, responsable de la
+// cause 1 ci-dessus) : grimpe doucement et linéairement, sans jamais dépasser la VIT de base d'une
+// carte au niveau attendu pour ce palier -- même une carte tank lente garde donc une chance d'agir
+// avant de subir la frappe complète de l'escouade ennemie.
+function defiEnemyVit(tier){ return 20 + tier*1.5; }
+// Niveau "affiché" de l'escouade ennemie (cosmétique : alimente le badge de niveau sur chaque tuile
+// ennemie, cf cbt-gem) -- interpolé sur les mêmes ancrages que DEFI_BOSS_LEVEL_GATE pour rester cohérent
+// avec le niveau de carte réellement requis à ce palier (sans affecter le calcul de scale/VIT ci-dessus).
+const DEFI_LEVEL_ANCHORS = [[1,1],[10,25],[20,35],[30,50],[40,100],[50,150]];
+function defiExpectedLevel(tier){
+  for(let i=0;i<DEFI_LEVEL_ANCHORS.length-1;i++){
+    const a = DEFI_LEVEL_ANCHORS[i], b = DEFI_LEVEL_ANCHORS[i+1];
+    if(tier>=a[0] && tier<=b[0]) return Math.round(a[1] + (b[1]-a[1])*(tier-a[0])/(b[0]-a[0]));
+  }
+  return DEFI_LEVEL_ANCHORS[DEFI_LEVEL_ANCHORS.length-1][1];
+}
+// Composition d'escouade DÉTERMINISTE par palier (V0.03.48, demande d'Alex : "chaque palier ait des
+// ennemis différent sinon c'est trop monotone et répétitif") -- un tirage purement aléatoire à chaque
+// ouverture de fenêtre pouvait, par hasard, redonner une bonne partie des mêmes personnages d'un palier
+// à l'autre (ou le même palier, rouvert, changer de visage sans raison). Ici, chaque palier (1 à 50) a
+// une composition FIXE et stable (toujours la même escouade pour "palier 23", par exemple, d'une
+// tentative à l'autre), tirée d'un mélange pseudo-aléatoire du roster complet des 26 personnages mais
+// RE-SEMÉ à chaque palier (seed = numéro du palier) -- deux paliers tirent donc deux mélanges
+// indépendants, pratiquement toujours différents, sans dépendre d'un pas fixe fragile si le roster
+// change de taille plus tard.
+function defiMulberry32(seed){
+  let s = seed >>> 0;
+  return function(){
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function defiEnemyRosterForTier(tier){
+  const rng = defiMulberry32(Math.imul(tier, 2654435761));
+  const pool = CHAR_DEFS.slice();
+  for(let i = pool.length - 1; i > 0; i--){
+    const j = Math.floor(rng() * (i + 1));
+    const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  return pool.slice(0, 5);
+}
+function defiFreshEnemyTeam(tier, cardName){
+  const scale = defiEnemyScale(tier, cardName);
+  const vit = Math.round(defiEnemyVit(tier));
+  const lvl = defiExpectedLevel(tier);
+  const defs = defiEnemyRosterForTier(tier);
+  return ENEMY_TPL.map((tpl, i) => {
+    const e = makeEnemyFromDef(defs[i % defs.length], tpl, scale, lvl);
+    e.vit = vit;
+    return e;
+  });
+}
+
 function domeSceneSvg(){
   const mech = (x, y, sc, op) => `<g transform="translate(${x} ${y}) scale(${sc})" fill="#0a0d14" stroke="#3aa8c8" stroke-width="0.7" opacity="${op}">
       <rect x="7" y="1" width="6" height="4" rx="1"/><rect x="4" y="5" width="12" height="9" rx="1.5"/>
@@ -11555,6 +11976,9 @@ function respawnTick(){
 }
 
 function endBattle(won){
+  // DÉFI (V0.03.47) : un combat défi en cours a ses propres règles de fin (un seul combat, pas de
+  // vagues infinies ni de butin accumulé) -- cf defiEndBattle() et son commentaire.
+  if(defiCombatActive){ defiEndBattle(won); return; }
   battleOver = true;
   clearInterval(tickHandle); tickHandle = null;
   const overlay = document.getElementById('overlay');
@@ -12270,6 +12694,21 @@ let upgradeQty = 1;         // nombre de groupes d'upgrade choisis dans la fenê
 // UPGRADE/DÉTRUIRE/DÉ-FUSIONNER n'agissent que sur ce palier précis -- plus besoin de sélecteur manuel
 // de répartition (l'ancien tierPickerHtml()/tierChoiceHtml() de la version précédente a été retiré).
 
+// Pastille "DÉFI TERMINÉ" (V0.03.49, demande d'Alex) : une fois les 50 paliers de défi d'une carte
+// remportés, UN SEUL exemplaire de cette carte dans toute la collection du joueur porte la pastille --
+// celui de la plus haute rareté possédée, et à cette rareté celui du plus haut niveau possédé (jamais
+// tous les exemplaires à la fois). Centralisé ici (plutôt que dans chaque appelant) car codexCardHtml()
+// est LE rendu partagé de toutes les tuiles de carte du jeu (collection, fusion, destruction, équipe...) --
+// la pastille apparaît donc automatiquement partout où cette carte précise est affichée.
+// N.B. : n'utilise PAS defiCardCompleted()/DEFI_CHALLENGES_PER_CARD (déclarées bien plus bas dans le
+// fichier, section DÉFI) -- codexCardHtml() est appelée dès le tout premier rendu (avant que l'exécution
+// du script n'atteigne cette déclaration), et une const encore en zone morte temporelle ferait planter
+// la page ("Cannot access before initialization"). 50 est le nombre total de paliers par carte, répété
+// ici en dur pour cette seule raison (cf DEFI_CHALLENGES_PER_CARD, section DÉFI, même valeur).
+function defiTrophyEligible(def, rar, level){
+  return ((player.defi && player.defi[def.name]) || 0) >= 50
+    && rar === effRarity(def) && level === topOwnedLevel(def.name, rar);
+}
 function codexCardHtml(def, rar, opts){
   // `opts.level` permet d'afficher un palier de niveau précis (tuile de la liste GESTION DE CARTE
   // désormais scindée par niveau, V0.01.88) plutôt que toujours le meilleur niveau de la pile.
@@ -12277,6 +12716,7 @@ function codexCardHtml(def, rar, opts){
   return `
       ${opts.unlock ? '<span class="notif-dot on card-dot"></span>' : ''}
       ${opts.badge ? `<div class="cx-copy-badge">${opts.badge}</div>` : ''}
+      ${defiTrophyEligible(def, rar, level) ? '<div class="defi-trophy-badge" title="DÉFI TERMINÉ"></div>' : ''}
       <div class="cx-portrait ${catCls(def)}">${catEmblem(def)}${isFav(def.name, rar) ? '<span class="fav-star">★</span>' : ''}${unitSVG(def.color, def.shape)}</div>
       <div class="cx-name" style="color:${def.color}">${def.name}</div>
       ${rarTag(rar)}
@@ -15592,6 +16032,11 @@ function startMission(){
   saveNow();                     // le combat lancé est sauvegardé tout de suite
 }
 function showHub(){
+  // DÉFI (V0.03.47) : showHub() est le point de passage commun à TOUTE sortie de l'écran de combat
+  // (changement d'onglet via switchView(), bouton RETOUR via openOrders()...) -- si un combat défi est
+  // en cours, on l'abandonne proprement EN PREMIER (restaure la mission mise en pause) plutôt que de
+  // laisser le combat défi tourner dans le vide, invisible, avec le mauvais écran affiché.
+  if(defiCombatActive){ defiAbandonCombat(); return; }
   inInfinite = false;
   document.getElementById('overlay').classList.remove('show');   // le combat continue en fond
   updateInfRecord();
@@ -15600,7 +16045,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -17262,7 +17707,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -17290,6 +17735,424 @@ document.getElementById('dailyBackBtn').onclick = () => { updateRewardTiles(); o
 document.getElementById('trophyBackBtn').onclick = () => { updateRewardTiles(); openSub('rewardsView'); };
 document.getElementById('tileTasks').onclick = () => { openSub('tasksView'); renderTasks(); };
 document.getElementById('tasksBackBtn').onclick = () => { updateRewardTiles(); openSub('rewardsView'); };
+// DÉFI (V0.03.43) : case 04 du MENU, grille de défis (un par carte de série) tous verrouillés pour
+// l'instant -- voir renderDefi() plus bas pour la génération de la grille à partir de SERIES_DEFS.
+document.getElementById('tileDefi').onclick = () => { openSub('defiView'); renderDefi(); };
+document.getElementById('defiBackBtn').onclick = showHub;
+// Cartes de série sans artwork étendu (def.artExt) assigné -- pratique pour savoir d'un coup d'œil
+// (console navigateur) lesquelles il reste à fournir, plutôt que de les recompter à la main à chaque
+// carte ajoutée. Les cases concernées affichent l'artwork gris par défaut (GREY_ART) en attendant.
+function defiExtArtMissing(){
+  return SERIES_DEFS.filter(def => !def.artExt).map(def => def.name);
+}
+// ---------- DÉFI : paliers par carte (V0.03.47, demande d'Alex) ----------
+// 50 paliers par carte, un combat unique chacun. Les paliers "dizaine" (10/20/30/40/50) sont des
+// combats de boss, plus gros/rouges sur la piste, et exigent un niveau minimum sur CETTE carte
+// (aucune restriction sur la carte module) -- confirmé par Alex pour le palier 20 (niveau 35,
+// interpolé entre le palier 10 à 25 et le palier 30 à 50).
+const DEFI_CHALLENGES_PER_CARD = 50;
+const DEFI_BOSS_LEVEL_GATE = { 10:25, 20:35, 30:50, 40:100, 50:150 };
+function defiTierIsBoss(tier){ return tier % 10 === 0; }
+function defiTierLevelGate(tier){ return DEFI_BOSS_LEVEL_GATE[tier] || null; }
+// Progression réelle d'une carte : player.defi[nom] = nombre de paliers déjà remportés (0-50),
+// persisté nativement (player.defi fait partie de l'objet player, cf normalizePlayerExtras()).
+function defiCardProgress(def){
+  return { done: (player.defi && player.defi[def.name]) || 0, total: DEFI_CHALLENGES_PER_CARD };
+}
+function defiCardCompleted(def){
+  const p = defiCardProgress(def);
+  return p.total > 0 && p.done >= p.total;
+}
+// Un palier ne se joue que dans l'ordre (le suivant juste après le dernier remporté), et pour un
+// palier "dizaine", seulement si le niveau de CETTE carte (sa meilleure rareté possédée) atteint le
+// minimum requis (cf DEFI_BOSS_LEVEL_GATE) -- sinon il reste affiché mais non lançable.
+function defiTierUnlockable(def, tier){
+  const done = defiCardProgress(def).done;
+  if(tier > done + 1) return false;
+  const gate = defiTierLevelGate(tier);
+  if(gate && cardLevel(def.name, effRarity(def)) < gate) return false;
+  return true;
+}
+// Récompenses d'un palier (V0.03.47) : basiques (or/xp/matériaux) pour un palier simple, grosses
+// (+ booster + cristaux) pour un palier boss -- toutes deux croissantes avec le palier, comme demandé
+// ("au plus le joueur monte dans les paliers au plus ils donnent de grosses récompenses"). Même forme
+// que les autres tables de récompense du jeu (cf RAID_PHASE_REWARD_BASE/grantReward()) pour rester
+// compatible avec grantReward()/rewardChips() tels quels.
+function defiTierReward(tier){
+  if(!defiTierIsBoss(tier)){
+    const t = tier / DEFI_CHALLENGES_PER_CARD;
+    return {
+      gold: Math.round(50 + 300 * t),
+      xp: Math.round(30 + 190 * t),
+      mat: { rare: Math.round(1 + 4 * t), epique: tier > 10 ? Math.round(1 + 2 * t) : 0, legendaire: tier > 30 ? Math.round(1 * t) : 0 }
+    };
+  }
+  const idx = tier / 10;   // 1..5
+  return {
+    gold: 300 * idx, xp: 200 * idx, crystal: 8 * idx,
+    mat: { rare: 4 * idx, epique: 2 * idx, legendaire: idx >= 3 ? idx - 2 : 0 },
+    booster: ['res', 'cards', 'modules'][(idx - 1) % 3], boosterN: idx
+  };
+}
+function renderDefi(){
+  const list = document.getElementById('defiList');
+  if(!list) return;
+  const lockSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  // Case déverrouillée (demande d'Alex, V0.03.45/46) dès que le joueur possède la carte (isOwned(), déjà
+  // utilisé partout ailleurs dans GESTION DE CARTE) : artwork « étendu » DÉDIÉ (def.artExt -- PAS
+  // def.artBig/def.art recadrés en CSS : Alex fournit un asset à part pour chaque carte, cf defiExtArtMissing()
+  // plus bas), nom en bas à gauche, "fait/total" en bas à droite, coin biseauté bleu/rouge selon
+  // defiCardCompleted(). Sinon, case fermée inchangée.
+  list.innerHTML = SERIES_DEFS.map(def => {
+    if(isOwned(def)){
+      const corner = defiCardCompleted(def) ? ' done' : '';
+      const prog = defiCardProgress(def);
+      return `
+        <div class="defi-cell unlocked" data-name="${def.name}">
+          <img class="defi-art-img" src="${def.artExt || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
+          <div class="defi-corner${corner}"></div>
+          <div class="defi-footer">
+            <div class="defi-name">${def.name}</div>
+            <div class="defi-count">${prog.done}/${prog.total}</div>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="defi-cell" data-name="${def.name}">
+        <div class="defi-lock">${lockSvg}</div>
+      </div>
+    `;
+  }).join('');
+  // Compteur de l'encadré DÉFI (V0.03.44) : "X/total", X = défis débloqués.
+  const total = SERIES_DEFS.length;
+  const done = list.querySelectorAll('.defi-cell.unlocked').length;
+  const counter = document.getElementById('defiProgressCount');
+  if(counter) counter.textContent = done + '/' + total;
+  // Case déverrouillée -> ouvre la piste des paliers de CETTE carte (V0.03.47, demande d'Alex).
+  list.querySelectorAll('.defi-cell.unlocked').forEach(cell => {
+    cell.onclick = () => {
+      const def = SERIES_DEFS.find(d => d.name === cell.dataset.name);
+      if(def) openDefiPath(def);
+    };
+  });
+}
+
+// ---------- DÉFI : piste des paliers d'une carte (V0.03.47, demande d'Alex) ----------
+// "une ligne qui part vers le haut... jusqu'au palier 10/50 (ensuite tous les paliers de dizaine)" :
+// 50 arrêts empilés verticalement, le palier 1 en bas (position du joueur) jusqu'au palier 50 en haut,
+// reliés par une ligne continue à gauche -- les récompenses du palier apparaissent à sa droite. Généré
+// une fois par ouverture (pas de redessin en boucle, rien ne change pendant qu'on regarde la piste).
+let defiActiveCard = null;   // def de la carte actuellement affichée sur la piste
+function openDefiPath(def){
+  defiActiveCard = def;
+  renderDefiPath();
+  openSub('defiPathView');
+  // Fait défiler jusqu'au palier courant (le prochain à jouer), le plus utile à voir en priorité,
+  // plutôt que le palier 50 tout en haut du DOM.
+  requestAnimationFrame(() => {
+    const cur = document.querySelector('#defiPathTrack .dp-tier.cur') || document.querySelector('#defiPathTrack .dp-tier');
+    if(cur) cur.scrollIntoView({ block:'center' });
+  });
+}
+function defiPathBack(){ openSub('defiView'); renderDefi(); }
+// Icône de palier simple (épée) vs palier boss (crâne) -- cohérent avec le cadenas de .defi-lock
+// (même famille de trait, stroke-width 2, viewBox 24x24).
+const DEFI_TIER_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>';
+const DEFI_BOSS_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.3 3 5.6V18a1 1 0 0 0 1 1h1.5v2h1v-2h1v2h1v-2H15a1 1 0 0 0 1-1v-3.4c1.8-1.3 3-3.2 3-5.6a7 7 0 0 0-7-7z"/><circle cx="9.5" cy="10" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10" r="1.2" fill="currentColor" stroke="none"/></svg>';
+function defiLockSvg(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'; }
+function renderDefiPath(){
+  const def = defiActiveCard;
+  const track = document.getElementById('defiPathTrack');
+  if(!def || !track) return;
+  document.getElementById('defiPathTitle').textContent = def.name;
+  const done = defiCardProgress(def).done;
+  const rows = [];
+  for(let tier = DEFI_CHALLENGES_PER_CARD; tier >= 1; tier--){
+    const boss = defiTierIsBoss(tier);
+    const cleared = tier <= done;
+    const isCur = tier === done + 1;
+    const unlockable = defiTierUnlockable(def, tier);
+    const gate = defiTierLevelGate(tier);
+    const gateUnmet = !!gate && cardLevel(def.name, effRarity(def)) < gate;
+    const rew = defiTierReward(tier);
+    const cls = ['dp-tier', boss ? 'boss' : '', cleared ? 'done' : '', isCur ? 'cur' : '', (!cleared && !isCur) ? 'ahead' : ''].filter(Boolean).join(' ');
+    rows.push(`
+      <div class="${cls}" data-tier="${tier}">
+        <div class="dp-node">
+          ${cleared ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>'
+            : unlockable ? (boss ? DEFI_BOSS_ICO : DEFI_TIER_ICO) : defiLockSvg()}
+          <span class="dp-num">${tier}</span>
+        </div>
+        <div class="dp-side">
+          <div class="dp-label">${boss ? 'BOSS · PALIER ' + tier : 'PALIER ' + tier}${gate ? '<span class="dp-gate' + (gateUnmet ? ' unmet' : '') + '">NIV. ' + gate + ' REQUIS</span>' : ''}</div>
+          <div class="dp-rewards">${rewardChips(rew, true)}</div>
+        </div>
+      </div>
+    `);
+  }
+  track.innerHTML = rows.join('');
+  track.querySelectorAll('.dp-tier').forEach(el => {
+    el.onclick = () => {
+      const tier = +el.dataset.tier;
+      if(el.classList.contains('ahead')){ showToast('TERMINE D’ABORD LE PALIER ' + (defiCardProgress(def).done + 1)); return; }
+      const gate = defiTierLevelGate(tier);
+      if(gate && cardLevel(def.name, effRarity(def)) < gate){ showToast('CARTE NIVEAU ' + gate + ' REQUIS'); return; }
+      if(el.classList.contains('done')){ showToast('PALIER DÉJÀ REMPORTÉ'); return; }
+      openDefiLaunch(def, tier);
+    };
+  });
+}
+
+// ---------- DÉFI : fenêtre de lancement d'un palier -- carte + module (V0.03.47, demande d'Alex) ----------
+// "une seule carte celle qui correspond à la case" : la liste affiche TOUTES les piles possédées
+// (triées comme d'habitude, celles de la carte de la case en tête) mais seules celles-ci sont
+// sélectionnables -- les autres restent visibles, grisées (même traitement que .lp-card.busy).
+let defiLaunchDef = null, defiLaunchTier = 0, defiLaunchCard = null, defiLaunchModule = null;
+let defiLaunchMode = 'cards';   // 'cards' | 'modules', même principe que squadPickMode
+// Escouade ennemie de CETTE tentative (V0.03.48, demande d'Alex) : tirée UNE SEULE FOIS à l'ouverture
+// de la fenêtre (pas à chaque appel de renderDefiLaunch(), ni au lancement du combat) et conservée tant
+// que la fenêtre reste ouverte, pour que l'aperçu affiché corresponde EXACTEMENT à ce qui sera combattu
+// (freshEnemyTeam() pioche aléatoirement -- deux appels séparés donneraient deux escouades différentes).
+// Rouvrir la fenêtre (nouvelle tentative après abandon/défaite) retire une escouade fraîche.
+let defiLaunchEnemies = null;
+function openDefiLaunch(def, tier){
+  defiLaunchDef = def; defiLaunchTier = tier; defiLaunchModule = null; defiLaunchMode = 'cards';
+  // V0.03.48 : formule dédiée au défi (1 carte vs escouade), plus freshEnemyTeam() (formule de vague de
+  // mission, 5 cartes vs 5 ennemis) -- cf commentaire au-dessus de defiFreshEnemyTeam(). Le nom de la
+  // carte est transmis pour appliquer sa courbe dédiée si elle en a une (cf DEFI_SCALE_ANCHORS_BY_CARD).
+  defiLaunchEnemies = defiFreshEnemyTeam(tier, def.name);
+  const matching = ownedStacks().filter(st => st.def.name === def.name);
+  // Présélectionne la carte si une seule pile valide existe (évite un clic inutile quand il n'y a
+  // de toute façon qu'un seul choix possible) ; sinon le joueur doit choisir lui-même la rareté.
+  defiLaunchCard = matching.length === 1 ? sqKey(matching[0].def.name, matching[0].rar) : null;
+  renderDefiLaunch();
+  document.getElementById('defiLaunchModal').classList.add('show');
+}
+function closeDefiLaunch(){ document.getElementById('defiLaunchModal').classList.remove('show'); }
+// Aperçu de l'escouade ennemie (V0.03.48, demande d'Alex) : mêmes tuiles .unit.cbt que l'écran de
+// combat réel (cf buildRoster()) -- simple aperçu statique (PV plein, ulti vide, pas de clic, pas
+// d'animation), les cartes n'ont pas encore commencé à se battre. L'escouade vient de defiLaunchEnemies
+// (tirée une seule fois à l'ouverture, cf openDefiLaunch()) pour que l'aperçu corresponde exactement à
+// ce qui sera réellement combattu au lancement.
+function defiEnemyPreviewHtml(enemies){
+  const tiles = enemies.map((u, idx) => `
+    <div class="unit cbt foe ${cbtFrameClass(u, false)}" data-defi-prev="${idx}">
+      <div class="cbt-ring"></div>
+      <img class="cbt-art-img" src="${(CHAR_DEFS.find(c => c.name === u.name) || {}).art || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
+      <div class="cbt-gem"><b>${u.level}</b></div>
+      <div class="cbt-g cbt-hp"><canvas></canvas></div>
+      <div class="cbt-g cbt-ult"><canvas></canvas></div>
+    </div>`).join('');
+  return `<div class="team-label enemy" style="margin:0 0 6px;">HOSTILES</div><div class="roster dl-enemy-roster">${tiles}</div>`;
+}
+// Peint les jauges statiques (PV 100 %, ulti 0 %) des tuiles d'aperçu -- setCbtGaugeFill() lit la taille
+// réelle du canvas via getBoundingClientRect(), donc appelé APRÈS insertion dans le DOM (cf appelant).
+function defiPaintEnemyPreviewGauges(){
+  document.querySelectorAll('#defiLaunchInner [data-defi-prev]').forEach(el => {
+    setCbtGaugeFill(el.querySelector('.cbt-hp'), 100);
+    setCbtGaugeFill(el.querySelector('.cbt-ult'), 0);
+  });
+}
+function renderDefiLaunch(){
+  const def = defiLaunchDef, tier = defiLaunchTier;
+  const inner = document.getElementById('defiLaunchInner');
+  if(!def || !inner) return;
+  const boss = defiTierIsBoss(tier);
+  const modEnt = modSqEntry(defiLaunchModule);
+  // Toutes les piles possédées, celles de la carte demandée en tête (demande d'Alex) ; sortStacks()
+  // garde ensuite le tri habituel (rareté/niveau) à l'intérieur de chacun des deux groupes.
+  const stacks = sortStacks(ownedStacks()).sort((a, b) => (b.def.name === def.name) - (a.def.name === def.name));
+  const cardsHtml = stacks.map(st => {
+    const key = sqKey(st.def.name, st.rar), match = st.def.name === def.name, sel = defiLaunchCard === key;
+    return `<div class="codex-card dl-card ${rarCls(st.rar)} ${sel ? 'sel' : ''} ${match ? '' : 'off'}" data-key="${key}" data-match="${match ? '1' : '0'}">
+      ${codexCardHtml(st.def, st.rar, { badge: sel ? '✓' : '' })}
+      ${match ? '' : '<div class="dl-off-tag">AUTRE CARTE</div>'}
+    </div>`;
+  }).join('');
+  const modsHtml = squadModulesAvailable().map(e => {
+    const level = moduleLevel(e.def.name, e.rar), sel = defiLaunchModule === e.key;
+    return `<div class="mod-item${sel ? ' sel' : ''}" data-modkey="${e.key}">
+      <div class="mod-card ${rarCls(e.rar)}">
+        ${modCardFaceHtml(e.def, level, e.rar)}
+        ${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}
+        ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+  inner.innerHTML = `
+    <button class="cx-close" id="dlClose">✕</button>
+    <div class="dl-count">${defiLaunchCard ? 1 : 0}/1</div>
+    <div class="team-label player" style="margin:0;">${boss ? 'BOSS · ' : ''}PALIER ${tier} — ${def.name}</div>
+    ${defiEnemyPreviewHtml(defiLaunchEnemies || [])}
+    <div class="dl-mod-row">
+      <div class="mod-slot${modEnt ? ' filled ' + rarCls(modEnt.rar) : ''}" id="dlModSlot">
+        ${modEnt ? `<div class="mod-card">${modCardFaceHtml(modEnt.def, moduleLevel(modEnt.def.name, modEnt.rar), modEnt.rar)}</div>` : `<span class="plus">+</span><span class="mod-slot-label">MODULE</span>`}
+      </div>
+    </div>
+    <button type="button" class="mod-fuse-toggle" id="dlModeToggle">${defiLaunchMode === 'cards' ? 'MODULES' : 'CARTES'}</button>
+    ${defiLaunchMode === 'cards' ? `
+    <div class="press-hint">Touche une carte ${def.name} pour la sélectionner</div>
+    <div class="codex-grid dl-list">${cardsHtml || '<div class="fab-empty">Aucune carte possédée.</div>'}</div>` : `
+    <div class="press-hint">Touche un module pour l’équiper</div>
+    <div class="mod-grid dl-list">${modsHtml || '<div class="fab-empty">Aucun module possédé.</div>'}</div>`}
+    <div class="controls" style="width:100%;"><button class="primary-btn" id="dlLaunchGo" ${defiLaunchCard ? '' : 'disabled'}>LANCER LE COMBAT</button></div>`;
+  defiPaintEnemyPreviewGauges();
+  document.getElementById('dlClose').onclick = closeDefiLaunch;
+  inner.querySelectorAll('.dl-card').forEach(el => {
+    el.onclick = () => {
+      if(el.dataset.match !== '1'){ showToast('CETTE CASE DÉFI EST RÉSERVÉE À ' + def.name); return; }
+      const key = el.dataset.key;
+      defiLaunchCard = defiLaunchCard === key ? null : key;
+      renderDefiLaunch();
+    };
+  });
+  const modSlotEl = document.getElementById('dlModSlot');
+  if(modSlotEl) modSlotEl.onclick = () => {
+    if(modEnt){ defiLaunchModule = null; renderDefiLaunch(); }
+    else { defiLaunchMode = 'modules'; renderDefiLaunch(); }
+  };
+  document.getElementById('dlModeToggle').onclick = () => {
+    defiLaunchMode = defiLaunchMode === 'cards' ? 'modules' : 'cards';
+    renderDefiLaunch();
+  };
+  inner.querySelectorAll('[data-modkey]').forEach(tile => {
+    tile.onclick = () => {
+      const key = tile.dataset.modkey;
+      defiLaunchModule = defiLaunchModule === key ? null : key;
+      defiLaunchMode = 'cards';
+      renderDefiLaunch();
+    };
+  });
+  document.getElementById('dlLaunchGo').onclick = () => {
+    if(!defiLaunchCard) return;
+    defiEnterCombat();
+  };
+}
+document.getElementById('defiLaunchModal').addEventListener('click', e => { if(e.target.id === 'defiLaunchModal') closeDefiLaunch(); });
+
+// ---------- DÉFI : le combat du palier (Stage C, V0.03.47, demande d'Alex) ----------
+// "Le combat est le même que les autres" -- Alex veut le VRAI moteur (bulles + escouade), pas une
+// version simplifiée comme RAID. Ce moteur tourne sur un jeu de variables globales partagées avec les
+// Missions (playerTeam/enemyTeam/battleStarted/bblBoard/...) et écrit directement dans les DOM
+// #playerRoster/#enemyRoster/#bblBoard d'#infiniteMode (cf render(), gatée par `inInfinite`) -- défi
+// prend donc temporairement possession de CET écran et de CES variables, exactement comme un
+// changement de mission (cf switchActive()/withMission() plus bas dans le fichier), mais sans jamais
+// passer par MSTATE : défi n'est pas un mode MISSIONS enregistré, c'est un combat unique et jetable.
+// defiSavedCtx conserve un instantané de tout ce que ça écrase (même liste que battleSnapshot(), plus
+// le reste de l'état de combat), restauré par defiRestoreContext() quelle que soit l'issue (victoire,
+// défaite, ou abandon -- navigation hors de l'écran, cf les gardes defiCombatActive dans showHub()/
+// goBack()/endBattle() plus bas).
+let defiCombatActive = false;
+let defiSavedCtx = null;
+function defiEnterCombat(){
+  if(!defiLaunchDef || !defiLaunchCard) return;
+  const cardEnt = sqEntry(defiLaunchCard);
+  if(!cardEnt){ showToast('CARTE INTROUVABLE'); return; }
+  const def = defiLaunchDef, tier = defiLaunchTier;
+  defiSavedCtx = Object.assign(battleSnapshot(), {
+    loot: runLoot, squadModule,
+    bblBoard: bblBoard.slice(), bblChain: bblChain.slice(), bblUltIdx, bblTickCounter,
+    wipeModuleTriggered, saphyrTriggered, tArmsTriggered
+  });
+  stopTimers();
+  defiCombatActive = true;
+  missionMode = 'one';   // force un mode combat normal (pas RÉCOLTE DOME) le temps du palier défi
+  squadModule = defiLaunchModule;
+  playerTeam = [makePlayerFromDef(cardEnt.def, cardEnt.rar)];
+  applyModuleSquadBonus(playerTeam);
+  // V0.03.48 : réutilise l'escouade DÉJÀ tirée et montrée dans l'aperçu (cf defiLaunchEnemies, fixée à
+  // l'ouverture de la fenêtre par openDefiLaunch()) plutôt que d'en retirer une nouvelle au hasard --
+  // sinon l'escouade réellement combattue ne correspondrait plus à celle que le joueur vient de voir.
+  enemyTeam = defiLaunchEnemies || defiFreshEnemyTeam(tier, defiLaunchDef && defiLaunchDef.name);
+  wave = tier;
+  runLoot = newLoot();
+  auto = false; speed = 1;
+  battleStarted = true; battleOver = false; missionDone = false; pendingNextWave = false;
+  missionEndAt = 0; runSeconds = 0; lastTickAt = Date.now();
+  bblChain = []; bblUltIdx = null; bblTickCounter = 0; bblBoard = [];
+  wipeModuleTriggered = false; saphyrTriggered = false; tArmsTriggered = false;
+  closeDefiLaunch();
+  document.getElementById('defiPathView').classList.remove('active');
+  inInfinite = true;
+  document.getElementById('infiniteMode').classList.add('active');
+  document.getElementById('collectBtn').style.display = 'none';
+  document.getElementById('infModeTagTitle').textContent = (defiTierIsBoss(tier) ? 'BOSS · ' : '') + 'DÉFI ' + def.name;
+  document.getElementById('missionTitleTxt').textContent = 'PALIER ' + tier + ' — ' + def.name;
+  document.getElementById('missionTimer').style.display = 'none';
+  document.getElementById('waveLabel').textContent = 'PALIER ' + tier;
+  document.getElementById('waveLabel').style.display = '';
+  document.getElementById('infModeTag').style.display = '';
+  document.getElementById('infStart').style.display = 'none';
+  document.getElementById('infArena').style.display = '';
+  scrollViewTop();
+  bblGenBoard();
+  render();
+  startLoop();
+}
+// Restaure EXACTEMENT l'état (mission active, escouade, module équipé...) tel qu'il était juste avant
+// que défi ne prenne possession des variables partagées (même principe que restoreBattle(), mais à
+// partir de l'instantané pris par defiEnterCombat() plutôt que de MSTATE).
+function defiRestoreContext(){
+  const ctx = defiSavedCtx;
+  defiSavedCtx = null;
+  if(!ctx) return;
+  missionMode = ctx.mode;
+  battleStarted = ctx.started; wave = ctx.wave; battleOver = ctx.over; pendingNextWave = ctx.pending;
+  playerTeam = ctx.player; enemyTeam = ctx.enemy;
+  auto = ctx.auto; speed = ctx.speed; lastTickAt = ctx.lastTickAt; runSeconds = ctx.runSeconds;
+  missionEndAt = ctx.missionEndAt; missionDone = ctx.missionDone;
+  runLoot = ctx.loot; squadModule = ctx.squadModule;
+  bblBoard = ctx.bblBoard; bblChain = ctx.bblChain; bblUltIdx = ctx.bblUltIdx; bblTickCounter = ctx.bblTickCounter;
+  wipeModuleTriggered = ctx.wipeModuleTriggered; saphyrTriggered = ctx.saphyrTriggered; tArmsTriggered = ctx.tArmsTriggered;
+  document.getElementById('missionTimer').style.display = '';
+  const ab = document.getElementById('autoBtn');
+  if(ab){ ab.textContent = 'AUTO : ' + (auto ? 'ON' : 'OFF'); ab.classList.toggle('auto-on', auto); }
+}
+// Quitte l'écran de combat et revient sur la piste des paliers -- utilisé aussi bien pour une fin de
+// combat normale (defiEndBattle()) qu'un abandon (navigation hors de l'écran, defiAbandonCombat()).
+function defiExitCombat(){
+  defiCombatActive = false;
+  document.getElementById('overlay').classList.remove('show');
+  inInfinite = false;
+  document.getElementById('infiniteMode').classList.remove('active');
+  defiRestoreContext();
+  if(battleStarted) ensureBattleLoop();
+  renderLoot();
+  openSub('defiPathView');
+  renderDefiPath();
+}
+// Navigation hors de l'écran PENDANT un combat défi (onglet FABRIQUE/CARTE, bouton RETOUR...) : cf les
+// gardes defiCombatActive ajoutées dans showHub()/goBack() plus bas, qui appellent ceci EN PREMIER.
+function defiAbandonCombat(){
+  defiExitCombat();
+  showToast('COMBAT DÉFI ABANDONNÉ');
+}
+// Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
+// cf la garde ajoutée au tout début d'endBattle() plus bas, qui redirige ici au lieu de son propre
+// traitement (vagues infinies, butin accumulé...) qui ne concerne pas défi.
+function defiEndBattle(won){
+  battleOver = true;
+  clearInterval(tickHandle); tickHandle = null;
+  const def = defiLaunchDef, tier = defiLaunchTier;
+  // V0.03.48 (fix) : la progression doit être mise à jour AVANT defiExitCombat(), car celui-ci
+  // ré-affiche la piste (renderDefiPath()) -- l'appeler après aurait laissé la piste affichée avec
+  // l'ancienne progression (palier remporté encore "en cours", palier suivant encore verrouillé)
+  // jusqu'au prochain rafraîchissement.
+  if(won){
+    player.defi[def.name] = Math.max((player.defi && player.defi[def.name]) || 0, tier);
+    saveSoon();
+  }
+  defiExitCombat();
+  if(won){
+    const items = grantReward(defiTierReward(tier));
+    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items);
+  } else {
+    showToast('ESCOUADE HORS SERVICE — PALIER ' + tier + ' À RETENTER');
+  }
+}
+
+document.getElementById('defiPathBackBtn').onclick = defiPathBack;
 // Easter egg : taper 10 fois le moteur du titre
 (function(){
   const logo = document.querySelector('.mt-meca');
@@ -18709,7 +19572,10 @@ function catchUpBattle(){
     renderNotifs();
     renderPlayerTile();
     renderResources();
-    document.getElementById('waveLabel').textContent = 'VAGUE ' + wave;
+    // DÉFI (V0.03.48, fix) : même raison que la garde sur infModeTagTitle plus haut -- ce libellé
+    // générique "VAGUE X" ne doit pas écraser "PALIER X" si un rattrapage (app en fond, minuteur figé)
+    // se déclenche pendant un combat défi.
+    if(!defiCombatActive) document.getElementById('waveLabel').textContent = 'VAGUE ' + wave;
     saveNow();
   } catch(err){
     HEADLESS = false;
@@ -18755,16 +19621,23 @@ window.addEventListener('pageshow', () => catchUpAllMissions());
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', ordersView:'hub', playerView:'hub' };
+const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', ordersView:'hub', playerView:'hub', defiView:'hub', defiPathView:'defi' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
 }
 function goBack(id){
   if(BACK_OF[id] === 'rewards'){ updateRewardTiles(); openSub('rewardsView'); }
-  else if(BACK_OF[id] === 'orders') openOrders();
+  // DÉFI (V0.03.47) : le bouton RETOUR pendant un combat défi (id === 'infiniteMode') doit abandonner
+  // proprement CE combat plutôt que suivre le chemin normal d'infiniteMode (openOrders(), pensé pour
+  // les vraies missions) -- sinon openOrders()'s openSub('ordersView') écraserait tout de suite le
+  // retour sur defiPathView fait par defiAbandonCombat() (lui-même déclenché via la garde de showHub()).
+  else if(BACK_OF[id] === 'orders'){ if(defiCombatActive) defiAbandonCombat(); else openOrders(); }
+  // DÉFI (V0.03.47) : la piste des paliers (defiPathView) revient à la grille des cartes (defiView),
+  // pas directement au hub -- même principe de nidification que rewards/tasksView ci-dessus.
+  else if(BACK_OF[id] === 'defi') renderDefi(), openSub('defiView');
   else { if(id === 'collectionView') saveNow(); showHub(); }
-  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'orders' ? document.getElementById('ordersView') : document.getElementById('modeHub');
+  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'orders' ? document.getElementById('ordersView') : BACK_OF[id] === 'defi' ? document.getElementById('defiView') : document.getElementById('modeHub');
   to.classList.remove('back-in'); void to.offsetWidth; to.classList.add('back-in');
   setTimeout(() => to.classList.remove('back-in'), 400);
 }
@@ -18934,7 +19807,11 @@ function updateMissionTiles(){
     else if(running === total){ ordIco.innerHTML = ORD_ICO_SPIN; ordIco.className = 'ord-status-ico spin'; }
     else { ordIco.innerHTML = ORD_ICO_SPIN_DOT; ordIco.className = 'ord-status-ico spin'; }
   }
-  const mt = document.getElementById('infModeTagTitle'); if(mt) mt.textContent = missionCfg().name;
+  // DÉFI (V0.03.48, fix) : updateMissionTiles() tourne en fond toutes les secondes (missionHeartbeat1s())
+  // même PENDANT un combat défi (qui emprunte missionMode='one' comme astuce technique, cf defiEnterCombat())
+  // -- sans cette garde, ce libellé repasserait sur "MISSION ONE" une seconde après le début du combat,
+  // écrasant le "DÉFI <carte>" posé par defiEnterCombat().
+  const mt = document.getElementById('infModeTagTitle'); if(mt && !defiCombatActive) mt.textContent = missionCfg().name;
   updateOrdCollectBtn();
 }
 // Bouton flottant "RÉCOLTER ET RELANCER" : visible sur ORDRE DE MISSION dès que 2 missions ou plus
