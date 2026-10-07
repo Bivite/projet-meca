@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.60</title>
+<title>Projet MECA V0.03.61</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1712,6 +1712,13 @@
      (posé en plus de .mod-slot sur cet élément précis, cf renderPlayerSheet()) pour ne pas réduire
      le slot cliquable d'origine, plus grand, de DEATH SQUAD (renderSquadManager()). */
   .pv-mod-slot{width:38%; max-width:150px;}
+  /* Carte module équipée affichée sous VOTRE ESCOUADE pendant le combat (V0.03.61, demande d'Alex :
+     "en dessous des petites cartes de mechs, affiche la carte module... met les dans le même
+     encadré") -- même recette que .pv-mod-slot (fiche joueur) ci-dessus, encore réduite pour tenir
+     sous les petites cartes .unit.cbt du cadre VOTRE ESCOUADE (#infArena .zone.player-zone) ;
+     lecture seule (cursor:default posé en inline comme .pv-mod-slot, cf renderBattleModSlot()) --
+     le module se change toujours depuis CHOIX DE L'ESCOUADE ou GESTION DE MODULE. */
+  .cbt-mod-slot{width:30%; max-width:92px;}
   /* ---------- Hub des modes de combat ---------- */
   .sub-view{display:none;}
   .sub-view.active{display:flex; flex-direction:column; gap:12px; animation:viewIn .22s ease;}
@@ -5957,6 +5964,14 @@
      SANS toucher .mod-grid seule (toujours utilisée telle quelle ailleurs, ex. renderDefiLaunch()) --
      même recette de spécificité déjà utilisée ailleurs dans ce fichier pour ce genre de cas. */
   .lp-list.mod-grid{grid-template-columns:repeat(2,1fr); gap:14px 10px; padding:14px 5px 10px;}
+  /* Module déjà équipé par une AUTRE mission en cours, dans la liste des modules de CHOIX DE
+     L'ESCOUADE (V0.03.61, demande d'Alex : "même principe que pour une carte mechs") -- même
+     traitement que .lp-card.busy/.lp-busy ci-dessus pour les cartes, réutilisé tel quel sur
+     .mod-card (déjà position:relative, cf règle générale plus haut) plutôt qu'une nouvelle classe.
+     Scopé à #launchInner pour ne pas affecter .mod-item ailleurs (GESTION DE MODULE, DÉFI...), qui
+     n'ont pas ce concept de "busy" partagé entre missions. */
+  #launchInner .mod-item.busy .mod-card{filter:grayscale(.9) brightness(.55);}
+  #launchInner .mod-item.busy{cursor:default;}
 
   /* Cases de mission : effet verre (liseré + reflet) par-dessus le dégradé de couleur propre à chaque case */
   #tileOmega .mt-inner, #tileDome .mt-inner{
@@ -7344,7 +7359,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.60</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.61</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7386,6 +7401,9 @@
     <div class="zone player-zone">
       <div class="team-label player">VOTRE ESCOUADE</div>
       <div class="roster" id="playerRoster"></div>
+      <!-- Carte module de la mission active, sous les cartes mechs, dans le MÊME cadre qu'elles
+           (V0.03.61, demande d'Alex) -- cf renderBattleModSlot(), appelée depuis render(). -->
+      <div class="mod-slot-row" id="battleModSlotRow"></div>
     </div>
   </div>
 
@@ -7729,9 +7747,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.60';
+var BUILD_VERSION = 'V0.03.61';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.61', items:[
+    'Correction : le module équipé pour une mission ne peut plus être équipé en même temps sur une autre mission en cours (même principe que les cartes mechs).',
+    'Écran de combat : la carte module de la mission en cours s\'affiche maintenant sous les cartes mechs, dans le même encadré VOTRE ESCOUADE.'
+  ]},
   { v:'V0.03.60', items:[
     'Choix de l\'escouade (lancement/relance d\'une mission) : possibilité d\'équiper le module de la Death Squad directement depuis cette fenêtre, sans repasser par GESTION DE MODULE.'
   ]},
@@ -11268,7 +11290,22 @@ let pickerTargetIdx = null;
 // un seul exemplaire équipable (un seul slot demandé pour l'instant ; 3 étaient envisagés à terme, cf
 // commentaire au-dessus de MODULE_DEFS). N'est PAS repris dans le pentagone (teamStarHtml()) : affiché
 // séparément, sans lien visuel avec le centre, cf renderSquadManager().
+// squadModule reste le module du MODÈLE "Death Squad" (squad[]) -- édité uniquement depuis GESTION DE
+// MODULE (renderSquadManager()), jamais lié à une mission précise, exactement comme squad[] pour les
+// cartes.
 let squadModule = null;
+// Module RÉELLEMENT équipé par la mission actuellement active (V0.03.61, demande d'Alex : "on peut
+// mettre plusieurs fois les mêmes cartes modules sur deux missions différentes... il faut que ça soit
+// le même principe que pour une carte mechs") -- même rôle que curSquad vs squad[] pour les cartes :
+// curSquadModule est la valeur LIVE, échangée à chaque switchActive()/withMission() (cf saveCtx()/
+// loadFields()/blankMission() plus bas) et sauvegardée par mission dans MSTATE[mode].squadModule, alors
+// que squadModule (ci-dessus) reste le modèle par défaut utilisé en repli à l'ouverture de la fenêtre de
+// lancement (openLaunchPicker(), même repli que curSquad.some(Boolean) ? curSquad : squad). Tout calcul
+// de combat RÉEL (applyModuleSquadBonus(), triggerModuleWipeEffect()/triggerSaphyrEffect()/
+// triggerTArmsEffect()) lit désormais curSquadModule, jamais squadModule -- défi (defiEnterCombat()/
+// defiRestoreContext()) l'emprunte et le restaure temporairement de la même façon qu'avant avec
+// squadModule.
+let curSquadModule = null;
 function modSqEntry(key){
   if(!key) return null;
   const [name, r] = String(key).split('|');
@@ -11367,7 +11404,7 @@ function freshPlayerTeam(){
 // leur nom (V0.02.58, ajout de PROTO-SHIELD et ROCKET en plus de BAVURES, cf commentaire au-dessus de
 // MODULE_DEFS).
 function applyModuleSquadBonus(team){
-  const me = modSqEntry(squadModule);
+  const me = modSqEntry(curSquadModule);   // V0.03.61 : module RÉEL de la mission active, plus squadModule (modèle)
   if(!me || me.def.kind !== 'bonus' || !team.length) return;
   const val = moduleValue(me.def, moduleLevel(me.def.name, me.rar));
   if(me.def.name === 'BAVURES'){
@@ -11698,11 +11735,31 @@ function refreshBattleModalIfOpen(){
 // HEADLESS = simulation sans affichage (rattrapage du combat quand l'app était fermée)
 var HEADLESS = false;
 var lastTickAt = Date.now();
+// Carte module affichée sous VOTRE ESCOUADE, dans le même cadre que les cartes mechs (V0.03.61,
+// demande d'Alex) -- lit curSquadModule (module RÉEL de la mission active), jamais le modèle
+// squadModule : chaque mission affiche bien SON module, pas celui de la Death Squad en général.
+// Signature mise en cache pour ne reconstruire le HTML que quand le module équipé change réellement
+// (render() tourne à chaque tick de combat, même recette que ROSTER_DOM/rosterSig() plus haut).
+var battleModSlotSig = null;
+function renderBattleModSlot(){
+  const el = document.getElementById('battleModSlotRow');
+  if(!el) return;
+  const modEnt = modSqEntry(curSquadModule);
+  const level = modEnt ? moduleLevel(modEnt.def.name, modEnt.rar) : 0;
+  const sig = modEnt ? modEnt.key + '|' + level : '';
+  if(sig === battleModSlotSig) return;
+  battleModSlotSig = sig;
+  el.innerHTML = modEnt ? `
+    <div class="mod-slot cbt-mod-slot filled ${rarCls(modEnt.rar)}" style="cursor:default;">
+      <div class="mod-card">${modCardFaceHtml(modEnt.def, level, modEnt.rar)}</div>
+    </div>` : '';
+}
 function render(){
   if(HEADLESS || BG_SWAP || !inInfinite) return;          // écran de combat caché : rien à redessiner
   updateDomeScene();
   renderRoster('playerRoster', playerTeam, true);
   renderRoster('enemyRoster', enemyTeam, false);
+  renderBattleModSlot();
   bblRenderBoard();
 }
 
@@ -12070,7 +12127,7 @@ const RESPAWN_S = 10;
 // ex. dans makePlayerFromDef() (cf applyModuleSquadBonus(), déjà le cas pour BAVURES).
 let wipeModuleTriggered = false;
 function triggerModuleWipeEffect(){
-  const me = modSqEntry(squadModule);
+  const me = modSqEntry(curSquadModule);   // V0.03.61 : module RÉEL de la mission active
   if(!me || me.def.kind !== 'malus') return;
   const val = moduleValue(me.def, moduleLevel(me.def.name, me.rar));
   if(me.def.name === 'PROK-IEM'){
@@ -12086,7 +12143,7 @@ function triggerModuleWipeEffect(){
     // engagée au combat (curSquad, pas la réserve `squad`), appliqués tels quels à chaque cible (comme
     // le débuff de PROK-IEM, pas divisés entre elles).
     const targets = shuffled(alive).slice(0, az5TargetCount(val));
-    const dmg = Math.max(1, Math.round(squadTotalPower(curSquad) * val / 100));
+    const dmg = Math.max(1, Math.round(squadTotalPower(curSquad, curSquadModule) * val / 100));
     targets.forEach(u => {
       u.hp = Math.max(0, u.hp - dmg);
       floatDamage('enemyRoster', enemyTeam.indexOf(u), '-' + dmg, 'crit');
@@ -12110,7 +12167,7 @@ let saphyrTriggered = false;
 function triggerSaphyrEffect(fallen){
   if(saphyrTriggered || fallen.isPlayer) return;
   saphyrTriggered = true;
-  const me = modSqEntry(squadModule);
+  const me = modSqEntry(curSquadModule);   // V0.03.61 : module RÉEL de la mission active
   if(!me || me.def.kind !== 'malus' || me.def.name !== 'SAPHYR') return;
   const val = moduleValue(me.def, moduleLevel(me.def.name, me.rar));
   const pool = aliveList(enemyTeam).filter(u => u !== fallen);
@@ -12137,7 +12194,7 @@ let tArmsTriggered = false;
 function triggerTArmsEffect(fallen){
   if(tArmsTriggered) return;
   tArmsTriggered = true;
-  const me = modSqEntry(squadModule);
+  const me = modSqEntry(curSquadModule);   // V0.03.61 : module RÉEL de la mission active
   if(!me || me.def.kind !== 'bonus' || me.def.name !== 'T-ARMS 09') return;
   const val = moduleValue(me.def, moduleLevel(me.def.name, me.rar));
   if(!playerTeam.length) return;
@@ -15543,10 +15600,13 @@ function modulePower(def, rar, level){
 // l'effet d'AZ-5 se base sur "la puissance totale de l'escouade") pour que renderTeamPower() (escouade
 // de réserve `squad`, affichage DEATH SQUAD) et triggerModuleWipeEffect() (escouade RÉELLEMENT engagée
 // au combat, `curSquad`) utilisent exactement le même calcul au lieu de deux formules dupliquées.
-function squadTotalPower(list){
+// `mod` (V0.03.61) : clé module explicite -- squadTotalPower(curSquad, curSquadModule) pour un calcul de
+// combat RÉEL (triggerModuleWipeEffect()), squadTotalPower() sans argument pour l'affichage DEATH SQUAD
+// (repli sur squadModule, le modèle, exactement comme avant ce changement).
+function squadTotalPower(list, mod){
   let power = 0;
   squadEntries(list).forEach(e => { power += cardPower(e.def, e.rar); });
-  const modEnt = modSqEntry(squadModule);
+  const modEnt = modSqEntry(mod !== undefined ? mod : squadModule);
   if(modEnt) power += modulePower(modEnt.def, modEnt.rar);
   return power;
 }
@@ -18423,14 +18483,14 @@ function defiEnterCombat(){
   if(!cardEnt){ showToast('CARTE INTROUVABLE'); return; }
   const def = defiLaunchDef, tier = defiLaunchTier;
   defiSavedCtx = Object.assign(battleSnapshot(), {
-    loot: runLoot, squadModule,
+    loot: runLoot, curSquadModule,   // V0.03.61 : emprunte/restaure le module RÉEL (plus le modèle squadModule)
     bblBoard: bblBoard.slice(), bblChain: bblChain.slice(), bblUltIdx, bblTickCounter,
     wipeModuleTriggered, saphyrTriggered, tArmsTriggered
   });
   stopTimers();
   defiCombatActive = true;
   missionMode = 'one';   // force un mode combat normal (pas RÉCOLTE DOME) le temps du palier défi
-  squadModule = defiLaunchModule;
+  curSquadModule = defiLaunchModule;
   playerTeam = [makePlayerFromDef(cardEnt.def, cardEnt.rar)];
   applyModuleSquadBonus(playerTeam);
   // V0.03.48 : réutilise l'escouade DÉJÀ tirée et montrée dans l'aperçu (cf defiLaunchEnemies, fixée à
@@ -18474,7 +18534,7 @@ function defiRestoreContext(){
   playerTeam = ctx.player; enemyTeam = ctx.enemy;
   auto = ctx.auto; speed = ctx.speed; lastTickAt = ctx.lastTickAt; runSeconds = ctx.runSeconds;
   missionEndAt = ctx.missionEndAt; missionDone = ctx.missionDone;
-  runLoot = ctx.loot; squadModule = ctx.squadModule;
+  runLoot = ctx.loot; curSquadModule = ctx.curSquadModule;
   bblBoard = ctx.bblBoard; bblChain = ctx.bblChain; bblUltIdx = ctx.bblUltIdx; bblTickCounter = ctx.bblTickCounter;
   wipeModuleTriggered = ctx.wipeModuleTriggered; saphyrTriggered = ctx.saphyrTriggered; tArmsTriggered = ctx.tArmsTriggered;
   document.getElementById('missionTimer').style.display = '';
@@ -20035,9 +20095,11 @@ document.getElementById('rbLogin').onclick = () => showToast('BONUS DE CONNEXION
 // =================== MISSIONS SIMULTANÉES ===================
 // Chaque mission a son propre état (combat, vague, butin, escouade). Celle qu'on regarde est « chargée »
 // dans les variables du combat et tourne en temps réel ; les autres avancent en arrière-plan.
-function blankMission(mode){ return { started:false, wave:1, over:false, pending:false, player:[], enemy:[], auto:false, speed:1, lastTickAt:Date.now(), runSeconds:0, missionEndAt:0, missionDone:false, mode, loot:newLoot(), absence:null, squad:[null, null, null, null, null] }; }
+// squadModule (V0.03.61 : squad:[...], squadModule:null) : chaque mission a maintenant aussi SON PROPRE
+// module, par défaut aucun -- cf commentaire sur curSquadModule plus haut.
+function blankMission(mode){ return { started:false, wave:1, over:false, pending:false, player:[], enemy:[], auto:false, speed:1, lastTickAt:Date.now(), runSeconds:0, missionEndAt:0, missionDone:false, mode, loot:newLoot(), absence:null, squad:[null, null, null, null, null], squadModule:null }; }
 function saveCtx(){
-  MSTATE[activeMission] = Object.assign(battleSnapshot(), { mode: activeMission, loot: runLoot, absence: absenceReport, squad: curSquad.slice() });
+  MSTATE[activeMission] = Object.assign(battleSnapshot(), { mode: activeMission, loot: runLoot, absence: absenceReport, squad: curSquad.slice(), squadModule: curSquadModule });
 }
 function loadFields(mode){
   const st = MSTATE[mode] || blankMission(mode);
@@ -20047,6 +20109,7 @@ function loadFields(mode){
   runLoot.mat = Object.assign({ rare:0, epique:0, legendaire:0 }, (st.loot && st.loot.mat) || {});
   absenceReport = st.absence || null;
   curSquad = (st.squad || []).slice(0, 5); while(curSquad.length < 5) curSquad.push(null);
+  curSquadModule = typeof st.squadModule !== 'undefined' ? st.squadModule : null;
 }
 function stopTimers(){ clearInterval(tickHandle); tickHandle = null; clearTimeout(nextWaveTimer); nextWaveTimer = null; }
 // Charge une autre mission comme mission active (l'ancienne continue en arrière-plan)
@@ -20079,7 +20142,7 @@ function withMission(mode, fn){
   }
 }
 function missionState(mode){
-  if(mode === activeMission) return { started: battleStarted, missionDone, missionEndAt, squad: curSquad, loot: runLoot };
+  if(mode === activeMission) return { started: battleStarted, missionDone, missionEndAt, squad: curSquad, squadModule: curSquadModule, loot: runLoot };
   return MSTATE[mode] || blankMission(mode);
 }
 // Cartes engagées dans une AUTRE mission en cours : impossibles à réutiliser
@@ -20093,6 +20156,18 @@ function busyKeys(exceptMode){
   return out;
 }
 function keyInMission(key){ return !!busyKeys(null)[key]; }
+// Modules équipés dans une AUTRE mission en cours : impossibles à réutiliser (V0.03.61, demande d'Alex :
+// "même principe que pour une carte mechs") -- même principe exactement que busyKeys() ci-dessus, pour
+// curSquadModule (module RÉEL de chaque mission) plutôt que squad (cartes).
+function busyModuleKeys(exceptMode){
+  const out = {};
+  Object.keys(MISSIONS).forEach(m => {
+    if(m === exceptMode) return;
+    const st = missionState(m);
+    if(st.started && st.squadModule) out[st.squadModule] = m;
+  });
+  return out;
+}
 // Missions d'arrière-plan : on rattrape leur temps de combat régulièrement
 setInterval(() => {
   if(HEADLESS || BG_SWAP || document.hidden) return;
@@ -20250,19 +20325,33 @@ var launchPick = [null, null, null, null, null], launchAfter = null;
 // Module de la Death Squad au lancement (V0.03.60, demande d'Alex : pouvoir choisir le module
 // directement depuis cette fenêtre, comme c'est déjà le cas pour le lancement d'un palier DÉFI, cf
 // defiLaunchModule/defiLaunchMode plus haut) -- même principe : un brouillon local (launchModule/
-// launchPickMode), préremple avec le module ACTUELLEMENT équipé (squadModule, une variable globale
-// unique partagée par tous les modes de jeu, cf applyModuleSquadBonus()), et appliqué pour de vrai
-// (squadModule = launchModule) seulement au clic sur LANCER -- comme curSquad = launchPick.slice()
-// juste en dessous. Partagée par les 4 missions (ONE/OMEGA/DOME/VESTIGE) puisque cette fenêtre
-// (openLaunchPicker/renderLaunchPicker) est déjà l'unique fenêtre de lancement/relance commune aux
-// quatre (cf #infStartBtn plus haut et processNextRelaunch() plus bas).
+// launchPickMode), préremple avec le module de CETTE mission (curSquadModule, V0.03.61 -- repli sur
+// squadModule, le modèle Death Squad, si la mission n'en a encore jamais eu), et appliqué pour de
+// vrai (curSquadModule = launchModule) seulement au clic sur LANCER -- comme curSquad =
+// launchPick.slice() juste en dessous. Partagée par les 4 missions (ONE/OMEGA/DOME/VESTIGE) puisque
+// cette fenêtre (openLaunchPicker/renderLaunchPicker) est déjà l'unique fenêtre de lancement/relance
+// commune aux quatre (cf #infStartBtn plus haut et processNextRelaunch() plus bas).
+// V0.03.61 (demande d'Alex : "même principe que pour une carte mechs, lorsque la carte module est
+// prise dans mission elle ne peux pas être reprise dans une autre") -- avant cette version,
+// squadModule était une UNIQUE variable globale appliquée sans aucune vérification d'exclusivité au
+// clic sur LANCER : rien n'empêchait d'équiper le même module sur deux missions en cours en même
+// temps (contrairement aux cartes, déjà protégées par busyKeys()). Le module est maintenant
+// RÉELLEMENT propre à chaque mission (curSquadModule, cf blankMission()/saveCtx()/loadFields() plus
+// bas) et soumis au même principe d'exclusivité via busyModuleKeys() (mirroir de busyKeys()).
 var launchModule = null;
 var launchPickMode = 'cards';   // 'cards' | 'modules', même principe que squadPickMode/defiLaunchMode
 function openLaunchPicker(prefill, after){
   const busy = busyKeys(activeMission);
   launchPick = (prefill || curSquad || []).slice(0, 5).map(k => (k && !busy[k] && sqEntry(k) && stackCount(sqEntry(k).def.name, sqEntry(k).rar) > 0) ? k : null);
   while(launchPick.length < 5) launchPick.push(null);
-  launchModule = squadModule;
+  // V0.03.61 : repart du module RÉEL déjà équipé par CETTE mission (curSquadModule) ; si elle n'en a
+  // encore jamais eu (jamais lancée), on propose le module du modèle Death Squad comme suggestion de
+  // départ -- même principe que curSquad.some(Boolean) ? curSquad : squad pour les cartes ci-dessus.
+  // Si ce module de repli est déjà engagé dans une AUTRE mission en cours, on ne le présélectionne
+  // pas (même garde-fou que le !busy[k] des cartes juste au-dessus).
+  const busyMod = busyModuleKeys(activeMission);
+  const fallbackMod = curSquadModule || squadModule;
+  launchModule = (fallbackMod && !busyMod[fallbackMod]) ? fallbackMod : null;
   launchPickMode = 'cards';
   launchAfter = after || null;
   document.getElementById('launchInner').innerHTML = '';   // nouvelle ouverture : liste en haut
@@ -20304,6 +20393,9 @@ function pickFillAuto(){
 }
 function renderLaunchPicker(){
   const busy = busyKeys(activeMission);
+  // Modules déjà engagés dans une AUTRE mission en cours (V0.03.61) -- même principe que `busy`
+  // ci-dessus pour les cartes, cf busyModuleKeys().
+  const busyMod = busyModuleKeys(activeMission);
   const inner = document.getElementById('launchInner');
   // garde la position de la liste quand on (dé)sélectionne une carte
   const oldList = inner.querySelector('.lp-list'), keepList = oldList ? oldList.scrollTop : 0, keepInner = inner.scrollTop;
@@ -20323,12 +20415,13 @@ function renderLaunchPicker(){
   // même gabarit .mod-item/.mod-card que renderDefiLaunch()/renderSquadManager().
   const modEnt = modSqEntry(launchModule);
   const modulesHtml = squadModulesAvailable().map(e => {
-    const level = moduleLevel(e.def.name, e.rar), sel = launchModule === e.key;
-    return `<div class="mod-item${sel ? ' sel' : ''}" data-modkey="${e.key}">
+    const level = moduleLevel(e.def.name, e.rar), sel = launchModule === e.key, bm = busyMod[e.key];
+    return `<div class="mod-item${sel ? ' sel' : ''}${bm ? ' busy' : ''}" data-modkey="${e.key}">
       <div class="mod-card ${rarCls(e.rar)}">
         ${modCardFaceHtml(e.def, level, e.rar)}
         ${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}
         ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
+        ${bm ? `<div class="lp-busy">EN MISSION<small>${MISSIONS[bm].name}</small></div>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -20372,6 +20465,9 @@ function renderLaunchPicker(){
   inner.querySelectorAll('[data-modkey]').forEach(tile => {
     tile.onclick = () => {
       const key = tile.dataset.modkey;
+      // V0.03.61 : même garde-fou que .lp-card ci-dessus -- un module déjà engagé dans une AUTRE
+      // mission en cours ne peut pas être sélectionné ici.
+      if(busyMod[key]){ showToast('MODULE DÉJÀ ÉQUIPÉ DANS ' + MISSIONS[busyMod[key]].name); return; }
       launchModule = launchModule === key ? null : key;
       launchPickMode = 'cards';
       renderLaunchPicker();
@@ -20381,8 +20477,13 @@ function renderLaunchPicker(){
     if(!launchPick.some(Boolean)) return;
     const b2 = busyKeys(activeMission);
     if(launchPick.some(k => k && b2[k])){ showToast('UNE CARTE EST DÉJÀ EN MISSION'); renderLaunchPicker(); return; }
+    // V0.03.61 : re-vérification finale du module au moment du clic (même principe que b2 ci-dessus
+    // pour les cartes) -- filet de sécurité si le module a été engagé ailleurs entre l'ouverture de
+    // cette fenêtre et ce clic (ex. relance en chaîne via processNextRelaunch()).
+    const bm2 = busyModuleKeys(activeMission);
+    if(launchModule && bm2[launchModule]){ showToast('MODULE DÉJÀ ÉQUIPÉ DANS ' + MISSIONS[bm2[launchModule]].name); renderLaunchPicker(); return; }
     curSquad = launchPick.slice();
-    squadModule = launchModule;   // V0.03.60 : applique le module choisi dans cette fenêtre
+    curSquadModule = launchModule;   // V0.03.61 : applique le module choisi dans cette fenêtre à CETTE mission (plus squadModule, le modèle)
     closeLaunchPicker();
     startMission();
     render();
