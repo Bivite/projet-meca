@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.58</title>
+<title>Projet MECA V0.03.59</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5226,6 +5226,38 @@
     position:absolute; right:18px; bottom:12px; left:auto; top:auto;
     margin:0; z-index:2;
   }
+  /* V0.03.58, demande d'Alex ("c'est pas aligné" après une première passe en position:absolute +
+     bottom ajusté au pixel près -- cf essai précédent juste en dessous, gardé en commentaire pour la
+     raison du changement) : le titre (.mt-title, police Orbitron) et le compteur/la puissance
+     (.mt-record, police Rajdhani) sont deux polices DIFFÉRENTES dont les métriques ascendant/
+     descendant ne coïncident pas -- un bottom ajusté à la main pour l'une ne vaut pas forcément pour
+     l'autre, et se re-casse au moindre changement de taille. Plutôt que les caler indépendamment
+     (l'un ancré à gauche en absolute, l'autre à droite), on les regroupe désormais dans .mt-row
+     (ajouté dans le HTML, V0.03.58) avec display:flex + align-items:baseline : c'est le navigateur
+     qui calcule alors la VRAIE ligne de base de chaque police et les aligne exactement, quelle que
+     soit la police effectivement rendue -- plus fiable qu'un pixel-push mesuré à l'écran. .mt-row
+     reprend la même position que la paire title+record avant (bottom:12px, 18px de chaque côté), et
+     gap:8px garantit un écart minimum entre titre et compteur même si le nombre est plus large (ex.
+     "100 000" plutôt que "857") -- ça remplace aussi le right:2px ajouté plus tôt sur #squadTilePower
+     pour le même problème ("l'icône touche presque le texte"), qui ne tenait que pour CETTE largeur
+     de nombre précise.
+     Bug trouvé en testant une puissance à 100k (fmtNum -> "100 k") : .mt-title a déjà
+     white-space:nowrap (cf plus bas) mais PAS .mt-record -- avec justify-content:space-between dans une
+     .mt-row étroite, le flex-box réduit .mt-record sous la largeur de son contenu plutôt que de le
+     laisser dépasser, et le texte repasse à la ligne (2 lignes de haut au lieu d'une), ce qui recasse
+     l'alignement des lignes de base de ~20px. On ajoute donc white-space:nowrap + flex-shrink:0 aux DEUX
+     enfants (title et record) : aucun des deux ne doit jamais passer à la ligne ni être compressé --
+     s'il n'y a vraiment pas la place pour les deux en une ligne, mieux vaut que .mt-record dépasse
+     légèrement (visible, repérable) qu'il ne se transforme silencieusement en bloc 2 lignes désaligné. */
+  #codexHubView .mode-tile:not(.soon) .mt-row{
+    position:absolute; left:18px; right:18px; bottom:12px; top:auto;
+    display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+    z-index:2;
+  }
+  #codexHubView .mode-tile:not(.soon) .mt-row .mt-title,
+  #codexHubView .mode-tile:not(.soon) .mt-row .mt-record{
+    position:static; margin:0; white-space:nowrap; flex-shrink:0;
+  }
   /* Titres sur une seule ligne (V0.02.25, demandé explicitement) : à la taille par défaut (13px /
      2.5px de letter-spacing), « GESTION DE CARTE » repassait à la ligne dans la largeur réduite de
      cx-a (rétrécie par le padding-right:42px de la pointe qui l'emboîte dans cx-b) — taille et
@@ -5241,20 +5273,18 @@
      pas — ce flou dessinait encore un rectangle "givré" visible derrière le texte, lu comme un
      encadré résiduel. */
   #collTileCount, #squadTilePower{background:none; border:none; padding:0; border-radius:0; backdrop-filter:none;}
+  /* V0.03.58, demande d'Alex : "26/26" à la même taille que "COLLECTION". Gardait sa taille d'origine
+     (12px, héritée de .mode-tile:not(.soon) .mt-record) -- remonté à 13px, pareil que le titre
+     (#codexHubView .mode-tile .mt-title plus haut). L'alignement des deux lignes de base est géré par
+     .mt-row (flex + align-items:baseline, cf plus haut), pas par du pixel-push ici. */
+  #codexHubView #collTileCount{font-size:13px;}
   /* Puissance de la case DEATH SQUAD agrandie (V0.02.52, demande d'Alex) : scopé à #squadTilePower
      uniquement (et pas #collTileCount, qui garde sa taille d'origine) -- l'icône ⚡ suit automatiquement
-     (.ico-power est dimensionnée en `em`, cf plus haut). Le texte plus grand touchait presque "DEATH
-     SQUAD" avec le right:18px hérité de la règle partagée ci-dessus (qui ancre le pavé à droite, donc
-     SON décalage, pas une marge gauche, règle l'écart avec le titre) -- resserré à right:6px pour lui
-     redonner de l'air des deux côtés. Préfixé par #codexHubView (sinon #squadTilePower seul, un ID,
-     perd face à "#codexHubView .mode-tile:not(.soon) .mt-record" ci-dessus -- 1 ID + 3 classes -- qui
-     pose le right:18px d'origine). */
-  /* Alignement vertical avec "DEATH SQUAD" (V0.02.67, demande d'Alex "aligne bien la puissance et
-     le nom de la case") : le `bottom:12px` hérité de la règle partagée ci-dessus positionne le BAS
-     de la boîte de texte, pas sa ligne de base -- à 17px (vs 13px pour le titre), la boîte est plus
-     haute et sa ligne de base se retrouvait visiblement plus haute que celle du titre. Rapproché du
-     bas (9px au lieu de 12px) pour ramener les deux lignes de base au même niveau, mesuré à l'écran. */
-  #codexHubView #squadTilePower{font-size:17px; right:6px; bottom:9px;}
+     (.ico-power est dimensionnée en `em`, cf plus haut). L'écart avec "DEATH SQUAD" et l'alignement de
+     ligne de base (essayés ici en V0.02.52/V0.02.67 via des right/bottom ajustés au pixel près) sont
+     maintenant gérés par .mt-row (flex, gap + align-items:baseline, cf plus haut) -- plus fiable, et
+     qui s'adapte à n'importe quelle largeur de nombre sans re-mesure manuelle. */
+  #codexHubView #squadTilePower{font-size:17px;}
   /* Bandeau "CARTE" du haut retiré (V0.02.25), même logique que FABRIQUE en V0.02.23 — .team-label
      est une classe partagée (aussi utilisée en combat pour les libellés d'équipe), donc le masquage
      est scopé à #codexHubView uniquement. */
@@ -7307,7 +7337,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.58</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.59</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7387,9 +7417,14 @@
           <div class="mode-tile collection cx-b" id="tileCollection">
             <div class="mt-inner">
               <div class="mt-book-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-collection.webp"></div>
-              <div class="mt-title">COLLECTION</div>
               <div class="mt-sub">Tes cartes classées</div>
-              <div class="mt-record" id="collTileCount">— / —</div>
+              <!-- V0.03.58, demande d'Alex : titre + compteur regroupés dans .mt-row (flex,
+                   align-items:baseline) au lieu de 2 éléments en position:absolute indépendants --
+                   cf règle CSS #codexHubView .mt-row plus bas pour l'explication complète. -->
+              <div class="mt-row">
+                <div class="mt-title">COLLECTION</div>
+                <div class="mt-record" id="collTileCount">— / —</div>
+              </div>
             </div>
           </div>
         </div>
@@ -7397,9 +7432,11 @@
           <div class="mode-tile squad cx-c" id="tileSquad">
             <div class="mt-inner">
               <div class="mt-squad-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-squad.webp"></div>
-              <div class="mt-title">DEATH SQUAD</div>
               <div class="mt-sub">Compose ton escouade</div>
-              <div class="mt-record" id="squadTilePower"><i class="ico-power"></i> —</div>
+              <div class="mt-row">
+                <div class="mt-title">DEATH SQUAD</div>
+                <div class="mt-record" id="squadTilePower"><i class="ico-power"></i> —</div>
+              </div>
             </div>
           </div>
           <div class="mode-tile modules cx-d" id="tileModules">
@@ -7685,9 +7722,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.58';
+var BUILD_VERSION = 'V0.03.59';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.59', items:[
+    'CARTE : le "26/26" de la case COLLECTION est maintenant à la même taille et le même alignement que le titre.',
+    'CARTE : la puissance de la case DEATH SQUAD ne touche plus le titre et reste bien alignée et lisible quelle que soit sa valeur.'
+  ]},
   { v:'V0.03.58', items:[
     'LABO : correction d\'un bug d\'affichage où le halo de lumière de l\'offre précédente pouvait rester visible après avoir actualisé.',
     'TIRAGE : le halo de lumière entoure maintenant toute la carte (il pouvait sembler se refermer sur l\'artwork/le nom au lieu du cadre entier).'
@@ -15688,6 +15729,34 @@ function squadPower(){
   if(modEnt) p += modulePower(modEnt.def, modEnt.rar);
   return p;
 }
+// V0.03.59, demande d'Alex ("fais moi voir si la Death Squad a 100k de puissance") : même abrégé par
+// fmtNum(), un nombre comme "100 k" ou "999 M" reste plus large que "857" -- dans l'espace déjà serré
+// à côté du titre "DEATH SQUAD" (cf .mt-row plus haut), ça peut dépasser le bord de la case et se faire
+// recouvrir visuellement par la case voisine. Une taille de police fixe ne peut pas anticiper cette
+// largeur (qui dépend de la police réellement chargée sur l'appareil, cf les soucis de pixel-push
+// précédents) -- on mesure donc la largeur RÉELLEMENT disponible et RÉELLEMENT nécessaire une fois le
+// texte posé, et on réduit la police juste ce qu'il faut pour qu'il tienne sur une ligne, sans jamais
+// repasser sous ~68% de sa taille normale (reste lisible). N'affecte que la case DEATH SQUAD du hub ;
+// squadPowerTag (fenêtre DEATH SQUAD elle-même, où la place ne manque pas) n'est pas concerné.
+function fitSquadTilePower(el){
+  const row = el.closest('.mt-row');
+  const title = row ? row.querySelector('.mt-title') : null;
+  const tile = el.closest('.mode-tile');
+  el.style.fontSize = ''; // repart de la taille CSS normale (17px) avant de mesurer
+  if(!row || !title || !tile) return;
+  const tileRect = tile.getBoundingClientRect();
+  if(tileRect.width < 10) return; // case pas affichée en ce moment (hub inactif) : mesure non fiable, sera recalculée à la prochaine ouverture de la case CARTE (showCodexHub)
+  const base = parseFloat(getComputedStyle(el).fontSize);
+  const titleRight = title.getBoundingClientRect().right;
+  const gap = parseFloat(getComputedStyle(row).gap) || 0;
+  const SAFETY = 6; // marge avant le bord découpé de la case
+  const avail = tileRect.right - titleRight - gap - SAFETY;
+  const needed = el.getBoundingClientRect().width;
+  if(needed > avail + 2 && avail > 10){
+    const scale = Math.max(avail / needed, 0.68);
+    el.style.fontSize = (base * scale).toFixed(1) + 'px';
+  }
+}
 function updateSquadTile(){
   const p = squadPower();
   // Case DEATH SQUAD du hub uniquement (demande d'Alex) : au-delà de 10 000, le nombre complet
@@ -15695,7 +15764,8 @@ function updateSquadTile(){
   // à partir de ce seuil (même format déjà utilisé pour l'or/l'XP/les matériaux ailleurs dans le jeu).
   // squadPowerTag (affiché dans la fenêtre DEATH SQUAD elle-même, où la place ne manque pas) garde
   // volontairement le nombre complet, inchangé.
-  const t = document.getElementById('squadTilePower'); if(t) t.innerHTML = ICON_POWER + ' ' + fmtNum(p);
+  const t = document.getElementById('squadTilePower');
+  if(t){ t.innerHTML = ICON_POWER + ' ' + fmtNum(p); fitSquadTilePower(t); }
   const g = document.getElementById('squadPowerTag'); if(g) g.innerHTML = ICON_POWER + ' ' + p.toLocaleString('fr-FR');
 }
 function enterSquadView(idx){
