@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.59</title>
+<title>Projet MECA V0.03.60</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5950,6 +5950,13 @@
   .lp-card.busy{filter:grayscale(.9) brightness(.55);}
   .lp-busy{position:absolute; inset:auto 0 30% 0; z-index:5; font-family:var(--font-title); font-size:7px; letter-spacing:1px; color:#ff8a80; background:rgba(0,0,0,.75); padding:3px 2px; text-align:center;}
   .lp-busy small{display:block; font-size:6px; color:#fff;}
+  /* V0.03.60, demande d'Alex : liste des modules dans la fenêtre de lancement -- .lp-list pose déjà
+     elle-même sa grille à 4 colonnes (pour les cartes mechs, cf plus haut), ce qui écraserait des
+     cartes module (plus larges) en colonnes trop étroites. .lp-list.mod-grid (les deux classes posées
+     ensemble sur le même conteneur, cf renderLaunchPicker()) l'emporte en spécificité sur .lp-list seule
+     SANS toucher .mod-grid seule (toujours utilisée telle quelle ailleurs, ex. renderDefiLaunch()) --
+     même recette de spécificité déjà utilisée ailleurs dans ce fichier pour ce genre de cas. */
+  .lp-list.mod-grid{grid-template-columns:repeat(2,1fr); gap:14px 10px; padding:14px 5px 10px;}
 
   /* Cases de mission : effet verre (liseré + reflet) par-dessus le dégradé de couleur propre à chaque case */
   #tileOmega .mt-inner, #tileDome .mt-inner{
@@ -7337,7 +7344,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.59</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.60</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7722,9 +7729,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.59';
+var BUILD_VERSION = 'V0.03.60';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.60', items:[
+    'Choix de l\'escouade (lancement/relance d\'une mission) : possibilité d\'équiper le module de la Death Squad directement depuis cette fenêtre, sans repasser par GESTION DE MODULE.'
+  ]},
   { v:'V0.03.59', items:[
     'CARTE : le "26/26" de la case COLLECTION est maintenant à la même taille et le même alignement que le titre.',
     'CARTE : la puissance de la case DEATH SQUAD ne touche plus le titre et reste bien alignée et lisible quelle que soit sa valeur.'
@@ -20237,10 +20247,23 @@ document.getElementById('ordCollectBtn').onclick = collectAndRelaunchAll;
 
 // =================== Sélection de l'escouade avant de lancer une mission ===================
 var launchPick = [null, null, null, null, null], launchAfter = null;
+// Module de la Death Squad au lancement (V0.03.60, demande d'Alex : pouvoir choisir le module
+// directement depuis cette fenêtre, comme c'est déjà le cas pour le lancement d'un palier DÉFI, cf
+// defiLaunchModule/defiLaunchMode plus haut) -- même principe : un brouillon local (launchModule/
+// launchPickMode), préremple avec le module ACTUELLEMENT équipé (squadModule, une variable globale
+// unique partagée par tous les modes de jeu, cf applyModuleSquadBonus()), et appliqué pour de vrai
+// (squadModule = launchModule) seulement au clic sur LANCER -- comme curSquad = launchPick.slice()
+// juste en dessous. Partagée par les 4 missions (ONE/OMEGA/DOME/VESTIGE) puisque cette fenêtre
+// (openLaunchPicker/renderLaunchPicker) est déjà l'unique fenêtre de lancement/relance commune aux
+// quatre (cf #infStartBtn plus haut et processNextRelaunch() plus bas).
+var launchModule = null;
+var launchPickMode = 'cards';   // 'cards' | 'modules', même principe que squadPickMode/defiLaunchMode
 function openLaunchPicker(prefill, after){
   const busy = busyKeys(activeMission);
   launchPick = (prefill || curSquad || []).slice(0, 5).map(k => (k && !busy[k] && sqEntry(k) && stackCount(sqEntry(k).def.name, sqEntry(k).rar) > 0) ? k : null);
   while(launchPick.length < 5) launchPick.push(null);
+  launchModule = squadModule;
+  launchPickMode = 'cards';
   launchAfter = after || null;
   document.getElementById('launchInner').innerHTML = '';   // nouvelle ouverture : liste en haut
   renderLaunchPicker();
@@ -20296,15 +20319,36 @@ function renderLaunchPicker(){
       ${codexCardHtml(st.def, st.rar, { badge: sel ? '✓' : '' })}
       ${b ? `<div class="lp-busy">EN MISSION<small>${MISSIONS[b].name}</small></div>` : ''}</div>`;
   }).join('');
+  // Module de la Death Squad (V0.03.60, demande d'Alex, cf commentaire sur launchModule plus haut) --
+  // même gabarit .mod-item/.mod-card que renderDefiLaunch()/renderSquadManager().
+  const modEnt = modSqEntry(launchModule);
+  const modulesHtml = squadModulesAvailable().map(e => {
+    const level = moduleLevel(e.def.name, e.rar), sel = launchModule === e.key;
+    return `<div class="mod-item${sel ? ' sel' : ''}" data-modkey="${e.key}">
+      <div class="mod-card ${rarCls(e.rar)}">
+        ${modCardFaceHtml(e.def, level, e.rar)}
+        ${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}
+        ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
   inner.innerHTML = `
     <button class="cx-close" id="lpClose">✕</button>
     <div class="team-label player" style="margin:0;">CHOIX DE L'ESCOUADE</div>
     <div class="lp-slots">${slots}</div>
+    <div class="dl-mod-row">
+      <div class="mod-slot${modEnt ? ' filled ' + rarCls(modEnt.rar) : ''}" id="lpModSlot">
+        ${modEnt ? `<div class="mod-card">${modCardFaceHtml(modEnt.def, moduleLevel(modEnt.def.name, modEnt.rar), modEnt.rar)}</div>` : `<span class="plus">+</span><span class="mod-slot-label">MODULE</span>`}
+      </div>
+    </div>
     <div class="lp-actions">
       <button class="lp-death" id="lpDeath">DEATH SQUAD</button>
       <button class="lp-auto" id="lpAuto">AUTO</button>
     </div>
-    <div class="lp-list">${list}</div>
+    <button type="button" class="mod-fuse-toggle" id="lpModeToggle">${launchPickMode === 'cards' ? 'CARTE MODULES' : 'CARTE MECHS'}</button>
+    ${launchPickMode === 'cards'
+      ? `<div class="lp-list">${list}</div>`
+      : `<div class="lp-list mod-grid">${modulesHtml || '<div class="fab-empty">Aucun module possédé.</div>'}</div>`}
     <div class="controls" style="width:100%;"><button class="primary-btn" id="lpLaunchGo" ${launchPick.some(Boolean) ? '' : 'disabled'}>LANCER ${missionCfg().name}</button></div>`;
   const newList = inner.querySelector('.lp-list'); if(newList) newList.scrollTop = keepList; inner.scrollTop = keepInner;
   document.getElementById('lpClose').onclick = cancelLaunchPicker;
@@ -20316,11 +20360,29 @@ function renderLaunchPicker(){
     if(busy[key]){ showToast('CARTE DÉJÀ ENGAGÉE DANS ' + MISSIONS[busy[key]].name); return; }
     pickAdd(key);
   });
+  const modSlotEl = document.getElementById('lpModSlot');
+  if(modSlotEl) modSlotEl.onclick = () => {
+    if(modEnt){ launchModule = null; renderLaunchPicker(); }
+    else { launchPickMode = 'modules'; renderLaunchPicker(); }
+  };
+  document.getElementById('lpModeToggle').onclick = () => {
+    launchPickMode = launchPickMode === 'cards' ? 'modules' : 'cards';
+    renderLaunchPicker();
+  };
+  inner.querySelectorAll('[data-modkey]').forEach(tile => {
+    tile.onclick = () => {
+      const key = tile.dataset.modkey;
+      launchModule = launchModule === key ? null : key;
+      launchPickMode = 'cards';
+      renderLaunchPicker();
+    };
+  });
   document.getElementById('lpLaunchGo').onclick = () => {
     if(!launchPick.some(Boolean)) return;
     const b2 = busyKeys(activeMission);
     if(launchPick.some(k => k && b2[k])){ showToast('UNE CARTE EST DÉJÀ EN MISSION'); renderLaunchPicker(); return; }
     curSquad = launchPick.slice();
+    squadModule = launchModule;   // V0.03.60 : applique le module choisi dans cette fenêtre
     closeLaunchPicker();
     startMission();
     render();
