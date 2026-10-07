@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.61</title>
+<title>Projet MECA V0.03.62</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1719,6 +1719,11 @@
      lecture seule (cursor:default posé en inline comme .pv-mod-slot, cf renderBattleModSlot()) --
      le module se change toujours depuis CHOIX DE L'ESCOUADE ou GESTION DE MODULE. */
   .cbt-mod-slot{width:30%; max-width:92px;}
+  /* Niveau masqué sur cette carte module compacte (V0.03.62, demande d'Alex, en voyant l'écran de
+     combat réel : "enlève l'affichage du niveau de la carte module") -- CSS seul, scopé à
+     .cbt-mod-slot : modCardFaceHtml() (partagée par GESTION DE MODULE, fiche joueur, CHOIX DE
+     L'ESCOUADE, DÉFI...) reste inchangée partout ailleurs, où le niveau continue de s'afficher. */
+  .cbt-mod-slot .mod-lvl-box{display:none;}
   /* ---------- Hub des modes de combat ---------- */
   .sub-view{display:none;}
   .sub-view.active{display:flex; flex-direction:column; gap:12px; animation:viewIn .22s ease;}
@@ -7359,7 +7364,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.61</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.62</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7747,9 +7752,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.61';
+var BUILD_VERSION = 'V0.03.62';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.62', items:[
+    'Écran de combat : le niveau n\'est plus affiché sur la carte module de la mission en cours (sous les cartes mechs).'
+  ]},
   { v:'V0.03.61', items:[
     'Correction : le module équipé pour une mission ne peut plus être équipé en même temps sur une autre mission en cours (même principe que les cartes mechs).',
     'Écran de combat : la carte module de la mission en cours s\'affiche maintenant sous les cartes mechs, dans le même encadré VOTRE ESCOUADE.'
