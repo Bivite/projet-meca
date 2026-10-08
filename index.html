@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.69</title>
+<title>Projet MECA V0.03.70</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7525,7 +7525,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.69</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.70</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7913,9 +7913,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.69';
+var BUILD_VERSION = 'V0.03.70';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.70', items:[
+    'DÉFI : cadrage de l\'artwork réajusté sur l\'écran de victoire/défaite pour CATER-PILLARD, MOG-AI, RHINO, STAR-HUNTER, GAPIX, MORPHE, BRI-KB-ROCK, DOZEUR, NEUTRON, EXO-MKIV, GAZELLE, PRAWN, EXO-MKV, WHIPLASH et DELOK.'
+  ]},
   { v:'V0.03.69', items:[
     'DÉFI : la fin d\'un combat affiche maintenant un vrai écran de victoire ou de défaite -- l\'artwork de la carte, avec "VICTOIRE" en vert ou "DÉFAITE" en rouge (encadré en noir et blanc) superposé dessus. Les récompenses de victoire restent affichées en dessous comme avant.',
     'Récompenses : les cases (or, cristaux, matériaux...) ont maintenant toutes la même taille, même quand l\'une d\'elles a un libellé plus long.',
@@ -16927,9 +16930,13 @@ function showRewardModal(title, items, opts){
   // trophées, tâches, raid) n'ont pas opts.resultType et gardent leur fenêtre normale.
   const isDefeat = opts.resultType === 'defeat';
   inner.classList.toggle('defi-result', !!opts.resultType);
+  // `opts.artPosY` (V0.03.70, demande d'Alex -- cf DEFI_RESULT_ART_Y/defiResultArtPosY() plus bas) : décale
+  // verticalement le cadrage object-fit:cover de l'artwork dans .rw-art-frame, carte par carte, sans toucher
+  // au reste (taille du cadre, texte superposé...). 50 (centré) si absent -- comportement d'origine.
+  const artPosY = opts.artPosY != null ? opts.artPosY : 50;
   const resultHtml = opts.resultType ? `
     <div class="rw-art-frame${isDefeat ? ' defeat' : ''}">
-      <img src="${opts.resultArt || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
+      <img src="${opts.resultArt || GREY_ART}" style="object-position:center ${artPosY}%" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
       <div class="rw-result${isDefeat ? ' defeat' : ''}" data-text="${isDefeat ? 'DÉFAITE' : 'VICTOIRE'}">${isDefeat ? 'DÉFAITE' : 'VICTOIRE'}</div>
     </div>` : '';
   // Retouche d'Alex : "pour la défaite, enlève le texte escouade hors service" -- le sous-titre
@@ -18883,6 +18890,31 @@ function defiAbandonCombat(){
   defiExitCombat();
   showToast('COMBAT DÉFI ABANDONNÉ');
 }
+// Recadrage vertical de l'artwork sur l'écran de victoire/défaite (V0.03.70, demande d'Alex après avoir vu
+// all_victory_contact_sheet.png -- le cadre 16:9 de .rw-art-frame coupe une image bien plus haute que large,
+// et le centrage par défaut (object-position 50%) ne met pas toujours le mech en valeur). Valeur = Y de
+// object-position en % : PLUS BAS montre davantage le HAUT de l'image ("remonte" le cadrage), PLUS HAUT
+// montre davantage le BAS ("descend"). Absente d'ici = 50 (centré, comportement d'origine, inchangé pour
+// toutes les cartes non listées). Même valeur appliquée à la victoire ET à la défaite (même artwork,
+// cf defiEndBattle()) -- seul le filtre noir et blanc change entre les deux, pas le cadrage.
+const DEFI_RESULT_ART_Y = {
+  'CATER-PILLARD': 38,   // "remonte un peu"
+  'MOG-AI': 10,          // "remonte le" -- déjà remonté une 1re fois (25), remonté encore
+  'RHINO': 60,           // "descend le", puis "remonte le un peu" -- revenu un peu vers le centre (75 -> 60)
+  'STAR-HUNTER': 25,
+  'GAPIX': 25,
+  'MORPHE': 25,
+  'BRI-KB-ROCK': 38,     // "remonte le un peu"
+  'DOZEUR': 25,
+  'NEUTRON': 25,
+  'EXO-MKIV': 25,
+  'GAZELLE': 25,
+  'PRAWN': 25,
+  'EXO-MKV': 25,
+  'WHIPLASH': 25,
+  'DELOK': 25
+};
+function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
 // cf la garde ajoutée au tout début d'endBattle() plus bas, qui redirige ici au lieu de son propre
 // traitement (vagues infinies, butin accumulé...) qui ne concerne pas défi.
@@ -18905,13 +18937,14 @@ function defiEndBattle(won){
   // le texte glitché rouge "DÉFAITE" à la place du vert "VICTOIRE". def.artExt est le même artwork « étendu »
   // dédié que la case défi (cf renderDefi()/.defi-art-img) -- certaines cartes n'en ont pas encore
   // (defiExtArtMissing()), showRewardModal() reprend alors le même repli GREY_ART.
+  const artPosY = defiResultArtPosY(def.name);
   if(won){
     const items = grantReward(defiTierReward(tier));
-    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt });
+    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt, artPosY });
   } else {
     // Retouche d'Alex : "pour la défaite, enlève le texte escouade hors service" -- titre vide, donc
     // showRewardModal() n'affiche plus du tout de .rw-title pour cet écran (cf son code plus haut).
-    showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, actionLabel:'CONTINUER' });
+    showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, artPosY, actionLabel:'CONTINUER' });
   }
 }
 
