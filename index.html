@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.81</title>
+<title>Projet MECA V0.03.82</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -4510,6 +4510,13 @@
     background:linear-gradient(128deg, rgba(255,255,255,.65) 0%, rgba(255,255,255,.15) 32%, transparent 52%);}
   .upd-btn svg{position:relative; z-index:1; width:100%; height:100%; display:block;}
   .upd-btn:active{transform:translateY(calc(-50% + 1px)) scale(.95); box-shadow:0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.45);}
+  /* Bouton AIDE (V0.03.82, demande d'Alex) : juste à droite de #updBtn (left:0 + 38px de large + 8px d'air) --
+     tout le reste de l'apparence vient de .upd-btn, partagée via la liste de classes dans le HTML. */
+  .help-btn{left:46px;}
+  .help-text{font-size:13px; line-height:1.55; color:var(--text-dim); text-align:left;}
+  .help-text b{color:#fff;}
+  .help-text ul{margin:6px 0 0; padding-left:18px; display:flex; flex-direction:column; gap:5px;}
+  .help-text li{font-size:12.5px; line-height:1.4;}
   .upd-inner{
     --cut:20px;
     gap:14px !important;
@@ -7073,6 +7080,11 @@
        plutôt que d'afficher l'icône "image cassée" du navigateur ; le titre/libellé du bouton reste lisible. -->
   <div class="main-title" aria-label="Squad Lock">
     <button class="upd-btn" id="updBtn" aria-label="Mise à jour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="M7.5 8.5 12 13l4.5-4.5"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></svg></button>
+    <!-- Aide contextuelle (V0.03.82, demande d'Alex) : même recette visuelle que #updBtn (classe
+         .upd-btn partagée), juste décalée de sa largeur + un petit espace -- cf règle .help-btn
+         plus bas qui ne fait que repositionner left. Le contenu affiché dépend de la page ouverte
+         au moment du clic, voir openHelpModal()/HELP_CONTENT plus bas dans le JS. -->
+    <button class="upd-btn help-btn" id="helpBtn" aria-label="Aide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.5a2.8 2.8 0 1 1 4.6 2.1c-.9.6-1.8 1.1-1.8 2.5"/><circle cx="12" cy="17.3" r="1" fill="currentColor" stroke="none"/></svg></button>
     <button class="opt-btn" id="optBtn" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <span class="mt-meca-wrap">
       <img class="mt-meca" src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/hero-meca.webp" alt="Squad Lock" draggable="false" onerror="this.style.opacity='0'">
@@ -7694,7 +7706,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.81</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.82</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7985,6 +7997,16 @@
     <div class="opt-note" id="optNote"></div>
   </div>
 </div>
+<!-- Aide contextuelle (V0.03.82, demande d'Alex) : même coquille que #optModal/#updateModal
+     (.codex-modal + .upd-inner déjà partagée) -- seul le contenu de #helpTitle/#helpText change,
+     rempli par openHelpModal() selon la page ouverte au moment du clic sur #helpBtn. -->
+<div class="codex-modal" id="helpModal">
+  <div class="codex-modal-inner upd-inner" id="helpInner">
+    <button class="cx-close" id="helpClose">✕</button>
+    <div class="team-label player" id="helpTitle" style="margin:0;">AIDE</div>
+    <div class="help-text" id="helpText"></div>
+  </div>
+</div>
 <div class="codex-modal" id="updateModal">
   <div class="codex-modal-inner upd-inner">
     <button class="cx-close" id="updClose">✕</button>
@@ -8082,9 +8104,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.81';
+var BUILD_VERSION = 'V0.03.82';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.82', items:[
+    'Nouveau bouton AIDE (point d\'interrogation, en haut à gauche, à côté du bouton MISE À JOUR) : ouvre une fenêtre qui explique simplement l\'écran sur lequel tu te trouves, utile pour un tout nouveau joueur.'
+  ]},
   { v:'V0.03.81', items:[
     'Carte ÉCARLATE : le nom de la carte est légèrement remonté dans le bandeau, et son texte est passé en rouge vif.',
     'Carte ÉCARLATE : l\'effet "vitre/plus vif" du cadre (filtre + reflet) a été retiré — le cadre reprend son rendu d\'origine.',
@@ -21234,6 +21259,83 @@ document.getElementById('optModal').addEventListener('click', e => { if(e.target
 document.getElementById('updBtn').onclick = () => openCurrentChangelog();
 document.getElementById('updClose').onclick = () => closeChangelogModal();
 document.getElementById('updateModal').addEventListener('click', e => { if(e.target.id === 'updateModal') closeChangelogModal(); });
+
+// ----- Fenêtre AIDE (V0.03.82, demande d'Alex) -----
+// Un texte par page -- simple, court, pensé pour un tout nouveau joueur -- affiché dans la même
+// coquille que les fenêtres OPTIONS/MISE À JOUR (cf #helpModal en HTML). La page actuelle est
+// retrouvée via son id de .sub-view (ex. 'fabDrawView' pour TIRAGE) : ces id sont déjà uniques dans
+// tout le jeu (un seul <div class="view"> a la classe "active" à la fois, et un seul <div
+// class="sub-view"> actif à l'intérieur), donc pas besoin de savoir en plus quel onglet
+// (FABRIQUE/MENU/CARTE) est ouvert. Un écran absent de cette liste (ex. une fenêtre .codex-modal)
+// ne pose pas de souci : le bouton AIDE est de toute façon recouvert et inatteignable dès qu'une
+// fenêtre plein écran est ouverte par-dessus (même pile z-index que #optBtn/#updBtn).
+const HELP_CONTENT = {
+  // ---------- FABRIQUE ----------
+  fabHubView: { title:'LA FABRIQUE', text:'Tout ce qui te permet d’obtenir nos cartes :<ul>' +
+    '<li><b>TIRAGE</b> — des cartes de mechs contre de l’or ou des cristaux.</li>' +
+    '<li><b>LABO</b> — la même chose, mais pour les cartes module.</li>' +
+    '<li><b>BOOSTERS</b> — ouvre les coffres que tu gagnes en jeu.</li>' +
+    '<li><b>BOUTIQUE</b> — achète directement des ressources.</li></ul>' },
+  fabDrawView: { title:'TIRAGE', text:'Dépense de l’or ou des cristaux pour obtenir une carte de mech dans l’offre affichée.<br><br>' +
+    '<b>ACHETER UNITÉ</b> prend une seule carte, <b>ACHETER TOUT</b> prend toute l’offre d’un coup. L’offre se renouvelle seule au bout d’un moment, ou tout de suite avec <b>ACTUALISER</b>.' },
+  labDrawView: { title:'LABO', text:'Le même principe que TIRAGE, mais pour les cartes module.<br><br>' +
+    'Une carte module ne combat pas : une fois équipée sur ton escouade (depuis DEATH SQUAD), elle donne un bonus à tes mechs ou un malus à l’ennemi.' },
+  boostView: { title:'BOOSTERS', text:'Range les boosters que tu gagnes en jeu (trophées, tâches, récompense quotidienne…) : ressources, cartes mechs ou cartes modules.<br><br>' +
+    'Glisse un booster sur le socle pour l’ouvrir et révéler 5 récompenses d’un coup.' },
+  shopView: { title:'BOUTIQUE', text:'Achète directement de l’XP, des cristaux, des matériaux de fusion ou des boosters contre de l’or ou des cristaux — sans attendre de les gagner en mission.' },
+  // ---------- MENU ----------
+  modeHub: { title:'MENU', text:'Le menu principal :<ul>' +
+    '<li><b>JOUEUR</b> — ta fiche de commandant.</li>' +
+    '<li><b>ORDRE DE MISSION</b> — lance un combat pour gagner de l’or, de l’XP et des récompenses.</li>' +
+    '<li><b>RÉCOMPENSES</b> — récompense quotidienne, trophées et tâches à réclamer.</li>' +
+    '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li>' +
+    '<li><b>BOSS DE RAID</b> — l’épreuve la plus difficile du jeu.</li></ul>' },
+  ordersView: { title:'ORDRE DE MISSION', text:'Choisis une mission pour ton escouade :<ul>' +
+    '<li><b>MISSION ONE</b> — 30 min, le meilleur rythme de gains.</li>' +
+    '<li><b>OMEGA</b> — 2 h, moins de gains mais 1 cristal de fabrication garanti.</li>' +
+    '<li><b>DOME</b> — 1 h, uniquement des matériaux de fusion.</li>' +
+    '<li><b>VESTIGE</b> — 2 h, 1 carte et 1 module rares garantis.</li></ul>' +
+    'Une seule mission à la fois : elle continue même si tu fermes le jeu.' },
+  infiniteMode: { title:'LE COMBAT', text:'Ton escouade affronte l’ennemi vague après vague.<br><br>' +
+    'Glisse le doigt pour relier jusqu’à 6 bulles d’une même ligne : <b>ATQ</b>/<b>VIT</b> attaquent, <b>DEF</b> protège ta carte la plus résistante, <b>PV</b> soigne, et la bulle dorée <b>ULT</b> déclenche la capacité ultime du mech. Le bouton <b>AUTO</b> peut jouer les lignes à ta place.' },
+  raidView: { title:'BOSS DE RAID', text:'Affronte un boss en 3 phases avec une escouade de 15 cartes.<br><br>' +
+    'Chaque tentative consomme un token (3 au maximum, qui se rechargent avec le temps). C’est bien plus difficile qu’une mission classique : mieux vaut avoir une escouade déjà développée avant de t’y risquer.' },
+  rewardsView: { title:'RÉCOMPENSES', text:'Trois façons de gagner des récompenses gratuites :<ul>' +
+    '<li><b>RÉCOMPENSE JOURNALIÈRE</b> — à réclamer chaque jour.</li>' +
+    '<li><b>TROPHÉES</b> — des exploits à débloquer une fois pour toutes.</li>' +
+    '<li><b>TÂCHES</b> — des objectifs qui se renouvellent.</li></ul>' },
+  dailyView: { title:'RÉCOMPENSE JOURNALIÈRE', text:'Reviens chaque jour réclamer ta récompense : elle grandit avec les jours consécutifs.<br><br>Glisse pour avancer sur la piste et découvrir les prochaines cases.' },
+  trophyView: { title:'TROPHÉES', text:'Chaque trophée récompense un exploit accompli, une seule fois (or, cristaux, cartes bonus…).<br><br><b>RÉCUPÉRER TOUT</b> apparaît en bas à droite dès que plusieurs trophées sont prêts en même temps.' },
+  tasksView: { title:'TÂCHES', text:'Des objectifs qui se renouvellent régulièrement : les accomplir fait progresser ta collection plus vite.<br><br><b>RÉCUPÉRER TOUT</b> apparaît dès que 2 tâches ou plus sont prêtes.' },
+  defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de paliers à vaincre un par un : plus tu avances, plus les récompenses sont généreuses, avec un combat de boss tous les 10 paliers.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> pour aller encore plus loin.' },
+  defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat contre ce même adversaire, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour choisir ta carte et un module, puis lance le combat.' },
+  playerView: { title:'FICHE JOUEUR', text:'Ta carte de visite : nom, niveau et statistiques cumulées depuis le début de la partie.' },
+  // ---------- CARTE ----------
+  codexHubView: { title:'CARTE', text:'Tout ce qui concerne ta collection :<ul>' +
+    '<li><b>GESTION DE CARTE</b> — classe, fusionne ou détruis tes cartes mechs.</li>' +
+    '<li><b>COLLECTION</b> — toutes tes cartes, rangées dans un classeur.</li>' +
+    '<li><b>DEATH SQUAD</b> — compose l’escouade qui part en mission.</li>' +
+    '<li><b>GESTION DE MODULE</b> — la même chose, pour tes cartes module.</li></ul>' },
+  codexMgmtView: { title:'GESTION DE CARTE', text:'Toutes tes cartes mechs : leurs statistiques, leur historique.<br><br>' +
+    '<b>UPGRADE</b> fusionne plusieurs exemplaires d’une même carte pour la faire monter en rareté. <b>DÉTRUIRE</b> t’en débarrasse contre des matériaux.' },
+  squadView: { title:'DEATH SQUAD', text:'Compose l’escouade qui partira en mission : choisis tes mechs — l’ordre et les rôles comptent — et, si tu en as, une carte module pour un bonus supplémentaire.' },
+  collectionView: { title:'COLLECTION', text:'Toutes les cartes que tu as déjà obtenues, rangées comme dans un classeur.<br><br>Une case vide est une carte que tu n’as pas encore.' },
+  modulesView: { title:'GESTION DE MODULE', text:'La version « modules » de GESTION DE CARTE : consulte tes cartes module, fusionne-les avec <b>UPGRADE</b> ou détruis-les pour récupérer des matériaux.' }
+};
+function currentHelpKey(){
+  const sub = document.querySelector('.view.active .sub-view.active');
+  return sub ? sub.id : null;
+}
+function openHelpModal(){
+  const entry = HELP_CONTENT[currentHelpKey()] || { title:'AIDE', text:'Pas encore d’aide pour cet écran.' };
+  document.getElementById('helpTitle').textContent = entry.title;
+  document.getElementById('helpText').innerHTML = entry.text;
+  document.getElementById('helpModal').classList.add('show');
+}
+document.getElementById('helpBtn').onclick = openHelpModal;
+document.getElementById('helpClose').onclick = () => document.getElementById('helpModal').classList.remove('show');
+document.getElementById('helpModal').addEventListener('click', e => { if(e.target.id === 'helpModal') e.currentTarget.classList.remove('show'); });
+
 document.querySelectorAll('#optTheme button').forEach(b => b.onclick = () => { SETTINGS.theme = b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optFps button').forEach(b => b.onclick = () => { SETTINGS.fps = +b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optEco button').forEach(b => b.onclick = () => { SETTINGS.eco = b.dataset.v === '1'; saveSettings(); renderOptions(); ecoWake(); });
