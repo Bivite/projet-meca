@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.75</title>
+<title>Projet MECA V0.03.76</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7632,7 +7632,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.75</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.76</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8020,9 +8020,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.75';
+var BUILD_VERSION = 'V0.03.76';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.76', items:[
+    'UPGRADE : la carte "après" affichée dans l\'écran de sélection manuelle des exemplaires (quand plusieurs niveaux sont disponibles) reflète maintenant en direct le niveau réellement obtenu selon ta sélection, au lieu de rester figée à NV.1.'
+  ]},
   { v:'V0.03.75', items:[
     'Nouvelle rareté ÉCARLATE, au-dessus de légendaire -- s\'obtient en fusionnant 3 cartes légendaires identiques, ou directement (plus rare qu\'une légendaire) via TIRAGE/Fabrique et les boosters CARTES MECHS. Montée de niveau jusqu\'à 400, nouveaux cadres de carte et de combat dédiés.'
   ]},
@@ -13861,10 +13864,14 @@ function renderUpgradePicker(def, rar, level){
   const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
   const dist = levelDist(def.name, rar);
   const tiers = levelTiers(def.name, rar).slice().sort((a, b) => b - a);   // niveau le plus haut en premier
-  let total = 0;
+  let total = 0, previewLvl = 1;
   tiers.forEach(l => {
     upgradePickerSel[l] = Math.min(upgradePickerSel[l] || 0, dist[l] || 0);
     total += upgradePickerSel[l];
+    // Même règle que consumeForFusion() : le résultat hérite du niveau le plus haut parmi les
+    // exemplaires réellement sélectionnés -- la carte "après" ci-dessous doit donc le refléter en
+    // direct (demande d'Alex, V0.03.76), pas rester figée au niveau 1 tant que la sélection change.
+    if(upgradePickerSel[l] > 0 && l > previewLvl) previewLvl = l;
   });
   const ready = total === need;
   const rows = tiers.map(l => {
@@ -13884,7 +13891,7 @@ function renderUpgradePicker(def, rar, level){
     <div class="defuse-row">
       ${actionCardHtml(def, rar, {})}
       <div class="fusion-arrow ${ready ? 'ready' : ''}">➜</div>
-      ${actionCardHtml(def, next, {})}
+      ${actionCardHtml(def, next, { level: previewLvl })}
     </div>
     <div class="lvlpick-list">${rows}</div>
     <div class="fusion-count"><b>${total}</b> / ${need} exemplaires sélectionnés</div>
