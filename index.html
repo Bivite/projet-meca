@@ -4895,16 +4895,20 @@
      cartes (qui reste bien visible, les cartes ne se collent pas) — débordement réduit par
      rapport à la première passe pour laisser de la place au halo (voir plus bas) avant le bord
      de l'écran (#fabriqueView.view.active coupe tout ce qui dépasse en overflow-x:hidden).
-     Encadré noir autour des 3 cartes, ajouté en V0.02.24 (demandé explicitement à l'époque, où les
-     cartes étaient de simples icônes carrées ayant besoin d'un cadre pour se détacher du fond) --
-     RETIRÉ en V0.03.67 (demande d'Alex : "il y a un encadré noir derrière chaque carte, tu peux
-     l'enlever") : depuis l'arrivée du cadre mécanique par carte (.lg-layer, cadre gravé + halo de
-     rareté propre à chaque carte, cf plus bas), ce panneau noir partagé n'apparaissait plus que comme
-     une boîte résiduelle visible derrière/entre les cadres ajourés des cartes -- gap/margin/padding
-     gardés tels quels (c'est l'espacement entre cartes et le débordement de marge, toujours utiles),
-     seuls le fond, la bordure, l'ombre et le clip-path à coins coupés du panneau sont retirés. */
+     Encadré noir autour des 3 cartes, ajouté en V0.02.24 -- brièvement retiré en V0.03.67 (demande
+     d'Alex, qui le trouvait redondant avec le cadre mécanique propre à chaque carte), puis remis en
+     V0.03.69 (demande d'Alex : "tu peux remettre l'encadré noir derrière les cartes stp") : au final
+     préféré avec le panneau, même langage visuel "verre" à coins coupés que les autres cadres de
+     l'écran (#fabResources plus haut), mais en fond quasi noir (pas de teinte violette). */
   #fabDrawView .fab-grid, #labDrawView .fab-grid{
     gap:4px; margin:0 -6px; padding:18px 12px;
+    --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid var(--line);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.08) 0%, transparent 35%),
+      linear-gradient(180deg, #100d18 0%, #050408 100%);
+    box-shadow:0 1px 0 rgba(255,255,255,.1) inset, 0 10px 24px rgba(0,0,0,.55);
   }
   /* Halo de rareté derrière la carte "grand cadre" visible (V0.02.24) : un box-shadow suit le
      rectangle (quasi invisible, border-radius:3.6%/2.6% seulement) de .fab-card, pas le contour
@@ -4954,11 +4958,23 @@
      ou moins opaques) au lieu de suivre le canal alpha. .lg-layer a overflow visible par défaut (pas
      de contain:paint propre à container-type:inline-size, seul le filter en souffrait, cf plus haut)
      donc ce box-shadow n'est pas rogné. Même rayon/intensité (deux flous superposés) que l'ancien
-     filter pour garder un rendu comparable. */
+     filter pour garder un rendu comparable.
+     V0.03.69 (demande d'Alex : "les cartes de mecs... sont en calque alpha, il ne faut pas qu'il y ait
+     de noir entre la carte en calque et le halo") : le cadre --lg-img est une image à canal alpha (les
+     coins coupés du cadre mécanique sont transparents) -- depuis le retour de l'encadré noir de
+     #fabGrid (V0.03.69 plus haut), ces zones transparentes laissaient voir cet encadré noir en plein
+     à l'INTÉRIEUR du rectangle de .lg-layer, juste avant que le halo (box-shadow non-inset, donc peint
+     seulement à L'EXTÉRIEUR du rectangle) ne prenne le relais -- d'où un anneau noir net entre le
+     cadre visible et le halo coloré. Un 3e box-shadow, EN INSET cette fois (même --rc-halo, donc
+     même teinte exacte que le halo extérieur, quelle que soit la rareté), comble ces zones
+     transparentes par l'intérieur avec la même lueur : la transition cadre → halo redevient continue.
+     Rayon généreux (22px) + propagation (8px) pour bien couvrir les coins coupés sans assombrir le
+     centre de la carte (l'artwork y est opaque, donc peint par-dessus, inchangé). */
   #fabGrid .fab-card:has(> .lg-layer) > .lg-layer{
     box-shadow:
       0 0 16px 0 var(--rc-halo, rgba(139,92,246,.55)),
-      0 0 28px 4px var(--rc-halo, rgba(139,92,246,.55));
+      0 0 28px 4px var(--rc-halo, rgba(139,92,246,.55)),
+      inset 0 0 22px 8px var(--rc-halo, rgba(139,92,246,.55));
   }
   /* Texte d'aide sous les cartes retiré (V0.02.24), demandé explicitement — .press-hint reste
      utilisé tel quel sur GESTION DE CARTE et en combat, retrait donc scopé par ID à cet écran.
