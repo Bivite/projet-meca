@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.77</title>
+<title>Projet MECA V0.03.78</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1737,6 +1737,13 @@
      de leur LARGEUR via aspect-ratio -- sans largeur, la rangée entière s'écrasait à presque rien). */
   .dl-enemy-roster{ width:100%; align-self:stretch; margin-bottom:4px; }
   .dl-card{ cursor:pointer; position:relative; }
+  /* V0.03.77 (rapport d'Alex, même bug que .lp-list -- cartes qui se chevauchent en cascade --
+     cette fois sur l'écran de lancement DÉFI/PALIER) : .dl-list est, comme .lp-list, une grille
+     LONGUE (une carte par exemplaire possédé) dans un conteneur à hauteur plafonnée qui scrolle
+     (max-height:32vh, cf .dl-list ci-dessus) -- même cause que documentée sur .lp-card (voir ce
+     commentaire plus bas dans le fichier pour le détail complet du raisonnement CSS Grid). Même
+     correctif, scopé à cette liste précise. */
+  .dl-list .dl-card:has(> .lg-layer){min-height:auto !important;}
   /* V0.03.68 (demande d'Alex) : "met les cartes modules et mechs qui ont été sélectionné grisé" --
      même recette que .codex-card.pick-used/.mod-item.pick-used ailleurs (grayscale+brightness+opacity),
      à la place du simple contour vert -- un filter s'applique à TOUT le rendu de l'élément (y compris
@@ -7648,7 +7655,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.77</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.78</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8036,9 +8043,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.77';
+var BUILD_VERSION = 'V0.03.78';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.78', items:[
+    'CORRECTIF : même correctif que V0.03.77, appliqué cette fois à l\'écran de lancement DÉFI (sélection de carte avant combat), qui pouvait aussi afficher ses cartes en paquet écrasé/chevauché.'
+  ]},
   { v:'V0.03.77', items:[
     'CORRECTIF : les cartes de la liste CHOIX DE L\'ESCOUADE (lancement d\'une mission) pouvaient s\'afficher en paquet écrasé/chevauché sur certains téléphones une fois la collection possédée assez grande, au lieu d\'une grille propre.'
   ]},
