@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.67</title>
+<title>Projet MECA V0.03.68</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1647,21 +1647,36 @@
   .dl-mode-row .mod-fuse-toggle{ margin:0; min-width:0; width:auto; }
   .dl-mode-row #dlModeToggle{ flex:1; }
   .dl-mode-row #dlModAuto{ flex:none; }
-  .dl-list{ width:100%; max-height:32vh; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
+  /* V0.03.68 (demande d'Alex) : "léger décalage... elles sont trop hautes ça coupe le haut" -- la
+     grille n'avait aucun remplissage vertical, seulement horizontal (.codex-grid{padding:0 5px}) ;
+     la 1ère rangée touchait donc le bord haut de ce conteneur défilant (overflow-y:auto), et le badge
+     gemme du cadre mécanique (.lg-layer, qui dépasse légèrement sa propre boîte en haut) se faisait
+     rogner dessus -- même famille de problème que le halo de rareté sur TIRAGE (cf #fabDrawView
+     .fab-grid plus haut), ici réglé par un padding-top plutôt qu'un encadré complet. */
+  .dl-list{ width:100%; max-height:32vh; padding-top:14px; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
   /* V0.03.48 : aperçu de l'escouade ennemie (HOSTILES) -- même raison que .dl-mod-row/.dl-list ci-dessus,
      #defiLaunchInner est en display:flex;align-items:center (cf .codex-modal-inner), donc un enfant direct
      sans largeur explicite se réduit à son contenu (ici quasi 0, les tuiles .unit.cbt dérivent leur hauteur
      de leur LARGEUR via aspect-ratio -- sans largeur, la rangée entière s'écrasait à presque rien). */
   .dl-enemy-roster{ width:100%; align-self:stretch; margin-bottom:4px; }
   .dl-card{ cursor:pointer; position:relative; }
-  .dl-card.sel{ outline:2px solid #4dff8a; outline-offset:1px; }
+  /* V0.03.68 (demande d'Alex) : "met les cartes modules et mechs qui ont été sélectionné grisé" --
+     même recette que .codex-card.pick-used/.mod-item.pick-used ailleurs (grayscale+brightness+opacity),
+     à la place du simple contour vert -- un filter s'applique à TOUT le rendu de l'élément (y compris
+     un contour), donc un contour vert par-dessus n'aurait plus été vraiment vert ; le bandeau
+     .pick-used-tag (ÉQUIPÉ, posé en enfant direct juste au-dessus) suffit maintenant à distinguer la
+     carte sélectionnée. */
+  .dl-card.sel{ filter:grayscale(.85) brightness(.55); opacity:.75; }
   .dl-card.off{ filter:grayscale(.9) brightness(.55); cursor:default; }
   .dl-off-tag{
     position:absolute; inset:auto 0 28% 0; z-index:5; text-align:center;
     font-family:var(--font-title); font-size:7px; letter-spacing:1px; color:#ff8a80;
     background:rgba(0,0,0,.75); padding:3px 2px;
   }
-  #defiLaunchInner .mod-item.sel .mod-card{ outline:2px solid #4dff8a; outline-offset:1px; }
+  /* V0.03.68 : même traitement "grisé" que .dl-card.sel juste au-dessus -- posé sur .mod-item (le
+     conteneur, comme #squadMgr .mod-item.pick-used ailleurs) pour couvrir la carte ET son bandeau
+     .pick-used-tag (ÉQUIPÉ) ensemble, pas seulement .mod-card. */
+  #defiLaunchInner .mod-item.sel{ filter:grayscale(.85) brightness(.55); opacity:.75; }
 
   /* ---------- Étoile d'escouade (sélecteur) ---------- */
   .team-star{
@@ -7421,7 +7436,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.67</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.68</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7809,9 +7824,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.67';
+var BUILD_VERSION = 'V0.03.68';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.68', items:[
+    'DÉFI : le bouton AUTO de l\'écran de lancement sélectionne maintenant aussi la meilleure carte mech disponible, en plus du meilleur module -- un seul tap suffit pour tout équiper.',
+    'DÉFI : léger espace ajouté en haut de la liste de cartes/modules pour que le cadre de la 1ère rangée ne soit plus rogné.',
+    'DÉFI : la carte mech sélectionnée pour le combat prend maintenant le même traitement que le module équipé (bandeau "ÉQUIPÉ" + carte grisée) au lieu d\'une simple coche.'
+  ]},
   { v:'V0.03.67', items:[
     'DÉFI : ajout d\'un bouton AUTO à côté du bouton MODULES sur l\'écran de lancement d\'un palier, pour équiper directement le meilleur module disponible sans passer par la liste.',
     'Piste DÉFI : en quittant un combat (victoire, défaite ou abandon), la piste se repositionne maintenant sur le palier jouable au lieu de rester tout en haut.',
@@ -18543,8 +18563,12 @@ function renderDefiLaunch(){
   const stacks = sortStacks(ownedStacks()).sort((a, b) => (b.def.name === def.name) - (a.def.name === def.name));
   const cardsHtml = stacks.map(st => {
     const key = sqKey(st.def.name, st.rar), match = st.def.name === def.name, sel = defiLaunchCard === key;
+    // V0.03.68 (demande d'Alex) : "le bandeau équipé" -- même bandeau .pick-used-tag que les modules
+    // juste en dessous (sel ? ÉQUIPÉ) à la place de la simple pastille ✓ (cx-copy-badge) utilisée avant,
+    // pour un traitement identique entre carte mech et carte module une fois sélectionnée.
     return `<div class="codex-card dl-card ${rarCls(st.rar)} ${sel ? 'sel' : ''} ${match ? '' : 'off'}" data-key="${key}" data-match="${match ? '1' : '0'}">
-      ${codexCardHtml(st.def, st.rar, { badge: sel ? '✓' : '' })}
+      ${codexCardHtml(st.def, st.rar, {})}
+      ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
       ${match ? '' : '<div class="dl-off-tag">AUTRE CARTE</div>'}
     </div>`;
   }).join('');
@@ -18597,11 +18621,23 @@ function renderDefiLaunch(){
   // le module disponible le plus puissant (modulePower(), même métrique que la puissance d'escouade
   // affichée ailleurs), sans passer par la liste. Même esprit que pickFillAuto() pour les cartes
   // d'escouade, mais un seul slot ici donc un simple max plutôt qu'un remplissage de plusieurs slots.
+  // V0.03.68 (demande d'Alex) : "il faut que le bouton auto sélectionne aussi la carte mech" -- même
+  // principe, mais sur les piles possédées de la carte DE CETTE CASE DÉFI (def.name, pas toutes les
+  // piles du joueur comme `stacks` plus haut) : la meilleure rareté/niveau (cardPower()) est choisie et
+  // sélectionnée comme pour un clic manuel sur la carte.
   document.getElementById('dlModAuto').onclick = () => {
+    const matching = ownedStacks().filter(st => st.def.name === def.name);
+    if(matching.length){
+      const bestCard = matching.reduce((a, b) => cardPower(b.def, b.rar) > cardPower(a.def, a.rar) ? b : a);
+      defiLaunchCard = sqKey(bestCard.def.name, bestCard.rar);
+    }
     const cands = squadModulesAvailable();
-    if(!cands.length){ showToast('AUCUN MODULE DISPONIBLE'); return; }
-    const best = cands.reduce((a, b) => modulePower(b.def, b.rar) > modulePower(a.def, a.rar) ? b : a);
-    defiLaunchModule = best.key;
+    if(cands.length){
+      const best = cands.reduce((a, b) => modulePower(b.def, b.rar) > modulePower(a.def, a.rar) ? b : a);
+      defiLaunchModule = best.key;
+    } else {
+      showToast('AUCUN MODULE DISPONIBLE');
+    }
     defiLaunchMode = 'cards';
     renderDefiLaunch();
   };
