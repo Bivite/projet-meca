@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.66</title>
+<title>Projet MECA V0.03.67</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1635,7 +1635,18 @@
     font-family:var(--font-title); font-weight:800; font-size:12px; letter-spacing:2px;
     color:var(--violet-hi); margin-top:2px;
   }
-  .dl-mod-row{ display:flex; justify-content:center; width:100%; padding:2px 0 0; }
+  .dl-mod-row{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:2px 0 0; }
+  /* V0.03.67 (demande d'Alex, "le bon design") : bouton AUTO déplacé à côté de #dlModeToggle (le bouton
+     MODULES/CARTES, en bas du slot) au lieu du slot MODULE lui-même -- et recyclé en .mod-fuse-toggle
+     (même recette "verre" biseauté à coins coupés que ce bouton, cf plus bas) plutôt qu'un bouton inventé
+     à coins arrondis. Même pattern que #modUpgradeToggle appairé à RECHERCHE dans .codex-tools un peu
+     plus bas : on annule le margin-top plein-largeur hérité de .mod-fuse-toggle, le conteneur gère
+     l'espacement, #dlModeToggle garde la majorité de la largeur (son libellé est le plus long des deux)
+     et #dlModAuto se réduit à son contenu. */
+  .dl-mode-row{ display:flex; align-items:stretch; gap:10px; margin-top:10px; }
+  .dl-mode-row .mod-fuse-toggle{ margin:0; min-width:0; width:auto; }
+  .dl-mode-row #dlModeToggle{ flex:1; }
+  .dl-mode-row #dlModAuto{ flex:none; }
   .dl-list{ width:100%; max-height:32vh; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
   /* V0.03.48 : aperçu de l'escouade ennemie (HOSTILES) -- même raison que .dl-mod-row/.dl-list ci-dessus,
      #defiLaunchInner est en display:flex;align-items:center (cf .codex-modal-inner), donc un enfant direct
@@ -4869,20 +4880,16 @@
      cartes (qui reste bien visible, les cartes ne se collent pas) — débordement réduit par
      rapport à la première passe pour laisser de la place au halo (voir plus bas) avant le bord
      de l'écran (#fabriqueView.view.active coupe tout ce qui dépasse en overflow-x:hidden).
-     Encadré noir ajouté autour des 3 cartes (demandé explicitement) : même langage visuel "verre"
-     à coins coupés que les autres cadres de l'écran (#fabResources plus haut), mais en fond quasi
-     noir (pas de teinte violette) — du remplissage (padding) généreux est gardé entre les cartes
-     et le bord du cadre pour laisser respirer le halo de rareté avant qu'il ne soit rogné par le
-     clip-path du cadre. */
+     Encadré noir autour des 3 cartes, ajouté en V0.02.24 (demandé explicitement à l'époque, où les
+     cartes étaient de simples icônes carrées ayant besoin d'un cadre pour se détacher du fond) --
+     RETIRÉ en V0.03.67 (demande d'Alex : "il y a un encadré noir derrière chaque carte, tu peux
+     l'enlever") : depuis l'arrivée du cadre mécanique par carte (.lg-layer, cadre gravé + halo de
+     rareté propre à chaque carte, cf plus bas), ce panneau noir partagé n'apparaissait plus que comme
+     une boîte résiduelle visible derrière/entre les cadres ajourés des cartes -- gap/margin/padding
+     gardés tels quels (c'est l'espacement entre cartes et le débordement de marge, toujours utiles),
+     seuls le fond, la bordure, l'ombre et le clip-path à coins coupés du panneau sont retirés. */
   #fabDrawView .fab-grid, #labDrawView .fab-grid{
     gap:4px; margin:0 -6px; padding:18px 12px;
-    --cut:14px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    border:1px solid var(--line);
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.08) 0%, transparent 35%),
-      linear-gradient(180deg, #100d18 0%, #050408 100%);
-    box-shadow:0 1px 0 rgba(255,255,255,.1) inset, 0 10px 24px rgba(0,0,0,.55);
   }
   /* Halo de rareté derrière la carte "grand cadre" visible (V0.02.24) : un box-shadow suit le
      rectangle (quasi invisible, border-radius:3.6%/2.6% seulement) de .fab-card, pas le contour
@@ -7414,7 +7421,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.66</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.67</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7802,9 +7809,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.66';
+var BUILD_VERSION = 'V0.03.67';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.67', items:[
+    'DÉFI : ajout d\'un bouton AUTO à côté du bouton MODULES sur l\'écran de lancement d\'un palier, pour équiper directement le meilleur module disponible sans passer par la liste.',
+    'Piste DÉFI : en quittant un combat (victoire, défaite ou abandon), la piste se repositionne maintenant sur le palier jouable au lieu de rester tout en haut.',
+    'DÉFI : correction du bouton AUTO (combat) qui pouvait afficher "ON" au lancement d\'un nouveau palier alors que le combat démarrait bien en manuel (bulles non grisées) -- le bouton se resynchronise maintenant correctement à OFF.',
+    'TIRAGE et LABO : retrait du panneau noir affiché derrière le trio de cartes, devenu superflu depuis que chaque carte a son propre cadre et son propre halo de rareté.'
+  ]},
   { v:'V0.03.66', items:[
     'Piste DÉFI : nouvelle icône de palier (cadre hexagonal) colorée selon l\'état -- gris si pas encore accessible, blanc lumineux si accessible maintenant, rouge lumineux pour un palier de dizaine (boss), jaune/orange lumineux une fois remporté -- avec le numéro du palier toujours centré dedans.',
     'Piste DÉFI : nouveau design pour les puces de récompense de chaque palier, centrées sous un trait séparateur.'
@@ -18368,16 +18381,23 @@ function renderDefi(){
 // reliés par une ligne continue à gauche -- les récompenses du palier apparaissent à sa droite. Généré
 // une fois par ouverture (pas de redessin en boucle, rien ne change pendant qu'on regarde la piste).
 let defiActiveCard = null;   // def de la carte actuellement affichée sur la piste
-function openDefiPath(def){
-  defiActiveCard = def;
-  renderDefiPath();
-  openSub('defiPathView');
-  // Fait défiler jusqu'au palier courant (le prochain à jouer), le plus utile à voir en priorité,
-  // plutôt que le palier 50 tout en haut du DOM.
+// Fait défiler la piste jusqu'au palier courant (le prochain à jouer), le plus utile à voir en
+// priorité, plutôt que le palier 50 tout en haut du DOM (ordre décroissant de renderDefiPath()).
+// Factorisé (V0.03.67, demande d'Alex) : openDefiPath() l'utilise à l'ouverture, ET defiExitCombat()
+// l'utilise au retour d'un combat -- avant ça, le retour d'un combat ré-affichait la piste
+// (renderDefiPath()) SANS recaler le défilement, qui restait donc bloqué tout en haut (palier 50) au
+// lieu de se repositionner sur le palier qu'on vient de jouer/débloquer.
+function defiScrollToCurTier(){
   requestAnimationFrame(() => {
     const cur = document.querySelector('#defiPathTrack .dp-tier.cur') || document.querySelector('#defiPathTrack .dp-tier');
     if(cur) cur.scrollIntoView({ block:'center' });
   });
+}
+function openDefiPath(def){
+  defiActiveCard = def;
+  renderDefiPath();
+  openSub('defiPathView');
+  defiScrollToCurTier();
 }
 function defiPathBack(){ openSub('defiView'); renderDefi(); }
 // Icônes de la piste DÉFI -- cohérentes avec le cadenas de .defi-lock (même famille de trait,
@@ -18548,7 +18568,10 @@ function renderDefiLaunch(){
         ${modEnt ? `<div class="mod-card">${modCardFaceHtml(modEnt.def, moduleLevel(modEnt.def.name, modEnt.rar), modEnt.rar)}</div>` : `<span class="plus">+</span><span class="mod-slot-label">MODULE</span>`}
       </div>
     </div>
-    <button type="button" class="mod-fuse-toggle" id="dlModeToggle">${defiLaunchMode === 'cards' ? 'MODULES' : 'CARTES'}</button>
+    <div class="dl-mode-row">
+      <button type="button" class="mod-fuse-toggle" id="dlModeToggle">${defiLaunchMode === 'cards' ? 'MODULES' : 'CARTES'}</button>
+      <button type="button" class="mod-fuse-toggle" id="dlModAuto">AUTO</button>
+    </div>
     ${defiLaunchMode === 'cards' ? `
     <div class="press-hint">Touche une carte ${def.name} pour la sélectionner</div>
     <div class="codex-grid dl-list">${cardsHtml || '<div class="fab-empty">Aucune carte possédée.</div>'}</div>` : `
@@ -18569,6 +18592,18 @@ function renderDefiLaunch(){
   if(modSlotEl) modSlotEl.onclick = () => {
     if(modEnt){ defiLaunchModule = null; renderDefiLaunch(); }
     else { defiLaunchMode = 'modules'; renderDefiLaunch(); }
+  };
+  // V0.03.67 (demande d'Alex) : "ajoute un bouton auto à droite du bouton module" -- équipe directement
+  // le module disponible le plus puissant (modulePower(), même métrique que la puissance d'escouade
+  // affichée ailleurs), sans passer par la liste. Même esprit que pickFillAuto() pour les cartes
+  // d'escouade, mais un seul slot ici donc un simple max plutôt qu'un remplissage de plusieurs slots.
+  document.getElementById('dlModAuto').onclick = () => {
+    const cands = squadModulesAvailable();
+    if(!cands.length){ showToast('AUCUN MODULE DISPONIBLE'); return; }
+    const best = cands.reduce((a, b) => modulePower(b.def, b.rar) > modulePower(a.def, a.rar) ? b : a);
+    defiLaunchModule = best.key;
+    defiLaunchMode = 'cards';
+    renderDefiLaunch();
   };
   document.getElementById('dlModeToggle').onclick = () => {
     defiLaunchMode = defiLaunchMode === 'cards' ? 'modules' : 'cards';
@@ -18626,6 +18661,13 @@ function defiEnterCombat(){
   wave = tier;
   runLoot = newLoot();
   auto = false; speed = 1;
+  // V0.03.67 (demande d'Alex) : auto remis à false ci-dessus, mais #autoBtn lui-même n'était jamais
+  // resynchronisé (contrairement à defiRestoreContext()/restoreBattle() qui le font toutes les deux) --
+  // le bouton gardait donc l'affichage "AUTO : ON" d'un combat précédent tant que le joueur n'y touchait
+  // pas, alors que le moteur tournait déjà en manuel (bulles non grisées, cf .auto-locked/bblRenderBoard()
+  // qui lit bien la variable auto et grisait donc correctement -- seul le bouton mentait).
+  const defiAb = document.getElementById('autoBtn');
+  if(defiAb){ defiAb.textContent = 'AUTO : OFF'; defiAb.classList.remove('auto-on'); }
   battleStarted = true; battleOver = false; missionDone = false; pendingNextWave = false;
   missionEndAt = 0; runSeconds = 0; lastTickAt = Date.now();
   bblChain = []; bblUltIdx = null; bblTickCounter = 0; bblBoard = [];
@@ -18679,6 +18721,9 @@ function defiExitCombat(){
   renderLoot();
   openSub('defiPathView');
   renderDefiPath();
+  // V0.03.67 (demande d'Alex) : recale le défilement sur le palier courant -- sinon la piste restait
+  // scrollée tout en haut (palier 50) au retour d'un combat (victoire, défaite ou abandon).
+  defiScrollToCurTier();
 }
 // Navigation hors de l'écran PENDANT un combat défi (onglet FABRIQUE/CARTE, bouton RETOUR...) : cf les
 // gardes defiCombatActive ajoutées dans showHub()/goBack() plus bas, qui appellent ceci EN PREMIER.
