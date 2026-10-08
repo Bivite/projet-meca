@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.76</title>
+<title>Projet MECA V0.03.77</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6210,6 +6210,22 @@
   .lp-card .cx-name{font-size:7.5px !important;} .lp-card .cx-lvl-tag{font-size:7px;} .lp-card .cx-badge{font-size:6px; padding:1px 4px;}
   .lp-card.sel{outline:2px solid #4dff8a; outline-offset:1px;}
   .lp-card.busy{filter:grayscale(.9) brightness(.55);}
+  /* V0.03.77 (bug rapporté par Alex, récurrent sur son iPhone -- cartes qui se chevauchent en
+     cascade dans .lp-list une fois la collection possédée assez grande) : .codex-card:has(> .lg-layer)
+     (cadre mécanique, cf plus bas dans le fichier) force min-height:0 !important + overflow:visible
+     !important sur la carte -- or la spec CSS Grid désactive justement la "taille minimale
+     automatique" d'une rangée de grille quand ces deux conditions sont réunies (min-height définie à
+     0 + overflow visible). Sur une grille courte ça ne se voit jamais (rien ne force les rangées à
+     rétrécir), mais .lp-list est une grille LONGUE (une carte par exemplaire possédé, donc des
+     dizaines de rangées) contenue dans un conteneur à hauteur plafonnée (max-height:38vh) qui
+     scrolle -- jamais reproduit ici en Chromium (les rangées restent bien espacées), mais tout
+     concorde avec un bug Safari/iOS connu de ce genre de grille une fois cette protection désactivée
+     (rangées qui s'effondrent les unes sur les autres alors que le contenu, lui, garde sa vraie
+     taille -- d'où les cartes qui se chevauchent en cascade, un peu comme un jeu de cartes éventé).
+     On restaure explicitement min-height:auto ICI, avec une spécificité assez haute (3 classes) pour
+     l'emporter sur la règle de .codex-card:has(> .lg-layer) (2 classes) SANS la toucher ailleurs dans
+     le jeu (TIRAGE, GESTION DE CARTE, FABRIQUE...), où elle reste nécessaire. */
+  .lp-list .lp-card:has(> .lg-layer){min-height:auto !important;}
   .lp-busy{position:absolute; inset:auto 0 30% 0; z-index:5; font-family:var(--font-title); font-size:7px; letter-spacing:1px; color:#ff8a80; background:rgba(0,0,0,.75); padding:3px 2px; text-align:center;}
   .lp-busy small{display:block; font-size:6px; color:#fff;}
   /* V0.03.60, demande d'Alex : liste des modules dans la fenêtre de lancement -- .lp-list pose déjà
@@ -7632,7 +7648,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.76</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.77</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8020,9 +8036,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.76';
+var BUILD_VERSION = 'V0.03.77';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.77', items:[
+    'CORRECTIF : les cartes de la liste CHOIX DE L\'ESCOUADE (lancement d\'une mission) pouvaient s\'afficher en paquet écrasé/chevauché sur certains téléphones une fois la collection possédée assez grande, au lieu d\'une grille propre.'
+  ]},
   { v:'V0.03.76', items:[
     'UPGRADE : la carte "après" affichée dans l\'écran de sélection manuelle des exemplaires (quand plusieurs niveaux sont disponibles) reflète maintenant en direct le niveau réellement obtenu selon ta sélection, au lieu de rester figée à NV.1.'
   ]},
