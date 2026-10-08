@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.68</title>
+<title>Projet MECA V0.03.69</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3731,10 +3731,83 @@
     box-shadow:0 1px 0 rgba(255,255,255,.28) inset, 0 0 30px -8px rgba(255,190,50,.55), 0 20px 50px rgba(0,0,0,.8) !important;
   }
   .rw-title{font-family:var(--font-title); font-size:15px; font-weight:900; letter-spacing:3px; color:#ffd65c; text-shadow:0 0 14px rgba(255,200,60,.7);}
+  /* Écran de victoire/défaite DÉFI (V0.03.69, demande d'Alex : "modifie cette fenêtre pour en faire un
+     écran de victoire/défaite -- agrandi la fenêtre et place en haut un encadré avec l'artwork de la
+     carte/case correspondante, au centre un texte en vert glitché (Victoire), laisse les récompenses en
+     bas avec le bouton comme ils sont -- si c'est une défaite, même encadré mais avec un filtre noir et
+     blanc, et le texte au centre rouge glitché (Défaite)" -- puis retouché : "place victoire et défaite
+     directement sur l'artwork, garde les récompenses centrées au milieu, pour la défaite enlève le texte
+     escouade hors service") -- actif uniquement quand showRewardModal() reçoit opts.resultType
+     ('victory'/'defeat', cf defiEndBattle()) : les autres appelants (journalière, trophées, tâches, raid)
+     ne passent jamais cette option, donc .defi-result n'est jamais posée et leur fenêtre reste strictement
+     inchangée. L'artwork utilisé est def.artExt (même asset « étendu » dédié que la case défi débloquée,
+     cf .defi-art-img) -- certaines cartes n'en ont pas encore (defiExtArtMissing()), d'où le même repli
+     sur GREY_ART que .defi-art-img. .rw-result est maintenant un ENFANT de .rw-art-frame (superposé en
+     position:absolute sur l'image, cf le gabarit dans showRewardModal()) plutôt qu'un bloc séparé en
+     dessous -- les récompenses (.rw-cards/.rw-items) restent, elles, à leur place normale dans le flux
+     (centrées, cf leurs règles existantes), entre le titre et le bouton. */
+  .reward-inner.defi-result{ max-width:420px; }
+  .rw-art-frame{
+    position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    --cut:16px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid var(--res-c, rgba(80,255,150,.65));
+    box-shadow:0 0 22px -4px var(--res-glow, rgba(80,255,150,.55)), inset 0 0 26px -4px var(--res-glow, rgba(80,255,150,.4));
+    background:#06040a;
+  }
+  .rw-art-frame img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .rw-art-frame::after{
+    /* Voile sombre sur TOUTE la carte (pas seulement en bas comme avant) : le texte est maintenant
+       superposé n'importe où sur l'artwork, il lui faut du contraste partout, pas juste en bas. */
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:linear-gradient(180deg, rgba(6,4,10,.35) 0%, rgba(6,4,10,.12) 38%, rgba(6,4,10,.12) 62%, rgba(6,4,10,.55) 100%);
+  }
+  /* Défaite : "filtre noir et blanc" sur l'artwork -- le cadre lui-même bascule aussi sur le ton rouge
+     du texte (--res-c/--res-glow) plutôt que de garder le vert, pour rester cohérent avec le résultat. */
+  .rw-art-frame.defeat{ --res-c:rgba(255,80,80,.6); --res-glow:rgba(255,70,70,.5); }
+  .rw-art-frame.defeat img{ filter:grayscale(1) contrast(1.08) brightness(.75); }
+  .rw-result{
+    position:relative; z-index:2;
+    font-family:var(--font-title); font-weight:900;
+    font-size:clamp(20px, 7vw, 32px); letter-spacing:4px; text-transform:uppercase; text-align:center; padding:0 8px;
+    color:#5dffa0; text-shadow:0 0 8px rgba(93,255,160,.85), 0 0 26px rgba(93,255,160,.55), 0 3px 6px rgba(0,0,0,.9);
+    animation:rwResFlicker 3s linear infinite;
+  }
+  .rw-result::before, .rw-result::after{ content:attr(data-text); position:absolute; inset:0; color:inherit; }
+  .rw-result::before{ text-shadow:2px 0 rgba(0,225,255,.8); clip-path:inset(0 0 55% 0); animation:rwGlitchTop 3.6s infinite linear; }
+  .rw-result::after{ text-shadow:-2px 0 rgba(255,0,160,.8); clip-path:inset(55% 0 0 0); animation:rwGlitchBot 2.8s infinite linear; }
+  .rw-result.defeat{ color:#ff4d4d; text-shadow:0 0 8px rgba(255,77,77,.85), 0 0 26px rgba(255,77,77,.55), 0 2px 0 rgba(0,0,0,.7); }
+  @keyframes rwResFlicker{
+    0%, 90%, 100%{ opacity:1; }
+    91%{ opacity:.35; } 92%{ opacity:1; } 93%{ opacity:.25; } 94%{ opacity:1; }
+  }
+  @keyframes rwGlitchTop{
+    0%, 91%, 100%{ transform:translate(0,0); clip-path:inset(0 0 55% 0); }
+    91.5%{ transform:translate(-4px,-1px); clip-path:inset(12% 0 38% 0); }
+    93%{ transform:translate(3px,1px); clip-path:inset(0 0 62% 0); }
+    95%{ transform:translate(-2px,0); clip-path:inset(6% 0 48% 0); }
+  }
+  @keyframes rwGlitchBot{
+    0%, 91%, 100%{ transform:translate(0,0); clip-path:inset(55% 0 0 0); }
+    92%{ transform:translate(4px,0); clip-path:inset(38% 0 12% 0); }
+    93.5%{ transform:translate(-3px,1px); clip-path:inset(62% 0 0 0); }
+    96%{ transform:translate(2px,-1px); clip-path:inset(48% 0 6% 0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .rw-result, .rw-result::before, .rw-result::after{ animation:none !important; }
+  }
   .rw-card-reveal{width:150px; animation:cardReveal .7s cubic-bezier(.2,1.3,.4,1) both .1s;}
   @keyframes cardReveal{0%{transform:rotateY(90deg) scale(.6); opacity:0;} 100%{transform:none; opacity:1;}}
   .rw-items{display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%;}
-  .rw-item{display:flex; flex-direction:column; align-items:center; gap:2px; min-width:86px; padding:10px 8px;
+  /* Retouche d'Alex (V0.03.69, écran de victoire) : "met bien les cases de récompenses à la même taille"
+     -- auparavant min-width:86px servait juste de plancher, donc une case avec libellé long (ex. "CRISTAUX
+     DE FABRICATION"/"MATÉRIAU LÉGENDAIRE") s'élargissait plus que les cases sans libellé (or/xp), ce qui
+     donnait des cases de tailles différentes sur la même rangée. width (au lieu de min-width) + flex figé
+     (0 0 86px, ne grandit/rétrécit plus selon le contenu) force maintenant TOUTES les cases à la même
+     largeur -- un libellé trop long passe simplement sur 2 lignes (cf .rw-item small ci-dessous) plutôt que
+     d'élargir sa case.*/
+  .rw-item{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; width:86px; flex:0 0 86px; padding:10px 8px;
     --cut:8px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     background:
@@ -3760,7 +3833,7 @@
      icônes de récompense (or/xp/cristal/matériau) ; mêmes règles de redimensionnement, ciblant <img>. */
   .rw-item .rw-ico img{width:100%; height:100%; object-fit:contain; display:block;}
   .rw-item b{font-family:var(--font-title); font-size:17px; color:#fff;}
-  .rw-item small{font-size:8px; letter-spacing:1.5px; color:var(--text-dim); font-weight:700;}
+  .rw-item small{font-size:8px; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; text-align:center; line-height:1.3;}
   .rw-chip{display:inline-flex; align-items:center; gap:3px; padding:2px 7px; border-radius:10px; font-size:10px; font-weight:700; color:#fff;
     background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.14); white-space:nowrap;}
   .rw-chip i{width:15px; height:15px; display:inline-flex;} .rw-chip i svg{width:100%; height:100%;}
@@ -7452,7 +7525,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.68</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.69</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7840,9 +7913,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.68';
+var BUILD_VERSION = 'V0.03.69';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.69', items:[
+    'DÉFI : la fin d\'un combat affiche maintenant un vrai écran de victoire ou de défaite -- l\'artwork de la carte, avec "VICTOIRE" en vert ou "DÉFAITE" en rouge (encadré en noir et blanc) superposé dessus. Les récompenses de victoire restent affichées en dessous comme avant.',
+    'Récompenses : les cases (or, cristaux, matériaux...) ont maintenant toutes la même taille, même quand l\'une d\'elles a un libellé plus long.',
+    'TIRAGE et LABO : le panneau noir derrière le trio de cartes est de retour.',
+    'TIRAGE et LABO : correction d\'un léger liseré noir qui pouvait apparaître entre certaines cartes et leur halo de rareté.'
+  ]},
   { v:'V0.03.68', items:[
     'DÉFI : le bouton AUTO de l\'écran de lancement sélectionne maintenant aussi la meilleure carte mech disponible, en plus du meilleur module -- un seul tap suffit pour tout équiper.',
     'DÉFI : léger espace ajouté en haut de la liste de cartes/modules pour que le cadre de la 1ère rangée ne soit plus rogné.',
@@ -16838,8 +16917,29 @@ function showRewardModal(title, items, opts){
   const moduleHtml = moduleList.map((it, k) =>
     `<div class="rw-card-reveal" style="animation-delay:${.1 + (cardList.length + k) * .18}s"><div class="mod-card ${rarCls(it.rar)}">${modCardFaceHtml(it.def, 1, it.rar)}</div></div>`);
   const cards = revealCount ? `<div class="rw-cards n${revealCount}">${cardHtml.concat(moduleHtml).join('')}</div>` : '';
+  // `opts.resultType` ('victory'/'defeat', V0.03.69, demande d'Alex -- cf defiEndBattle()) : transforme la
+  // fenêtre en écran de victoire/défaite -- encadré d'artwork (opts.resultArt, repli GREY_ART comme
+  // .defi-art-img) avec le texte glitché "VICTOIRE"/"DÉFAITE" SUPERPOSÉ dessus (retouche d'Alex : "place
+  // victoire et défaite directement sur l'artwork", donc .rw-result est désormais un enfant de
+  // .rw-art-frame, pas un bloc séparé en dessous) -- les récompenses (cartes/items) restent à leur place
+  // normale dans le flux, centrées comme avant ("garde les récompenses centrées au milieu"), entre le
+  // titre et le bouton. .defi-result n'est posée que pour ce cas précis : les autres appels (journalière,
+  // trophées, tâches, raid) n'ont pas opts.resultType et gardent leur fenêtre normale.
+  const isDefeat = opts.resultType === 'defeat';
+  inner.classList.toggle('defi-result', !!opts.resultType);
+  const resultHtml = opts.resultType ? `
+    <div class="rw-art-frame${isDefeat ? ' defeat' : ''}">
+      <img src="${opts.resultArt || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
+      <div class="rw-result${isDefeat ? ' defeat' : ''}" data-text="${isDefeat ? 'DÉFAITE' : 'VICTOIRE'}">${isDefeat ? 'DÉFAITE' : 'VICTOIRE'}</div>
+    </div>` : '';
+  // Retouche d'Alex : "pour la défaite, enlève le texte escouade hors service" -- le sous-titre
+  // (.rw-title) ne s'affiche plus du tout quand `title` est vide ; defiEndBattle() passe désormais ''
+  // comme titre pour la défaite (le texte "ESCOUADE HORS SERVICE..." disparaît), tandis que la victoire
+  // garde son titre "PALIER X REMPORTÉ" comme avant, et tous les autres appelants (qui passent toujours
+  // un titre non vide) ne sont pas affectés.
   inner.innerHTML = `
-    <div class="rw-title">${title}</div>
+    ${resultHtml}
+    ${title ? `<div class="rw-title">${title}</div>` : ''}
     ${cards}
     ${res ? `<div class="rw-items">${res}</div>` : ''}
     <div class="controls" style="width:100%;"><button class="primary-btn" id="rwOk">${opts.actionLabel || 'RÉCUPÉRER'}</button></div>`;
@@ -18799,11 +18899,19 @@ function defiEndBattle(won){
     saveSoon();
   }
   defiExitCombat();
+  // V0.03.69 (demande d'Alex) : l'ancien toast de défaite ("ESCOUADE HORS SERVICE...") devient un vrai
+  // écran de défaite -- même fenêtre de récompense que la victoire, mais sans récompenses ([]) et avec
+  // opts.resultType:'defeat' (cf showRewardModal()) qui affiche l'encadré d'artwork en noir et blanc et
+  // le texte glitché rouge "DÉFAITE" à la place du vert "VICTOIRE". def.artExt est le même artwork « étendu »
+  // dédié que la case défi (cf renderDefi()/.defi-art-img) -- certaines cartes n'en ont pas encore
+  // (defiExtArtMissing()), showRewardModal() reprend alors le même repli GREY_ART.
   if(won){
     const items = grantReward(defiTierReward(tier));
-    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items);
+    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt });
   } else {
-    showToast('ESCOUADE HORS SERVICE — PALIER ' + tier + ' À RETENTER');
+    // Retouche d'Alex : "pour la défaite, enlève le texte escouade hors service" -- titre vide, donc
+    // showRewardModal() n'affiche plus du tout de .rw-title pour cet écran (cf son code plus haut).
+    showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, actionLabel:'CONTINUER' });
   }
 }
 
