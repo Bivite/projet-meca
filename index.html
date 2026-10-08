@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.70</title>
+<title>Projet MECA V0.03.71</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1654,6 +1654,22 @@
      rogner dessus -- même famille de problème que le halo de rareté sur TIRAGE (cf #fabDrawView
      .fab-grid plus haut), ici réglé par un padding-top plutôt qu'un encadré complet. */
   .dl-list{ width:100%; max-height:32vh; padding-top:14px; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
+  /* Bouton LANCER LE COMBAT de l'écran de lancement DÉFI (V0.03.71, demande d'Alex : "qu'il ait le bon
+     design" -- remplace le bouton violet arrondi générique de .primary-btn/.controls button) : même recette
+     "verre biseauté" (coins coupés, reflet diagonal, ombre portée épaisse) que .raid-launch-btn, reprise ici
+     en violet -- couleur de .primary-btn -- pour rester dans le thème de l'écran DÉFI (MODULES/AUTO, cadre
+     de la carte sélectionnée...) plutôt que le rouge de RAID. Ciblé par id (#dlLaunchGo) : ne touche à
+     aucun autre bouton "LANCER" du jeu (mission, raid, squad manager...), qu'Alex n'a pas mentionnés. */
+  #dlLaunchGo{
+    --cut:12px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.26) 0%, transparent 42%),
+      linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%);
+    border:1px solid #c8b2ff;
+    box-shadow:0 4px 0 #2e1777, 0 8px 20px rgba(124,77,255,.4), 0 1px 0 rgba(255,255,255,.3) inset;
+  }
+  #dlLaunchGo:active{ box-shadow:0 1px 0 #2e1777, 0 1px 0 rgba(255,255,255,.3) inset; }
   /* V0.03.48 : aperçu de l'escouade ennemie (HOSTILES) -- même raison que .dl-mod-row/.dl-list ci-dessus,
      #defiLaunchInner est en display:flex;align-items:center (cf .codex-modal-inner), donc un enfant direct
      sans largeur explicite se réduit à son contenu (ici quasi 0, les tuiles .unit.cbt dérivent leur hauteur
@@ -7525,7 +7541,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.70</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.71</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7913,9 +7929,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.70';
+var BUILD_VERSION = 'V0.03.71';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.71', items:[
+    'DÉFI : le bouton "LANCER LE COMBAT" de l\'écran de lancement d\'un palier a maintenant le même design biseauté que le reste du jeu, au lieu du bouton violet arrondi générique.'
+  ]},
   { v:'V0.03.70', items:[
     'DÉFI : cadrage de l\'artwork réajusté sur l\'écran de victoire/défaite pour CATER-PILLARD, MOG-AI, RHINO, STAR-HUNTER, GAPIX, MORPHE, BRI-KB-ROCK, DOZEUR, NEUTRON, EXO-MKIV, GAZELLE, PRAWN, EXO-MKV, WHIPLASH et DELOK.'
   ]},
