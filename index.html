@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.85</title>
+<title>Projet MECA V0.03.90</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -494,6 +494,13 @@
     border-radius:50%; object-fit:cover; pointer-events:none; z-index:0; }
   .unit.cbt .cbt-gem{ position:absolute; left:var(--gx); top:var(--gy); transform:translate(-50%,-50%); font-family:var(--font-title); font-weight:900; line-height:1; color:#20150a; font-size:12cqw; text-shadow:0 1px 0 rgba(255,255,255,.3); pointer-events:none; }
   .unit.cbt .cbt-name{ position:absolute; left:50%; top:66%; transform:translate(-50%,0); max-width:74%; font-family:var(--font-ui); font-size:8cqw; font-weight:700; letter-spacing:.2px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; text-shadow:0 1px 2px #000,0 0 3px #000,0 0 5px #000; pointer-events:none; }
+  /* V0.03.86 : .cbt-name ci-dessus n'était encore utilisée nulle part (règle prête mais jamais posée
+     dans une carte) avant son 1er usage sur les cases d'escouade de raid (raidUnitCardHtml()) -- ajusté
+     à cette occasion pour les noms les plus longs (CATER-PILLARD, STAR-HUNTER...), qui débordaient de la
+     petite carte et se faisaient tronquer de façon disgracieuse (texte centré + overflow:hidden coupe des
+     DEUX côtés, sans "..." lisible). Police réduite et largeur élargie pour que tous les noms du jeu
+     tiennent sur une ligne à la taille de ces cartes. */
+  .raid-squad-grid .unit.cbt .cbt-name{ max-width:94%; font-size:6cqw; letter-spacing:0; }
   /* jauges circulaires à remplissage vertical : PV (droite) descend, ulti (gauche) monte */
   .unit.cbt .cbt-g{ position:absolute; transform:translate(-50%,-50%); width:var(--gd); aspect-ratio:1; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.05), rgba(0,0,0,.62)); box-shadow:0 0 0 1px rgba(0,0,0,.55), inset 0 0 5px rgba(0,0,0,.78); }
   /* V0.03.05/06/07 : trois tentatives (transform:scaleY, clip-path:inset, puis un simple
@@ -6867,12 +6874,42 @@
   }
   .raid-boss-imgwrap{ position:relative; flex:0 0 180px; display:flex; align-items:center; justify-content:center; }
   .raid-boss-box img{ max-width:100%; max-height:100%; object-fit:contain; }
+  /* Encadré boss repris tel quel (V0.03.86, demande d'Alex) dans l'écran de COMBAT lui-même (où il
+     n'existait pas avant -- seul l'écran de choix affichait l'artwork) : même recette .raid-boss-box
+     que ci-dessus, juste une zone image plus basse (130px au lieu de 180px) pour laisser la place au
+     minuteur, à la barre de PV du boss et à l'escouade en dessous. */
+  /* min-height:0 nécessaire en plus de flex-basis (bug classique flexbox) : sans ça, le minimum
+     automatique d'un enfant flex se cale sur la taille de son contenu (ici l'image, plus haute que 130px
+     à cette largeur) et l'imgwrap grandissait quand même au-delà du flex-basis fixé. */
+  .raid-combat-bossimgwrap{ flex-basis:130px; min-height:0; overflow:hidden; }
+  /* V0.03.89 (demande d'Alex, "l'artwork doit prendre l'encadré entièrement") : en écran de choix,
+     .raid-boss-box img garde object-fit:contain (toute l'image visible, quitte à laisser des bandes).
+     Ici en combat, la zone est plus basse (130px) donc plus large que l'image une fois mise à l'échelle --
+     object-fit:contain laissait des bandes vides à gauche/droite. On force l'image à remplir tout le
+     cadre (width/height:100% + object-fit:cover), quitte à rogner légèrement les bords de l'artwork. */
+  .raid-combat-bossimgwrap .raid-boss-img{ width:100%; height:100%; object-fit:cover; }
   /* Placeholder masqué (V0.03.03, demande d'Alex : 3 visuels fournis, un par phase, boss nommé
      AMALGAME) -- conservé dans le DOM (sert toujours de retour visuel via #raidBossPhaseNum, inoffensif
      resté invisible) plutôt que supprimé, pour ne pas toucher au JS qui l'alimente. */
   .raid-boss-ph{ display:none; font-family:var(--font-title); font-size:11px; letter-spacing:1.5px; color:rgba(255,160,160,.5); text-align:center; padding:0 20px; }
   .raid-boss-img{ display:block; }
   .raid-boss-box.glitch{ animation:glitchJit 2.8s steps(1) infinite; }
+  /* Glitch bref à chaque coup encaissé par le boss en combat (V0.03.88, demande d'Alex), distinct du
+     .glitch ci-dessus (boucle infinie + message "LE BOSS REVIENDRA", réservé à l'état indisponible) :
+     une seule secousse courte (même esprit que glitchJit -- jitter + décalage de teinte façon interférence
+     -- mais en charge unique, posée/retirée par raidFloatDamage() à chaque dégât infligé). */
+  @keyframes glitchHit{
+    0%{filter:none;}
+    20%{filter:hue-rotate(90deg) saturate(2);}
+    45%{filter:hue-rotate(-70deg) saturate(2.4);}
+    70%{filter:hue-rotate(40deg);}
+    100%{filter:none;}
+  }
+  /* V0.03.89 (demande d'Alex, "remet l'artwork en entier correctement dans l'encadré") : le glitch de coup
+     ci-dessus déformait géométriquement l'image (translateX/skewX), ce qui pouvait donner l'impression que
+     l'artwork était coupé/mal cadré pendant l'animation. On ne garde que le filtre de couleur : l'image ne
+     bouge/ne se déforme plus jamais, seule sa teinte clignote brièvement. */
+  .raid-boss-box.hit-glitch{ animation:glitchHit .35s steps(1); }
   /* Nom du boss (V0.03.03, puis fusionné dans l'encadré image en V0.03.04, demandes d'Alex) : plus de
      cadre/bordure propre, juste le texte posé dans le même bloc verre biseauté que l'image, un peu plus
      gros qu'à sa 1ère version. Nom encore générique : un seul boss pour l'instant, l'identité (nom/visuel)
@@ -6943,7 +6980,7 @@
      que justify-content:space-between centre les 3 colonnes exactement les unes sous les autres. */
   .raid-phase-row{ display:flex; justify-content:space-between; margin:30px 30px 10px; }
   .raid-phase-row .rp-btn{
-    --cut:10px; border-radius:0;
+    --cut:10px; border-radius:0; position:relative;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     width:44px; height:44px; display:flex; align-items:center; justify-content:center;
     color:#ffe7a8; font-size:16px;
@@ -6955,6 +6992,16 @@
     box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 14px -4px rgba(232,196,104,.6), 0 4px 10px rgba(0,0,0,.4);
   }
   .raid-phase-row .rp-btn:active{ transform:translateY(2px); box-shadow:0 0 10px -4px rgba(232,196,104,.5); }
+  /* V0.03.90 (demande d'Alex) : récompense de phase déjà récupérée (i < r.phase, même condition que
+     .rt-node.done) -- même langage visuel qu'ailleurs dans le jeu pour un "validé" (.db-check sur les
+     coffres journaliers, .task-box.done) : icône d'origine assombrie + coche dorée en surimpression. */
+  .raid-phase-row .rp-btn.claimed{ filter:grayscale(.5); }
+  .raid-phase-row .rp-btn.claimed i{ opacity:.35; }
+  .raid-phase-row .rp-btn.claimed::after{
+    content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:#ffd65c; text-shadow:0 0 8px rgba(0,0,0,.9), 0 0 10px rgba(255,214,92,.8);
+    background:rgba(0,0,0,.35);
+  }
   /* Corrige un bug préexistant (avant même le passage au carré) : l'icône <i class="ico-rewardsbadge">
      utilise un masque CSS en width/height:100%, mais sans taille explicite sur le <i> lui-même (un
      élément inline) elle restait invisible -- aucune case de récompense ailleurs dans le jeu n'utilise
@@ -7007,17 +7054,33 @@
     box-shadow:0 1px 0 rgba(255,255,255,.12) inset;
   }
   .raid-boss-hpbar .fill{ height:100%; background:linear-gradient(90deg,#ff5050,#e8c468); transition:width .25s; }
-  .raid-squad-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin:0 14px 10px; }
-  .raid-unit{
-    --cut:6px; border-radius:0;
+  /* Escouade en combat (V0.03.86, demande d'Alex : "met les petites cartes (celle du mode combat) dans
+     un encadré") : avant, juste un nom + une barre de PV plate par case (.raid-unit, retiré). Chaque
+     case contient maintenant la VRAIE petite carte illustrée utilisée ailleurs en combat (.unit.cbt, cf
+     cbtPreviewHtml()/buildRoster() -- artwork, gemme de niveau, jauge de PV qui se vide réellement).
+     L'escouade de raid n'a pas de jauge d'ultime fonctionnelle (raidTick() ne fait jamais progresser
+     l'énergie), mais la jauge reste affichée à 0% : c'est la vraie carte de combat, pas une version
+     simplifiée, et une alvéole vide dans le cadre aurait l'air cassée.
+     V0.03.87 (2e passage, demande d'Alex : "un seul encadré pour les 5 cartes") : 1er essai avec un
+     encadré biseauté PAR carte (.raid-sq-cell, retiré) rejeté -- un seul grand encadré (.raid-squad-box,
+     même recette verre rouge/or que .raid-boss-box juste au-dessus) enveloppe maintenant les 5 cartes,
+     qui n'ont elles-mêmes plus de cadre propre (juste la grille à l'intérieur). */
+  .raid-squad-box{
+    --cut:14px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    background:linear-gradient(160deg, rgba(255,255,255,.08) 0%, transparent 45%), linear-gradient(180deg,#201a30,#120e1c);
-    border:1px solid var(--line); padding:5px 3px; text-align:center; opacity:1; transition:opacity .2s;
+    position:relative; margin:0 14px 10px; overflow:hidden;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,90,78,.32), transparent 70%),
+      linear-gradient(180deg,#2a0e12,#140608);
+    border:1px solid rgba(255,90,78,.6);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 30px -8px rgba(255,90,78,.6), 0 20px 40px rgba(0,0,0,.6);
+    padding:10px 8px 11px;
   }
-  .raid-unit.dead{ opacity:.25; filter:grayscale(1); }
-  .raid-unit .ru-name{ font-size:8px; font-weight:700; color:#cfc6e6; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .raid-unit .ru-hpbar{ height:5px; border-radius:3px; background:rgba(255,255,255,.1); margin-top:3px; overflow:hidden; }
-  .raid-unit .ru-hpbar .fill{ height:100%; background:#5ad15a; }
+  .raid-squad-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .raid-sq-empty{ display:flex; align-items:center; justify-content:center; aspect-ratio:440/528; opacity:.4; }
+  .raid-sq-empty .rsc-dash{ font-size:14px; color:rgba(255,255,255,.4); }
   .raid-bench-count{ text-align:center; font-family:var(--font-title); font-size:10px; letter-spacing:1px; color:rgba(255,255,255,.5); margin-bottom:8px; }
 
   /* Sélection d'équipe (jusqu'à 15 cartes) avant de lancer le combat -- fenêtre, badge et puces de
@@ -7628,12 +7691,22 @@
       </div>
     </div>
     <div id="raidCombat" hidden>
+      <!-- Encadré artwork du boss (V0.03.86, demande d'Alex) : jusqu'ici absent de l'écran de combat
+           lui-même, l'image du boss ne se voyait que sur l'écran de choix avant de lancer le combat. -->
+      <div class="raid-boss-box" id="raidCombatBossBox">
+        <div class="raid-boss-imgwrap raid-combat-bossimgwrap">
+          <img class="raid-boss-img" id="raidCombatBossImg" alt="">
+        </div>
+        <div class="raid-boss-name">AMALGAME</div>
+      </div>
       <div class="raid-combat-timer" id="raidTimer">2:00</div>
       <div class="raid-boss-hpwrap">
         <div class="rbh-lbl"><span>BOSS · PHASE <span id="raidCombatPhaseNum">1</span></span><span id="raidBossHpTxt">0 / 0</span></div>
         <div class="raid-boss-hpbar"><div class="fill" id="raidBossHpFill"></div></div>
       </div>
-      <div class="raid-squad-grid" id="raidSquadGrid"></div>
+      <div class="raid-squad-box">
+        <div class="raid-squad-grid" id="raidSquadGrid"></div>
+      </div>
       <div class="raid-bench-count" id="raidBenchCount"></div>
     </div>
   </div>
@@ -7801,7 +7874,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.85</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.90</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8267,9 +8340,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.85';
+var BUILD_VERSION = 'V0.03.90';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.90', items:[
+    'Combat du BOSS DE RAID : l\'artwork du boss s\'affiche maintenant aussi pendant le combat (avant, on ne le voyait que sur l\'écran de choix), dans un encadré qu\'il remplit entièrement.',
+    'Combat du BOSS DE RAID : les cartes de l\'escouade affichent maintenant leur vrai visuel illustré (comme partout ailleurs dans le jeu), réunies dans un seul encadré.',
+    'Combat du BOSS DE RAID : chaque coup porté au boss affiche maintenant les dégâts en chiffres sur son artwork (rouge, jaune pour un coup critique), avec un bref effet de glitch sur l\'encadré.',
+    'BOSS DE RAID : la case de récompense d\'une phase déjà remportée affiche maintenant une coche pour indiquer qu\'elle a été récupérée.',
+    'CORRECTIF : les tokens de tentative du BOSS DE RAID sont maintenant remis à 3/3 pour tout le monde à l\'ouverture de chaque nouvel évènement, au lieu de reprendre ce qu\'il restait du cycle précédent.'
+  ]},
   { v:'V0.03.85', items:[
     'CORRECTIF : la sélection de l\'équipe de raid (jusqu\'à 15 cartes) pouvait afficher ses cartes en paquet écrasé/chevauché et pousser le bouton LANCER hors de l\'écran. La fenêtre reprend une taille compacte, avec une liste qui défile bien à l\'intérieur.',
     'CORRECTIF : sur une case DÉFI, le badge "en cours" (coin bleu, ou rouge une fois le mode ultimate terminé) pouvait trancher de façon disgracieuse sur un artwork sombre et donner l\'impression d\'un défaut d\'affichage.',
@@ -22391,6 +22471,12 @@ function raidEnsureCycle(){
     player.raid.phaseHp = null;
     player.raid.lockUntil = 0;
     player.raid.finalClaimed = false;
+    // V0.03.90 (demande d'Alex) : tokens remis à fond pour tout le monde au démarrage de CHAQUE nouvel
+    // évènement -- avant ça, seuls phase/phaseHp/verrou/récompense finale étaient remis à zéro au
+    // changement de cycle, les tokens restants (ou épuisés) d'un joueur se reportaient tels quels d'un
+    // raid au suivant, ce qui pouvait laisser un joueur à 0 token dès l'ouverture du nouvel évènement.
+    player.raid.tokens = RAID_TOKEN_MAX;
+    player.raid.tokenAt = 0;
     saveSoon();
   }
   return info;
@@ -22555,6 +22641,11 @@ function renderRaidView(){
     const node = document.getElementById('raidNode' + i);
     node.classList.toggle('done', i < r.phase);
     node.classList.toggle('cur', i === r.phase && canAttempt);
+    // V0.03.90 (demande d'Alex) : la case de récompense sous une phase déjà remportée passe "validée"
+    // (coche dorée), même condition que .rt-node.done ci-dessus -- le bouton reste cliquable (aperçu
+    // toujours utile pour se rappeler ce qui a été reçu), seul son habillage change.
+    const rpBtn = document.querySelector('.raid-phase-row .rp-btn[data-ph="' + i + '"]');
+    if(rpBtn) rpBtn.classList.toggle('claimed', i < r.phase);
   }
   document.getElementById('raidTrackFill').style.width = (Math.min(r.phase, 3) / 3 * 100) + '%';
   const launchBtn = document.getElementById('raidLaunchBtn');
@@ -22716,6 +22807,10 @@ function raidStartAttempt(){
   document.getElementById('raidChoice').hidden = true;
   document.getElementById('raidCombat').hidden = false;
   document.getElementById('raidCombatPhaseNum').textContent = raidPhaseIdx + 1;
+  // Artwork du boss dans l'écran de combat (V0.03.86) : la phase ne change pas en cours de tentative
+  // (seulement entre 2 tentatives, après une victoire), donc un seul réglage au lancement suffit.
+  const combatBossImg = document.getElementById('raidCombatBossImg');
+  if(combatBossImg) combatBossImg.src = RAID_BOSS_IMG[Math.min(raidPhaseIdx, RAID_BOSS_IMG.length - 1)];
   raidRenderCombat();
   // V0.03.09 : clearInterval défensif avant d'en reposer un, comme startLoop() le fait déjà pour tickHandle --
   // aucun chemin de sortie connu n'omet raidEndAttempt() (qui nettoie raidTickHandle), mais c'est désormais
@@ -22731,6 +22826,9 @@ function raidRefillBench(){
 // Même formule de dégâts que dealDamage() (crit 18%/+60%, variance ±15%, DÉF à rendements
 // décroissants, bouclier -50%) mais sans les hooks liés aux missions (pas de rewardKill() ni
 // d'effets d'ultime spéciaux -- voir l'en-tête de section).
+// V0.03.88 (demande d'Alex) : retourne maintenant {dmg, crit} au lieu du seul montant -- raidTick() a
+// besoin de savoir si LE BOSS vient de subir un critique pour choisir la couleur du chiffre flottant
+// (raidFloatDamage(), rouge normal / jaune critique, cf CSS .float-dmg.dmg/.crit) posé sur son artwork.
 function raidDealDamage(attacker, target, mult, forceCrit){
   const crit = forceCrit || Math.random() < 0.18;
   const raw = attacker.atk * mult * (crit ? 1.6 : 1) * (0.85 + Math.random() * 0.3);
@@ -22738,7 +22836,37 @@ function raidDealDamage(attacker, target, mult, forceCrit){
   const dmg = Math.max(1, Math.round(raw * reduction * (target.shield > 0 ? 0.5 : 1)));
   target.hp = Math.max(0, target.hp - dmg);
   if(target.hp <= 0) target.alive = false;
-  return dmg;
+  return { dmg, crit };
+}
+// Chiffre de dégâts flottant sur l'artwork du boss + glitch de l'encadré (V0.03.88, demande d'Alex :
+// "les points de dégâts que les cartes mechs de l'escouade du joueur infligent au boss apparaissent sur
+// l'artwork en rouge, jaune pour les critiques, et ça fasse glitcher l'encadré du boss") -- même recette
+// visuelle que floatDamage() (.float-dmg/.dmg/.crit, cf CSS, déjà rouge/jaune) mais posée directement sur
+// .raid-combat-bossimgwrap (plutôt que sur une carte .unit via ROSTER_DOM, qui n'existe pas en raid), et
+// SANS les garde-fous HEADLESS/BG_SWAP/inInfinite de floatDamage() : propres au système de missions
+// normal, sans équivalent côté raid (pas de rattrapage hors-écran). Le glitch réutilise l'esthétique de
+// .raid-boss-box.glitch (même keyframes glitchJit) mais en charge courte à la demande (classe .hit-glitch,
+// retirée après coup) plutôt qu'en boucle infinie -- celle-ci reste réservée à l'état "boss indisponible"
+// (qui affiche aussi le message "LE BOSS REVIENDRA", hors de propos ici).
+function raidFloatDamage(text, cls){
+  if(document.hidden) return;
+  const wrap = document.querySelector('#raidCombatBossBox .raid-combat-bossimgwrap');
+  if(wrap){
+    const old = wrap.getElementsByClassName('float-dmg');
+    while(old.length >= 4) old[0].remove();
+    const f = document.createElement('div');
+    f.className = 'float-dmg ' + cls;
+    f.textContent = text;
+    wrap.appendChild(f);
+    setTimeout(() => { if(f.parentNode) f.remove(); }, 700);
+  }
+  const box = document.getElementById('raidCombatBossBox');
+  if(box){
+    box.classList.remove('hit-glitch');
+    void box.offsetWidth; // force le reflow pour pouvoir rejouer l'animation si un coup vient de se terminer
+    box.classList.add('hit-glitch');
+    setTimeout(() => box.classList.remove('hit-glitch'), 350);
+  }
 }
 function raidTick(){
   if(!raidBattleOn || raidBattleOver) return;
@@ -22754,13 +22882,33 @@ function raidTick(){
       raidDealDamage(raidBoss, allies[Math.floor(Math.random() * allies.length)], 1);
     } else {
       if(!u.alive) continue;
-      raidDealDamage(u, raidBoss, 1);
+      const hit = raidDealDamage(u, raidBoss, 1);
+      raidFloatDamage('-' + hit.dmg, hit.crit ? 'crit' : 'dmg');
     }
   }
   raidRefillBench();
   raidRenderCombat();
   if(!raidBoss.alive){ raidEndAttempt('win'); return; }
   if(raidTeam.every(u => !u || !u.alive) && !raidBench.length){ raidEndAttempt('wipe'); return; }
+}
+// Petite carte illustrée d'une unité d'escouade en combat de raid (V0.03.86, demande d'Alex) : même
+// recette que cbtPreviewHtml()/buildRoster() (cadre .unit.cbt par rareté, artwork, gemme de niveau) --
+// seule différence avec les autres usages de .unit.cbt : la jauge de PV doit refléter les VRAIS PV
+// restants (pas une jauge statique pleine), peinte ensuite via setCbtGaugeFill() comme en combat normal
+// (voir raidRenderCombat() juste en dessous). V0.03.87 : plus de cadre individuel par carte (.raid-sq-cell,
+// retiré) -- les 5 cartes partagent maintenant un seul grand encadré (.raid-squad-box, posé une fois dans
+// le HTML autour de #raidSquadGrid), demande d'Alex après la 1ère version à un encadré par carte.
+function raidUnitCardHtml(u){
+  if(!u) return '<div class="raid-sq-empty"><span class="rsc-dash">—</span></div>';
+  const uArt = (CHAR_DEFS.find(c => c.name === u.name) || {}).art;
+  return '<div class="unit cbt ' + cbtFrameClass(u, true) + (u.alive ? '' : ' dead') + '">' +
+      '<div class="cbt-ring"></div>' +
+      (uArt ? '<img class="cbt-art-img" style="object-position:50% ' + cbtArtPosY(u.name) + '%" src="' + uArt + '" alt="" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'">' : '') +
+      '<div class="cbt-gem"><b>' + u.level + '</b></div>' +
+      '<div class="cbt-name">' + escapeHtml(u.name) + '</div>' +
+      '<div class="cbt-g cbt-hp"><canvas></canvas></div>' +
+      '<div class="cbt-g cbt-ult"><canvas></canvas></div>' +
+    '</div>';
 }
 function raidRenderCombat(){
   const timerEl = document.getElementById('raidTimer');
@@ -22770,11 +22918,17 @@ function raidRenderCombat(){
   timerEl.classList.toggle('low', totalSec <= 20);
   document.getElementById('raidBossHpTxt').textContent = Math.max(0, Math.round(raidBoss.hp)).toLocaleString('fr-FR') + ' / ' + raidBoss.maxHp.toLocaleString('fr-FR');
   document.getElementById('raidBossHpFill').style.width = Math.max(0, raidBoss.hp / raidBoss.maxHp * 100) + '%';
-  document.getElementById('raidSquadGrid').innerHTML = raidTeam.map(u => {
-    if(!u) return '<div class="raid-unit dead"><div class="ru-name">—</div></div>';
+  const squadGrid = document.getElementById('raidSquadGrid');
+  squadGrid.innerHTML = raidTeam.map(raidUnitCardHtml).join('');
+  // Les cartes n'ont plus de cadre individuel qui les enveloppe (V0.03.87) -- on itère directement sur
+  // les enfants de la grille (carte .unit.cbt ou alvéole vide .raid-sq-empty, cf raidUnitCardHtml()).
+  Array.from(squadGrid.children).forEach((cell, i) => {
+    const u = raidTeam[i];
+    if(!u) return;
     const pct = Math.max(0, u.hp / u.maxHp * 100);
-    return '<div class="raid-unit' + (u.alive ? '' : ' dead') + '"><div class="ru-name">' + u.name + '</div><div class="ru-hpbar"><div class="fill" style="width:' + pct + '%"></div></div></div>';
-  }).join('');
+    setCbtGaugeFill(cell.querySelector('.cbt-hp'), pct);
+    setCbtGaugeFill(cell.querySelector('.cbt-ult'), 0);
+  });
   document.getElementById('raidBenchCount').textContent = raidBench.length + ' en réserve';
 }
 function raidStopCombatLoop(){
