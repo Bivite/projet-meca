@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.82</title>
+<title>Projet MECA V0.03.84</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6197,6 +6197,39 @@
   .dome-active #domeScene{display:block;}
   /* DOME : pas de combat, donc pas de "champ de bataille" entre les décombres et l'escouade */
   .dome-active .battlefield{display:none;}
+  /* Les règles .dome-scene/.dome-active ci-dessus sont désormais MORTES (V0.03.83) : la mission DOME
+     n'entre plus jamais dans #infiniteMode, voir le mini-jeu #domeGameView plus bas. Laissées en place
+     par prudence (zéro risque de casser autre chose en les retirant maintenant). */
+
+  /* ===== Mini-jeu DOME (V0.03.83, demande d'Alex) : exploration isométrique temps réel, ===== */
+  /* ===== indépendant du reste (ne réutilise aucune règle de .battlefield/.dome-scene ci-dessus). ===== */
+  .dg-wrap{position:relative; width:100%; aspect-ratio:3/4; max-height:64vh; margin:10px auto 0; border-radius:14px; overflow:hidden; background:#0a0c0f; touch-action:none; border:1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,.5) inset;}
+  #dgCanvas{position:absolute; inset:0; display:block; width:100%; height:100%;}
+  .dg-stick-zone{position:absolute; inset:0; z-index:3;}
+  .dg-hud{position:absolute; top:8px; left:8px; right:8px; display:flex; justify-content:space-between; align-items:center; z-index:5; pointer-events:none;}
+  .dg-hud > *{pointer-events:auto;}
+  .dg-timer{background:rgba(0,0,0,.45); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:4px 12px; font-family:var(--font-title); font-size:13px; letter-spacing:1px; color:#eafcff;}
+  .dg-bag-btn{position:relative; background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.04)); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.38); border-radius:10px; padding:6px 14px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
+  .dg-bag-count{position:absolute; top:-6px; right:-6px; min-width:16px; height:16px; line-height:16px; border-radius:50%; background:#ff5050; color:#fff; font-size:10px; font-family:var(--font-title); padding:0 3px;}
+  .dg-stick{position:absolute; width:84px; height:84px; transform:translate(-50%,-50%); z-index:4; pointer-events:none;}
+  .dg-stick-base{position:absolute; inset:0; border-radius:50%; border:2px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08);}
+  .dg-stick-knob{position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.42); border:1px solid rgba(255,255,255,.65); transform:translate(-50%,-50%);}
+  .dg-interact, .dg-sewer-btn{position:absolute; left:50%; transform:translateX(-50%); z-index:6; background:rgba(10,12,16,.72); backdrop-filter:blur(6px); border-radius:10px; padding:8px 18px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
+  .dg-interact{bottom:14px; display:flex; flex-direction:column; align-items:center; gap:5px; min-width:170px; border:1px solid rgba(255,180,70,.5);}
+  .dg-interact-bar{width:100%; height:5px; border-radius:4px; background:rgba(255,255,255,.18); overflow:hidden;}
+  #dgInteractFill{height:100%; width:0%; background:linear-gradient(90deg,#ffb347,#ff7a3d);}
+  .dg-sewer-btn{bottom:80px; border:1px solid rgba(130,230,255,.5); color:#bdf4ff;}
+  .dg-toast{position:absolute; top:46px; left:50%; transform:translate(-50%,6px); z-index:7; background:rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:5px 14px; font-family:var(--font-title); font-size:11px; letter-spacing:.5px; color:#fff; opacity:0; pointer-events:none; transition:opacity .18s, transform .18s;}
+  .dg-toast.show{opacity:1; transform:translate(-50%,0);}
+  .dg-end-title{font-family:var(--font-title); font-size:20px; font-weight:900; letter-spacing:2px;}
+  .dg-end-title.win{color:#7fffa0; text-shadow:0 0 12px rgba(127,255,160,.6);}
+  .dg-end-title.lose{color:#ff6b6b; text-shadow:0 0 12px rgba(255,107,107,.6);}
+  .dg-end-loot{display:flex; flex-direction:column; gap:4px; width:100%; max-width:300px;}
+  .dg-end-lootrow{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 10px; font-size:12.5px; color:#eafcff; text-align:center;}
+  .dg-bag-list{display:flex; flex-direction:column; gap:6px; margin-top:4px; max-height:50vh; overflow-y:auto;}
+  .dg-bag-row{display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:6px 10px; font-size:12.5px; color:#eafcff;}
+  .dg-bag-row b{color:#ffd65c;}
+  .dg-bag-empty{font-size:12.5px; color:var(--text-dim); text-align:center; padding:10px 0;}
   .mt-sub-o{font-family:var(--font-title); font-size:7.5px; letter-spacing:1.5px; color:#b8fbff; font-weight:700;}
   #omegaLive, .ord-grid #infLive{white-space:nowrap; letter-spacing:.5px; padding:3px 8px; border-radius:20px; background:rgba(0,0,0,.35); border:1px solid rgba(77,255,138,.4); font-size:8px;}
   #omegaLive.done{border-color:rgba(255,214,92,.5);}
@@ -6285,6 +6318,19 @@
     border:1px solid rgba(255,255,255,.22);
     box-shadow:0 1px 0 rgba(255,255,255,.25) inset;
   }
+  /* Case DOME fermée temporairement (V0.03.83, cf DG_LOCKED) : même esprit que .raid-big.locked/
+     .daily-box.locked (case réelle qu'on assombrit, pas une case "PROCHAINEMENT" jamais construite) --
+     tout le contenu existant reste visible mais grisé, avec le cadenas (.mt-lock) recentré par-dessus.
+     Clic bloqué côté JS (onclick=null, cf plus bas) ; pointer-events/cursor ici ne sont qu'un indice
+     visuel cohérent, même logique que .raid-big.closed. */
+  #tileDome.locked{ filter:saturate(.3) brightness(.6); }
+  #tileDome.locked .mt-inner{ cursor:default; }
+  #tileDome.locked .mt-lock{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); margin:0;
+    width:32px; height:32px; color:rgba(255,255,255,.8); z-index:3;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.75));
+  }
+  #tileDome.locked .notif-dot{ display:none !important; }
   /* MISSION ONE : même traitement que les belles cases du menu (JOUEUR, RÉCOMPENSES...) —
      dégradé diagonal + teinte noire en bas, sans le reflet verre */
   #tileInfinite .mt-inner{
@@ -6734,7 +6780,7 @@
      pictogramme carré -- cohérent avec le rendu "logo ghosté plein cadre" des autres cases. */
   .mt-raid-ico img{width:100%; height:100%; object-fit:contain; display:block;}
   .mode-tile:not(.soon) .mt-raid-ico{
-    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    position:absolute; left:50%; top:calc(50% - 14px); transform:translate(-50%,-50%);
     width:94%; height:94%; max-width:none; max-height:none; margin:0;
     pointer-events:none; z-index:0; opacity:.4;
     filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
@@ -6746,7 +6792,7 @@
      texte superposé (juste la barre) -- remplissage blanc uni comme demandé, se vide selon les PV
      restants du boss sur la phase en cours (calculé dans updateRaidTile()). */
   .raid-big .mt-raid-hpbar{
-    --cut:4px; width:65%; max-width:200px; height:7px;
+    --cut:4px; width:100%; height:7px;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     background:rgba(0,0,0,.45); overflow:hidden; border:1px solid rgba(255,255,255,.3);
     box-shadow:0 1px 0 rgba(255,255,255,.12) inset;
@@ -6918,6 +6964,7 @@
   }
   .raid-reward-bubble .rrb-title{ font-family:var(--font-title); font-size:10px; letter-spacing:1.2px; color:#e8c468; margin-bottom:6px; }
   .raid-reward-bubble .rrb-row{ display:flex; align-items:center; gap:6px; font-size:12px; color:#fff; padding:2px 0; }
+  .raid-reward-bubble .rrb-row i{ flex:none; width:15px; height:15px; }
 
   .raid-launch-wrap{ margin:16px 20px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; }
   /* Bouton de lancement : CTA plein rouge biseauté, même recette que .controls button.danger-btn */
@@ -6985,26 +7032,25 @@
     padding:4px 10px; border:1px solid rgba(232,196,104,.55);
     backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
   }
-  .raid-team-grid{ flex:1; overflow-y:auto; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:40px 10px 10px; }
-  .raid-team-card{
-    --cut:8px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:relative; display:flex; flex-direction:column; align-items:center; gap:3px;
-    background:linear-gradient(160deg, rgba(255,255,255,.08) 0%, transparent 45%), linear-gradient(180deg,#201a30,#120e1c);
-    border:2px solid transparent; padding:6px 4px 7px; cursor:pointer;
+  /* V0.03.84 (demande d'Alex, 2e passage : "prends la même liste que celle du choix des cartes lors
+     du lancement des missions") : la tuile maison (.rtc-port/.rtc-name/...) est abandonnée -- on
+     reprend telle quelle la recette de .lp-list/.lp-card de renderLaunchPicker() (même grille 4
+     colonnes, mêmes cartes .codex-card complètes via codexCardHtml(), même classe .sel pour l'état
+     sélectionné) pour un rendu identique à l'écran de lancement de mission, cadre légendaire et tout.
+     .raid-team-card ne sert plus qu'à cibler le clic (toggleRaidPick) sans dupliquer le style. */
+  /* width:100% nécessaire ici (absent de .lp-list, copiée telle quelle) : #raidTeamModal utilise le
+     système .codex-modal/.codex-modal-inner, dont la règle de base pose align-items:center (centrage
+     des fenêtres CODEX/LOOT) -- sans largeur explicite, une grille avec des colonnes minmax(0,1fr)
+     s'effondre au lieu de s'étirer (constaté : grille à 30px de large, cartes invisibles). .lp-list
+     n'a jamais ce problème car sa propre fenêtre de lancement n'hérite pas de ce centrage. */
+  .raid-team-grid{
+    flex:1; width:100%; overflow-y:auto; overflow-x:hidden; display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; padding:40px 8px 10px 4px;
   }
-  .raid-team-card.picked{ border-color:#e8c468; box-shadow:0 0 12px -2px rgba(232,196,104,.7); }
-  .raid-team-card .rtc-badge{
-    --cut:4px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:absolute; top:3px; right:3px; width:18px; height:18px;
-    background:linear-gradient(180deg,#ffe7a8,#e8c468); color:#1a1208; font-size:11px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; z-index:3;
-  }
-  .raid-team-card .rtc-port{ width:100%; aspect-ratio:1; border-radius:8px; }
-  .raid-team-card .rtc-name{ width:100%; font-size:10px; font-weight:700; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .raid-team-card .rtc-rar{ font-family:var(--font-title); font-size:8px; letter-spacing:1px; color:rgba(255,255,255,.55); }
-  .raid-team-card .rtc-stats{ font-family:var(--font-title); font-size:8px; letter-spacing:.5px; color:rgba(255,255,255,.35); }
+  .raid-team-card{ padding:5px 3px 15px !important; gap:3px !important; cursor:pointer; position:relative; }
+  .raid-team-card .cx-name{ font-size:7.5px !important; } .raid-team-card .cx-lvl-tag{ font-size:7px; } .raid-team-card .cx-badge{ font-size:6px; padding:1px 4px; }
+  .raid-team-card .cx-pow{ font-size:6.5px; padding:0 3px; right:3px; bottom:2px; } .raid-team-card .cx-pow i{ font-size:6px; }
+  .raid-team-card.sel{ outline:2px solid #4dff8a; outline-offset:1px; }
   .raid-team-launch{
     --cut:12px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
@@ -7059,6 +7105,22 @@
       linear-gradient(180deg, rgba(232,196,104,.4), rgba(150,100,10,.4));
     box-shadow:0 3px 0 rgba(0,0,0,.5), 0 0 12px -2px rgba(232,196,104,.6), 0 1px 0 rgba(255,255,255,.25) inset;
   }
+  /* Bouton AUTO (V0.03.84, demande d'Alex) : remplit l'équipe en un clic avec les 15 meilleures cartes
+     possédées, classées par puissance globale (cardPower(), même formule que le badge "Puissance" du
+     Codex) -- sous le volet FILTRES. CTA plein doré pour bien le distinguer des boutons de tri. */
+  .raid-auto-btn{
+    --cut:7px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    display:block; width:calc(100% - 20px); margin:8px 10px 0;
+    font-family:var(--font-title); font-weight:800; font-size:11px; letter-spacing:1.5px; color:#1a1208;
+    padding:7px 10px; text-align:center; cursor:pointer;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 45%),
+      linear-gradient(180deg, #ffe7a8, #e8c468);
+    border:1px solid #fff3d4;
+    box-shadow:0 3px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset;
+  }
+  .raid-auto-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset; }
 </style>
 </head>
 <body>
@@ -7446,8 +7508,12 @@
             <div class="ms-block" id="msOmega"></div>
           </div>
         </div>
-        <div class="mode-tile dome o-r" id="tileDome">
+        <div class="mode-tile dome o-r locked" id="tileDome">
           <div class="mt-inner">
+            <!-- Cadenas (V0.03.83, demande d'Alex) : mission fermée temporairement, cf DG_LOCKED --
+                 même SVG que les cases "PROCHAINEMENT" (.mt-lock), pour rester cohérent avec le
+                 langage visuel déjà en place pour une case non accessible. -->
+            <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
             <span class="notif-dot tile-dot" id="dotDome"></span>
             <div class="mt-dome-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-dome.webp" alt="" onerror="this.style.opacity='0'"></div>
             <div class="mt-rewcol">
@@ -7556,6 +7622,7 @@
           <button type="button" class="raid-filter-opt active" data-sort="level">NIVEAU</button>
         </div>
       </details>
+      <button type="button" class="raid-auto-btn" id="raidAutoBtn">AUTO</button>
       <div class="raid-team-grid" id="raidTeamGrid"></div>
       <button type="button" class="raid-team-launch" id="raidTeamLaunchBtn" disabled>LANCER</button>
     </div>
@@ -7706,7 +7773,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.82</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.84</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -7765,6 +7832,74 @@
   </button>
   </div>
   </div>
+
+  <!-- Mini-jeu DOME (V0.03.83) : volontairement HORS de #battleView (même raison que trClaimAllBtn
+       etc. juste en dessous -- overflow-y:auto sur .view.active recadrerait le canvas plein écran),
+       et hors du système d'onglets FABRIQUE/MENU/CARTE puisqu'il se montre/cache via sa seule classe
+       .active (cf règle globale .sub-view.active{display:flex} plus haut, pas besoin d'un ancêtre
+       .view.active) -- showHub() l'abandonne explicitement (cf domeGameActive) avant tout changement
+       d'onglet, donc aucun risque qu'il reste affiché par-dessus un autre écran. -->
+  <div id="domeGameView" class="sub-view">
+    <header class="inf-header">
+      <button class="back-btn" id="domeBackBtn">‹ MENU</button>
+      <div class="inf-tag"><span>MISSION DÔME</span></div>
+    </header>
+
+    <!-- Briefing avant d'entrer dans la zone (V0.03.83, demande d'Alex : mini-jeu d'exploration
+         qui remplace l'ancienne récolte passive de la mission DOME) -->
+    <div class="inf-start" id="dgBrief">
+      <div class="inf-start-text help-text">
+        <b>ZONE DU DÔME</b><br>
+        Un dôme énergétique encercle une ville en ruine. Explore-la pour récupérer des ressources sur
+        les épaves de mechs désactivés, de l'or et de l'XP sur place, et des caisses de boosters --
+        mais évite les drones qui te traquent.
+        <ul>
+          <li>Repéré par un drone, ou touché par le dôme qui se resserre : tout le butin de la sortie est perdu.</li>
+          <li>Fuis par une bouche d'égout, ou tiens 20 minutes jusqu'à la fermeture totale : le butin est gardé.</li>
+        </ul>
+      </div>
+      <div class="controls" style="width:100%;"><button id="dgStartBtn" class="primary-btn">ENTRER DANS LA ZONE</button></div>
+    </div>
+
+    <!-- Mini-jeu -->
+    <div class="dg-wrap" id="dgWrap" style="display:none;">
+      <canvas id="dgCanvas"></canvas>
+      <div class="dg-stick-zone" id="dgStickZone"></div>
+      <div class="dg-hud">
+        <div class="dg-timer" id="dgTimer">20:00</div>
+        <button class="dg-bag-btn" id="dgBagBtn">SAC<span class="dg-bag-count" id="dgBagCount"></span></button>
+      </div>
+      <div class="dg-stick" id="dgStick" style="display:none;">
+        <div class="dg-stick-base"></div>
+        <div class="dg-stick-knob"></div>
+      </div>
+      <button class="dg-interact" id="dgInteractBtn" style="display:none;">
+        <span id="dgInteractLabel">RÉCUPÉRER</span>
+        <div class="dg-interact-bar"><div id="dgInteractFill"></div></div>
+      </button>
+      <button class="dg-sewer-btn" id="dgSewerBtn" style="display:none;">S'ÉCHAPPER PAR L'ÉGOUT</button>
+      <div class="dg-toast" id="dgToast"></div>
+    </div>
+
+    <!-- Fin de run : victoire / défaite -->
+    <div class="inf-start" id="dgEnd" style="display:none;">
+      <div class="dg-end-title" id="dgEndTitle">VICTOIRE</div>
+      <div class="inf-start-text" id="dgEndText"></div>
+      <div class="dg-end-loot" id="dgEndLoot"></div>
+      <div class="controls" style="width:100%;"><button id="dgEndBtn" class="primary-btn">RETOUR AU MENU</button></div>
+    </div>
+  </div>
+
+  <!-- Sac du mini-jeu DÔME : ressources accumulées pendant la run en cours (pas encore créditées --
+       elles ne le sont qu'à la victoire, cf dgBankLoot()) -->
+  <div class="codex-modal" id="dgBagModal">
+    <div class="codex-modal-inner upd-inner">
+      <button class="cx-close" id="dgBagClose">✕</button>
+      <div class="team-label player" style="margin:0;">SAC</div>
+      <div id="dgBagList" class="dg-bag-list"></div>
+    </div>
+  </div>
+
   <!-- Bouton hors de #battleView : cet ancêtre a overflow:hidden/auto (scroll interne), ce qui
        recadre (clip) le rendu d'un position:fixed malgré son ancrage viewport -->
   <button class="tr-claim-all" id="trClaimAllBtn">RÉCUPÉRER TOUT</button>
@@ -8104,9 +8239,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.82';
+var BUILD_VERSION = 'V0.03.84';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.84', items:[
+    'Case BOSS DE RAID : la barre de PV du boss prend maintenant toute la largeur de la case, et l\'icône "ATTENTION URGENCE" est un peu remontée.',
+    'Fenêtre de récompense de phase (BOSS DE RAID) : chaque ligne affiche maintenant l\'icône de la ressource (or, XP, cristaux, matériaux) à gauche du texte.',
+    'Sélection de l\'équipe de raid (jusqu\'à 15 cartes) : les cartes affichent maintenant leur vrai visuel (comme partout ailleurs dans le jeu) au lieu d\'une pastille de couleur. Ajout d\'un bouton AUTO sous FILTRES qui remplit l\'équipe avec les meilleures cartes possédées en un clic.'
+  ]},
+  { v:'V0.03.83', items:[
+    'La mission DOME est temporairement fermée (cadenas sur la case) : elle est en cours de refonte complète et reviendra bientôt sous une nouvelle forme.'
+  ]},
   { v:'V0.03.82', items:[
     'Nouveau bouton AIDE (point d\'interrogation, en haut à gauche, à côté du bouton MISE À JOUR) : ouvre une fenêtre qui explique simplement l\'écran sur lequel tu te trouves, utile pour un tout nouveau joueur.'
   ]},
@@ -16961,6 +17104,10 @@ function showHub(){
   // en cours, on l'abandonne proprement EN PREMIER (restaure la mission mise en pause) plutôt que de
   // laisser le combat défi tourner dans le vide, invisible, avec le mauvais écran affiché.
   if(defiCombatActive){ defiAbandonCombat(); return; }
+  // DOME (V0.03.83) : même principe que defiCombatActive ci-dessus -- une sortie en cours est
+  // abandonnée (donc perdue, cf règles tranchées par Alex) plutôt que laissée ouverte en arrière-plan,
+  // impossible ici puisque c'est le joueur lui-même qui se déplace en temps réel.
+  if(domeGameActive){ dgAbandon(); return; }
   inInfinite = false;
   document.getElementById('overlay').classList.remove('show');   // le combat continue en fond
   updateInfRecord();
@@ -17002,8 +17149,749 @@ function enterInfinite(){
 }
 document.getElementById('tileInfinite').onclick = () => enterMission('one');
 document.getElementById('tileOmega').onclick = () => enterMission('omega');
-document.getElementById('tileDome').onclick = () => enterMission('dome');
+// tileDome : voir plus bas, V0.03.83 -- n'appelle plus enterMission('dome'), cf module MINI-JEU DOME.
 document.getElementById('tileVestige').onclick = () => enterMission('vestige');
+
+// =====================================================================================
+// MINI-JEU DOME (V0.03.83, demande d'Alex) : remplace entièrement l'ancienne récolte
+// passive de la mission DOME (barre qui tournait en fond pendant que l'écran de combat
+// restait ouvert -- cf domeSceneSvg()/.dome-active plus haut, désormais INUTILISÉES :
+// tileDome n'appelle plus enterMission('dome'), donc missionCfg('dome').harvest ne se
+// déclenche plus jamais) par une exploration active en temps réel, caméra isométrique :
+// ville en ruine générée procéduralement, dôme énergétique qui se resserre sur 20 min,
+// drones qui traquent le joueur, ressources à récupérer en prenant des risques.
+// AUCUNE escouade/carte n'intervient ici -- le joueur explore en tant que "petit humain",
+// pas ses mechs (contrairement à ONE/OMEGA/VESTIGE). Système entièrement autonome (son
+// propre état, sa propre boucle de rendu indépendante du tick BASE_TICK partagé) pour ne
+// toucher à rien du système de missions/combat existant.
+//
+// Règles de fin de run, tranchées par Alex (09/10/2026) :
+//  - repéré par un drone  -> DÉFAITE, tout le butin de la run est perdu
+//  - toucher la limite du dôme avant qu'il soit fermé -> DÉFAITE (même traitement)
+//  - fuite réussie par une bouche d'égout             -> VICTOIRE, butin conservé
+//  - survivre jusqu'à la fermeture totale (20 min)    -> VICTOIRE, butin conservé
+// =====================================================================================
+const DG_LOCKED = true;                // V0.03.83 (demande d'Alex) : case DOME fermée (cadenas) tant qu'on retravaille
+                                        // le rendu ensemble (textures, lumière, échelle...) -- le mini-jeu lui-même est
+                                        // fonctionnel et ne change pas, repasser à false (ou retirer ce flag) pour rouvrir.
+const DG_DUR = 20 * 60 * 1000;         // durée totale avant fermeture complète du dôme
+const DG_CITY_R = 900;                 // rayon de la ville (unités-monde arbitraires, indépendantes de D3V/SPV)
+const DG_MIN_R = 46;                   // rayon résiduel du dôme à la toute fin (pour que le cercle ne s'annule pas littéralement)
+const DG_SPEED = 230;                  // vitesse du joueur, unités/seconde
+const DG_DRONE_SPEED = 150;            // plus lent que le joueur : on peut semer un drone qui a accroché du regard
+const DG_VISION_R = 260, DG_VISION_HALF = 32 * Math.PI / 180;   // portée + demi-angle du cône de détection
+const DG_DETECT_TIME = 1.4;            // secondes d'exposition continue dans le cône avant d'être repéré
+const DG_WRECK_R = 72, DG_PICKUP_R = 52, DG_SEWER_R = 60;       // rayons d'interaction
+const DG_HARVEST_TIME = 3.5;           // secondes pour récupérer une épave (bouton tenu + rester à portée)
+
+const DG = {
+  active:false, ctx:null, canvas:null, W:0, H:0, dpr:1,
+  raf:null, lastT:0, q:{ cap:2, slow:0, lastT:0 },
+  cam:{ x:0, y:0 },
+  player:{ x:0, y:0 },
+  input:{ x:0, y:0 },
+  startAt:0, elapsed:0,
+  city:null,
+  drones:[],
+  loot:{ gold:0, xp:0, mat:{ rare:0, epique:0, legendaire:0 }, crystal:0, boosters:{ res:0, cards:0, modules:0 } },
+  lootCount:0,                         // nombre d'objets ramassés cette run (affiché dans le sac)
+  nearWreck:null, harvestOn:false, harvestProg:0,
+  nearSewer:null,
+  ended:false
+};
+let domeGameActive = false;
+
+function dgRng(){ return d3Rng(((Date.now() % 1e9) ^ Math.floor(Math.random() * 1e9)) | 0); }
+
+// ----- Génération procédurale de la ville -----
+function dgGenCity(){
+  const rnd = dgRng(), R = DG_CITY_R, cells = 11, cs = (R * 2) / cells;
+  const buildings = [], forest = [], camp = [], wrecks = [], pickups = [], crates = [], sewers = [];
+  // V0.03.83 (demande d'Alex) : une vraie grille de rues (2 grands axes dans chaque sens, jamais de
+  // bâtiment dessus) plutôt que de simples trous laissés au hasard dans le semis de bâtiments.
+  const roadLines = [3, 7], roads = [], lights = [], decoCars = [];
+  const isRoadLine = n => roadLines.indexOf(n) !== -1;
+  for(let gx = 0; gx < cells; gx++){
+    for(let gy = 0; gy < cells; gy++){
+      const cx = -R + cs * (gx + .5), cy = -R + cs * (gy + .5);
+      const d = Math.hypot(cx, cy);
+      if(d > R * .97) continue;                     // hors de la ville (coins de la grille carrée)
+      const vRoad = isRoadLine(gx), hRoad = isRoadLine(gy);
+      if(vRoad || hRoad){
+        roads.push({ x:cx, y:cy, s:cs, vertical: vRoad && !hRoad, horizontal: hRoad && !vRoad, inter: vRoad && hRoad });
+        continue;
+      }
+      if(d < cs * .9) continue;                     // place centrale dégagée (point de départ)
+      const roll = rnd();
+      if(roll < .10){                               // forêt qui a repris ses droits -- nettement plus haute qu'un humain
+        const n = 2 + Math.floor(rnd() * 3);
+        for(let i = 0; i < n; i++) forest.push({ x: cx + (rnd() * 2 - 1) * cs * .35, y: cy + (rnd() * 2 - 1) * cs * .35, s: 16 + rnd() * 12, h: 70 + rnd() * 70 });
+      } else if(roll < .16){                        // camp militaire abandonné -- tentes plus hautes qu'un humain debout
+        const n = 2 + Math.floor(rnd() * 2);
+        for(let i = 0; i < n; i++) camp.push({ x: cx + (rnd() * 2 - 1) * cs * .3, y: cy + (rnd() * 2 - 1) * cs * .3, s: 26 + rnd() * 14, h: 46 + rnd() * 36 });
+      } else if(roll < .32){                        // décombres : amas de 2-4 blocs effondrés (pas un seul pavé net) pour lire comme des ruines
+        const n = 2 + Math.floor(rnd() * 3), pieces = [];
+        for(let i = 0; i < n; i++) pieces.push({ dx:(rnd() * 2 - 1) * cs * .22, dy:(rnd() * 2 - 1) * cs * .22, s: cs * (.26 + rnd() * .22), h: 12 + rnd() * 30 });
+        buildings.push({ x:cx, y:cy, s:cs * .62, h:14 + rnd() * 26, rubble:true, pieces, tint: rnd() * 2 - 1 });
+      } else if(roll < .74){                        // bâtiment encore debout -- échelle d'un vrai immeuble (plusieurs étages au-dessus du
+        // joueur, pas une maison de poupée), certains penchés / éventrés, séquelles du siège du dôme
+        const dmg = rnd(), gash = dmg >= .18 && dmg < .3, debris = [];
+        if(gash){ const n = 1 + Math.floor(rnd() * 2); for(let i = 0; i < n; i++) debris.push({ dx:(rnd() * 2 - 1) * cs * .3, dy:(rnd() * 2 - 1) * cs * .3, s: cs * (.18 + rnd() * .14), h: 6 + rnd() * 12 }); }
+        buildings.push({
+          x:cx, y:cy, s:cs * .58, h:170 + rnd() * 260, rubble:false, tint: rnd() * 2 - 1, winSeed: rnd(),
+          lean: dmg < .18 ? { x:(rnd() * 2 - 1) * cs * .32, y:(rnd() * 2 - 1) * cs * .32 } : null,
+          gash, debris
+        });
+      }
+      // le reste : terrain dégagé -- laisse la place aux ramassages
+    }
+  }
+  const place = (list, n, rMin, rMax, mk) => { for(let i = 0; i < n; i++){ const a = rnd() * Math.PI * 2, r = rMin + rnd() * (rMax - rMin); list.push(Object.assign({ x:Math.cos(a) * r, y:Math.sin(a) * r, done:false }, mk ? mk() : {})); } };
+  place(wrecks, 7, cs * 1.1, R * .9);
+  place(pickups, 13, cs * .7, R * .95, () => ({ k:['car', 'phone', 'grass'][Math.floor(rnd() * 3)] }));
+  place(crates, 6, cs * 1.1, R * .88);
+  place(sewers, 4, R * .25, R * .85);
+  // feux tricolores (presque tous morts, de rares encore sous tension) aux intersections ; carcasses
+  // de voitures décoratives abandonnées le long des rues (en plus du pickup "voiture" interactif)
+  roads.forEach(r => {
+    if(r.inter && rnd() < .55) lights.push({ x:r.x + (rnd() * 2 - 1) * cs * .3, y:r.y + (rnd() * 2 - 1) * cs * .3, lean:(rnd() * 2 - 1) * 14, lit: rnd() < .22 ? 0 : -1 });
+    else if(!r.inter && rnd() < .3) decoCars.push({ x:r.x + (rnd() * 2 - 1) * cs * .28, y:r.y + (rnd() * 2 - 1) * cs * .28, rot: rnd() * Math.PI * 2, burnt: rnd() < .4 });
+  });
+  // ----- Texture du sol : zones de végétation reconquise / terre / asphalte craquelé, + fissures -----
+  // (purement décoratif, dessiné sous tout le reste -- cf dgDrawGround() -- pour que le sol ne soit
+  // plus un simple aplat noir entre les blocs)
+  const patches = [];
+  for(let i = 0; i < 46; i++){
+    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * R * .95, roll2 = rnd();
+    patches.push({ x:Math.cos(a) * r, y:Math.sin(a) * r, s: 30 + rnd() * 46, type: roll2 < .45 ? 'veg' : roll2 < .75 ? 'dirt' : 'crack', rot: rnd() * Math.PI });
+  }
+  const cracks = [];
+  for(let i = 0; i < 9; i++){
+    const a0 = rnd() * Math.PI * 2, r0 = rnd() * R * .3, len = R * (.25 + rnd() * .4);
+    const steps = 5, pts = []; let x = Math.cos(a0) * r0, y = Math.sin(a0) * r0, ang = a0 + Math.PI * .5;
+    for(let s = 0; s <= steps; s++){ pts.push({ x, y }); ang += (rnd() - .5) * .7; x += Math.cos(ang) * (len / steps); y += Math.sin(ang) * (len / steps); }
+    cracks.push(pts);
+  }
+  return { R, buildings, forest, camp, wrecks, pickups, crates, sewers, patches, cracks, roads, lights, decoCars };
+}
+
+// ----- Drones : patrouille par points de passage aléatoires + cône de détection -----
+function dgMakeDrone(city){
+  const a = Math.random() * Math.PI * 2, r = Math.random() * city.R * .85;
+  const d = { x:Math.cos(a) * r, y:Math.sin(a) * r, ang:Math.random() * Math.PI * 2, wx:0, wy:0, detect:0 };
+  dgDronePickWaypoint(d, city);
+  return d;
+}
+function dgDronePickWaypoint(d, city){
+  const a = Math.random() * Math.PI * 2, r = Math.random() * city.R * .88;
+  d.wx = Math.cos(a) * r; d.wy = Math.sin(a) * r;
+}
+function dgDroneCount(){ return Math.min(7, 4 + Math.floor(DG.elapsed / (5 * 60 * 1000))); }
+
+// ----- Projection isométrique (caméra centrée sur le joueur, indépendante de D3V/SPV) -----
+// V0.03.83 (demande d'Alex) : vue plus rapprochée du joueur ("niveau de la rue") qu'à l'origine, mais
+// pas au point qu'un seul immeuble (maintenant à la bonne échelle, cf dgGenCity) masque tout l'écran --
+// sinon on ne voit plus les drones/ressources arriver, ce qui casse la jouabilité.
+const DG_SC = .95, DG_C45 = Math.SQRT1_2, DG_CS = Math.cos(58 * Math.PI / 180), DG_SN = Math.sin(58 * Math.PI / 180), DG_D = 1200;
+function dgP(x, y, z){
+  const wx = x - DG.cam.x, wy = y - DG.cam.y;
+  const X = (wx - wy) * DG_C45 * DG_SC, Y0 = (wx + wy) * DG_C45 * DG_SC, Z0 = (z || 0) * DG_SC;
+  const Y = Y0 * DG_CS - Z0 * DG_SN, Z = Y0 * DG_SN + Z0 * DG_CS;
+  // garde-fou : avec des bâtiments beaucoup plus hauts (V0.03.83), Z peut s'approcher de DG_D --
+  // on le plafonne pour ne jamais faire exploser/inverser la division en perspective.
+  const k = DG_D / Math.max(60, DG_D - Math.min(Z, DG_D * .85));
+  return { x: DG.W * .5 + X * k, y: DG.H * .46 + Y * k, k };
+}
+function dgPoly(ctx, pts, fill){ ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for(let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
+function dgShade(hex, f){
+  const m = /^#([0-9a-f]{6})$/i.exec(hex); if(!m) return hex;
+  const n = parseInt(m[1], 16), r = Math.round(((n >> 16) & 255) * f), g = Math.round(((n >> 8) & 255) * f), b = Math.round((n & 255) * f);
+  return `rgb(${r},${g},${b})`;
+}
+function dgHexAlpha(col, a){
+  // accepte soit '#rrggbb', soit 'rgb(r,g,b)' (c'est ce que renvoie dgHexLerp/dgTod)
+  const mh = /^#([0-9a-f]{6})$/i.exec(col);
+  if(mh){ const n = parseInt(mh[1], 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; }
+  const mr = /^rgb\((\d+),(\d+),(\d+)\)$/.exec(col);
+  if(mr) return `rgba(${mr[1]},${mr[2]},${mr[3]},${a})`;
+  return `rgba(0,0,0,${a})`;
+}
+function dgCube(ctx, x, y, s, h, cTop, cSide, tex, lean, z0){
+  z0 = z0 || 0;
+  const x0 = x - s / 2, x1 = x + s / 2, y0 = y - s / 2, y1 = y + s / 2, z1 = z0 + h;
+  const lx = lean ? (lean.x || 0) : 0, ly = lean ? (lean.y || 0) : 0;
+  const S = [dgP(x0, y1, z0), dgP(x1, y1, z0), dgP(x1 + lx, y1 + ly, z1), dgP(x0 + lx, y1 + ly, z1)];    // face avant (sud)
+  const E = [dgP(x1, y0, z0), dgP(x1, y1, z0), dgP(x1 + lx, y1 + ly, z1), dgP(x1 + lx, y0 + ly, z1)];    // face droite (est), plus sombre
+  const T = [dgP(x0 + lx, y0 + ly, z1), dgP(x1 + lx, y0 + ly, z1), dgP(x1 + lx, y1 + ly, z1), dgP(x0 + lx, y1 + ly, z1)]; // dessus
+  dgPoly(ctx, S, cSide);
+  dgPoly(ctx, E, dgShade(cSide, .78));
+  dgPoly(ctx, T, cTop);
+  if(tex){ dgApplyTexture(ctx, S, tex, .5); dgApplyTexture(ctx, E, tex, .4); }
+  return { S, E, T };
+}
+const DG_GLOW_CACHE = {};
+function dgGlowSprite(color){
+  if(DG_GLOW_CACHE[color]) return DG_GLOW_CACHE[color];
+  const c = document.createElement('canvas'); c.width = c.height = 96;
+  const x = c.getContext('2d'), g = x.createRadialGradient(48, 48, 0, 48, 48, 48);
+  g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 96, 96);
+  return (DG_GLOW_CACHE[color] = c);
+}
+function dgGlow(ctx, x, y, r, color, alpha, z){
+  const p = dgP(x, y, z != null ? z : r * .4), rx = r * DG_SC * p.k; if(rx < 1) return;
+  ctx.globalAlpha = alpha; ctx.drawImage(dgGlowSprite(color), p.x - rx, p.y - rx * DG_CS, rx * 2, rx * 2 * DG_CS); ctx.globalAlpha = 1;
+}
+// ----- Textures procédurales (béton granuleux / briques) mises en cache une seule fois, puis plaquées -----
+// sur les façades par un simple clip+drawImage (pas de vraie image/photo -- cohérent avec le reste du
+// rendu canvas 2D du jeu, mais ça casse l'aplat de couleur -- demande d'Alex)
+const DG_TEX_CACHE = {};
+function dgNoiseTex(key){
+  if(DG_TEX_CACHE[key]) return DG_TEX_CACHE[key];
+  const size = 110, c = document.createElement('canvas'); c.width = c.height = size;
+  const x = c.getContext('2d');
+  if(key === 'brick'){
+    const rowH = 11;
+    for(let ry = 0; ry < size; ry += rowH){
+      const off = (Math.floor(ry / rowH) % 2) ? 11 : 0;
+      x.strokeStyle = 'rgba(0,0,0,.3)'; x.lineWidth = 1.2;
+      x.beginPath(); x.moveTo(0, ry); x.lineTo(size, ry); x.stroke();
+      for(let cx = -off; cx < size + 22; cx += 22){ x.beginPath(); x.moveTo(cx, ry); x.lineTo(cx, ry + rowH); x.stroke(); }
+    }
+    for(let i = 0; i < 260; i++){ x.fillStyle = `rgba(${90 + Math.random() * 50 | 0},${38 + Math.random() * 24 | 0},${26 + Math.random() * 16 | 0},${.05 + Math.random() * .1})`; x.fillRect(Math.random() * size, Math.random() * size, 5, 3); }
+  } else {                                           // 'concrete' : grain fin + quelques traînées de coulure/rouille
+    for(let i = 0; i < 950; i++){ const a = .035 + Math.random() * .09; x.fillStyle = Math.random() < .5 ? `rgba(0,0,0,${a})` : `rgba(255,255,255,${a * .65})`; x.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 1.6, 1 + Math.random() * 1.6); }
+    for(let i = 0; i < 5; i++){ const sx = Math.random() * size; x.strokeStyle = `rgba(40,34,26,${.12 + Math.random() * .1})`; x.lineWidth = 2 + Math.random() * 2; x.beginPath(); x.moveTo(sx, 0); x.lineTo(sx + (Math.random() * 14 - 7), size * (.4 + Math.random() * .6)); x.stroke(); }
+  }
+  return (DG_TEX_CACHE[key] = c);
+}
+function dgApplyTexture(ctx, pts, key, alpha){
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  pts.forEach(p => { if(p.x < minX) minX = p.x; if(p.x > maxX) maxX = p.x; if(p.y < minY) minY = p.y; if(p.y > maxY) maxY = p.y; });
+  const w = maxX - minX, h = maxY - minY; if(w < 2 || h < 2) return;
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for(let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y); ctx.closePath(); ctx.clip();
+  ctx.globalAlpha = alpha; ctx.drawImage(dgNoiseTex(key), minX, minY, w, h); ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+// ----- Rendu du sol : donne du grain au vide noir entre les blocs (demande d'Alex -- "juste des blocs") -----
+function dgDrawGround(ctx, city, tod){
+  const R = DG_CITY_R, steps = 48, pts = [];
+  for(let i = 0; i <= steps; i++){ const a = i / steps * Math.PI * 2; pts.push(dgP(Math.cos(a) * R, Math.sin(a) * R, 0)); }
+  const cen = dgP(0, 0, 0), g = ctx.createRadialGradient(cen.x, cen.y, 10, cen.x, cen.y, Math.max(DG.W, DG.H) * .85);
+  g.addColorStop(0, tod.ground0); g.addColorStop(1, tod.ground1);
+  dgPoly(ctx, pts, g);
+  (city.roads || []).forEach(r => dgDrawRoad(ctx, r));
+  (city.patches || []).forEach(p => dgDrawPatch(ctx, p));
+  dgDrawCracks(ctx, city.cracks || []);
+}
+function dgDrawRoad(ctx, r){
+  const x0 = r.x - r.s / 2, x1 = r.x + r.s / 2, y0 = r.y - r.s / 2, y1 = r.y + r.s / 2;
+  const quad = [dgP(x0, y0, .2), dgP(x1, y0, .2), dgP(x1, y1, .2), dgP(x0, y1, .2)];
+  dgPoly(ctx, quad, '#1b1a19');
+  dgApplyTexture(ctx, quad, 'concrete', .3);
+  const swCol = 'rgba(130,126,114,.3)', swW = r.s * .14;
+  if(r.vertical){
+    dgPoly(ctx, [dgP(x0, y0, .25), dgP(x0 + swW, y0, .25), dgP(x0 + swW, y1, .25), dgP(x0, y1, .25)], swCol);
+    dgPoly(ctx, [dgP(x1 - swW, y0, .25), dgP(x1, y0, .25), dgP(x1, y1, .25), dgP(x1 - swW, y1, .25)], swCol);
+    ctx.strokeStyle = 'rgba(230,200,120,.3)'; ctx.lineWidth = Math.max(1, 1.6 * quad[0].k * DG_SC); ctx.setLineDash([10, 12]);
+    const a = dgP(r.x, y0, .3), b = dgP(r.x, y1, .3); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.setLineDash([]);
+  } else if(r.horizontal){
+    dgPoly(ctx, [dgP(x0, y0, .25), dgP(x1, y0, .25), dgP(x1, y0 + swW, .25), dgP(x0, y0 + swW, .25)], swCol);
+    dgPoly(ctx, [dgP(x0, y1 - swW, .25), dgP(x1, y1 - swW, .25), dgP(x1, y1, .25), dgP(x0, y1, .25)], swCol);
+    ctx.strokeStyle = 'rgba(230,200,120,.3)'; ctx.lineWidth = Math.max(1, 1.6 * quad[0].k * DG_SC); ctx.setLineDash([10, 12]);
+    const a = dgP(x0, r.y, .3), b = dgP(x1, r.y, .3); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+function dgDrawPatch(ctx, p){
+  const col = p.type === 'veg' ? 'rgba(68,118,62,.5)' : p.type === 'dirt' ? 'rgba(107,84,52,.4)' : 'rgba(8,8,8,.4)';
+  const q = dgP(p.x, p.y, .5), rx = p.s * q.k * DG_SC, ry = rx * DG_CS * .62;
+  ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(p.rot * .2);
+  ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); ctx.restore();
+}
+function dgDrawCracks(ctx, cracks){
+  ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 2;
+  cracks.forEach(pts => {
+    ctx.beginPath();
+    pts.forEach((pt, i) => { const q = dgP(pt.x, pt.y, .4); if(i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); });
+    ctx.stroke();
+  });
+}
+
+// ----- Rendu des éléments du décor / ressources -----
+function dgDrawBuilding(ctx, b, tod){ if(b.rubble) dgDrawRubble(ctx, b); else dgDrawTower(ctx, b, tod); }
+function dgDrawRubble(ctx, b){
+  const f = 1 + (b.tint || 0) * .12, cTop = dgShade('#7a6a52', f), cSide = dgShade('#453a2b', f);
+  (b.pieces && b.pieces.length ? b.pieces : [{ dx:0, dy:0, s:b.s, h:b.h }]).forEach(pc => dgCube(ctx, b.x + pc.dx, b.y + pc.dy, pc.s, pc.h, cTop, cSide, 'concrete'));
+}
+function dgDrawTower(ctx, b, tod){
+  const f = 1 + (b.tint || 0) * .14, cTop = dgShade('#5b6670', f), cSide = dgShade('#333b43', f);
+  const tex = (b.winSeed || 0) < .4 ? 'brick' : 'concrete';
+  dgCube(ctx, b.x, b.y, b.s, b.h, cTop, cSide, tex, b.lean);
+  // rangées de fenêtres (la plupart éteintes, quelques allumées -- la proportion dépend de l'heure, cf tod.lit)
+  const lx = b.lean ? b.lean.x : 0, ly = b.lean ? b.lean.y : 0;
+  const x0 = b.x - b.s / 2, x1 = b.x + b.s / 2, y0 = b.y - b.s / 2, y1 = b.y + b.s / 2;
+  const rows = Math.min(18, Math.floor(b.h / 22)), seed = b.winSeed || .5, litP = tod ? tod.lit : .22;
+  for(let i = 1; i <= rows; i++){
+    const z = (b.h / (rows + 1)) * i, t = (lx || ly) ? (z / b.h) : 0, lit = ((seed * 997 + i * 131) % 1) < litP;
+    const a = dgP(x0 + 3 + lx * t, y1 + ly * t, z), bb = dgP(x1 - 3 + lx * t, y1 + ly * t, z), c = dgP(x1 + lx * t, y1 - 3 + ly * t, z), e = dgP(x1 + lx * t, y0 + 3 + ly * t, z);
+    ctx.lineWidth = Math.max(1, 1.3 * a.k * DG_SC);
+    ctx.strokeStyle = lit ? 'rgba(255,196,110,.85)' : 'rgba(10,14,18,.55)';
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(bb.x, bb.y); ctx.stroke();
+    ctx.strokeStyle = lit ? 'rgba(255,196,110,.55)' : 'rgba(10,14,18,.4)';
+    ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(e.x, e.y); ctx.stroke();
+  }
+  // pan de mur éventré (séquelle du siège) + débris tombés au pied
+  if(b.gash){
+    const gz0 = b.h * .25, gz1 = b.h * .62, gx0 = x0 + b.s * .22, gx1 = x0 + b.s * .68;
+    const hole = [dgP(gx0, y1, gz0), dgP(gx1, y1, gz0), dgP(gx1 + 6, y1, gz1), dgP(gx0 - 4, y1, gz1)];
+    dgPoly(ctx, hole, 'rgba(8,8,8,.72)');
+    (b.debris || []).forEach(pc => dgCube(ctx, b.x + pc.dx, b.y + b.s / 2 + pc.dy * .4 + 6, pc.s, pc.h, dgShade(cTop, .7), dgShade(cSide, .7), 'concrete'));
+  }
+}
+function dgDrawTree(ctx, t){
+  // tronc sur toute la hauteur + feuillage (glow) tout en haut, pour que l'arbre domine vraiment le
+  // joueur au lieu de s'arrêter à sa taille
+  dgGlow(ctx, t.x, t.y, t.s * .9, 'rgba(40,70,40,.4)', .4, .5);                  // ombre verte au pied
+  dgCube(ctx, t.x, t.y, t.s * .22, t.h, '#5a4328', '#3c2f1c');
+  dgGlow(ctx, t.x, t.y, t.s * 1.5, 'rgba(70,170,90,.5)', .55, t.h * .78);
+  dgGlow(ctx, t.x, t.y, t.s, 'rgba(90,200,110,.9)', .9, t.h);
+}
+function dgDrawCamp(ctx, c){
+  // tente militaire (base + toit à deux pans) pour bien la distinguer des immeubles -- plus un simple pavé
+  const x = c.x, y = c.y, s = c.s, h = c.h;
+  dgCube(ctx, x, y, s, h, '#6b5f3c', '#49401f');
+  const apex = dgP(x, y, h + s * .55);
+  const sA = dgP(x - s / 2, y + s / 2, h), sB = dgP(x + s / 2, y + s / 2, h);
+  dgPoly(ctx, [sA, sB, apex], '#8a7a4e');
+  const eA = dgP(x + s / 2, y - s / 2, h), eB = dgP(x + s / 2, y + s / 2, h);
+  dgPoly(ctx, [eA, eB, apex], dgShade('#8a7a4e', .78));
+}
+function dgDrawWreck(ctx, w){
+  if(w.done) return;
+  const seed = Math.abs(Math.sin(w.x * 12.9898 + w.y * 78.233) * 43758.5453 % 1), flip = seed < .5 ? 1 : -1;
+  dgGlow(ctx, w.x, w.y, 120, 'rgba(255,170,60,.32)', .5);
+  // carcasse de mécha effondrée, à l'échelle d'un vrai mech (nettement plus grand qu'un humain même
+  // couché) : torse écrasé au sol + tête/cockpit affaissé sur le côté + un bras rompu qui dépasse +
+  // une jambe repliée -- teinte gris-métal froid + rouille, pour qu'on ne la confonde plus avec les
+  // voitures abandonnées (dgDrawPickup, k==='car' / dgDrawDecoCar)
+  dgCube(ctx, w.x, w.y, 90, 36, '#5c6b70', '#2a3337', 'concrete');
+  dgCube(ctx, w.x - 28 * flip, w.y + 22, 34, 46, '#4a585d', '#202a2c', 'concrete', null, 8);
+  dgCube(ctx, w.x + 36 * flip, w.y - 25, 46, 15, '#6e4024', '#36200f', 'concrete');
+  dgCube(ctx, w.x + 14 * flip, w.y + 30, 18, 42, '#4a585d', '#202a2c', null, { x:20 * flip, y:9 }, 11);
+  // noyau fissuré encore sous tension -- la lueur qui a trahi sa position au joueur
+  const p1 = dgP(w.x - 8, w.y - 6, 18), p2 = dgP(w.x + 16 * flip, w.y + 8, 24);
+  ctx.strokeStyle = 'rgba(255,196,120,.9)'; ctx.lineWidth = Math.max(1, 2.4 * p1.k * DG_SC);
+  ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+  const cp = dgP(w.x, w.y, 19);
+  ctx.beginPath(); ctx.arc(cp.x, cp.y, Math.max(1.8, 4 * cp.k * DG_SC), 0, Math.PI * 2); ctx.fillStyle = '#ffd98a'; ctx.fill();
+}
+function dgDrawPickup(ctx, p){
+  if(p.done) return;
+  if(p.k === 'car'){ dgCube(ctx, p.x, p.y, 64, 22, '#7a2a28', '#3d1513'); dgCube(ctx, p.x - 7, p.y, 32, 16, '#5e201e', '#30100f'); }
+  else if(p.k === 'phone'){ dgCube(ctx, p.x, p.y, 15, 46, '#c23b3b', '#6e1f1f'); }
+  else { dgGlow(ctx, p.x, p.y, 28, 'rgba(120,220,120,.7)', .7); }
+}
+function dgDrawCrate(ctx, c){ if(c.done) return; dgCube(ctx, c.x, c.y, 30, 26, '#caa24a', '#7a6220'); }
+function dgDrawSewer(ctx, s, reachable){
+  const col = reachable ? 'rgba(130,230,255,.55)' : 'rgba(255,70,70,.4)';
+  dgGlow(ctx, s.x, s.y, 36, col, .8);
+  const p = dgP(s.x, s.y, 1), rx = 20 * p.k * DG_SC, ry = rx * DG_CS;
+  ctx.beginPath(); ctx.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(20,24,28,.9)'; ctx.fill(); ctx.strokeStyle = reachable ? '#7fe8ff' : '#ff6b6b'; ctx.lineWidth = 2; ctx.stroke();
+  // grille (quelques barreaux) pour casser l'aplat du disque
+  ctx.save();
+  ctx.beginPath(); ctx.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2); ctx.clip();
+  ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1.4;
+  for(let i = -2; i <= 2; i++){ ctx.beginPath(); ctx.moveTo(p.x - rx, p.y + i * ry * .4); ctx.lineTo(p.x + rx, p.y + i * ry * .4); ctx.stroke(); }
+  ctx.restore();
+}
+function dgDrawTrafficLight(ctx, L){
+  // poteau penché (dégât de guerre) + tête à 3 feux -- presque tous morts, un sur cinq encore sous tension
+  const x = L.x, y = L.y, topZ = 92, lean = { x:L.lean, y:L.lean * .5 };
+  const p0 = dgP(x, y, 0), p1 = dgP(x + lean.x, y + lean.y, topZ);
+  ctx.strokeStyle = '#242420'; ctx.lineWidth = Math.max(1.3, 2.3 * p0.k * DG_SC);
+  ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+  dgCube(ctx, x + lean.x, y + lean.y, 13, 20, '#1c1c1a', '#101010', null, null, topZ - 10);
+  const cols = ['#ff4d4d', '#ffce42', '#4fd27a'], glows = ['rgba(255,77,77,.8)', 'rgba(255,206,66,.8)', 'rgba(79,210,122,.8)'];
+  for(let i = 0; i < 3; i++){
+    const q = dgP(x + lean.x, y + lean.y - 7, topZ + 4 - i * 13);
+    ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(1.8, 3 * q.k * DG_SC), 0, Math.PI * 2);
+    ctx.fillStyle = L.lit === i ? cols[i] : 'rgba(30,30,28,.85)'; ctx.fill();
+    if(L.lit === i) dgGlow(ctx, x + lean.x, y + lean.y - 7, 18, glows[i], .7);
+  }
+}
+function dgDrawDecoCar(ctx, c){
+  // carcasse de voiture purement décorative, abandonnée le long des rues -- certaines calcinées
+  const top = c.burnt ? '#2c2a28' : '#5c4a28', side = c.burnt ? '#141312' : '#352a17';
+  const rot = c.rot || 0, ox = Math.cos(rot) * 14, oy = Math.sin(rot) * 14;
+  dgCube(ctx, c.x, c.y, 70, 24, top, side);
+  dgCube(ctx, c.x + ox * .3, c.y + oy * .3, 34, 16, dgShade(top, .85), dgShade(side, .85), null, null, 20);
+  if(c.burnt) dgGlow(ctx, c.x, c.y, 34, 'rgba(90,60,30,.25)', .5);
+}
+function dgDrawPlayer(ctx){
+  const pl = DG.player, fa = pl.facing || 0, moving = Math.hypot(DG.input.x, DG.input.y) > .05;
+  const lean = moving ? { x:Math.cos(fa) * 5, y:Math.sin(fa) * 5 } : null;
+  dgGlow(ctx, pl.x, pl.y, 30, 'rgba(255,255,255,.4)', .4);
+  const sp = dgP(pl.x, pl.y, .5);
+  ctx.beginPath(); ctx.ellipse(sp.x, sp.y, 10 * sp.k * DG_SC, 5 * sp.k * DG_SC * DG_CS, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fill();
+  // jambes (léger mouvement de marche), perpendiculaires à la direction de déplacement
+  const perp = fa + Math.PI / 2, walk = moving ? Math.sin((pl.walk || 0) * 9) * 2.4 : 0;
+  dgCube(ctx, pl.x + Math.cos(perp) * 2.6, pl.y + Math.sin(perp) * 2.6, 5, Math.max(4, 9 + walk), '#2a2e24', '#15170f');
+  dgCube(ctx, pl.x - Math.cos(perp) * 2.6, pl.y - Math.sin(perp) * 2.6, 5, Math.max(4, 9 - walk), '#2a2e24', '#15170f');
+  // torse (veste de survivant) -- penche légèrement dans la direction du déplacement
+  dgCube(ctx, pl.x, pl.y, 11, 15, '#8a7a4e', '#5c5134', null, lean, 8);
+  // tête (dégradé simple pour un peu de volume) + regard dans la direction de déplacement
+  const hx = pl.x + (lean ? lean.x : 0), hy = pl.y + (lean ? lean.y : 0);
+  const hp = dgP(hx, hy, 29);
+  const g = ctx.createRadialGradient(hp.x - 2 * hp.k, hp.y - 2 * hp.k, 1, hp.x, hp.y, 7 * hp.k);
+  g.addColorStop(0, '#f2c9a0'); g.addColorStop(1, '#b4825a');
+  ctx.beginPath(); ctx.ellipse(hp.x, hp.y, 6 * hp.k, 6 * hp.k * DG_CS, 0, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+  const ep = dgP(hx + Math.cos(fa) * 4.2, hy + Math.sin(fa) * 4.2, 29);
+  ctx.beginPath(); ctx.ellipse(ep.x, ep.y, 2 * ep.k, 1.5 * ep.k * DG_CS, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.fill();
+}
+function dgDrawDrone(ctx, d){
+  // Cône de vision, teinté selon le niveau de détection (ambre -> rouge vif juste avant d'être repéré)
+  const steps = 18, pts = [dgP(d.x, d.y, 46)];
+  for(let i = 0; i <= steps; i++){
+    const a = d.ang - DG_VISION_HALF + (DG_VISION_HALF * 2) * (i / steps);
+    pts.push(dgP(d.x + Math.cos(a) * DG_VISION_R, d.y + Math.sin(a) * DG_VISION_R, 46));
+  }
+  const t = d.detect, r = 255, g = Math.round(180 * (1 - t)), b = Math.round(60 * (1 - t));
+  ctx.globalAlpha = .16 + t * .22; dgPoly(ctx, pts, `rgb(${r},${g},${b})`); ctx.globalAlpha = 1;
+  const p = dgP(d.x, d.y, 46);
+  dgGlow(ctx, d.x, d.y, 22, t > .5 ? 'rgba(255,70,70,.9)' : 'rgba(255,180,70,.8)', .8);
+  ctx.beginPath(); ctx.ellipse(p.x, p.y, 10 * p.k, 6 * p.k * DG_CS, 0, 0, Math.PI * 2); ctx.fillStyle = '#20242b'; ctx.fill();
+  ctx.strokeStyle = t > .5 ? '#ff5050' : '#ffb347'; ctx.lineWidth = 2; ctx.stroke();
+}
+function dgDomeR(){
+  const k = Math.max(0, 1 - DG.elapsed / DG_DUR);
+  return DG_MIN_R + (DG_CITY_R - DG_MIN_R) * k;
+}
+function dgDrawDome(ctx){
+  // Le dôme est fixe, centré sur l'origine du monde (le centre de la ville) -- PAS sur le joueur,
+  // qui lui se déplace librement à l'intérieur (ou en déborde, ce qui est fatal, cf dgUpdate()).
+  const r = dgDomeR(), steps = 64, pts = [];
+  for(let i = 0; i <= steps; i++){ const a = i / steps * Math.PI * 2; pts.push(dgP(Math.cos(a) * r, Math.sin(a) * r, 0)); }
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for(let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+  ctx.strokeStyle = 'rgba(130,200,255,.85)'; ctx.lineWidth = 3; ctx.shadowColor = '#4fd2ff'; ctx.shadowBlur = 14; ctx.stroke();
+  ctx.restore();
+}
+
+// ----- Ambiance / lumière : le ciel tombe au fil de la run (demande d'Alex -- 5 ambiances), ce qui colle
+// bien à la tension du dôme qui se referme : on commence en plein jour et on termine dans le noir. -----
+const DG_TOD = [
+  { name:'morning',   sky0:'#4a5f73', sky1:'#1c2a35', ground0:'#352f22', ground1:'#17140d', fog:'#3a2f22', lit:.08, dim:0,   sun:'rgba(255,224,180,.14)' },
+  { name:'midday',    sky0:'#6c8aa0', sky1:'#2a3a46', ground0:'#36341f', ground1:'#17160c', fog:'#201e16', lit:.04, dim:0,   sun:'rgba(255,255,240,.12)' },
+  { name:'afternoon', sky0:'#5a5368', sky1:'#221e2c', ground0:'#352a1c', ground1:'#16110a', fog:'#3a2418', lit:.14, dim:.05, sun:'rgba(255,186,120,.16)' },
+  { name:'sunset',    sky0:'#6a3b4a', sky1:'#20121c', ground0:'#332318', ground1:'#140e09', fog:'#4a2016', lit:.26, dim:.14, sun:'rgba(255,130,90,.22)' },
+  { name:'night',     sky0:'#10151e', sky1:'#05060a', ground0:'#15170f', ground1:'#07070a', fog:'#0c1220', lit:.46, dim:.32, sun:'rgba(110,150,255,.10)' }
+];
+function dgHexLerp(h1, h2, t){
+  const m1 = /^#([0-9a-f]{6})$/i.exec(h1), m2 = /^#([0-9a-f]{6})$/i.exec(h2); if(!m1 || !m2) return h1;
+  const n1 = parseInt(m1[1], 16), n2 = parseInt(m2[1], 16);
+  const r = Math.round(((n1 >> 16) & 255) + (((n2 >> 16) & 255) - ((n1 >> 16) & 255)) * t);
+  const g = Math.round(((n1 >> 8) & 255) + (((n2 >> 8) & 255) - ((n1 >> 8) & 255)) * t);
+  const b = Math.round((n1 & 255) + ((n2 & 255) - (n1 & 255)) * t);
+  return `rgb(${r},${g},${b})`;
+}
+function dgTod(){
+  const k = Math.min(.9999, DG.elapsed / DG_DUR) * DG_TOD.length, idx = Math.floor(k), f = k - idx;
+  const a = DG_TOD[idx], b = DG_TOD[Math.min(DG_TOD.length - 1, idx + 1)];
+  return {
+    name:a.name, sky0:dgHexLerp(a.sky0, b.sky0, f), sky1:dgHexLerp(a.sky1, b.sky1, f),
+    ground0:dgHexLerp(a.ground0, b.ground0, f), ground1:dgHexLerp(a.ground1, b.ground1, f),
+    fog:dgHexLerp(a.fog, b.fog, f), lit:a.lit + (b.lit - a.lit) * f, dim:a.dim + (b.dim - a.dim) * f, sun:f < .5 ? a.sun : b.sun
+  };
+}
+
+// ----- Boucle de rendu -----
+function dgFit(){
+  const cv = DG.canvas; if(!cv) return;
+  const view = cv.parentElement, w = view.clientWidth, h = view.clientHeight, dpr = Math.min(DG.q.cap, window.devicePixelRatio || 1);
+  DG.W = w; DG.H = h; DG.dpr = dpr; DG.ctx = cv.getContext('2d');
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  DG.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+function dgQualityCheck(now){
+  if(DG.q.lastT){
+    const dt = now - DG.q.lastT;
+    if(dt > 26 && dt < 250) DG.q.slow++; else if(dt < 19) DG.q.slow = Math.max(0, DG.q.slow - 1);
+    if(DG.q.slow > 40 && DG.q.cap > 1){ DG.q.cap = DG.q.cap > 1.5 ? 1.5 : 1; DG.q.slow = 0; dgFit(); }
+  }
+  DG.q.lastT = now;
+}
+function dgDraw(){
+  const ctx = DG.ctx; if(!ctx || !DG.W) return;
+  const tod = dgTod();
+  const g = ctx.createLinearGradient(0, 0, 0, DG.H); g.addColorStop(0, tod.sky0); g.addColorStop(1, tod.sky1);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, DG.W, DG.H);
+  // teinte d'ambiance (chaude le jour/coucher de soleil, froide la nuit) plaquée sur toute la scène
+  ctx.fillStyle = tod.sun; ctx.fillRect(0, 0, DG.W, DG.H);
+  const city = DG.city;
+  dgDrawGround(ctx, city, tod);
+  const items = [];
+  city.buildings.forEach(b => items.push({ k:'b', o:b, d:b.x + b.y }));
+  city.forest.forEach(t => items.push({ k:'t', o:t, d:t.x + t.y }));
+  city.camp.forEach(c => items.push({ k:'c', o:c, d:c.x + c.y }));
+  city.wrecks.forEach(w => items.push({ k:'w', o:w, d:w.x + w.y }));
+  city.pickups.forEach(p => items.push({ k:'p', o:p, d:p.x + p.y }));
+  city.crates.forEach(c => items.push({ k:'cr', o:c, d:c.x + c.y }));
+  city.sewers.forEach(s => items.push({ k:'s', o:s, d:s.x + s.y }));
+  (city.lights || []).forEach(L => items.push({ k:'lt', o:L, d:L.x + L.y }));
+  (city.decoCars || []).forEach(c => items.push({ k:'dc', o:c, d:c.x + c.y }));
+  DG.drones.forEach(dr => items.push({ k:'dr', o:dr, d:dr.x + dr.y }));
+  items.push({ k:'pl', o:null, d:DG.player.x + DG.player.y });
+  items.sort((a, b) => a.d - b.d);
+  const domeR = dgDomeR();
+  items.forEach(it => {
+    if(it.k === 'b') dgDrawBuilding(ctx, it.o, tod);
+    else if(it.k === 't') dgDrawTree(ctx, it.o);
+    else if(it.k === 'c') dgDrawCamp(ctx, it.o);
+    else if(it.k === 'w') dgDrawWreck(ctx, it.o);
+    else if(it.k === 'p') dgDrawPickup(ctx, it.o);
+    else if(it.k === 'cr') dgDrawCrate(ctx, it.o);
+    else if(it.k === 's') dgDrawSewer(ctx, it.o, Math.hypot(it.o.x, it.o.y) < domeR);
+    else if(it.k === 'lt') dgDrawTrafficLight(ctx, it.o);
+    else if(it.k === 'dc') dgDrawDecoCar(ctx, it.o);
+    else if(it.k === 'dr') dgDrawDrone(ctx, it.o);
+    else if(it.k === 'pl') dgDrawPlayer(ctx);
+  });
+  dgDrawDome(ctx);
+  // assombrissement global (plus la nuit tombe, plus c'est sombre) + vignette teintée par l'ambiance
+  if(tod.dim > 0){ ctx.fillStyle = `rgba(0,0,0,${tod.dim})`; ctx.fillRect(0, 0, DG.W, DG.H); }
+  const vg = ctx.createRadialGradient(DG.W * .5, DG.H * .46, DG.H * .25, DG.W * .5, DG.H * .46, DG.H * .78);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, dgHexAlpha(tod.fog, .55));
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, DG.W, DG.H);
+}
+
+// ----- Entrée : joystick flottant (apparaît au point d'appui, reste fixe -- demande d'Alex) -----
+let dgStickPid = null, dgStickCx = 0, dgStickCy = 0;
+const DG_STICK_MAX = 34;               // rayon max de déplacement du petit rond, en px CSS
+function dgSetupInput(){
+  const zone = document.getElementById('dgStickZone'), stick = document.getElementById('dgStick'), knob = stick.querySelector('.dg-stick-knob');
+  const reset = () => { DG.input.x = 0; DG.input.y = 0; knob.style.transform = 'translate(-50%,-50%)'; };
+  zone.addEventListener('pointerdown', e => {
+    if(dgStickPid !== null) return;
+    dgStickPid = e.pointerId;
+    const r = zone.getBoundingClientRect();
+    dgStickCx = e.clientX; dgStickCy = e.clientY;
+    stick.style.left = (e.clientX - r.left) + 'px'; stick.style.top = (e.clientY - r.top) + 'px';
+    stick.style.display = 'block';
+    try{ zone.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  zone.addEventListener('pointermove', e => {
+    if(e.pointerId !== dgStickPid) return;
+    let dx = e.clientX - dgStickCx, dy = e.clientY - dgStickCy, n = Math.hypot(dx, dy);
+    if(n > DG_STICK_MAX){ dx = dx / n * DG_STICK_MAX; dy = dy / n * DG_STICK_MAX; n = DG_STICK_MAX; }
+    knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    DG.input.x = n > 2 ? dx / DG_STICK_MAX : 0; DG.input.y = n > 2 ? dy / DG_STICK_MAX : 0;
+  });
+  const end = e => { if(e.pointerId !== dgStickPid) return; dgStickPid = null; stick.style.display = 'none'; reset(); };
+  zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end);
+}
+
+// ----- Boucle de jeu (temps réel, indépendante du tick de combat) -----
+function dgUpdate(dt){
+  if(DG.ended) return;
+  DG.elapsed = Date.now() - DG.startAt;
+  const n = Math.hypot(DG.input.x, DG.input.y);
+  if(n > .05){
+    DG.player.x += (DG.input.x / Math.max(n, 1)) * DG_SPEED * dt;
+    DG.player.y += (DG.input.y / Math.max(n, 1)) * DG_SPEED * dt;
+    DG.player.facing = Math.atan2(DG.input.y, DG.input.x);
+    DG.player.walk = (DG.player.walk || 0) + dt;
+  }
+  DG.cam.x = DG.player.x; DG.cam.y = DG.player.y;
+  const domeR = dgDomeR();
+  if(Math.hypot(DG.player.x, DG.player.y) > domeR){ dgEnd(false, 'dome'); return; }
+  if(DG.elapsed >= DG_DUR){ dgEnd(true, 'survie'); return; }
+  const step = DG_DRONE_SPEED * dt;
+  DG.drones.forEach(d => {
+    const dx = d.wx - d.x, dy = d.wy - d.y, dist = Math.hypot(dx, dy);
+    if(dist < 24) dgDronePickWaypoint(d, DG.city);
+    else { d.x += dx / dist * step; d.y += dy / dist * step; d.ang = Math.atan2(dy, dx); }
+    const px = DG.player.x - d.x, py = DG.player.y - d.y, pd = Math.hypot(px, py);
+    let seen = false;
+    if(pd < DG_VISION_R){
+      const a = Math.atan2(py, px), diff = Math.atan2(Math.sin(a - d.ang), Math.cos(a - d.ang));
+      if(Math.abs(diff) < DG_VISION_HALF) seen = true;
+    }
+    d.detect = Math.max(0, Math.min(1, d.detect + (seen ? dt / DG_DETECT_TIME : -dt * .8)));
+    if(d.detect >= 1 && !DG.ended) dgEnd(false, 'drone');
+  });
+  if(DG.ended) return;
+  DG.city.pickups.forEach(p => { if(!p.done && Math.hypot(DG.player.x - p.x, DG.player.y - p.y) < DG_PICKUP_R) dgCollectPickup(p); });
+  DG.city.crates.forEach(c => { if(!c.done && Math.hypot(DG.player.x - c.x, DG.player.y - c.y) < DG_PICKUP_R) dgCollectCrate(c); });
+  let nearest = null, nd = Infinity;
+  DG.city.wrecks.forEach(w => { if(w.done) return; const d = Math.hypot(DG.player.x - w.x, DG.player.y - w.y); if(d < DG_WRECK_R && d < nd){ nd = d; nearest = w; } });
+  if(nearest !== DG.nearWreck){ DG.nearWreck = nearest; DG.harvestOn = false; DG.harvestProg = 0; dgSyncInteractUI(); }
+  if(DG.nearWreck && DG.harvestOn){
+    DG.harvestProg = Math.min(1, DG.harvestProg + dt / DG_HARVEST_TIME);
+    dgSyncInteractUI();
+    if(DG.harvestProg >= 1) dgCollectWreck(DG.nearWreck);
+  }
+  let sewer = null; nd = Infinity;
+  DG.city.sewers.forEach(s => { const d = Math.hypot(DG.player.x - s.x, DG.player.y - s.y); if(d < DG_SEWER_R && d < nd){ nd = d; sewer = s; } });
+  if(sewer !== DG.nearSewer){ DG.nearSewer = sewer; dgSyncSewerUI(); }
+}
+function dgCollectPickup(p){
+  p.done = true; DG.lootCount++;
+  if(p.k === 'grass'){ const g = 8 + Math.floor(Math.random() * 10); DG.loot.gold += g; dgToast('+' + g + ' OR'); }
+  else if(p.k === 'car'){ const x = 12 + Math.floor(Math.random() * 14); DG.loot.xp += x; dgToast('+' + x + ' XP'); }
+  else { const g = 5 + Math.floor(Math.random() * 8), x = 5 + Math.floor(Math.random() * 8); DG.loot.gold += g; DG.loot.xp += x; dgToast('+' + g + ' OR · +' + x + ' XP'); }
+  dgRenderBagBadge();
+}
+function dgCollectCrate(c){
+  c.done = true; DG.lootCount++;
+  const t = BOOST_TYPES[Math.floor(Math.random() * BOOST_TYPES.length)];
+  DG.loot.boosters[t] = (DG.loot.boosters[t] || 0) + 1;
+  DG.loot.crystal += 1;
+  dgToast('BOOSTER + 1 CRISTAL');
+  dgRenderBagBadge();
+}
+function dgCollectWreck(w){
+  w.done = true; DG.lootCount++; DG.nearWreck = null; DG.harvestOn = false; DG.harvestProg = 0; dgSyncInteractUI();
+  const roll = Math.random(), r = roll < .08 ? 'legendaire' : roll < .34 ? 'epique' : 'rare';
+  const n = 1 + Math.floor(Math.random() * 2);
+  DG.loot.mat[r] = (DG.loot.mat[r] || 0) + n;
+  dgToast('+' + n + ' MATÉRIAU ' + RARITIES[r].label.toUpperCase());
+  dgRenderBagBadge();
+}
+let dgToastTimer = null;
+function dgToast(msg){
+  const el = document.getElementById('dgToast'); if(!el) return;
+  clearTimeout(dgToastTimer);
+  el.textContent = msg; el.classList.add('show');
+  dgToastTimer = setTimeout(() => el.classList.remove('show'), 1200);
+}
+function dgSyncInteractUI(){
+  const btn = document.getElementById('dgInteractBtn'), fill = document.getElementById('dgInteractFill'), lbl = document.getElementById('dgInteractLabel');
+  if(!btn) return;
+  if(DG.nearWreck){ btn.style.display = ''; lbl.textContent = DG.harvestOn ? 'RÉCUPÉRATION…' : 'RÉCUPÉRER'; fill.style.width = (DG.harvestProg * 100) + '%'; }
+  else { btn.style.display = 'none'; }
+}
+function dgSyncSewerUI(){
+  const btn = document.getElementById('dgSewerBtn'); if(!btn) return;
+  btn.style.display = DG.nearSewer ? '' : 'none';
+}
+function dgRenderBagBadge(){
+  const el = document.getElementById('dgBagCount'); if(!el) return;
+  el.textContent = DG.lootCount ? String(DG.lootCount) : '';
+  el.style.display = DG.lootCount ? '' : 'none';
+}
+function dgRenderBagModal(){
+  const L = DG.loot, rows = [];
+  if(L.gold) rows.push(['OR', '+' + Math.floor(L.gold)]);
+  if(L.xp) rows.push(['XP', '+' + Math.floor(L.xp)]);
+  if(L.crystal) rows.push(['CRISTAL', '+' + L.crystal]);
+  MAT_ORDER.forEach(r => { if(L.mat[r]) rows.push(['MAT. ' + RARITIES[r].label.toUpperCase(), '+' + L.mat[r]]); });
+  BOOST_TYPES.forEach(t => { if(L.boosters[t]) rows.push(['BOOSTER', '+' + L.boosters[t]]); });
+  const list = document.getElementById('dgBagList');
+  list.innerHTML = rows.length ? rows.map(r => `<div class="dg-bag-row"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('') : '<div class="dg-bag-empty">Rien récupéré pour l’instant.</div>';
+}
+function dgFmtTimer(ms){
+  const s = Math.max(0, Math.ceil((DG_DUR - ms) / 1000)), m = Math.floor(s / 60), r = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+}
+function dgLoop(now){
+  if(!DG.active) return;
+  dgQualityCheck(now);
+  let dt = DG.lastT ? (now - DG.lastT) / 1000 : 0; dt = Math.min(dt, .08);   // borne le pas de temps (onglet en arrière-plan, lag...)
+  DG.lastT = now;
+  if(!document.hidden) dgUpdate(dt);
+  if(DG.ended) return;
+  dgDraw();
+  const timerEl = document.getElementById('dgTimer'); if(timerEl) timerEl.textContent = dgFmtTimer(DG.elapsed);
+  DG.raf = requestAnimationFrame(dgLoop);
+}
+
+// ----- Entrée / sortie du mini-jeu -----
+function enterDomeGame(){
+  showHub();
+  document.getElementById('modeHub').classList.remove('active');
+  document.getElementById('domeGameView').classList.add('active');
+  document.getElementById('dgBrief').style.display = '';
+  document.getElementById('dgWrap').style.display = 'none';
+  document.getElementById('dgEnd').style.display = 'none';
+  scrollViewTop();
+  domeGameActive = true;
+}
+function dgStartRun(){
+  document.getElementById('dgBrief').style.display = 'none';
+  document.getElementById('dgWrap').style.display = '';
+  DG.canvas = document.getElementById('dgCanvas');
+  DG.city = dgGenCity();
+  DG.player = { x:0, y:0, facing:-Math.PI * .75, walk:0 };
+  DG.cam = { x:0, y:0 };
+  DG.input = { x:0, y:0 };
+  DG.loot = { gold:0, xp:0, mat:{ rare:0, epique:0, legendaire:0 }, crystal:0, boosters:{ res:0, cards:0, modules:0 } };
+  DG.lootCount = 0; DG.nearWreck = null; DG.harvestOn = false; DG.harvestProg = 0; DG.nearSewer = null;
+  DG.ended = false; DG.startAt = Date.now(); DG.elapsed = 0; DG.lastT = 0; DG.q = { cap:2, slow:0, lastT:0 };
+  DG.drones = []; const dn = dgDroneCount(); for(let i = 0; i < dn; i++) DG.drones.push(dgMakeDrone(DG.city));
+  dgRenderBagBadge(); dgSyncInteractUI(); dgSyncSewerUI();
+  dgFit(); window.addEventListener('resize', dgFit);
+  DG.active = true;
+  DG.raf = requestAnimationFrame(dgLoop);
+}
+function dgEnd(victory, cause){
+  if(DG.ended) return;
+  DG.ended = true; DG.active = false; domeGameActive = false;
+  if(DG.raf) cancelAnimationFrame(DG.raf);
+  window.removeEventListener('resize', dgFit);
+  const L = DG.loot;
+  if(victory) dgBankLoot(L);
+  const title = document.getElementById('dgEndTitle'), text = document.getElementById('dgEndText'), lootEl = document.getElementById('dgEndLoot');
+  title.textContent = victory ? 'VICTOIRE' : 'DÉFAITE';
+  title.className = 'dg-end-title' + (victory ? ' win' : ' lose');
+  text.textContent = victory
+    ? (cause === 'survie' ? 'Le dôme s’est refermé -- tu as tenu bon jusqu’au bout.' : 'Tu as filé par la bouche d’égout avant que le dôme ne te rattrape.')
+    : (cause === 'drone' ? 'Un drone t’a repéré et ouvert le feu. Tout le butin de cette sortie est perdu.' : 'Le dôme t’a rattrapé. Tout le butin de cette sortie est perdu.');
+  if(victory && DG.lootCount){
+    const rows = [];
+    if(L.gold) rows.push('+' + Math.floor(L.gold) + ' OR');
+    if(L.xp) rows.push('+' + Math.floor(L.xp) + ' XP');
+    if(L.crystal) rows.push('+' + L.crystal + ' CRISTAL');
+    MAT_ORDER.forEach(r => { if(L.mat[r]) rows.push('+' + L.mat[r] + ' MAT. ' + RARITIES[r].label.toUpperCase()); });
+    BOOST_TYPES.forEach(t => { if(L.boosters[t]) rows.push('+' + L.boosters[t] + ' BOOSTER'); });
+    lootEl.innerHTML = rows.map(r => `<div class="dg-end-lootrow">${r}</div>`).join('');
+  } else { lootEl.innerHTML = victory ? '<div class="dg-end-lootrow">Rien récupéré cette fois.</div>' : ''; }
+  document.getElementById('dgWrap').style.display = 'none';
+  document.getElementById('dgEnd').style.display = '';
+}
+function dgBankLoot(L){
+  grantReward({ gold:L.gold, xp:L.xp, crystal:L.crystal, mat:L.mat });
+  BOOST_TYPES.forEach(t => { if(L.boosters[t]) grantReward({ booster:t, boosterN:L.boosters[t] }); });
+}
+function exitDomeGame(){
+  domeGameActive = false; DG.active = false; if(DG.raf) cancelAnimationFrame(DG.raf);
+  window.removeEventListener('resize', dgFit);
+  document.getElementById('domeGameView').classList.remove('active');
+  showHub();
+}
+// Abandon (navigation hors de l'écran pendant une run active) : même traitement qu'une défaite --
+// le joueur perd le butin de la run en cours, cohérent avec "repéré par un drone" ci-dessus.
+function dgAbandon(){
+  if(DG.active && !DG.ended) dgEnd(false, 'abandon');
+  domeGameActive = false;
+  document.getElementById('domeGameView').classList.remove('active');
+  showHub();
+}
+
+// ----- Branchements UI (une seule fois, au chargement) -----
+document.getElementById('tileDome').onclick = DG_LOCKED ? null : enterDomeGame;
+document.getElementById('domeBackBtn').onclick = () => { if(DG.active && !DG.ended) dgAbandon(); else exitDomeGame(); };
+document.getElementById('dgStartBtn').onclick = dgStartRun;
+document.getElementById('dgEndBtn').onclick = exitDomeGame;
+document.getElementById('dgInteractBtn').onclick = () => { if(DG.nearWreck) DG.harvestOn = true; };
+document.getElementById('dgSewerBtn').onclick = () => { if(DG.nearSewer) dgEnd(true, 'egout'); };
+document.getElementById('dgBagBtn').onclick = () => { dgRenderBagModal(); document.getElementById('dgBagModal').classList.add('show'); };
+document.getElementById('dgBagClose').onclick = () => document.getElementById('dgBagModal').classList.remove('show');
+document.getElementById('dgBagModal').addEventListener('click', e => { if(e.target.id === 'dgBagModal') e.currentTarget.classList.remove('show'); });
+dgSetupInput();
+
 // Ordre de mission : sous-menu des missions (Mission ONE + prochaines missions)
 function openOrders(){
   showHub();                                   // quitte proprement l'écran de combat (le combat continue en fond)
@@ -21660,18 +22548,21 @@ function hideRaidRewardBubble(){ const el = document.getElementById('raidRewardB
 function showRaidRewardBubble(phaseIdx, btn){
   hideRaidRewardBubble();
   const rew = raidPhaseReward(phaseIdx);
+  // V0.03.84 (demande d'Alex) : icône à gauche du texte sur chaque ligne -- on réutilise les mêmes
+  // constantes/classes d'icônes que partout ailleurs dans le jeu (ICON_GOLD/ICON_XP/ICON_CRYSTAL,
+  // matIcon() pour les matériaux) plutôt que d'en recréer.
   const rows = [
-    rew.gold ? (rew.gold + ' OR') : null,
-    rew.xp ? (rew.xp + ' XP') : null,
-    rew.crystal ? (rew.crystal + ' CRISTAUX') : null,
-    rew.mat.rare ? (rew.mat.rare + ' MAT. RARE') : null,
-    rew.mat.epique ? (rew.mat.epique + ' MAT. ÉPIQUE') : null,
-    rew.mat.legendaire ? (rew.mat.legendaire + ' MAT. LÉGENDAIRE') : null,
+    rew.gold ? [ICON_GOLD, rew.gold + ' OR'] : null,
+    rew.xp ? [ICON_XP, rew.xp + ' XP'] : null,
+    rew.crystal ? [ICON_CRYSTAL, rew.crystal + ' CRISTAUX'] : null,
+    rew.mat.rare ? [matIcon('rare'), rew.mat.rare + ' MAT. RARE'] : null,
+    rew.mat.epique ? [matIcon('epique'), rew.mat.epique + ' MAT. ÉPIQUE'] : null,
+    rew.mat.legendaire ? [matIcon('legendaire'), rew.mat.legendaire + ' MAT. LÉGENDAIRE'] : null,
   ].filter(Boolean);
   const bubble = document.createElement('div');
   bubble.className = 'raid-reward-bubble';
   bubble.id = 'raidRewardBubbleEl';
-  bubble.innerHTML = '<div class="rrb-title">RÉCOMPENSE · PHASE ' + (phaseIdx + 1) + '</div>' + rows.map(t => '<div class="rrb-row">' + t + '</div>').join('');
+  bubble.innerHTML = '<div class="rrb-title">RÉCOMPENSE · PHASE ' + (phaseIdx + 1) + '</div>' + rows.map(r => '<div class="rrb-row">' + r[0] + '<span>' + r[1] + '</span></div>').join('');
   document.body.appendChild(bubble);
   const bw = bubble.offsetWidth;
   const br = btn.getBoundingClientRect();
@@ -21718,10 +22609,13 @@ function toggleRaidPick(key){
   else { if(raidPicked.length >= 15) return; raidPicked.push(key); }
   renderRaidTeamGrid();
 }
-// Tuile volontairement simple (nom + pastille de couleur + rareté), plutôt que codexCardHtml()
-// (le "vrai" visuel des cartes) : ce dernier dépend d'un conteneur .codex-grid/.sleeve précis
-// pour sa mise en page (portrait, cadre légendaire, etc.) et ne tient pas sans lui -- pas la
-// peine de reproduire toute cette mécanique pour une simple liste de sélection.
+// V0.03.84 (demande d'Alex, 2e passage : "prends la même liste que celle du choix des cartes lors du
+// lancement des missions") : 1ère tentative (.cx-portrait + unitSVG() seuls) encore rejetée -- les
+// persos sans config dédiée dans MECH_CONFIGS (CATER-PILLARD, PRAWN, NEUTRON...) retombent sur une
+// forme générique (wedge/block/wing/orb) peu lisible. On reprend donc exactement la recette de
+// .lp-card dans renderLaunchPicker() (fenêtre "CHOIX DE L'ESCOUADE" avant une mission) : carte
+// .codex-card complète via codexCardHtml() (nom, rareté, niveau, cadre légendaire le cas échéant),
+// avec le badge numéroté (ordre de sélection) au lieu du ✓ utilisé là-bas.
 function renderRaidTeamGrid(){
   const grid = document.getElementById('raidTeamGrid');
   let cards = ownedRaidCards();
@@ -21735,12 +22629,9 @@ function renderRaidTeamGrid(){
   grid.innerHTML = cards.map(c => {
     const idx = raidPicked.indexOf(c.key);
     const picked = idx >= 0;
-    return '<div class="raid-team-card' + (picked ? ' picked' : '') + '" data-key="' + c.key + '">'
-      + (picked ? ('<div class="rtc-badge">' + (idx + 1) + '</div>') : '')
-      + '<div class="rtc-port" style="background:' + (c.def.color || '#333') + '33"></div>'
-      + '<div class="rtc-name" style="color:' + (c.def.color || '#fff') + '">' + c.def.name + '</div>'
-      + '<div class="rtc-rar">' + c.rar.toUpperCase() + '</div>'
-      + '<div class="rtc-stats">NV.' + c.level + ' · ' + c.hp + ' PV</div></div>';
+    return `<div class="codex-card raid-team-card ${rarCls(c.rar)}${picked ? ' sel' : ''}" data-key="${c.key}">
+      ${codexCardHtml(c.def, c.rar, { badge: picked ? String(idx + 1) : '' })}
+    </div>`;
   }).join('');
   grid.querySelectorAll('.raid-team-card').forEach(el => { el.onclick = () => toggleRaidPick(el.dataset.key); });
   document.getElementById('raidTeamCount').textContent = raidPicked.length + '/15';
@@ -21748,7 +22639,16 @@ function renderRaidTeamGrid(){
   launchBtn.disabled = raidPicked.length < 5;
   launchBtn.textContent = raidPicked.length < 5 ? ('SÉLECTIONNE AU MOINS 5 CARTES (' + raidPicked.length + '/5)') : 'LANCER';
 }
+// V0.03.84 (demande d'Alex) : remplit l'équipe en un clic avec les 15 meilleures cartes possédées,
+// classées par puissance globale (cardPower(), même formule que le badge "Puissance" du Codex) --
+// remplace entièrement la sélection en cours (comme un vrai "auto", pas un simple complément).
+function raidAutoPick(){
+  const cards = ownedRaidCards().slice().sort((a, b) => cardPower(b.def, b.rar, b.level) - cardPower(a.def, a.rar, a.level));
+  raidPicked = cards.slice(0, 15).map(c => c.key);
+  renderRaidTeamGrid();
+}
 document.getElementById('raidTeamClose').onclick = closeRaidTeamPicker;
+document.getElementById('raidAutoBtn').onclick = raidAutoPick;
 document.querySelectorAll('#raidSortOpts .raid-filter-opt').forEach(btn => {
   btn.onclick = () => {
     raidSortBy = btn.dataset.sort;
