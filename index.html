@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.92</title>
+<title>Projet MECA V0.03.93</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7963,7 +7963,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.92</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.93</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8438,9 +8438,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.92';
+var BUILD_VERSION = 'V0.03.93';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.93', items:[
+    'Boss de raid rééquilibré : difficulté identique pour tous les joueurs et croissante de phase en phase. La phase 1 demande déjà un minimum de cartes solides, et la phase 3 est un vrai mur qui ne se termine qu\'avec des cartes bien montées et fusionnées (en plusieurs tentatives).'
+  ]},
   { v:'V0.03.92', items:[
     'La pastille de certification DÉFI (jaune palier 50, rouge palier 100) s\'affiche maintenant sur toutes les cartes du personnage concerné, à toutes ses raretés, et pas seulement sur sa meilleure copie.',
     'Nouvelle animation à l\'obtention d\'une certification DÉFI : après avoir récupéré la récompense, la carte s\'affiche en grand et la pastille vient s\'y poser avec un effet d\'impact.'
@@ -22693,27 +22696,39 @@ function raidState(){
   return { info, r, now, locked, finished, canAttempt: info.active && !locked && !finished };
 }
 
-// ---------- Boss (3 phases ; valeurs identiques pour tout le monde comme demandé par Alex) ----------
-// V0.03.02 : 1er étalonnage réel (demande d'Alex : "pour le moment, en gros les joueurs du niveau 5
-// réussiront à terminer la phase 3"), en remplacement des PV/ATQ/DÉF/VIT d'origine qui n'avaient
-// jamais été calibrés en jeu réel. Simulation faite avec le vrai moteur de combat (raidDealDamage()),
-// sur une escouade de 15 cartes RARE (mult rareté ×1, pas de fusion) à un niveau de CARTE 5 -- la seule
-// hypothèse simplificatrice assumée ici est niveau de carte ≈ niveau joueur, en l'absence d'un lien
-// direct entre les deux dans le jeu (XP joueur vient de la Fabrique, XP carte vient des missions) ;
-// à réviser si Alex a une autre idée du profil type d'un joueur niveau 5.
-// Avec les anciennes valeurs, cette escouade se faisait anéantir à 100% avant la fin des 2 minutes de
-// chaque tentative, quel que soit le niveau de carte testé (1/5/10) : l'ATQ du boss à elle seule
-// explique l'essentiel du problème (on-shot/two-shot les unités), donc ATQ et DÉF ont aussi été revus,
-// pas seulement les PV. Résultat visé et obtenu (≈300 tentatives simulées par phase, taux d'échec
-// avant la fin du chrono) à niveau de carte 5 : phase 1 ≈2 tentatives (0% d'échec), phase 2 ≈5
-// tentatives (0%), phase 3 ≈10 tentatives (≈4% d'échec -- quelques tentatives perdues, pas un mur).
-// À niveau de carte 1 (joueur tout frais), la phase 3 reste hors de portée (anéantissement quasi
-// garanti) ; à niveau de carte 10+, les 3 phases se passent sans encombre -- la courbe de difficulté
-// se resserre avec le niveau, comme attendu d'un boss de fin.
+// ---------- Boss (3 phases ; table FIXE, identique pour tout le monde -- V0.03.94) ----------
+// V0.03.93 avait remplacé la table fixe d'origine (calibrée une seule fois en V0.03.02, à un niveau de
+// CARTE 5, jamais revue depuis -- devenue trivialement facile une fois les cartes montées au-delà) par
+// un systeme qui recalculait les stats du boss à partir de l'escouade de raid du joueur lui-même
+// (proportionnel, "adaptatif"). Alex a corrigé le cap après coup : ce n'est PAS ce qu'il voulait --
+// avec un boss relatif à sa propre escouade, N'IMPORTE QUEL joueur (niveau de compte 1 ou 50) vit
+// exactement le même scénario (phase 1 facile, phase 2 correcte, phase 3 un mur), quel que soit son
+// investissement réel dans ses cartes. Demande explicite : "il ne faut pas que ca soit trop facile dès
+// la phase 1 et que ca soit de plus en plus compliqué" + "il faut trouvé un truc pour que les joueurs du
+// niveau 1 comme ceux du niveau 50 aient a peu près la même difficulté, il y a des joueurs qui
+// n'arriveront pas a terminer les 3 phases et d'autres y arriveront mais il faut qu'il aient des cartes
+// assez fort" -- donc une difficulté ABSOLUE (même boss pour tout le monde, comme à l'origine), mais
+// cette fois calibrée par simulation sur le vrai moteur de combat (raidDealDamage()) à travers tout un
+// spectre de paliers d'investissement CARTE réalistes (niveau de carte + fusion de rareté -- PAS le
+// niveau de compte, qui n'est pas le même axe de progression, cf cardTierFused/rarityMult) :
+//   TRES FAIBLE (niv. carte 5-10, commun, aucune fusion)   : phase 1 gagnable mais tendue (jusqu'à 62
+//     des 86 ticks d'une tentative) ; phase 2 anéantit l'escouade ; phase 3 hors de portée.
+//   DEBUT A MODERE (niv. 20-60, rare, aucune fusion)       : phase 1 de plus en plus facile ; phase 2
+//     devient jouable autour du niveau 60-70 (quasi à la limite du chrono) ; phase 3 reste un mur
+//     (anéantissement ou quasi aucun progrès selon le palier).
+//   INVESTI A FORT (niv. 70-150, épique/légendaire FUSIONNÉS, "cartes assez fortes") : phases 1 et 2
+//     triviales ; phase 3 ne se termine PAS en une seule tentative mais entame vraiment le boss (de 75%
+//     à 45% de PV restants selon le palier) -- un vrai siège sur 2-4 tentatives (PV persistés entre
+//     échecs + 3 tokens/cycle déjà existants), proportionné à la valeur de grantRaidFinalReward().
+//   ENDGAME (niv. 200-250, légendaire fusionné) : phase 3 se termine en 1-2 tentatives -- trivialisation
+//     naturelle de fin de jeu, pas un défaut à corriger.
+// Donc : certains joueurs (cartes peu ou pas investies) ne termineront jamais les 3 phases avec leur
+// escouade actuelle : il leur faut monter des cartes plus fort (niveau et/ou fusion de rareté), pas
+// juste continuer à jouer leur compte -- exactement ce qu'Alex demandait.
 const RAID_BOSS = [
-  { hp: 9000,  atk: 55,  def: 35, vit: 40 },
-  { hp: 22000, atk: 75,  def: 55, vit: 55 },
-  { hp: 44000, atk: 100, def: 80, vit: 70 },
+  { hp: 4827,  atk: 18,  def: 8,   vit: 107 },
+  { hp: 20631, atk: 115, def: 59,  vit: 383 },
+  { hp: 44716, atk: 441, def: 299, vit: 978 },
 ];
 // Visuels du boss AMALGAME, un par phase (V0.03.03, fournis par Alex) : progression jour -> crépuscule
 // -> nuit illustrant sa dégradation au fil des phases (intact / bras arraché-fumant / effondré). Encodés
@@ -22770,8 +22785,10 @@ function updateRaidTile(){
   if(dot) dot.classList.toggle('on', canAttempt && r.tokens > 0);
   // Barre de vie (V0.03.02, masquée hors évènement disponible depuis V0.03.04 -- demande d'Alex : inutile
   // à voir tant qu'on ne peut pas attaquer) : PV restants du boss sur la phase en cours (r.phaseHp,
-  // persistés entre tentatives) par rapport au max de cette phase (RAID_BOSS[phase].hp) ; pleine si la
-  // phase n'a pas encore été entamée (phaseHp == null) ; vide une fois les 3 phases terminées (r.phase > 2).
+  // persistés entre tentatives) par rapport au max de cette phase. Depuis V0.03.93 ce max est calculé
+  // (RAID_BOSS[phase].hp, table fixe identique pour tout le monde) ;
+  // pleine si la phase n'a pas encore été entamée (phaseHp == null) ; vide une fois les 3 phases
+  // terminées (r.phase > 2).
   const hpBar = document.getElementById('raidTileHpBar');
   if(hpBar) hpBar.style.display = canAttempt ? '' : 'none';
   const hpFill = document.getElementById('raidTileHpFill');
