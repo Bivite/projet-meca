@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.03.90</title>
+<title>Projet MECA V0.03.92</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2789,6 +2789,88 @@
   /* Anneau rouge + voile doré "100/100" déplacés vers .defi-cell (hub DÉFI) en V0.03.53 -- cf
      .defi-corner/.defi-ultimate-shine plus haut dans ce fichier : "case de carte" désignait depuis le
      départ les cases de la grille DÉFI, pas les tuiles de GESTION DE CARTE (demande d'Alex). */
+
+  /* ========== Révélation de certification DÉFI (V0.03.92, demande d'Alex) ==========
+     Palier 50 (certifié) ou palier 100 (ultimate) tout juste remporté : après la fenêtre de récompense,
+     la carte s'affiche en grand (#defiCertModal, cf openDefiCertReveal()) et la pastille arrive "comme
+     une météorite" jusqu'à sa position définitive (même top/right/height que .lg-layer > .defi-trophy-
+     badge ci-dessus -- .defi-cert-meteor PART de ces classes, donc hérite déjà de la bonne image/taille/
+     position d'arrivée, seul un transform de décalage initial la place hors-écran). À l'impact : la
+     carte fait une "vague" (anneau qui s'étend depuis la pastille + bref flash/secousse sur l'artwork)
+     puis tout se stabilise -- .defi-cert-meteor/.fly/.impact sont alors retirés (il ne reste que
+     .defi-trophy-badge(.ultimate) classique, qui reprend son halo normal). */
+  .defi-cert-meteor{
+    animation:none !important;   /* neutralise trophyGlow (héritée de .defi-trophy-badge) tant que la météorite vole */
+    transform:translate(230cqw, -190cqw) scale(2.6) rotate(-38deg);
+    opacity:0;
+    filter:brightness(1.4) drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 0 10px rgba(255,210,110,.9)) drop-shadow(0 0 22px 4px rgba(255,180,60,.75));
+  }
+  .defi-cert-meteor.ultimate{
+    filter:brightness(1.1) drop-shadow(0 0 3px rgba(255,255,255,.8)) drop-shadow(0 0 10px rgba(255,90,78,.9)) drop-shadow(0 0 22px 4px rgba(255,70,60,.7));
+  }
+  .defi-cert-meteor::after{   /* traînée derrière la météorite, visible uniquement pendant le vol */
+    content:""; position:absolute; top:50%; left:0; width:480%; height:2.4cqw; max-height:5px;
+    background:linear-gradient(90deg, rgba(255,214,120,.95), rgba(255,214,120,0) 85%);
+    transform:translate(-98%, -50%); border-radius:4px; opacity:0; pointer-events:none;
+  }
+  .defi-cert-meteor.ultimate::after{ background:linear-gradient(90deg, rgba(255,96,80,.95), rgba(255,96,80,0) 85%); }
+  .defi-cert-meteor.fly{
+    transition:transform .42s cubic-bezier(.32,.04,.46,1), opacity .16s ease;
+    transform:none; opacity:1;
+  }
+  .defi-cert-meteor.fly::after{ transition:opacity .08s ease .04s; opacity:.85; }
+  .defi-cert-meteor.impact{ opacity:1; animation:certBadgeLand .5s cubic-bezier(.22,1.6,.42,1) !important; }
+  .defi-cert-meteor.impact::after{ opacity:0; transition:opacity .22s ease; }
+  @keyframes certBadgeLand{
+    0%{ transform:scale(2); filter:brightness(2.4) drop-shadow(0 0 3px #fff) drop-shadow(0 0 30px 10px rgba(255,224,150,.95)); }
+    55%{ transform:scale(.8); }
+    100%{ transform:scale(1); filter:brightness(1) drop-shadow(0 0 2px rgba(255,246,210,.7)) drop-shadow(0 0 4px rgba(255,214,110,.5)); }
+  }
+  .defi-cert-meteor.ultimate.impact{ animation:certBadgeLandRed .5s cubic-bezier(.22,1.6,.42,1) !important; }
+  @keyframes certBadgeLandRed{
+    0%{ transform:scale(2); filter:brightness(1.8) drop-shadow(0 0 3px #fff) drop-shadow(0 0 26px 8px rgba(255,90,78,.9)); }
+    55%{ transform:scale(.8); }
+    100%{ transform:scale(1); filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+  }
+  /* Anneau de "vague" qui part de la pastille au moment de l'impact, balaie la carte puis disparaît */
+  .defi-cert-wave{
+    position:absolute; z-index:3; top:3.5%; right:-1.5%; width:17cqw; height:17cqw; margin:0;
+    border-radius:50%; border:.6cqw solid rgba(255,226,150,.9); pointer-events:none;
+    transform:translate(50%,-50%) scale(.3); opacity:0;
+  }
+  .defi-cert-wave.ultimate{ border-color:rgba(255,96,80,.9); }
+  .defi-cert-wave.go{ animation:certWaveRing .75s cubic-bezier(.18,.7,.32,1) forwards; }
+  @keyframes certWaveRing{
+    0%{ transform:translate(50%,-50%) scale(.3); opacity:.95; }
+    100%{ transform:translate(50%,-50%) scale(9); opacity:0; }
+  }
+  /* Secousse/flash de l'artwork au moment de l'impact (même déclencheur que l'anneau ci-dessus) */
+  .lg-layer.cert-shock{ animation:certLayerShake .4s ease-out; }
+  @keyframes certLayerShake{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    22%{ transform:translate(-.6%, .4%) scale(1.015); }
+    46%{ transform:translate(.5%, -.3%) scale(.99); }
+    70%{ transform:translate(-.3%, .2%) scale(1.006); }
+  }
+  .lg-layer.cert-shock .lg-art-img{ animation:certArtFlash .5s ease-out; }
+  @keyframes certArtFlash{
+    0%,100%{ filter:brightness(1); }
+    18%{ filter:brightness(2) saturate(1.3); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .defi-cert-meteor{ transition:none !important; animation:none !important; transform:none; opacity:1; }
+    .defi-cert-wave.go{ animation:none !important; opacity:0; }
+    .lg-layer.cert-shock, .lg-layer.cert-shock .lg-art-img{ animation:none !important; }
+  }
+  /* Fenêtre de révélation : invite à toucher pour fermer, affichée seulement une fois la séquence jouée */
+  #defiCertModal{ flex-direction:column; }
+  #defiCertModal .defi-cert-hint{
+    position:absolute; left:0; right:0; bottom:calc(40px + env(safe-area-inset-bottom, 0px));
+    text-align:center; font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:3px;
+    color:var(--text-dim); opacity:0; pointer-events:none; transition:opacity .4s ease;
+  }
+  #defiCertModal .defi-cert-hint.show{ opacity:.85; animation:certHintPulse 1.6s ease-in-out infinite; }
+  @keyframes certHintPulse{ 0%,100%{opacity:.55;} 50%{opacity:.95;} }
   /* Bandeau de fin de vague (remplace le popup de victoire) */
   #infArena{position:relative;}
   /* V0.03.74 (diagnostic demandé par Alex) : coins arrondis d'origine remplacés par le même style
@@ -6670,8 +6752,15 @@
 
   /* =================== DESTRUCTION DE CARTE =================== */
   .dfx-overlay{
+    /* Pas de backdrop-filter ici (V0.03.91, correctif crash iOS Safari demandé par Alex) : ce calque
+       plein écran reste affiché ~1.8s pendant que jusqu'à 24 .dfx-shard (chacun une copie complète de
+       la carte/module) s'animent dessus -- un flou recalculé en continu par-dessus la navbar/barre de
+       ressources (elles-mêmes déjà en filter/backdrop-filter en permanence) en plus de tout ça a de
+       bonnes chances de faire planter le compositeur de Safari sur iPhone. Le fond déjà à 82% d'opacité
+       assombrit largement ce qu'il y a dessous, donc retirer le flou ne change quasiment rien à l'oeil.
+    */
     position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center;
-    background:rgba(4,3,8,.82); backdrop-filter:blur(3px); opacity:0; pointer-events:none;
+    background:rgba(4,3,8,.82); opacity:0; pointer-events:none;
     transition:opacity .22s ease;
   }
   .dfx-overlay.on{opacity:1;}
@@ -7874,7 +7963,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.90</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.03.92</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8267,6 +8356,15 @@
   <div class="cx-below" id="cxBelow"></div>
 </div>
 
+<!-- Révélation de certification DÉFI (V0.03.92, demande d'Alex) : fenêtre dédiée, séparée de #codexModal
+     pour ne jamais interférer avec son propre état (dataset.cxCard, lvl-open, tilt...) -- cf
+     openDefiCertReveal(). Réutilise les classes .codex-modal/.codex-modal-inner.lg-modal/.lg-layer
+     telles quelles (fond flouté, cadre grand format centré) : rien à redéfinir pour l'habillage de base. -->
+<div class="codex-modal" id="defiCertModal">
+  <div class="codex-modal-inner lg-modal" id="defiCertInner"></div>
+  <div class="defi-cert-hint" id="defiCertHint">TOUCHEZ POUR CONTINUER</div>
+</div>
+
 <div class="codex-modal" id="slotPickerModal">
   <div class="codex-modal-inner" id="slotPickerInner"></div>
 </div>
@@ -8340,9 +8438,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.03.90';
+var BUILD_VERSION = 'V0.03.92';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.03.92', items:[
+    'La pastille de certification DÉFI (jaune palier 50, rouge palier 100) s\'affiche maintenant sur toutes les cartes du personnage concerné, à toutes ses raretés, et pas seulement sur sa meilleure copie.',
+    'Nouvelle animation à l\'obtention d\'une certification DÉFI : après avoir récupéré la récompense, la carte s\'affiche en grand et la pastille vient s\'y poser avec un effet d\'impact.'
+  ]},
+  { v:'V0.03.91', items:[
+    'CORRECTIF : un bug qui pouvait provoquer un flash blanc et fermer l\'écran en cours (au LABO, au TIRAGE, en GESTION DE CARTES ou en DEATH SQUAD), généralement juste après avoir confirmé une action (DÉTRUIRE, UPGRADE, DOWNGRADE), a été corrigé.'
+  ]},
   { v:'V0.03.90', items:[
     'Combat du BOSS DE RAID : l\'artwork du boss s\'affiche maintenant aussi pendant le combat (avant, on ne le voyait que sur l\'écran de choix), dans un encadré qu\'il remplit entièrement.',
     'Combat du BOSS DE RAID : les cartes de l\'escouade affichent maintenant leur vrai visuel illustré (comme partout ailleurs dans le jeu), réunies dans un seul encadré.',
@@ -13765,16 +13870,19 @@ let upgradeQty = 1;         // nombre de groupes d'upgrade choisis dans la fenê
 // du script n'atteigne cette déclaration), et une const encore en zone morte temporelle ferait planter
 // la page ("Cannot access before initialization"). 50 est le nombre total de paliers par carte, répété
 // ici en dur pour cette seule raison (cf DEFI_CHALLENGES_PER_CARD, section DÉFI, même valeur).
+// V0.03.92 (demande d'Alex) : la pastille se posait avant uniquement sur LA carte (meilleure rareté +
+// meilleur niveau possédés) -- elle s'affiche maintenant sur TOUTES les cartes de ce personnage (toutes
+// raretés, tous paliers de niveau), y compris celles obtenues après coup : c'est juste un seuil sur
+// player.defi[def.name] (progression par PERSONNAGE, pas par exemplaire), donc rien à retenir par carte
+// -- `rar`/`level` restent dans la signature pour ne pas changer les deux appelants, mais ne servent plus.
 function defiTrophyEligible(def, rar, level){
-  return ((player.defi && player.defi[def.name]) || 0) >= 50
-    && rar === effRarity(def) && level === topOwnedLevel(def.name, rar);
+  return ((player.defi && player.defi[def.name]) || 0) >= 50;
 }
 // V0.03.52 (mode ultimate, demande d'Alex) : même principe/même raison que defiTrophyEligible()
 // ci-dessus (seuil en dur -- codexCardHtml() tourne avant que la section DÉFI du script ne déclare
 // ULTIMATE_MAX_TIER, TDZ sinon), mais au seuil 100 (palier ultimate final, 100/100).
 function defiUltimateEligible(def, rar, level){
-  return ((player.defi && player.defi[def.name]) || 0) >= 100
-    && rar === effRarity(def) && level === topOwnedLevel(def.name, rar);
+  return ((player.defi && player.defi[def.name]) || 0) >= 100;
 }
 function codexCardHtml(def, rar, opts){
   // `opts.level` permet d'afficher un palier de niveau précis (tuile de la liste GESTION DE CARTE
@@ -13939,6 +14047,54 @@ function lgLayerHtml(def, rar, ids, level, showTrophy){
       <div class="lg-st s-def"><b${id('cxStdef')}${inkStyle(s.def)}>${s.def}</b></div>
       <div class="lg-st big s-hp"><b${id('cxSthp')}${inkStyle(s.hp)}>${s.hp}</b></div>
     </div>`;
+}
+// ---------- Révélation de certification DÉFI (V0.03.92, demande d'Alex) ----------
+// Appelée depuis defiEndBattle() (via opts.onAction de showRewardModal, donc une fois la fenêtre de
+// récompense acceptée) quand la victoire vient de faire franchir le palier 50 (certifié) ou 100
+// (ultimate) pour la toute première fois. `key` = sqKey(nom, rareté) de LA carte jouée (defiLaunchCard)
+// -- celle affichée en grand ; la pastille elle-même concerne tout le personnage (cf
+// defiTrophyEligible/defiUltimateEligible, V0.03.92) et s'affichera donc aussi sur ses autres raretés
+// dès le prochain rendu de GESTION DE CARTE, pas seulement sur celle-ci.
+function openDefiCertReveal(key, certType){
+  const e = sqEntry(key);
+  if(!e) return;
+  const { def, rar } = e;
+  const ultimate = certType === 'ultimate';
+  const inner = document.getElementById('defiCertInner');
+  const hint = document.getElementById('defiCertHint');
+  hint.classList.remove('show');
+  // showTrophy:false -- la pastille n'est pas posée par lgLayerHtml ici, elle est ajoutée juste après
+  // en tant que météorite (.defi-cert-meteor), pour ne pas la dupliquer avec la version animée.
+  inner.className = 'codex-modal-inner ' + rarCls(rar) + ' lg-modal';
+  inner.innerHTML = lgLayerHtml(def, rar, false, null, false);
+  const layer = inner.querySelector('.lg-layer');
+  layer.insertAdjacentHTML('beforeend', `
+    <div class="defi-cert-wave${ultimate ? ' ultimate' : ''}"></div>
+    <div class="defi-trophy-badge defi-cert-meteor${ultimate ? ' ultimate' : ''}" title="${ultimate ? 'MODE ULTIMATE TERMINÉ' : 'DÉFI TERMINÉ'}"></div>`);
+  const meteor = layer.querySelector('.defi-cert-meteor');
+  const wave = layer.querySelector('.defi-cert-wave');
+  document.getElementById('defiCertModal').classList.add('show');
+  let ready = false;
+  const FLY_MS = 420, LAND_MS = 500;
+  requestAnimationFrame(() => requestAnimationFrame(() => meteor.classList.add('fly')));
+  setTimeout(() => {   // impact : la pastille "atterrit", la carte encaisse le choc
+    meteor.classList.remove('fly'); meteor.classList.add('impact');
+    layer.classList.add('cert-shock');
+    wave.classList.add('go');
+    if(navigator.vibrate) try{ navigator.vibrate(ultimate ? [12, 50, 12, 50, 45] : [18, 45, 28]); }catch(_){}
+  }, FLY_MS);
+  setTimeout(() => layer.classList.remove('cert-shock'), FLY_MS + 400);
+  setTimeout(() => {   // tout est retombé : la pastille redevient la pastille normale (même halo qu'ailleurs)
+    meteor.classList.remove('defi-cert-meteor', 'impact');
+    hint.classList.add('show');
+    ready = true;
+  }, FLY_MS + LAND_MS);
+  const close = () => {
+    if(!ready) return;
+    document.getElementById('defiCertModal').classList.remove('show');
+    document.getElementById('defiCertModal').removeEventListener('click', close);
+  };
+  document.getElementById('defiCertModal').addEventListener('click', close);
 }
 function powerTag(def, rar, level){ return `<div class="cx-pow" title="Puissance"><i>${ICON_POWER}</i>${fmtPow(cardPower(def, rar, level))}</div>`; }
 function renderCodex(){
@@ -20281,13 +20437,17 @@ function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_
 function defiEndBattle(won){
   battleOver = true;
   clearInterval(tickHandle); tickHandle = null;
-  const def = defiLaunchDef, tier = defiLaunchTier;
+  const def = defiLaunchDef, tier = defiLaunchTier, certKey = defiLaunchCard;
+  // V0.03.92 (demande d'Alex) : capturé AVANT la mise à jour de player.defi[] ci-dessous, pour détecter
+  // si CETTE victoire fait franchir le palier 50 (certifié) ou 100 (ultimate) pour la toute première fois
+  // -- cf plus bas, juste avant l'appel à showRewardModal().
+  const prevDefi = (player.defi && player.defi[def.name]) || 0;
   // V0.03.48 (fix) : la progression doit être mise à jour AVANT defiExitCombat(), car celui-ci
   // ré-affiche la piste (renderDefiPath()) -- l'appeler après aurait laissé la piste affichée avec
   // l'ancienne progression (palier remporté encore "en cours", palier suivant encore verrouillé)
   // jusqu'au prochain rafraîchissement.
   if(won){
-    player.defi[def.name] = Math.max((player.defi && player.defi[def.name]) || 0, tier);
+    player.defi[def.name] = Math.max(prevDefi, tier);
     saveSoon();
   }
   defiExitCombat();
@@ -20298,9 +20458,17 @@ function defiEndBattle(won){
   // dédié que la case défi (cf renderDefi()/.defi-art-img) -- certaines cartes n'en ont pas encore
   // (defiExtArtMissing()), showRewardModal() reprend alors le même repli GREY_ART.
   const artPosY = defiResultArtPosY(def.name);
+  // V0.03.92 (demande d'Alex) : "jaune" = palier 50 (defiTrophyEligible), "rouge"/ultimate = palier 100
+  // (defiUltimateEligible) -- justCert n'est non-null QUE la victoire qui fait franchir le seuil pour la
+  // toute première fois (prevDefi en-dessous, nouvelle valeur au-dessus), jamais sur une victoire déjà
+  // certifiée. La révélation (openDefiCertReveal) se joue APRÈS acceptation de la récompense (onAction),
+  // pas avant -- "il accepte et LA la carte s'affiche en grand", pas pendant l'écran de récompense.
+  const justCert = !won ? null
+    : (prevDefi < 50 && player.defi[def.name] >= 50) ? 'gold'
+    : (prevDefi < 100 && player.defi[def.name] >= 100) ? 'ultimate' : null;
   if(won){
     const items = grantReward(defiTierReward(tier));
-    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt, artPosY });
+    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt, artPosY, onAction: justCert ? () => openDefiCertReveal(certKey, justCert) : null });
   } else {
     // Retouche d'Alex : "pour la défaite, enlève le texte escouade hors service" -- titre vide, donc
     // showRewardModal() n'affiche plus du tout de .rw-title pour cet écran (cf son code plus haut).
