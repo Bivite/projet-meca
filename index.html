@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.8</title>
+<title>Projet MECA V0.04.9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8001,7 +8001,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.8</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.9</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8502,9 +8502,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.8';
+var BUILD_VERSION = 'V0.04.9';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.9', items:[
+    'Mission DOME : objectif 30 images par seconde constantes. Le jeu vérifie en continu ce que ton téléphone arrive à faire : s\'il peine, il passe d\'abord en 30 images par seconde bien régulières (adapté aux écrans 90/120 Hz), puis allège par étapes ce qui pèse le plus (détails fins des maisons, fissures, textures, puis définition de l\'image) selon la cause du ralentissement. Le réglage est mémorisé pour les parties suivantes. Sur un téléphone assez rapide, rien ne change à l\'écran. Le compteur d\'IPS (menu pause) indique maintenant aussi le niveau de détails. Correction : un cas rare où le robot pouvait disparaître en bougeant dès la première image.'
+  ]},
   { v:'V0.04.8', items:[
     'Mission DOME : encore plus fluide. Les buissons des jardins, les fissures du sol et les décors à venir sont bien moins coûteux à dessiner, et le jeu s\'allège tout seul par étapes si ton téléphone n\'arrive pas à suivre (jusqu\'à 30 images par seconde bien régulières). Nouveau : un compteur d\'images par seconde, à afficher ou masquer depuis le menu pause. Les petits flous derrière le chrono et les boutons sont retirés pour alléger l\'écran.',
   ]},
@@ -19867,23 +19870,30 @@ function dgSlab(ctx, pts, z0, h, cTop, cSide, tex){
 function dgDrawFlat(ctx, items){
   const cl = ctx === DG.ctx ? DG.cull : null;
   if(cl && items.some(it => it.stroke)) ctx.lineJoin = 'round';      // l'original le posait au premier trait tracé : d'autres dessins en dépendent, même si ce trait est hors écran
-  const lod = ctx === DG.ctx ? (DG.q ? DG.q.lod || 0 : 0) : 0; let bH = null, bC = null;
+  const lod = ctx === DG.ctx ? (DG.q ? DG.q.lod || 0 : 0) : 0; let bH = null, bC = null, bF = null, bFc = null;
+  const flushF = () => { if(bF){ ctx.fillStyle = bFc; ctx.fill(); bF = null; } };                      // aplats consécutifs de même couleur (bandes, marquages, taches) : un seul tracé
   const flushCk = () => {                                                                       // fissures : un seul tracé pour tous les halos, un seul pour tous les cœurs
     if(bH){ ctx.beginPath(); for(const q of bH){ ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); } ctx.fillStyle = DG_CK_HALO; ctx.fill(); bH = null; }
     if(bC){ ctx.beginPath(); for(const q of bC){ ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); } ctx.fillStyle = DG_CK_CORE; ctx.fill(); bC = null; } };
   for(let i = 0; i < items.length; i++){
     const it = items[i], z = it.z == null ? .3 : it.z, isCk = it.t === 'p' && !it.stroke && (it.fill === DG_CK_HALO || it.fill === DG_CK_CORE);
     if(!isCk) flushCk();
-    else if(lod >= 2 || (lod >= 1 && it.fill === DG_CK_HALO)) continue;
+    else if(flushF(), lod >= 2 || (lod >= 1 && it.fill === DG_CK_HALO)) continue;
     const q = it.pts.map(p => dgP(p[0], p[1], z));
     if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let j = 0; j < q.length; j++){ const r = q[j]; if(r.x < a) a = r.x; if(r.x > b) b = r.x; if(r.y < c) c = r.y; if(r.y > d) d = r.y; }
-      const m = 4 + (it.lw || 1) * q[0].k * DG_SC; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ if(it.t === 'p' && it.fill && !isCk) ctx.fillStyle = it.fill; if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); } continue; } }      // hors écran : on ne trace rien, mais l'état du pinceau reste celui de l'original
+      const m = 4 + (it.lw || 1) * q[0].k * DG_SC; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ if(it.t === 'p' && it.fill && !isCk){ flushF(); ctx.fillStyle = it.fill; } if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); } continue; } }      // hors écran : on ne trace rien, mais l'état du pinceau reste celui de l'original
     if(isCk){ if(it.fill === DG_CK_HALO) (bH || (bH = [])).push(q); else (bC || (bC = [])).push(q); continue; }
+    if(it.t === 'p' && it.fill && !it.stroke){                                                   // aplat simple : regroupé avec les précédents de même couleur
+      if(bF && bFc !== it.fill) flushF();
+      if(!bF){ ctx.beginPath(); bF = true; bFc = it.fill; }
+      ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); continue;
+    }
+    flushF();
     ctx.beginPath(); ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y);
     if(it.t === 'p'){ ctx.closePath(); if(it.fill){ ctx.fillStyle = it.fill; ctx.fill(); } }
     if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); ctx.lineJoin = 'round'; ctx.stroke(); }
   }
-  flushCk();
+  flushCk(); flushF();
 }
 const DG_CK_HALO = 'rgba(0,0,0,.2)', DG_CK_CORE = 'rgba(3,3,2,.9)';
 function dgEllPts(cx, cy, rx, ry, rot, n, rnd, jit){
@@ -21238,10 +21248,11 @@ function dgDomeSpr(pal, fl, vr, big){
 function dgDrawParts(ctx0, o, M){
   const ctx = ctx0, ox = o.x, oy = o.y, pj = p => dgP(ox + p[0], oy + p[1], p[2]);
   const poly = (pts, fill, stroke, lw) => { ctx.beginPath(); pts.forEach((p, i) => { const q = pj(p); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath(); if(fill){ ctx.fillStyle = fill; ctx.fill(); } if(stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } };
-  M.ground.forEach(g => poly(g.p, g.k === 'col' ? g.c : g.k === 'soot' ? 'rgba(18,16,14,.45)' : g.k === 'moss' ? 'rgba(82,110,58,.38)' : 'rgba(225,220,205,.22)'));
+  const lod0 = ctx0 === DG.ctx && DG.q ? DG.q.lod || 0 : 0;
+  M.ground.forEach(g => lod0 < 4 ? poly(g.p, g.k === 'col' ? g.c : g.k === 'soot' ? 'rgba(18,16,14,.45)' : g.k === 'moss' ? 'rgba(82,110,58,.38)' : 'rgba(225,220,205,.22)') : 0);
   ctx.beginPath(); M.shadow.forEach(h => { h.forEach((p, i) => { const q = pj(p); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath(); }); ctx.fillStyle = 'rgba(0,0,0,' + (M.sa || .24) + ')'; ctx.fill();
   const k0 = dgP(ox, oy, 0).k * DG_SC;
-  const cl = ctx0 === DG.ctx ? DG.cull : null;
+  const cl = ctx0 === DG.ctx ? DG.cull : null, lod = ctx0 === DG.ctx && DG.q ? DG.q.lod || 0 : 0;      // lod 3-4 : appareil à la peine, on retire les détails fins (textures, taches, contours)
   M.parts.forEach(p => {
     let ctx = ctx0, stub = null;
     if(p.fx){                                                    // pièce dessinée à part (rondes, eau)
@@ -21262,29 +21273,36 @@ function dgDrawParts(ctx0, o, M){
       const n = f.n, cam = n[0] * .6 + n[1] * .6 + n[2] * .53; if(cam <= .02) return; vis[f.nm] = 1;
       const d = -.35 * n[0] + .55 * n[1] + .75 * n[2], k = Math.min(1.02, .74 + (d + .35) * .24), pts = f.idx.map(pjc);
       dgPoly(ctx, pts, f.cs || (f.cs = dgShade(p.col, k)));
-      if(p.tex && (f.nm === 'top' || f.nm === 'bp' || f.nm === 'ap')) dgApplyTexture(ctx, pts, 'concrete', .3);
+      if(lod < 3 && p.tex && (f.nm === 'top' || f.nm === 'bp' || f.nm === 'ap')) dgApplyTexture(ctx, pts, 'concrete', .3);
+      if(lod >= 4) return;
       if(!sk){ ctx.beginPath(); sk = true; } pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath();       // contours des faces visibles : un seul tracé par pièce
     });
     if(sk){ ctx.strokeStyle = 'rgba(70,64,52,.42)'; ctx.lineWidth = Math.max(.5, .7 * k0); ctx.stroke(); }
     let cg = null;                                                                    // fissures regroupées par (épaisseur, couleur) : un seul tracé par groupe au lieu de deux traits par fissure
+    let bt = null;                                   // tracé en cours : les décors consécutifs de même couleur sont regroupés en un seul tracé (même ordre de superposition, bien moins d'appels)
+    const bflush = () => { if(bt){ if(bt.m){ ctx.fillStyle = bt.s; ctx.fill(); } else { ctx.strokeStyle = bt.s; ctx.lineWidth = bt.w; ctx.stroke(); } bt = null; } };
+    const badd = (m, st, w, pts) => { if(bt && (bt.m !== m || bt.s !== st || bt.w !== w)) bflush(); if(!bt){ ctx.beginPath(); bt = { m, s:st, w }; } pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); };
     p.decos.forEach(dc => {
       if(!vis[dc.f]) return;
-      if(dc.k === 'cols'){ ctx.beginPath(); dc.ps.forEach(pl => { pl.forEach((q, i) => { const r = pj(q); i ? ctx.lineTo(r.x, r.y) : ctx.moveTo(r.x, r.y); }); ctx.closePath(); }); ctx.fillStyle = dc.c; ctx.fill(); return; }       // aplats regroupés (fenêtres des tours)
+      if(lod >= 3 && dc.k !== 'cols' && dc.k !== 'col') return;
+      if(dc.k === 'cols'){ dc.ps.forEach(pl => badd(1, dc.c, 0, pl.map(pj))); return; }       // aplats regroupés (fenêtres des tours)
       const pts = dc.p.map(pj);
       if(dc.k === 'crack'){ const key = (dc.w || 1) + '|' + (dc.c || ''); cg = cg || {}; (cg[key] || (cg[key] = { w:dc.w || 1, c:dc.c, l:[] })).l.push(pts); return; }
+      if(dc.k === 'moss'){ badd(1, 'rgba(86,118,60,.55)', 0, pts); return; }
+      if(dc.k === 'stain'){ badd(1, 'rgba(78,70,54,.2)', 0, pts); return; }
+      if(dc.k === 'col'){ badd(1, dc.c, 0, pts); return; }
+      if(dc.k === 'line'){ badd(0, 'rgba(70,64,52,.4)', Math.max(.4, .6 * k0), pts); return; }
+      bflush();
       ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath();
-      if(dc.k === 'moss'){ ctx.fillStyle = 'rgba(86,118,60,.55)'; ctx.fill(); }
-      else if(dc.k === 'stain'){ ctx.fillStyle = 'rgba(78,70,54,.2)'; ctx.fill(); }
-      else if(dc.k === 'fresh'){ ctx.fillStyle = 'rgba(250,247,236,.92)'; ctx.fill(); ctx.strokeStyle = 'rgba(70,64,52,.6)'; ctx.lineWidth = Math.max(.5, .8 * k0); ctx.stroke(); }
+      if(dc.k === 'fresh'){ ctx.fillStyle = 'rgba(250,247,236,.92)'; ctx.fill(); ctx.strokeStyle = 'rgba(70,64,52,.6)'; ctx.lineWidth = Math.max(.5, .8 * k0); ctx.stroke(); }
       else if(dc.k === 'panel'){ ctx.fillStyle = 'rgba(40,34,24,.1)'; ctx.fill(); ctx.strokeStyle = 'rgba(70,64,52,.5)'; ctx.lineWidth = Math.max(.5, .8 * k0); ctx.stroke(); }
-      else if(dc.k === 'col'){ ctx.fillStyle = dc.c; ctx.fill(); }
-      else if(dc.k === 'line'){ ctx.strokeStyle = 'rgba(70,64,52,.4)'; ctx.lineWidth = Math.max(.4, .6 * k0); ctx.stroke(); }
       else if(dc.k === 'rows'){ const c = dc.c, tl = dgRowsTile(c), p0 = pts[0], p1 = pts[1], p3 = pts[3];     // briques / tuiles : une image à lignes plaquée sur la face (transformation affine), découpée à la face
         ctx.save(); ctx.clip(); ctx.transform((p1.x - p0.x) / tl.width, (p1.y - p0.y) / tl.width, (p3.x - p0.x) / tl.height, (p3.y - p0.y) / tl.height, p0.x, p0.y); ctx.drawImage(tl, 0, 0); ctx.restore(); }
     });
+    bflush();
     if(cg) for(const key in cg){ const g = cg[key]; ctx.lineJoin = 'round';
       ctx.beginPath(); g.l.forEach(pts => pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y))); ctx.strokeStyle = g.c || 'rgba(52,46,38,.85)'; ctx.lineWidth = Math.max(.6, .85 * k0 * g.w); ctx.stroke();
-      ctx.save(); ctx.translate(.7, .7); ctx.beginPath(); g.l.forEach(pts => pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y))); ctx.strokeStyle = g.c ? 'rgba(222,216,200,.4)' : 'rgba(255,255,248,.4)'; ctx.lineWidth = Math.max(.4, .5 * k0 * g.w); ctx.stroke(); ctx.restore(); }
+      ctx.beginPath(); g.l.forEach(pts => pts.forEach((q, i) => i ? ctx.lineTo(q.x + .7, q.y + .7) : ctx.moveTo(q.x + .7, q.y + .7))); ctx.strokeStyle = g.c ? 'rgba(222,216,200,.4)' : 'rgba(255,255,248,.4)'; ctx.lineWidth = Math.max(.4, .5 * k0 * g.w); ctx.stroke(); }
     if(stub){ ctx0.fillStyle = stub.fillStyle; ctx0.strokeStyle = stub.strokeStyle; ctx0.lineWidth = stub.lineWidth; ctx0.lineJoin = stub.lineJoin; ctx0.lineCap = stub.lineCap; ctx0.globalAlpha = stub.globalAlpha; }
   });
 }
@@ -24939,22 +24957,52 @@ function dgFit(){
   cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   DG.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-// Qualité adaptative : si l'appareil n'arrive pas à suivre, on allège par étapes (jamais en remontant pendant la partie).
-//   1 : fissures sans halo · 2 : 30 images/s stables (une image sur deux dessinée : plus régulier que 40-50 qui oscillent) · 3 : plus de fissures au sol · 4-5 : définition réduite (1,5 puis 1)
-const DG_STAGE_MAX = 5;
-function dgApplyStage(n){
-  const q = DG.q; q.stage = n; q.lod = n >= 3 ? 2 : n >= 1 ? 1 : 0; q.half = n >= 2; q.cap = n >= 5 ? 1 : n >= 4 ? 1.5 : 2;
+// Qualité adaptative (objectif : 30 images/s constantes sur n'importe quel téléphone). Le jeu mesure les images réellement affichées par fenêtres de ~0,7 s ;
+// s'il n'arrive pas à suivre, il passe d'abord en 30 images/s stables (une image sur deux dessinée, cadence réglée sur l'horloge : marche aussi sur écrans 90/120 Hz),
+// puis allège par crans, en choisissant le levier selon le goulot mesuré :
+//   - le processeur est saturé (temps de calcul/dessin proche de l'intervalle) -> détails retirés (0 normal · 1 fissures sans halo · 2 plus de fissures au sol · 3 plus de textures/taches · 4 plus de contours)
+//   - sinon (carte graphique/affichage) -> définition réduite (x2 -> x1,5 -> x1)
+// Le réglage atteint est mémorisé (appareil lent = on démarre déjà allégé) ; il n'est jamais remonté pendant une partie.
+const DG_LOD_MAX = 4, DG_DPR_STEPS = [2, 1.5, 1], DG_HALF_MS = 27, DG_WIN = 20;
+function dgApplyQ(){
+  const q = DG.q; q.cap = DG_DPR_STEPS[q.dl]; q.stage = (q.half ? 1 : 0) + q.lod + q.dl;
+}
+function dgGovSave(){ const q = DG.q; try { localStorage.setItem('dgGov', JSON.stringify([q.half ? 1 : 0, q.lod, q.dl, Date.now()])); } catch(_){} }
+function dgGovLoad(){
+  const q = DG.q; let v = null; try { v = JSON.parse(localStorage.getItem('dgGov') || 'null'); } catch(_){}
+  if(!Array.isArray(v) || v.length < 4) return;
+  q.half = !!v[0]; q.lod = Math.max(0, Math.min(DG_LOD_MAX, v[1] | 0)); q.dl = Math.max(0, Math.min(DG_DPR_STEPS.length - 1, v[2] | 0));
+  if(Date.now() - v[3] > 12 * 3600 * 1000){ if(q.lod > 0) q.lod--; else if(q.dl > 0) q.dl--; else q.half = false; }      // réglage ancien (appareil refroidi, autre usage) : on retente un cran au-dessus
+  dgApplyQ();
+}
+function dgGovStep(n){            // n crans de dégradation ; renvoie true si quelque chose a changé
+  const q = DG.q, g = q.gw; let done = false;
+  for(let i = 0; i < n; i++){
+    if(!q.half){ q.half = true; done = true; continue; }
+    const cpuFirst = g.cpu > .55, canL = q.lod < DG_LOD_MAX, canD = q.dl < DG_DPR_STEPS.length - 1;
+    if(cpuFirst && canL) q.lod++; else if(!cpuFirst && canD) q.dl++; else if(canL) q.lod++; else if(canD) q.dl++; else break;
+    done = true;
+  }
+  return done;
 }
 function dgQualityCheck(now){
-  const q = DG.q;
-  if(q.lastT){
+  const q = DG.q, g = q.gw;
+  if(q.lastT && !DG.paused && !document.hidden){
     const dt = now - q.lastT;
     if(!q.t0) q.t0 = now;
-    if(!DG.paused && !document.hidden && now - q.t0 > 3000){            // les 3 premières secondes (préchauffage) ne comptent pas
-      if(dt > (q.half ? 41 : 26) && dt < 250) q.slow++; else if(dt < (q.half ? 36 : 19)) q.slow = Math.max(0, q.slow - 1);
-      if(q.slow > 40 && q.stage < DG_STAGE_MAX){
-        q.slow = 0; const cap0 = q.cap; dgApplyStage(q.stage + 1); if(q.cap !== cap0) dgFit();
-        try { localStorage.setItem('dgStage', String(q.stage)); } catch(_){}
+    if(now - q.t0 > 2500 && dt < 1500){                              // les premières secondes (préchauffage) ne comptent pas ; les saccades isolées sont écartées plus bas (2 pires images de chaque fenêtre ignorées)
+      if(g.skip > 0) g.skip--;
+      else {
+        g.n++; g.sum += dt; g.cost += g.lastCost; if(dt > (q.half ? 41 : 26)) g.miss++; if(dt > g.t1){ g.t2 = g.t1; g.t1 = dt; } else if(dt > g.t2) g.t2 = dt;
+        if(g.n >= DG_WIN){
+          const avg = (g.sum - g.t1 - g.t2) / (g.n - 2), ratio = Math.max(0, g.miss - 2) / g.n; g.cpu = g.cost / g.sum;      // moyenne sans les 2 pires images : un à-coup isolé (préchargement, ramasse-miettes) ne déclenche rien
+          const bad = q.half ? (avg > 37 || ratio > .05) : (avg > 22 || ratio > .1);                 // sans le mode 30 : en dessous de ~45 images/s on préfère 30 bien régulières
+          if(bad){
+            const sev = q.half ? (avg > 52 ? 2 : 1) : 1, cap0 = q.cap;
+            if(dgGovStep(sev)){ dgApplyQ(); if(q.cap !== cap0) dgFit(); dgGovSave(); g.skip = DG_WIN; }
+          }
+          g.n = 0; g.sum = 0; g.miss = 0; g.cost = 0; g.t1 = 0; g.t2 = 0;
+        }
       }
     }
   }
@@ -24970,7 +25018,7 @@ function dgFpsTick(now, tu, td){
   F.last = now; if(!F.t0) F.t0 = now;
   if(now - F.t0 >= 1000 && F.n){
     const e = document.getElementById('dgFps');
-    if(e) e.textContent = Math.round(F.n * 1000 / F.sum) + ' IPS · ' + (F.sum / F.n).toFixed(1) + ' ms (pire ' + Math.round(F.worst) + ')\nCalcul ' + (F.tu / F.n).toFixed(1) + ' + dessin ' + (F.td / F.n).toFixed(1) + ' ms · niveau ' + (DG.q.stage || 0) + (DG.q.half ? ' (30 max)' : '') + ' · x' + (DG.dpr || 1);
+    if(e) e.textContent = Math.round(F.n * 1000 / F.sum) + ' IPS · ' + (F.sum / F.n).toFixed(1) + ' ms (pire ' + Math.round(F.worst) + ')\nCalcul ' + (F.tu / F.n).toFixed(1) + ' + dessin ' + (F.td / F.n).toFixed(1) + ' ms · niveau ' + (DG.q.stage || 0) + (DG.q.half ? ' (30 max)' : '') + ' · détails ' + (4 - (DG.q.lod || 0)) + '/4 · x' + (DG.dpr || 1);
     F.n = 0; F.sum = 0; F.worst = 0; F.tu = 0; F.td = 0; F.t0 = now;
   }
 }
@@ -25470,6 +25518,7 @@ function dgCarSortKey(c, isPickup){
 }
 function dgUpdate(dt){
   if(DG.ended) return;
+  if(!(dt > 1e-4)) dt = 1e-4;                // deux images avec le même horodatage (dt = 0) donnaient une division par zéro dans le déplacement : position invalide
   DG.elapsed = Date.now() - DG.startAt;
   dgFxStep(dt);
   dgLobStep(dt);
@@ -25737,13 +25786,14 @@ function dgLoop(now){
   DG.lastT = now;
   const pt0 = performance.now();
   if(!document.hidden && !DG.paused) dgUpdate(dt);
-  if(DG.q.half && !DG.ended && !DG.paused && (DG.skipF = !DG.skipF)){ DG.raf = requestAnimationFrame(dgLoop); return; }      // mode 30 images/s : une image sur deux n'est que calculée
+  if(DG.q.half && !DG.ended && !DG.paused && DG.lastDrawT && now - DG.lastDrawT < DG_HALF_MS){ DG.raf = requestAnimationFrame(dgLoop); return; }      // mode 30 images/s : on ne dessine qu'à partir de ~33 ms après la précédente (cadence sur l'horloge : indépendante de la fréquence de l'écran)
+  DG.lastDrawT = now;
   dgQualityCheck(now);
   if(dt < .03){ dgSprWarmStep(); if((DG.frameN = (DG.frameN || 0) + 1) % 3 === 0 && DG.city && DG.city.terrain) dgTerrainAhead(DG.city, DG.player.x, DG.player.y); }                 // préchauffe le cache de sprites du robot (1 sprite par image si ça ne rame pas) et les décors du sol à venir
   if(DG.ended) return;
   const pt1 = performance.now();
   dgDraw(); dgSearchUI();
-  const pt2 = performance.now();
+  const pt2 = performance.now(); DG.q.gw.lastCost = pt2 - pt0;
   const timerEl = document.getElementById('dgTimer'); if(timerEl){ const tx = dgFmtTimer(DG.elapsed); if(tx !== DG.timerTx){ DG.timerTx = tx; timerEl.textContent = tx; } }
   dgHpUI(); dgActUI(); dgArmorUI();
   dgFpsTick(now, pt1 - pt0, pt2 - pt1);
@@ -25773,7 +25823,7 @@ function dgStartRun(){
   DG.loot = { gold:0, xp:0, mat:{ rare:0, epique:0, legendaire:0 }, crystal:0, boosters:{ res:0, cards:0, modules:0 } };
   DG.lootCount = 0; DG.nearWreck = null; DG.harvestOn = false; DG.harvestProg = 0; DG.ctIn = null; DG.secured = null; DG.secLoot = null; DG.secCount = 0; DG.search = null; DG.searchNear = null; DG.shk = []; DG.sFxCar = null; DG.sFxUntil = 0;
   DG.sGains = []; DG.sLay = null; { const sr = document.getElementById('dgSearch'); if(sr) sr.style.display = 'none'; }
-  DG.dcx = 0; DG.dcy = 0; DG.domeTarget = dgDomePickTarget(); DG.ended = false; DG.startAt = Date.now(); DG.elapsed = 0; DG.lastT = 0; DG.q = { cap:2, slow:0, lastT:0, lod:0, t0:0, half:false, stage:0 }; DG.skipF = false; { let st = 0; try { st = Math.max(0, (parseInt(localStorage.getItem('dgStage'), 10) || 0) - 1); } catch(_){} if(st) dgApplyStage(Math.min(DG_STAGE_MAX, st)); } DG.timerTx = ''; DG.hpW = ''; DG.hpCls = ''; dgFpsSync();
+  DG.dcx = 0; DG.dcy = 0; DG.domeTarget = dgDomePickTarget(); DG.ended = false; DG.startAt = Date.now(); DG.elapsed = 0; DG.lastT = 0; DG.q = { cap:2, lastT:0, lod:0, dl:0, t0:0, half:false, stage:0, gw:{ n:0, sum:0, miss:0, cost:0, cpu:0, lastCost:0, skip:0, t1:0, t2:0 } }; DG.lastDrawT = 0; dgGovLoad(); DG.timerTx = ''; DG.hpW = ''; DG.hpCls = ''; dgFpsSync();
   DG.drones = []; const dn = dgDroneCount(); for(let i = 0; i < dn; i++) DG.drones.push(dgMakeDrone(DG.city));
   DG.death = null; DG.deadT = 0; DG.invuln = 0; DG.zoomK = 1; DG.lastDeath = null; DG.testHold = false; DG.test = { fire:true }; dgFxClear();
   DG.hp = DG_HP_MAX; DG.outside = false; DG.inT = 0; DG.hurtA = 0; dgHpUI();
