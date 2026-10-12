@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.11</title>
+<title>Projet MECA V0.04.12</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8007,7 +8007,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.11</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.12</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8091,7 +8091,7 @@
           <li>Repéré par un drone : il tire. Ton robot encaisse un premier tir (il est endommagé, il fume), le deuxième le détruit : il se reconstruit alors sur place (quelques secondes perdues, pas ton butin). Un conteneur répare le robot.</li>
           <li>Touché par le dôme qui se resserre : tout le butin non sécurisé de la sortie est perdu.</li>
           <li>Des conteneurs d'extraction sont dispersés dans la ville : entres-y pour clôturer la mission (butin gardé) ou pour sécuriser tes ressources et repartir en chercher d'autres -- mais tu devras alors revenir dans ce même conteneur, les autres resteront fermés.</li>
-          <li>Tu peux aussi tenir 10 minutes jusqu'à la fermeture totale : le butin est gardé.</li>
+          <li>Tu peux aussi tenir 14 minutes jusqu'à la fermeture totale : le butin est gardé.</li>
         </ul>
       </div>
       <div class="controls" style="width:100%;"><button id="dgStartBtn" class="primary-btn">ENTRER DANS LA ZONE</button></div>
@@ -8509,9 +8509,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.11';
+var BUILD_VERSION = 'V0.04.12';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.12', items:[
+    'Mission DOME : la carte est beaucoup plus grande (environ 60 % de plus), avec plus de conteneurs d\'extraction, plus de drones qui arrivent au fil de la partie, une mission plus longue (14 minutes) et un butin rééquilibré, plus généreux.',
+    'Mission DOME : en ville, de vrais immeubles et de hautes tours remplacent les anciens blocs, avec leurs fenêtres qui s\'allument la nuit. Le vent fait bouger les arbres et les plantes et emporte des feuilles, l\'eau des rivières brille et ondule, et la météo est tirée au hasard à chaque partie : temps clair, pluie (sol mouillé, flaques, éclairs) ou brouillard.',
+    'Mission DOME : les drones sont plus détaillés (capteur sous la coque, grilles, feux de navigation qui clignotent, lueur sous les rotors et faisceau devant eux).',
+    'Mission DOME : le jeu est allégé pour tenir sur la grande carte (tours, routes et ombres bien moins coûteuses à dessiner), les bâtiments loin du robot sont retirés de la mémoire du téléphone pour éviter les plantages en longue partie, et le bouton « ENTRER DANS LA ZONE » affiche « CHARGEMENT » et ne peut plus lancer deux parties si on appuie deux fois.',
+  ]},
   { v:'V0.04.11', items:[
     'Mission DOME (mode carte graphique) : image plus nette (définition jusqu\'à trois fois plus fine, avec baisse automatique si ton téléphone peine), ombres douces aux bords adoucis sous les maisons, les immeubles et le robot, et brume légère au loin qui donne de la profondeur.',
     'Mission DOME : la nuit, des fenêtres de maisons et d\'immeubles s\'allument (de plus en plus nombreuses à mesure que la nuit tombe), les lampadaires brillent d\'un éclat plus doux, et l\'œil de ton robot éclaire le sol devant lui.',
@@ -17577,9 +17583,9 @@ document.getElementById('tileVestige').onclick = () => enterMission('vestige');
 const DG_LOCKED = false;               // V0.03.83 (demande d'Alex) : case DOME fermée (cadenas) tant qu'on retravaille
                                         // le rendu ensemble (textures, lumière, échelle...) -- le mini-jeu lui-même est
                                         // fonctionnel et ne change pas, repasser à false (ou retirer ce flag) pour rouvrir.
-const DG_DUR = 10 * 60 * 1000;         // durée totale avant fermeture complète du dôme
-const DG_CELL = 250, DG_GRID = 19;      // case de la grille (largeur des rues et avenues) et nombre de cases par côté
-const DG_GRID_W = 27;                                   // grille du monde complet : 4 cases de ville en plus de chaque côté du dôme (la ville continue après le dôme)
+const DG_DUR = 14 * 60 * 1000;         // durée totale avant fermeture complète du dôme
+const DG_CELL = 250, DG_GRID = 31;      // case de la grille (largeur des rues et avenues) et nombre de cases par côté
+const DG_GRID_W = DG_GRID + 8;                                   // grille du monde complet : 4 cases de ville en plus de chaque côté du dôme (la ville continue après le dôme)
 const DG_CITY_R = DG_CELL * DG_GRID / 2;   // rayon de la ville : 2375 (grande carte ; était 900) -- unités-monde arbitraires, indépendantes de D3V/SPV
 const DG_WORLD_R = DG_CELL * DG_GRID_W / 2;   // rayon du monde : 3375 (dôme de départ = DG_CITY_R, la ville continue 1000 unités plus loin)
 const DG_MIN_R = 120;                  // rayon résiduel du dôme à la toute fin (pour que le cercle ne s'annule pas littéralement)
@@ -17592,7 +17598,7 @@ const DG_HARMLESS = true;              // drones inoffensifs : repéré = le dro
 const DG_TEST = false;                 // true uniquement dans la copie de test : panneau de boutons pour rejouer chaque animation
 const DG_FIRE_TIME = .55, DG_REVIVE_LINGER = .7, DG_INVULN = 2.6, DG_DRONE_COOL = 4;   // durée de la rafale, pause avant reconstruction, invulnérabilité après, repos du drone
 const DG_WRECK_R = 72, DG_PICKUP_R = 52;       // rayons d'interaction
-const DG_CT_COUNT = 8;                 // nombre de conteneurs d'extraction dispersés dans la ville (ils remplacent les sorties par les égouts)
+const DG_CT_COUNT = 12;                 // nombre de conteneurs d'extraction dispersés dans la ville (ils remplacent les sorties par les égouts)
 const DG_HARVEST_TIME = 3.5;           // secondes pour récupérer une épave (bouton tenu + rester à portée)
 
 const DG = {
@@ -17634,7 +17640,7 @@ function dgGenContainers(rnd, R, cs, roadLines, buildings, forest, camp, decoCar
     for(let t = 0; t < 600; t++){
       const a = rnd() * Math.PI * 2, r = R * .26 + rnd() * R * .52, x = Math.cos(a) * r, y = Math.sin(a) * r;
       const rot = (rnd() < .65 ? Math.floor(rnd() * 2) : 2 + Math.floor(rnd() * 2)) * Math.PI / 2, cr = Math.cos(rot), sr = Math.sin(rot);
-      if(out.some(o => Math.hypot(o.x - x, o.y - y) < R * .3)) continue;
+      if(out.some(o => Math.hypot(o.x - x, o.y - y) < R * .26)) continue;
       if(pts.some(q => { const wx = x + q[0] * cr - q[1] * sr, wy = y + q[0] * sr + q[1] * cr; return Math.hypot(wx, wy) > R * .9 || isRoadCell(wx, wy) || bl.some(b => b.pk && Math.abs(wx - b.x) < b.s / 2 && Math.abs(wy - b.y) < b.s / 2); })) continue;   // jamais sur un parking
       const c = { x, y, rot, si:Math.floor(rnd() * DG_CT.STY.length), seed:1 + Math.floor(rnd() * 3), op:0, fade:1 }, h = hits(c), sc = h.b.length + h.t.length * .25 + h.k.length * .5 + frontHidden(c) * 1.5 + rnd() * .3;
       if(sc < bs){ bs = sc; best = { c, h }; if(sc < .35) break; }
@@ -17835,18 +17841,22 @@ function dgGenCity(biome){
   const BIO = biome || (typeof DG !== 'undefined' && DG.biome) || 'ville';
   const rnd = dgRng(), R = DG_CITY_R, RW = DG_WORLD_R, G = DG_GRID_W, P = DG_CELL, cs = 164;   // R : rayon de jeu (dôme), RW : rayon du monde (décor jusqu'au-delà du dôme)
   const buildings = [], houses = [], forest = [], camp = [], ammo = [], wrecks = [], pickups = [], crates = [], plants = [];
-  const roadLines = [1, 5, 9, 13, 17, 21, 25], roads = [], lights = [], decoCars = [];
+  const NB = Math.floor((G - 7) / 4), roadLines = [], roads = [], lights = [], decoCars = [];   // NB × NB quartiers ; une avenue tous les 4 cases
+  for(let i = 0; i <= NB; i++) roadLines.push(3 + 4 * i);          // la case du milieu de la grille est une avenue : le robot démarre sur un carrefour
   const isRoadLine = n => roadLines.indexOf(n) !== -1;
-  const BX0 = [2, 6, 10, 14, 18, 22], NB = 6;   // 6 × 6 quartiers : les 16 du centre (blocs 1 à 4) sont ceux de la carte d'origine, les 20 de la couronne continuent la ville après le dôme
-  const blockOf = g => g >= 2 && g <= 24 && (g - 2) % 4 < 3 ? Math.floor((g - 2) / 4) : -1;
+  const BX0 = []; for(let i = 0; i < NB; i++) BX0.push(4 + 4 * i);   // 6 × 6 quartiers : les 16 du centre (blocs 1 à 4) sont ceux de la carte d'origine, les 20 de la couronne continuent la ville après le dôme
+  const blockOf = g => g >= 4 && g <= 4 * NB + 2 && (g - 4) % 4 < 3 ? Math.floor((g - 4) / 4) : -1;
   // type de chaque quartier : au moins 6 quartiers denses, 4 parcs, le reste mixte ou en ruines
-  const tc = BIO === 'building' ? ['suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'parking', 'parking', 'park', 'park', 'park', 'park']
-    : BIO === 'banlieue' ? ['suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'park', 'park', 'park', 'park']
-    : ['dense', 'dense', 'dense', 'dense', 'dense', 'dense', 'park', 'park', 'park', 'park', 'mixed', 'mixed', 'mixed', 'mixed', 'ruins', 'ruins'];
-  const to = BIO === 'ville' ? ['dense', 'dense', 'dense', 'dense', 'dense', 'dense', 'dense', 'dense', 'park', 'park', 'park', 'park', 'mixed', 'mixed', 'mixed', 'mixed', 'mixed', 'ruins', 'ruins', 'ruins']
-    : ['suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'suburb', 'park', 'park', 'park', 'park'];
+  const inPlay = (bx, by) => Math.hypot(-RW + P * (BX0[bx] + 1.5), -RW + P * (BX0[by] + 1.5)) <= R * .98;   // quartier dans la zone de jeu (sinon : décor au-delà du dôme)
+  let NC = 0; for(let by = 0; by < NB; by++) for(let bx = 0; bx < NB; bx++) if(inPlay(bx, by)) NC++;
+  const NO = NB * NB - NC;                                                                  // quartiers du centre (zone de jeu) et de la couronne (décor au-delà du dôme)
+  const mixOf = (n, w) => { const tot = w.reduce((s, q) => s + q[1], 0), out = [], rem = []; w.forEach(q => { const f = q[1] / tot * n, k = Math.floor(f); for(let i = 0; i < k; i++) out.push(q[0]); rem.push([q[0], f - k]); }); rem.sort((a, b) => b[1] - a[1]); for(let i = 0; out.length < n; i++) out.push(rem[i % rem.length][0]); return out; };
+  const MX = BIO === 'building' ? { c:[['suburb', 10], ['parking', 2], ['park', 4]], o:[['suburb', 16], ['park', 4]] }
+    : BIO === 'banlieue' ? { c:[['suburb', 12], ['park', 4]], o:[['suburb', 16], ['park', 4]] }
+    : { c:[['dense', 6], ['park', 4], ['mixed', 4], ['ruins', 2]], o:[['dense', 8], ['park', 4], ['mixed', 5], ['ruins', 3]] };
+  const tc = mixOf(NC, MX.c), to = mixOf(NO, MX.o);
   [tc, to].forEach(a => { for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } });
-  const types = []; { let ci = 0, oi = 0; for(let by = 0; by < NB; by++) for(let bx = 0; bx < NB; bx++) types.push(bx >= 1 && bx <= 4 && by >= 1 && by <= 4 ? tc[ci++] : to[oi++]); }   // type de chaque quartier (index by * 6 + bx)
+  const types = []; { let ci = 0, oi = 0; for(let by = 0; by < NB; by++) for(let bx = 0; bx < NB; bx++) types.push(inPlay(bx, by) ? tc[ci++] : to[oi++]); }   // type de chaque quartier (index by * 6 + bx)
   const typeAt = (gx, gy) => { const bx = blockOf(gx), by = blockOf(gy); return bx < 0 || by < 0 ? 'edge' : types[by * NB + bx]; };
   const tower = (x, y, s, h, dmg) => {
     const gash = dmg >= .18 && dmg < .3, debris = [];
@@ -17865,7 +17875,8 @@ function dgGenCity(biome){
     let best = 9, fs = []; dist.forEach((d, f) => { if(d && d < best){ best = d; fs = [f]; } else if(d && d === best) fs.push(f); });
     const f = fs.length ? fs[Math.floor(rnd() * fs.length)] : Math.floor(rnd() * 4), o = (f === 0 ? [0, 1] : f === 1 ? [1, 0] : f === 2 ? [0, -1] : [-1, 0]);
     const hr = { x:cx - o[0] * 6 + (rnd() * 2 - 1) * 5, y:cy - o[1] * 6 + (rnd() * 2 - 1) * 5, v, f, sd:rnd(), s:230, gx, gy, hc:[cx, cy] };
-    hr.m = BIO === 'building' ? 2 + Math.floor(((hr.sd * 577) % 1) * 3) : Math.floor(((hr.sd * 577) % 1) * 2);                                                    // modèle : 0 maison de brique, 1 maison moderne (sans consommer le tirage aléatoire)
+    { const u = (hr.sd * 577) % 1;                                                                  // modèle : 0 maison de brique, 1 maison moderne ; 2 à 4 = tours (biome « building » : surtout des résidences ; biome « ville » : centre-ville dense = grandes tours et gratte-ciel, quartiers mixtes = plus petites)
+      hr.m = BIO === 'building' ? 2 + Math.floor(u * 3) : BIO === 'ville' ? (typeAt(gx, gy) === 'dense' ? (u < .4 ? 4 : u < .8 ? 3 : 2) : (u < .4 ? 2 : u < .8 ? 3 : 4)) : Math.floor(u * 2); }                                                    // modèle : 0 maison de brique, 1 maison moderne (sans consommer le tirage aléatoire)
     hr.fs = Math.floor(((hr.sd * 997) % 1) * 4); hr.fb = ((hr.sd * 313) % 1) < [.14, .5, .8][v];          // style de clôture (0 à 3) et clôture abîmée (surtout autour des maisons abîmées / détruites)
     houses.push(hr);
   };
@@ -17903,15 +17914,13 @@ function dgGenCity(biome){
       const vRoad = isRoadLine(gx), hRoad = isRoadLine(gy);
       if(vRoad || hRoad){ roads.push({ x:cx, y:cy, s:P, vertical: vRoad && !hRoad, horizontal: hRoad && !vRoad, inter: vRoad && hRoad }); continue; }
       const ty = typeAt(gx, gy);
+      if(d < P * 1.7 && (ty === 'dense' || ty === 'ruins' || ty === 'mixed' || ty === 'edge')) continue;          // le carrefour de départ reste dégagé (pas de grande tour collée à l'écran du départ)
       if(ty === 'dense'){                           // quartier entièrement bâti : 2 × 2 immeubles serrés par case, quelques ruelles et ruines
-        for(let i = 0; i < 2; i++) for(let j = 0; j < 2; j++){
-          const x = cx + (i - .5) * P * .5 + (rnd() * 2 - 1) * 3, y = cy + (j - .5) * P * .5 + (rnd() * 2 - 1) * 3, q = rnd();
-          if(q < .05) continue;
-          if(q < .14){ rubble(x, y, cs * .6); continue; }
-          tower(x, y, 112 + rnd() * 12, (q < .35 ? 90 : 150) + rnd() * 240, rnd());
-        }
+        { const q = rnd();
+          if(q < .06) rubble(cx, cy, cs * .62);
+          else { const q2 = rnd(); house(cx, cy, gx, gy, q2 < .58 ? 0 : q2 < .86 ? 1 : 2); } }          // une grande tour par case (modèles du biome « building »)
       } else if(ty === 'park'){                     // grand parc : bois serrés, quelques clairières (2 cases par parc, sans arbre), parfois un camp
-        const bk = (blockOf(gx) * 6 + blockOf(gy)) * 7 + 3, clearing = ((gx * 31 + gy * 17 + bk) % 9) < 2;
+        const bk = (blockOf(gx) * NB + blockOf(gy)) * 7 + 3, clearing = ((gx * 31 + gy * 17 + bk) % 9) < 2;
         if(clearing){ if(rnd() < .35) trees(cx, cy, 3, P * .4); }
         else {
           const nc = 5 + Math.floor(rnd() * 2); for(let c = 0; c < nc; c++){ const bx = cx + (rnd() * 2 - 1) * P * .28, by = cy + (rnd() * 2 - 1) * P * .28; trees(bx, by, 14 + Math.floor(rnd() * 6), 70, 60); }   // parc aéré : arbres espacés, le robot garde des passages dégagés
@@ -17931,7 +17940,7 @@ function dgGenCity(biome){
       } else if(ty === 'ruins'){                    // quartier rasé : décombres, quelques immeubles éventrés
         const q = rnd();
         if(q < .62){ rubble(cx, cy, cs * .62); if(rnd() < .5) rubble(cx + (rnd() * 2 - 1) * P * .3, cy + (rnd() * 2 - 1) * P * .3, cs * .5); }
-        else if(q < .8) tower(cx, cy, cs * .58, 120 + rnd() * 160, .2 + rnd() * .1);
+        else if(q < .8) house(cx, cy, gx, gy, rnd() < .5 ? 1 : 2);
         else if(q < .9) trees(cx, cy, 3, P * .3);
       } else {                                      // mixte (et couronne extérieure) : même tirage qu'à l'origine, case par case
         if(d < cs * .9) continue;
@@ -17939,7 +17948,7 @@ function dgGenCity(biome){
         if(roll < .10){ trees(cx, cy, 2 + Math.floor(rnd() * 3), P * .3); if(rnd() < .4) campAt(cx, cy, P * .24); }   // bosquet : parfois un camp militaire (jamais ailleurs qu'en forêt ou en parc)
         else if(roll < .16){ }
         else if(roll < .32) rubble(cx, cy, cs * .62);
-        else if(roll < .74) tower(cx, cy, cs * .58, 170 + rnd() * 260, rnd());
+        else if(roll < .74){ if(BIO === 'ville'){ const q2 = rnd(); house(cx, cy, gx, gy, q2 < .6 ? 0 : q2 < .86 ? 1 : 2); } else trees(cx, cy, 3, P * .3); }
       }
     }
   }
@@ -17986,9 +17995,10 @@ function dgGenCity(biome){
   // ramassages / épaves / caisses : sur le sol libre uniquement (jamais dans un immeuble)
   const onBuilding = (x, y, m) => buildings.some(b => Math.abs(x - b.x) < b.s / 2 + m && Math.abs(y - b.y) < b.s / 2 + m);
   const place = (list, n, rMin, rMax, mk) => { for(let i = 0; i < n; i++){ for(let t = 0; t < 40; t++){ const a = rnd() * Math.PI * 2, r = rMin + Math.sqrt(rnd()) * (rMax - rMin), x = Math.cos(a) * r, y = Math.sin(a) * r; if(onBuilding(x, y, 30) || forest.some(f => Math.hypot(f.x - x, f.y - y) < 40) || camp.some(k => Math.hypot(k.x - x, k.y - y) < k.s * .6 + 28 || (k.broken && Math.hypot(k.x + k.fx - x, k.y + k.fy - y) < k.L * .6 + 20))) continue; list.push(Object.assign({ x, y, done:false }, mk ? mk() : {})); break; } } };
-  place(wrecks, 30, cs * 1.1, R * .92);
-  place(pickups, 23, cs * .7, R * .96, () => ({ k:'car' }));          // voitures à fouiller (téléphones et touffes d'herbe à ramasser supprimés, demande d'Alex)
-  place(crates, 28, cs * 1.1, R * .9, () => { const q = rnd(); return { tier:q < .62 ? 0 : q < .9 ? 1 : 2, sd:rnd() }; });   // rareté du contenu : 0 rare, 1 épique, 2 légendaire
+  const KM = (DG_GRID / 19) * (DG_GRID / 19);          // facteur de surface par rapport à la carte précédente (19 × 19)
+  place(wrecks, Math.round(30 * KM), cs * 1.1, R * .92);
+  place(pickups, Math.round(23 * KM * .8), cs * .7, R * .96, () => ({ k:'car' }));          // voitures à fouiller (téléphones et touffes d'herbe à ramasser supprimés, demande d'Alex)
+  place(crates, Math.round(28 * KM * .75), cs * 1.1, R * .9, () => { const q = rnd(); return { tier:q < .62 ? 0 : q < .9 ? 1 : 2, sd:rnd() }; });   // rareté du contenu : 0 rare, 1 épique, 2 légendaire
   // feux tricolores (presque tous morts, de rares encore sous tension) aux intersections ; carcasses de voitures décoratives abandonnées le long des rues
   // feu tricolore new-yorkais (potence + têtes jaunes), 5 états : 0 intact, 1 feux au sol, 2 poteau couché avec ses feux, 3 feux détruits, 4 poteau couché + feux détruits
   const pickSt = () => { const q = rnd(); return q < .30 ? 0 : q < .46 ? 1 : q < .64 ? 2 : q < .80 ? 3 : 4; };
@@ -18018,7 +18028,7 @@ function dgGenCity(biome){
   } }
   // ----- Taches au sol : sur la chaussée uniquement (terre apportée, asphalte sombre) -----
   const patches = [];
-  for(let i = 0; i < 150; i++){ const r = roads[Math.floor(rnd() * roads.length)], roll2 = rnd(); patches.push({ x:r.x + (rnd() * 2 - 1) * P * .3, y:r.y + (rnd() * 2 - 1) * P * .3, s: 30 + rnd() * 46, type: roll2 < .5 ? 'dirt' : 'crack', rot: rnd() * Math.PI, off:false }); }
+  for(let i = 0, np = Math.round(150 * (RW / 3375) * (RW / 3375)); i < np; i++){ const r = roads[Math.floor(rnd() * roads.length)], roll2 = rnd(); patches.push({ x:r.x + (rnd() * 2 - 1) * P * .3, y:r.y + (rnd() * 2 - 1) * P * .3, s: 30 + rnd() * 46, type: roll2 < .5 ? 'dirt' : 'crack', rot: rnd() * Math.PI, off:false }); }
   for(let i = forest.length - 1; i >= 0; i--) if(roadHit(forest[i].x, forest[i].y, 40)) forest.splice(i, 1);   // aucun arbre sur une rue ni sur un trottoir (le trottoir fait ~26 de large)
   for(let i = camp.length - 1; i >= 0; i--){ const k = camp[i]; if(buildings.some(b => (Math.abs(b.x - k.x) < b.s / 2 + k.s * .5 + 12 && Math.abs(b.y - k.y) < b.s / 2 + k.s * .5 + 12) || (k.broken && Math.abs(b.x - k.x - k.fx) < b.s / 2 + k.L * .6 + 8 && Math.abs(b.y - k.y - k.fy) < b.s / 2 + k.L * .6 + 8))) camp.splice(i, 1); }   // ni sur un immeuble construit après coup
   for(let i = forest.length - 1; i >= 0; i--){ const t = forest[i]; if(camp.some(k => Math.hypot(k.x - t.x, k.y - t.y) < k.s * .75 + 85 || (k.broken && Math.hypot(k.x + k.fx - t.x, k.y + k.fy - t.y) < 70))) forest.splice(i, 1); }   // clairière autour des tentes (les arbres ne les cachent plus)
@@ -18028,7 +18038,7 @@ function dgGenCity(biome){
     if(containers.some(c => Math.hypot(c.x - l.x, c.y - l.y) < 125) || camp.some(k => Math.hypot(k.x - l.x, k.y - l.y) < k.s * .6 + 70 || (k.broken && Math.hypot(k.x + k.fx - l.x, k.y + k.fy - l.y) < 90))) lights.splice(i, 1); }
   const parks = []; for(let by = 0; by < NB; by++) for(let bx = 0; bx < NB; bx++) if(types[by * NB + bx] === 'park') parks.push({ x0:-RW + P * BX0[bx], y0:-RW + P * BX0[by] });
   const rivers = dgGenRivers(rnd, RW, P, parks, containers.map(c => dgFoot.container(c)).concat(buildings.filter(b => !b.rubble).map(b => dgFoot.building(b)))), riverFp = [].concat(...rivers.map(r => r.fp));   // rivière creusée dans chaque parc
-  const craters = dgGenCraters(rnd, RW, cs, roads, buildings, forest, camp, wrecks, pickups, crates, containers, decoCars, lights, (RW / R) * (RW / R));
+  const craters = dgGenCraters(rnd, RW, cs, roads, buildings, forest, camp, wrecks, pickups, crates, containers, decoCars, lights, (RW / 2375) * (RW / 2375));
   hProx.concat(lotProx).forEach(q => { const i = buildings.indexOf(q); if(i >= 0) buildings.splice(i, 1); });
   for(let i = craters.length - 1; i >= 0; i--){ const c = craters[i]; if(riverFp.some(q => Math.hypot(q.x - c.x, q.y - c.y) < q.r + c.r * 1.1 + 8)) craters.splice(i, 1); }   // pas de cratère dans la rivière
   for(let i = forest.length - 1; i >= 0; i--){ const t = forest[i]; if(craters.some(c => { const d = Math.hypot(c.x - t.x, c.y - t.y); return d < c.r * 1.9 + 16 || (d < c.r * 2.7 + 30 && rnd() < .7); })) forest.splice(i, 1); }   // ni dans les cratères ni (presque) autour : bords nus
@@ -18039,7 +18049,7 @@ function dgGenCity(biome){
     const solids = [['building', buildings], ['tent', camp], ['container', containers], ['crater', craters], ['crate', crates], ['wreck', wrecks], ['car', pickups], ['car', decoCars], ['light', lights], ['ammo', ammo], ['river', riverFp]];
     for(let by = 0; by < NB; by++) for(let bx = 0; bx < NB; bx++){
       if(types[by * NB + bx] !== 'park') continue;
-      const cells = []; for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++){ const gx = BX0[bx] + i, gy = BX0[by] + j, bk = (blockOf(gx) * 6 + blockOf(gy)) * 7 + 3; cells.push({ cx:-RW + P * (gx + .5), cy:-RW + P * (gy + .5), cl:((gx * 31 + gy * 17 + bk) % 9) < 2 }); }
+      const cells = []; for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++){ const gx = BX0[bx] + i, gy = BX0[by] + j, bk = (blockOf(gx) * NB + blockOf(gy)) * 7 + 3; cells.push({ cx:-RW + P * (gx + .5), cy:-RW + P * (gy + .5), cl:((gx * 31 + gy * 17 + bk) % 9) < 2 }); }
       cells.sort((a, b) => (b.cl - a.cl) || (rnd() - .5));
       for(let n = rnd() < .4 ? 2 : 1, ci = 0; n > 0 && ci < cells.length; ci++){
         let ok = false;
@@ -18064,7 +18074,7 @@ function dgGenCity(biome){
     const solids = [['building', buildings], ['tent', camp], ['container', containers], ['crater', craters], ['crate', crates], ['wreck', wrecks], ['car', pickups], ['car', decoCars], ['light', lights], ['tree', forest], ['ammo', ammo], ['river', riverFp], ['fountain', fountain], ['path', pathFp]];
     for(let gx = 0; gx < G; gx++) for(let gy = 0; gy < G; gy++){
       if(isRoadLine(gx) || isRoadLine(gy) || typeAt(gx, gy) !== 'park') continue;
-      const cx = -RW + P * (gx + .5), cy = -RW + P * (gy + .5), bk = (blockOf(gx) * 6 + blockOf(gy)) * 7 + 3, clearing = ((gx * 31 + gy * 17 + bk) % 9) < 2;
+      const cx = -RW + P * (gx + .5), cy = -RW + P * (gy + .5), bk = (blockOf(gx) * NB + blockOf(gy)) * 7 + 3, clearing = ((gx * 31 + gy * 17 + bk) % 9) < 2;
       const n = clearing ? (rnd() < .85 ? 1 : 2) : (rnd() < .38 ? 1 : 0);
       for(let i = 0; i < n; i++) for(let t = 0; t < 30; t++){
         const o = { x:cx + (rnd() * 2 - 1) * P * .36, y:cy + (rnd() * 2 - 1) * P * .36, v:pickV(), f:Math.floor(rnd() * 4), sd:rnd(), s:90 };
@@ -19289,7 +19299,17 @@ function dgHouseBuild(o){
   }
   return dgPartsFinish(parts, ground, .55, .26);
 }
-function dgDrawHouse(ctx, o){ dgDrawParts(ctx, o, o._m || (o._m = dgHouseBuild(o))); }
+function dgDrawHouse(ctx, o){ o._mt = DG.drawN; dgDrawParts(ctx, o, o._m || (o._m = dgHouseBuild(o))); }
+// Mémoire : chaque modèle de maison / tour construit pèse jusqu'à ~1 Mo (milliers de fenêtres). Sur la grande carte, un téléphone finirait par manquer de mémoire :
+// on ne garde que les modèles récemment affichés (les autres sont reconstruits à l'identique, la construction ne dépend que de la graine de la maison).
+const DG_MODEL_CAP = 40;
+function dgEvictModels(){
+  const H = DG.city && DG.city.houses; if(!H) return; let built = 0;
+  for(let i = 0; i < H.length; i++) if(H[i]._m) built++;
+  if(built <= DG_MODEL_CAP) return;
+  const old = H.filter(h => h._m && DG.drawN - (h._mt || 0) > 90).sort((a, b) => (a._mt || 0) - (b._mt || 0));
+  for(let i = 0; i < old.length && built > DG_MODEL_CAP; i++){ old[i]._m = null; built--; }
+}
 
 
 // ----- Rivières creusées dans les parcs : une tranchée (berges en terre) avec de l'eau qui coule au fond -----
@@ -19394,6 +19414,22 @@ function dgDrawRiver(ctx, rv, tod){
     const a = pts[i], b = pts[i + 1], x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t, nx = a.nx + (b.nx - a.nx) * t, ny = a.ny + (b.ny - a.ny) * t, hw = a.hw + (b.hw - a.hw) * t, q = dgP(x + nx * hw * u, y + ny * hw * u, -D);
     ctx.fillStyle = T('#eaf8fb', .22 + .3 * Math.abs(Math.sin(now * 2.1 + j * 1.7))); ctx.beginPath(); ctx.ellipse(q.x, q.y, 5 * k, 1.8 * k, 0, 0, 6.283); ctx.fill();
   }
+  // reflet du ciel sur l'eau, ondulations qui s'élargissent et étincelles de lumière (le soleil le jour, la lune la nuit)
+  { const gs = ctx.createLinearGradient(0, y0, 0, y1); gs.addColorStop(0, dgHexAlpha(tod.sky0, .5)); gs.addColorStop(1, dgHexAlpha(tod.sky0, .18)); ring(LD, RD); ctx.fillStyle = gs; ctx.fill();
+    const jj = ctx.isGL ? 10 : 6;
+    for(let j = 0; j < jj; j++){
+      const rp = (now * .35 + j * .173 + rv.sd * 7) % 1, f = (((j * .6180339 + rv.sd * 3) % 1) * (n - 3)) + 1, i = Math.floor(f), t = f - i, u = (((j * 5.17 + rv.sd * 21) % 1) - .5) * 1.4;
+      const a = pts[i], b = pts[i + 1], x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t, nx = a.nx + (b.nx - a.nx) * t, ny = a.ny + (b.ny - a.ny) * t, hw = a.hw + (b.hw - a.hw) * t, q = dgP(x + nx * hw * u, y + ny * hw * u, -D);
+      ctx.strokeStyle = T('#e2f5f8', .5 * (1 - rp)); ctx.lineWidth = 1.2 * k; ctx.beginPath(); ctx.ellipse(q.x, q.y, (2 + 11 * rp) * k, (1 + 4.2 * rp) * k, 0, 0, 6.283); ctx.stroke();
+    }
+    if(ctx.isGL){ const nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), sparkC = nt > .5 ? '200,220,255' : '255,240,200'; ctx.globalCompositeOperation = 'lighter';
+      for(let j = 0; j < 14; j++){
+        const f = (((j * .4142135 + rv.sd * 5 + now * .004) % 1) * (n - 3)) + 1, i = Math.floor(f), t = f - i, u = (((j * 3.77 + rv.sd * 13) % 1) - .5) * 1.7, tw = Math.pow(Math.max(0, Math.sin(now * 2.7 + j * 4.3)), 6);
+        if(tw < .05) continue;
+        const a = pts[i], b = pts[i + 1], x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t, nx = a.nx + (b.nx - a.nx) * t, ny = a.ny + (b.ny - a.ny) * t, hw = a.hw + (b.hw - a.hw) * t, q = dgP(x + nx * hw * u, y + ny * hw * u, -D);
+        ctx.fillStyle = 'rgba(' + sparkC + ',' + (.85 * tw).toFixed(2) + ')'; ctx.beginPath(); ctx.ellipse(q.x, q.y, 3.4 * k, 1.1 * k, 0, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.ellipse(q.x, q.y, .9 * k, 3 * k, 0, 0, 6.283); ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over'; } }
   (rv.bridges || []).forEach(b => { const M = dgBridgeModel(b); if(M.water) dgDrawParts(ctx, b, M.water); });          // débris tombés dans l'eau (vus à travers l'ouverture)
   // mur du pont côté éloigné (celui dont la face regarde la caméra) : pierre avec une arche sombre par où l'eau passe sous la route
   { const fi = pts[1].x + pts[1].y < pts[n - 2].x + pts[n - 2].y ? 1 : n - 2, e = pts[fi], vert = Math.abs(pts[1].x - pts[n - 2].x) < Math.abs(pts[1].y - pts[n - 2].y);
@@ -19761,7 +19797,7 @@ function dgDroneReinforce(lead){
   const a0 = Math.random() * Math.PI * 2;
   c.forEach((o, i) => { o.mode = 'patrol'; o.escort = { lead, until:DG.elapsed + 50000, a:a0 + i * Math.PI, r:100 + Math.random() * 30 }; o.pause = 30 + Math.random() * 10; dgFxRing({ x:o.x, y:o.y, z:0 }, 140, .5, '255,170,50', 1.6, .8); });
 }
-function dgDroneCount(){ return Math.min(18, 12 + Math.floor(DG.elapsed / (90 * 1000))); }   // grande carte : plus de drones (12 au départ, 18 en fin de mission)
+function dgDroneCount(){ return Math.min(36, 24 + Math.floor(DG.elapsed / (70 * 1000))); }   // grande carte : plus de drones (12 au départ, 18 en fin de mission)
 
 // ----- Projection isométrique (caméra centrée sur le joueur, indépendante de D3V/SPV) -----
 // V0.03.83 (demande d'Alex) : vue plus rapprochée du joueur ("niveau de la rue") qu'à l'origine, mais
@@ -19778,6 +19814,28 @@ function dgP(x, y, z){
   const k = DG_D / Math.max(60, DG_D - Math.min(Z, DG_D * .85));
   return { x: DG.W * .5 + X * k, y: DG.H * DG_CY + Y * k, k };
 }
+// même calcul que dgP, mais le résultat est écrit dans un objet réutilisé (aucune allocation : utile pour les milliers de fenêtres des tours)
+const DG_PS = { x:0, y:0, k:1 }, DG_XS = [], DG_YS = [];
+function dgPs(x, y, z){
+  const wx = x - DG.cam.x, wy = y - DG.cam.y;
+  const X = (wx - wy) * DG_C45 * DG_SC, Y0 = (wx + wy) * DG_C45 * DG_SC, Z0 = (z || 0) * DG_SC;
+  const Y = Y0 * DG_CS - Z0 * DG_SN, Z = Y0 * DG_SN + Z0 * DG_CS;
+  const k = DG_D / Math.max(60, DG_D - Math.min(Z, DG_D * .85));
+  DG_PS.x = DG.W * .5 + X * k; DG_PS.y = DG.H * DG_CY + Y * k; DG_PS.k = k;
+}
+// rectangle d'écran -> boîte alignée du monde (au niveau du sol, avec marge) : permet d'écarter les éléments plats lointains sans même les projeter
+function dgWorldView(r){
+  let a = 1e9, b = 1e9, c = -1e9, d = -1e9; const cx = DG.W * .5, cy = DG.H * DG_CY, m = 40;
+  for(let i = 0; i < 4; i++){
+    const sx = (i & 1 ? r.x1 : r.x0) - cx, sy = (i & 2 ? r.y1 : r.y0) - cy, den = DG_CS * DG_D + sy * DG_SN; if(den < 1e-3) return null;
+    const Y0 = sy * DG_D / den, Zc = Y0 * DG_SN; if(Zc > DG_D * .8) return null;
+    const k = DG_D / (DG_D - Zc), X = sx / k, A = X / (DG_C45 * DG_SC), B = Y0 / (DG_C45 * DG_SC), wx = DG.cam.x + (A + B) / 2, wy = DG.cam.y + (B - A) / 2;
+    if(wx < a) a = wx; if(wx > c) c = wx; if(wy < b) b = wy; if(wy > d) d = wy;
+  }
+  return { x0:a - m, y0:b - m, x1:c + m, y1:d + m };
+}
+function dgBB(P){ let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for(let i = 0; i < P.length; i++){ const x = P[i][0], y = P[i][1]; if(x < a) a = x; if(x > c) c = x; if(y < b) b = y; if(y > d) d = y; } return [a, b, c, d]; }
+const dgBBout = (bb, w) => bb[2] < w.x0 || bb[0] > w.x1 || bb[3] < w.y0 || bb[1] > w.y1;
 function dgPoly(ctx, pts, fill){ ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for(let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
 const DG_SHADE_C = new Map();                                    // mémo : mêmes (couleur, facteur) redemandés des milliers de fois par image
 function dgShade(hex, f){
@@ -19891,7 +19949,7 @@ function dgSlab(ctx, pts, z0, h, cTop, cSide, tex){
 function dgDrawFlat(ctx, items){
   const cl = ctx === DG.ctx ? DG.cull : null;
   if(cl && items.some(it => it.stroke)) ctx.lineJoin = 'round';      // l'original le posait au premier trait tracé : d'autres dessins en dépendent, même si ce trait est hors écran
-  const lod = ctx === DG.ctx ? (DG.q ? DG.q.lod || 0 : 0) : 0; let bH = null, bC = null, bF = null, bFc = null;
+  const lod = ctx === DG.ctx ? (DG.q ? DG.q.lod || 0 : 0) : 0; let bH = null, bC = null, bF = null, bFc = null; const wv = cl ? DG.wv : null;
   const flushF = () => { if(bF){ ctx.fillStyle = bFc; ctx.fill(); bF = null; } };                      // aplats consécutifs de même couleur (bandes, marquages, taches) : un seul tracé
   const flushCk = () => {                                                                       // fissures : un seul tracé pour tous les halos, un seul pour tous les cœurs
     if(bH){ ctx.beginPath(); for(const q of bH){ ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); } ctx.fillStyle = DG_CK_HALO; ctx.fill(); bH = null; }
@@ -19900,9 +19958,15 @@ function dgDrawFlat(ctx, items){
     const it = items[i], z = it.z == null ? .3 : it.z, isCk = it.t === 'p' && !it.stroke && (it.fill === DG_CK_HALO || it.fill === DG_CK_CORE);
     if(!isCk) flushCk();
     else if(flushF(), lod >= 2 || (lod >= 1 && it.fill === DG_CK_HALO)) continue;
-    const q = it.pts.map(p => dgP(p[0], p[1], z));
-    if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let j = 0; j < q.length; j++){ const r = q[j]; if(r.x < a) a = r.x; if(r.x > b) b = r.x; if(r.y < c) c = r.y; if(r.y > d) d = r.y; }
-      const m = 4 + (it.lw || 1) * q[0].k * DG_SC; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ if(it.t === 'p' && it.fill && !isCk){ flushF(); ctx.fillStyle = it.fill; } if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); } continue; } }      // hors écran : on ne trace rien, mais l'état du pinceau reste celui de l'original
+    const P = it.pts;
+    if(cl){                                                                                       // hors écran : on ne trace rien (et sans allouer), mais on garde l'état du pinceau
+      let k1 = 1, off = false;
+      if(wv && dgBBout(it.bb || (it.bb = dgBB(P)), wv)){ off = true; if(it.stroke){ dgPs(P[0][0], P[0][1], z); k1 = DG_PS.k; } }
+      else { let a = 1e9, b = -1e9, c = 1e9, d = -1e9;
+        for(let j = 0; j < P.length; j++){ dgPs(P[j][0], P[j][1], z); if(j === 0) k1 = DG_PS.k; const x = DG_PS.x, y = DG_PS.y; if(x < a) a = x; if(x > b) b = x; if(y < c) c = y; if(y > d) d = y; }
+        const m = 4 + (it.lw || 1) * k1 * DG_SC; off = b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m; }
+      if(off){ if(it.t === 'p' && it.fill && !isCk){ flushF(); ctx.fillStyle = it.fill; } if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * k1 * DG_SC); } continue; } }
+    const q = P.map(p => dgP(p[0], p[1], z));
     if(isCk){ if(it.fill === DG_CK_HALO) (bH || (bH = [])).push(q); else (bC || (bC = [])).push(q); continue; }
     if(it.t === 'p' && it.fill && !it.stroke){                                                   // aplat simple : regroupé avec les précédents de même couleur
       if(bF && bFc !== it.fill) flushF();
@@ -20126,8 +20190,9 @@ function dgDrawRoadAsphalt(ctx, city, r){
 }
 function dgDrawRoadSidewalks(ctx, r){
   const S = r.sw; if(!S) return;
-  S.raised.forEach(p => dgSlab(ctx, p, 0, DG_CURB_H, '#7b766c', '#4d4a44'));
-  S.low.forEach(p => dgSlab(ctx, p, 0, DG_DROP_H, '#857e70', '#4d4a44'));
+  const wv = DG.ctx === ctx ? DG.wv : null, vis = p => !wv || !dgBBout(p.bb || (p.bb = dgBB(p)), wv);         // dalles hors écran : ignorées sans projection
+  S.raised.forEach(p => { if(vis(p)) dgSlab(ctx, p, 0, DG_CURB_H, '#7b766c', '#4d4a44'); });
+  S.low.forEach(p => { if(vis(p)) dgSlab(ctx, p, 0, DG_DROP_H, '#857e70', '#4d4a44'); });
   dgDrawFlat(ctx, S.tops);
   dgDrawFlat(ctx, S.tcr);
 }
@@ -20137,7 +20202,7 @@ function dgDrawRoadSidewalks(ctx, r){
 //   1. fond : toute la carte à basse résolution (zones d'herbe sombre / claire / sèche, relief doux, bord assombri) -- calculé une fois au lancement
 //   2. grain d'herbe : une tuile répétée (touffes serrées, cailloux) plaquée par-dessus partout
 //   3. décors : cratères, plaques de terre nue (rares), traces de véhicules, sol brûlé -- petits calques dessinés à la demande à pleine résolution, gardés en cache
-const DG_TR = { SB:.17, TILE:512, ST:1.5, SD:1.5, M:[68, 55, 38], DVB:16, DVT:22, DVD:7 };
+const DG_TR = { SB:.14, TILE:512, ST:1.5, SD:1.5, M:[68, 55, 38], DVB:16, DVT:22, DVD:7 };
 function dgTrNoise(seed){
   const r = dgRnd(seed), v = new Float32Array(65536); for(let i = 0; i < 65536; i++) v[i] = r();
   return (x, y) => {
@@ -20311,7 +20376,7 @@ function dgTrRut(c, pts, u0, v0, rnd, gauge){   // pts : [u, v, angle] ; deux tr
 }
 // liste des décors de la carte (métadonnées seulement ; les calques sont dessinés à la demande)
 function dgTrDecals(seed, city){
-  const rnd = dgRnd(seed + 4242), R = DG_WORLD_R, KA = (DG_WORLD_R / DG_CITY_R) * (DG_WORLD_R / DG_CITY_R), C45 = DG_C45, nz = dgTrNoise(seed + 91), out = [], roads = city.roads || [];
+  const rnd = dgRnd(seed + 4242), R = DG_WORLD_R, KA = (DG_WORLD_R / 2375) * (DG_WORLD_R / 2375), C45 = DG_C45, nz = dgTrNoise(seed + 91), out = [], roads = city.roads || [];
   const uv = (x, y) => [(x - y) * C45, (x + y) * C45], onRoad = (x, y, m) => roads.some(r => Math.abs(x - r.x) < r.s / 2 + m && Math.abs(y - r.y) < r.s / 2 + m);
   const rp = (m) => { for(let t = 0; t < 30; t++){ const a = rnd() * 6.2832, d = Math.sqrt(rnd()) * R * .96; const x = Math.cos(a) * d, y = Math.sin(a) * d; if(!onRoad(x, y, m)) return [x, y]; } return [0, 400]; };
   const ext = r => r * 2.0;
@@ -20547,7 +20612,8 @@ const DG_LQ = { on:false, a:[], n:0, spr:{}, col:{} };
 const DG_AMB = [[255, 251, 244], [255, 255, 255], [255, 243, 224], [255, 198, 162], [96, 112, 176]];       // teinte d'ambiance : matin · midi · après-midi · coucher · nuit
 function dgAmb(){
   const k = Math.min(.9999, DG.elapsed / DG_DUR) * DG_AMB.length, i = Math.floor(k), f = k - i, A = DG_AMB[i], B = DG_AMB[Math.min(DG_AMB.length - 1, i + 1)];
-  return [A[0] + (B[0] - A[0]) * f, A[1] + (B[1] - A[1]) * f, A[2] + (B[2] - A[2]) * f, k];
+  const wx = dgWx(), rn = wx.rain, fg = wx.fog * (1 - rn * .5), dm = 1 - .24 * rn - .08 * fg;                       // pluie : image plus sombre et plus grise ; brouillard : un peu plus terne
+  return [(A[0] + (B[0] - A[0]) * f) * dm * (1 - .06 * rn), (A[1] + (B[1] - A[1]) * f) * dm * (1 - .02 * rn), (A[2] + (B[2] - A[2]) * f) * dm, k];
 }
 // Fenêtres de maisons allumées la nuit (mode GPU) : au hasard mais toujours les mêmes d'une image à l'autre ; de plus en plus nombreuses à mesure que la nuit tombe.
 function dgWinLit(dc, ox, oy){
@@ -20632,13 +20698,14 @@ function dgLightFx(ctx, city, tod, amb, shk, zk){
       pool(pl.x + cf * 8, pl.y + sf * 8, 50, 20, '180,255,215', .05 + .1 * dark, 0); }
   }
   // 6. drones : tache de lumière sous la machine, de la couleur de leur alerte
-  DG.drones.forEach(d => { const rgb = dgDroneRGB(d), c = (rgb[0] >> 4 << 4) + ',' + (rgb[1] >> 4 << 4) + ',' + (rgb[2] >> 4 << 4); pool(d.x, d.y, 1, 90, c, .12 + .24 * dark, 1); pool(d.x, d.y, dgDroneZ(d), 26, c, .2 + .26 * dark, 0); });
+  DG.drones.forEach(d => { const rgb = dgDroneRGB(d), c = (rgb[0] >> 4 << 4) + ',' + (rgb[1] >> 4 << 4) + ',' + (rgb[2] >> 4 << 4), vr = d.vr || DG_VISION_R, ca = Math.cos(d.ang), sa = Math.sin(d.ang); pool(d.x, d.y, 1, 90, c, .12 + .24 * dark, 1); pool(d.x, d.y, dgDroneZ(d), 26, c, .2 + .26 * dark, 0);
+    [[.32, .3, .22], [.58, .42, .17], [.84, .5, .12]].forEach(q => pool(d.x + ca * vr * q[0], d.y + sa * vr * q[0], 1, vr * q[1], c, (q[2] + .06 * dark) * (.6 + .4 * dark), 1)); });          // le faisceau de scan éclaire vraiment le sol devant le drone
   // 7. soleil bas du matin / du coucher (chaud, venant du haut à droite) et clair de lune (froid)
   { const k = amb[3], gs = (c, w) => Math.exp(-((k - c) * (k - c)) / (w * w)), sunW = Math.max(gs(.25, .55), gs(3.35, .6)) , moonW = gs(4.7, .55);
     if(sunW > .03){ const g = ctx.createRadialGradient(W * .92, -H * .08, 0, W * .92, -H * .08, Math.max(W, H) * 1.05); g.addColorStop(0, 'rgba(255,170,90,' + (.42 * sunW).toFixed(3) + ')'); g.addColorStop(.5, 'rgba(255,130,70,' + (.12 * sunW).toFixed(3) + ')'); g.addColorStop(1, 'rgba(255,110,60,0)'); ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
     if(moonW > .03){ const g = ctx.createRadialGradient(W * .15, -H * .1, 0, W * .15, -H * .1, Math.max(W, H) * .95); g.addColorStop(0, 'rgba(120,160,255,' + (.16 * moonW).toFixed(3) + ')'); g.addColorStop(1, 'rgba(100,140,255,0)'); ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); } }
   // 8. rayons de soleil (matin / coucher) : longs faisceaux qui tombent du haut à droite vers le bas à gauche, et poussière en suspension qui flotte dans la lumière
-  { const k = amb[3], gs = (c, w) => Math.exp(-((k - c) * (k - c)) / (w * w)), sunW = Math.max(gs(.25, .5), gs(3.35, .55)), dayW = Math.max(gs(1.5, .7), gs(2.4, .5)) * .35, dW = Math.max(sunW, dayW);
+  { const k = amb[3], gs = (c, w) => Math.exp(-((k - c) * (k - c)) / (w * w)), cl = 1 - Math.max(dgWx().rain, dgWx().fog * .8), sunW = Math.max(gs(.25, .5), gs(3.35, .55)) * cl, dayW = Math.max(gs(1.5, .7), gs(2.4, .5)) * .35 * cl, dW = Math.max(sunW, dayW);
     if(sunW > .04){
       const warm = k > 2.8 ? '255,170,100' : '255,225,170', spr = dgShaftSprite(warm), n = 7, ang = .62;
       ctx.globalCompositeOperation = 'lighter';
@@ -20673,9 +20740,29 @@ function dgHullOf(pts){
   return H.map(q => [q[0], q[1], 0]);
 }
 const DG_SOFT = { frame:0, al:1 };
+function dgSmallDeco(dc){                                     // décor minuscule (aire < 36 unités²) : calculé une fois
+  let a = dc._sm; if(a !== undefined) return a; const P = dc.p;
+  if(!P || P.length < 3) a = true; else { const ux = P[1][0] - P[0][0], uy = P[1][1] - P[0][1], uz = P[1][2] - P[0][2], L = P[P.length - 1], vx = L[0] - P[0][0], vy = L[1] - P[0][1], vz = L[2] - P[0][2], cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx; a = Math.sqrt(cx * cx + cy * cy + cz * cz) < 36; }
+  return (dc._sm = a);
+}
+// retire les contours entièrement contenus dans un contour plus grand (tours : des dizaines de pièces dont l'ombre est déjà couverte) -- même ombre, bien moins de sommets
+function dgDropInner(hs){
+  const ar = hs.map(h => { let A = 0; for(let i = 0; i < h.length; i++){ const a = h[i], b = h[(i + 1) % h.length]; A += a[0] * b[1] - b[0] * a[1]; } return A; });
+  const idx = hs.map((_, i) => i).sort((a, b) => Math.abs(ar[b]) - Math.abs(ar[a])), keep = [];
+  for(const i of idx){
+    const h = hs[i]; let inside = false;
+    for(let kk = 0; kk < keep.length && !inside; kk++){
+      const j = keep[kk], g = hs[j], sg = ar[j] >= 0 ? 1 : -1; let ok = true;
+      for(let pi = 0; pi < h.length && ok; pi++){ const p = h[pi]; for(let e = 0; e < g.length; e++){ const a = g[e], b = g[(e + 1) % g.length]; if(((b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0])) * sg < -.5){ ok = false; break; } } }
+      if(ok) inside = true;
+    }
+    if(!inside) keep.push(i);
+  }
+  return keep.sort((a, b) => a - b).map(i => hs[i]);
+}
 function dgSoftShadowParts(ctx, pj, M, alpha){
   if(!M._soft){
-    const base = M.parts.map(p => { const pts = []; p.cr.forEach(q => { pts.push([q[0], q[1]]); pts.push([q[0] + q[2] * DG_SUN[0], q[1] + q[2] * DG_SUN[1]]); }); return dgHullOf(pts); }).filter(hh => hh.length >= 3);
+    const base = dgDropInner(M.parts.map(p => { const pts = []; p.cr.forEach(q => { pts.push([q[0], q[1]]); pts.push([q[0] + q[2] * DG_SUN[0], q[1] + q[2] * DG_SUN[1]]); }); return dgHullOf(pts); }).filter(hh => hh.length >= 3));
     M._soft = [base]; for(let i = 1; i < DG_SOFT_N; i++) M._soft.push(base.map(hh => dgOffsetHull(hh, i * DG_SOFT_SP)));
   }
   if(M._ao === undefined){                       // ombre de contact : tout autour du pied de l'objet (pièces posées au sol), plus sombre au contact
@@ -20719,8 +20806,51 @@ function dgSoftShadowBuildings(ctx, city, tod){
   }
 }
 // reflets des lampadaires sur la chaussée mouillée, la nuit : posés sur le sol AVANT les objets (donc jamais par-dessus une maison ou le robot), sur les rues seulement
+// ===== Météo (tirée au hasard à chaque partie) : clair, pluie ou brouillard =====
+// DG.wx = { kind, rain, fog } (0 à 1) ; la pluie assombrit l'ambiance, mouille le sol (flaques, reflets des lampadaires) et fait souffler le vent plus fort ; le brouillard épaissit la brume au loin.
+function dgPickWeather(){
+  if(DG.weatherForce) return DG.weatherForce;
+  const r = Math.random(); return r < .5 ? 'clair' : r < .8 ? 'pluie' : 'brouillard';
+}
+function dgSetWeather(kind){
+  DG.weather = kind; DG.wx = { kind, rain: kind === 'pluie' ? 1 : 0, fog: kind === 'brouillard' ? 1 : kind === 'pluie' ? .35 : 0, flash: 0, nextFlash: 6 + Math.random() * 10 };
+}
+function dgWx(){ return DG.wx || (DG.wx = { kind:'clair', rain:0, fog:0, flash:0, nextFlash:99 }); }
+function dgPuddles(ctx, city, tod){
+  const wx = dgWx(); if(wx.rain <= 0 || !city.roads) return;
+  const W = DG.W, H = DG.H, sk = dgHexAlpha(tod.sky0, .26), sk2 = 'rgba(8,12,20,.22)', nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), hl = 'rgba(' + (200 - 60 * nt | 0) + ',' + (220 - 50 * nt | 0) + ',255,' + (.2 + .1 * (1 - nt)).toFixed(2) + ')';
+  const t = DG.elapsed || 0;
+  for(let i = 0; i < city.roads.length; i++){
+    const r = city.roads[i], g = dgP(r.x, r.y, 0); if(g.x < -220 || g.x > W + 220 || g.y < -140 || g.y > H + 140) continue;
+    for(let j = 0; j < 2; j++){
+      const sd = Math.abs(Math.sin((r.x * 12.9898 + r.y * 78.233 + j * 37.7) * 1.7)) * 43758.5453 % 1, sd2 = Math.abs(Math.sin((r.x * 4.1 + r.y * 9.3 + j * 11.3) * 2.3)) * 12345.678 % 1; if(sd > .72) continue;
+      const px = r.x + (sd2 * 2 - 1) * 90, py = r.y + (((sd * 7.3) % 1) * 2 - 1) * 90, q = dgP(px, py, 0), rad = (13 + (sd2 * 31 % 1) * 28) * q.k * DG_SC;
+      ctx.fillStyle = sk2; ctx.beginPath(); ctx.ellipse(q.x, q.y, rad * 1.6, rad * .85 * DG_CS * 1.6, 0, 0, 6.2832); ctx.fill(); ctx.fillStyle = sk; ctx.beginPath(); ctx.ellipse(q.x, q.y, rad * 1.4, rad * .72 * DG_CS * 1.6, 0, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = hl; ctx.beginPath(); ctx.ellipse(q.x - rad * .25, q.y - rad * .12, rad * .9, rad * .4 * DG_CS * 1.6, 0, 0, 6.2832); ctx.fill();
+      if(((t / 700 + sd * 9) % 1) < .5){ const u = ((t / 700 + sd * 9) % 1) * 2; ctx.strokeStyle = 'rgba(210,225,245,' + (.4 * (1 - u)).toFixed(2) + ')'; ctx.lineWidth = Math.max(.8, rad * .05); ctx.beginPath(); ctx.ellipse(q.x + rad * .3, q.y, rad * (.2 + .7 * u), rad * (.1 + .35 * u) * DG_CS * 1.6, 0, 0, 6.2832); ctx.stroke(); }
+    }
+  }
+}
+function dgWeatherFx(ctx, tod, dt){            // par-dessus la scène : rideau de pluie, voile de brouillard, éclairs
+  const wx = dgWx(), W = DG.W, H = DG.H, t = (DG.elapsed || 0) / 1000;
+  if(wx.fog > 0 && wx.rain < 1){ const nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), c = Math.round(150 - 90 * nt) + ',' + Math.round(160 - 90 * nt) + ',' + Math.round(172 - 80 * nt);
+    ctx.fillStyle = 'rgba(' + c + ',' + (.2 * (wx.fog - wx.rain * .5)).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
+  if(wx.rain > 0){
+    const n = DG.q && DG.q.lod >= 3 ? 70 : DG.q && DG.q.lod >= 2 ? 110 : 170, sp = 1250, ang = .2, len = 26 * DG_SC * .9, dx = Math.sin(ang) * len, dy = Math.cos(ang) * len;
+    ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(205,220,240,.34)'; ctx.lineWidth = Math.max(1, 1.1 * DG_SC); ctx.beginPath();
+    for(let i = 0; i < n; i++){ const u = (((i * .6180339 + t * (1.1 + (i % 5) * .08)) % 1) + 1) % 1, v = (((i * .7548777 + t * (2.3 + (i % 3) * .2)) % 1) + 1) % 1, x = ((u * 1.2) - .1) * W - v * H * .2, y = v * (H + 60) - 30; ctx.moveTo(x, y); ctx.lineTo(x + dx, y + dy); }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(190,205,230,.18)'; ctx.lineWidth = Math.max(1.4, 1.8 * DG_SC); ctx.beginPath();
+    for(let i = 0; i < n * .25; i++){ const u = (((i * .5698403 + .2 + t * 1.5) % 1) + 1) % 1, v = (((i * .8191725 + t * 2.9) % 1) + 1) % 1, x = ((u * 1.2) - .1) * W - v * H * .2, y = v * (H + 60) - 30; ctx.moveTo(x, y); ctx.lineTo(x + dx * 1.4, y + dy * 1.4); }
+    ctx.stroke();
+    // éclairs : un flash blanc-bleu qui s'éteint vite, parfois doublé
+    if(!DG.paused){ wx.nextFlash -= dt || 0; if(wx.nextFlash <= 0 && wx.rain > .5){ wx.flash = 1; wx.nextFlash = 9 + Math.random() * 16; wx.dbl = Math.random() < .5 ? .22 : 0; } }
+    if(wx.flash > .02){ ctx.fillStyle = 'rgba(205,220,255,' + (wx.flash * .34).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); wx.flash *= Math.pow(.02, (dt || .016)); if(wx.dbl && wx.flash < .5){ wx.flash = .8; wx.dbl = 0; } }
+    ctx.restore();
+  }
+}
 function dgWetReflections(ctx, city, tod){
-  const nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), wet = Math.max(0, (nt - .15) / .85); if(wet <= 0 || !city.lamp) return;
+  const nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), rn = dgWx().rain, wet = Math.max(0, (nt - .15) / .85, rn * (.55 + .45 * nt)); if(wet <= 0 || !city.lamp) return;
   if(!city.roadMap) dgRoadIndex(city);
   const W = DG.W, H = DG.H, cr = DG_CELL, t = DG.elapsed || 0, spr = dgLightSprite('255,224,170');
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
@@ -21142,14 +21272,29 @@ function dgTreeAssign(t){
   t.ty = h(bx, by) < .7 ? Math.floor(h(by, bx + 3) * 5) : Math.floor(h(t.x, t.y) * 5);   // un type dominant par îlot de forêt, quelques intrus
   t.ty = Math.min(4, t.ty); const hs = h(t.x * .37 + 5, t.y * .53 + 11); t.st = hs < DG_TREE.BROKEN[0] ? 1 : hs < DG_TREE.BROKEN[1] ? 2 : hs < DG_TREE.BROKEN[2] ? 3 : 0; t.v = Math.floor(h(t.y, t.x + 7) * DG_TREE.NV); t.ph = h(t.x, t.y + 1) * 6.28;
 }
+// Vent : une brise qui souffle vers la droite avec des rafales qui traversent la carte ; renvoie la force du vent à cet endroit (environ -0,4 à 1,1)
+function dgWind(x, y){
+  const t = (DG.elapsed || 0) / 1000, g = .5 + .5 * Math.sin(t * .5 - (x * .0011 + y * .0007));          // rafale qui avance sur la carte
+  return (.28 + .55 * g * g + .25 * Math.sin(t * 1.9 - x * .0023 + y * .0016) * (.4 + .6 * g)) * (1 + .6 * dgWx().rain);
+}
+const DG_LEAF_COL = ['#c8782a', '#b4521f', '#d9a43a', '#8a9a3c', '#a3421c'];
+function dgWindLeaves(ctx){                       // feuilles mortes emportées par le vent, qui traversent l'écran en tournoyant
+  const W = DG.W, H = DG.H, t = (DG.elapsed || 0) / 1000, w = dgWind(DG.cam.x, DG.cam.y), n = DG.q && DG.q.lod >= 3 ? 8 : 18, sc = DG_SC * (DG.dpr > 2 ? 1 : 1);
+  for(let i = 0; i < n; i++){
+    const sp = .035 + (i % 4) * .012 + w * .02, u = (((i * .6180339 + t * sp) % 1) + 1) % 1, v = (((i * .4142135 + .3 + t * (.02 + (i % 3) * .008)) % 1) + 1) % 1;
+    const x = (u * 1.3 - .15) * W, y = (v * 1.2 - .1) * H + Math.sin(t * 2.6 + i * 1.9) * 14, a = t * (1.5 + (i % 3)) + i, sz = (2.8 + (i % 3) * .9) * sc, fl = Math.abs(Math.cos(a * .7));
+    ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.fillStyle = DG_LEAF_COL[i % DG_LEAF_COL.length]; ctx.globalAlpha = .85; ctx.beginPath(); ctx.ellipse(0, 0, sz, Math.max(.6, sz * .5 * fl), 0, 0, 6.2832); ctx.fill(); ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
 function dgDrawTree(ctx, t){
   if(t.ty == null) dgTreeAssign(t);
   const g = dgP(t.x, t.y, 0), k = g.k, f = t.h / 100, S = DG_TREE, spr = dgTreeSprite(t.ty, t.v, t.st), s = k * f;
   dgGlow(ctx, t.x, t.y, 30 * f, 'rgba(0,0,0,.6)', .45, .4);                                   // ombre au sol
   if(t.ty === 4) dgGlow(ctx, t.x, t.y, 34 * f, 'rgba(110,255,230,.6)', .22 + .1 * Math.sin((DG.elapsed || 0) / 600 + t.ph), 1);   // lueur de l'arbre mutant
   ctx.save(); ctx.translate(g.x, g.y);
-  const sway = Math.sin((DG.elapsed || 0) / 1100 + t.ph) * .012 * (t.ty === 2 ? 1.6 : t.ty === 1 ? .6 : 1) * (t.st >= 2 ? 0 : 1);   // léger balancement dans le vent
-  ctx.rotate(sway);
+  const sway = dgWind(t.x, t.y) * .05 * (t.ty === 2 ? 1.5 : t.ty === 1 ? .55 : 1) * (t.st >= 2 ? 0 : 1);   // le vent penche l'arbre (le haut bouge plus que le pied) ; le saule pleureur bouge le plus, le sapin le moins
+  ctx.transform(1, 0, -sway, 1, 0, 0);
   ctx.drawImage(spr.cv, -spr.ax * s, -spr.ay * s, spr.w * s, spr.h * s);
   ctx.restore();
 }
@@ -21280,7 +21425,7 @@ function dgPlantSprite(k, v){
 }
 function dgDrawPlant(ctx, p){
   const g = dgP(p.x, p.y, 0), k = g.k * p.s, T = DG_PLANT, spr = dgPlantSprite(p.k, p.v), tuft = p.k >= 3;
-  ctx.save(); ctx.translate(g.x, g.y); ctx.rotate(p.v >= 2 ? 0 : Math.sin((DG.elapsed || 0) / (tuft ? 800 : 1300) + p.ph) * (tuft ? .035 : .012));
+  ctx.save(); ctx.translate(g.x, g.y); ctx.transform(1, 0, p.v >= 2 ? 0 : -dgWind(p.x, p.y) * (tuft ? .13 : .06) * (.85 + .3 * Math.sin(p.ph)), 1, 0, 0);
   ctx.drawImage(spr.cv, spr.ox * k, spr.oy * k, spr.w * k, spr.h * k); ctx.restore();
 }
 // ===== Bancs en pierre blanche (parcs) : un seul modèle, en version intacte puis 5 versions cassées / détruites =====
@@ -21484,7 +21629,7 @@ function dgDrawParts(ctx0, o, M){
     if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let i = 0; i < p.cr.length; i++){ const q = pjc(i); if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; }
       const m = 10 + k0 * 3; let off = b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m;       // si les coins touchent déjà l'écran, inutile de projeter tous les décors
       if(off){
-        for(let i = 0; i < p.decos.length; i++){ const dc = p.decos[i], L = dc.ps || [dc.p]; for(let j = 0; j < L.length; j++){ const P = L[j]; if(!P) continue; for(let n = 0; n < P.length; n++){ const q = pj(P[n]); if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; } } }      // les décors (taches, mousse, fenêtres) peuvent dépasser de la pièce
+        for(let i = 0; i < p.decos.length; i++){ const dc = p.decos[i], L = dc.ps || [dc.p]; for(let j = 0; j < L.length; j++){ const P = L[j]; if(!P) continue; for(let n = 0; n < P.length; n++){ dgPs(ox + P[n][0], oy + P[n][1], P[n][2]); const qx = DG_PS.x, qy = DG_PS.y; if(qx < a) a = qx; if(qx > b) b = qx; if(qy < c) c = qy; if(qy > d) d = qy; } } }      // les décors (taches, mousse, fenêtres) peuvent dépasser de la pièce
         off = b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m; }
       if(off){ stub = DG_STUB; stub.fillStyle = ctx0.fillStyle; stub.strokeStyle = ctx0.strokeStyle; stub.lineWidth = ctx0.lineWidth; stub.lineJoin = ctx0.lineJoin; stub.lineCap = ctx0.lineCap; stub.globalAlpha = ctx0.globalAlpha; ctx = stub; } }                  // pièce entièrement hors écran : mêmes calculs mais sans rien tracer              // sommets projetés une seule fois par pièce (partagés entre ses faces)
     p.faces.forEach(f => {
@@ -21500,17 +21645,29 @@ function dgDrawParts(ctx0, o, M){
     let bt = null;                                   // tracé en cours : les décors consécutifs de même couleur sont regroupés en un seul tracé (même ordre de superposition, bien moins d'appels)
     const bflush = () => { if(bt){ if(bt.m){ ctx.fillStyle = bt.s; ctx.fill(); } else { ctx.strokeStyle = bt.s; ctx.lineWidth = bt.w; ctx.stroke(); } bt = null; } };
     const badd = (m, st, w, pts) => { if(bt && (bt.m !== m || bt.s !== st || bt.w !== w)) bflush(); if(!bt){ ctx.beginPath(); bt = { m, s:st, w }; } pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); };
+    const mc = 10 + k0 * 3;
+    const baddR = (m, st, w, P, lt) => {                  // décor à plat : projeté sans allocation, et ignoré s'il est entièrement hors écran (mêmes pixels, bien moins de sommets)
+      const n = P.length; let a = 1e9, b = -1e9, c = 1e9, d = -1e9;
+      for(let i = 0; i < n; i++){ const q = P[i]; dgPs(ox + q[0], oy + q[1], q[2]); const x = DG_PS.x, y = DG_PS.y; DG_XS[i] = x; DG_YS[i] = y; if(x < a) a = x; if(x > b) b = x; if(y < c) c = y; if(y > d) d = y; }
+      if(cl && (b < cl.x0 - mc || a > cl.x1 + mc || d < cl.y0 - mc || c > cl.y1 + mc)) return;
+      if(lt) st = dgWinLit(lt, ox, oy) ? 'rgb(255,214,140)' : lt.c;
+      if(bt && (bt.m !== m || bt.s !== st || bt.w !== w)) bflush(); if(!bt){ ctx.beginPath(); bt = { m, s:st, w }; }
+      ctx.moveTo(DG_XS[0], DG_YS[0]); for(let i = 1; i < n; i++) ctx.lineTo(DG_XS[i], DG_YS[i]); ctx.closePath();
+    };
     p.decos.forEach(dc => {
       if(!vis[dc.f]) return;
       if(lod >= 3 && dc.k !== 'cols' && dc.k !== 'col' && dc.k !== 'lit') return;
-      if(dc.k === 'cols'){ dc.ps.forEach(pl => badd(1, dc.c, 0, pl.map(pj))); return; }       // aplats regroupés (fenêtres des tours)
+      if(lod >= 2 && dc.k === 'col' && dgSmallDeco(dc)) return;                  // appareil à la peine : meneaux, rebords et autres finesses sont retirés
+      if(dc.k === 'cols'){ const L = dc.ps, stp = lod >= 4 ? 2 : 1; for(let j = 0; j < L.length; j += stp) baddR(1, dc.c, 0, L[j]); return; }       // aplats regroupés (fenêtres des tours)
+      if(dc.k === 'col'){ baddR(1, dc.c, 0, dc.p); return; }
+      if(dc.k === 'lit'){ baddR(1, null, 0, dc.p, dc); return; }          // fenêtre de maison : la nuit (mode GPU), certaines s'allument
+      if(dc.k === 'moss'){ baddR(1, 'rgba(86,118,60,.55)', 0, dc.p); return; }
+      if(dc.k === 'stain'){ baddR(1, 'rgba(78,70,54,.2)', 0, dc.p); return; }
+      if(dc.k === 'line'){ baddR(0, 'rgba(70,64,52,.4)', Math.max(.4, .6 * k0), dc.p); return; }
       const pts = dc.p.map(pj);
+      if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let i = 0; i < pts.length; i++){ const q = pts[i]; if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; }
+        if(b < cl.x0 - mc || a > cl.x1 + mc || d < cl.y0 - mc || c > cl.y1 + mc) return; }
       if(dc.k === 'crack'){ const key = (dc.w || 1) + '|' + (dc.c || ''); cg = cg || {}; (cg[key] || (cg[key] = { w:dc.w || 1, c:dc.c, l:[] })).l.push(pts); return; }
-      if(dc.k === 'moss'){ badd(1, 'rgba(86,118,60,.55)', 0, pts); return; }
-      if(dc.k === 'stain'){ badd(1, 'rgba(78,70,54,.2)', 0, pts); return; }
-      if(dc.k === 'col'){ badd(1, dc.c, 0, pts); return; }
-      if(dc.k === 'lit'){ badd(1, dgWinLit(dc, ox, oy) ? 'rgb(255,214,140)' : dc.c, 0, pts); return; }          // fenêtre de maison : la nuit (mode GPU), certaines s'allument
-      if(dc.k === 'line'){ badd(0, 'rgba(70,64,52,.4)', Math.max(.4, .6 * k0), pts); return; }
       bflush();
       ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath();
       if(dc.k === 'fresh'){ ctx.fillStyle = 'rgba(250,247,236,.92)'; ctx.fill(); ctx.strokeStyle = 'rgba(70,64,52,.6)'; ctx.lineWidth = Math.max(.5, .8 * k0); ctx.stroke(); }
@@ -25014,6 +25171,11 @@ function dgDrawDrone(ctx, d){
     ctx.fillStyle = '#8c98a6'; ctx.beginPath(); ctx.arc(b2.x, b2.y, Math.max(.8, 1.7 * K), 0, 6.2832); ctx.fill();
     if(d.fire > 0 && Math.sin(t * 70 + sd) > -.2) glow(b2, 14, .95);
   });
+  { const s = W(5, 0, -7.4), r = 4.6 * K;                                   // nacelle de capteurs sous la coque : boule sombre à lentille de la couleur de l'état, qui tourne vers la cible
+    ctx.fillStyle = '#14181e'; ctx.beginPath(); ctx.ellipse(s.x, s.y, r * 1.12, r, 0, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = '#3d4652'; ctx.lineWidth = Math.max(.6, K * .8); ctx.beginPath(); ctx.ellipse(s.x, s.y, r * 1.12, r, 0, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+    const lx = Math.cos(t * 1.4 + (d.bob || 0)) * r * .35; ctx.fillStyle = col(.95); ctx.beginPath(); ctx.ellipse(s.x + lx, s.y + r * .1, r * .36, r * .3, 0, 0, 6.2832); ctx.fill(); glow({ x:s.x + lx, y:s.y + r * .1 }, 8, .6);
+    ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.arc(s.x - r * .45, s.y - r * .4, Math.max(.5, r * .16), 0, 6.2832); ctx.fill(); }
   const N = 8, ring = (r, z, sx) => { const o = []; for(let i = 0; i < N; i++){ const th = (i + .5) / N * 6.2832; o.push(W(Math.cos(th) * r * sx, Math.sin(th) * r, z)); } return o; };
   const bot = ring(15, -4, 1.12), mid = ring(15, 3, 1.12), top = ring(11.5, 6.5, 1.1);
   for(let i = 0; i < N; i++){
@@ -25033,6 +25195,9 @@ function dgDrawDrone(ctx, d){
     ctx.fillStyle = col(.95); ctx.beginPath(); ctx.ellipse(e.x, e.y, r * .55, r * .55 * DG_CS, 0, 0, 6.2832); ctx.fill(); glow(e, 12, .75); }
   { const q0 = W(-8, 0, 6.6), q1 = W(-10, 0, 16); line(q0, q1, 1, '#aab4c0'); if(Math.sin(t * 6 + (d.bob || 0)) > .2){ ctx.fillStyle = cv > 1.5 ? '#ff5a5a' : '#ffd36b'; ctx.beginPath(); ctx.arc(q1.x, q1.y, Math.max(.8, 1.3 * K), 0, 6.2832); ctx.fill(); } }
   front.forEach(drawRotor);
+  { for(let k = 0; k < 4; k++){ const q0 = W(-9.5, -4.2 + k * 2.8, 6.75), q1 = W(-5.8, -4.2 + k * 2.8, 6.75); line(q0, q1, .9, 'rgba(14,18,24,.8)'); }          // grilles d'aération sur le dos
+    [[mount[1], '255,70,70'], [mount[2], '90,255,130']].forEach(([o, c], i) => { if(Math.sin(t * 5 + (d.bob || 0) + i * 1.6) > .15){ const r = Math.max(.9, 1.5 * K); ctx.fillStyle = 'rgb(' + c + ')'; ctx.beginPath(); ctx.arc(o.m.x, o.m.y + K * 1.2, r, 0, 6.2832); ctx.fill(); const sp = dgLightSprite(c), rx = 7 * K; ctx.globalAlpha = .55; ctx.drawImage(sp, o.m.x - rx, o.m.y + K * 1.2 - rx, rx * 2, rx * 2); ctx.globalAlpha = 1; } });          // feux de navigation clignotants
+    mount.forEach(o => glow({ x:o.m.x, y:o.m.y + K * 1.5 }, 7, .32)); }                                                  // lueur sous chaque rotor
   // halo lumineux sous la coque (couleur de l'état)
   glow(W(0, 0, -6), 40, .5);
   ctx.lineCap = 'butt';
@@ -25926,9 +26091,9 @@ function dgDrawPlayerItem(c){ if(!(DG.invuln > 0 && ((DG.elapsed / 90) | 0) % 2)
 function dgDepthHaze(ctx, tod){
   const W = DG.W, H = DG.H, sk = /rgba?\((\d+),(\d+),(\d+)/.exec(dgHexAlpha(tod.sky0, 1)), sn = /rgba\((\d+),(\d+),(\d+),([\d.]+)\)/.exec(tod.sun), sa = sn ? Math.min(1, +sn[4] * 2.2) : 0;
   const nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42)), br = 1.55 - .55 * nt, mix = i => Math.min(255, Math.round((+sk[i + 1] * (1 - sa) + (sn ? +sn[i + 1] : 0) * sa) * br)), rgb = mix(0) + ',' + mix(1) + ',' + mix(2);
-  const top = .42 - .1 * nt, g = ctx.createLinearGradient(0, 0, 0, H * .62);
+  const wx = dgWx(), top = Math.min(.92, .42 - .1 * nt + .5 * wx.fog + .12 * wx.rain), g = ctx.createLinearGradient(0, 0, 0, H * (.62 + .3 * wx.fog));
   g.addColorStop(0, 'rgba(' + rgb + ',' + top.toFixed(3) + ')'); g.addColorStop(.45, 'rgba(' + rgb + ',' + (top * .38).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * .62);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * (.62 + .3 * wx.fog));
 }
 function dgDrawHaze(ctx, tod){
   const cx = DG.cam.x, cy = DG.cam.y; if(Math.hypot(cx, cy) < 1300) return;
@@ -25947,6 +26112,7 @@ function dgDrawHaze(ctx, tod){
 }
 function dgDraw(){
   const ctx = DG.ctx; if(!ctx || !DG.W) return;
+  DG.drawN = (DG.drawN || 0) + 1; if(DG.drawN >= (DG.evN || 0)){ DG.evN = DG.drawN + 60; dgEvictModels(); }
   if(ctx.isGL) ctx.begin();
   const tod = dgTod();
   DG_LQ.on = !!ctx.isGL; DG_LQ.n = 0; DG_LQ.nt = Math.max(0, Math.min(1, (tod.lit - .04) / .42));
@@ -25957,9 +26123,10 @@ function dgDraw(){
   const city = DG.city;
   const shk = dgFxShakeOff(), zk = DG.zoomK > 1.004 ? DG.zoomK : 1;
   DG.cull = (shk || zk > 1) ? null : { x0:-14, y0:-14, x1:DG.W + 14, y1:DG.H + 14 };      // rectangle d'affichage : les pièces entièrement hors écran ne sont pas tracées (identique à l'écran, bien moins de travail)
+  DG.wv = DG.cull ? dgWorldView(DG.cull) : null;
   if(shk || zk > 1){ ctx.save(); if(shk) ctx.translate(shk.x, shk.y); if(zk > 1){ const zx = DG.W * .5, zy = DG.H * DG_CY - 14; ctx.translate(zx, zy); ctx.scale(zk, zk); ctx.translate(-zx, -zy); } }
   dgDrawGround(ctx, city, tod);
-  if(ctx.isGL){ DG_SOFT.frame++; DG_SOFT.al = 1 - .5 * Math.max(0, Math.min(1, (tod.lit - .04) / .42)); dgSoftShadowBuildings(ctx, city, tod); dgWetReflections(ctx, city, tod); }          // mode GPU : ombres douces portées au sol
+  if(ctx.isGL){ DG_SOFT.frame++; DG_SOFT.al = 1 - .5 * Math.max(0, Math.min(1, (tod.lit - .04) / .42)); dgSoftShadowBuildings(ctx, city, tod); dgPuddles(ctx, city, tod); dgWetReflections(ctx, city, tod); }          // mode GPU : ombres douces portées au sol
   dgFxDrawGround(ctx);
   dgDrawDomeBack(ctx);                          // dôme : liseré au sol et mur du fond (avant les objets)
   const items = [];
@@ -25991,7 +26158,7 @@ function dgDraw(){
     if(plIt && Math.abs(DG.player.x - hh.x) < 300 && Math.abs(DG.player.y - hh.y) < 300){ const b = hh._fp || (hh._fp = dgHouseBox(hh)), px = DG.player.x, py = DG.player.y;
       if(px > b.x1 || py > b.y1 || (px > b.x0 && py > b.y0)) plIt.d = Math.max(plIt.d, it.d + .01); else plIt.d = Math.min(plIt.d, it.d - .01); }          // robot devant ou derrière la maison (tri exact)
   });
-  (city.fences || []).forEach(fn => { if(vis({ x:fn.x, y:fn.y, s:fn.L }, 40)) items.push({ k:'cl', o:fn, d:fn.x + fn.y }); });
+  (city.fences || []).forEach(fn => { if(vis({ x:fn.x, y:fn.y, s:fn.L * .5 }, 40)) items.push({ k:'cl', o:fn, d:fn.x + fn.y }); });
   (city.containers || []).forEach(c => {
     c.mid = null; if(!vis({ x:c.x, y:c.y, s:260 }, 260)) return;
     const it = { k:'ct', o:c, d:c.x + c.y, rel:null }; items.push(it);
@@ -26041,6 +26208,8 @@ function dgDraw(){
   if(shk || zk > 1) ctx.restore();
   dgDrawHaze(ctx, tod);
   if(ctx.isGL) dgDepthHaze(ctx, tod);
+  if(!(DG.q && DG.q.lod >= 4) && dgWx().rain < .5) dgWindLeaves(ctx);
+  dgWeatherFx(ctx, tod, DG.frameDt);
   dgDrawSecuredMarker(ctx);
   // assombrissement global (plus la nuit tombe, plus c'est sombre) + vignette teintée par l'ambiance
   if(ctx.isGL) dgLightFx(ctx, city, tod, dgAmb(), shk, zk);          // mode GPU : ambiance colorée + vraies lumières
@@ -26357,6 +26526,7 @@ function dgCarSortKey(c, isPickup){
   return c.x + qx * L.cr - qy * L.sr + c.y + qx * L.sr + qy * L.cr;
 }
 function dgUpdate(dt){
+  DG.frameDt = dt;
   if(DG.ended) return;
   if(!(dt > 1e-4)) dt = 1e-4;                // deux images avec le même horodatage (dt = 0) donnaient une division par zéro dans le déplacement : position invalide
   DG.elapsed = Date.now() - DG.startAt;
@@ -26655,6 +26825,7 @@ function dgStartRun(){
   document.getElementById('dgBrief').style.display = 'none';
   document.getElementById('dgWrap').style.display = '';
   DG.canvas = document.getElementById('dgCanvas'); DG.glOn = dgGlWanted() && !!window.WebGL2RenderingContext;
+  dgSetWeather(dgPickWeather());                           // météo tirée au hasard à chaque partie (DG.weatherForce sert seulement de forçage pour les tests)
   DG.city = dgGenCity(DG.biome || ['ville', 'banlieue', 'building'][Math.floor(Math.random() * 3)]);   // biome tiré totalement au hasard à chaque partie (DG.biome sert seulement de forçage pour les tests)
   DG.city.terrain = dgTerrainBuild(DG.city); dgTerrainPrewarm(DG.city, 0, 0);   // sol cuit dès le départ (évite un à-coup au premier affichage)
   DG.player = { x:0, y:0, facing:-Math.PI * .75, walk:0 };
@@ -26672,6 +26843,7 @@ function dgStartRun(){
   dgRenderBagBadge(); dgSyncInteractUI(); dgSyncCtUI();
   dgFit(); dgGlSync(); dgSprWarmInit(); window.addEventListener('resize', dgFit);
   DG.active = true;
+  if(DG.raf) cancelAnimationFrame(DG.raf);         // jamais deux boucles de jeu en même temps
   DG.raf = requestAnimationFrame(dgLoop);
 }
 function dgEnd(victory, cause){
@@ -26720,7 +26892,12 @@ function dgAbandon(){
 document.getElementById('tileDome').onclick = DG_LOCKED ? null : enterDomeGame;
 if(!DG_LOCKED){ const tl = document.getElementById('tileDome'); tl.classList.remove('locked'); const lk = tl.querySelector('.mt-lock'); if(lk) lk.remove(); }      // mission rouverte (test) : plus de cadenas
 document.getElementById('domeBackBtn').onclick = () => { if(DG.active && !DG.ended) dgAbandon(); else exitDomeGame(); };
-document.getElementById('dgStartBtn').onclick = dgStartRun;
+function dgStartClick(){                       // la génération de la grande carte prend quelques secondes : on affiche « CHARGEMENT » et on ignore les appuis répétés (sinon deux parties se lançaient en même temps)
+  const b = document.getElementById('dgStartBtn'); if(DG.starting) return;
+  DG.starting = true; const t0 = b.textContent; b.textContent = 'CHARGEMENT DE LA ZONE…';
+  setTimeout(() => { try { dgStartRun(); } finally { DG.starting = false; b.textContent = t0; } }, 60);
+}
+document.getElementById('dgStartBtn').onclick = dgStartClick;
 document.getElementById('dgEndBtn').onclick = exitDomeGame;
 document.getElementById('dgInteractBtn').onclick = () => { if(DG.nearWreck) DG.harvestOn = true; };
 document.getElementById('dgSearchBtn').onclick = e => { e.stopPropagation(); dgSearchStart(); };
