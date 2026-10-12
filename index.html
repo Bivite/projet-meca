@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.14</title>
+<title>Projet MECA V0.04.15</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3287,6 +3287,171 @@
   /* Cartes de la sélection agrandies sur demande (V0.02.31) — .codex-grid est une classe partagée
      avec le codex, la fabrique et la fusion, donc repassée à 2 colonnes ici uniquement via #squadMgr. */
   #squadMgr .codex-grid{grid-template-columns:repeat(2,1fr); gap:10px;}
+  /* ---------- DECK (V0.04.15, demande d'Alex) ---------- */
+  .mode-tile.deck{background:linear-gradient(160deg, #c8fff0, #1fd1a5 45%, #0b4f40); filter:drop-shadow(0 0 12px rgba(31,209,165,.4));}
+  .mode-tile.deck .mt-inner{background:
+    linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 26%),
+    linear-gradient(0deg, rgba(0,0,0,.65) 0%, transparent 30%),
+    linear-gradient(160deg, #c8fff0 0%, transparent 60%);}
+  .mt-deck-ico svg{width:100%; height:100%; display:block;}
+  .mode-tile:not(.soon) .mt-deck-ico{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:62%; height:62%; max-width:none; max-height:none; margin:0;
+    pointer-events:none; z-index:0; opacity:.45; color:#fff;
+    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
+    animation:none !important;
+  }
+  #deckView{gap:12px;}
+  #deckView .wave, #deckView .inf-tag{display:none;}
+  #deckBackBtn{visibility:hidden; pointer-events:none;}
+  /* Encadré déroulant DECK : même recette que #codexResources (RESSOURCES) */
+  /* Même « verre » biseauté que #codexResources (RESSOURCES de GESTION DE CARTE) */
+  #deckPanel{
+    --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(139,92,246,.5);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(139,92,246,.3), transparent 70%),
+      linear-gradient(180deg, #1b1629, #0d0b15);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
+  }
+  #deckPanel > summary{list-style:none; cursor:pointer; position:relative; margin:0;}
+  #deckPanel > summary::-webkit-details-marker{display:none;}
+  #deckPanel > summary::marker{content:"";}
+  #deckPanel:not([open]) > #deckBody{display:none;}
+  #deckPanel:not([open]){gap:0;}
+  #deckPanel[open] .res-toggle-chevron{transform:translateY(-50%) rotate(-135deg);}
+  #deckBody{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 8px; padding:4px 0 2px;}
+  .deck-tile{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .deck-tile .codex-card{pointer-events:none;}
+  .deck-name{
+    width:100%; text-align:center; font-family:var(--font-title); font-weight:900; font-size:9.5px; letter-spacing:1.2px; color:#fff;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-shadow:0 1px 3px rgba(0,0,0,.7);
+  }
+  .deck-name small{display:block; font-family:var(--font-ui); font-weight:600; font-size:8px; letter-spacing:.5px; color:var(--text-dim);}
+  .deck-empty{
+    min-height:120px; border-radius:12px; border:1.5px dashed rgba(255,255,255,.28); background:rgba(0,0,0,.3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    color:rgba(255,255,255,.55); font-family:var(--font-title); font-size:7.5px; letter-spacing:.8px; font-weight:700; text-align:center; padding:0 4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .deck-empty span{font-size:30px; line-height:1; color:rgba(255,255,255,.7);}
+  .deck-empty:active{background:rgba(255,255,255,.08);}
+  .deck-tile.editing .codex-card{outline:2px solid #4d94ff; border-radius:12px;}
+  /* Filtres + recherche */
+  .deck-tools{position:relative; align-items:stretch;}
+  #deckFilterDetails{position:static; overflow:visible; border:none; background:none; box-shadow:none; border-radius:0; min-width:0;}
+  #deckFilterDetails > summary{
+    --cut:10px; height:100%; box-sizing:border-box; padding:10.5px 8px; font-size:10.5px; letter-spacing:2px; border-bottom:none !important;
+    border:1px solid var(--line-strong); box-shadow:var(--shadow-card);
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
+      linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+  }
+  #deckFilterDetails .deck-filter-body{
+    position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:30;
+    border-radius:var(--radius); border:1px solid var(--line-strong); box-shadow:0 14px 30px rgba(0,0,0,.65);
+    background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+  }
+  #deckFilterDetails:not([open]) .deck-filter-body{display:none;}
+  /* Bouton bleu VALIDER LE DECK */
+  .deck-validate{
+    width:100%; padding:14px 8px; cursor:pointer; --cut:12px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:12px; font-weight:900; letter-spacing:3px; color:#fff;
+    border:1px solid rgba(170,210,255,.7);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.38) 0%, transparent 42%),
+      linear-gradient(180deg, #4d94ff, #1b52d6 60%, #0f2f8c);
+    box-shadow:0 4px 0 #081a52, 0 0 18px rgba(77,148,255,.6);
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+  .deck-validate[hidden]{display:none;}
+  .deck-validate:active{transform:translateY(2px);}
+  /* Barre du deck en cours */
+  .deck-draft-bar{display:flex; align-items:center; gap:8px;}
+  .deck-draft-bar[hidden]{display:none;}
+  .deck-draft-bar button{
+    font-family:var(--font-title); font-weight:700; font-size:9.5px; letter-spacing:1.5px; color:#fff; cursor:pointer; padding:9px 10px;
+    border-radius:10px; border:1px solid var(--line-strong); background:linear-gradient(180deg, #1e1830, #120f1c);
+  }
+  .deck-draft-bar .deck-rename{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; border-color:rgba(77,148,255,.55);}
+  .deck-draft-bar .deck-del{color:#ff8d9b; border-color:rgba(255,79,106,.55);}
+  .deck-draft-bar .deck-del.confirm{background:#5a1020; color:#fff;}
+  .deck-name-input{
+    width:100%; box-sizing:border-box; padding:13px 12px; border-radius:12px; text-align:center;
+    font-family:var(--font-title); font-size:13px; font-weight:700; letter-spacing:2px; color:#fff;
+    background:rgba(0,0,0,.4); border:1px solid var(--line-strong); outline:none;
+  }
+  .deck-name-input:focus{border-color:#4d94ff; box-shadow:0 0 0 2px rgba(77,148,255,.3);}
+  /* Liste des cartes / mode création */
+  #deckWork .codex-grid{padding:0 5px;}
+  .deck-split{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:10px; align-items:start;}
+  .deck-split #deckLeft .codex-grid{grid-template-columns:repeat(2,minmax(0,1fr)); padding:0; gap:8px;}
+  #deckLeft.drop-ok{outline:2px dashed rgba(255,79,106,.7); outline-offset:3px; border-radius:12px;}
+  #deckRight{
+    position:sticky; top:6px; align-self:start; max-height:calc(100dvh - 120px); overflow-y:auto; overflow-x:hidden;
+    border-radius:14px; padding:0 6px 8px; box-sizing:border-box;
+    background:linear-gradient(180deg, rgba(77,148,255,.14), rgba(0,0,0,.35)); border:1px solid rgba(77,148,255,.45);
+    display:flex; flex-direction:column; gap:8px; overscroll-behavior:contain;
+  }
+  #deckRight.drop-ok{border-color:#7fe0a8; box-shadow:0 0 0 2px rgba(127,224,168,.5), 0 0 20px rgba(127,224,168,.35);}
+  .deck-count{
+    position:sticky; top:0; z-index:5; margin:0 -6px; padding:9px 6px; text-align:center;
+    font-family:var(--font-title); font-weight:900; font-size:13px; letter-spacing:2px; color:#fff;
+    background:linear-gradient(180deg, #18294f, #0f1a38); border-bottom:1px solid rgba(77,148,255,.45);
+  }
+  .deck-count.full{color:#7fe0a8;}
+  #deckRight > .deck-stack{flex:0 0 auto;}
+  .deck-stack{position:relative; width:78%; margin:16px 0 0 auto;}
+  .deck-stack > .codex-card{width:100%;}
+  .deck-stack > .deck-front{position:relative; z-index:1;}
+  .deck-stack > .deck-back{position:absolute; left:0; top:0; width:100%; height:100%; z-index:0; transform-origin:100% 100%; transform:translate(-6%,-2%) rotate(-11deg);}   /* penchée en éventail, pivot en bas à droite */
+  #deckView .codex-search-box .search-ico{left:16px;}
+  .deck-right-empty{padding:26px 6px; text-align:center; font-size:10px; line-height:1.5; letter-spacing:.5px; color:var(--text-dim);}
+  .deck-drag-card{touch-action:pan-y; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:grab;}
+  .deck-drag-card.dragging{opacity:.3; filter:grayscale(1);}
+  .deck-ghost{position:fixed; z-index:99999; pointer-events:none; opacity:.93; transform:translate(-50%,-50%) rotate(3deg) scale(1.04); filter:drop-shadow(0 10px 14px rgba(0,0,0,.6));}
+  .deck-ghost .cx-copy-badge{display:none;}
+  /* V0.04.15 (demande d'Alex : "met les bons designs de partout") : tous les boutons/encadrés de l'écran DECK
+     reprennent le « verre biseauté » du jeu (coins coupés, reflet diagonal, bord violet) au lieu des
+     pastilles arrondies génériques. */
+  #deckView .deck-draft-bar button, #actionInner .deck-btn{
+    --cut:10px; border-radius:0; cursor:pointer; color:#fff;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
+      linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid rgba(139,92,246,.55); box-shadow:var(--shadow-card), 0 0 14px -6px var(--violet-glow);
+    font-family:var(--font-title); font-size:10.5px; font-weight:700; letter-spacing:2px; padding:11px 12px;
+  }
+  #deckView .deck-draft-bar .deck-rename{border-color:rgba(77,148,255,.7); padding-left:16px;}
+  #deckView .deck-draft-bar .deck-del{border-color:rgba(255,79,106,.7); color:#ff8d9b;}
+  #deckView .deck-draft-bar button:active, #actionInner .deck-btn:active{transform:translateY(2px);}
+  #actionInner .deck-modal-row{display:flex; gap:10px; width:100%;}
+  #actionInner .deck-modal-row .deck-btn{flex:1; min-width:0; padding:13px 8px;}
+  #actionInner .deck-btn.go{
+    border:1px solid rgba(255,255,255,.4);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.38) 0%, transparent 42%),
+      linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%);
+  }
+  .deck-name-input{
+    --cut:10px; border-radius:0; border:1px solid rgba(139,92,246,.55);
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.08) 0%, transparent 45%), rgba(0,0,0,.45);
+  }
+  .deck-name-input:focus{box-shadow:none; border-color:#4d94ff;}
+  #deckRight{
+    --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.1) 0%, transparent 40%), linear-gradient(180deg, rgba(77,148,255,.16), rgba(0,0,0,.4));
+  }
+  #deckRight.drop-ok{box-shadow:none; background:linear-gradient(160deg, rgba(255,255,255,.1) 0%, transparent 40%), linear-gradient(180deg, rgba(127,224,168,.28), rgba(0,0,0,.4));}
+  .deck-count{border-bottom:1px solid rgba(77,148,255,.45); background:linear-gradient(160deg, rgba(255,255,255,.14) 0%, transparent 50%), linear-gradient(180deg, #1a2d58, #0f1a38);}
   /* ---------- Montée de niveau ---------- */
   .lvl-btn{
     width:100%; padding:12px; cursor:pointer;
@@ -8029,7 +8194,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.14</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.15</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8239,10 +8404,13 @@
           </div>
         </div>
         <div class="mode-row">
-          <div class="mode-tile soon cx-c">
+          <div class="mode-tile deck cx-c" id="tileDeck">
             <div class="mt-inner">
-              <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-              <div class="mt-soon">PROCHAINEMENT</div>
+              <div class="mt-deck-ico"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="8" y="14" width="30" height="40" rx="4" transform="rotate(-9 23 34)"/><rect x="17" y="10" width="30" height="40" rx="4" transform="rotate(-1 32 30)"/><rect x="26" y="12" width="30" height="40" rx="4" transform="rotate(8 41 32)" fill="rgba(255,255,255,.12)"/></svg></div>
+              <div class="mt-sub">Compose tes decks</div>
+              <div class="mt-row">
+                <div class="mt-title">DECK</div>
+              </div>
             </div>
           </div>
           <div class="mode-tile soon cx-d">
@@ -8309,6 +8477,31 @@
         <div class="team-label player" style="margin-top:10px;">UPGRADE</div>
         <div class="zone fusion-zone" id="fusionZone"></div>
       </div>
+    </div>
+
+    <div id="deckView" class="sub-view">
+      <header class="inf-header">
+        <button class="back-btn" id="deckBackBtn">‹ CARTE</button>
+        <div class="wave">DECK</div>
+      </header>
+      <details class="res-panel" id="deckPanel">
+        <summary class="team-label player">DECK<span class="res-toggle-chevron"></span></summary>
+        <div id="deckBody"></div>
+      </details>
+      <div class="deck-draft-bar" id="deckDraftBar" hidden></div>
+      <div class="codex-tools deck-tools">
+        <details class="codex-filter" id="deckFilterDetails">
+          <summary>FILTRES</summary>
+          <div class="deck-filter-body" id="deckFilterBody"></div>
+        </details>
+        <div class="codex-search-box">
+          <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
+          <input type="text" id="deckSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+          <button type="button" class="search-clear" aria-label="Effacer la recherche" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </div>
+      </div>
+      <button type="button" class="deck-validate" id="deckValidateBtn" hidden>VALIDER LE DECK</button>
+      <div id="deckWork"></div>
     </div>
 
     <div id="squadView" class="sub-view">
@@ -8535,9 +8728,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.14';
+var BUILD_VERSION = 'V0.04.15';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.15', items:[
+    'Nouvelle case DECK dans l\'onglet CARTE. Un encadré déroulant liste tes decks (la carte la plus forte du deck en vignette, ton nom en dessous) avec un emplacement vide pour en créer un nouveau.',
+    'Création d\'un deck : donne-lui un nom, puis glisse 20 cartes vers la colonne de droite (compteur X/20 en haut). Tu peux retirer une carte en la glissant hors de la colonne. Quand les 20 cartes sont là, un bouton bleu « VALIDER LE DECK » apparaît et enregistre le deck. Touche un deck pour le modifier, le renommer ou le supprimer.',
+    'Règles : 2 exemplaires maximum d\'une même carte (si tu les possèdes), un seul pour une carte holographique. Filtres et recherche comme dans la gestion de carte.',
+    'Dans la colonne de droite, une même carte mise deux fois (peu importe le niveau ou la rareté) forme une pile en éventail : la rareté la plus haute devant, l\'autre derrière, penchée sur la gauche pour laisser voir sa gemme.',
+  ]},
   { v:'V0.04.14', items:[
     'LABO : les cartes module n\'ont pas de version écarlate. Le LABO n\'en propose plus, un module légendaire ne peut plus être fusionné en écarlate, et les modules écarlates déjà obtenus repassent en légendaire (niveau conservé).',
     'GESTION DE CARTE : détruire une carte écarlate fonctionne enfin (elle rapporte des matériaux légendaires et plus d\'or qu\'une légendaire). Un favori ne protège plus que ton meilleur exemplaire : tu peux détruire les exemplaires de niveau inférieur, y compris pour les cartes écarlates.',
@@ -17317,6 +17516,8 @@ function showCodexHub(){
   document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('modulesView').classList.remove('active');
+  document.getElementById('deckView').classList.remove('active');
+  updateDeckTile();
   updateSquadTile();
   updateCollectionTile();
 }
@@ -17333,6 +17534,313 @@ document.getElementById('labDrawBackBtn').onclick = showFabHub;
 document.getElementById('tileCardMgmt').onclick = enterCodexMgmt;
 document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
 
+
+// ---------- DECK (V0.04.15, demande d'Alex) ----------
+// Nouvelle case de l'onglet CARTE. Un deck = un nom + 20 cartes (clés "NOM|rareté", comme squad[]).
+// Règles : 2 exemplaires maximum d'une même carte (et seulement si le joueur les possède), 1 seul pour
+// une carte HOLOGRAPHIQUE. Le deck en cours de création/édition vit dans deckDraft (jamais enregistré
+// avant VALIDER LE DECK) ; en mode création la liste passe à gauche, le deck à droite, et les cartes se
+// déplacent par glisser-déposer (cf deckAttachDrag()).
+var decks = [];              // [{ id, name, cards:[ "NOM|rareté", ... ] }]
+var deckDraft = null;        // { id|null, name, cards:[] }
+var deckFilter = 'all', deckSort = 'group', deckSearchQuery = '';
+const DECK_SIZE = 20;
+function deckKeyName(k){ return String(k).split('|')[0]; }
+function deckCount(cards, key){ let n = 0; cards.forEach(k => { if(k === key) n++; }); return n; }
+function deckNameCount(cards, name){ let n = 0; cards.forEach(k => { if(deckKeyName(k) === name) n++; }); return n; }
+// Exemplaires encore ajoutables de cette pile (possédés, plafond 2 par carte, 1 pour une holographique)
+function deckRemaining(cards, key){
+  const e = sqEntry(key); if(!e) return 0;
+  const inKey = deckCount(cards, key), inName = deckNameCount(cards, e.def.name);
+  return Math.max(0, Math.min(stackCount(e.def.name, e.rar) - inKey, (isHolo(e.rar) ? 1 : 2) - inKey, 2 - inName));
+}
+// null si l'ajout est permis, sinon le message de refus
+function deckAddCheck(cards, key){
+  const e = sqEntry(key); if(!e) return 'CARTE INTROUVABLE';
+  if(cards.length >= DECK_SIZE) return 'DECK COMPLET (' + DECK_SIZE + '/' + DECK_SIZE + ')';
+  if(isHolo(e.rar) && deckCount(cards, key) >= 1) return 'CARTE HOLOGRAPHIQUE : UN SEUL EXEMPLAIRE';
+  if(deckNameCount(cards, e.def.name) >= 2) return '2 EXEMPLAIRES MAXIMUM D’UNE MÊME CARTE';
+  if(deckCount(cards, key) >= stackCount(e.def.name, e.rar)) return 'TU N’AS PAS D’AUTRE EXEMPLAIRE DE CETTE CARTE';
+  return null;
+}
+// La carte la plus forte du deck (affichée sur sa tuile)
+function deckBestKey(cards){
+  let best = null, bp = -1;
+  cards.forEach(k => { const e = sqEntry(k); if(!e) return; const p = cardPower(e.def, e.rar); if(p > bp){ bp = p; best = e.key; } });
+  return best;
+}
+function deckListStacks(){
+  const q = deckSearchQuery;
+  const list = ownedStacks().filter(st => (deckFilter === 'all' || categoryOf(st.def) === deckFilter) && (!q || st.def.name.toLowerCase().includes(q)));
+  const g = st => GROUP_ORDER.indexOf(categoryOf(st.def)), r = st => tierOf(st.rar), l = st => cardLevel(st.def.name, st.rar);
+  const cmp = {
+    group:  (a, b) => g(a) - g(b) || r(b) - r(a) || l(b) - l(a) || a.def.name.localeCompare(b.def.name),
+    rarity: (a, b) => r(b) - r(a) || g(a) - g(b) || l(b) - l(a) || a.def.name.localeCompare(b.def.name),
+    level:  (a, b) => l(b) - l(a) || r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name)
+  }[deckSort] || (() => 0);
+  return list.sort(cmp);
+}
+function deckNewId(){ return 'dk' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36); }
+function updateDeckTile(){
+  const t = document.getElementById('deckTileCount');
+  if(t) t.textContent = decks.length + ' DECK' + (decks.length > 1 ? 'S' : '');
+}
+function deckPeekOpts(){ return { noLevel:true, noCopies:true, noFav:true, noInfo:true }; }
+
+// --- Navigation ---
+function enterDeckView(){
+  document.getElementById('codexHubView').classList.remove('active');
+  document.getElementById('deckView').classList.add('active');
+  renderDeckView();
+  scrollViewTop();
+}
+document.getElementById('tileDeck').onclick = enterDeckView;
+document.getElementById('deckBackBtn').onclick = showCodexHub;
+
+// --- Fenêtre "nom du deck" ---
+function openDeckNameModal(initial, onOk){
+  document.getElementById('actionInner').innerHTML = `
+    <button class="cx-close" id="actClose">✕</button>
+    <div class="team-label player" style="margin:0;">NOM DU DECK</div>
+    <input type="text" id="deckNameInput" class="deck-name-input" maxlength="18" placeholder="MON DECK" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
+    <div class="deck-modal-row">
+      <button id="actCancel" class="deck-btn">ANNULER</button>
+      <button id="actGo" class="deck-btn go">ENREGISTRER</button>
+    </div>`;
+  const inp = document.getElementById('deckNameInput');
+  inp.value = initial || '';
+  const go = () => {
+    const name = inp.value.replace(/\s+/g, ' ').trim();
+    if(!name){ showToast('DONNE UN NOM À TON DECK'); return; }
+    closeActionModal();
+    onOk(name);
+  };
+  document.getElementById('actClose').onclick = closeActionModal;
+  document.getElementById('actCancel').onclick = closeActionModal;
+  document.getElementById('actGo').onclick = go;
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); go(); } });
+  document.getElementById('actionModal').classList.add('show');
+  setTimeout(() => { try{ inp.focus(); inp.select(); }catch(_){} }, 60);
+}
+
+// --- Actions sur le deck en cours ---
+function deckStartNew(){
+  if(deckDraft){ showToast('TERMINE OU ANNULE LE DECK EN COURS'); return; }
+  openDeckNameModal('', name => {
+    deckDraft = { id:null, name, cards:[] };
+    renderDeckView();
+  });
+}
+function deckStartEdit(id){
+  if(deckDraft){ showToast('TERMINE OU ANNULE LE DECK EN COURS'); return; }
+  const d = decks.find(x => x.id === id); if(!d) return;
+  // reprend les cartes encore possédées (une carte détruite depuis ne peut plus rester dans le deck)
+  const cards = [];
+  d.cards.forEach(k => { if(!deckAddCheck(cards, k)) cards.push(k); });
+  const lost = d.cards.length - cards.length;
+  deckDraft = { id:d.id, name:d.name, cards };
+  if(lost > 0) showToast(lost + ' CARTE' + (lost > 1 ? 'S' : '') + ' DU DECK NE SONT PLUS DISPONIBLES');
+  document.getElementById('deckPanel').open = false;
+  renderDeckView();
+}
+function deckAddCard(key){
+  if(!deckDraft) return false;
+  const msg = deckAddCheck(deckDraft.cards, key);
+  if(msg){ showToast(msg); return false; }
+  deckDraft.cards.push(key);
+  renderDeckView();
+  return true;
+}
+function deckRemoveCard(idx){
+  if(!deckDraft || idx < 0 || idx >= deckDraft.cards.length) return;
+  deckDraft.cards.splice(idx, 1);
+  renderDeckView();
+}
+function deckValidate(){
+  if(!deckDraft || deckDraft.cards.length !== DECK_SIZE) return;
+  const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice() };
+  const i = decks.findIndex(x => x.id === saved.id);
+  if(i >= 0) decks[i] = saved; else decks.push(saved);
+  deckDraft = null;
+  document.getElementById('deckPanel').open = true;
+  showToast('DECK « ' + saved.name + ' » ENREGISTRÉ');
+  updateDeckTile();
+  renderDeckView();
+  saveNow();
+  scrollViewTop();
+}
+function deckCancelDraft(){ deckDraft = null; renderDeckView(); }
+function deckDeleteDraft(){
+  if(!deckDraft || !deckDraft.id) return;
+  decks = decks.filter(x => x.id !== deckDraft.id);
+  deckDraft = null;
+  showToast('DECK SUPPRIMÉ');
+  updateDeckTile();
+  renderDeckView();
+  saveNow();
+}
+
+// --- Rendu ---
+function renderDeckPanel(){
+  const body = document.getElementById('deckBody');
+  const editing = deckDraft && deckDraft.id;
+  const tiles = decks.map(d => {
+    const bk = deckBestKey(d.cards), e = bk && sqEntry(bk);
+    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    return `<div class="deck-tile${editing && deckDraft.id === d.id ? ' editing' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
+  }).join('');
+  body.innerHTML = tiles + `<div class="deck-tile" id="deckNewSlot"><div class="deck-empty"><span>+</span>NOUVEAU DECK</div></div>`;
+  body.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => deckStartEdit(t.dataset.deck); });
+  document.getElementById('deckNewSlot').onclick = deckStartNew;
+}
+function escDeckHtml(s){ return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
+function renderDeckFilter(){
+  const F = [['all','TOUTES LES CARTES'],['atk','ATQ'],['def','DEF'],['hp','PV'],['vit','VIT']];
+  const S = [['group','PAR GROUPE'],['rarity','PAR RARETÉ'],['level','PAR NIVEAU']];
+  document.getElementById('deckFilterBody').innerHTML = `
+    <div class="filter-options">${F.map(([k, l]) => `<button type="button" class="filter-opt ${deckFilter === k ? 'active' : ''}" data-dkf="${k}">${l}</button>`).join('')}</div>
+    <div class="sort-title">CLASSEMENT</div>
+    <div class="filter-options sort-options">${S.map(([k, l]) => `<button type="button" class="sort-opt ${deckSort === k ? 'active' : ''}" data-dks="${k}">${l}</button>`).join('')}</div>`;
+  const det = document.getElementById('deckFilterDetails');
+  document.querySelectorAll('#deckFilterBody [data-dkf]').forEach(b => { b.onclick = () => { deckFilter = b.dataset.dkf; det.open = false; renderDeckView(); }; });
+  document.querySelectorAll('#deckFilterBody [data-dks]').forEach(b => { b.onclick = () => { deckSort = b.dataset.dks; det.open = false; renderDeckView(); }; });
+}
+function renderDeckDraftBar(){
+  const bar = document.getElementById('deckDraftBar');
+  if(!deckDraft){ bar.hidden = true; bar.innerHTML = ''; return; }
+  bar.hidden = false;
+  bar.innerHTML = `<button type="button" class="deck-rename" id="deckRenameBtn" title="Renommer">✎ ${escDeckHtml(deckDraft.name)}</button>` +
+    (deckDraft.id ? '<button type="button" class="deck-del" id="deckDelBtn">SUPPRIMER</button>' : '') +
+    '<button type="button" id="deckCancelBtn">ANNULER</button>';
+  document.getElementById('deckRenameBtn').onclick = () => openDeckNameModal(deckDraft.name, n => { deckDraft.name = n; renderDeckView(); });
+  document.getElementById('deckCancelBtn').onclick = deckCancelDraft;
+  const del = document.getElementById('deckDelBtn');
+  if(del) del.onclick = () => {
+    if(!del.classList.contains('confirm')){
+      del.classList.add('confirm'); del.textContent = 'CONFIRMER ?';
+      setTimeout(() => { if(del.isConnected){ del.classList.remove('confirm'); del.textContent = 'SUPPRIMER'; } }, 3000);
+      return;
+    }
+    deckDeleteDraft();
+  };
+}
+function deckTileHtml(e, badge){
+  return `${codexCardHtml(e.def, e.rar, { badge: badge > 1 ? '×' + badge : '' })}`;
+}
+function renderDeckWork(){
+  const work = document.getElementById('deckWork');
+  const keepH = work.offsetHeight; if(keepH) work.style.minHeight = keepH + 'px';
+  const stacks = deckListStacks();
+  if(!deckDraft){
+    work.innerHTML = `<div class="codex-grid" id="deckList">${stacks.map(st => `<div class="codex-card ${rarCls(st.rar)}" data-key="${sqKey(st.def.name, st.rar)}">${deckTileHtml(st, stackCount(st.def.name, st.rar))}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>'}</div>`;
+    work.querySelectorAll('[data-key]').forEach(el => { const e = sqEntry(el.dataset.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts()); });
+  } else {
+    const list = stacks.map(st => ({ st, key: sqKey(st.def.name, st.rar) }))
+      .map(x => Object.assign(x, { rem: deckRemaining(deckDraft.cards, x.key) })).filter(x => x.rem > 0);
+    const leftHtml = list.map(x => `<div class="codex-card deck-drag-card ${rarCls(x.st.rar)}" data-key="${x.key}">${deckTileHtml(x.st, x.rem)}</div>`).join('')
+      || `<div class="fab-empty" style="grid-column:1/-1;">${stacks.length ? 'Toutes les cartes de cette liste sont déjà dans le deck.' : 'Aucune carte dans cette catégorie.'}</div>`;
+    const n = deckDraft.cards.length;
+    const sorted = deckDraft.cards.map((k, i) => ({ k, i, e: sqEntry(k) })).filter(x => x.e)
+      .sort((a, b) => cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i);
+    // V0.04.15 : une même carte (même nom, peu importe rareté/niveau) mise deux fois forme une PILE : la
+    // rareté la plus haute devant, l'autre derrière, décalée en diagonale vers le haut-gauche pour laisser
+    // voir sa gemme.
+    const byName = {};
+    sorted.forEach(x => { (byName[x.e.def.name] = byName[x.e.def.name] || []).push(x); });
+    const groups = Object.keys(byName).map(n => byName[n].sort((a, b) => tierOf(b.e.rar) - tierOf(a.e.rar) || cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i));
+    groups.sort((a, b) => cardPower(b[0].e.def, b[0].e.rar) - cardPower(a[0].e.def, a[0].e.rar) || a[0].i - b[0].i);
+    const dkCard = (x, cls) => `<div class="codex-card deck-drag-card ${cls} ${rarCls(x.e.rar)}" data-idx="${x.i}" data-key="${x.k}">${deckTileHtml(x.e, 0)}</div>`;
+    const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
+      : '<div class="deck-right-empty">Glisse tes cartes ici</div>';
+    work.innerHTML = `<div class="deck-split">
+      <div id="deckLeft"><div class="codex-grid">${leftHtml}</div></div>
+      <div id="deckRight"><div class="deck-count${n === DECK_SIZE ? ' full' : ''}" id="deckCount">${n} / ${DECK_SIZE}</div>${rightHtml}</div>
+    </div>`;
+    work.querySelectorAll('#deckLeft .deck-drag-card').forEach(el => {
+      const e = sqEntry(el.dataset.key);
+      if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
+      deckAttachDrag(el, 'list', el.dataset.key);
+    });
+    work.querySelectorAll('#deckRight .deck-drag-card').forEach(el => {   // pile : devant ET derrière
+      const e = sqEntry(el.dataset.key);
+      if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
+      deckAttachDrag(el, 'deck', +el.dataset.idx);
+    });
+  }
+  requestAnimationFrame(() => { work.style.minHeight = ''; });
+}
+function renderDeckView(){
+  renderDeckPanel();
+  renderDeckFilter();
+  renderDeckDraftBar();
+  renderDeckWork();
+  const v = document.getElementById('deckValidateBtn');
+  v.hidden = !(deckDraft && deckDraft.cards.length === DECK_SIZE);
+  updateDeckTile();
+}
+document.getElementById('deckValidateBtn').onclick = deckValidate;
+document.getElementById('deckSearchInput').addEventListener('input', e => {
+  deckSearchQuery = e.target.value.trim().toLowerCase();
+  renderDeckWork();
+});
+
+// --- Glisser-déposer ---
+// Tactile : le geste doit être surtout HORIZONTAL (le défilement vertical de la page reste libre, d'où
+// touch-action:pan-y sur les cartes) ; souris : n'importe quelle direction après quelques pixels.
+// Une carte de la liste lâchée sur la colonne de droite entre dans le deck ; une carte du deck lâchée
+// en dehors de cette colonne en sort et retrouve sa place dans la liste.
+function deckAttachDrag(el, from, ref){
+  let sx = 0, sy = 0, pid = null, pressed = false, dragging = false, ghost = null;
+  const rightEl = () => document.getElementById('deckRight'), leftEl = () => document.getElementById('deckLeft');
+  const insideRight = (x, y) => { const r = rightEl().getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+  const tm = ev => { if(ev.cancelable) ev.preventDefault(); };
+  const cleanup = () => {
+    pressed = false;
+    if(ghost){ ghost.remove(); ghost = null; }
+    el.classList.remove('dragging');
+    document.removeEventListener('touchmove', tm);
+    const r = rightEl(), l = leftEl(); if(r) r.classList.remove('drop-ok'); if(l) l.classList.remove('drop-ok');
+    dragging = false;
+  };
+  el.addEventListener('pointerdown', e => {
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    pressed = true; dragging = false; sx = e.clientX; sy = e.clientY; pid = e.pointerId;
+    try{ el.setPointerCapture(pid); }catch(_){}
+  });
+  el.addEventListener('pointermove', e => {
+    if(!pressed) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if(!dragging){
+      const touch = e.pointerType === 'touch' || e.pointerType === 'pen';
+      const go = touch ? (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) : Math.hypot(dx, dy) > 7;
+      if(!go) return;
+      dragging = true;
+      el._suppressClick = Date.now();
+      ghost = el.cloneNode(true);
+      ghost.classList.add('deck-ghost'); ghost.classList.remove('dragging', 'deck-drag-card');
+      ghost.style.width = el.getBoundingClientRect().width + 'px';
+      document.body.appendChild(ghost);
+      el.classList.add('dragging');
+      document.addEventListener('touchmove', tm, { passive:false });
+    }
+    ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+    const inside = insideRight(e.clientX, e.clientY);
+    rightEl().classList.toggle('drop-ok', from === 'list' && inside);
+    leftEl().classList.toggle('drop-ok', from === 'deck' && !inside);
+    if(e.cancelable) e.preventDefault();
+  });
+  const finish = (e, commit) => {
+    if(!pressed) return;
+    const was = dragging, inside = was && commit ? insideRight(e.clientX, e.clientY) : false;
+    cleanup();
+    if(!was || !commit) return;
+    if(from === 'list'){ if(inside) deckAddCard(ref); }
+    else if(!inside) deckRemoveCard(ref);
+  };
+  el.addEventListener('pointerup', e => finish(e, true));
+  el.addEventListener('pointercancel', e => finish(e, false));
+}
+
 // ---------- Navigation onglets ----------
 // Retour d'un niveau depuis un sous-menu de l'onglet actif (le bouton de l'onglet devient une flèche)
 function navBackAction(){
@@ -17348,6 +17856,7 @@ function navBackAction(){
   if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
+  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('modulesView').classList.contains('active')) return () => showCodexHub();
   return null;
@@ -17638,6 +18147,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
+  document.getElementById('deckView').classList.remove('active');
   ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
@@ -29962,6 +30472,7 @@ function serializeSave(){
     missions: MSTATE, activeMission,
     m58: true,
     favorites, codexSort,
+    decks,   // V0.04.15 : DECK
     settings: SETTINGS,
     collOrder: collSlots.slice()
   };
@@ -30132,6 +30643,7 @@ function applySave(data){
     if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevel(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; u.vit = st.vit; } });
   }
   if(data.favorites) favorites = Object.assign({}, data.favorites);
+  if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => ({ id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards: d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE) }));
   if(data.settings){ Object.assign(SETTINGS, data.settings); applySettings(); }
   if(Array.isArray(data.collOrder)){ collSlots = data.collOrder.slice(); ensureCollSlots(); }
   if(data.codexSort){
@@ -31383,6 +31895,7 @@ const HELP_CONTENT = {
     '<li><b>GESTION DE MODULE</b> — la même chose, pour tes cartes module.</li></ul>' },
   codexMgmtView: { title:'GESTION DE CARTE', text:'Toutes tes cartes mechs : leurs statistiques, leur historique.<br><br>' +
     '<b>UPGRADE</b> fusionne plusieurs exemplaires d’une même carte pour la faire monter en rareté. <b>DÉTRUIRE</b> t’en débarrasse contre des matériaux.' },
+  deckView: { title:'DECK', text:'Compose des decks de 20 cartes.<br><br>Touche <b>NOUVEAU DECK</b>, donne-lui un nom, puis glisse tes cartes vers la colonne de droite (2 exemplaires maximum d’une même carte, un seul pour une holographique). Une fois les 20 cartes en place, touche <b>VALIDER LE DECK</b>. Touche un deck pour le modifier.' },
   squadView: { title:'DEATH SQUAD', text:'Compose l’escouade qui partira en mission : choisis tes mechs — l’ordre et les rôles comptent — et, si tu en as, une carte module pour un bonus supplémentaire.' },
   collectionView: { title:'COLLECTION', text:'Toutes les cartes que tu as déjà obtenues, rangées comme dans un classeur.<br><br>Une case vide est une carte que tu n’as pas encore.' },
   modulesView: { title:'GESTION DE MODULE', text:'La version « modules » de GESTION DE CARTE : consulte tes cartes module, fusionne-les avec <b>UPGRADE</b> ou détruis-les pour récupérer des matériaux.' }
