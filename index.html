@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.12</title>
+<title>Projet MECA V0.04.13</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2495,6 +2495,12 @@
   /* Briefing / fin du mini-jeu DÔME (V0.04.10) : sur un écran court (ou un aperçu bas) le bouton sortait de l'écran sans moyen de défiler.
      Le panneau tient maintenant dans l'écran : le texte défile à l'intérieur, le bouton reste toujours visible en bas. */
   #dgBrief, #dgEnd{max-height:calc(100vh - 205px - env(safe-area-inset-bottom, 0px)); max-height:calc(100dvh - 205px - env(safe-area-inset-bottom, 0px)); box-sizing:border-box;}   /* 205 px = en-tête + barre de navigation du bas */
+  /* Briefing (V0.04.13, demande d'Alex) : plus de bouton MENU ni d'étiquette en haut, la fenêtre d'information est collée en haut de l'écran
+     (juste sous la barre de ressources) et le bouton ENTRER DANS LA ZONE est séparé, en dessous, avec le même habillage biseauté que les autres boutons de lancement. */
+  #dgBrief{display:flex; flex-direction:column; gap:12px;}
+  #dgBrief .inf-start{flex:0 1 auto; min-height:0;}
+  #domeGameView.brief > .inf-header{display:none;}
+  #battleView:has(~ #domeGameView.brief.active){flex:0 0 auto;}   /* la zone de combat vide ne repousse plus le briefing vers le bas */
   #dgBrief .inf-start-text{flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y; overscroll-behavior:contain; padding-right:4px;}
   #dgBrief .controls{flex:0 0 auto;}
   #dgEnd{overflow-y:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y;}
@@ -2503,7 +2509,7 @@
   .inf-start-text{font-size:15px; font-weight:600; color:#fff; line-height:1.4; text-shadow:0 1px 3px rgba(0,0,0,.5); max-width:340px;}
   .inf-start-text b{color:var(--violet-hi);}
   /* Bouton de lancement : même habillage carré/biseauté/verre que le panneau (scopé à ce bouton uniquement) */
-  #infStartBtn{
+  #infStartBtn, #dgStartBtn{
     --cut:12px; border-radius:0;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     border:1px solid rgba(255,255,255,.4);
@@ -8007,7 +8013,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.12</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.13</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8081,7 +8087,8 @@
 
     <!-- Briefing avant d'entrer dans la zone (V0.03.83, demande d'Alex : mini-jeu d'exploration
          qui remplace l'ancienne récolte passive de la mission DOME) -->
-    <div class="inf-start" id="dgBrief">
+    <div id="dgBrief">
+      <div class="inf-start" id="dgBriefPanel">
       <div class="inf-start-text help-text">
         <b>ZONE DU DÔME</b><br>
         Un dôme énergétique encercle une ville en ruine. Explore-la pour récupérer des ressources sur
@@ -8093,6 +8100,7 @@
           <li>Des conteneurs d'extraction sont dispersés dans la ville : entres-y pour clôturer la mission (butin gardé) ou pour sécuriser tes ressources et repartir en chercher d'autres -- mais tu devras alors revenir dans ce même conteneur, les autres resteront fermés.</li>
           <li>Tu peux aussi tenir 14 minutes jusqu'à la fermeture totale : le butin est gardé.</li>
         </ul>
+      </div>
       </div>
       <div class="controls" style="width:100%;"><button id="dgStartBtn" class="primary-btn">ENTRER DANS LA ZONE</button></div>
     </div>
@@ -8509,9 +8517,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.12';
+var BUILD_VERSION = 'V0.04.13';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.13', items:[
+    'ORDRE DE MISSION : « RÉCOLTER ET RELANCER » ne propose plus la mission DOME à la relance (la DOME se joue maintenant depuis sa propre case).',
+    'Mission DOME : la page de briefing est refaite. La fenêtre d\'information passe en haut de l\'écran, le bouton « ENTRER DANS LA ZONE » est séparé en dessous avec le même design que les autres boutons de lancement, et le bouton MENU et l\'étiquette du haut sont retirés (le menu du bas reste disponible).',
+  ]},
   { v:'V0.04.12', items:[
     'Mission DOME : la carte est beaucoup plus grande (environ 60 % de plus), avec plus de conteneurs d\'extraction, plus de drones qui arrivent au fil de la partie, une mission plus longue (14 minutes) et un butin rééquilibré, plus généreux.',
     'Mission DOME : en ville, de vrais immeubles et de hautes tours remplacent les anciens blocs, avec leurs fenêtres qui s\'allument la nuit. Le vent fait bouger les arbres et les plantes et emporte des feuilles, l\'eau des rivières brille et ondule, et la météo est tirée au hasard à chaque partie : temps clair, pluie (sol mouillé, flaques, éclairs) ou brouillard.',
@@ -26814,7 +26826,7 @@ function dgLoop(now){
 function enterDomeGame(){
   showHub();
   document.getElementById('modeHub').classList.remove('active');
-  document.getElementById('domeGameView').classList.add('active');
+  document.getElementById('domeGameView').classList.add('active', 'brief');
   document.getElementById('dgBrief').style.display = '';
   document.getElementById('dgWrap').style.display = 'none';
   document.getElementById('dgEnd').style.display = 'none';
@@ -26822,6 +26834,7 @@ function enterDomeGame(){
   domeGameActive = true;
 }
 function dgStartRun(){
+  document.getElementById('domeGameView').classList.remove('brief');
   document.getElementById('dgBrief').style.display = 'none';
   document.getElementById('dgWrap').style.display = '';
   DG.canvas = document.getElementById('dgCanvas'); DG.glOn = dgGlWanted() && !!window.WebGL2RenderingContext;
@@ -30948,7 +30961,7 @@ function updateMissionTiles(){
 function updateOrdCollectBtn(){
   const btn = document.getElementById('ordCollectBtn');
   if(!btn) return;
-  const n = Object.keys(MISSIONS).filter(m => missionState(m).missionDone).length;
+  const n = Object.keys(MISSIONS).filter(m => m !== 'dome' && missionState(m).missionDone).length;      // DOME n'est plus une mission de fond (c'est un mini-jeu) : elle ne compte plus pour « récolter et relancer »
   const onOrders = document.getElementById('ordersView').classList.contains('active');
   // V0.02.99, demande d'Alex : masqué tant que la fenêtre de récompenses (bouton RELANCER) ou la
   // fenêtre de choix d'escouade (bouton LANCER) ouverte par collectAndRelaunchAll() est affichée --
@@ -30963,10 +30976,10 @@ function updateOrdCollectBtn(){
 // le joueur voit d'abord ce qu'il a gagné avant de relancer, au lieu que tout se fasse d'un coup en silence.
 let pendingMissionRelaunch = [];
 function collectAndRelaunchAll(){
-  const targets = Object.keys(MISSIONS).filter(m => missionState(m).missionDone);
+  const done = Object.keys(MISSIONS).filter(m => missionState(m).missionDone), targets = done.filter(m => m !== 'dome');      // DOME (mini-jeu) n'est jamais proposée à la relance
   if(!targets.length) return;
   let allItems = [];
-  targets.forEach(mode => withMission(mode, () => {
+  done.forEach(mode => withMission(mode, () => {                  // un éventuel butin DOME resté en attente (ancienne mission de fond) est quand même encaissé, sans relance
     if(!lootEmpty()) allItems = allItems.concat(collectLoot(true));
   }));
   updateMissionTiles();
