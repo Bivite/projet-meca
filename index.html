@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.17</title>
+<title>Projet MECA V0.04.19</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3402,6 +3402,12 @@
     text-shadow:0 1px 3px rgba(0,0,0,.5);
   }
   .deck-validate[hidden]{display:none;}
+  .deck-validate.need{filter:grayscale(.8) brightness(.78); box-shadow:none; font-size:11px; letter-spacing:2px;}
+  /* Chef d'escouade : halo lumineux de sa rareté derrière la carte */
+  .deck-drag-card.deck-leader{position:relative; z-index:2; animation:deckLeaderPulse 2.2s ease-in-out infinite;
+    filter:drop-shadow(0 0 6px var(--rc, #fff)) drop-shadow(0 0 16px var(--rc-glow, rgba(255,255,255,.6)));}
+  @keyframes deckLeaderPulse{50%{filter:drop-shadow(0 0 9px var(--rc, #fff)) drop-shadow(0 0 26px var(--rc-glow, rgba(255,255,255,.6)));}}
+  .deck-stack > .deck-back.deck-leader{position:absolute; z-index:0;}
   .deck-validate:active{transform:translateY(2px);}
   /* Barre du deck en cours */
   .deck-draft-bar{display:flex; align-items:center; gap:8px;}
@@ -5042,7 +5048,8 @@
   /* écran agrandi : moins de vide en haut, les cases occupent toute la hauteur disponible */
   #app{padding-top:calc(4px + env(safe-area-inset-top, 0px)) !important;}
   .main-title{padding-top:2px !important;}
-  #modeHub .mode-grid .mode-tile{height:clamp(150px, calc((100dvh - 293px) / 3), 250px);}
+  #modeHub .mode-grid .mode-tile{height:clamp(130px, calc((100dvh - 440px) / 3), 250px);}   /* 4 rangées depuis BATAILLE (V0.04.18) : 3 × cette hauteur + BATAILLE (120px) tiennent là où 3 rangées tenaient avant */
+  #modeHub .mode-grid .mode-tile.battle-big{height:120px;}
   .ord-grid .mode-tile.o-big{height:clamp(186px, calc((100dvh - 244px) * .425), 300px) !important;}
   .ord-grid .mode-tile.o-l, .ord-grid .mode-tile.o-r{height:clamp(140px, calc((100dvh - 244px) * .32), 225px) !important;}
   .ord-grid .mode-tile.o-a, .ord-grid .mode-tile.o-b, .ord-grid .mode-tile.o-c{height:clamp(112px, calc((100dvh - 244px) * .255), 180px) !important;}
@@ -7153,6 +7160,58 @@
      du boss persistants entre tentatives, banc de 10 avec remplacement automatique). Palette
      distincte (rouge sang/or) du violet habituel du jeu, pour bien marquer un évènement à part.
      ==================================================================================== */
+  /* ---------- BATAILLE (V0.04.18) : même recette que .raid-big (case pleine largeur biseautée), palette vert émeraude ---------- */
+  .mode-tile.battle-big{ height:120px; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); background:linear-gradient(160deg, #9be8b4, #1f8f4e 45%, #05210f); filter:drop-shadow(0 0 12px rgba(40,190,100,.32)); }
+  #modeHub .mode-row > .mode-tile.battle-big:first-child{ margin-right:0; }
+  .battle-big .mt-inner{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
+      linear-gradient(135deg, rgba(14,100,52,.95) 0%, rgba(14,100,52,.55) 40%, rgba(14,100,52,.2) 70%, transparent 100%);
+  }
+  .battle-big .mt-battle-ico{
+    position:absolute; left:50%; top:calc(50% - 12px); transform:translate(-50%,-50%); width:62px; height:62px;
+    color:rgba(220,255,232,.5); pointer-events:none; z-index:0;
+    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
+  }
+  .battle-big .mt-title{ color:#d4ffe3; text-shadow:0 0 10px rgba(60,220,120,.55); letter-spacing:3px; position:relative; z-index:1; }
+  /* Écran BATAILLE : liste des decks du joueur (mêmes tuiles que dans CARTE › DECK), un seul sélectionnable,
+     bouton LANCER LE COMBAT en bas d'écran une fois un deck choisi. */
+  #batailleView{padding-bottom:110px;}
+  /* Encadré CHOIX DU DECK : pleine largeur, même « verre » biseauté que l'encadré DECK de CARTE */
+  #batPanel{
+    --cut:14px; border-radius:0; padding:14px 12px 16px; gap:12px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(139,92,246,.5);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(139,92,246,.3), transparent 70%),
+      linear-gradient(180deg, #1b1629, #0d0b15);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
+  }
+  #batPanel .team-label{margin:0;}
+  #batailleList{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; padding:4px 0 2px;}
+  #batailleList .deck-tile{transition:transform .15s;}
+  #batailleList .deck-tile:active{transform:scale(.97);}
+  #batailleList .deck-tile.selected .codex-card{outline:2px solid #5dffa0; border-radius:12px; box-shadow:0 0 16px rgba(93,255,160,.55);}
+  #batailleList .deck-tile.selected .deck-name{color:#9dffc6;}
+  .bat-empty{grid-column:1/-1; text-align:center; padding:26px 10px; font-family:var(--font-title); font-size:11px; letter-spacing:1.5px; line-height:1.7; color:var(--text-dim);}
+  .bat-launch{
+    position:fixed; left:50%; transform:translateX(-50%); z-index:14;
+    bottom:calc(94px + env(safe-area-inset-bottom, 0px)); width:calc(100% - 32px); max-width:460px; padding:15px 8px; cursor:pointer;
+    --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:13px; font-weight:900; letter-spacing:3px; color:#fff;
+    border:1px solid rgba(190,255,215,.7);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.38) 0%, transparent 42%),
+      linear-gradient(180deg, #3fd47e, #14894a 60%, #0a5230);
+    box-shadow:0 4px 0 #04301a, 0 0 18px rgba(63,212,126,.6);
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+  .bat-launch[hidden]{display:none;}
+  .bat-launch:active{transform:translateX(-50%) translateY(2px);}
   .mode-tile.raid-big{ height:150px; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); background:linear-gradient(160deg, #e08a8a, #8a1f1f 45%, #260606); filter:drop-shadow(0 0 12px rgba(138,31,31,.35)); }
   #modeHub .mode-row > .mode-tile.raid-big:first-child{ margin-right:0; }
   /* V0.03.02, demande d'Alex : case passée en rouge plein (même palette que l'ancienne RÉCOMPENSES,
@@ -7902,6 +7961,15 @@
         </div>
       </div>
       </div>
+      <!-- BATAILLE (V0.04.18, demande d'Alex) : case pleine largeur sous JOUEUR / ORDRE DE MISSION -->
+      <div class="mode-row">
+      <div class="mode-tile battle-big" id="tileBattle">
+        <div class="mt-inner">
+          <svg class="mt-battle-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12l26 26M52 12L26 38"/><path d="M34 34l8 8M30 34l-8 8"/><path d="M38 38l7 7a3 3 0 0 0 4-4l-7-7M26 38l-7 7a3 3 0 0 1-4-4l7-7"/><path d="M10 10h8l-2 8-8 2zM54 10h-8l2 8 8 2z"/></svg>
+          <div class="mt-title">BATAILLE</div>
+        </div>
+      </div>
+      </div>
       <div class="mode-row">
       <div class="mode-tile rewards s-c" id="tileRewards">
         <div class="mt-inner">
@@ -7934,6 +8002,13 @@
         </div>
       </div>
       </div>
+    </div>
+  </div>
+
+  <div id="batailleView" class="sub-view">
+    <div class="res-panel" id="batPanel">
+      <div class="team-label player">CHOIX DU DECK</div>
+      <div id="batailleList"></div>
     </div>
   </div>
 
@@ -8252,7 +8327,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.17</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.19</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8786,9 +8861,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.17';
+var BUILD_VERSION = 'V0.04.19';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.19', items:[
+    'DECK : une fois les 20 cartes placées, choisis ton CHEF D\'ESCOUADE en touchant une carte de la colonne de droite (dans une pile, ouvre-la d\'abord). Elle reçoit un halo lumineux de sa rareté et devient la carte « top deck » de ton deck (liste des decks et BATAILLE). Le bouton VALIDER LE DECK se débloque une fois le chef choisi.',
+  ]},
+  { v:'V0.04.18', items:[
+    'MENU : nouvelle case BATAILLE (verte), pleine largeur, sous JOUEUR et ORDRE DE MISSION. Elle ouvre l\'encadré CHOIX DU DECK (pleine largeur, en verre biseauté) avec la liste de tes decks ; choisis-en un et le bouton LANCER LE COMBAT apparaît en bas (le combat arrive bientôt). Les autres cases du MENU sont un peu moins hautes pour que tout tienne à l\'écran.',
+  ]},
   { v:'V0.04.17', items:[
     'DECK : la recherche, le filtre et le classement reviennent à zéro (par défaut) quand tu fais RETOUR puis rouvres la case DECK.',
     'DECK : toucher une pile de 2 cartes identiques ne l\'affiche plus en grand : elle s\'ouvre dans la colonne de droite (celle de derrière descend sous l\'autre, le reste est flouté). Glisse l\'une vers la liste pour la retirer, touche à côté ou la pile pour la refermer.',
@@ -17635,7 +17716,9 @@ function deckAddCheck(cards, key){
   return null;
 }
 // La carte la plus forte du deck (affichée sur sa tuile)
-function deckBestKey(cards){
+function deckBestKey(cards, leader){
+  // V0.04.16 : le chef d'escouade choisi (s'il est dans le deck) est la carte « top deck » ; sinon la plus forte
+  if(leader && cards.includes(leader) && sqEntry(leader)) return leader;
   let best = null, bp = -1;
   cards.forEach(k => { const e = sqEntry(k); if(!e) return; const p = cardPower(e.def, e.rar); if(p > bp){ bp = p; best = e.key; } });
   return best;
@@ -17678,7 +17761,7 @@ function deckDraftDirty(){
   if(!deckDraft) return false;
   if(!deckDraft.id) return true;                       // nouveau deck : tout est à perdre
   const d = decks.find(x => x.id === deckDraft.id);
-  return !d || d.name !== deckDraft.name || d.cards.length !== deckDraft.cards.length || d.cards.some((k, i) => k !== deckDraft.cards[i]);
+  return !d || (d.leader || null) !== (deckDraft.leader || null) || d.name !== deckDraft.name || d.cards.length !== deckDraft.cards.length || d.cards.some((k, i) => k !== deckDraft.cards[i]);
 }
 function deckLeave(){
   if(!deckDraftDirty()){ deckDraft = null; showCodexHub(); return; }
@@ -17727,7 +17810,7 @@ function openDeckNameModal(initial, onOk){
 function deckStartNew(){
   if(deckDraft){ showToast('TERMINE OU ANNULE LE DECK EN COURS'); return; }
   openDeckNameModal('', name => {
-    deckDraft = { id:null, name, cards:[] };
+    deckDraft = { id:null, name, cards:[], leader:null };
     renderDeckView();
   });
 }
@@ -17738,7 +17821,7 @@ function deckStartEdit(id){
   const cards = [];
   d.cards.forEach(k => { if(!deckAddCheck(cards, k)) cards.push(k); });
   const lost = d.cards.length - cards.length;
-  deckDraft = { id:d.id, name:d.name, cards };
+  deckDraft = { id:d.id, name:d.name, cards, leader:(d.leader && cards.includes(d.leader)) ? d.leader : null };
   if(lost > 0) showToast(lost + ' CARTE' + (lost > 1 ? 'S' : '') + ' DU DECK NE SONT PLUS DISPONIBLES');
   document.getElementById('deckPanel').open = false;
   renderDeckView();
@@ -17749,16 +17832,19 @@ function deckAddCard(key){
   if(msg){ showToast(msg); return false; }
   deckDraft.cards.push(key);
   renderDeckView();
+  if(deckDraft.cards.length === DECK_SIZE && !deckDraft.leader) showToast('CHOISIS TON CHEF D’ESCOUADE : TOUCHE UNE CARTE');
   return true;
 }
 function deckRemoveCard(idx){
   if(!deckDraft || idx < 0 || idx >= deckDraft.cards.length) return;
   deckDraft.cards.splice(idx, 1);
+  if(deckDraft.leader && !deckDraft.cards.includes(deckDraft.leader)) deckDraft.leader = null;
   renderDeckView();
 }
 function deckValidate(){
   if(!deckDraft || deckDraft.cards.length !== DECK_SIZE) return;
-  const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice() };
+  if(!deckDraft.leader){ showToast('CHOISIS D’ABORD TON CHEF D’ESCOUADE'); return; }
+  const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: deckDraft.leader };
   const i = decks.findIndex(x => x.id === saved.id);
   if(i >= 0) decks[i] = saved; else decks.push(saved);
   deckDraft = null;
@@ -17785,7 +17871,7 @@ function renderDeckPanel(){
   const body = document.getElementById('deckBody');
   const editing = deckDraft && deckDraft.id;
   const tiles = decks.map(d => {
-    const bk = deckBestKey(d.cards), e = bk && sqEntry(bk);
+    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
     const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
     return `<div class="deck-tile${editing && deckDraft.id === d.id ? ' editing' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('');
@@ -17869,12 +17955,35 @@ function renderDeckWork(){
     const col = document.getElementById('deckRight');
     deckColumnScroll(col);
     deckColumnScroll(document.getElementById('deckLeft'), true);
-    col.querySelectorAll('.deck-stack.pile').forEach(stk => stk.addEventListener('click', () => {
+    col.querySelectorAll('.deck-stack').forEach(stk => stk.addEventListener('click', ev => {
       if(Date.now() - (col._scrolledAt || 0) < 350) return;
-      openDeckPile(stk);
+      const full = deckDraft && deckDraft.cards.length === DECK_SIZE;
+      const pile = stk.classList.contains('pile');
+      if(pile && !stk.classList.contains('open')){ openDeckPile(stk); return; }
+      if(pile && !full){ closeDeckPile(); return; }   // pile ouverte, deck incomplet : toucher la referme
+      const card = ev.target.closest('.deck-drag-card');
+      if(card && full) deckSetLeader(card.dataset.key);
     }));
   }
   requestAnimationFrame(() => { work.style.minHeight = ''; });
+}
+// --- Chef d'escouade (V0.04.16) : une seule carte du deck complet, halo de sa rareté, c'est elle le « top deck » ---
+function deckSetLeader(key){
+  if(!deckDraft || deckDraft.cards.length !== DECK_SIZE || !deckDraft.cards.includes(key)) return;
+  deckDraft.leader = key;
+  deckRefreshLeader();
+  if(navigator.vibrate) try{ navigator.vibrate(10); }catch(_){}
+}
+function deckRefreshLeader(){
+  const cards = [...document.querySelectorAll('#deckRight .deck-drag-card')];
+  cards.forEach(c => c.classList.remove('deck-leader'));
+  const full = deckDraft && deckDraft.cards.length === DECK_SIZE;
+  if(deckDraft && deckDraft.leader){ const c = cards.slice().reverse().find(x => x.dataset.key === deckDraft.leader); if(c) c.classList.add('deck-leader'); }
+  const v = document.getElementById('deckValidateBtn');
+  v.hidden = !full;
+  const need = full && !deckDraft.leader;
+  v.classList.toggle('need', need);
+  v.textContent = need ? 'CHOISIS TON CHEF D’ESCOUADE' : 'VALIDER LE DECK';
 }
 function renderDeckView(){
   closeDeckPile(true);
@@ -17882,8 +17991,7 @@ function renderDeckView(){
   renderDeckFilter();
   renderDeckDraftBar();
   renderDeckWork();
-  const v = document.getElementById('deckValidateBtn');
-  v.hidden = !(deckDraft && deckDraft.cards.length === DECK_SIZE);
+  deckRefreshLeader();
   updateDeckTile();
 }
 document.getElementById('deckValidateBtn').onclick = deckValidate;
@@ -18382,7 +18490,7 @@ function showHub(){
   document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -29443,7 +29551,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -29455,6 +29563,34 @@ function openSub(id){
 }
 document.getElementById('tileRewards').onclick = () => { checkTrophies(true); updateRewardTiles(); openSub('rewardsView'); };
 document.getElementById('rwBackBtn').onclick = showHub;
+// ---------- BATAILLE (V0.04.18) : choix du deck avant le combat ----------
+var batSelected = null;
+// Le bouton est dans <body> (pas dans la vue) : un ancêtre transformé de la vue casserait son position:fixed.
+(function(){
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'bat-launch'; b.id = 'batLaunchBtn'; b.hidden = true; b.textContent = 'LANCER LE COMBAT';
+  document.body.appendChild(b);
+})();
+function batSyncLaunch(){
+  const v = document.getElementById('batailleView'), b = document.getElementById('batLaunchBtn');
+  if(b) b.hidden = !(v && v.classList.contains('active') && batSelected);
+}
+new MutationObserver(batSyncLaunch).observe(document.getElementById('batailleView'), { attributes:true, attributeFilter:['class'] });
+function renderBataille(){
+  const list = document.getElementById('batailleList');
+  if(batSelected && !decks.some(d => d.id === batSelected)) batSelected = null;
+  list.innerHTML = decks.length ? decks.map(d => {
+    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
+    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    return `<div class="deck-tile${batSelected === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
+  }).join('') : '<div class="bat-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
+  list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
+  batSyncLaunch();
+}
+document.getElementById('tileBattle').onclick = () => { batSelected = null; renderBataille(); openSub('batailleView'); };
+document.getElementById('batLaunchBtn').onclick = () => {
+  const d = decks.find(x => x.id === batSelected); if(!d) return;
+  showToast('COMBAT AVEC « ' + d.name + ' » : BIENTÔT DISPONIBLE');   // le combat lui-même reste à définir
+};
 document.getElementById('tileRaid').onclick = () => {
   // V0.03.04, demande d'Alex : la case reste fermée tant que la fenêtre d'évènement (5 jours sur 14)
   // n'est pas ouverte -- distinct de .locked (qui couvre aussi le verrou de 5h entre 2 phases ET la fin
@@ -30878,7 +31014,7 @@ function applySave(data){
     if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevel(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; u.vit = st.vit; } });
   }
   if(data.favorites) favorites = Object.assign({}, data.favorites);
-  if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => ({ id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards: d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE) }));
+  if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => { const cards = d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE); return { id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards, leader: (typeof d.leader === 'string' && cards.includes(d.leader)) ? d.leader : null }; });
   if(data.settings){ Object.assign(SETTINGS, data.settings); applySettings(); }
   if(Array.isArray(data.collOrder)){ collSlots = data.collOrder.slice(); ensureCollSlots(); }
   if(data.codexSort){
@@ -31581,7 +31717,7 @@ window.addEventListener('pageshow', () => catchUpAllMissions());
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', ordersView:'hub', playerView:'hub', defiView:'hub', defiPathView:'defi' };
+const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', ordersView:'hub', playerView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
