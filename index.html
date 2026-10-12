@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.13</title>
+<title>Projet MECA V0.04.14</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6058,6 +6058,19 @@
      pour garder exactement le même rendu que les boutons voisins (le champ se vide normalement via
      le clavier ou la touche retour, inutile de dupliquer le contrôle). */
   .codex-search-input::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+  /* V0.04.14, demande d'Alex : "dans recherche, lorsque le joueur écrit quelque chose, met une petite croix
+     dans l'encadré à droite pour effacer le texte" -- bouton posé en absolu à droite de l'encadré, visible
+     seulement quand le champ contient du texte (cf listener .search-clear plus bas dans le script). */
+  .codex-search-box .search-clear{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    width:22px; height:22px; padding:0; border:none; border-radius:50%;
+    background:rgba(255,255,255,.12); color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .codex-search-box .search-clear[hidden]{display:none;}
+  .codex-search-box .search-clear svg{width:11px; height:11px;}
+  .codex-search-box .search-clear:active{background:rgba(255,255,255,.28); color:#fff;}
   /* #modSearchInput (GESTION DE MODULE, V0.03.41) réutilise .codex-search-box/.codex-search-input tels
      quels, mais surclasse la taille/graisse/espacement en 12px/13px pour matcher DÉTRUIRE et UPGRADE
      SUR CET ÉCRAN (déjà cohérents entre eux à 12px/padding 13px, contrairement à GESTION DE CARTE où
@@ -6415,7 +6428,10 @@
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
   }
   .lp-death{flex:1; font-size:10.5px; color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.25) 0%, transparent 40%), linear-gradient(180deg, #3a1020, #1a0710); border:1.5px solid #ff4f6a; box-shadow:0 3px 0 #07030a, 0 0 16px -4px rgba(255,79,106,.8);}
-  .lp-auto{flex:none; width:78px; font-size:9px; color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.22) 0%, transparent 40%), linear-gradient(180deg, #2a2340, #141020); border:1px solid var(--line-strong); box-shadow:0 3px 0 #06050b;}
+  .lp-auto, .lp-clear{flex:1; font-size:10px;}
+  .lp-clear{color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 40%), linear-gradient(180deg, #3a1520, #1a0a10); border:1px solid rgba(255,79,106,.55); box-shadow:0 3px 0 #06050b;}
+  .lp-clear:active{transform:translateY(2px);}
+  .lp-auto{font-size:10px; color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.22) 0%, transparent 40%), linear-gradient(180deg, #2a2340, #141020); border:1px solid var(--line-strong); box-shadow:0 3px 0 #06050b;}
   .lp-death:active, .lp-auto:active{transform:translateY(2px);}
   /* Bouton de lancement : même habillage que le bouton de l'écran précédent */
   #lpLaunchGo{
@@ -8013,7 +8029,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.13</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.14</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8264,6 +8280,7 @@
                d'effacement native disparaissait déjà avec type="search" (CSS ci-dessous, maintenant
                inoffensif) ; le champ se vide toujours normalement au clavier. -->
           <input type="text" id="codexSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+          <button type="button" class="search-clear" aria-label="Effacer la recherche" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
       </div>
       <details class="codex-filter" id="codexFilterDetails">
@@ -8343,6 +8360,7 @@
         <div class="codex-search-box">
           <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
           <input type="text" id="modSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+          <button type="button" class="search-clear" aria-label="Effacer la recherche" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
       </div>
       <div id="modFilterBox"></div>
@@ -8517,9 +8535,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.13';
+var BUILD_VERSION = 'V0.04.14';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.14', items:[
+    'LABO : les cartes module n\'ont pas de version écarlate. Le LABO n\'en propose plus, un module légendaire ne peut plus être fusionné en écarlate, et les modules écarlates déjà obtenus repassent en légendaire (niveau conservé).',
+    'GESTION DE CARTE : détruire une carte écarlate fonctionne enfin (elle rapporte des matériaux légendaires et plus d\'or qu\'une légendaire). Un favori ne protège plus que ton meilleur exemplaire : tu peux détruire les exemplaires de niveau inférieur, y compris pour les cartes écarlates.',
+    'RECHERCHE (cartes et modules) : une petite croix apparaît à droite dès que tu écris, pour effacer le texte d\'un seul geste.',
+    'DEATH SQUAD : le bouton « SÉLECTION AUTO » équipe maintenant aussi le meilleur module.',
+    'CHOIX DE L\'ESCOUADE : le bouton DEATH SQUAD prend toute la largeur. En dessous, un bouton SUPPRIMER (qui vide les cartes du choix) à gauche et le bouton AUTO à droite.',
+    'DÉFI : le bouton « COLLECTER & STOPPER LA MISSION » n\'apparaît plus pendant un combat de défi.',
+  ]},
   { v:'V0.04.13', items:[
     'ORDRE DE MISSION : « RÉCOLTER ET RELANCER » ne propose plus la mission DOME à la relance (la DOME se joue maintenant depuis sa propre case).',
     'Mission DOME : la page de briefing est refaite. La fenêtre d\'information passe en haut de l\'écran, le bouton « ENTRER DANS LA ZONE » est séparé en dessous avec le même design que les autres boutons de lancement, et le bouton MENU et l\'étiquette du haut sont retirés (le menu du bas reste disponible).',
@@ -10756,12 +10782,13 @@ function renderLoot(){
   if(btn){
     const empty = lootEmpty();
     const mats = MAT_ORDER.reduce((a, r) => a + (runLoot.mat[r] || 0), 0);
-    const sig = activeMission + '|' + empty + '|' + runLoot.gold + '|' + runLoot.xp + '|' + mats + '|' + runLoot.crystal + '|' + runLoot.cardReward + '|' + runLoot.moduleReward + '|' + battleStarted + '|' + missionDone;
+    const sig = activeMission + '|' + empty + '|' + runLoot.gold + '|' + runLoot.xp + '|' + mats + '|' + runLoot.crystal + '|' + runLoot.cardReward + '|' + runLoot.moduleReward + '|' + battleStarted + '|' + missionDone + '|' + (defiCombatActive ? 'D' : '');
     if(sig !== _lootSig){
       _lootSig = sig;
       btn.disabled = empty;
       // Jamais lancée : aucune récompense, pas de bouton. En cours : collecter arrête la mission. Terminée : collecter le butin restant.
-      const hide = empty || (!battleStarted && !missionDone);
+      // V0.04.14, demande d'Alex : jamais affiché pendant un combat DÉFI lancé (le défi n'est pas une mission).
+      const hide = empty || (!battleStarted && !missionDone) || defiCombatActive;
       btn.style.display = hide ? 'none' : '';
       btn.classList.toggle('ready', !empty);
       sub.innerHTML = empty ? 'Rien à collecter pour le moment'
@@ -10769,7 +10796,7 @@ function renderLoot(){
     }
   }
   const tl = document.getElementById('infLoot');
-  if(tl){ tl.style.display = (lootEmpty() || (!battleStarted && !missionDone)) ? 'none' : ''; tl.textContent = '◆ À COLLECTER'; }
+  if(tl){ tl.style.display = (lootEmpty() || (!battleStarted && !missionDone) || defiCombatActive) ? 'none' : ''; tl.textContent = '◆ À COLLECTER'; }
 }
 function openLootModal(){
   if(lootEmpty() || (!battleStarted && !missionDone)) return;
@@ -11148,6 +11175,17 @@ function tArmsTargetCount(v){
 // n'existait (cf ancien commentaire "pas de palier max défini pour les modules pour l'instant").
 const MODULE_LEVEL_CAP = { rare:100, epique:150, legendaire:250 };
 function moduleLevelCap(rar){ return MODULE_LEVEL_CAP[rar] || MODULE_LEVEL_CAP.legendaire; }
+// V0.04.14, demande d'Alex : "les cartes modules n'ont pas de version écarlate, j'en ai trouvé dans le
+// labo, il faut l'enlever" -- un module s'arrête à LÉGENDAIRE : plus de tirage écarlate au LABO
+// (modRollRarity ci-dessous) ni de fusion légendaire -> écarlate (modFusionNeed ci-dessous = 0 pour
+// légendaire). Les éventuels modules écarlates déjà obtenus sont ramenés en légendaire au chargement
+// (cf migrateModulesNoEcarlate()).
+function modRollRarity(){
+  let r = rollRarity();
+  if(r === 'ecarlate' || r === 'holo') r = 'legendaire';
+  return r;
+}
+function modFusionNeed(rar){ return rar === 'legendaire' ? 0 : (FUSION_NEED[rar] || 0); }
 // Coût d'amélioration, maintenant payé dans les matériaux de la RARETÉ COURANTE `rar` (celle affichée,
 // après fusion éventuelle) et non plus toujours ceux de la rareté de base def.rarity -- cohérent avec
 // le plafond ci-dessus qui dépend lui aussi de cette rareté courante (V0.02.55 : un module fusionné en
@@ -11449,7 +11487,7 @@ function renderModulesFilterBox(){
 // la rareté effective du module entier). Même principe que `lacking` dans renderCodex() pour les
 // cartes classiques -- une rareté sans palier suivant (légendaire) n'est jamais éligible.
 function modCanUpgrade(def, rar){
-  const need = FUSION_NEED[rar];
+  const need = modFusionNeed(rar);
   return !!need && modStackCount(def.name, rar) >= need;
 }
 function renderModulesGrid(){
@@ -11705,7 +11743,7 @@ function openModuleUpgradeConfirm(def, rar, level){
   document.getElementById('actionModal').classList.add('show');
 }
 function startModuleUpgradeFlow(def, rar, level){
-  const need = FUSION_NEED[rar];
+  const need = modFusionNeed(rar);
   const n = modLevelDist(def.name, rar)[level] || 0;
   if(n >= need){
     modUpgradeQty = 1;
@@ -11725,7 +11763,7 @@ function moduleActionCardHtml(def, rar, level, extra){
   </div>`;
 }
 function renderModuleUpgradeConfirm(def, rar, level){
-  const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
+  const need = modFusionNeed(rar), next = RARITY_ORDER[tierOf(rar) + 1];
   const n = modLevelDist(def.name, rar)[level] || 0;
   if(!need || n < need){ closeActionModal(); return; }
   const maxGroups = Math.max(1, Math.floor(n / need));
@@ -11774,7 +11812,7 @@ function openModuleUpgradePicker(def, rar, level){
   renderModuleUpgradePicker(def, rar, level);
 }
 function renderModuleUpgradePicker(def, rar, level){
-  const need = FUSION_NEED[rar], next = RARITY_ORDER[tierOf(rar) + 1];
+  const need = modFusionNeed(rar), next = RARITY_ORDER[tierOf(rar) + 1];
   const dist = modLevelDist(def.name, rar);
   const tiers = modLevelTiers(def.name, rar).slice().sort((a, b) => b - a);
   let total = 0;
@@ -11832,7 +11870,7 @@ function renderModuleUpgradePicker(def, rar, level){
 // Upgrade d'1 groupe, avec animation (même "lancer de carte" que les cartes classiques, cf
 // playCardToss() généralisé pour cibler #moduleModal/#moduleModalInner au lieu de #codexModal).
 function doModuleFusion(def, rar, selection){
-  const need = FUSION_NEED[rar];
+  const need = modFusionNeed(rar);
   if(!need || modStackCount(def.name, rar) < need) return;
   const next = RARITY_ORDER[tierOf(rar) + 1];
   consumeModForFusion(def.name, rar, next, need, selection);
@@ -11857,7 +11895,7 @@ function doModuleFusion(def, rar, selection){
 // Upgrade silencieux (pas d'animation) -- utilisé par doModuleFusionMulti() quand plusieurs groupes
 // sont upgradés d'un coup, même principe que doFusionSilent() pour les cartes.
 function doModuleFusionSilent(def, rar, selection){
-  const need = FUSION_NEED[rar];
+  const need = modFusionNeed(rar);
   if(!need || modStackCount(def.name, rar) < need) return null;
   const next = RARITY_ORDER[tierOf(rar) + 1];
   consumeModForFusion(def.name, rar, next, need, selection);
@@ -11952,7 +11990,7 @@ function renderModuleDestroyModal(def, rar, level){
     <div class="salvage-box">
       <div class="salvage-title">RECYCLAGE</div>
       <div class="salvage-row">
-        <span class="salv r-${rar}"><i>${matIcon(rar)}</i>+${totMat} <small>${RARITIES[rar].label}</small></span>
+        <span class="salv r-${salvageMatRar(rar)}"><i>${matIcon(salvageMatRar(rar))}</i>+${totMat} <small>${RARITIES[salvageMatRar(rar)].label}</small></span>
         <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
       </div>
     </div>
@@ -11988,7 +12026,8 @@ function renderModuleDestroyModal(def, rar, level){
         // DEATH SQUAD doit libérer le slot plutôt que de laisser une référence fantôme.
         validateSquad();
       }
-      player.res.mat[rar] = (player.res.mat[rar] || 0) + gainMat;
+      const mRar = salvageMatRar(rar);   // V0.04.14 : écarlate -> matériaux légendaires
+      player.res.mat[mRar] = (player.res.mat[mRar] || 0) + gainMat;
       player.res.gold += gainGold;
       addTotals(gainGold, 0, { [rar]: gainMat }, 0);
       showToast((realQty > 1 ? realQty + ' MODULES RECYCLÉS' : 'MODULE RECYCLÉ') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold) + ' OR');
@@ -12217,7 +12256,7 @@ let labResetAt = 0;
 function rollLabOffer(){
   const picks = [], rars = [];
   for(let i = 0; i < 3; i++){
-    const rar = rollRarity();
+    const rar = modRollRarity();
     let pool = MODULE_DEFS.filter(d => !picks.includes(d));
     if(pool.length === 0) pool = MODULE_DEFS;
     picks.push(shuffled(pool)[0]);
@@ -12261,6 +12300,26 @@ function sqEntry(key){
   return { def, rar, key: sqKey(name, rar) };
 }
 function squadEntries(list){ return (list || squad).map((k, i) => { const e = sqEntry(k); return e ? Object.assign({ i }, e) : null; }).filter(Boolean); }
+// V0.04.14 : ramène en LÉGENDAIRE les modules ÉCARLATES déjà possédés (exemplaires + niveaux, plafonnés
+// au niveau max légendaire) -- les modules n'ont pas de version écarlate.
+function migrateModulesNoEcarlate(){
+  MODULE_DEFS.forEach(d => {
+    const st = moduleCopies[d.name];
+    if(!st || !(st.ecarlate > 0)) { if(st) st.ecarlate = 0; return; }
+    const cap = MODULE_LEVEL_CAP.legendaire;
+    const fromD = modLevelDist(d.name, 'ecarlate'), toD = modLevelDist(d.name, 'legendaire');
+    Object.keys(fromD).forEach(l => {
+      const n = fromD[l]; if(!(n > 0)) return;
+      const lv = Math.min(Number(l), cap);
+      toD[lv] = (toD[lv] || 0) + n;
+    });
+    st.legendaire = (st.legendaire || 0) + st.ecarlate;
+    st.ecarlate = 0;
+    delete moduleLevelDist[modKey(d.name, 'ecarlate')];
+    delete modulePlayerLevels[modKey(d.name, 'ecarlate')];
+    modulePlayerLevels[modKey(d.name, 'legendaire')] = topOwnedModLevel(d.name, 'legendaire');
+  });
+}
 // Retire (ou remplace par une autre rareté possédée) les cartes de l'escouade qui n'existent plus
 function validateSquad(){
   // On suit les clés déjà attribuées dans un Set construit AU FUR ET À MESURE : `squad.includes(...)`
@@ -12317,7 +12376,7 @@ function modSqEntry(key){
   const [name, r] = String(key).split('|');
   const def = MODULE_DEFS.find(m => m.name === name);
   if(!def) return null;
-  const rar = RARITIES[r] ? r : modEffRarity(def);
+  const rar = (RARITIES[r] && r !== 'ecarlate') ? r : modEffRarity(def);   // V0.04.14 : pas de module écarlate
   return { def, rar, key: modKey(name, rar) };
 }
 
@@ -13972,6 +14031,14 @@ var codexSort = 'group';         // 'group' | 'rarity' | 'level'
 const GROUP_ORDER = ['atk', 'def', 'hp', 'vit'];
 function favKey(name, rar){ return name + '|' + rar; }
 function isFav(name, rar){ return !!favorites[favKey(name, rar)]; }
+// V0.04.14, demande d'Alex ("je ne peux pas détruire un exemplaire pas monté de niveau d'une carte parce
+// qu'une autre est en favoris", et pareil pour les ÉCARLATES) : le favori reste posé sur la pile (nom +
+// rareté), mais ne PROTÈGE plus que le MEILLEUR exemplaire (le palier de niveau le plus haut) -- les
+// exemplaires de niveau inférieur se détruisent normalement. Valable pour toutes les raretés.
+function favKeepAt(name, rar, level){
+  if(!isFav(name, rar)) return 0;
+  return level === topOwnedLevel(name, rar) ? 1 : 0;
+}
 function toggleFav(name, rar){
   const k = favKey(name, rar);
   if(favorites[k]) delete favorites[k]; else { favorites[k] = true; player.stats.favAdds++; }
@@ -14050,7 +14117,7 @@ function codexCardHtml(def, rar, opts){
       ${opts.unlock ? '<span class="notif-dot on card-dot"></span>' : ''}
       ${opts.badge ? `<div class="cx-copy-badge">${opts.badge}</div>` : ''}
       ${isUltimateCert ? '<div class="defi-trophy-badge ultimate" title="MODE ULTIMATE TERMINÉ"></div>' : isDefiCert ? '<div class="defi-trophy-badge" title="DÉFI TERMINÉ"></div>' : ''}
-      <div class="cx-portrait ${catCls(def)}">${catEmblem(def)}${isFav(def.name, rar) ? '<span class="fav-star">★</span>' : ''}${unitSVG(def.color, def.shape)}</div>
+      <div class="cx-portrait ${catCls(def)}">${catEmblem(def)}${(isFav(def.name, rar) && (opts.level == null || opts.level === topOwnedLevel(def.name, rar))) ? '<span class="fav-star">★</span>' : ''}${unitSVG(def.color, def.shape)}</div>
       <div class="cx-name" style="color:${def.color}">${def.name}</div>
       ${rarTag(rar)}
       <div class="cx-lvl-tag ${opts.showCap ? 'cap' : ''}">${opts.showCap ? 'Nv. ' + level + ' → ' + LEVEL_CAP[rar] + ' max' : 'Nv. ' + level}</div>
@@ -14287,7 +14354,7 @@ function renderCodex(){
     }
     shown.forEach(st => {
       const card = document.createElement('div');
-      card.className = 'codex-card ' + rarCls(st.rar) + (destroy ? ((isFav(st.def.name, st.rar) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy') : ' tool-defuse');
+      card.className = 'codex-card ' + rarCls(st.rar) + (destroy ? (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy') : ' tool-defuse');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
       card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
@@ -14858,7 +14925,12 @@ function actionCardHtml(def, rar, extra){
 // Base matériaux désormais croissante par rareté (3/4/6, V0.02.55 -- auparavant un flat 3 partout alors
 // que seul l'or montait avec la rareté ; cf "adapte toutes les récompenses liées aux matériaux pour
 // suivre une courbe de progression logique", même demande que le plafond de niveau des modules).
-const SALVAGE = { rare:{ mat:3, gold:50 }, epique:{ mat:4, gold:250 }, legendaire:{ mat:6, gold:1200 } };
+// V0.04.14 : ÉCARLATE (V0.03.75) n'avait aucune entrée ici -- détruire une carte écarlate plantait dans
+// salvageValue() (base undefined), d'où l'impression que « rien ne se passe » dans GESTION DE CARTE. Il
+// n'existe pas de matériau écarlate : le recyclage rend des matériaux LÉGENDAIRES (salvageMatRar()), en
+// plus grande quantité, et plus d'or que la légendaire.
+const SALVAGE = { rare:{ mat:3, gold:50 }, epique:{ mat:4, gold:250 }, legendaire:{ mat:6, gold:1200 }, ecarlate:{ mat:10, gold:3000 } };
+function salvageMatRar(rar){ return rar === 'ecarlate' ? 'legendaire' : rar; }
 function salvageValue(def, rar, level){
   const lvl = level != null ? level : cardLevel(def.name, rar), base = SALVAGE[rar];
   return { mat: bonusN(base.mat + Math.floor(lvl / 10)), gold: bonusN(Math.round(base.gold * (1 + (lvl - 1) / 20))) };
@@ -15047,7 +15119,7 @@ function playModuleDestroyFx(def, rar, level, done){
 function openDestroyModal(def, rar, level){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
   if(isHolo(rar)){ showToast('CARTE HOLOGRAPHIQUE : INDESTRUCTIBLE'); return; }
-  if(isFav(def.name, rar)){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
+  if((levelDist(def.name, rar)[level] || 0) - favKeepAt(def.name, rar, level) <= 0){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
   destroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture, quelle que soit la carte précédente
   renderDestroyModal(def, rar, level);
   document.getElementById('actionModal').classList.add('show');
@@ -15061,8 +15133,9 @@ function renderDestroyModal(def, rar, level){
   if(n <= 0){ closeActionModal(); return; }
   // Si cette carte est engagée dans une mission en arrière-plan, il faut toujours en laisser au moins 1.
   const busy = keyInMission(sqKey(def.name, rar));
-  const maxQty = Math.max(1, busy ? n - 1 : n);
-  const showStepper = n > 2;
+  const keep = Math.max(busy ? 1 : 0, favKeepAt(def.name, rar, level));   // exemplaires à garder (mission / favori)
+  const maxQty = Math.max(1, n - keep);
+  const showStepper = n > 2 && maxQty > 1;
   const qty = showStepper ? Math.max(1, Math.min(destroyQty, maxQty)) : 1;
   destroyQty = qty;
   const unit = salvageValue(def, rar, level);
@@ -15081,7 +15154,7 @@ function renderDestroyModal(def, rar, level){
     <div class="salvage-box">
       <div class="salvage-title">RECYCLAGE</div>
       <div class="salvage-row">
-        <span class="salv r-${rar}"><i>${matIcon(rar)}</i>+${totMat} <small>${RARITIES[rar].label}</small></span>
+        <span class="salv r-${salvageMatRar(rar)}"><i>${matIcon(salvageMatRar(rar))}</i>+${totMat} <small>${RARITIES[salvageMatRar(rar)].label}</small></span>
         <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
       </div>
       ${(totRefundGold || totRefundXp) ? `<div class="salvage-title">NIVEAU REMBOURSÉ</div>
@@ -15126,14 +15199,15 @@ function renderDestroyModal(def, rar, level){
         // possédée du même personnage au lieu de vider systématiquement l'emplacement d'escouade.
         validateSquad();
       }
-      player.res.mat[rar] = (player.res.mat[rar] || 0) + gainMat;
+      const mRar = salvageMatRar(rar);   // V0.04.14 : écarlate -> matériaux légendaires
+      player.res.mat[mRar] = (player.res.mat[mRar] || 0) + gainMat;
       player.res.gold += gainGold + refundGold;
       player.res.xp = (player.res.xp || 0) + refundXp;
-      addTotals(gainGold + refundGold, refundXp, { [rar]: gainMat }, 0);
-      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold + refundGold) + ' OR' + (refundXp ? ' · +' + fmtNum(refundXp) + ' XP' : ''));
+      addTotals(gainGold + refundGold, refundXp, { [mRar]: gainMat }, 0);
+      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[mRar].label + ' · +' + fmtNum(gainGold + refundGold) + ' OR' + (refundXp ? ' · +' + fmtNum(refundXp) + ' XP' : ''));
       renderResources();
       renderCodexResources();
-      flashResources(rar, { mat: gainMat, gold: gainGold + refundGold });
+      flashResources(mRar, { mat: gainMat, gold: gainGold + refundGold });
       saveNow();                 // sauvegarde immédiate des ressources gagnées
       renderCodex();
       saveSoon();
@@ -15214,6 +15288,23 @@ document.getElementById('codexSearchInput').addEventListener('input', e => {
 document.getElementById('modSearchInput').addEventListener('input', e => {
   modSearchQuery = e.target.value.trim().toLowerCase();
   renderModulesGrid();
+});
+// Croix d'effacement des champs RECHERCHER (V0.04.14, demande d'Alex) : visible dès qu'il y a du texte,
+// vide le champ puis relance le filtre via l'événement 'input' (listeners ci-dessus) et rend le focus.
+document.querySelectorAll('.codex-search-box').forEach(box => {
+  const inp = box.querySelector('.codex-search-input'), clr = box.querySelector('.search-clear');
+  if(!inp || !clr) return;
+  const sync = () => { clr.hidden = !inp.value; };
+  inp.addEventListener('input', sync);
+  clr.addEventListener('pointerdown', e => e.preventDefault());   // garde le clavier ouvert
+  clr.onclick = (e) => {
+    e.stopPropagation();
+    inp.value = '';
+    inp.dispatchEvent(new Event('input', { bubbles:true }));
+    sync();
+    try{ inp.focus(); }catch(_){}
+  };
+  sync();
 });
 document.querySelectorAll('.filter-opt').forEach(btn => {
   btn.onclick = () => {
@@ -17030,11 +17121,22 @@ function placeCardInSlot(key){
 function placeModuleInSlot(key){
   changeTeam(() => { squadModule = key; });
 }
+// V0.04.14, demande d'Alex ("dans death squad, il faut que le bouton auto mette automatiquement le
+// meilleur module aussi") : SÉLECTION AUTO équipe aussi le module le plus puissant (modulePower(), à son
+// meilleur niveau possédé -- même métrique que le bouton AUTO de la fenêtre DÉFI).
+function bestModuleKey(){
+  const cands = modOwnedStacks();
+  if(!cands.length) return null;
+  const best = cands.reduce((a, b) => modulePower(b.def, b.rar) > modulePower(a.def, a.rar) ? b : a);
+  return modKey(best.def.name, best.rar);
+}
 function autoTeam(){
   const best = ownedStacks().sort((a, b) => cardPower(b.def, b.rar) - cardPower(a.def, a.rar)).slice(0, 5).map(st => sqKey(st.def.name, st.rar));
-  const same = best.length === squad.filter(Boolean).length && best.every(n => squad.includes(n));
-  if(same){ showToast('DÉJÀ L’ESCOUADE LA PLUS PUISSANTE'); return; }
-  changeTeam(() => { for(let i = 0; i < 5; i++) squad[i] = best[i] || null; }, 0);
+  const bestMod = bestModuleKey();
+  const sameCards = best.length === squad.filter(Boolean).length && best.every(n => squad.includes(n));
+  const sameMod = !bestMod || squadModule === bestMod;
+  if(sameCards && sameMod){ showToast('DÉJÀ L’ESCOUADE LA PLUS PUISSANTE'); return; }
+  changeTeam(() => { for(let i = 0; i < 5; i++) squad[i] = best[i] || null; if(bestMod) squadModule = bestMod; }, 0);
 }
 
 document.getElementById('slotPickerModal').addEventListener('click', (e) => {
@@ -29093,7 +29195,7 @@ document.getElementById('defiLaunchModal').addEventListener('click', e => { if(e
 // le reste de l'état de combat), restauré par defiRestoreContext() quelle que soit l'issue (victoire,
 // défaite, ou abandon -- navigation hors de l'écran, cf les gardes defiCombatActive dans showHub()/
 // goBack()/endBattle() plus bas).
-let defiCombatActive = false;
+var defiCombatActive = false;   // var (V0.04.14) : lu aussi par renderLoot(), appelée avant cette ligne au chargement
 let defiSavedCtx = null;
 function defiEnterCombat(){
   if(!defiLaunchDef || !defiLaunchCard) return;
@@ -29969,6 +30071,7 @@ function applySave(data){
       }
     });
   });
+  migrateModulesNoEcarlate();
   // Slot module de l'escouade (V0.02.51) : squadModule simple, pas de migration ancien format nécessaire
   squadModule = data.squadModule || null;
   if(Array.isArray(data.squad)){
@@ -29996,6 +30099,7 @@ function applySave(data){
     notif.fab = true;          // la Fabrique s'est renouvelée pendant l'absence du joueur
   }
   // LABO (V0.02.62) : même principe que data.fab ci-dessus.
+  if(data.lab && data.lab.rar) data.lab.rar = data.lab.rar.map(r => r === 'ecarlate' ? 'legendaire' : r);   // V0.04.14 : plus de module écarlate
   if(data.lab && data.lab.resetAt > Date.now()){
     labOffer = [0,1,2].map(i => {
       const n = data.lab.offer && data.lab.offer[i];
@@ -31131,6 +31235,9 @@ function renderLaunchPicker(){
     </div>
     <div class="lp-actions">
       <button class="lp-death" id="lpDeath">DEATH SQUAD</button>
+    </div>
+    <div class="lp-actions">
+      <button class="lp-clear" id="lpClear">SUPPRIMER</button>
       <button class="lp-auto" id="lpAuto">AUTO</button>
     </div>
     <button type="button" class="mod-fuse-toggle" id="lpModeToggle">${launchPickMode === 'cards' ? 'CARTE MODULES' : 'CARTE MECHS'}</button>
@@ -31142,6 +31249,12 @@ function renderLaunchPicker(){
   document.getElementById('lpClose').onclick = cancelLaunchPicker;
   document.getElementById('lpDeath').onclick = pickFillDeath;
   document.getElementById('lpAuto').onclick = pickFillAuto;
+  // V0.04.14 : SUPPRIMER vide les 5 emplacements de cartes du choix (le module équipé n'est pas touché).
+  document.getElementById('lpClear').onclick = () => {
+    if(!launchPick.some(Boolean)){ showToast('ESCOUADE DÉJÀ VIDE'); return; }
+    launchPick = launchPick.map(() => null);
+    renderLaunchPicker();
+  };
   inner.querySelectorAll('.lp-slot').forEach(el => el.onclick = () => { const i = +el.dataset.i; if(launchPick[i]){ launchPick[i] = null; renderLaunchPicker(); } });
   inner.querySelectorAll('.lp-card').forEach(el => el.onclick = () => {
     const key = el.dataset.key;
