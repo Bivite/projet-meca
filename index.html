@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.7</title>
+<title>Projet MECA V0.04.8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6322,13 +6322,15 @@
   .dg-hp.low .dg-hp-fill{background:linear-gradient(180deg,#ff8a8a,#d81f1f);}
   .dg-hp.hurt{border-color:rgba(255,80,80,.9); animation:dgHpHurt .5s ease-in-out infinite;}
   @keyframes dgHpHurt{50%{box-shadow:0 0 9px 2px rgba(255,60,60,.85);}}
-  .dg-timer{background:rgba(0,0,0,.45); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:4px 12px; font-family:var(--font-title); font-size:13px; letter-spacing:1px; color:#eafcff;}
-  .dg-bag-btn{position:relative; background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.04)); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.38); border-radius:10px; padding:6px 14px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
-  .dg-pause-btn{display:flex; align-items:center; justify-content:center; gap:4px; width:38px; height:30px; padding:0; border-radius:10px; background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.04)); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.38); cursor:pointer;}
+  .dg-timer{background:rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:4px 12px; font-family:var(--font-title); font-size:13px; letter-spacing:1px; color:#eafcff;}
+  .dg-bag-btn{position:relative; background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.38); border-radius:10px; padding:6px 14px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
+  .dg-pause-btn{display:flex; align-items:center; justify-content:center; gap:4px; width:38px; height:30px; padding:0; border-radius:10px; background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.38); cursor:pointer;}
   .dg-pause-btn i{display:block; width:4px; height:13px; border-radius:2px; background:#fff;}
   .dg-pause-inner{gap:12px; max-width:300px;}
   .dg-pause-inner button{width:100%; min-height:44px;}
   .dg-pause-sub{position:relative; background:linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.3); border-radius:10px; padding:10px 14px; font-family:var(--font-title); font-size:13px; letter-spacing:1px; color:#fff; cursor:pointer;}
+  .dg-fps{position:absolute; left:8px; top:48px; z-index:7; padding:2px 6px; border-radius:6px; background:rgba(0,0,0,.62); color:#9dffb0; font:600 10px/1.3 ui-monospace,Menlo,Consolas,monospace; letter-spacing:.3px; pointer-events:none; display:none; white-space:pre;}
+  .dg-fps.on{display:block;}
   .dg-pause-quit{background:rgba(120,20,20,.35); border:1px solid rgba(255,90,90,.6); border-radius:10px; padding:10px 14px; font-family:var(--font-title); font-size:13px; letter-spacing:1px; color:#ffb4b4; cursor:pointer;}
   .dg-pause-quit.armed{background:#b3201f; color:#fff; border-color:#ff8a8a;}
   .dg-pause-warn{font-size:11px; line-height:1.35; color:rgba(255,255,255,.65); text-align:center;}
@@ -6336,7 +6338,7 @@
   .dg-stick{position:absolute; width:84px; height:84px; transform:translate(-50%,-50%); z-index:4; pointer-events:none;}
   .dg-stick-base{position:absolute; inset:0; border-radius:50%; border:2px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08);}
   .dg-stick-knob{position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.42); border:1px solid rgba(255,255,255,.65); transform:translate(-50%,-50%);}
-  .dg-interact{position:absolute; left:50%; transform:translateX(-50%); z-index:6; background:rgba(10,12,16,.72); backdrop-filter:blur(6px); border-radius:10px; padding:8px 18px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
+  .dg-interact{position:absolute; left:50%; transform:translateX(-50%); z-index:6; background:rgba(10,12,16,.72); border-radius:10px; padding:8px 18px; font-family:var(--font-title); font-size:12px; letter-spacing:1px; color:#fff;}
   .dg-interact{bottom:calc(14px + env(safe-area-inset-bottom, 0px)); display:flex; flex-direction:column; align-items:center; gap:5px; min-width:170px; border:1px solid rgba(255,180,70,.5);}
   .dg-interact-bar{width:100%; height:5px; border-radius:4px; background:rgba(255,255,255,.18); overflow:hidden;}
   #dgInteractFill{height:100%; width:0%; background:linear-gradient(90deg,#ffb347,#ff7a3d);}
@@ -6347,7 +6349,7 @@
   .dg-ctb:active > span{background:radial-gradient(130% 150% at 50% 0,rgba(255,214,92,.4),rgba(255,214,92,.05) 62%),#120d04; color:#fff3c9;}
   .dg-ctb.off{opacity:.5;}
   .dg-actions{position:absolute; left:calc(10px + env(safe-area-inset-left, 0px)); bottom:calc(150px + env(safe-area-inset-bottom, 0px)); z-index:6; display:flex; flex-direction:column; gap:9px;}
-  .dg-act{position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; width:56px; height:56px; padding:0; border-radius:14px; border:1px solid rgba(255,255,255,.34); background:rgba(10,12,16,.62); backdrop-filter:blur(6px); color:#fff; cursor:pointer; touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;}
+  .dg-act{position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; width:56px; height:56px; padding:0; border-radius:14px; border:1px solid rgba(255,255,255,.34); background:rgba(10,12,16,.62); color:#fff; cursor:pointer; touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;}
   .dg-act svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; position:relative; z-index:1;}
   .dg-act span{position:relative; z-index:1; font-family:Orbitron,Rajdhani,var(--font-title),sans-serif; font-weight:700; font-size:7px; letter-spacing:.7px;}
   .dg-act.on{border-color:#ffd65c; background:rgba(255,214,92,.2); color:#ffe27a; box-shadow:0 0 12px rgba(255,214,92,.45);}
@@ -7999,7 +8001,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.7</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.8</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8099,6 +8101,7 @@
         <div class="dg-hp" id="dgHp" aria-label="Points de vie"><div class="dg-hp-fill" id="dgHpFill"></div></div>
         <button class="dg-pause-btn" id="dgPauseBtn" type="button" aria-label="Pause"><i></i><i></i></button>
       </div>
+      <div class="dg-fps" id="dgFps"></div>
       <div class="dg-stick" id="dgStick" style="display:none;">
         <div class="dg-stick-base"></div>
         <div class="dg-stick-knob"></div>
@@ -8135,6 +8138,7 @@
       <div class="team-label player" style="margin:0;">PAUSE</div>
       <button class="primary-btn" id="dgResumeBtn" type="button">REPRENDRE</button>
       <button class="dg-pause-sub" id="dgBagBtn" type="button">SAC<span class="dg-bag-count" id="dgBagCount"></span></button>
+      <button class="dg-pause-sub" id="dgFpsBtn" type="button">AFFICHER LES IPS</button>
       <button class="dg-pause-quit" id="dgQuitBtn" type="button">RETOUR AU MENU</button>
       <div class="dg-pause-warn" id="dgPauseWarn"></div>
     </div>
@@ -8498,9 +8502,12 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.7';
+var BUILD_VERSION = 'V0.04.8';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.8', items:[
+    'Mission DOME : encore plus fluide. Les buissons des jardins, les fissures du sol et les décors à venir sont bien moins coûteux à dessiner, et le jeu s\'allège tout seul par étapes si ton téléphone n\'arrive pas à suivre (jusqu\'à 30 images par seconde bien régulières). Nouveau : un compteur d\'images par seconde, à afficher ou masquer depuis le menu pause. Les petits flous derrière le chrono et les boutons sont retirés pour alléger l\'écran.',
+  ]},
   { v:'V0.04.7', items:[
     'Mission DOME : le jeu est beaucoup plus fluide. La ville ne dessine plus que ce qui est visible à l\'écran, les décors du sol ne se reconstruisent plus en permanence quand tu bouges, et les images du robot prennent bien moins de mémoire. La caméra se rapproche du robot, qui reste toujours au centre de l\'écran, un peu plus bas qu\'avant. Le dôme se rétrécit désormais jusqu\'à un petit cercle autour d\'un conteneur, sans jamais t\'y piéger. RAID : correction d\'un cas rare où un jeton pouvait être dépensé pour rien.',
   ]},
@@ -18931,15 +18938,12 @@ function dgHouseBuild(o){
   // arbustes en dôme (ellipsoïdes aplatis, avec fleurs éventuelles), hostas, tas de végétation : dessinés à part, triés devant / derrière le corps de la maison
   const fxPart = (u, w, dl, fn) => { const q = toW(u, w, 0), p = { cr:[], faces:[], decos:[], c:[q[0], q[1], 0], key:0, layer:0, deb:true, solid:false, g:'x', fx:(ctx, pj, k0) => fn(ctx, pj, k0, q) }; Kk(p, dl); parts.push(p); return p; };
   const dome = (u, w, r, pal, op) => { op = op || {}; const hr = op.hr || .8, z0 = op.z0 || 0, seeds = []; for(let i = 0; i < 14; i++) seeds.push([rnd() * 2 - 1, rnd() * 2 - 1, rnd()]);
+    let spB = null, spS = null;
     return fxPart(u, w, 1.5 + (z0 + r) * .001, (ctx, pj, k0, q) => {
       const c0 = pj([q[0], q[1], z0]), c1 = pj([q[0], q[1], z0 + r * hr * .72]), R0 = r * k0, RY = R0 * Math.max(.4, hr);
       if(!op.noSh){ ctx.fillStyle = 'rgba(0,0,0,.24)'; ctx.beginPath(); ctx.ellipse(c0.x + R0 * .4, c0.y + R0 * .08, R0 * 1.08, R0 * .5, 0, 0, 6.2832); ctx.fill(); }
       ctx.save(); ctx.translate(c1.x, c1.y); ctx.scale(1, RY / R0);
-      const g = ctx.createRadialGradient(-R0 * .35, -R0 * .45, R0 * .1, 0, 0, R0 * 1.05); g.addColorStop(0, pal[0]); g.addColorStop(.55, pal[1]); g.addColorStop(1, pal[2]);
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R0, 0, 6.2832); ctx.fill();
-      seeds.forEach((s, i) => { if(Math.hypot(s[0], s[1]) > .86) return; ctx.globalAlpha = .5; ctx.fillStyle = i % 2 ? pal[2] : pal[0]; ctx.beginPath(); ctx.arc(s[0] * R0 * .72, s[1] * R0 * .72, R0 * (.09 + s[2] * .08), 0, 6.2832); ctx.fill(); });
-      ctx.globalAlpha = 1;
-      if(op.fl) seeds.forEach((s, i) => { if(Math.hypot(s[0], s[1]) > .8 || s[1] > .3) return; ctx.fillStyle = op.fl[i % op.fl.length]; ctx.beginPath(); ctx.arc(s[0] * R0 * .75, s[1] * R0 * .75, R0 * .095, 0, 6.2832); ctx.fill(); });
+      { const bg = R0 * (DG.dpr || 1) > 24, sp = bg ? (spB || (spB = dgDomeSpr(pal, op.fl, Math.min(4, Math.floor(seeds[0][2] * 5)), true))) : (spS || (spS = dgDomeSpr(pal, op.fl, Math.min(4, Math.floor(seeds[0][2] * 5)), false))), h = R0 * sp.k; ctx.drawImage(sp.cv, -h, -h, 2 * h, 2 * h); }       // image mise à l'échelle (identique à l'ancien tracé : dégradé + taches + fleurs)
       ctx.restore(); }); };
   const hosta = (u, w, r, pal) => { const ph = rnd() * 6; return fxPart(u, w, 1.4, (ctx, pj, k0, q) => { const c = pj([q[0], q[1], 1]), R0 = r * k0;
     for(let k = 0; k < 9; k++){ const a = ph + k * .698, ca = Math.cos(a), sa = Math.sin(a); ctx.save(); ctx.translate(c.x + ca * R0 * .5, c.y + sa * R0 * .3 - R0 * .1); ctx.rotate(a * .6 + .3); ctx.fillStyle = k % 2 ? pal[0] : pal[1]; ctx.strokeStyle = pal[2]; ctx.lineWidth = Math.max(.4, .5 * k0); ctx.beginPath(); ctx.ellipse(0, 0, R0 * .62, R0 * .27, 0, 0, 6.2832); ctx.fill(); ctx.stroke(); ctx.restore(); } }); };
@@ -19863,15 +19867,25 @@ function dgSlab(ctx, pts, z0, h, cTop, cSide, tex){
 function dgDrawFlat(ctx, items){
   const cl = ctx === DG.ctx ? DG.cull : null;
   if(cl && items.some(it => it.stroke)) ctx.lineJoin = 'round';      // l'original le posait au premier trait tracé : d'autres dessins en dépendent, même si ce trait est hors écran
+  const lod = ctx === DG.ctx ? (DG.q ? DG.q.lod || 0 : 0) : 0; let bH = null, bC = null;
+  const flushCk = () => {                                                                       // fissures : un seul tracé pour tous les halos, un seul pour tous les cœurs
+    if(bH){ ctx.beginPath(); for(const q of bH){ ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); } ctx.fillStyle = DG_CK_HALO; ctx.fill(); bH = null; }
+    if(bC){ ctx.beginPath(); for(const q of bC){ ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y); ctx.closePath(); } ctx.fillStyle = DG_CK_CORE; ctx.fill(); bC = null; } };
   for(let i = 0; i < items.length; i++){
-    const it = items[i], z = it.z == null ? .3 : it.z, q = it.pts.map(p => dgP(p[0], p[1], z));
+    const it = items[i], z = it.z == null ? .3 : it.z, isCk = it.t === 'p' && !it.stroke && (it.fill === DG_CK_HALO || it.fill === DG_CK_CORE);
+    if(!isCk) flushCk();
+    else if(lod >= 2 || (lod >= 1 && it.fill === DG_CK_HALO)) continue;
+    const q = it.pts.map(p => dgP(p[0], p[1], z));
     if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let j = 0; j < q.length; j++){ const r = q[j]; if(r.x < a) a = r.x; if(r.x > b) b = r.x; if(r.y < c) c = r.y; if(r.y > d) d = r.y; }
-      const m = 4 + (it.lw || 1) * q[0].k * DG_SC; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ if(it.t === 'p' && it.fill) ctx.fillStyle = it.fill; if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); } continue; } }      // hors écran : on ne trace rien, mais l'état du pinceau reste celui de l'original
+      const m = 4 + (it.lw || 1) * q[0].k * DG_SC; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ if(it.t === 'p' && it.fill && !isCk) ctx.fillStyle = it.fill; if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); } continue; } }      // hors écran : on ne trace rien, mais l'état du pinceau reste celui de l'original
+    if(isCk){ if(it.fill === DG_CK_HALO) (bH || (bH = [])).push(q); else (bC || (bC = [])).push(q); continue; }
     ctx.beginPath(); ctx.moveTo(q[0].x, q[0].y); for(let j = 1; j < q.length; j++) ctx.lineTo(q[j].x, q[j].y);
     if(it.t === 'p'){ ctx.closePath(); if(it.fill){ ctx.fillStyle = it.fill; ctx.fill(); } }
     if(it.stroke){ ctx.strokeStyle = it.stroke; ctx.lineWidth = Math.max(.6, (it.lw || 1) * q[0].k * DG_SC); ctx.lineJoin = 'round'; ctx.stroke(); }
   }
+  flushCk();
 }
+const DG_CK_HALO = 'rgba(0,0,0,.2)', DG_CK_CORE = 'rgba(3,3,2,.9)';
 function dgEllPts(cx, cy, rx, ry, rot, n, rnd, jit){
   const p = [], c = Math.cos(rot), s = Math.sin(rot);
   for(let i = 0; i < n; i++){ const a = i / n * 6.2832, k = 1 + (rnd ? (rnd() - .5) * (jit || 0) : 0), x = Math.cos(a) * rx * k, y = Math.sin(a) * ry * k; p.push([cx + x * c - y * s, cy + x * s + y * c]); }
@@ -20353,6 +20367,13 @@ function dgDrawTerrain(ctx, city, tod){
 function dgTerrainPrewarm(city, x, y){
   const TR = city.terrain, uc = (x - y) * DG_C45, vc = (x + y) * DG_C45;
   TR.decals.forEach(d => { if(Math.hypot(d.cx - uc, d.cy - vc) - Math.max(d.w, d.h) / 2 < 760) dgTrSprite(TR, d); });
+}
+// préchauffage à l'avance : pendant les images légères, construit UN calque de décor du sol juste hors écran (au lieu de le construire d'un coup quand il apparaît = à-coup en marchant)
+function dgTerrainAhead(city, x, y){
+  const TR = city.terrain; if(!TR || TR.sprites.size >= 56) return;
+  const uc = (x - y) * DG_C45, vc = (x + y) * DG_C45; let best = null, bd = 1e9;
+  for(let i = 0; i < TR.decals.length; i++){ const d = TR.decals[i]; if(TR.sprites.has(d.id)) continue; const e = Math.hypot(d.cx - uc, d.cy - vc) - Math.max(d.w, d.h) / 2; if(e < 950 && e < bd){ bd = e; best = d; } }
+  if(best) dgTrSprite(TR, best);
 }
 // ===== Parking (biome « building ») : bitume, places peintes, bordure, voitures garées, lampadaires doubles éclairés =====
 // Repère local du parking : u le long des rangées de places (13 places de 50), w en travers (rangées : 1 simple + 2 doubles dos à dos, séparées par 2 allées). ax=1 : repère tourné d'un quart de tour.
@@ -21196,10 +21217,24 @@ function dgRowsTile(c){
   g.stroke(); return t;
 }
 // faux contexte : reçoit les mêmes appels qu'un vrai canvas sans rien tracer, pour reproduire exactement l'état du pinceau (couleur, épaisseur, jointure) laissé par les pièces hors écran
-const DG_STUB = (() => { const o = { fillStyle:'', strokeStyle:'', lineWidth:1, lineJoin:'miter', lineCap:'butt', globalAlpha:1 }; ['beginPath', 'moveTo', 'lineTo', 'closePath', 'fill', 'stroke', 'clip', 'translate', 'transform', 'drawImage', 'scale', 'rotate', 'arc'].forEach(k => o[k] = () => {});
+const DG_STUB = (() => { const o = { fillStyle:'', strokeStyle:'', lineWidth:1, lineJoin:'miter', lineCap:'butt', globalAlpha:1 }; ['beginPath', 'moveTo', 'lineTo', 'closePath', 'fill', 'stroke', 'clip', 'translate', 'transform', 'drawImage', 'scale', 'rotate', 'arc', 'ellipse', 'bezierCurveTo', 'quadraticCurveTo', 'rect', 'fillRect', 'strokeRect', 'setTransform', 'arcTo', 'setLineDash', 'clearRect'].forEach(k => o[k] = () => {});
+  o.createRadialGradient = o.createLinearGradient = () => ({ addColorStop(){} });
   const K = ['fillStyle', 'strokeStyle', 'lineWidth', 'lineJoin', 'lineCap', 'globalAlpha'], st = [];
   o.save = () => { st.push(K.map(k => o[k])); }; o.restore = () => { const v = st.pop(); if(v) K.forEach((k, i) => o[k] = v[i]); };
   return o; })();
+const DG_DOME_SPR = new Map();
+function dgDomeSpr(pal, fl, vr, big){
+  const key = pal.join('|') + '#' + (fl ? fl.join('|') : '') + '#' + vr + (big ? 'B' : 'S'); let s = DG_DOME_SPR.get(key); if(s) return s;
+  const Rs = big ? 56 : 22, C = Rs + 3, cv = document.createElement('canvas'); cv.width = cv.height = C * 2; const x = cv.getContext('2d');
+  let sd = 9871 + vr * 131; const rr = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+  const seeds = []; for(let i = 0; i < 14; i++) seeds.push([rr() * 2 - 1, rr() * 2 - 1, rr()]);
+  const g = x.createRadialGradient(C - Rs * .35, C - Rs * .45, Rs * .1, C, C, Rs * 1.05); g.addColorStop(0, pal[0]); g.addColorStop(.55, pal[1]); g.addColorStop(1, pal[2]);
+  x.fillStyle = g; x.beginPath(); x.arc(C, C, Rs, 0, 6.2832); x.fill();
+  seeds.forEach((q, i) => { if(Math.hypot(q[0], q[1]) > .86) return; x.globalAlpha = .5; x.fillStyle = i % 2 ? pal[2] : pal[0]; x.beginPath(); x.arc(C + q[0] * Rs * .72, C + q[1] * Rs * .72, Rs * (.09 + q[2] * .08), 0, 6.2832); x.fill(); });
+  x.globalAlpha = 1;
+  if(fl) seeds.forEach((q, i) => { if(Math.hypot(q[0], q[1]) > .8 || q[1] > .3) return; x.fillStyle = fl[i % fl.length]; x.beginPath(); x.arc(C + q[0] * Rs * .75, C + q[1] * Rs * .75, Rs * .095, 0, 6.2832); x.fill(); });
+  s = { cv, k: C / Rs }; DG_DOME_SPR.set(key, s); return s;
+}
 function dgDrawParts(ctx0, o, M){
   const ctx = ctx0, ox = o.x, oy = o.y, pj = p => dgP(ox + p[0], oy + p[1], p[2]);
   const poly = (pts, fill, stroke, lw) => { ctx.beginPath(); pts.forEach((p, i) => { const q = pj(p); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath(); if(fill){ ctx.fillStyle = fill; ctx.fill(); } if(stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } };
@@ -21209,15 +21244,24 @@ function dgDrawParts(ctx0, o, M){
   const cl = ctx0 === DG.ctx ? DG.cull : null;
   M.parts.forEach(p => {
     let ctx = ctx0, stub = null;
-    if(p.fx){ p.fx(ctx, pj, k0); return; }                       // pièce dessinée à part (rondes, eau)
+    if(p.fx){                                                    // pièce dessinée à part (rondes, eau)
+      if(cl && p.c){ const g = pj(p.c), m = 150 * k0 + 20;
+        if(g.x < cl.x0 - m || g.x > cl.x1 + m || g.y < cl.y0 - m || g.y > cl.y1 + m){                  // hors écran : on rejoue sur le faux contexte, pour laisser le pinceau dans le même état
+          const st = DG_STUB; st.fillStyle = ctx0.fillStyle; st.strokeStyle = ctx0.strokeStyle; st.lineWidth = ctx0.lineWidth; st.lineJoin = ctx0.lineJoin; st.lineCap = ctx0.lineCap; st.globalAlpha = ctx0.globalAlpha;
+          try { p.fx(st, pj, k0); } catch(_){}
+          ctx0.fillStyle = st.fillStyle; ctx0.strokeStyle = st.strokeStyle; ctx0.lineWidth = st.lineWidth; ctx0.lineJoin = st.lineJoin; ctx0.lineCap = st.lineCap; ctx0.globalAlpha = st.globalAlpha; return; } }
+      p.fx(ctx, pj, k0); return; }
     const vis = {}, pc = [], pjc = i => pc[i] || (pc[i] = pj(p.cr[i])); let sk = false;
     if(cl){ let a = 1e9, b = -1e9, c = 1e9, d = -1e9; for(let i = 0; i < p.cr.length; i++){ const q = pjc(i); if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; }
-      for(let i = 0; i < p.decos.length; i++){ const dc = p.decos[i], L = dc.ps || [dc.p]; for(let j = 0; j < L.length; j++){ const P = L[j]; if(!P) continue; for(let n = 0; n < P.length; n++){ const q = pj(P[n]); if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; } } }      // les décors (taches, mousse, fenêtres) peuvent dépasser de la pièce
-      const m = 10 + k0 * 3; if(b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m){ stub = DG_STUB; stub.fillStyle = ctx0.fillStyle; stub.strokeStyle = ctx0.strokeStyle; stub.lineWidth = ctx0.lineWidth; stub.lineJoin = ctx0.lineJoin; stub.lineCap = ctx0.lineCap; stub.globalAlpha = ctx0.globalAlpha; ctx = stub; } }                  // pièce entièrement hors écran : mêmes calculs mais sans rien tracer              // sommets projetés une seule fois par pièce (partagés entre ses faces)
+      const m = 10 + k0 * 3; let off = b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m;       // si les coins touchent déjà l'écran, inutile de projeter tous les décors
+      if(off){
+        for(let i = 0; i < p.decos.length; i++){ const dc = p.decos[i], L = dc.ps || [dc.p]; for(let j = 0; j < L.length; j++){ const P = L[j]; if(!P) continue; for(let n = 0; n < P.length; n++){ const q = pj(P[n]); if(q.x < a) a = q.x; if(q.x > b) b = q.x; if(q.y < c) c = q.y; if(q.y > d) d = q.y; } } }      // les décors (taches, mousse, fenêtres) peuvent dépasser de la pièce
+        off = b < cl.x0 - m || a > cl.x1 + m || d < cl.y0 - m || c > cl.y1 + m; }
+      if(off){ stub = DG_STUB; stub.fillStyle = ctx0.fillStyle; stub.strokeStyle = ctx0.strokeStyle; stub.lineWidth = ctx0.lineWidth; stub.lineJoin = ctx0.lineJoin; stub.lineCap = ctx0.lineCap; stub.globalAlpha = ctx0.globalAlpha; ctx = stub; } }                  // pièce entièrement hors écran : mêmes calculs mais sans rien tracer              // sommets projetés une seule fois par pièce (partagés entre ses faces)
     p.faces.forEach(f => {
       const n = f.n, cam = n[0] * .6 + n[1] * .6 + n[2] * .53; if(cam <= .02) return; vis[f.nm] = 1;
       const d = -.35 * n[0] + .55 * n[1] + .75 * n[2], k = Math.min(1.02, .74 + (d + .35) * .24), pts = f.idx.map(pjc);
-      dgPoly(ctx, pts, dgShade(p.col, k));
+      dgPoly(ctx, pts, f.cs || (f.cs = dgShade(p.col, k)));
       if(p.tex && (f.nm === 'top' || f.nm === 'bp' || f.nm === 'ap')) dgApplyTexture(ctx, pts, 'concrete', .3);
       if(!sk){ ctx.beginPath(); sk = true; } pts.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath();       // contours des faces visibles : un seul tracé par pièce
     });
@@ -24895,13 +24939,40 @@ function dgFit(){
   cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   DG.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
+// Qualité adaptative : si l'appareil n'arrive pas à suivre, on allège par étapes (jamais en remontant pendant la partie).
+//   1 : fissures sans halo · 2 : 30 images/s stables (une image sur deux dessinée : plus régulier que 40-50 qui oscillent) · 3 : plus de fissures au sol · 4-5 : définition réduite (1,5 puis 1)
+const DG_STAGE_MAX = 5;
+function dgApplyStage(n){
+  const q = DG.q; q.stage = n; q.lod = n >= 3 ? 2 : n >= 1 ? 1 : 0; q.half = n >= 2; q.cap = n >= 5 ? 1 : n >= 4 ? 1.5 : 2;
+}
 function dgQualityCheck(now){
-  if(DG.q.lastT){
-    const dt = now - DG.q.lastT;
-    if(dt > 26 && dt < 250) DG.q.slow++; else if(dt < 19) DG.q.slow = Math.max(0, DG.q.slow - 1);
-    if(DG.q.slow > 40 && DG.q.cap > 1){ DG.q.cap = DG.q.cap > 1.5 ? 1.5 : 1; DG.q.slow = 0; dgFit(); }
+  const q = DG.q;
+  if(q.lastT){
+    const dt = now - q.lastT;
+    if(!q.t0) q.t0 = now;
+    if(!DG.paused && !document.hidden && now - q.t0 > 3000){            // les 3 premières secondes (préchauffage) ne comptent pas
+      if(dt > (q.half ? 41 : 26) && dt < 250) q.slow++; else if(dt < (q.half ? 36 : 19)) q.slow = Math.max(0, q.slow - 1);
+      if(q.slow > 40 && q.stage < DG_STAGE_MAX){
+        q.slow = 0; const cap0 = q.cap; dgApplyStage(q.stage + 1); if(q.cap !== cap0) dgFit();
+        try { localStorage.setItem('dgStage', String(q.stage)); } catch(_){}
+      }
+    }
   }
-  DG.q.lastT = now;
+  q.lastT = now;
+}
+// compteur d'images par seconde (option du menu pause) : IPS, temps moyen / pire image, temps de calcul (hors dessin final par la carte graphique)
+const DG_FPS = { on:false, n:0, sum:0, worst:0, tu:0, td:0, t0:0, last:0 };
+try { DG_FPS.on = localStorage.getItem('dgFps') === '1'; } catch(_){}
+function dgFpsSync(){ const e = document.getElementById('dgFps'), b = document.getElementById('dgFpsBtn'); if(e) e.classList.toggle('on', DG_FPS.on); if(b) b.textContent = DG_FPS.on ? 'MASQUER LES IPS' : 'AFFICHER LES IPS'; }
+function dgFpsTick(now, tu, td){
+  const F = DG_FPS; if(!F.on) return;
+  if(F.last){ const g = now - F.last; if(g < 500){ F.n++; F.sum += g; if(g > F.worst) F.worst = g; F.tu += tu; F.td += td; } }
+  F.last = now; if(!F.t0) F.t0 = now;
+  if(now - F.t0 >= 1000 && F.n){
+    const e = document.getElementById('dgFps');
+    if(e) e.textContent = Math.round(F.n * 1000 / F.sum) + ' IPS · ' + (F.sum / F.n).toFixed(1) + ' ms (pire ' + Math.round(F.worst) + ')\nCalcul ' + (F.tu / F.n).toFixed(1) + ' + dessin ' + (F.td / F.n).toFixed(1) + ' ms · niveau ' + (DG.q.stage || 0) + (DG.q.half ? ' (30 max)' : '') + ' · x' + (DG.dpr || 1);
+    F.n = 0; F.sum = 0; F.worst = 0; F.tu = 0; F.td = 0; F.t0 = now;
+  }
 }
 // ----- Contour lumineux bleu du robot quand il passe DERRIÈRE un bâtiment / un arbre / un objet (demande d'Alex) -----
 // Les objets de premier plan cachent toujours le robot ; on ne voit à travers que son contour en halo bleu, uniquement là où il est masqué.
@@ -25649,8 +25720,9 @@ function dgFmtTimer(ms){
 function dgHpUI(){
   const el = document.getElementById('dgHp'), f = document.getElementById('dgHpFill'); if(!el || !f) return;
   const p = Math.max(0, Math.min(1, (DG.hp == null ? DG_HP_MAX : DG.hp) / DG_HP_MAX));
-  f.style.width = (p * 100).toFixed(1) + '%';
-  el.className = 'dg-hp' + (p < .25 ? ' low' : p < .6 ? ' mid' : '') + (DG.outside ? ' hurt' : '');
+  const w = (p * 100).toFixed(1) + '%', cls = 'dg-hp' + (p < .25 ? ' low' : p < .6 ? ' mid' : '') + (DG.outside ? ' hurt' : '');
+  if(w !== DG.hpW){ DG.hpW = w; f.style.width = w; }
+  if(cls !== DG.hpCls){ DG.hpCls = cls; el.className = cls; }
 }
 let dgArmorKey = '';
 function dgArmorUI(){
@@ -25661,15 +25733,20 @@ function dgArmorUI(){
 }
 function dgLoop(now){
   if(!DG.active) return;
-  dgQualityCheck(now);
   let dt = DG.lastT ? (now - DG.lastT) / 1000 : 0; dt = Math.min(dt, .08);   // borne le pas de temps (onglet en arrière-plan, lag...)
   DG.lastT = now;
+  const pt0 = performance.now();
   if(!document.hidden && !DG.paused) dgUpdate(dt);
-  if(dt < .03) dgSprWarmStep();                 // préchauffe le cache de sprites du robot (1 sprite par image si ça ne rame pas)
+  if(DG.q.half && !DG.ended && !DG.paused && (DG.skipF = !DG.skipF)){ DG.raf = requestAnimationFrame(dgLoop); return; }      // mode 30 images/s : une image sur deux n'est que calculée
+  dgQualityCheck(now);
+  if(dt < .03){ dgSprWarmStep(); if((DG.frameN = (DG.frameN || 0) + 1) % 3 === 0 && DG.city && DG.city.terrain) dgTerrainAhead(DG.city, DG.player.x, DG.player.y); }                 // préchauffe le cache de sprites du robot (1 sprite par image si ça ne rame pas) et les décors du sol à venir
   if(DG.ended) return;
+  const pt1 = performance.now();
   dgDraw(); dgSearchUI();
-  const timerEl = document.getElementById('dgTimer'); if(timerEl) timerEl.textContent = dgFmtTimer(DG.elapsed);
+  const pt2 = performance.now();
+  const timerEl = document.getElementById('dgTimer'); if(timerEl){ const tx = dgFmtTimer(DG.elapsed); if(tx !== DG.timerTx){ DG.timerTx = tx; timerEl.textContent = tx; } }
   dgHpUI(); dgActUI(); dgArmorUI();
+  dgFpsTick(now, pt1 - pt0, pt2 - pt1);
   DG.raf = requestAnimationFrame(dgLoop);
 }
 
@@ -25696,7 +25773,7 @@ function dgStartRun(){
   DG.loot = { gold:0, xp:0, mat:{ rare:0, epique:0, legendaire:0 }, crystal:0, boosters:{ res:0, cards:0, modules:0 } };
   DG.lootCount = 0; DG.nearWreck = null; DG.harvestOn = false; DG.harvestProg = 0; DG.ctIn = null; DG.secured = null; DG.secLoot = null; DG.secCount = 0; DG.search = null; DG.searchNear = null; DG.shk = []; DG.sFxCar = null; DG.sFxUntil = 0;
   DG.sGains = []; DG.sLay = null; { const sr = document.getElementById('dgSearch'); if(sr) sr.style.display = 'none'; }
-  DG.dcx = 0; DG.dcy = 0; DG.domeTarget = dgDomePickTarget(); DG.ended = false; DG.startAt = Date.now(); DG.elapsed = 0; DG.lastT = 0; DG.q = { cap:2, slow:0, lastT:0 };
+  DG.dcx = 0; DG.dcy = 0; DG.domeTarget = dgDomePickTarget(); DG.ended = false; DG.startAt = Date.now(); DG.elapsed = 0; DG.lastT = 0; DG.q = { cap:2, slow:0, lastT:0, lod:0, t0:0, half:false, stage:0 }; DG.skipF = false; { let st = 0; try { st = Math.max(0, (parseInt(localStorage.getItem('dgStage'), 10) || 0) - 1); } catch(_){} if(st) dgApplyStage(Math.min(DG_STAGE_MAX, st)); } DG.timerTx = ''; DG.hpW = ''; DG.hpCls = ''; dgFpsSync();
   DG.drones = []; const dn = dgDroneCount(); for(let i = 0; i < dn; i++) DG.drones.push(dgMakeDrone(DG.city));
   DG.death = null; DG.deadT = 0; DG.invuln = 0; DG.zoomK = 1; DG.lastDeath = null; DG.testHold = false; DG.test = { fire:true }; dgFxClear();
   DG.hp = DG_HP_MAX; DG.outside = false; DG.inT = 0; DG.hurtA = 0; dgHpUI();
@@ -25777,6 +25854,7 @@ function dgQuit(){
   DG.paused = false; dgPauseClose(); document.getElementById('dgBagModal').classList.remove('show'); dgAbandon();
 }
 document.getElementById('dgPauseBtn').onclick = dgPause;
+document.getElementById('dgFpsBtn').onclick = () => { DG_FPS.on = !DG_FPS.on; DG_FPS.last = 0; DG_FPS.t0 = 0; try { localStorage.setItem('dgFps', DG_FPS.on ? '1' : '0'); } catch(_){} dgFpsSync(); };
 document.getElementById('dgResumeBtn').onclick = dgResume;
 document.getElementById('dgQuitBtn').onclick = dgQuit;
 document.getElementById('dgPauseModal').addEventListener('click', e => { if(e.target.id === 'dgPauseModal') dgResume(); });
