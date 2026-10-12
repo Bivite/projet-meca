@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.15</title>
+<title>Projet MECA V0.04.16</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3332,9 +3332,9 @@
   }
   .deck-name small{display:block; font-family:var(--font-ui); font-weight:600; font-size:8px; letter-spacing:.5px; color:var(--text-dim);}
   .deck-empty{
-    min-height:120px; border-radius:12px; border:1.5px dashed rgba(255,255,255,.28); background:rgba(0,0,0,.3);
+    width:100%; aspect-ratio:195/272; box-sizing:border-box; border-radius:12px; border:1.5px dashed rgba(255,255,255,.28); background:rgba(0,0,0,.3);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer;
-    color:rgba(255,255,255,.55); font-family:var(--font-title); font-size:7.5px; letter-spacing:.8px; font-weight:700; text-align:center; padding:0 4px;
+    color:rgba(255,255,255,.55); font-family:var(--font-title); font-size:9px; letter-spacing:1px; font-weight:700; text-align:center; padding:0 4px;
     -webkit-tap-highlight-color:transparent;
   }
   .deck-empty span{font-size:30px; line-height:1; color:rgba(255,255,255,.7);}
@@ -3357,6 +3357,38 @@
     background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
   }
   #deckFilterDetails:not([open]) .deck-filter-body{display:none;}
+  /* Panneau FILTRES du DECK : même recette verre biseauté que #codexFilterDetails (GESTION DE CARTE) */
+  #deckFilterDetails .deck-filter-body{
+    --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(139,92,246,.5);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(139,92,246,.3), transparent 70%),
+      linear-gradient(180deg, #1b1629, #0d0b15);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
+  }
+  #deckFilterDetails .filter-opt, #deckFilterDetails .sort-opt{
+    --cut:8px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
+      rgba(20,16,34,.32);
+    border:1px solid rgba(139,92,246,.35);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 3px 0 rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.12) inset;
+  }
+  #deckFilterDetails .filter-opt:active, #deckFilterDetails .sort-opt:active{
+    transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.12) inset;
+  }
+  #deckFilterDetails .filter-opt.active, #deckFilterDetails .sort-opt.active{
+    border-color:rgba(200,178,255,.7);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(143,99,255,.55), rgba(98,54,224,.62));
+    box-shadow:0 3px 0 #2e1777, 0 0 14px -2px var(--violet-glow), 0 1px 0 rgba(255,255,255,.35) inset;
+  }
   /* Bouton bleu VALIDER LE DECK */
   .deck-validate{
     width:100%; padding:14px 8px; cursor:pointer; --cut:12px; border-radius:0;
@@ -3406,16 +3438,26 @@
   }
   .deck-count.full{color:#7fe0a8;}
   #deckRight > .deck-stack{flex:0 0 auto;}
-  .deck-stack{position:relative; width:78%; margin:16px 0 0 auto;}
+  .deck-stack{position:relative; width:84%; margin:14px auto 0;}   /* carte seule : centrée dans la colonne */
+  .deck-stack.pile{width:74%; transform:translateX(15%); cursor:pointer;}   /* pile de 2 : décalée pour que l'ensemble (avec la carte penchée) reste centré */
   .deck-stack > .codex-card{width:100%;}
   .deck-stack > .deck-front{position:relative; z-index:1;}
   .deck-stack > .deck-back{position:absolute; left:0; top:0; width:100%; height:100%; z-index:0; transform-origin:100% 100%; transform:translate(-6%,-2%) rotate(-11deg);}   /* penchée en éventail, pivot en bas à droite */
   #deckView .codex-search-box .search-ico{left:16px;}
   .deck-right-empty{padding:26px 6px; text-align:center; font-size:10px; line-height:1.5; letter-spacing:.5px; color:var(--text-dim);}
+  #deckRight{scrollbar-width:none; -ms-overflow-style:none; touch-action:none;}   /* pas de barre ; défilement géré en JS (deckColumnScroll) pour pouvoir défiler liste + colonne à deux doigts */
+  #deckRight::-webkit-scrollbar{display:none; width:0; height:0;}
+  #deckRight .deck-drag-card, #deckLeft, #deckLeft .deck-drag-card{touch-action:none;}   /* liste aussi : le défilement natif ne permet pas 2 doigts sur 2 zones (touch-action = intersection des doigts) */
   .deck-drag-card{touch-action:pan-y; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:grab;}
   .deck-drag-card.dragging{opacity:.3; filter:grayscale(1);}
-  .deck-ghost{position:fixed; z-index:99999; pointer-events:none; opacity:.93; transform:translate(-50%,-50%) rotate(3deg) scale(1.04); filter:drop-shadow(0 10px 14px rgba(0,0,0,.6));}
+  .deck-ghost{position:fixed !important; left:0 !important; top:0 !important; margin:0 !important; z-index:99999; pointer-events:none; opacity:.95; filter:drop-shadow(0 12px 16px rgba(0,0,0,.6));}
   .deck-ghost .cx-copy-badge{display:none;}
+  /* Fenêtre d'une PILE (2 cartes de même nom) : fond flou, la carte du dessus monte, celle du dessous descend */
+  .deck-pile-ov{position:fixed; inset:0; z-index:30; background:rgba(4,6,16,.5); -webkit-backdrop-filter:blur(0px); backdrop-filter:blur(0px); opacity:0; touch-action:none;
+    transition:opacity .3s ease, backdrop-filter .3s ease, -webkit-backdrop-filter .3s ease;}
+  .deck-pile-ov.show{opacity:1; -webkit-backdrop-filter:blur(9px); backdrop-filter:blur(9px);}
+  .deck-pile-card{position:fixed !important; margin:0 !important; z-index:1; transform-origin:100% 100%; transition:transform .5s cubic-bezier(.2,.85,.25,1.08); touch-action:none; filter:drop-shadow(0 12px 18px rgba(0,0,0,.55));}
+  .deck-pile-card .cx-copy-badge{display:none;}
   /* V0.04.15 (demande d'Alex : "met les bons designs de partout") : tous les boutons/encadrés de l'écran DECK
      reprennent le « verre biseauté » du jeu (coins coupés, reflet diagonal, bord violet) au lieu des
      pastilles arrondies génériques. */
@@ -3433,6 +3475,15 @@
   #deckView .deck-draft-bar button:active, #actionInner .deck-btn:active{transform:translateY(2px);}
   #actionInner .deck-modal-row{display:flex; gap:10px; width:100%;}
   #actionInner .deck-modal-row .deck-btn{flex:1; min-width:0; padding:13px 8px;}
+  #actionInner .deck-modal-msg{width:100%; text-align:center; font-family:var(--font-ui); font-size:13px; line-height:1.5; color:var(--text-dim); padding:2px 6px 4px; box-sizing:border-box;}
+  #actionInner .deck-modal-msg b{color:#fff; font-family:var(--font-title); font-size:12px; letter-spacing:1px; white-space:nowrap;}
+  #actionInner .deck-btn.danger{
+    border:1px solid rgba(255,170,180,.6); color:#fff;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.32) 0%, transparent 42%),
+      linear-gradient(180deg, #ff6b7d 0%, #e0324c 55%, #a8142d 100%);
+    box-shadow:0 3px 0 #5a0a18, 0 0 14px -2px rgba(255,79,106,.55), 0 1px 0 rgba(255,255,255,.35) inset;
+  }
   #actionInner .deck-btn.go{
     border:1px solid rgba(255,255,255,.4);
     background:
@@ -7532,6 +7583,11 @@
     box-shadow:0 3px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset;
   }
   .raid-auto-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset; }
+  /* V0.04.16 (demande d'Alex : "plus l'effet de zoom qui dérègle la vue quand j'écris") : Safari iPhone zoome
+     automatiquement la page au focus d'un champ dont la police fait moins de 16 px. Tous les champs de saisie
+     passent donc à 16 px (les placeholders gardent leur taille d'origine, l'aspect des champs vides ne change pas). */
+  input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea, select{font-size:16px !important;}
+  .codex-search-input::placeholder{font-size:10.5px !important;}
 </style>
 </head>
 <body>
@@ -8194,7 +8250,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.15</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.16</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -8728,9 +8784,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.15';
+var BUILD_VERSION = 'V0.04.16';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.16', items:[
+    'DECK : le menu FILTRES et tous ses boutons (filtres et classement) reprennent le design biseauté en verre de GESTION DE CARTE.',
+    'DECK : les cartes de la colonne de droite sont bien centrées (décalage seulement pour une pile de 2 cartes de même nom). Toucher une pile ouvre une fenêtre floutée où les 2 cartes se séparent ; glisse l\'une vers la liste pour la retirer du deck.',
+    'DECK : liste et colonne de droite se font défiler en même temps (un doigt chacune), sans barre de défilement dans la colonne. L\'emplacement NOUVEAU DECK a la taille d\'une carte.',
+    'Champs de saisie (recherche, noms) : fini le zoom automatique de l\'écran quand tu écris.',
+    'DECK : si tu fais RETOUR pendant la création (ou une modification) d\'un deck, une fenêtre te demande de confirmer ou d\'annuler, car le deck en cours serait perdu.',
+    'Glisser-déposer : la carte suit maintenant ton doigt et flotte en se balançant légèrement en profondeur (haut/bas, gauche/droite) selon ton mouvement. Valable dans DECK, la COLLECTION et les BOOSTERS.',
+  ]},
   { v:'V0.04.15', items:[
     'Nouvelle case DECK dans l\'onglet CARTE. Un encadré déroulant liste tes decks (la carte la plus forte du deck en vignette, ton nom en dessous) avec un emplacement vide pour en créer un nouveau.',
     'Création d\'un deck : donne-lui un nom, puis glisse 20 cartes vers la colonne de droite (compteur X/20 en haut). Tu peux retirer une carte en la glissant hors de la colonne. Quand les 20 cartes sont là, un bouton bleu « VALIDER LE DECK » apparaît et enregistre le deck. Touche un deck pour le modifier, le renommer ou le supprimer.',
@@ -16240,8 +16304,8 @@ document.addEventListener('pointermove', (ev) => {
     boostDrag.ghost = ghost;
   }
   if(boostDrag.moved && boostDrag.ghost){
-    boostDrag.ghost.style.left = ev.clientX + 'px';
-    boostDrag.ghost.style.top = ev.clientY + 'px';
+    if(!boostDrag.fl) boostDrag.fl = floatGhostStart(boostDrag.ghost, 42, 42, ev.clientX, ev.clientY, 1.08);
+    boostDrag.fl.move(ev.clientX, ev.clientY);
     const socle = document.getElementById('boostSocle');
     const r = socle.getBoundingClientRect();
     const over = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
@@ -16256,6 +16320,7 @@ function endBoostDrag(ev){
   if(box) box.classList.remove('dragging');
   const socle = document.getElementById('boostSocle');
   socle.classList.remove('drag-over');
+  if(d.fl) d.fl.stop();
   if(d.ghost) d.ghost.remove();
   if(!d.moved){
     // Simple appui sans glissé : aucune action (pas d'achat sur cet écran, cf. en-tête de section)
@@ -17589,13 +17654,38 @@ function deckPeekOpts(){ return { noLevel:true, noCopies:true, noFav:true, noInf
 
 // --- Navigation ---
 function enterDeckView(){
+  deckDraft = null;   // V0.04.16 : on rouvre toujours la case DECK sur la liste de cartes, jamais dans un deck resté ouvert
   document.getElementById('codexHubView').classList.remove('active');
   document.getElementById('deckView').classList.add('active');
   renderDeckView();
   scrollViewTop();
 }
 document.getElementById('tileDeck').onclick = enterDeckView;
-document.getElementById('deckBackBtn').onclick = showCodexHub;
+document.getElementById('deckBackBtn').onclick = () => deckLeave();
+
+// --- Quitter l'écran DECK (V0.04.16, demande d'Alex) : un deck en cours de création/modification est perdu, on demande confirmation ---
+function deckDraftDirty(){
+  if(!deckDraft) return false;
+  if(!deckDraft.id) return true;                       // nouveau deck : tout est à perdre
+  const d = decks.find(x => x.id === deckDraft.id);
+  return !d || d.name !== deckDraft.name || d.cards.length !== deckDraft.cards.length || d.cards.some((k, i) => k !== deckDraft.cards[i]);
+}
+function deckLeave(){
+  if(!deckDraftDirty()){ deckDraft = null; showCodexHub(); return; }
+  const editing = !!deckDraft.id;
+  document.getElementById('actionInner').innerHTML = `
+    <button class="cx-close" id="actClose">✕</button>
+    <div class="team-label player" style="margin:0;">QUITTER LE DECK ?</div>
+    <div class="deck-modal-msg">${editing ? 'Tes modifications du deck' : 'Ta création du deck'} <b>« ${escDeckHtml(deckDraft.name)} »</b> ${editing ? 'seront perdues' : 'sera perdue'} si tu quittes maintenant.</div>
+    <div class="deck-modal-row">
+      <button id="actCancel" class="deck-btn">ANNULER</button>
+      <button id="actGo" class="deck-btn danger">CONFIRMER</button>
+    </div>`;
+  document.getElementById('actClose').onclick = closeActionModal;
+  document.getElementById('actCancel').onclick = closeActionModal;
+  document.getElementById('actGo').onclick = () => { closeActionModal(); deckDraft = null; renderDeckView(); showCodexHub(); };
+  document.getElementById('actionModal').classList.add('show');
+}
 
 // --- Fenêtre "nom du deck" ---
 function openDeckNameModal(initial, onOk){
@@ -17750,7 +17840,7 @@ function renderDeckWork(){
     const groups = Object.keys(byName).map(n => byName[n].sort((a, b) => tierOf(b.e.rar) - tierOf(a.e.rar) || cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i));
     groups.sort((a, b) => cardPower(b[0].e.def, b[0].e.rar) - cardPower(a[0].e.def, a[0].e.rar) || a[0].i - b[0].i);
     const dkCard = (x, cls) => `<div class="codex-card deck-drag-card ${cls} ${rarCls(x.e.rar)}" data-idx="${x.i}" data-key="${x.k}">${deckTileHtml(x.e, 0)}</div>`;
-    const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
+    const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack${g[1] ? ' pile' : ''}">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
       : '<div class="deck-right-empty">Glisse tes cartes ici</div>';
     work.innerHTML = `<div class="deck-split">
       <div id="deckLeft"><div class="codex-grid">${leftHtml}</div></div>
@@ -17766,10 +17856,18 @@ function renderDeckWork(){
       if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
       deckAttachDrag(el, 'deck', +el.dataset.idx);
     });
+    const col = document.getElementById('deckRight');
+    deckColumnScroll(col);
+    deckColumnScroll(document.getElementById('deckLeft'), true);
+    col.querySelectorAll('.deck-stack.pile').forEach(stk => stk.addEventListener('click', () => {
+      if(Date.now() - (col._scrolledAt || 0) < 350) return;
+      openDeckPile(stk);
+    }));
   }
   requestAnimationFrame(() => { work.style.minHeight = ''; });
 }
 function renderDeckView(){
+  closeDeckPile(true);
   renderDeckPanel();
   renderDeckFilter();
   renderDeckDraftBar();
@@ -17789,18 +17887,179 @@ document.getElementById('deckSearchInput').addEventListener('input', e => {
 // touch-action:pan-y sur les cartes) ; souris : n'importe quelle direction après quelques pixels.
 // Une carte de la liste lâchée sur la colonne de droite entre dans le deck ; une carte du deck lâchée
 // en dehors de cette colonne en sort et retrouve sa place dans la liste.
+// ---------- Colonne de droite : défilement à part + fenêtre de pile (V0.04.16, demandes d'Alex) ----------
+// touch-action:none sur la colonne ET la liste : le navigateur ne fait plus défiler natif (avec 2 doigts il
+// prend l'intersection des touch-action, donc le 2e doigt ne pourrait plus défiler). Chaque doigt défile donc
+// sa zone via ce code (avec inertie) : colonne de droite d'un côté, page/liste de l'autre, en même temps.
+var deckDragPid = null, deckScrollPids = new Set(), deckMomentumRaf = 0;
+function deckColumnScroll(col, pageOnly){
+  const st = {};
+  const target = () => (!pageOnly && col.scrollHeight > col.clientHeight + 1) ? col : document.querySelector('.view.active');
+  const end = e => {
+    const s = st[e.pointerId]; if(!s) return;
+    delete st[e.pointerId]; deckScrollPids.delete(e.pointerId);
+    if(s.mode !== 1) return;
+    const tg = s.tg; let v = s.v, last = performance.now();
+    cancelAnimationFrame(deckMomentumRaf);
+    const step = now => {
+      const dt = Math.min(40, now - last); last = now;
+      tg.scrollTop += v * dt; v *= Math.pow(0.94, dt / 16.67);
+      if(Math.abs(v) > 0.03) deckMomentumRaf = requestAnimationFrame(step);
+    };
+    if(Math.abs(v) > 0.05) deckMomentumRaf = requestAnimationFrame(step);
+  };
+  col.addEventListener('pointerdown', e => {
+    if(e.pointerType === 'mouse') return;
+    cancelAnimationFrame(deckMomentumRaf);
+    st[e.pointerId] = { x:e.clientX, y:e.clientY, ly:e.clientY, mode:0, v:0, t:performance.now(), tg:null };
+  });
+  col.addEventListener('pointermove', e => {
+    const s = st[e.pointerId]; if(!s || deckDragPid === e.pointerId) return;
+    if(!s.mode){
+      const dx = e.clientX - s.x, dy = e.clientY - s.y;
+      if(Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)){ s.mode = 1; s.tg = target(); deckScrollPids.add(e.pointerId); }
+      else return;
+    }
+    const now = performance.now(), d = s.ly - e.clientY, dt = Math.max(1, now - s.t);
+    s.tg.scrollTop += d; s.ly = e.clientY; s.t = now;
+    s.v = s.v * 0.5 + (d / dt) * 0.5;
+    col._scrolledAt = Date.now();
+  });
+  col.addEventListener('pointerup', end);
+  col.addEventListener('pointercancel', end);
+}
+var deckPileOv = null;
+function closeDeckPile(instant){
+  const o = deckPileOv; if(!o) return;
+  deckPileOv = null;
+  const done = () => { o.ov.remove(); if(o.stack) o.stack.style.visibility = ''; };
+  if(instant){ done(); return; }
+  o.ov.classList.remove('show');
+  o.cards.forEach(c => { c.el.style.transform = c.init; });
+  setTimeout(done, 380);
+}
+function openDeckPile(stack){
+  const front = stack.querySelector('.deck-front'), back = stack.querySelector('.deck-back');
+  if(!front || !back) return;
+  closeDeckPile(true);
+  const fr = front.getBoundingClientRect(), L = fr.left, T = fr.top, W = fr.width, H = fr.height, ratio = H / W;
+  const vw = window.innerWidth, vh = window.innerHeight, gap = 16;
+  const W2 = Math.min(vw * 0.5, ((vh * 0.78 - gap) / 2) / ratio), H2 = W2 * ratio;
+  const top0 = (vh - (2 * H2 + gap)) / 2, left2 = (vw - W2) / 2;
+  const ox = L + W, oy = T + H, s2 = W2 / W;
+  const ov = document.createElement('div'); ov.className = 'deck-pile-ov';
+  const cards = [[front, 0, ''], [back, 1, 'translate(-6%,-2%) rotate(-11deg)']].map(([src, slot, init]) => {
+    const c = src.cloneNode(true);
+    c.classList.remove('deck-front', 'deck-back', 'dragging');
+    c.classList.add('deck-pile-card');
+    c.style.cssText = `left:${L}px; top:${T}px; width:${W}px; height:${H}px; transform:${init || 'none'};`;
+    const tx = left2 + W2 - ox, ty = top0 + slot * (H2 + gap) + H2 - oy;
+    ov.appendChild(c);
+    deckPileDrag(c, +src.dataset.idx);
+    return { el: c, init: init || 'none', final: `translate(${tx}px,${ty}px) scale(${s2}) rotate(0deg)` };
+  });
+  document.body.appendChild(ov);
+  stack.style.visibility = 'hidden';
+  deckPileOv = { ov, cards, stack };
+  void ov.offsetWidth;
+  requestAnimationFrame(() => { ov.classList.add('show'); cards.forEach(c => { c.el.style.transform = c.final; }); });
+  ov.addEventListener('click', e => { if(e.target === ov) closeDeckPile(); });
+}
+// Glisser une des 2 cartes de la fenêtre vers la LISTE (à gauche) : elle sort du deck et retrouve sa place.
+// Lâchée ailleurs, elle revient simplement à sa place dans la fenêtre.
+function deckPileDrag(c, idx){
+  let sx = 0, sy = 0, pid = null, pressed = false, dragging = false, ghost = null, fl = null;
+  const cleanup = () => { pressed = false; if(fl){ fl.stop(); fl = null; } if(ghost){ ghost.remove(); ghost = null; } c.style.opacity = ''; dragging = false; };
+  c.addEventListener('pointerdown', e => {
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    pressed = true; dragging = false; sx = e.clientX; sy = e.clientY; pid = e.pointerId;
+    try{ c.setPointerCapture(pid); }catch(_){}
+  });
+  c.addEventListener('pointermove', e => {
+    if(!pressed) return;
+    if(!dragging){
+      if(Math.hypot(e.clientX - sx, e.clientY - sy) <= 7) return;
+      dragging = true;
+      const r = c.getBoundingClientRect();
+      ghost = c.cloneNode(true);
+      ghost.classList.remove('deck-pile-card'); ghost.classList.add('deck-ghost'); ghost.style.cssText = '';
+      ghost.style.width = r.width + 'px';
+      document.body.appendChild(ghost);
+      fl = floatGhostStart(ghost, Math.max(0, Math.min(r.width, sx - r.left)), Math.max(0, Math.min(r.height, sy - r.top)), e.clientX, e.clientY, 1.06);
+      c.style.opacity = '.3';
+    }
+    fl.move(e.clientX, e.clientY);
+    if(e.cancelable) e.preventDefault();
+  });
+  const finish = (e, commit) => {
+    if(!pressed) return;
+    const was = dragging; cleanup();
+    if(!was || !commit) return;
+    const l = document.getElementById('deckLeft'); if(!l) return;
+    const r = l.getBoundingClientRect();
+    if(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) deckRemoveCard(idx);   // renderDeckView() ferme la fenêtre
+  };
+  c.addEventListener('pointerup', e => finish(e, true));
+  c.addEventListener('pointercancel', e => finish(e, false));
+}
+// ---------- Carte "flottante" pendant un glisser-déposer (V0.04.16, demande d'Alex) ----------
+// La carte suit exactement le doigt (position posée à chaque événement) et se balance en 3D : inclinaison
+// avant/arrière selon le déplacement vertical, gauche/droite selon l'horizontal (ressort amorti, retombe
+// quand le doigt s'arrête), plus un léger flottement permanent en profondeur. Partagé par DECK, la
+// COLLECTION (reclassement) et les BOOSTERS.
+function floatGhostStart(ghost, ox, oy, x, y, base){
+  base = base || 1.06;
+  ghost.style.left = '0px'; ghost.style.top = '0px';
+  ghost.style.transformOrigin = ox + 'px ' + oy + 'px';
+  ghost.style.willChange = 'transform'; ghost.style.transition = 'none';
+  const now0 = performance.now();
+  const st = { x, y, vx:0, vy:0, rx:0, ry:0, rz:0, wx:0, wy:0, wz:0, lm:now0, lt:now0, t0:now0, raf:0, alive:true };
+  const clamp = (v, m) => Math.max(-m, Math.min(m, v));
+  const render = now => {
+    const t = (now - st.t0) / 1000;
+    const sp = Math.hypot(st.vx, st.vy);
+    const sc = base + Math.sin(t * 2.4) * 0.018 + Math.min(sp * 0.003, 0.04);
+    ghost.style.transform = 'translate3d(' + (st.x - ox) + 'px,' + (st.y - oy) + 'px,0) perspective(700px) rotateX(' + st.rx.toFixed(2) + 'deg) rotateY(' + st.ry.toFixed(2) + 'deg) rotateZ(' + st.rz.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+  };
+  const loop = now => {
+    if(!st.alive || !ghost.isConnected){ st.alive = false; return; }
+    const dt = Math.min(2, (now - st.lt) / 16.67); st.lt = now;
+    const k = Math.pow(0.86, dt); st.vx *= k; st.vy *= k;
+    const t = (now - st.t0) / 1000;
+    const tY = clamp(st.vx * 1.7, 28) + Math.sin(t * 1.9) * 2.4;
+    const tX = clamp(-st.vy * 1.7, 28) + Math.sin(t * 1.5 + 1) * 2.4;
+    const tZ = clamp(st.vx * 0.6, 10) + Math.sin(t * 1.2 + 2) * 1.3;
+    st.wx += ((tX - st.rx) * 0.14 - st.wx * 0.2) * dt; st.rx += st.wx * dt;
+    st.wy += ((tY - st.ry) * 0.14 - st.wy * 0.2) * dt; st.ry += st.wy * dt;
+    st.wz += ((tZ - st.rz) * 0.14 - st.wz * 0.2) * dt; st.rz += st.wz * dt;
+    render(now);
+    st.raf = requestAnimationFrame(loop);
+  };
+  render(now0);
+  st.raf = requestAnimationFrame(loop);
+  return {
+    move(nx, ny){
+      const now = performance.now(), dtm = Math.max(1, now - st.lm); st.lm = now;
+      st.vx = st.vx * 0.5 + ((nx - st.x) / dtm * 16.67) * 0.5;
+      st.vy = st.vy * 0.5 + ((ny - st.y) / dtm * 16.67) * 0.5;
+      st.x = nx; st.y = ny; render(now);
+    },
+    stop(){ st.alive = false; cancelAnimationFrame(st.raf); }
+  };
+}
 function deckAttachDrag(el, from, ref){
-  let sx = 0, sy = 0, pid = null, pressed = false, dragging = false, ghost = null;
+  let sx = 0, sy = 0, pid = null, pressed = false, dragging = false, ghost = null, fl = null, gox = 0, goy = 0;
   const rightEl = () => document.getElementById('deckRight'), leftEl = () => document.getElementById('deckLeft');
   const insideRight = (x, y) => { const r = rightEl().getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
   const tm = ev => { if(ev.cancelable) ev.preventDefault(); };
   const cleanup = () => {
     pressed = false;
+    if(fl){ fl.stop(); fl = null; }
     if(ghost){ ghost.remove(); ghost = null; }
     el.classList.remove('dragging');
     document.removeEventListener('touchmove', tm);
     const r = rightEl(), l = leftEl(); if(r) r.classList.remove('drop-ok'); if(l) l.classList.remove('drop-ok');
-    dragging = false;
+    dragging = false; if(deckDragPid === pid) deckDragPid = null;
   };
   el.addEventListener('pointerdown', e => {
     if(e.pointerType === 'mouse' && e.button !== 0) return;
@@ -17811,19 +18070,23 @@ function deckAttachDrag(el, from, ref){
     if(!pressed) return;
     const dx = e.clientX - sx, dy = e.clientY - sy;
     if(!dragging){
+      if(deckScrollPids.has(e.pointerId)) return;   // le doigt fait défiler la colonne : pas de glisser-déposer
       const touch = e.pointerType === 'touch' || e.pointerType === 'pen';
       const go = touch ? (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) : Math.hypot(dx, dy) > 7;
       if(!go) return;
-      dragging = true;
+      dragging = true; deckDragPid = pid;
       el._suppressClick = Date.now();
       ghost = el.cloneNode(true);
       ghost.classList.add('deck-ghost'); ghost.classList.remove('dragging', 'deck-drag-card');
-      ghost.style.width = el.getBoundingClientRect().width + 'px';
+      const er = el.getBoundingClientRect();
+      ghost.style.width = er.width + 'px';
       document.body.appendChild(ghost);
+      gox = Math.max(0, Math.min(er.width, sx - er.left)); goy = Math.max(0, Math.min(er.height, sy - er.top));
+      fl = floatGhostStart(ghost, gox, goy, e.clientX, e.clientY, 1.06);
       el.classList.add('dragging');
       document.addEventListener('touchmove', tm, { passive:false });
     }
-    ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+    fl.move(e.clientX, e.clientY);
     const inside = insideRight(e.clientX, e.clientY);
     rightEl().classList.toggle('drop-ok', from === 'list' && inside);
     leftEl().classList.toggle('drop-ok', from === 'deck' && !inside);
@@ -17856,7 +18119,7 @@ function navBackAction(){
   if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
-  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => showCodexHub();
+  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => deckLeave();
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('modulesView').classList.contains('active')) return () => showCodexHub();
   return null;
@@ -29944,7 +30207,7 @@ function collDragStart(pid, idx, card, x, y){
   ghost.style.height = r.height + 'px';
   document.body.appendChild(ghost);
   collDrag = { pid, src: idx, ghost, ox: x - r.left, oy: y - r.top, edge: 0, edgeT: null, over: null, x, y };
-  ghost.style.transformOrigin = collDrag.ox + 'px ' + collDrag.oy + 'px';   // la carte grossit autour du doigt : elle reste pile dessous
+  collDrag.fl = floatGhostStart(ghost, collDrag.ox, collDrag.oy, x, y, 1.08);   // suit le doigt + balancement 3D (pivot sous le doigt)
   try{ binder.setPointerCapture(pid); }catch(_){}
   if(navigator.vibrate) try{ navigator.vibrate(15); }catch(_){}
   card.closest('.sleeve').classList.add('drag-src');
@@ -29985,7 +30248,7 @@ function sleeveAtPoint(x, y, nearest){
 function collDragMove(x, y){
   const d = collDrag; if(!d) return;
   d.x = x; d.y = y;
-  d.ghost.style.transform = `translate(${x - d.ox}px, ${y - d.oy}px) rotate(3deg) scale(1.08)`;
+  if(d.fl) d.fl.move(x, y);
   const sl = sleeveAtPoint(x, y);
   if(d.over && d.over !== sl) d.over.classList.remove('drop-target');
   d.over = sl && +sl.dataset.idx !== d.src ? sl : null;
@@ -30030,6 +30293,7 @@ function collDragEnd(cancel){
     const sl = sleeveAtPoint(d.x, d.y, true);
     if(sl) target = +sl.dataset.idx;
   }
+  if(d.fl) d.fl.stop();
   d.ghost.remove();
   document.querySelectorAll('.coll-ghost').forEach(g => g.remove());
   document.querySelectorAll('#binderPage .sleeve.drop-target').forEach(el => el.classList.remove('drop-target'));
