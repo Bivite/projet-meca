@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.47</title>
+<title>Projet MECA V0.04.48</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2619,6 +2619,8 @@
      même style biseauté), mais seul (pas de DOWNGRADE pour les modules) donc hors de la grille 2 colonnes
      .codex-tools -- pleine largeur ajoutée ici, comme .mod-fuse-toggle juste en dessous. */
   #modDestroyToggle{width:100%; margin:10px 0 0; padding:13px 14px; font-size:12px; letter-spacing:3px;}
+  #deckDestroyToggle{width:100%; margin:0; padding:13px 14px; font-size:12px; letter-spacing:3px;}
+  #deckDestroyToggle[hidden]{display:none;}
   .codex-card.tool-defuse{outline:1px dashed rgba(139,92,246,.5); outline-offset:3px;}
   #actionModal{z-index:35;}
   .action-inner{gap:12px;}
@@ -2748,6 +2750,9 @@
   .mode-tile.s-b .tile-dot{top:14px;}
   .mode-tile.o-big .tile-dot{top:16px; right:10px;}
   .mode-tile.cx-a .tile-dot{top:14px; right:auto; left:8px;}
+  .mode-tile.cx-c .tile-dot{top:10px; right:26px; left:auto;}
+  /* V0.04.48 : PROCHAINEMENT seul sur sa rangée (la case GESTION DE CARTE a été supprimée) : pleine largeur, coins coupés réguliers */
+  .cx-grid .mode-row > .mode-tile.soon:only-child{margin-right:0; --clip:polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);}
   /* RÉCOMPENSES, TROPHÉES (s-c) et OMEGA (o-l) : demandé à droite malgré leur découpe en biais sur tout
      le bord droit (pas un simple coin rogné : toute l'arête est en pente) -- #tileOmega mesure ~210px
      de haut avec sa pointe à 26px du bord à mi-hauteur, #tileTrophies/#tileRewards 168px avec 24px à
@@ -3308,11 +3313,11 @@
     linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 26%),
     linear-gradient(0deg, rgba(0,0,0,.65) 0%, transparent 30%),
     linear-gradient(160deg, #c8fff0 0%, transparent 60%);}
-  .mt-deck-ico svg{width:100%; height:100%; display:block;}
+  .mt-deck-ico img{width:100%; height:100%; object-fit:contain; display:block;}
   .mode-tile:not(.soon) .mt-deck-ico{
     position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    width:62%; height:62%; max-width:none; max-height:none; margin:0;
-    pointer-events:none; z-index:0; opacity:.45; color:#fff;
+    width:80%; height:80%; max-width:none; max-height:none; margin:0;
+    pointer-events:none; z-index:0; opacity:.4; color:#fff;
     filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
     animation:none !important;
   }
@@ -8878,7 +8883,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.47</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.48</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9047,12 +9052,13 @@
       <div class="team-label player" style="margin-top:2px;">CARTE</div>
       <div class="mode-grid cx-grid">
         <div class="mode-row">
-          <div class="mode-tile cardmgmt cx-a" id="tileCardMgmt">
+          <div class="mode-tile deck cx-a" id="tileDeck">
             <div class="mt-inner">
-              <span class="notif-dot tile-dot" id="dotCardMgmt"></span>
-              <div class="mt-cardmgmt-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-cardmgmt.webp" alt="" onerror="this.style.opacity='0'"></div>
-              <div class="mt-title">GESTION DE CARTE</div>
-              <div class="mt-sub">Classe, fusionne, détruis</div>
+              <div class="mt-deck-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-cardmgmt.webp" alt="" onerror="this.style.opacity='0'"></div>
+              <div class="mt-sub">Compose tes decks</div>
+              <div class="mt-row">
+                <div class="mt-title">DECK</div>
+              </div>
             </div>
           </div>
           <div class="mode-tile collection cx-b" id="tileCollection">
@@ -9088,15 +9094,6 @@
           </div>
         </div>
         <div class="mode-row">
-          <div class="mode-tile deck cx-c" id="tileDeck">
-            <div class="mt-inner">
-              <div class="mt-deck-ico"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="8" y="14" width="30" height="40" rx="4" transform="rotate(-9 23 34)"/><rect x="17" y="10" width="30" height="40" rx="4" transform="rotate(-1 32 30)"/><rect x="26" y="12" width="30" height="40" rx="4" transform="rotate(8 41 32)" fill="rgba(255,255,255,.12)"/></svg></div>
-              <div class="mt-sub">Compose tes decks</div>
-              <div class="mt-row">
-                <div class="mt-title">DECK</div>
-              </div>
-            </div>
-          </div>
           <div class="mode-tile soon cx-d">
             <div class="mt-inner">
               <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
@@ -9166,6 +9163,7 @@
         <summary class="team-label player">DECK<span class="res-toggle-chevron"></span></summary>
         <div id="deckBody"></div>
       </details>
+      <button type="button" class="codex-tool-btn destroy" id="deckDestroyToggle">DÉTRUIRE</button>
       <div class="deck-draft-bar" id="deckDraftBar" hidden></div>
       <div class="codex-tools deck-tools">
         <details class="codex-filter" id="deckFilterDetails">
@@ -9406,9 +9404,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.47';
+var BUILD_VERSION = 'V0.04.48';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.48', items:[
+    'DECK : nouveau bouton DÉTRUIRE sous l\'encadré DECK (même fenêtre de destruction qu\'avant, cartes séparées par niveau, holographiques et favorites protégées) ; il disparaît pendant la création ou la modification d\'un deck.',
+    'Menu CARTE : la case DECK passe en haut à gauche avec l\'icône de l\'ancienne case GESTION DE CARTE, qui est supprimée (l\'upgrade et le downgrade ne sont plus accessibles pour l\'instant). PROCHAINEMENT occupe seule la dernière rangée.',
+  ] },
   { v:'V0.04.47', items:[
     'Bataille — nouveau bouton FIN : hexagone en verre bleu au centre du champ de bataille, « FIN » gravé ; un premier appui le passe au vert, un second appui valide la fin du tour. Les mana de l\'adversaire (à gauche) et du joueur (à droite) l\'encadrent.',
     'Bataille — rythme encore plus lent (×2) : pose des cartes en scène (colonne de lumière, ondes de choc) et destruction spectaculaire (la carte vacille, rougeoie, puis éclate en éclats incandescents qui retombent en braises).',
@@ -10732,8 +10734,8 @@ var TUT_STEPS = [
     mock: () => tutIconFrom('#tileDefi .mt-defi-ico', 'violet') },
   { title:'LA FABRIQUE', text:'Dépense de l\'or ou des cristaux à la Fabrique pour obtenir de nouvelles cartes de mechs à ajouter à ta collection.',
     mock: () => tutIconFrom('#tileFabTirage .mt-tirage-ico', 'green') },
-  { title:'GESTION DE CARTE', text:'Dans l\'onglet CARTE, la case GESTION DE CARTE regroupe toute ta collection : consulte les statistiques et l\'historique de chaque pilote de mech.',
-    mock: () => tutIconFrom('#tileCardMgmt .mt-cardmgmt-ico', 'blue') },
+  { title:'DECK', text:'Dans l\'onglet CARTE, la case DECK te permet de composer tes decks et de détruire les cartes dont tu n\'as plus besoin.',
+    mock: () => tutIconFrom('#tileDeck .mt-deck-ico', 'green') },
   { title:'LA FUSION', text:'Réunis plusieurs exemplaires d\'une même carte pour la fusionner et la faire monter en rareté.',
     mock: tutFusionMock },
   { title:'LES MODULES', text:'Une carte module n\'est pas un mech : elle donne un effet passif, bonus pour ton escouade ou malus pour l\'ennemi. Équipe-en une depuis l\'écran de ton escouade, à côté de tes mechs.',
@@ -16267,6 +16269,7 @@ function renderDestroyModal(def, rar, level){
       flashResources(mRar, { mat: gainMat, gold: gainGold + refundGold });
       saveNow();                 // sauvegarde immédiate des ressources gagnées
       renderCodex();
+      if(document.getElementById('deckView').classList.contains('active')) renderDeckView();
       saveSoon();
     };
     // La carte utilisée dans l'escouade actuelle : le combat en cours sera arrêté
@@ -18354,7 +18357,6 @@ document.getElementById('tileFabTirage').onclick = enterFabDraw;
 document.getElementById('fabDrawBackBtn').onclick = showFabHub;
 document.getElementById('tileFabLabo').onclick = enterLabDraw;
 document.getElementById('labDrawBackBtn').onclick = showFabHub;
-document.getElementById('tileCardMgmt').onclick = enterCodexMgmt;
 document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
 
 
@@ -18367,6 +18369,7 @@ document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
 var decks = [];              // [{ id, name, cards:[ "NOM|rareté", ... ] }]
 var deckDraft = null;        // { id|null, name, cards:[] }
 var deckFilter = 'all', deckSort = 'group', deckSearchQuery = '';
+var deckDestroyMode = false;   // V0.04.48 : bouton DÉTRUIRE de l'écran DECK (même fenêtre que GESTION DE CARTE)
 const DECK_SIZE = 20;
 function deckKeyName(k){ return String(k).split('|')[0]; }
 function deckCount(cards, key){ let n = 0; cards.forEach(k => { if(k === key) n++; }); return n; }
@@ -18414,6 +18417,7 @@ function deckPeekOpts(){ return { noLevel:true, noCopies:true, noFav:true, noInf
 
 // --- Navigation ---
 function enterDeckView(){
+  deckDestroyMode = false;
   deckDraft = null;   // V0.04.16 : on rouvre toujours la case DECK sur la liste de cartes, jamais dans un deck resté ouvert
   // V0.04.16 : recherche, filtre et classement reviennent à zéro à chaque ouverture de la case DECK
   deckFilter = 'all'; deckSort = 'group'; deckSearchQuery = '';
@@ -18425,7 +18429,7 @@ function enterDeckView(){
   scrollViewTop();
 }
 document.getElementById('tileDeck').onclick = enterDeckView;
-document.getElementById('deckBackBtn').onclick = () => deckLeave();
+document.getElementById('deckBackBtn').onclick = () => { if(deckDestroyMode) setDeckDestroyMode(false); else deckLeave(); };
 
 // --- Quitter l'écran DECK (V0.04.16, demande d'Alex) : un deck en cours de création/modification est perdu, on demande confirmation ---
 function deckDraftDirty(){
@@ -18588,7 +18592,22 @@ function renderDeckWork(){
   const work = document.getElementById('deckWork');
   const keepH = work.offsetHeight; if(keepH) work.style.minHeight = keepH + 'px';
   const stacks = deckListStacks();
-  if(!deckDraft){
+  if(!deckDraft && deckDestroyMode){
+    const shown = levelSplitStacks(stacks);
+    work.innerHTML = '<div class="codex-grid" id="deckList"></div>';
+    const grid = work.firstChild;
+    if(!shown.length) grid.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
+    shown.forEach(st => {
+      const card = document.createElement('div');
+      card.className = 'codex-card ' + rarCls(st.rar) + (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy');
+      card.style.setProperty('--sh-delay', shineDelay());
+      card.style.setProperty('--sh-dur', shineDur(st.rar));
+      card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
+      card.onclick = () => openDestroyModal(st.def, st.rar, st.level);
+      addPreviewPress(card, st.def, st.rar, { level: st.level });
+      grid.appendChild(card);
+    });
+  } else if(!deckDraft){
     work.innerHTML = `<div class="codex-grid" id="deckList">${stacks.map(st => `<div class="codex-card ${rarCls(st.rar)}" data-key="${sqKey(st.def.name, st.rar)}">${deckTileHtml(st, stackCount(st.def.name, st.rar))}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>'}</div>`;
     work.querySelectorAll('[data-key]').forEach(el => { const e = sqEntry(el.dataset.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts()); });
   } else {
@@ -18656,7 +18675,18 @@ function deckRefreshLeader(){
   v.classList.toggle('need', need);
   v.textContent = need ? 'CHOISIS TON CHEF D’ESCOUADE' : 'VALIDER LE DECK';
 }
+function setDeckDestroyMode(on){
+  deckDestroyMode = !!on && !deckDraft;
+  setTimeout(updateNavBack, 0);
+  renderDeckView();
+}
+document.getElementById('deckDestroyToggle').onclick = () => setDeckDestroyMode(!deckDestroyMode);
 function renderDeckView(){
+  if(deckDraft) deckDestroyMode = false;
+  const dd = document.getElementById('deckDestroyToggle');
+  dd.hidden = !!deckDraft;
+  dd.classList.toggle('active', deckDestroyMode);
+  dd.textContent = deckDestroyMode ? 'QUITTER' : 'DÉTRUIRE';
   closeDeckPile(true);
   renderDeckPanel();
   renderDeckFilter();
@@ -18869,7 +18899,7 @@ function navBackAction(){
   if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
-  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => deckLeave();
+  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => { if(deckDestroyMode) setDeckDestroyMode(false); else deckLeave(); };
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('modulesView').classList.contains('active')) return () => showCodexHub();
   return null;
