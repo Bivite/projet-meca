@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.56</title>
+<title>Projet MECA V0.04.57</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8896,7 +8896,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.56</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.57</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9321,9 +9321,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.56';
+var BUILD_VERSION = 'V0.04.57';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.57', items:[
+    'COMBAT : la croix rouge s\'affiche aussi sur les cartes qui vont être détruites par un module (BAVURES, ROCKET), un effet de carte ou un coup mortel imprévu, côté joueur comme côté adversaire.',
+    'COMBAT : la flèche bleue de défense de l\'adversaire passe au-dessus de ses cartes (vers le haut), celle du joueur reste en dessous.',
+  ] },
   { v:'V0.04.56', items:[
     'DECK : nouveau bouton FABRIQUER (à gauche de DÉTRUIRE). La liste montre toutes les cartes (ou tous les modules) ; celles que tu n\'as pas sont en fantôme gris, avec un aperçu et un bouton FABRIQUER payé en matériaux selon la rareté (rare 10, épique 20, légendaire 40, écarlate 80 matériaux légendaires). Les holographiques ne se fabriquent pas.',
     'DECK : pendant FABRIQUER ou DÉTRUIRE, l\'encadré DECK devient RESSOURCES (or, XP, matériaux, cristaux).',
@@ -21264,12 +21268,12 @@ function btlArCurve(x0, y0, x1, y1, mk, dir){
   return [x0, y0, l(ax, cx), l(ay, c1y), l(bx, dx2), l(by, c2y), x1, y1];
 }
 // points d'ancrage : entre deux camps, la flèche part du haut de la carte du joueur et vise le BAS des cartes ennemies ; quand l'ennemi cible, elle part de son bas et vise le HAUT des cartes alliées ; même rangée : arche haut → haut
-function btlArAnch(r0, r1, kind){
+function btlArAnch(r0, r1, kind, foe){
   const c0 = r0.top + r0.height / 2, c1 = r1.top + r1.height / 2, dy = c1 - c0, thr = Math.min(r0.height, r1.height) * 0.9, x0 = r0.left + r0.width / 2, x1 = r1.left + r1.width / 2;
   const L = 9;   // voies parallèles : si deux cartes se ciblent mutuellement, les deux flèches ne se superposent pas
   if(dy < -thr) return { x0:x0 - L, y0:r0.top, x1:x1 - L, y1:r1.bottom, mk:1, dir:-1 };
   if(dy > thr) return { x0:x0 + L, y0:r0.bottom, x1:x1 + L, y1:r1.top, mk:1, dir:1 };
-  if(kind === 'def') return { x0, y0:r0.bottom, x1, y1:r1.bottom, mk:0, dir:1 };   // DÉFENDRE : flèche bleue sous les cartes
+  if(kind === 'def' && !foe) return { x0, y0:r0.bottom, x1, y1:r1.bottom, mk:0, dir:1 };   // DÉFENDRE : flèche bleue sous les cartes du joueur ; celle de l'adversaire passe au-dessus des siennes (vers le haut)
   return { x0, y0:r0.top, x1, y1:r1.top, mk:0, dir:-1 };
 }
 function btlArSplit(P, s){   // de Casteljau : première partie [0, s] de la courbe
@@ -21379,7 +21383,7 @@ function btlRenderArrowsNow(){
   ['p', 'o'].forEach(s => BTL.S[s].slots.forEach(c => {
     if(!c || !c.plan || !c.plan.tgt) return;
     const t = btlCardByUid(c.plan.tgt); if(!t || t.hp <= 0) return;
-    const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), c.plan.kind);
+    const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), c.plan.kind, c.side === 'o');
     want.set('plan:' + c.uid, { kind:c.plan.kind, a:{ x:n.x0, y:n.y0 }, b:{ x:n.x1, y:n.y1 }, mk:n.mk, dir:n.dir, lock:true, rate:16, intro:460 });
   }));
   const tg = BTL.tg;
@@ -21404,7 +21408,8 @@ function btlRenderArrowsNow(){
 }
 function btlBeam(r0, r1, kind, fast){
   const intro = (fast ? 170 : 300) * BTL_TS, ar = btlArrowNew(kind, { introMs:intro, rate:40 });
-  const n = btlArAnch(r0, r1, kind);
+  const me = btlQ('.btl-half.me'), foe = !!me && (r0.top + r0.height / 2) < btlRect(me).top;   // lanceur dans la moitié adverse : flèche bleue vers le haut
+  const n = btlArAnch(r0, r1, kind, foe);
   ar.go(n.x0, n.y0, n.x1, n.y1, { snap:true, lock:true, mk:n.mk, dir:n.dir });
   return btlSleep(intro, true).then(() => btlSleep(fast ? 40 : 160)).then(() => { ar.die((fast ? 140 : 240) * BTL_TS); return btlSleep(fast ? 140 : 240); });
 }
@@ -21710,7 +21715,7 @@ function btlReticle(t, kind){
   return { off(){ btlAnim(e, [{ opacity:1 }, { opacity:0 }], { duration:240 }).then(() => e.remove(), () => e.remove()); } };
 }
 function btlLock(c, t, kind, carry){
-  const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), kind);
+  const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), kind, c.side === 'o');
   let ar = carry;
   if(ar && ar.kind !== kind){ ar.die(120); ar = null; }
   if(!ar) ar = btlArrowNew(kind, { introMs:360, rate:30 });
@@ -22543,6 +22548,9 @@ function btlBeginTarget(c, kind, ev, src){
 }
 function btlHighlight(list, on, cur){
   BTL.el.querySelectorAll('.btl-unit.tg-ok, .btl-unit.tg-cur').forEach(u => u.classList.remove('tg-ok', 'tg-cur'));
+  const hv = BTL.xhov;   // croix d'aperçu : la carte survolée serait détruite par l'effet en cours de visée
+  if(on && cur && BTL.xdmg && btlLethal(cur, BTL.xdmg)){ if(hv !== cur){ if(hv) btlXOff(hv); BTL.xhov = cur; btlXOn(cur); } }
+  else if(hv){ btlXOff(hv); BTL.xhov = null; }
   if(!on) return;
   list.forEach(t => { const u = btlUnitEl(t); if(u) u.classList.add(t === cur ? 'tg-cur' : 'tg-ok'); });
 }
@@ -22783,10 +22791,21 @@ function btlMarkOff(c, now){
   u.querySelectorAll('.btl-x').forEach(x => { if(now){ x.remove(); return; } if(x.classList.contains('out')) return; x.classList.add('out'); setTimeout(() => x.remove(), 200); });
 }
 function btlMarksClear(){ if(BTL) BTL.el.querySelectorAll('.btl-x').forEach(x => x.remove()); }
+// croix « effet » (V0.04.57) : carte qui va être détruite par un module, un effet de carte, un coup critique, un camp ou l'autre (marques data-fx, non retirées par btlRenderMarks)
+function btlLethal(t, d){ return !!t && t.hp > 0 && d > 0 && d >= t.hp + Math.max(0, t.df); }
+function btlXOn(t){
+  const u = t && BTL && btlUnitEl(t); if(!u) return;
+  const ex = u.querySelector('.btl-x:not(.out)'); if(ex){ ex.dataset.fx = '1'; return; }
+  const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = t.uid; x.dataset.fx = '1'; x.innerHTML = BTL_X_HTML; u.appendChild(x);
+}
+function btlXOff(t){
+  const u = t && BTL && btlUnitEl(t); if(!u) return;
+  u.querySelectorAll('.btl-x[data-fx]:not(.out)').forEach(x => { x.classList.add('out'); setTimeout(() => x.remove(), 200); });
+}
 function btlRenderMarks(){
   if(!BTL || BTL.resolving || BTL.over) return;
   const dead = btlPredict();
-  BTL.el.querySelectorAll('.btl-unit .btl-x:not(.out)').forEach(x => { if(!dead.has(x.dataset.u)){ x.classList.add('out'); setTimeout(() => x.remove(), 200); } });
+  BTL.el.querySelectorAll('.btl-unit .btl-x:not(.out)').forEach(x => { if(!x.dataset.fx && !dead.has(x.dataset.u)){ x.classList.add('out'); setTimeout(() => x.remove(), 200); } });
   dead.forEach(uid => {
     const c = btlCardByUid(uid), u = c && btlUnitEl(c); if(!u) return;
     if(u.querySelector('.btl-x:not(.out)')) return;
@@ -22909,6 +22928,8 @@ async function btlDoAction(c, ov){
   const res = btlCalcDmg(c, t, ult ? (c.def.ultMult || 1.5) * 1.5 : 1);
   // riposte : la carte attaquée (hors chef d'escouade) frappe en retour avec son ATQ, en même temps
   const counter = (!t.leader || BTL_LEADER_COUNTER) ? btlCalcDmg(t, c, 1, true) : null;
+  if(btlLethal(t, res.dmg)) btlXOn(t);
+  if(counter && btlLethal(c, counter.dmg)) btlXOn(c);   // la croix s'affiche aussi sur un coup mortel imprévu (critique) ou une riposte fatale
   const before = t.hp / t.maxHp * 100, beforeC = c.hp / c.maxHp * 100;
   const dealt = Math.min(res.dmg, t.hp + t.df), taken = counter ? Math.min(counter.dmg, c.hp + c.df) : 0;
   const ap = btlApplyDmg(t, res.dmg), apc = counter ? btlApplyDmg(c, counter.dmg) : null;
@@ -23142,9 +23163,11 @@ function btlPickTarget(c, cands, opt){
       void u.offsetWidth; u.style.transition = 'transform .42s cubic-bezier(.3,.7,.25,1)'; u.style.transform = 'none';
       btlAfter(() => { u.classList.remove('tg-lev', 'tg-lev-out'); u.style.transition = ''; u.style.transform = ''; }, 480);
     });   // option levit : les cartes ciblables flottent dans un halo bleu
-    const end = t => { if(pk.done) return; pk.done = true; off(); if(BTL){ btlHighlight(cands, false); lev(false); if(!ai) BTL.pick = null; } res(t); };
+    const end = t => { if(pk.done) return; pk.done = true; off(); if(BTL){ if(BTL.xhov === t) BTL.xhov = null; BTL.xdmg = 0; btlHighlight(cands, false); cands.forEach(x => { if(!(x === t && btlLethal(x, xd))) btlXOff(x); }); lev(false); if(!ai) BTL.pick = null; } res(t); };
     pk.auto = () => end(btlRnd(cands)); pk.off = off;
     btlHighlight(cands, true);
+    const xd = (opt && opt.xdmg) || 0; BTL.xdmg = ai ? 0 : xd;
+    if(xd && !ai && !(opt && opt.arrow)) cands.filter(x => btlLethal(x, xd)).forEach(btlXOn);   // choix au toucher : croix sur toutes les cartes qui seraient détruites
     if(opt && opt.levit) lev(true);
     if(ai){
       (async () => {
@@ -23154,6 +23177,7 @@ function btlPickTarget(c, cands, opt){
           for(const t of order){
             if(pk.done || btlGone()) break;
             btlHighlight(cands, true, t); if(aim) aim(0, 0, t === ai, t);
+            if(t === ai && xd && btlLethal(ai, xd)) btlXOn(ai);   // l'adversaire verrouille sa cible : croix si elle va être détruite
             await btlSleep(t === ai ? 400 : 260);
           }
         }catch(e){}
@@ -23175,6 +23199,7 @@ function btlAIChoose(cands, mode, dmg){
 }
 async function btlChoose(c, cands, mode, dmg, opt){
   cands = cands.filter(t => t.hp > 0); if(!cands.length || btlGone()) return null;
+  if(mode === 'dmg') opt = Object.assign({ xdmg:dmg }, opt);
   if(c.side === 'p') return await btlPickTarget(c, cands, opt);
   const pick = btlAIChoose(cands, mode, dmg); if(!pick) return null;
   return await btlPickTarget(c, cands, Object.assign({}, opt, { ai:pick }));
@@ -23183,6 +23208,7 @@ async function btlChoose(c, cands, mode, dmg, opt){
 async function btlHit(src, t, dmg, opt){
   opt = opt || {};
   if(btlGone() || !t || t.hp <= 0 || dmg <= 0) return;
+  if(btlLethal(t, dmg)) btlXOn(t);   // effet / module mortel : croix avant le tir
   const ret = src ? btlReticle(t, 'fx') : null;
   if(ret) await btlSleep(300);
   if(src) await (opt.drill ? btlDrillDrop(t) : opt.ball ? btlBallDrop(t) : opt.missile ? btlMissileDrop(src, t) : opt.gun ? btlGunShot(src, t) : btlBeam(btlUnitRect(src), btlUnitRect(t), 'fx', !!opt.fast)).catch(e => { if(e === 'abort') throw e; });
@@ -23200,7 +23226,7 @@ async function btlHit(src, t, dmg, opt){
   if(t.hp <= 0){
     if(t.leader){ await btlFinish(btlOther(t.side)); return; }
     await btlDie(t);
-  } else btlPaint(t);
+  } else { btlXOff(t); btlPaint(t); }
 }
 async function btlFxHeal(src, t, amount, fast){
   if(btlGone() || !t || t.hp <= 0 || amount <= 0) return;
@@ -23993,6 +24019,7 @@ async function btlConqClash(a, b){   // un vent soulève deux cartes ennemies, e
     [ea, eb].forEach(e => { if(e){ e.style.transform = ''; e.style.zIndex = ''; } });
   }
   function applyDmg(){
+    if(btlLethal(b, res.dmg)) btlXOn(b); if(btlLethal(a, counter.dmg)) btlXOn(a);
     const dealt = Math.min(res.dmg, b.hp + b.df), taken = Math.min(counter.dmg, a.hp + a.df), ap = btlApplyDmg(b, res.dmg), apc = btlApplyDmg(a, counter.dmg);
     const rb = btlUnitRect(b), ra = btlUnitRect(a);   // rectangles actuels (les cartes sont encore en vol)
     const strong = res.crit, c1 = ap.hpLoss > 0 ? '#ff5a5a' : '#4ea8ff', c2 = apc.hpLoss > 0 ? '#ff5a5a' : '#4ea8ff';
@@ -24305,6 +24332,7 @@ async function btlToaTurret(c, t, dmg){
           if(p >= 1 && !q.done){ q.done = true;
             // impact : dégât appliqué à cet instant
             if(t.hp > 0){
+              if(btlLethal(t, q.tk)) btlXOn(t);
               const was = t.hp + t.df, ap = btlApplyDmg(t, q.tk); dealt += Math.min(q.tk, was);
               const uEl = btlUnitEl(t); if(uEl) btlSetStat(uEl, 's-hp', btlFmtN(t.hp));
               texts.push({ x:q.x1 + (Math.random() - .5) * 20, y:q.y1 - 6, t0:tm, txt:'-' + q.tk, c:ap.hpLoss > 0 ? '#ffae3c' : '#6bb6ff' }); if(texts.length > 16) texts.shift();
@@ -25264,6 +25292,7 @@ const BTL_MODULES = {
   },
   'ROCKET': {   // N dégâts à toutes les cartes du champ de bataille (les deux camps, chefs exclus)
     cands: s => btlField('p').concat(btlField('o')), mode:'none',
+    kills: (s, m) => btlField('p').concat(btlField('o')).filter(t => btlLethal(t, btlModVal(5, m.t))),
     run: async (s, _t, m) => {
       const n = btlModVal(5, m.t), src = btlModSrc(s);
       for(const t of btlField('p').concat(btlField('o'))){ if(btlGone()) return; await btlHit(src, t, n, { fast:true }); }
@@ -25299,6 +25328,7 @@ async function btlModuleUse(side, pre){
   const m = BTL.mod[side], def = BTL_MODULES[m.name], wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }
   BTL.fxBusy++;
+  let ks = [];
   try{
     let t = null;
     if(def.mode !== 'none'){
@@ -25308,9 +25338,11 @@ async function btlModuleUse(side, pre){
     }
     BTL.mana[side] -= btlModCost(m.t); BTL.modTurn[side] = BTL.turn; btlRenderMana(); btlRefreshCan();
     if(side === 'p') btlModFire();
+    if(def.kills){ ks = def.kills(side, m); ks.forEach(btlXOn); if(ks.length) await btlSleep(420); }   // croix sur chaque carte que le module va détruire
     await def.run(side, t, m);
     return true;
   } finally {
+    ks.forEach(x => btlXOff(x));
     if(BTL){
       BTL.fxBusy--;
       if(wasPlan && BTL.phase === 'fx' && !BTL.over){ BTL.phase = 'plan'; if(!BTL.timeUp) btlSetEnd(true); btlRefreshCan(); }
@@ -25359,27 +25391,32 @@ function btlModDown(ev){
   const def = BTL_MODULES[m.name], on = (t, f, o) => window.addEventListener(t, f, o), offl = (t, f, o) => window.removeEventListener(t, f, o);
   if(def.mode === 'none'){   // bouton : se lance au relâchement, doigt resté sur le bouton
     btn.classList.add('press');
+    const ks = def.kills ? def.kills('p', m) : []; ks.forEach(btlXOn);   // aperçu : croix sur les cartes que le module détruira
     const up = e => {
       offl('pointerup', up, true); offl('pointercancel', up, true); btn.classList.remove('press');
       const r = btlRect(btn);
-      if(e.type === 'pointerup' && e.clientX >= r.left - 10 && e.clientX <= r.right + 10 && e.clientY >= r.top - 10 && e.clientY <= r.bottom + 10) btlModuleUse('p');
+      if(e.type === 'pointerup' && e.clientX >= r.left - 10 && e.clientX <= r.right + 10 && e.clientY >= r.top - 10 && e.clientY <= r.bottom + 10){ btlModuleUse('p').then(ok => { if(!ok) ks.forEach(x => btlXOff(x)); }); }
+      else ks.forEach(x => btlXOff(x));
     };
     on('pointerup', up, true); on('pointercancel', up, true); return;
   }
   const cands = def.cands('p').filter(t => t.hp > 0), kind = btlModKind(def), ag = btlArrowNew(kind, { introMs:300, rate:26 });
   const st = BTL.modDrag = { sx:ev.clientX, sy:ev.clientY, x:ev.clientX, y:ev.clientY, off:ev.pointerType === 'touch' ? 22 : 0, moved:false, armed:false, over:null };
-  btn.classList.add('aim'); btlHighlight(cands, true);
+  btn.classList.add('aim'); BTL.xdmg = def.mode === 'dmg' ? btlModVal(5, m.t) : 0; btlHighlight(cands, true);
   const aim = () => {
     const r = btlRect(btn);
     if(st.over){ const n = btlArAnch(r, btlUnitRect(st.over), kind === 'def' ? 'def' : 'atk'); ag.go(n.x0, n.y0, n.x1, n.y1, { lock:true, rate:14, mk:n.mk, dir:n.dir }); return; }
     const cx = r.left + r.width / 2, up = st.y < r.top + r.height / 2, oy = up ? r.top : r.bottom;
     ag.go(cx, oy, st.x, st.y, { lock:false, rate:28, mk:Math.max(0, Math.min(1, Math.abs(st.y - oy) / 70)), dir:up ? -1 : 1 });
   };
-  const clean = () => {
+  const clean = keep => {
     offl('pointermove', move, { passive:false }); offl('pointerup', up, true); offl('pointercancel', cancel, true); offl('pointerdown', down, true);
-    ag.die(200); btlHighlight(cands, false); btn.classList.remove('aim'); BTL.modDrag = null;
+    if(keep && BTL.xhov === keep) BTL.xhov = null;
+    ag.die(200); BTL.xdmg = 0; btlHighlight(cands, false); btn.classList.remove('aim'); BTL.modDrag = null;
+    cands.forEach(x => { if(x !== keep || !btlLethal(x, kd)) btlXOff(x); });
   };
-  const finish = t => { clean(); btlModuleUse('p', t); };
+  const kd = def.mode === 'dmg' ? btlModVal(5, m.t) : 0;
+  const finish = t => { clean(t); btlModuleUse('p', t); };
   const cancel = () => { if(BTL && BTL.modDrag === st) clean(); };
   st.cancel = cancel;
   const move = e => {
@@ -25395,7 +25432,8 @@ function btlModDown(ev){
     const o = btlCardAt(cands, st.x, st.y, st.over);
     if(o){ finish(o); return; }
     if(st.moved || st.armed){ cancel(); return; }
-    st.armed = true; st.over = null; st.x = st.sx; st.y = st.sy - 90; aim();   // simple toucher : on attend qu'une carte soit touchée
+    st.armed = true; st.over = null; st.x = st.sx; st.y = st.sy - 90; aim();
+    if(kd) cands.filter(x => btlLethal(x, kd)).forEach(btlXOn);   // mode toucher : croix sur toutes les cartes qui seraient détruites   // simple toucher : on attend qu'une carte soit touchée
   };
   const down = e => {
     if(!st.armed) return;
