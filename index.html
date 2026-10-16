@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.50</title>
+<title>Projet MECA V0.04.52</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6938,8 +6938,9 @@
   .lg-layer::after{inset:0; border-radius:0; -webkit-mask:var(--lg-sil) center / 100% 100% no-repeat; mask:var(--lg-sil) center / 100% 100% no-repeat;}
   .lg-box{left:17%; right:16%;}
   .lg-st{width:auto; aspect-ratio:1; border-radius:50%; flex-direction:row;}
-  .lg-st.s-atk{left:var(--sx1); top:var(--sy1); width:var(--sd1); --gc:52,128,224; --gt:214,232,255;}
-  .lg-st.s-def{left:var(--sx2); top:var(--sy2); width:var(--sd2); --gc:46,168,112; --gt:208,246,226;}
+  .lg-st.s-atk{left:var(--sx1); top:var(--sy1); width:var(--sd1); --gc:150,156,168; --gt:8,10,14;}
+  .lg-st.s-atk b{text-shadow:0 .3cqw .4cqw rgba(255,255,255,.4);}
+  .lg-st.s-def{left:var(--sx2); top:var(--sy2); width:var(--sd2); --gc:52,128,224; --gt:214,232,255;}
   .lg-st.s-hp{left:var(--sx3); top:var(--sy3); width:var(--sd3); --gc:204,58,58; --gt:255,222,220;}
   /* verre fumé : fond sombre teinté, liseré de la couleur du stat, texture en fines hachures, reflet en biais */
   .lg-st::before{content:""; position:absolute; inset:0; z-index:1; border-radius:50%;
@@ -7165,6 +7166,55 @@
     box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
   }
   #batPanel .team-label{margin:0;}
+  /* Encadré WINSTREAK : même verre biseauté que CHOIX DU DECK, teinte or ; 5 points (vides -> jaunes à chaque victoire d'affilée) */
+  #batStreak{
+    --cut:14px; border-radius:0; padding:12px 12px 14px; gap:12px; margin-bottom:12px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(255,196,64,.42);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,184,48,.22), transparent 70%),
+      linear-gradient(180deg, #1d1810, #0e0b08);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(255,184,48,.45), 0 10px 24px rgba(0,0,0,.5);
+  }
+  #batStreak .team-label{margin:0;}
+  .bat-dots{position:relative; display:flex; justify-content:center; gap:16px; width:fit-content; margin:0 auto; padding:2px 0; --k:0;}
+  /* rail : fond sombre biseauté, remplissage or jusqu'au dernier point allumé */
+  .bat-dots::before, .bat-dots::after{content:''; position:absolute; left:22px; top:50%; height:4px; margin-top:-2px; z-index:0; border-radius:2px;}
+  .bat-dots::before{right:22px; background:linear-gradient(180deg,#050403,#1c160c); box-shadow:0 1px 0 rgba(255,220,140,.18), 0 -1px 0 rgba(0,0,0,.6) inset;}
+  .bat-dots::after{width:calc((100% - 44px) * var(--k)); background:linear-gradient(180deg,#fff0b0,#f0a820 55%,#a8650a); box-shadow:0 0 8px rgba(255,190,50,.8); transition:width .7s cubic-bezier(.3,.8,.3,1);}
+  /* chaque point : alvéole hexagonale à cadre métal doré, gemme taillée qui s'allume */
+  .bat-dots i{
+    --hx:polygon(25% 2%,75% 2%,100% 50%,75% 98%,25% 98%,0 50%);
+    position:relative; z-index:1; display:block; width:44px; height:48px; container-type:size;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.75));
+    transition:filter .45s;
+  }
+  .bat-dots i::before{content:''; position:absolute; inset:0; clip-path:var(--hx);
+    background:linear-gradient(155deg,#f6e4ae 0%,#a88a45 22%,#4a3a1b 50%,#2a210f 68%,#c9aa5e 100%);}
+  .bat-dots i::after{content:''; position:absolute; inset:3.5px; clip-path:var(--hx);
+    background:radial-gradient(ellipse 70% 60% at 50% 70%, #1f1a12 0%, #0b0907 100%);
+    box-shadow:0 5px 8px rgba(0,0,0,.95) inset;}
+  .bat-dots i b{position:absolute; inset:3.5px; z-index:1; clip-path:var(--hx); opacity:0; transform:scale(.6); transition:opacity .4s, transform .5s cubic-bezier(.3,1.4,.4,1);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,.12) 38%, transparent 50%),
+      conic-gradient(from 0deg at 50% 54%, rgba(255,255,255,.34) 0 7%, transparent 7% 24%, rgba(110,50,0,.3) 24% 34%, transparent 34% 57%, rgba(255,255,255,.26) 57% 65%, transparent 65% 82%, rgba(110,50,0,.34) 82% 92%, transparent 92%),
+      radial-gradient(circle at 50% 42%, #ffe784 0%, #ffbe28 52%, #c97500 100%);}
+  .bat-dots i b::after{content:''; position:absolute; top:-20%; bottom:-20%; width:34%; left:-60%; transform:skewX(-22deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent); animation:batGemShine 4.2s ease-in-out infinite; animation-delay:var(--d,0s);}
+  .bat-dots i:nth-child(2){--d:.5s;} .bat-dots i:nth-child(3){--d:1s;} .bat-dots i:nth-child(4){--d:1.5s;} .bat-dots i:nth-child(5){--d:2s;}
+  /* montant d'or gagné à cette victoire, gravé dans la gemme (n'apparaît que sur les points allumés) */
+  .bat-dots i b{display:flex; align-items:center; justify-content:center;}
+  .bat-dots i b::before{content:attr(data-g); position:relative; z-index:1; padding-top:1px;
+    font-family:'Rajdhani','Segoe UI',system-ui,sans-serif; font-weight:700; font-style:normal; font-size:31cqw; letter-spacing:.2px; white-space:nowrap; line-height:1;
+    background:linear-gradient(180deg,#4a2000 0%,#7d3f00 48%,#a85f0a 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 -1px 0 rgba(48,18,0,.8)) drop-shadow(0 1.2px 0 rgba(255,246,196,.95)) drop-shadow(0 0 1.5px rgba(255,220,120,.5));}
+  .bat-dots i:nth-child(n+4) b::before{font-size:25cqw; letter-spacing:0;}
+  .bat-dots i.on{filter:drop-shadow(0 0 8px rgba(255,186,40,.9)) drop-shadow(0 3px 3px rgba(0,0,0,.6));}
+  .bat-dots i.on b{opacity:1; transform:none;}
+  .bat-dots i.pop{animation:batDotPop .85s cubic-bezier(.2,.9,.3,1.1);}
+  @keyframes batGemShine{0%,62%{left:-60%;}100%{left:130%;}}
+  @keyframes batDotPop{0%{transform:scale(.7); filter:brightness(2.4) drop-shadow(0 0 0 rgba(255,210,80,0));}40%{transform:scale(1.3); filter:brightness(1.7) drop-shadow(0 0 26px rgba(255,210,80,1));}100%{transform:scale(1); filter:brightness(1) drop-shadow(0 0 8px rgba(255,186,40,.9));}}
   #batailleList{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; padding:4px 0 2px;}
   #batailleList .deck-tile{transition:transform .15s;}
   #batailleList .deck-tile:active{transform:scale(.97);}
@@ -8462,6 +8512,10 @@
   </div>
 
   <div id="batailleView" class="sub-view">
+    <div class="res-panel" id="batStreak">
+      <div class="team-label player">WINSTREAK</div>
+      <div class="bat-dots" id="batDots" aria-label="Série de victoires"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    </div>
     <div class="res-panel" id="batPanel">
       <div class="team-label player">CHOIX DU DECK</div>
       <div id="batailleList"></div>
@@ -8765,7 +8819,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.50</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.52</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9189,9 +9243,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.50';
+var BUILD_VERSION = 'V0.04.52';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.52', items:[
+    'CARTES : les grandes cartes reprennent les couleurs des petites : ATQ en gris, DEF en bleu, PV en rouge.',
+    'TAUX DE DROP : TIRAGE et boosters cartes mechs : rare 75 %, épique 15 %, légendaire 5 %, écarlate 4 %, holographique 1 %. LABO et boosters modules : rare 85 %, épique 10 %, légendaire 5 %. Les boosters gardent au moins une carte ou un module épique dans le dernier emplacement.',
+  ] },
+  { v:'V0.04.51', items:[
+    'BATAILLE : nouvel encadré WINSTREAK au-dessus du choix du deck. 5 points (gemmes dorées) qui s\'allument à chaque victoire d\'affilée, avec le montant d\'or gagné gravé dedans. Une défaite (ou un combat quitté) remet la série à 0.',
+    'BATAILLE : les victoires rapportent maintenant de l\'or et de l\'XP, en hausse à chaque victoire d\'affilée : 25, 50, 75, 100 puis 125 or (XP : 15, 30, 45, 60 puis 75). La série pleine reste à 125 or par victoire.',
+  ] },
   { v:'V0.04.50', items:[
     'MENU : les cases ORDRE DE MISSION et BATAILLE sont inversées (BATAILLE en haut à droite, ORDRE DE MISSION dans la grande case du milieu, mêmes découpes). La case BATAILLE reprend l\'icône de l\'ordre de mission.',
     'La mission DOME est retirée du jeu (case supprimée de l\'ORDRE DE MISSION, OMEGA passe en pleine largeur). Le code est sauvegardé pour pouvoir la réinjecter plus tard.',
@@ -11212,7 +11274,8 @@ function rarTag(r, extraCls){
 }
 // V0.04.49 : tirage des CARTES (rareté unique) -- la rareté est tirée d'abord, puis une carte de cette rareté.
 // (rollRarity() reste utilisée telle quelle par les modules.)
-const CARD_DRAW_W = { rare:48, epique:30, legendaire:15, ecarlate:6.5, holo:0.5 };
+const CARD_DRAW_W = { rare:75, epique:15, legendaire:5, ecarlate:4, holo:1 };   // TIRAGE + booster CARTES MECHS (somme = 100 %)
+const MOD_DRAW_W = { rare:85, epique:10, legendaire:5 };                          // LABO + booster CARTES MODULES (somme = 100 %)
 function rollCardRarity(){
   const ks = Object.keys(CARD_DRAW_W); let t = 0; ks.forEach(k => { t += CARD_DRAW_W[k]; });
   let r = Math.random() * t;
@@ -11513,6 +11576,7 @@ function normalizePlayerExtras(){
   player.stats = Object.assign(defaultStats(), player.stats || {});
   player.troph = { r: Object.assign({}, (player.troph && player.troph.r) || {}), c: Object.assign({}, (player.troph && player.troph.c) || {}) };
   player.daily = Object.assign({ day:0, last:'', total:0, cycle:0 }, player.daily || {});
+  player.winStreak = Math.max(0, Math.min(5, Math.floor(player.winStreak || 0)));   // série de victoires BATAILLE
   // Boosters (V0.02.84) : inventaire par type -- Object.assign comble les champs manquants sur une
   // sauvegarde antérieure à cette version (0 chacun depuis V0.02.94, cf player.boosters plus haut --
   // une sauvegarde qui a DÉJÀ un champ boosters garde son propre compte, rien n'est réinitialisé ici :
@@ -12052,9 +12116,9 @@ function moduleLevelCap(rar){ return MODULE_LEVEL_CAP[rar] || MODULE_LEVEL_CAP.l
 // légendaire). Les éventuels modules écarlates déjà obtenus sont ramenés en légendaire au chargement
 // (cf migrateModulesNoEcarlate()).
 function modRollRarity(){
-  let r = rollRarity();
-  if(r === 'ecarlate' || r === 'holo') r = 'legendaire';
-  return r;
+  let r = Math.random() * 100;
+  for(const k of ['rare', 'epique', 'legendaire']){ r -= MOD_DRAW_W[k]; if(r < 0) return k; }
+  return 'rare';
 }
 function modFusionNeed(rar){ return rar === 'legendaire' ? 0 : (FUSION_NEED[rar] || 0); }
 // Coût d'amélioration, maintenant payé dans les matériaux de la RARETÉ COURANTE `rar` (celle affichée,
@@ -16752,19 +16816,12 @@ function openBoostCards(){
 // Équivalent pour un Booster CARTES MODULES : même principe, pool MODULE_DEFS, pas de holo (aucun
 // module n'atteint ce palier, comme pour LABO).
 function openBoostModules(){
-  const picks = [];
-  const usedNames = [];
-  let hasLeg = Math.random() < BOOST_LEG_CHANCE;
+  // taux = ceux du LABO (MOD_DRAW_W) ; dernier emplacement : au moins épique si rien de mieux n'est sorti
+  const picks = [], usedNames = [];
   let gotHighTier = false;
-  for(let i=0; i<5; i++){
-    if(hasLeg){
-      let pool = MODULE_DEFS.filter(d => !usedNames.includes(d.name));
-      if(pool.length === 0) pool = MODULE_DEFS;
-      const d = shuffled(pool)[0];
-      picks.push({ def:d, rar:'legendaire' }); usedNames.push(d.name); hasLeg = false; gotHighTier = true;
-      continue;
-    }
-    let rar = (i === 4 && !gotHighTier) ? 'epique' : rollBoostCommonRarity();
+  for(let i = 0; i < 5; i++){
+    let rar = modRollRarity();
+    if(i === 4 && !gotHighTier && rar === 'rare') rar = 'epique';
     if(rar !== 'rare') gotHighTier = true;
     let pool = MODULE_DEFS.filter(d => !usedNames.includes(d.name));
     if(pool.length === 0) pool = MODULE_DEFS;
@@ -20613,6 +20670,28 @@ document.getElementById('tileRewards').onclick = () => { checkTrophies(true); up
 document.getElementById('rwBackBtn').onclick = showHub;
 // ---------- BATAILLE (V0.04.18) : choix du deck avant le combat ----------
 var batSelected = null;
+// WINSTREAK : chaque victoire d'affilée allume un point (5 max) ; une défaite (ou un combat quitté) remet à 0.
+// Récompense : 25 or + 15 XP à la 1re victoire, puis +25 or / +15 XP de plus à chaque victoire suivante (50, 75, 100, 125 or ; la série pleine reste à 125).
+const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25, BAT_WIN_XP = 15;
+var batStreakShown = -1;
+function batStreakResolve(won){
+  if(!won){ player.winStreak = 0; saveSoon(); return null; }   // l'affichage est rafraîchi par renderBataille() à la sortie du combat
+  const n = Math.min(BAT_STREAK_MAX, (player.winStreak || 0) + 1);
+  player.winStreak = n;
+  const items = grantReward({ gold: BAT_WIN_GOLD * n, xp: BAT_WIN_XP * n });   // 25 + 25 x (n-1) or ; XP au même rythme
+  return { n, items };
+}
+function batRenderStreak(){
+  const dots = document.querySelectorAll('#batDots i'), n = player.winStreak || 0;
+  const box = document.getElementById('batDots'); if(box) box.style.setProperty('--k', Math.max(0, n - 1) / (BAT_STREAK_MAX - 1));
+  dots.forEach((d, i) => {
+    d.classList.toggle('on', i < n);
+    if(d.firstChild) d.firstChild.dataset.g = '+' + BAT_WIN_GOLD * (i + 1);
+    d.classList.remove('pop');
+    if(batStreakShown >= 0 && n > batStreakShown && i === n - 1){ void d.offsetWidth; d.classList.add('pop'); }
+  });
+  batStreakShown = n;
+}
 // Le bouton est dans <body> (pas dans la vue) : un ancêtre transformé de la vue casserait son position:fixed.
 (function(){
   const b = document.createElement('button'); b.type = 'button'; b.className = 'bat-launch'; b.id = 'batLaunchBtn'; b.hidden = true; b.textContent = 'LANCER LE COMBAT';
@@ -20632,6 +20711,7 @@ function renderBataille(){
     return `<div class="deck-tile${batSelected === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('') : '<div class="bat-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
+  batRenderStreak();
   batSyncLaunch();
 }
 document.getElementById('tileBattle').onclick = () => { batSelected = null; renderBataille(); openSub('batailleView'); };
@@ -21592,6 +21672,7 @@ function btlStart(d){
 }
 function btlExit(){
   if(!BTL) return;
+  if(!BTL.over && typeof batStreakResolve === 'function') batStreakResolve(false);   // combat quitté avant la fin = défaite : la série retombe à 0
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
   window.removeEventListener('resize', BTL.onResize);
   BTL.el.remove(); BTL = null;
@@ -22717,7 +22798,8 @@ async function btlFinish(winner){
   const rm = document.getElementById('rewardModal');
   const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
-  showRewardModal('', [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:my.artExt, artPosY:defiResultArtPosY(my.name), actionLabel:'CONTINUER' });
+  const wr = (typeof batStreakResolve === 'function') ? batStreakResolve(winner === 'p') : null;   // série de victoires : récompense (victoire) ou remise à zéro (défaite)
+  showRewardModal('', (wr && wr.items) || [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:my.artExt, artPosY:defiResultArtPosY(my.name), actionLabel:'CONTINUER' });
 }
 
 // =====================================================================================================
