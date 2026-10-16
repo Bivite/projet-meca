@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.54</title>
+<title>Projet MECA V0.04.55</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3436,7 +3436,6 @@
     background:linear-gradient(180deg, rgba(255,255,255,.05), transparent); transition:color .2s, background .2s;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut)); }
   #deckView .deck-switch button.on{color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.34) 0%, transparent 42%), linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);}
-  #deckView.deck-tab-mod .deck-tools{display:none;}
   #deckLeft .deck-mod-grid{grid-template-columns:1fr; gap:10px; padding:4px 0 10px;}
   .deck-mod-grid .mod-card.deck-mod-sel{box-shadow:0 0 0 2px #ffd978, 0 0 16px rgba(255,200,74,.55); border-radius:6px;}
   .deck-mod-slot{flex:none; margin:6px 0 0;}
@@ -6173,6 +6172,11 @@
     font-size:clamp(6px, 1.8vw, 9px); color:var(--text-dim);
   }
   .mod-big .mod-lvl-label{font-size:clamp(8px, 2.6vw, 12px);}
+  /* Texte d'effet dans l'encadré sous le nom (grande carte de la fiche module) */
+  .mod-fx{position:absolute; left:4.7%; right:5%; top:78%; height:12%; display:flex; align-items:center; justify-content:center; padding:0 3.5%; box-sizing:border-box; pointer-events:none;}
+  .mod-fx-in{font-family:var(--font-ui); font-size:clamp(7.5px, 2.5vw, 10.2px); line-height:1.12; text-align:center; color:#c9d3e6; text-shadow:0 1px 2px rgba(0,0,0,.9);}
+  .mod-fx-in b{color:#fff;}
+  .mod-fx-in .mana-pt{filter:drop-shadow(0 0 2px rgba(76,194,255,.9));}
   .mod-lvl-num-box{height:90%; aspect-ratio:1; display:block;}
   .mod-lvl-num-svg{width:100%; height:100%; display:block; overflow:visible;}
   .mod-lvl-num-text{font-family:var(--font-title); font-weight:900; font-size:42px; stroke-width:1.1px; paint-order:stroke fill;}
@@ -6193,6 +6197,9 @@
      upgrader)") est retirée, sans remplacement dans cette fiche. */
   .mod-desc{font-size:13px; line-height:1.5; color:var(--text-dim); text-align:center; padding:0 6px;}
   .mod-desc b{color:#fff;}
+  /* point de mana (losange bleu, comme les jauges de mana du combat) */
+  .mana-pt{display:inline-block; width:.62em; height:.78em; margin:0 .05em 0 .18em; vertical-align:-.1em; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    background:conic-gradient(#d6f6ff 0 25%, #79d2ff 25% 50%, #2f7fe6 50% 75%, #5cc0ff 75%); filter:drop-shadow(0 0 3px rgba(76,194,255,.9));}
   .mod-action-card{width:40%; max-width:150px;}
   /* Prévisualisation de la valeur au niveau visé, tant que le panneau de montée de niveau est ouvert
      (V0.02.36l, demande d'Alex) -- même vert que les gains de stats ailleurs (.st-plus, .lp-st em). */
@@ -8859,7 +8866,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.54</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.55</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9284,9 +9291,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.54';
+var BUILD_VERSION = 'V0.04.55';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.55', items:[
+    'DECK, onglet MODULES : encadré RECHERCHER et bouton FILTRES (classement par rareté ou A-Z) comme pour les cartes.',
+    'MODULES : le coût s\'écrit maintenant « 3 » suivi d\'un point de mana au lieu de « Dépense 3 Mana ».',
+    'MODULES : sur la fiche d\'un module, le texte de l\'effet est écrit dans l\'encadré sous le nom de la carte.',
+  ] },
   { v:'V0.04.54', items:[
     'DECK : nouvel encadré pleine largeur CARTES / MODULES pour basculer entre la liste des cartes classiques et celle des modules.',
     'CRÉATION DE DECK : une fois les 20 cartes choisies, la liste bascule automatiquement sur les modules ; touche-en un pour en faire le module du deck (touche-le à nouveau pour le retirer). Il apparaît tout en haut de la colonne de droite, au-dessus du compteur.',
@@ -11885,7 +11897,7 @@ const MODULE_DEFS = [
     // hi (V0.02.36l, demande d'Alex) : quand le panneau de montée de niveau est ouvert, la valeur
     // affichée directement dans le texte passe en vert pour prévisualiser le changement -- au lieu du
     // <b> blanc normal (mod-desc b{color:#fff}), voir renderModuleLevelPanel()/toggleModuleLevelPanel().
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, déclenche le <b>Baroud d'honneur</b> d'une carte ciblée.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, déclenche le <b>Baroud d'honneur</b> d'une carte ciblée.`; },
     valueLabel(v){ return '-' + v.toFixed(1) + '% DEF'; }
   },
   {
@@ -11895,7 +11907,7 @@ const MODULE_DEFS = [
     // +0.1% au Nv.1, jusqu'à +50% au Nv.250 (niveau max légendaire, cf MODULE_LEVEL_CAP) -- valueStep
     // dérivé de ces deux points d'ancrage ((50 - 0.1) / (250 - 1)) plutôt qu'un pas rond comme PROK-IEM.
     baseValue: 0.1, valueStep: 49.9 / 249,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, inflige <b>1 point d'attaque</b> à une carte ciblée.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, inflige <b>1 point d'attaque</b> à une carte ciblée.`; },
     valueLabel(v){ return '+' + v.toFixed(1) + '% ATQ'; }
   },
   {
@@ -11907,7 +11919,7 @@ const MODULE_DEFS = [
     // l'escouade adverse au Nv.250 (niveau max légendaire) -- valueStep = (50 - 0.2) / (250 - 1) = 0.2
     // pile. Le nombre de cibles touchées grandit en parallèle avec la valeur, cf az5TargetCount(v).
     baseValue: 0.2, valueStep: 0.2,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, donne <b>TANK</b> à une carte ciblée.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, donne <b>TANK</b> à une carte ciblée.`; },
     valueLabel(v){ return v.toFixed(1) + '% DÉGÂTS'; }
   },
   {
@@ -11919,7 +11931,7 @@ const MODULE_DEFS = [
     // max légendaire) -- valueStep dérivé de ces deux points d'ancrage ((75 - 0.1) / (250 - 1)), nombre
     // de cibles cf protoShieldTargetCount(v).
     baseValue: 0.1, valueStep: 74.9 / 249,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, ajoute la <b>défense</b> d'une carte alliée ciblée au chef d'escouade.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, ajoute la <b>défense</b> d'une carte alliée ciblée au chef d'escouade.`; },
     valueLabel(v){ return '+' + v.toFixed(1) + '% DEF'; }
   },
   {
@@ -11930,7 +11942,7 @@ const MODULE_DEFS = [
     // max légendaire) -- valueStep dérivé de ces deux points d'ancrage ((40 - 0.1) / (250 - 1)). Une
     // seule cible, à tous les niveaux (pas de montée en nombre de cibles comme AZ-5/PROTO-SHIELD).
     baseValue: 0.1, valueStep: 39.9 / 249,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, inflige <b>1 point d'attaque</b> à toutes les cartes sur le champ de bataille.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, inflige <b>1 point d'attaque</b> à toutes les cartes sur le champ de bataille.`; },
     valueLabel(v){ return '+' + v.toFixed(1) + '% ATQ'; }
   },
   {
@@ -11944,7 +11956,7 @@ const MODULE_DEFS = [
     // seule fois par vague, cf triggerSaphyrEffect()/saphyrTriggered), pas sur la chute de l'escouade du
     // joueur comme PROK-IEM/AZ-5 -- câblé dans dealDamage()/tickBurns() plutôt que dans respawnTick().
     baseValue: 0.1, valueStep: 49.9 / 249,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, <b>pioche</b> une carte.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, <b>pioche</b> une carte.`; },
     valueLabel(v){ return v.toFixed(1) + '% DÉGÂTS'; }
   },
   {
@@ -11959,7 +11971,7 @@ const MODULE_DEFS = [
     // est déclenché par un évènement de combat (comme PROK-IEM/AZ-5/SAPHYR) -- câblé dans dealDamage()/
     // tickBurns() (chute du 1er joueur), cf triggerTArmsEffect().
     baseValue: 0.1, valueStep: 49.9 / 249,
-    descFor(v, hi){ return `Dépense <b>3 Mana</b>, soigne <b>1 PV</b> à une carte ciblée.`; },
+    descFor(v, hi){ return `<b>3</b><i class="mana-pt"></i>, soigne <b>1 PV</b> à une carte ciblée.`; },
     valueLabel(v){ return '+' + v.toFixed(1) + '% DEF'; }
   }
 ];
@@ -12380,7 +12392,7 @@ function modLvlSvg(level, rarity){
 // Niveau affiché centré dans l'encadré vide du bas du cadre (V0.02.36h, demande d'Alex + référence
 // envoyée : "NV." en petit + le chiffre en grand, centrés) -- remplace l'étiquette .mod-lvl-tag qui
 // était affichée sous la carte (retirée de .mod-meta, ne reste que le tag bonus/malus).
-function modCardFaceHtml(def, level, rar){
+function modCardFaceHtml(def, level, rar, opts){
   // `rar` = rareté effective (V0.02.45) ; défaut sur def.rarity (compat. appels existants).
   rar = rar || def.rarity;
   // Artwork de module (V0.02.59, demande d'Alex) : même principe que `def.art` sur les cartes
@@ -12395,7 +12407,7 @@ function modCardFaceHtml(def, level, rar){
   // l'icône "image cassée" du navigateur (repli visuel discret sur .mod-window, qui n'a lui-même aucun
   // style propre -- le cadre .mod-face-front reste visible derrière).
   const winContent = def.art ? `<img class="mod-art-img" src="${def.art}" alt="" onerror="this.style.opacity='0'">` : moduleEffIcon(def.kind);
-  return `<div class="mod-face mod-face-front"></div><div class="mod-window">${winContent}</div><div class="mod-name">${modNameSvg(def, rar)}</div><div class="mod-lvl-box"><span class="mod-lvl-label">NV.</span><div class="mod-lvl-num-box">${modLvlSvg(level, rar)}</div></div>`;
+  return `<div class="mod-face mod-face-front"></div><div class="mod-window">${winContent}</div><div class="mod-name">${modNameSvg(def, rar)}</div>${opts && opts.fx ? `<div class="mod-fx"><div class="mod-fx-in">${def.descFor(0)}</div></div>` : `<div class="mod-lvl-box"><span class="mod-lvl-label">NV.</span><div class="mod-lvl-num-box">${modLvlSvg(level, rar)}</div></div>`}`;
 }
 // Mode UPGRADE de l'écran MODULES (V0.02.46, demande d'Alex) : bouton sous l'encadré MATÉRIAUX, qui
 // passe en "QUITTER" + rouge une fois actif. Depuis V0.02.49 (demande d'Alex : pas de bouton UPGRADE
@@ -12572,9 +12584,9 @@ function openModuleModal(name, rar, level, opts){
   // tuile elle-même (cf renderModulesGrid()/.cx-copy-badge), pas le total toutes raretés/niveaux confondus.
   const nAtLevel = (modLevelDist(name, rar)[level] || 0);
   inner.innerHTML = `
-    <div class="mod-big">${modCardFaceHtml(def, level, rar)}</div>
+    <div class="mod-big">${modCardFaceHtml(def, level, rar, { fx:true })}</div>
     ${nAtLevel > 1 ? `<div class="cx-lvl-tag-big">×${nAtLevel} exemplaires</div>` : ''}
-    <div class="mod-desc" id="modDescText">${def.descFor(val)}</div>
+    <div class="mod-desc" id="modDescText" hidden>${def.descFor(val)}</div>
     
   `;
   const lvlBtn = document.getElementById('modLvlOpenBtn');
@@ -18202,6 +18214,7 @@ document.getElementById('codexMgmtBackBtn').onclick = showCodexHub;
 var decks = [];              // [{ id, name, cards:[ "NOM|rareté", ... ] }]
 var deckDraft = null;        // { id|null, name, cards:[] }
 var deckFilter = 'all', deckSort = 'group', deckSearchQuery = '';
+var deckModSort = 'rarity';   // classement des modules : 'rarity' ou 'az'
 var deckTab = 'cards';   // V0.04.54 : liste affichée dans l'écran DECK : 'cards' (cartes classiques) ou 'modules'
 var deckDestroyMode = false;   // V0.04.48 : bouton DÉTRUIRE de l'écran DECK (même fenêtre que GESTION DE CARTE)
 const DECK_SIZE = 20;
@@ -18343,7 +18356,7 @@ function deckAddCard(key){
   if(msg){ showToast(msg); return false; }
   deckDraft.cards.push(key);
   const toMod = deckDraft.cards.length === DECK_SIZE && modOwnedStacks().length > 0;   // 20 cartes : on passe à la liste des modules
-  if(toMod) deckTab = 'modules';
+  if(toMod){ deckTab = 'modules'; deckResetSearch(); }
   renderDeckView();
   if(toMod) showToast(deckDraft.module ? 'CHOISIS TON CHEF D’ESCOUADE : TOUCHE UNE CARTE' : 'CHOISIS LE MODULE DU DECK');
   else if(deckDraft.cards.length === DECK_SIZE && !deckDraft.leader) showToast('CHOISIS TON CHEF D’ESCOUADE : TOUCHE UNE CARTE');
@@ -18401,6 +18414,13 @@ function renderDeckPanel(){
 }
 function escDeckHtml(s){ return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
 function renderDeckFilter(){
+  if(deckTab === 'modules'){
+    const M = [['rarity','PAR RARETÉ'],['az','A – Z']];
+    document.getElementById('deckFilterBody').innerHTML = `<div class="sort-title">CLASSEMENT</div>
+      <div class="filter-options sort-options">${M.map(([k, l]) => `<button type="button" class="sort-opt ${deckModSort === k ? 'active' : ''}" data-dkms="${k}">${l}</button>`).join('')}</div>`;
+    document.querySelectorAll('#deckFilterBody [data-dkms]').forEach(b => { b.onclick = () => { deckModSort = b.dataset.dkms; document.getElementById('deckFilterDetails').open = false; renderDeckView(); }; });
+    return;
+  }
   const S = [['group','PAR GROUPE'],['rarity','PAR RARETÉ']];
   document.getElementById('deckFilterBody').innerHTML = `
     <div class="sort-title">GROUPE</div>
@@ -18453,7 +18473,7 @@ function renderDeckWork(){
       grid.appendChild(card);
     });
   } else if(!deckDraft && deckTab === 'modules'){
-    work.innerHTML = '<div class="mod-grid" id="deckList">' + (modOwnedStacks().map(e => deckModTile(e, false)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">Aucun module possédé.</div>') + '</div>';
+    work.innerHTML = '<div class="mod-grid" id="deckList">' + (deckModStacks().map(e => deckModTile(e, false)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">' + (deckSearchQuery ? 'Aucun module trouvé.' : 'Aucun module possédé.') + '</div>') + '</div>';
     work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openModuleModal(c.dataset.name, c.dataset.rar, parseInt(c.dataset.level, 10)); });
   } else if(!deckDraft){
     work.innerHTML = `<div class="codex-grid" id="deckList">${stacks.map(st => `<div class="codex-card ${rarCls(st.rar)}" data-key="${sqKey(st.def.name, st.rar)}">${deckTileHtml(st, stackCount(st.def.name, st.rar))}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>'}</div>`;
@@ -18493,7 +18513,7 @@ function renderDeckWork(){
     });
     const lf = document.getElementById('deckLeft');
     lf.querySelectorAll('.mod-card').forEach(c => c.addEventListener('click', () => { if(Date.now() - (lf._scrolledAt || 0) < 350) return; deckPickModule(c.dataset.name, c.dataset.rar); }));
-    document.getElementById('deckModSlot').addEventListener('click', () => { if(deckTab !== 'modules'){ deckTab = 'modules'; renderDeckView(); } });
+    document.getElementById('deckModSlot').addEventListener('click', () => { if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); } });
     const col = document.getElementById('deckRight');
     deckColumnScroll(col);
     deckColumnScroll(lf, true);
@@ -18539,15 +18559,21 @@ function deckRenderSwitch(){
   sw.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === deckTab));
   document.getElementById('deckView').classList.toggle('deck-tab-mod', deckTab === 'modules' && !deckDestroyMode);
 }
-document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => { if(deckTab === b.dataset.t) return; deckTab = b.dataset.t; closeDeckPile(true); renderDeckView(); });
+document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => { if(deckTab === b.dataset.t) return; deckTab = b.dataset.t; closeDeckPile(true); const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value){ si.value = ''; si.dispatchEvent(new Event('input', { bubbles:true })); } document.getElementById('deckFilterDetails').open = false; renderDeckView(); });
 // --- Liste des modules (V0.04.54) ---
 function deckModTile(e, sel){
   const lvl = moduleLevel(e.def.name, e.rar);
   return `<div class="mod-item"><div class="mod-card ${rarCls(e.rar)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, e.rar)}</div></div>`;
 }
+function deckResetSearch(){ const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value) si.value = ''; const sc = document.querySelector('#deckView .search-clear'); if(sc) sc.hidden = true; }
+function deckModStacks(){
+  const q = deckSearchQuery, r = e => tierOf(e.rar);
+  const list = modOwnedStacks().filter(e => !q || e.def.name.toLowerCase().includes(q));
+  return list.sort(deckModSort === 'az' ? (a, b) => a.def.name.localeCompare(b.def.name) || r(b) - r(a) : (a, b) => r(b) - r(a) || a.def.name.localeCompare(b.def.name));
+}
 function deckModListHtml(){
   const cur = deckDraft && deckDraft.module;
-  return modOwnedStacks().map(e => deckModTile(e, cur && cur.name === e.def.name && cur.rar === e.rar)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">Aucun module possédé.</div>';
+  return deckModStacks().map(e => deckModTile(e, cur && cur.name === e.def.name && cur.rar === e.rar)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">' + (deckSearchQuery ? 'Aucun module trouvé.' : 'Aucun module possédé.') + '</div>';
 }
 function deckModSlotHtml(){
   const m = deckDraft && deckDraft.module, def = m && MODULE_DEFS.find(d => d.name === m.name);
