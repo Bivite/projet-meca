@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.48</title>
+<title>Projet MECA V0.04.49</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7064,9 +7064,11 @@
   .lg-st::after{content:""; position:absolute; inset:0; z-index:2; border-radius:50%; pointer-events:none; mix-blend-mode:screen;
     background:linear-gradient(112deg, rgba(255,255,255,0) 14%, rgba(255,255,255,.46) 30%, rgba(255,255,255,.08) 44%, rgba(255,255,255,0) 52%),
                radial-gradient(70% 38% at 50% 10%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%);}
-  .lg-st b{position:relative; z-index:3; font-size:7.4cqw; font-weight:800; color:rgb(var(--gt)); -webkit-text-stroke:0; paint-order:normal; animation:none;
+  .lg-st b{position:relative; z-index:3; font-size:9.8cqw; font-weight:800; color:rgb(var(--gt)); -webkit-text-stroke:0; paint-order:normal; animation:none;
     text-shadow:0 .4cqw .7cqw rgba(0,0,0,.9); font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .lg-st b.l4{font-size:5.8cqw;} .lg-st b.l5{font-size:4.8cqw;}
+  #fuseToggle, #defuseToggle, #modUpgradeToggle{display:none !important;}
+  .codex-tools:has(#modUpgradeToggle){grid-template-columns:1fr;}
+  .lg-st b.l2{font-size:8.2cqw;} .lg-st b.l4{font-size:5.8cqw;} .lg-st b.l5{font-size:4.8cqw;}
   .lg-st b .st-plus{position:absolute; left:50%; top:92%; transform:translateX(-50%); font-size:.5em; line-height:1; white-space:nowrap;}
   @keyframes holoFlick{0%, 93%, 100%{opacity:1;} 94%{opacity:.55;} 96%{opacity:.9;} 97%{opacity:.4;}}
   /* ----- Prévisualisation de la carte légendaire ----- */
@@ -7840,6 +7842,11 @@
   @keyframes btlLevCur{ 0%,100%{ transform:translateY(-6px) scale(1.07); } 50%{ transform:translateY(-12px) scale(1.07); } }
   @keyframes btlLevHalo{ 0%,100%{ opacity:.72; transform:scale(.94); } 50%{ opacity:1; transform:scale(1.06); } }
   @keyframes btlLevSh{ 0%,100%{ opacity:.9; transform:scale(1); } 50%{ opacity:.5; transform:scale(.8); } }
+  .btl-x{ position:absolute; left:50%; top:50%; width:78%; aspect-ratio:1; display:block; transform:translate(-50%,-50%); pointer-events:none; z-index:7; animation:btlXIn .3s cubic-bezier(.2,.9,.3,1.2) both; }
+  .btl-x svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .btl-x.out{ animation:btlXOut .18s ease-in forwards; }
+  @keyframes btlXIn{ 0%{ transform:translate(-50%,-50%) scale(1.9); opacity:0; } 60%{ transform:translate(-50%,-50%) scale(.9); opacity:1; } 100%{ transform:translate(-50%,-50%) scale(1); opacity:1; } }
+  @keyframes btlXOut{ to{ transform:translate(-50%,-50%) scale(.6); opacity:0; } }
   .btl-unit.planned-heal::after{ content:""; position:absolute; inset:-3px; border-radius:8px; pointer-events:none; box-shadow:0 0 10px 2px rgba(255,210,74,.85); animation:btlPulse 1.2s ease-in-out infinite; }
   @keyframes btlPulse{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
 
@@ -8096,9 +8103,10 @@
     background:linear-gradient(112deg, rgba(255,255,255,0) 14%, rgba(255,255,255,.46) 30%, rgba(255,255,255,.08) 44%, rgba(255,255,255,0) 52%),
                linear-gradient(180deg, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 9%);
     mix-blend-mode:screen; }
-  .btl .unit.cbt .cbt-st b{ position:relative; z-index:3; font-family:var(--font-title); font-weight:800; font-size:6.4cqw; line-height:1; letter-spacing:0; color:rgb(var(--t));
+  .btl .unit.cbt .cbt-st b{ position:relative; z-index:3; font-family:var(--font-title); font-weight:800; font-size:8.6cqw; line-height:1; letter-spacing:0; color:rgb(var(--t));
     text-shadow:0 .3cqw .5cqw rgba(0,0,0,.9); font-variant-numeric:tabular-nums; white-space:nowrap; transform:translateY(2.1cqw); }
   .btl .unit.cbt .cbt-st b.dash{ transform:none; }
+  .btl .unit.cbt .cbt-st b.l2{ font-size:7.4cqw; }
   .btl .unit.cbt .cbt-st b.l4{ font-size:4.9cqw; }
   .btl .unit.cbt .s-atk{ --c:150,156,168; --t:8,10,14; }
   .btl .unit.cbt .s-atk b{ text-shadow:0 .25cqw .3cqw rgba(255,255,255,.4); }
@@ -8883,7 +8891,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.48</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.49</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9115,10 +9123,10 @@
       </details>
       <div class="codex-tools">
         <button type="button" class="codex-tool-btn destroy" id="destroyToggle">DÉTRUIRE</button>
-        <button type="button" class="codex-tool-btn defuse" id="defuseToggle">DOWNGRADE</button>
+        <button type="button" class="codex-tool-btn defuse" id="defuseToggle" hidden>DOWNGRADE</button>
       </div>
       <div class="codex-tools">
-        <button type="button" class="codex-fuse-btn" id="fuseToggle">UPGRADE</button>
+        <button type="button" class="codex-fuse-btn" id="fuseToggle" hidden>UPGRADE</button>
         <div class="codex-search-box">
           <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
           <!-- type="text" au lieu de "search" (V0.03.40, demande d'Alex "centre bien le texte recherche") :
@@ -9225,7 +9233,7 @@
       </details>
       <button type="button" class="codex-tool-btn destroy" id="modDestroyToggle">DÉTRUIRE</button>
       <div class="codex-tools">
-        <button type="button" class="mod-fuse-toggle" id="modUpgradeToggle">UPGRADE</button>
+        <button type="button" class="mod-fuse-toggle" id="modUpgradeToggle" hidden>UPGRADE</button>
         <div class="codex-search-box">
           <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
           <input type="text" id="modSearchInput" class="codex-search-input" placeholder="RECHERCHER" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
@@ -9404,9 +9412,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.48';
+var BUILD_VERSION = 'V0.04.49';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.49', items:[
+    'BATAILLE : nouveau ciblage -- maintiens ton doigt sur une carte et tire vers le HAUT pour attaquer, vers le BAS pour défendre, puis relâche sur la cible (plus de menu). Toucher une carte engagée la désengage.',
+    'BATAILLE : une croix rouge apparaît sur toute carte qui sera détruite à la fin du tour (elle disparaît si l\'attaque est désengagée). Les flèches de défense partent du bas des cartes.',
+    'RARETÉ UNIQUE : chaque carte a désormais une seule rareté, définitive (S holographique, A écarlate, B légendaire, C épique, D rare). Plus d\'upgrade ni de downgrade, pour les cartes comme pour les modules : seule la destruction reste.',
+    'STATS : toutes les cartes ont des stats ATQ / DEF / PV de 1 à 10, équilibrées avec leur effet. Chiffres agrandis sur les cartes. Chef d\'escouade : PV + DEF inférieurs à 50.',
+    'Tirages (Fabrique, boosters) : la rareté est tirée d\'abord, puis une carte de cette rareté. Un nouveau joueur ne reçoit que des cartes rares. Tes cartes déjà possédées passent à leur rareté définitive, sans rien perdre. Trophées d\'upgrade retirés.',
+  ] },
   { v:'V0.04.48', items:[
     'DECK : nouveau bouton DÉTRUIRE sous l\'encadré DECK (même fenêtre de destruction qu\'avant, cartes séparées par niveau, holographiques et favorites protégées) ; il disparaît pendant la création ou la modification d\'un deck.',
     'Menu CARTE : la case DECK passe en haut à gauche avec l\'icône de l\'ancienne case GESTION DE CARTE, qui est supprimée (l\'upgrade et le downgrade ne sont plus accessibles pour l\'instant). PROCHAINEMENT occupe seule la dernière rangée.',
@@ -11308,6 +11323,29 @@ function computeStatBounds(){
   });
   return bounds;
 }
+// ---------- V0.04.49 : RARETÉ UNIQUE + STATS DE 1 À 10 (demande d'Alex) ----------
+// Plus d'upgrade : chaque carte a UNE rareté, définitive (S holo / A écarlate / B légendaire / C épique / D rare).
+// Stats ATQ / DEF / PV de 1 à 10 (10 = exceptionnel), équilibrées avec l'effet de la carte : une carte à petites stats
+// peut valoir plus qu'une carte à grosses stats si son effet est plus fort. Chef d'escouade : PV + DEF < 50 (cf btl.js).
+const CARD_TIERS = {
+  holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI'],
+  ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
+  legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
+  epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY']
+};
+const CARD_STATS = {
+  // [ATQ, DEF, PV]
+  'MOTOKO':[9,5,8], 'ZAPPAN':[10,3,8], 'TOA2':[6,8,9], 'MOG-AI':[9,4,8],
+  'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
+  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
+  'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5]
+};
+CHAR_DEFS.forEach(d => {
+  Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
+  d.owned = (d.rarity === 'rare');   // un nouveau joueur ne reçoit que des cartes RARE (rareté D)
+});
 const STAT_BOUNDS = computeStatBounds();
 // Stat dominante = la stat la plus forte PAR RAPPORT à une référence fixe (moyenne d'une carte type).
 // Une carte plus rare a toutes ses stats plus hautes, mais garde le même profil, donc la même catégorie.
@@ -11391,6 +11429,20 @@ function rarCls(r){ return 'rar r-' + r; }
 function rarTag(r, extraCls){
   return `<div class="rar-tag${extraCls ? ' ' + extraCls : ''}">${RARITIES[r].label}</div>`;
 }
+// V0.04.49 : tirage des CARTES (rareté unique) -- la rareté est tirée d'abord, puis une carte de cette rareté.
+// (rollRarity() reste utilisée telle quelle par les modules.)
+const CARD_DRAW_W = { rare:48, epique:30, legendaire:15, ecarlate:6.5, holo:0.5 };
+function rollCardRarity(){
+  const ks = Object.keys(CARD_DRAW_W); let t = 0; ks.forEach(k => { t += CARD_DRAW_W[k]; });
+  let r = Math.random() * t;
+  for(const k of ks){ r -= CARD_DRAW_W[k]; if(r < 0) return k; }
+  return 'rare';
+}
+function cardPoolOf(rar, usedNames){
+  let pool = CHAR_DEFS.filter(d => d.rarity === rar && !(usedNames || []).includes(d.name));
+  if(!pool.length) pool = CHAR_DEFS.filter(d => d.rarity === rar);
+  return pool.length ? pool : CHAR_DEFS.slice();
+}
 function rollRarity(){
   const total = RARITY_ORDER.reduce((a, k) => a + RARITIES[k].weight, 0);
   let r = Math.random() * total;
@@ -11468,12 +11520,7 @@ function copiesOf(defOrName){
   return RARITY_ORDER.reduce((a, r) => a + (st[r] || 0), 0);
 }
 function isOwned(def){ return copiesOf(def) > 0; }
-function effRarity(def){
-  for(let i = RARITY_ORDER.length - 1; i >= 0; i--){
-    if(stackCount(def.name, RARITY_ORDER[i]) > 0) return RARITY_ORDER[i];
-  }
-  return rarityOf(def);
-}
+function effRarity(def){ return rarityOf(def); }   // V0.04.49 : rareté unique par carte
 // Bonus de stats par palier de rareté gagné par fusion (+30 % par palier).
 const RARITY_BONUS_PER_TIER = 0.3;
 const HOLO_BONUS = 0.5;   // une holographique = sa version légendaire +50 %
@@ -11490,6 +11537,7 @@ const HOLO_BONUS = 0.5;   // une holographique = sa version légendaire +50 %
 // quel exemplaire précis vient d'où.
 const cardTierFused = {};
 function rarityMult(def, r){
+  return 1;   // V0.04.49 : plus de bonus de palier (rareté unique)
   if(isHolo(r)) return rarityMult(def, 'legendaire') + HOLO_BONUS;
   const dt = tierOf(r) - tierOf(rarityOf(def));
   if(dt <= 0) return 1;
@@ -12608,7 +12656,6 @@ function renderModulesGrid(){
     };
   });
 }
-document.getElementById('modUpgradeToggle').onclick = () => { modulesFusionMode = !modulesFusionMode; if(modulesFusionMode) modulesDestroyMode = false; renderModulesGrid(); };
 // Bouton DÉTRUIRE de GESTION DE MODULE (V0.02.54, demande d'Alex) : exclusif avec UPGRADE ci-dessus.
 document.getElementById('modDestroyToggle').onclick = () => { modulesDestroyMode = !modulesDestroyMode; if(modulesDestroyMode) modulesFusionMode = false; renderModulesGrid(); };
 // `rar` (optionnel) : force l'affichage à une rareté précise plutôt que l'effective actuelle -- utilisé
@@ -13190,7 +13237,7 @@ let fabriqueHolo = [false, false, false];   // emplacement tiré en version holo
 // la contrepartie stats (ces exemplaires tirés directement restent à stats de rare tant qu'ils n'ont pas
 // été fusionnés).
 let fabriqueOfferRar = [null, null, null];
-function fabSlotRar(i){ const d = fabriqueOffer[i]; return d ? (fabriqueHolo[i] ? 'holo' : fabriqueOfferRar[i]) : null; }
+function fabSlotRar(i){ const d = fabriqueOffer[i]; return d ? rarityOf(d) : null; }   // V0.04.49 : rareté unique
 let fabResetTimer = null;
 let fabResetAt = 0;
 const FAB_RESET_MS = 30 * 60 * 1000; // 30 minutes
@@ -13204,28 +13251,15 @@ function shuffled(arr){
   return a;
 }
 function rollFabriqueOffer(){
-  // Chaque emplacement tire d'abord une rareté (selon les taux), puis une carte (V0.02.83 : n'importe
-  // quelle carte de série, quelle que soit sa rareté IMPRIMÉE -- la rareté de l'offre est désormais celle
-  // TIRÉE, pas celle de la carte piochée, cf fabriqueOfferRar/fabSlotRar plus haut, même principe que
-  // rollLabOffer() ci-dessous pour les modules). On évite d'avoir deux fois la même carte dans la même
-  // offre quand c'est possible.
+  // V0.04.49 : chaque emplacement tire d'abord une rareté (CARD_DRAW_W), puis une carte de CETTE rareté (déjà unique).
   const picks = [], rars = [];
   fabriqueHolo = [false, false, false];
   for(let i=0; i<3; i++){
-    if(Math.random() < HOLO_CHANCE){
-      // Holographique : une des 6 cartes holo uniques
-      fabriqueHolo[i] = true;
-      let pool = HOLO_DEFS.filter(d => !picks.includes(d));
-      if(pool.length === 0) pool = HOLO_DEFS;
-      picks.push(shuffled(pool)[0]);
-      rars.push(null);   // non utilisée pour un emplacement holo (fabSlotRar renvoie 'holo' directement)
-      continue;
-    }
-    const rar = rollRarity();
-    let pool = SERIES_DEFS.filter(d => !picks.includes(d));
-    if(pool.length === 0) pool = SERIES_DEFS;
-    picks.push(shuffled(pool)[0]);
-    rars.push(rar);
+    const rar = rollCardRarity();
+    const d = shuffled(cardPoolOf(rar, picks.map(x => x.name)))[0];
+    picks.push(d);
+    rars.push(d.rarity);
+    fabriqueHolo[i] = (d.rarity === 'holo');
   }
   fabriqueOffer = picks;
   fabriqueOfferRar = rars;
@@ -13266,6 +13300,11 @@ function renderDropRates(targetId){
   }).join('<span class="sep">·</span>');   // les holographiques restent secrètes : taux non affiché
 }
 renderDropRates('fabRates');
+(function(){   // V0.04.49 : taux de la Fabrique = taux des cartes à rareté unique (holo secrète)
+  const el = document.getElementById('fabRates'); if(!el) return;
+  const ks = ['rare', 'epique', 'legendaire', 'ecarlate'], tot = ks.reduce((a, k) => a + CARD_DRAW_W[k], 0);
+  el.innerHTML = ks.map(k => `<span class="r-${k}"><b>${RARITIES[k].label}</b> ${Math.round(CARD_DRAW_W[k] / tot * 100)}%</span>`).join('<span class="sep">·</span>');
+})();
 
 // ---------- LABO (V0.02.62, demande d'Alex) ----------
 // « Exactement la même chose que TIRAGE, mais avec 3 cartes modules » -- même structure à 3 emplacements,
@@ -13330,7 +13369,7 @@ function sqEntry(key){
   const [name, r] = String(key).split('|');
   const def = CHAR_DEFS.find(c => c.name === name);
   if(!def) return null;
-  const rar = RARITIES[r] ? r : effRarity(def);
+  const rar = rarityOf(def);   // V0.04.49 : rareté unique, une ancienne clé « NOM|autre rareté » pointe sur la bonne carte
   return { def, rar, key: sqKey(name, rar) };
 }
 function squadEntries(list){ return (list || squad).map((k, i) => { const e = sqEntry(k); return e ? Object.assign({ i }, e) : null; }).filter(Boolean); }
@@ -13417,6 +13456,7 @@ function modSqEntry(key){
 function lerp(a, b, t){ return a + (b-a)*t; }
 // Stats « moteur » (échelle interne des missions, raids, défis, récolte, puissance) : inchangées.
 function statsAtLevelRaw(def, level, rar){
+  { const cs = CARD_STATS[def.name]; if(cs) return { atk: cs[0] * 80, def: cs[1] * 22, hp: cs[2] * 250 }; }   // V0.04.49
   // Progression linéaire : base au Nv. 1, "max" au Nv. 100, puis même rythme au-delà (jusqu'au Nv. 250)
   const t = Math.max(0, (level-1)/99);
   const m = rarityMult(def, rar || effRarity(def));
@@ -13438,6 +13478,7 @@ const STAT_FILL = 0.95;
 const STAT_SCALE = {rare: {atk: 0.10215, def: 0.125, hp: 0.015833}, epique: {atk: 0.082167, def: 0.098798, hp: 0.01309}, legendaire: {atk: 0.055331, def: 0.065663, hp: 0.0090502}, ecarlate: {atk: 0.044585, def: 0.052503, hp: 0.0074102}, holo: {atk: 0.069351, def: 0.10311, hp: 0.014343}};
 const STAT_SCALE_UNF = {rare: {atk: 0.10215, def: 0.125, hp: 0.015833}, epique: {atk: 0.10682, def: 0.12844, hp: 0.016332}, legendaire: {atk: 0.088529, def: 0.10506, hp: 0.013792}, ecarlate: {atk: 0.084711, def: 0.099756, hp: 0.013348}};
 function statsAtLevel(def, level, rar){
+  { const cs = CARD_STATS[def.name]; if(cs) return { atk: cs[0], def: cs[1], hp: cs[2] }; }   // V0.04.49 : stats fixes de 1 à 10
   rar = rar || effRarity(def);
   const t = Math.max(0, (level-1)/99);
   const m = rarityMult(def, rar);
@@ -15281,7 +15322,7 @@ const GREY_ART = 'data:image/webp;base64,UklGRsoCAABXRUJQVlA4IL4CAAAQKwCdASosAaQ
 // d'éligibilité que codexCardHtml (defiTrophyEligible/defiUltimateEligible, cf plus haut), et même
 // escalade dorée -> rouge mat une fois l'ultimate 100/100 terminé.
 // taille du chiffre dans les ronds de stats : 3 chiffres normal, 4 plus petit, 5+ encore plus
-function lgDigCls(n){ const l = String(n).length; return l >= 5 ? 'l5' : l === 4 ? 'l4' : ''; }
+function lgDigCls(n){ const l = String(n).length; return l >= 5 ? 'l5' : l === 4 ? 'l4' : l === 2 ? 'l2' : ''; }
 
 const WIN_KEEP = {'TOA2':1,'RHINO':1,'DELOK':1,'WHIPLASH':1,'TUNNELIER':1};
 const WIN_FOCUS = {'SHADOW':72,'MOG-AI':12,'CHEIF 117':8};
@@ -15964,9 +16005,7 @@ function setFusionMode(on){
   renderCodex();
 }
 renderCodex();
-document.getElementById('fuseToggle').onclick = () => setCodexMode(codexMode === 'fusion' ? 'normal' : 'fusion');
 document.getElementById('destroyToggle').onclick = () => setCodexMode(codexMode === 'destroy' ? 'normal' : 'destroy');
-document.getElementById('defuseToggle').onclick = () => setCodexMode(codexMode === 'defuse' ? 'normal' : 'defuse');
 
 // ---------- Détruire / Dé-fusionner ----------
 // Une carte peut être dé-fusionnée seulement si sa rareté a été obtenue par fusion
@@ -16448,7 +16487,7 @@ function renderFabrique(){
 
 function acquireCard(def, rar){
   const isFirstCopy = copiesOf(def) === 0;
-  rar = rar || rarityOf(def);
+  rar = rarityOf(def);   // V0.04.49 : rareté unique
   const lk = sqKey(def.name, rar);
   const d = levelDist(def.name, rar);   // capture la répartition existante avant d'ajouter la copie
   cardCopies[def.name][rar] = (cardCopies[def.name][rar] || 0) + 1;
@@ -16970,43 +17009,15 @@ function openBoostResources(){
 // BOOST_LEG_CHANCE/BOOST_HOLO_CHANCE que le booster contienne une légendaire/holo (holo = une des 6
 // cartes hors-série, piochée à part, même pool que rollFabriqueOffer()).
 function openBoostCards(){
-  const picks = [];
-  const usedNames = [];
-  let hasHolo = Math.random() < BOOST_HOLO_CHANCE;
-  // V0.03.75 : tirage dédié ÉCARLATE, indépendant lui aussi (même raison que BOOST_LEG_CHANCE plus haut :
-  // ne pas le fondre dans rollBoostCommonRarity()), vérifié ENTRE holo et légendaire par rareté décroissante
-  // -- une carte de série (jamais holo) peut sortir écarlate directement ici, cf RARITIES.ecarlate plus haut.
-  let hasEcarlate = Math.random() < BOOST_ECARLATE_CHANCE;
-  let hasLeg = Math.random() < BOOST_LEG_CHANCE;
+  // V0.04.49 : rareté unique -- on tire la rareté (CARD_DRAW_W), puis une carte de CETTE rareté ; dernier emplacement : au moins épique.
+  const picks = [], usedNames = [];
   let gotHighTier = false;
   for(let i=0; i<5; i++){
-    if(hasHolo){
-      let pool = HOLO_DEFS.filter(d => !usedNames.includes(d.name));
-      if(pool.length === 0) pool = HOLO_DEFS;
-      const d = shuffled(pool)[0];
-      picks.push({ def:d, rar:'holo' }); usedNames.push(d.name); hasHolo = false; gotHighTier = true;
-      continue;
-    }
-    if(hasEcarlate){
-      let pool = SERIES_DEFS.filter(d => !usedNames.includes(d.name));
-      if(pool.length === 0) pool = SERIES_DEFS;
-      const d = shuffled(pool)[0];
-      picks.push({ def:d, rar:'ecarlate' }); usedNames.push(d.name); hasEcarlate = false; gotHighTier = true;
-      continue;
-    }
-    if(hasLeg){
-      let pool = SERIES_DEFS.filter(d => !usedNames.includes(d.name));
-      if(pool.length === 0) pool = SERIES_DEFS;
-      const d = shuffled(pool)[0];
-      picks.push({ def:d, rar:'legendaire' }); usedNames.push(d.name); hasLeg = false; gotHighTier = true;
-      continue;
-    }
-    let rar = (i === 4 && !gotHighTier) ? 'epique' : rollBoostCommonRarity();
+    let rar = rollCardRarity();
+    if(i === 4 && !gotHighTier && (rar === 'rare')) rar = 'epique';
     if(rar !== 'rare') gotHighTier = true;
-    let pool = SERIES_DEFS.filter(d => !usedNames.includes(d.name));
-    if(pool.length === 0) pool = SERIES_DEFS;
-    const d = shuffled(pool)[0];
-    picks.push({ def:d, rar }); usedNames.push(d.name);
+    const d = shuffled(cardPoolOf(rar, usedNames))[0];
+    picks.push({ def:d, rar:d.rarity }); usedNames.push(d.name);
   }
   return picks;
 }
@@ -29622,6 +29633,7 @@ var TROPHIES = [
   { id:'boost_cards_3', tier:5, name:'Flotte légendaire',  desc:'Ouvrir 150 boosters cartes mechs',                 target:150, val:() => (player.stats.boostersByType || {}).cards || 0, rew:{ gold:500, card:'legendaire', booster:'cards', boosterN:3 } },
   { id:'boost_mod_3',   tier:5, name:'Arsenal infini',     desc:'Ouvrir 150 boosters cartes modules',               target:150, val:() => (player.stats.boostersByType || {}).modules || 0, rew:{ gold:500, card:'legendaire', booster:'modules', boosterN:3 } }
 ];
+TROPHIES = TROPHIES.filter(t => ['fus1', 'fusL', 'fus10', 'mr_fus25'].indexOf(t.id) < 0);   // V0.04.49 : plus d'upgrade
 function tTarget(t){ return typeof t.target === 'function' ? t.target() : t.target; }
 function tReward(t){ return t.hidden ? { card:'holo' } : (t.rew || TROPHY_TIERS[t.tier].rew); }
 function tVal(t){ try{ return t.val() || 0; }catch(_){ return 0; } }
@@ -30285,7 +30297,9 @@ var BTL = null, btlUid = 0;
 const BTL_ATK_K = 1;            // dégâts = ATQ x 1 x (100 / (100 + DEF cible x 3))  (stats V0.04.23 : plafonds 50 à 175)
 const BTL_DEF_K = 3;            // (inutilisé depuis V0.04.26 : la DEF est un bouclier, elle ne réduit plus les dégâts)
 const BTL_HEAL_K = 0.17;        // (inutilisé depuis V0.04.26 : DÉFENDRE ajoute la DEF au bouclier de la cible)
-const BTL_LEADER_HP = 1.5;      // le chef d'escouade a 1,5 x les PV de sa carte
+// V0.04.49 : stats de cartes de 1 à 10. Chef d'escouade : PV = PV x 2,5 + 6, DEF = DEF x 1,25, PV + DEF toujours < 50. Énergie d'ultime x7 (les dégâts sont petits).
+const BTL_LEADER_HP_K = 2.5, BTL_LEADER_HP_ADD = 6, BTL_LEADER_DEF_K = 1.25, BTL_LEADER_MAX = 49;
+const BTL_EN_K = 7;
 const BTL_HAND_START = 3;
 const BTL_TURN_MS = 150000, BTL_HEAT_MS = 20000;
 const BTL_BACK_FALLBACK = 'rare';
@@ -30371,8 +30385,12 @@ const BTL_RATIO = 966 / 692;   // hauteur / largeur d'une grande carte
 // ---------- cartes ----------
 function btlMakeCard(side, def, rar, level, leader, k){
   const s = statsAtLevel(def, level, rar); k = k || 1;
-  const hp = Math.max(1, Math.round(s.hp * k * (leader ? BTL_LEADER_HP : 1)));
-  return { uid:++btlUid, side, def, rar, level, name:def.name, atk:Math.max(1, Math.round(s.atk * k)), df:Math.round(s.def * k),
+  let hp = Math.max(1, Math.round(s.hp * k)), df0 = Math.round(s.def * k);
+  if(leader){
+    hp = Math.round(s.hp * BTL_LEADER_HP_K + BTL_LEADER_HP_ADD); df0 = Math.round(s.def * BTL_LEADER_DEF_K);
+    if(hp + df0 > BTL_LEADER_MAX) df0 = Math.max(0, BTL_LEADER_MAX - hp);
+  }
+  return { uid:++btlUid, side, def, rar, level, name:def.name, atk:Math.max(1, Math.round(s.atk * k)), df:df0,
     maxHp:hp, hp, energy:0, leader:!!leader, plan:null, slot:-1,
     kw:leader ? [] : (BTL_CARD_KW[def.name] || []).slice(), playedTurn:-1, ultOn:false, base:null };
 }
@@ -30383,21 +30401,18 @@ function btlBuildSides(d){
   const lead = ents[li], rest = ents.filter((_, i) => i !== li);
   const mkP = (e, isL) => btlMakeCard('p', e.def, e.rar, Math.max(1, cardLevel(e.def.name, e.rar)), isL);
   const P = { leader:mkP(lead, true), pile:btlShuffle(rest.map(e => mkP(e, false))), hand:[], slots:[null, null, null] };
-  // Adversaire : un deck de même forme que celui du joueur (mêmes raretés, niveaux voisins), cartes tirées au hasard
-  const pool = CHAR_DEFS.filter(x => x.rarity !== 'holo');
+  // Adversaire (V0.04.49, rareté unique) : un deck de même forme que celui du joueur -- pour chaque carte du joueur,
+  // une carte au hasard de la MÊME rareté (2 exemplaires max par carte) ; son chef est la carte la plus forte de la rareté du chef du joueur.
   const cnt = {};
-  const pickDef = () => { let def, t = 0; do{ def = pool[Math.floor(Math.random() * pool.length)]; t++; } while((cnt[def.name] || 0) >= 2 && t < 40); cnt[def.name] = (cnt[def.name] || 0) + 1; return def; };
-  const mkO = (e, isL, def) => {
-    const rar = e.rar === 'holo' ? 'legendaire' : e.rar;
-    const lvl0 = Math.max(1, cardLevel(e.def.name, e.rar));
-    const lvl = Math.max(1, Math.round(lvl0 * (isL ? 1 : 0.92 + Math.random() * 0.14)));
-    const k = rarityMult(e.def, e.rar) / rarityMult(def, rar);
-    return btlMakeCard('o', def, rar, lvl, isL, k);
+  const pickDef = rar => {
+    const all = CHAR_DEFS.filter(x => x.rarity === rar), pool = all.filter(x => (cnt[x.name] || 0) < 2), src = pool.length ? pool : all;
+    const def = src[Math.floor(Math.random() * src.length)]; cnt[def.name] = (cnt[def.name] || 0) + 1; return def;
   };
-  const lrar = lead.rar === 'holo' ? 'legendaire' : lead.rar, llvl = Math.max(1, cardLevel(lead.def.name, lead.rar));
-  const strongest = pool.reduce((b, x) => cardPower(x, lrar, llvl) > cardPower(b, lrar, llvl) ? x : b, pool[0]);
+  const mkO = (def, isL) => btlMakeCard('o', def, def.rarity, 1, isL, 1);
+  const lpool = CHAR_DEFS.filter(x => x.rarity === lead.rar);
+  const strongest = lpool.reduce((b2, x) => cardPower(x, x.rarity, 1) > cardPower(b2, b2.rarity, 1) ? x : b2, lpool[0]);
   cnt[strongest.name] = 1;
-  const O = { leader:mkO(lead, true, strongest), pile:btlShuffle(rest.map(e => mkO(e, false, pickDef()))), hand:[], slots:[null, null, null] };
+  const O = { leader:mkO(strongest, true), pile:btlShuffle(rest.map(e => mkO(pickDef(e.rar), false))), hand:[], slots:[null, null, null] };
   return { p:P, o:O };
 }
 function btlCardByUid(uid){
@@ -30433,7 +30448,7 @@ function btlUltReady(c){ return !c.leader && !c.ultOn && c.energy >= 100; }
 function btlAddEnergy(c, n){
   if(!c || c.leader || c.ultOn || c.hp <= 0 || n <= 0) return;
   const was = c.energy >= 100;
-  c.energy = Math.min(100, c.energy + n);
+  c.energy = Math.min(100, c.energy + n * BTL_EN_K);
   btlPaint(c);
   if(!was && c.energy >= 100){ const el = btlUnitEl(c); if(el){ const r = btlRect(el); btlRing(r, '#ff9a2a', false); btlParticles(r.left + r.width / 2, r.top + r.height / 2, { n:10, color:'#ff9a2a', dist:56, dur:620, size:6, rise:true, spread:200 }); } }
 }
@@ -30459,7 +30474,7 @@ async function btlUltEnd(side){
 // ---------- rendu des cartes ----------
 // petite carte : artwork au centre + 4 verres (ATK bleu, DEF vert, ULT % jaune, PV rouge) dans les carrés du cadre
 function btlFmtN(n){ n = Math.max(0, Math.round(n)); return n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n); }
-function btlStatHtml(cls, txt){ return '<div class="cbt-st ' + cls + '"><b class="' + (String(txt).length >= 4 ? 'l4' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
+function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class="cbt-st ' + cls + '"><b class="' + (L >= 4 ? 'l4' : L === 2 ? 'l2' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
 function btlSmallHtml(c){
   const art = winArt(c.def), af = winFocus(c.def);
   return '<div class="unit cbt f-' + c.rar + (c.ultOn ? ' ult-on' : btlUltReady(c) ? ' ult-rdy' : '') + (btlCanActNow(c) ? ' can-act' : '') + '">' +
@@ -30472,7 +30487,7 @@ function btlSmallHtml(c){
 }
 function btlSetStat(root, cls, txt){
   const b = root && root.querySelector('.cbt-st.' + cls + ' b'); if(!b) return;
-  if(b.textContent !== txt){ b.textContent = txt; b.classList.toggle('l4', txt.length >= 4); b.classList.toggle('dash', txt === '–'); }
+  if(b.textContent !== txt){ b.textContent = txt; b.classList.toggle('l4', txt.length >= 4); b.classList.toggle('l2', txt.length === 2); b.classList.toggle('dash', txt === '–'); }
 }
 function btlPaintIn(root, c){
   btlSetStat(root, 's-atk', btlFmtN(c.atk)); btlSetStat(root, 's-def', btlFmtN(c.df));
@@ -30557,18 +30572,20 @@ const BTL_SVG = 'http://www.w3.org/2000/svg';
 let btlArSeq = 0;
 function btlArCurve(x0, y0, x1, y1, mk, dir){
   const dx = x1 - x0, dy = y1 - y0, dist = Math.hypot(dx, dy), H = Math.min(160, 44 + dist * 0.3);
-  const ax = x0 + dx * 0.2, ay = Math.max(6, y0 - H), bx = x1 - dx * 0.2, by = Math.max(6, y1 - H);   // arche : monte puis retombe sur le haut de la carte
+  const dn = dir === 1 && !mk;   // arche vers le bas (DÉFENDRE) : descend sous les cartes puis remonte sur leur bas
+  const ax = x0 + dx * 0.2, ay = dn ? y0 + H : Math.max(6, y0 - H), bx = x1 - dx * 0.2, by = dn ? y1 + H : Math.max(6, y1 - H);   // arche : monte puis retombe sur le haut de la carte
   if(!mk) return [x0, y0, ax, ay, bx, by, x1, y1];
   const H1 = Math.min(120, 28 + Math.abs(dy) * 0.38, Math.abs(dy) * 0.46), cx = x0 + dx * 0.08, c1y = y0 + dir * H1, dx2 = x1 - dx * 0.08, c2y = y1 - dir * H1;   // trajet d'un camp à l'autre : part et arrive à la verticale
   const m = Math.max(0, Math.min(1, mk)), l = (p, q) => p + (q - p) * m;
   return [x0, y0, l(ax, cx), l(ay, c1y), l(bx, dx2), l(by, c2y), x1, y1];
 }
 // points d'ancrage : entre deux camps, la flèche part du haut de la carte du joueur et vise le BAS des cartes ennemies ; quand l'ennemi cible, elle part de son bas et vise le HAUT des cartes alliées ; même rangée : arche haut → haut
-function btlArAnch(r0, r1){
+function btlArAnch(r0, r1, kind){
   const c0 = r0.top + r0.height / 2, c1 = r1.top + r1.height / 2, dy = c1 - c0, thr = Math.min(r0.height, r1.height) * 0.9, x0 = r0.left + r0.width / 2, x1 = r1.left + r1.width / 2;
   const L = 9;   // voies parallèles : si deux cartes se ciblent mutuellement, les deux flèches ne se superposent pas
   if(dy < -thr) return { x0:x0 - L, y0:r0.top, x1:x1 - L, y1:r1.bottom, mk:1, dir:-1 };
   if(dy > thr) return { x0:x0 + L, y0:r0.bottom, x1:x1 + L, y1:r1.top, mk:1, dir:1 };
+  if(kind === 'def') return { x0, y0:r0.bottom, x1, y1:r1.bottom, mk:0, dir:1 };   // DÉFENDRE : flèche bleue sous les cartes
   return { x0, y0:r0.top, x1, y1:r1.top, mk:0, dir:-1 };
 }
 function btlArSplit(P, s){   // de Casteljau : première partie [0, s] de la courbe
@@ -30678,28 +30695,32 @@ function btlRenderArrowsNow(){
   ['p', 'o'].forEach(s => BTL.S[s].slots.forEach(c => {
     if(!c || !c.plan || !c.plan.tgt) return;
     const t = btlCardByUid(c.plan.tgt); if(!t || t.hp <= 0) return;
-    const n = btlArAnch(btlUnitRect(c), btlUnitRect(t));
+    const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), c.plan.kind);
     want.set('plan:' + c.uid, { kind:c.plan.kind, a:{ x:n.x0, y:n.y0 }, b:{ x:n.x1, y:n.y1 }, mk:n.mk, dir:n.dir, lock:true, rate:16, intro:460 });
   }));
   const tg = BTL.tg;
   if(tg && tg.shown){
     const fr = btlRect(tg.fl);
     if(tg.over){
-      const n = btlArAnch(fr, btlUnitRect(tg.over));
+      const n = btlArAnch(fr, btlUnitRect(tg.over), tg.kind);
       want.set('tg', { kind:tg.kind, a:{ x:n.x0, y:n.y0 }, b:{ x:n.x1, y:n.y1 }, mk:n.mk, dir:n.dir, lock:true, rate:14, intro:220 });
+    } else if(tg.kind === 'def' && tg.y > fr.bottom - 10){   // DÉFENDRE : la flèche part du bas de la carte et descend vers le doigt
+      const ax = fr.left + fr.width / 2, ay = fr.bottom;
+      want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:tg.x, y:tg.y }, mk:Math.max(0, Math.min(1, (tg.y - ay) / 70)), dir:1, lock:false, rate:30, intro:220 });
     } else {   // doigt libre : plus il passe au-dessus de la carte, plus la flèche part à la verticale vers le haut
       const ax = fr.left + fr.width / 2, ay = fr.top;
       want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:tg.x, y:tg.y }, mk:Math.max(0, Math.min(1, (ay - tg.y) / 70)), dir:-1, lock:false, rate:30, intro:220 });
     }
   }
   btlArSync(want);
+  btlRenderMarks();
   // halo doré sur les cartes dont l'ultime de soin est planifié
   BTL.el.querySelectorAll('.btl-unit.planned-heal').forEach(u => u.classList.remove('planned-heal'));
   BTL.S.p.slots.forEach(c => { if(c && c.plan && c.plan.heal){ const u = btlUnitEl(c); if(u) u.classList.add('planned-heal'); } });
 }
 function btlBeam(r0, r1, kind, fast){
   const intro = (fast ? 170 : 300) * BTL_TS, ar = btlArrowNew(kind, { introMs:intro, rate:40 });
-  const n = btlArAnch(r0, r1);
+  const n = btlArAnch(r0, r1, kind);
   ar.go(n.x0, n.y0, n.x1, n.y1, { snap:true, lock:true, mk:n.mk, dir:n.dir });
   return btlSleep(intro, true).then(() => btlSleep(fast ? 40 : 160)).then(() => { ar.die((fast ? 140 : 240) * BTL_TS); return btlSleep(fast ? 140 : 240); });
 }
@@ -31005,7 +31026,7 @@ function btlReticle(t, kind){
   return { off(){ btlAnim(e, [{ opacity:1 }, { opacity:0 }], { duration:240 }).then(() => e.remove(), () => e.remove()); } };
 }
 function btlLock(c, t, kind, carry){
-  const n = btlArAnch(btlUnitRect(c), btlUnitRect(t));
+  const n = btlArAnch(btlUnitRect(c), btlUnitRect(t), kind);
   let ar = carry;
   if(ar && ar.kind !== kind){ ar.die(120); ar = null; }
   if(!ar) ar = btlArrowNew(kind, { introMs:360, rate:30 });
@@ -31793,11 +31814,11 @@ function btlCardAt(list, x, y, cur){
   for(const t of list){ const r = btlUnitRect(t), dx = Math.max(r.left - x, 0, x - r.right), dy = Math.max(r.top - y, 0, y - r.bottom), d = Math.hypot(dx, dy); if(d < bd){ bd = d; best = t; } }
   return bd <= 22 ? best : null;
 }
-function btlBeginTarget(c, kind, ev){
-  const mn = BTL.menu; if(!mn) return;
+function btlBeginTarget(c, kind, ev, src){
+  const mn = src || BTL.menu; if(!mn) return;
   const fl = mn.fl;
-  btlCloseMenu(true);
-  const tg = BTL.tg = { c, kind, fl, unit:mn.unit, active:true, shown:true, moved:false, sx:ev.clientX, sy:ev.clientY, x:ev.clientX, y:ev.clientY, over:null, list:btlTargetsFor(c, kind), off:ev.pointerType === 'touch' ? 22 : 0 };
+  if(!src) btlCloseMenu(true);
+  const tg = BTL.tg = { c, kind, fl, unit:mn.unit, drag:!!src, active:true, shown:true, moved:false, sx:ev.clientX, sy:ev.clientY, x:ev.clientX, y:ev.clientY, over:null, list:btlTargetsFor(c, kind), off:ev.pointerType === 'touch' ? 22 : 0 };
   btlQ('#btlBlur').classList.remove('on', 'catch');
   btlHighlight(tg.list, true);
   const move = e => {
@@ -31813,7 +31834,7 @@ function btlBeginTarget(c, kind, ev){
     tg.x = e.clientX; tg.y = e.clientY - tg.off;
     const o = btlCardAt(tg.list, tg.x, tg.y, tg.over);
     if(o){ btlEndTarget(true, o); return; }
-    if(tg.moved || tg.armed){ btlEndTarget(false); return; }
+    if(tg.drag || tg.moved || tg.armed){ btlEndTarget(false); return; }
     // simple tap sur le bouton : on attend que le joueur pose le doigt pour viser
     tg.active = false; tg.armed = true; tg.over = null;
     tg.x = tg.sx; tg.y = tg.sy - 80; btlRenderArrows();
@@ -31828,7 +31849,8 @@ function btlBeginTarget(c, kind, ev){
   window.addEventListener('pointerup', up);
   window.addEventListener('pointercancel', up);
   window.addEventListener('pointerdown', down, true);
-  tg.x = ev.clientX; tg.y = ev.clientY - 4;
+  tg.x = ev.clientX; tg.y = ev.clientY - (src ? tg.off : 4);
+  if(src) tg.moved = true;
   btlRenderArrows();
 }
 function btlHighlight(list, on, cur){
@@ -31999,6 +32021,7 @@ function btlFieldHoldDown(ev){
   const c = slot.dataset.i === 'L' ? S.leader : S.slots[+slot.dataset.i]; if(!c) return;
   const fz = BTL.fz = { c, shown:false, sx:ev.clientX, sy:ev.clientY, t:0 };
   const stop = () => { window.removeEventListener('pointermove', fz.move); window.removeEventListener('pointerup', fz.up); window.removeEventListener('pointercancel', fz.up); clearTimeout(fz.t); };
+  fz.stop = stop;
   fz.move = e => { if(!BTL){ stop(); return; } if(!fz.shown && Math.hypot(e.clientX - fz.sx, e.clientY - fz.sy) > 14){ stop(); BTL.fz = null; } };
   fz.up = () => {
     stop(); if(!BTL) return;
@@ -32013,7 +32036,77 @@ function btlFieldHoldDown(ev){
   window.addEventListener('pointerup', fz.up);
   window.addEventListener('pointercancel', fz.up);
 }
+// ----- geste sur une carte alliée : maintenir et tirer vers le HAUT = ATTAQUER, vers le BAS = DÉFENDRE ; relâcher sur la cible -----
+function btlAimDown(ev){
+  if(!BTL || BTL.abort || BTL.phase !== 'plan' || BTL.side !== 'p' || BTL.tg || BTL.menu || BTL.hold || BTL.pick) return;
+  if(ev.pointerType === 'mouse' && ev.button) return;
+  const slot = ev.target.closest && ev.target.closest('.btl-slot'); if(!slot || !slot.classList.contains('has') || slot.dataset.i === 'L') return;
+  const c = BTL.S.p.slots[+slot.dataset.i]; if(!c) return;
+  const sx = ev.clientX, sy = ev.clientY;
+  const off = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', off); window.removeEventListener('pointercancel', off); };
+  const move = e => {
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if(Math.hypot(dx, dy) < 14) return;
+    off();
+    BTL.noClick = true; setTimeout(() => { if(BTL) BTL.noClick = false; }, 400);
+    if(Math.abs(dy) < Math.abs(dx) * .6) return;                 // geste surtout horizontal : ignoré
+    if(!BTL || BTL.phase !== 'plan' || BTL.side !== 'p' || BTL.tg || !btlOnField(c)) return;
+    const kind = dy < 0 ? 'atk' : 'def';
+    if(!btlCanAct(c)){ btlDeny('slots'); return; }
+    if(kind === 'def' && btlNoDef(c)){ btlDeny('slots'); return; }
+    if(BTL.mana.p + (c.plan ? 1 : 0) < 1){ btlDeny('mana'); return; }
+    const fz = BTL.fz;                                           // un appui long en cours (grande carte) cède la place au ciblage
+    if(fz){ if(fz.shown){ btlFieldZoomHide(c); fz.shown = false; } if(fz.stop) fz.stop(); BTL.fz = null; }
+    const unit = btlUnitEl(c); if(!unit) return;
+    const r = btlRect(unit), fl = document.createElement('div'); fl.className = 'btl-float';
+    btlPlaceFixed(fl, r); fl.innerHTML = btlSmallHtml(c); btlQ('#btlFx').appendChild(fl); btlPaintIn(fl, c);
+    unit.style.visibility = 'hidden';
+    btlBeginTarget(c, kind, e, { fl, unit });
+  };
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', off);
+  window.addEventListener('pointercancel', off);
+}
+// ----- croix rouge : cartes ciblées qui seront détruites en fin de tour (simulation prudente : dégâts minimum) -----
+function btlPredict(){
+  const st = new Map(), get = c => { let s = st.get(c.uid); if(!s){ s = { hp:c.hp, df:Math.max(0, c.df) }; st.set(c.uid, s); } return s; };
+  const hit = (s, d) => { const sh = Math.min(s.df, d); s.df -= sh; s.hp = Math.max(0, s.hp - (d - sh)); };
+  const plans = [];
+  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt && btlOnField(c)) plans.push(c); }));
+  plans.sort((a, b) => (a.plan.seq || 0) - (b.plan.seq || 0));
+  const targeted = new Set();
+  plans.forEach(c => {
+    const a = get(c); if(a.hp <= 0) return;
+    const t0 = btlCardByUid(c.plan.tgt); if(!t0 || !btlOnField(t0)) return;
+    const t = get(t0); if(t.hp <= 0) return;
+    targeted.add(t0.uid);
+    if(c.plan.kind === 'def'){ t.df += Math.max(0, Math.round(c.df)); return; }
+    if(c.plan.kind !== 'atk') return;
+    hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K * 0.9)));
+    if(!t0.leader || BTL_LEADER_COUNTER) hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K * 0.9)));
+  });
+  const dead = new Set();
+  targeted.forEach(uid => { const s = st.get(uid); if(s && s.hp <= 0) dead.add(uid); });
+  return dead;
+}
+const BTL_X_HTML = '<svg viewBox="0 0 100 100"><g fill="none" stroke-linecap="round"><path d="M20 20L80 80M80 20L20 80" stroke="#ff2a1c" stroke-opacity=".32" stroke-width="30"/><path d="M20 20L80 80M80 20L20 80" stroke="#4a0804" stroke-width="22"/><path d="M20 20L80 80M80 20L20 80" stroke="#e8281c" stroke-width="15"/><path d="M20 20L80 80M80 20L20 80" stroke="#ff9a90" stroke-opacity=".85" stroke-width="5" transform="translate(-1.6 -1.6)"/></g></svg>';
+function btlMarkOff(c, now){
+  const u = btlUnitEl(c); if(!u) return;
+  u.querySelectorAll('.btl-x').forEach(x => { if(now){ x.remove(); return; } if(x.classList.contains('out')) return; x.classList.add('out'); setTimeout(() => x.remove(), 200); });
+}
+function btlMarksClear(){ if(BTL) BTL.el.querySelectorAll('.btl-x').forEach(x => x.remove()); }
+function btlRenderMarks(){
+  if(!BTL || BTL.resolving || BTL.over) return;
+  const dead = btlPredict();
+  BTL.el.querySelectorAll('.btl-unit .btl-x:not(.out)').forEach(x => { if(!dead.has(x.dataset.u)){ x.classList.add('out'); setTimeout(() => x.remove(), 200); } });
+  dead.forEach(uid => {
+    const c = btlCardByUid(uid), u = c && btlUnitEl(c); if(!u) return;
+    if(u.querySelector('.btl-x:not(.out)')) return;
+    const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = uid; x.innerHTML = BTL_X_HTML; u.appendChild(x);
+  });
+}
 function btlWire(){
+  btlQ('.btl-half.me').addEventListener('pointerdown', btlAimDown);
   btlQ('#btlHand').addEventListener('pointerdown', btlHandDown);
   BTL.el.querySelectorAll('.btl-half').forEach(h => h.addEventListener('pointerdown', btlFieldHoldDown));
   BTL.el.addEventListener('contextmenu', e => e.preventDefault());
@@ -32023,7 +32116,8 @@ function btlWire(){
   btlQ('.btl-half.me').addEventListener('click', e => {
     if(BTL.noClick){ BTL.noClick = false; return; }
     const slot = e.target.closest('.btl-slot'); if(!slot || slot.dataset.i === 'L') return;
-    const c = BTL.S.p.slots[+slot.dataset.i]; if(c) btlOpenMenu(c);
+    const c = BTL.S.p.slots[+slot.dataset.i];
+    if(c && c.plan && BTL.phase === 'plan' && BTL.side === 'p' && !BTL.tg) btlClearPlan(c);   // simple appui sur une carte engagée : on la désengage
   });
   // tap hors du menu : la carte retourne à sa place
   btlQ('#btlBlur').addEventListener('pointerdown', e => { if(BTL.menu){ e.preventDefault(); btlCloseMenu(); } });
@@ -32052,7 +32146,7 @@ function btlCalcDmg(a, t, mult, noCrit){
   return { dmg:Math.max(1, Math.round(raw)), crit };
 }
 async function btlResolve(side){
-  const S = BTL.S[side];
+  const S = BTL.S[side]; BTL.resolving = true;
   // ordre de lancement : la première action planifiée par le joueur est la première jouée (et non plus de gauche à droite)
   const order = S.slots.filter(c => c && c.plan).sort((a, b) => (a.plan.seq || 0) - (b.plan.seq || 0));
   for(const c of order){
@@ -32061,6 +32155,7 @@ async function btlResolve(side){
     if(BTL.over) return;
     await btlSleep(560);
   }
+  BTL.resolving = false; btlMarksClear();
 }
 function btlLift(el){ el.style.zIndex = 60; return btlAnim(el, [{ transform:'none' }, { transform:'translateY(-12px) scale(1.2)' }], { duration:260, easing:BTL_E.out }); }
 async function btlSettle(el){
@@ -32185,6 +32280,7 @@ function btlDie(c){ return c._diePr || (c._diePr = btlDie0(c)); }
 async function btlDie0(c){
   const el = btlUnitEl(c), slot = btlSlotOf(c);
   if(!el || !slot){ const Q = BTL && BTL.S[c.side]; if(Q && !c.leader && Q.slots[c.slot] === c) Q.slots[c.slot] = null; return; }   // carte sans élément à l'écran : on libère quand même son emplacement
+  btlMarkOff(c, true);
   const r = btlRect(el), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   const col = btlRarColor(c.rar), plate = btlQ('#btlPlate');
   // 1) dernier souffle : la carte vacille et rougeoie, l'énergie est aspirée vers elle (le temps de lire « 0 PV »)
@@ -35547,7 +35643,7 @@ function renderPlayerSheet(){
       <div class="pv-stat">
         <div class="pv-stat-label">TIRAGES FABRIQUE</div>
         <div class="pv-stat-val">${player.draws}</div>
-        <div class="pv-stat-sub">cartes achetées · ${player.fusions || 0} upgrade${(player.fusions || 0) > 1 ? 's' : ''}</div>
+        <div class="pv-stat-sub">cartes achetées</div>
       </div>
       <div class="pv-stat">
         <div class="pv-stat-label">TEMPS DE JEU</div>
@@ -35847,11 +35943,29 @@ function serializeSave(){
     collOrder: collSlots.slice()
   };
 }
+// V0.04.49 : les anciennes clés « NOM|rareté » (escouades, decks, favoris, missions) pointent sur la rareté unique de la carte.
+function migRemapCardKeys(data){
+  const fix = str => {
+    if(typeof str !== 'string') return str;
+    const i = str.lastIndexOf('|'); if(i < 1) return str;
+    const nm = str.slice(0, i), r = str.slice(i + 1);
+    if(!RARITIES[r]) return str;
+    const d = CHAR_DEFS.find(c => c.name === nm);
+    return (d && r !== d.rarity) ? nm + '|' + d.rarity : str;
+  };
+  const walk = o => {
+    if(Array.isArray(o)) return o.map(walk);
+    if(o && typeof o === 'object'){ const out = {}; Object.keys(o).forEach(k => { out[fix(k)] = walk(o[k]); }); return out; }
+    return fix(o);
+  };
+  ['missions', 'squad', 'battle', 'decks', 'favorites'].forEach(f => { if(data[f] !== undefined) data[f] = walk(data[f]); });
+}
 function applySave(data){
   if(!data || data.v !== 1) return false;
   // Copie profonde : les documents lus depuis la sauvegarde en ligne sont GELÉS (lecture seule).
   // Sans cette copie, l'or, les matériaux ou les PV en combat ne pouvaient plus être modifiés.
   data = JSON.parse(JSON.stringify(data));
+  migRemapCardKeys(data);   // V0.04.49
   restoring = true;
   const p = data.player || {};
   Object.keys(player).forEach(k => { if(p[k] !== undefined) player[k] = p[k]; });
@@ -35883,7 +35997,8 @@ function applySave(data){
     // de légendaire, mais des exemplaires uniques à part. Une carte de série ne doit jamais détenir de
     // copie holo (impossible par le jeu actuel, mais une sauvegarde issue d'une ancienne version buggée
     // pouvait en contenir une) : on la retire silencieusement au chargement.
-    if(!d.holoOnly) st.holo = 0;
+    // V0.04.49 : rareté unique -- tous les exemplaires possédés (toutes raretés confondues) passent à la rareté définitive de la carte.
+    { let tot = 0; RARITY_ORDER.forEach(r => { tot += st[r] || 0; st[r] = 0; }); st[d.rarity] = tot; }
     cardCopies[d.name] = st;
     // Niveau/XP PAR RARETÉ (V0.01.82) : clé sqKey(nom, rareté). Migration depuis l'ancien format (un seul
     // niveau partagé par personnage, clé = juste le nom) -- chaque rareté déjà possédée reprend ce niveau
@@ -35917,7 +36032,7 @@ function applySave(data){
   });
   // Paliers épique/légendaire gagnés par fusion (V0.02.83, cf cardTierFused/rarityMult plus haut).
   Object.keys(cardTierFused).forEach(k => delete cardTierFused[k]);
-  if(data.cardTierFused){
+  if(false && data.cardTierFused){
     Object.keys(data.cardTierFused).forEach(name => {
       cardTierFused[name] = Object.assign({}, data.cardTierFused[name]);
     });
