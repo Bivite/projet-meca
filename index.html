@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.55</title>
+<title>Projet MECA V0.04.56</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2607,7 +2607,11 @@
      même style biseauté), mais seul (pas de DOWNGRADE pour les modules) donc hors de la grille 2 colonnes
      .codex-tools -- pleine largeur ajoutée ici, comme .mod-fuse-toggle juste en dessous. */
   #modDestroyToggle{width:100%; margin:10px 0 0; padding:13px 14px; font-size:12px; letter-spacing:3px;}
-  #deckDestroyToggle{width:100%; margin:0; padding:13px 14px; font-size:12px; letter-spacing:3px;}
+  .deck-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .deck-acts[hidden]{display:none;}
+  #deckDestroyToggle, #deckCreateToggle{width:100%; margin:0; padding:13px 14px; font-size:12px; letter-spacing:3px; min-width:0;}
+  .codex-tool-btn.create{border-color:rgba(90,255,160,.55); color:#a8ffd0;}
+  .codex-tool-btn.create.active{color:#fff; background:linear-gradient(180deg,#4fe39a,#118a54); border-color:#b4ffd8; box-shadow:0 3px 0 #0a4a2c, 0 0 16px -2px rgba(80,255,160,.6);}
   #deckDestroyToggle[hidden]{display:none;}
   .codex-card.tool-defuse{outline:1px dashed rgba(139,92,246,.5); outline-offset:3px;}
   #actionModal{z-index:35;}
@@ -3332,6 +3336,15 @@
   #deckPanel:not([open]){gap:0;}
   #deckPanel[open] .res-toggle-chevron{transform:translateY(-50%) rotate(-135deg);}
   #deckBody{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 8px; padding:4px 0 2px;}
+  #deckBody.res-mode{display:flex; flex-direction:column; gap:8px;}
+  #deckBody.res-mode .res-crystal{margin-top:0;}
+  #deckBody.res-mode .res-big, #deckBody.res-mode .res-crystal, #deckBody.res-mode .res-mat{
+    --cut:8px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  }
+  #deckBody.res-mode .res-big{background:linear-gradient(160deg, rgba(255,255,255,.14) 0%, transparent 45%), rgba(0,0,0,.4);}
+  #deckBody.res-mode .res-crystal{border-color:rgba(90,120,255,.5); background:linear-gradient(160deg, rgba(255,255,255,.14) 0%, transparent 45%), rgba(18,26,70,.55);}
+  #deckBody.res-mode .res-crystal b{color:#b3c3ff;}
   .deck-tile{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   .deck-tile .codex-card{pointer-events:none;}
   .deck-name{
@@ -6173,8 +6186,8 @@
   }
   .mod-big .mod-lvl-label{font-size:clamp(8px, 2.6vw, 12px);}
   /* Texte d'effet dans l'encadré sous le nom (grande carte de la fiche module) */
-  .mod-fx{position:absolute; left:4.7%; right:5%; top:78%; height:12%; display:flex; align-items:center; justify-content:center; padding:0 3.5%; box-sizing:border-box; pointer-events:none;}
-  .mod-fx-in{font-family:var(--font-ui); font-size:clamp(7.5px, 2.5vw, 10.2px); line-height:1.12; text-align:center; color:#c9d3e6; text-shadow:0 1px 2px rgba(0,0,0,.9);}
+  .mod-fx{container-type:size; position:absolute; left:4.7%; right:5%; top:78%; height:12%; display:flex; align-items:center; justify-content:center; padding:0 3.5%; box-sizing:border-box; pointer-events:none;}
+  .mod-fx-in{font-family:var(--font-ui); font-size:3.2cqw; line-height:1.12; text-align:center; color:#c9d3e6; text-shadow:0 1px 2px rgba(0,0,0,.9);}
   .mod-fx-in b{color:#fff;}
   .mod-fx-in .mana-pt{filter:drop-shadow(0 0 2px rgba(76,194,255,.9));}
   .mod-lvl-num-box{height:90%; aspect-ratio:1; display:block;}
@@ -6198,6 +6211,23 @@
   .mod-desc{font-size:13px; line-height:1.5; color:var(--text-dim); text-align:center; padding:0 6px;}
   .mod-desc b{color:#fff;}
   /* point de mana (losange bleu, comme les jauges de mana du combat) */
+  /* CRÉER : cartes / modules non possédés en fantôme gris, bouton FABRIQUER */
+  .codex-card.craft-ghost, .mod-card.craft-ghost{filter:grayscale(1) brightness(.62) contrast(.92); opacity:.8;}
+  #codexModalInner.craft-ghost, .mod-big.craft-ghost{filter:grayscale(1) brightness(.66) contrast(.92); opacity:.88;}
+  #codexModalInner, .mod-big{transition:filter .6s, opacity .6s;}
+  #codexModalInner.craft-pop, .mod-big.craft-pop{animation:craftPop .85s ease-out;}
+  @keyframes craftPop{0%{filter:brightness(1);} 25%{filter:brightness(1.7) drop-shadow(0 0 18px rgba(120,255,190,.9));} 100%{filter:brightness(1);}}
+  #craftBar{position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom, 0px) + 26px); display:none; justify-content:center; z-index:45; pointer-events:none;}
+  #craftBar.show{display:flex;}
+  .craft-btn{--cut:14px; pointer-events:auto; width:min(86vw, 340px); display:flex; align-items:center; justify-content:center; gap:10px; padding:16px 14px; border:0; border-radius:0; cursor:pointer; color:#fff;
+    font-family:var(--font-title); font-size:13px; font-weight:800; letter-spacing:2.5px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.4) 0%, transparent 42%), linear-gradient(180deg, #4fe39a 0%, #18a566 55%, #0d6a40 100%);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.4); text-shadow:0 1px 2px rgba(0,0,0,.5);}
+  .craft-btn:active{transform:translateY(2px);}
+  .craft-btn.off{background:linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 42%), linear-gradient(180deg, #4a5262, #2c323e); color:#aab2c2; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);}
+  .craft-cost{display:inline-flex; align-items:center; gap:5px;}
+  .craft-cost i{width:20px; height:20px; display:inline-block;}
   .mana-pt{display:inline-block; width:.62em; height:.78em; margin:0 .05em 0 .18em; vertical-align:-.1em; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     background:conic-gradient(#d6f6ff 0 25%, #79d2ff 25% 50%, #2f7fe6 50% 75%, #5cc0ff 75%); filter:drop-shadow(0 0 3px rgba(76,194,255,.9));}
   .mod-action-card{width:40%; max-width:150px;}
@@ -8385,7 +8415,7 @@
             <div class="sh-xp-amt" id="shopMatRareAmt">10 <small>RARE</small></div>
           </div>
           <div class="sh-price-col">
-            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatRarePrice">50</b></div>
+            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatRarePrice">140</b></div>
             <button type="button" class="sh-buy" id="shopMatRareBuyBtn">ACHETER</button>
           </div>
           <div class="sh-stepper">
@@ -8399,7 +8429,7 @@
             <div class="sh-xp-amt" id="shopMatEpiqueAmt">10 <small>ÉPIQUE</small></div>
           </div>
           <div class="sh-price-col">
-            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatEpiquePrice">150</b></div>
+            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatEpiquePrice">420</b></div>
             <button type="button" class="sh-buy" id="shopMatEpiqueBuyBtn">ACHETER</button>
           </div>
           <div class="sh-stepper">
@@ -8413,7 +8443,7 @@
             <div class="sh-xp-amt" id="shopMatLegendaireAmt">10 <small>LÉGENDAIRE</small></div>
           </div>
           <div class="sh-price-col">
-            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatLegendairePrice">400</b></div>
+            <div class="sh-price"><i class="ico-goldbar"></i><b id="shopMatLegendairePrice">1 125</b></div>
             <button type="button" class="sh-buy" id="shopMatLegendaireBuyBtn">ACHETER</button>
           </div>
           <div class="sh-stepper">
@@ -8866,7 +8896,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.55</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.56</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9046,10 +9076,10 @@
         <div class="wave">DECK</div>
       </header>
       <details class="res-panel" id="deckPanel">
-        <summary class="team-label player">DECK<span class="res-toggle-chevron"></span></summary>
+        <summary class="team-label player"><span id="deckPanelTitle">DECK</span><span class="res-toggle-chevron"></span></summary>
         <div id="deckBody"></div>
       </details>
-      <button type="button" class="codex-tool-btn destroy" id="deckDestroyToggle">DÉTRUIRE</button>
+      <div class="deck-acts" id="deckActs"><button type="button" class="codex-tool-btn create" id="deckCreateToggle">FABRIQUER</button><button type="button" class="codex-tool-btn destroy" id="deckDestroyToggle">DÉTRUIRE</button></div>
       <div class="deck-draft-bar" id="deckDraftBar" hidden></div>
       <div class="deck-switch" id="deckSwitch"><button type="button" data-t="cards" class="on">CARTES</button><button type="button" data-t="modules">MODULES</button></div>
       <div class="codex-tools deck-tools">
@@ -9291,9 +9321,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.55';
+var BUILD_VERSION = 'V0.04.56';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.56', items:[
+    'DECK : nouveau bouton FABRIQUER (à gauche de DÉTRUIRE). La liste montre toutes les cartes (ou tous les modules) ; celles que tu n\'as pas sont en fantôme gris, avec un aperçu et un bouton FABRIQUER payé en matériaux selon la rareté (rare 10, épique 20, légendaire 40, écarlate 80 matériaux légendaires). Les holographiques ne se fabriquent pas.',
+    'DECK : pendant FABRIQUER ou DÉTRUIRE, l\'encadré DECK devient RESSOURCES (or, XP, matériaux, cristaux).',
+    'DESTRUCTION : rare 5 matériaux rares, épique 10 épiques, légendaire 20 légendaires, écarlate 40 légendaires, holographique 100 légendaires. Les cartes holographiques sont maintenant destructibles.',
+    'BOUTIQUE : nouveaux prix des matériaux (rare 14 or, épique 42, légendaire 112,5 l\'unité ; 40 légendaires = 4 500 or).',
+    'DECK : un module est obligatoire pour valider un deck.',
+    'MODULES : le texte de l\'effet s\'affiche dans l\'encadré sous le nom sur toutes les cartes modules (liste, deck, labo, fiche).',
+  ] },
   { v:'V0.04.55', items:[
     'DECK, onglet MODULES : encadré RECHERCHER et bouton FILTRES (classement par rareté ou A-Z) comme pour les cartes.',
     'MODULES : le coût s\'écrit maintenant « 3 » suivi d\'un point de mana au lieu de « Dépense 3 Mana ».',
@@ -12407,7 +12445,7 @@ function modCardFaceHtml(def, level, rar, opts){
   // l'icône "image cassée" du navigateur (repli visuel discret sur .mod-window, qui n'a lui-même aucun
   // style propre -- le cadre .mod-face-front reste visible derrière).
   const winContent = def.art ? `<img class="mod-art-img" src="${def.art}" alt="" onerror="this.style.opacity='0'">` : moduleEffIcon(def.kind);
-  return `<div class="mod-face mod-face-front"></div><div class="mod-window">${winContent}</div><div class="mod-name">${modNameSvg(def, rar)}</div>${opts && opts.fx ? `<div class="mod-fx"><div class="mod-fx-in">${def.descFor(0)}</div></div>` : `<div class="mod-lvl-box"><span class="mod-lvl-label">NV.</span><div class="mod-lvl-num-box">${modLvlSvg(level, rar)}</div></div>`}`;
+  return `<div class="mod-face mod-face-front"></div><div class="mod-window">${winContent}</div><div class="mod-name">${modNameSvg(def, rar)}</div><div class="mod-fx"><div class="mod-fx-in">${def.descFor(0)}</div></div>`;
 }
 // Mode UPGRADE de l'écran MODULES (V0.02.46, demande d'Alex) : bouton sous l'encadré MATÉRIAUX, qui
 // passe en "QUITTER" + rouge une fois actif. Depuis V0.02.49 (demande d'Alex : pas de bouton UPGRADE
@@ -12594,6 +12632,7 @@ function openModuleModal(name, rar, level, opts){
   document.getElementById('moduleModal').classList.add('show');
 }
 function closeModuleModal(){
+  hideCraftBar();
   if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   document.getElementById('moduleModal').classList.remove('show', 'lvl-open');
   const panel = document.getElementById('modLvlPanel');
@@ -15295,7 +15334,7 @@ function renderCodex(){
     }
     shown.forEach(st => {
       const card = document.createElement('div');
-      card.className = 'codex-card ' + rarCls(st.rar) + (destroy ? (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy') : ' tool-defuse');
+      card.className = 'codex-card ' + rarCls(st.rar) + (destroy ? (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0)) ? ' tool-protected' : ' tool-destroy') : ' tool-defuse');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
       card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
@@ -15868,8 +15907,9 @@ function actionCardHtml(def, rar, extra){
 // salvageValue() (base undefined), d'où l'impression que « rien ne se passe » dans GESTION DE CARTE. Il
 // n'existe pas de matériau écarlate : le recyclage rend des matériaux LÉGENDAIRES (salvageMatRar()), en
 // plus grande quantité, et plus d'or que la légendaire.
-const SALVAGE = { rare:{ mat:3, gold:5 }, epique:{ mat:4, gold:25 }, legendaire:{ mat:6, gold:120 }, ecarlate:{ mat:10, gold:300 } };
-function salvageMatRar(rar){ return rar === 'ecarlate' ? 'legendaire' : rar; }
+// V0.04.56 : rare 5 / épique 10 / légendaire 20 / écarlate 40 (matériaux légendaires) / holographique 100 (matériaux légendaires)
+const SALVAGE = { rare:{ mat:5, gold:5 }, epique:{ mat:10, gold:25 }, legendaire:{ mat:20, gold:120 }, ecarlate:{ mat:40, gold:300 }, holo:{ mat:100, gold:600 } };
+function salvageMatRar(rar){ return (rar === 'ecarlate' || rar === 'holo') ? 'legendaire' : rar; }
 function salvageValue(def, rar, level){
   const lvl = 1, base = SALVAGE[rar];   // V0.04.32 : valeur de base de la rareté (plus de niveaux)
   return { mat: bonusN(base.mat + Math.floor(lvl / 10)), gold: bonusN(Math.round(base.gold * (1 + (lvl - 1) / 20))) };
@@ -16057,7 +16097,6 @@ function playModuleDestroyFx(def, rar, level, done){
 
 function openDestroyModal(def, rar, level){
   if(keyInMission(sqKey(def.name, rar)) && stackCount(def.name, rar) <= 1){ showToast('CARTE ENGAGÉE EN MISSION'); return; }
-  if(isHolo(rar)){ showToast('CARTE HOLOGRAPHIQUE : INDESTRUCTIBLE'); return; }
   if((levelDist(def.name, rar)[level] || 0) - favKeepAt(def.name, rar, level) <= 0){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
   destroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture, quelle que soit la carte précédente
   renderDestroyModal(def, rar, level);
@@ -17213,10 +17252,10 @@ document.getElementById('shopCrystalBuyBtn').onclick = () => {
 // boutique (règle explicite d'Alex, V0.02.92).
 const SHOP_MAT_STEP = 10;
 const SHOP_MAT_MAX = SHOP_MAT_STEP * 10;
-const SHOP_MAT_GOLD_PER_UNIT = { rare:5, epique:15, legendaire:40 };   // V0.04.32 : max 100 unités = 4 000 or < 1 cristal (4 500)
+const SHOP_MAT_GOLD_PER_UNIT = { rare:14, epique:42, legendaire:112.5 };   // V0.04.56 : 40 légendaires = 4 500 or (même proportion 1 : 3 : 8 pour rare / épique)
 const SHOP_MAT_ID = { rare:'MatRare', epique:'MatEpique', legendaire:'MatLegendaire' };
 const shopMatAmount = { rare:SHOP_MAT_STEP, epique:SHOP_MAT_STEP, legendaire:SHOP_MAT_STEP };
-function shopMatPrice(rar){ return shopMatAmount[rar] * SHOP_MAT_GOLD_PER_UNIT[rar]; }
+function shopMatPrice(rar){ return Math.round(shopMatAmount[rar] * SHOP_MAT_GOLD_PER_UNIT[rar]); }
 function renderShopMat(rar){
   const id = SHOP_MAT_ID[rar], price = shopMatPrice(rar);
   const amtEl = document.getElementById('shop' + id + 'Amt');
@@ -17645,6 +17684,7 @@ function openCodexModal(name, rar, opts){
   }
 }
 function closeCodexModal(){
+  hideCraftBar();
   if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   const m = document.getElementById('codexModal');
   m.classList.remove('show', 'lvl-open');
@@ -18216,6 +18256,7 @@ var deckDraft = null;        // { id|null, name, cards:[] }
 var deckFilter = 'all', deckSort = 'group', deckSearchQuery = '';
 var deckModSort = 'rarity';   // classement des modules : 'rarity' ou 'az'
 var deckTab = 'cards';   // V0.04.54 : liste affichée dans l'écran DECK : 'cards' (cartes classiques) ou 'modules'
+var deckCreateMode = false;   // V0.04.56 : bouton CRÉER de l'écran DECK (fabrication de cartes / modules en matériaux)
 var deckDestroyMode = false;   // V0.04.48 : bouton DÉTRUIRE de l'écran DECK (même fenêtre que GESTION DE CARTE)
 const DECK_SIZE = 20;
 function deckKeyName(k){ return String(k).split('|')[0]; }
@@ -18264,7 +18305,7 @@ function deckPeekOpts(){ return { noLevel:true, noCopies:true, noFav:true, noInf
 
 // --- Navigation ---
 function enterDeckView(){
-  deckDestroyMode = false; deckTab = 'cards';
+  deckDestroyMode = false; deckCreateMode = false; deckTab = 'cards'; hideCraftBar();
   deckDraft = null;   // V0.04.16 : on rouvre toujours la case DECK sur la liste de cartes, jamais dans un deck resté ouvert
   // V0.04.16 : recherche, filtre et classement reviennent à zéro à chaque ouverture de la case DECK
   deckFilter = 'all'; deckSort = 'group'; deckSearchQuery = '';
@@ -18276,7 +18317,7 @@ function enterDeckView(){
   scrollViewTop();
 }
 document.getElementById('tileDeck').onclick = enterDeckView;
-document.getElementById('deckBackBtn').onclick = () => { if(deckDestroyMode) setDeckDestroyMode(false); else deckLeave(); };
+document.getElementById('deckBackBtn').onclick = () => { if(deckDestroyMode) setDeckDestroyMode(false); else if(deckCreateMode) setDeckCreateMode(false); else deckLeave(); };
 
 // --- Quitter l'écran DECK (V0.04.16, demande d'Alex) : un deck en cours de création/modification est perdu, on demande confirmation ---
 function deckDraftDirty(){
@@ -18371,6 +18412,13 @@ function deckRemoveCard(idx){
 }
 function deckValidate(){
   if(!deckDraft || deckDraft.cards.length !== DECK_SIZE) return;
+  // V0.04.56 : un module est désormais obligatoire pour valider un deck
+  if(!deckModuleValid(deckDraft.module)){
+    deckDraft.module = null;
+    if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); }
+    showToast(modOwnedStacks().length ? 'CHOISIS D’ABORD LE MODULE DU DECK' : 'UN MODULE EST OBLIGATOIRE : FABRIQUE-EN UN');
+    return;
+  }
   if(!deckDraft.leader){ showToast('CHOISIS D’ABORD TON CHEF D’ESCOUADE'); return; }
   const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: deckDraft.leader, module: deckModuleValid(deckDraft.module) };
   const i = decks.findIndex(x => x.id === saved.id);
@@ -18400,8 +18448,26 @@ function deckDeleteDraft(){
 }
 
 // --- Rendu ---
+var _deckResMode = false;
 function renderDeckPanel(){
   const body = document.getElementById('deckBody');
+  // FABRIQUER / DÉTRUIRE : l'encadré DECK devient RESSOURCES (même contenu que le TIRAGE + les matériaux)
+  const resMode = !deckDraft && (deckCreateMode || deckDestroyMode);
+  document.getElementById('deckPanelTitle').textContent = resMode ? 'RESSOURCES' : 'DECK';
+  body.classList.toggle('res-mode', resMode);
+  if(resMode){
+    if(!_deckResMode) document.getElementById('deckPanel').open = true;
+    _deckResMode = true;
+    body.innerHTML = `
+      <div class="res-top">
+        <div class="res-big"><span class="res-ico" data-lbl="OR">${ICON_GOLD}</span><div><b>${fmtNum(player.res.gold)}</b></div></div>
+        <div class="res-big"><span class="res-ico" data-lbl="EXPÉRIENCE">${ICON_XP}</span><div><b>${fmtNum(player.totalXp || 0)}</b></div></div>
+      </div>
+      <div class="res-mats">${MAT_ORDER.map(r => `<div class="res-mat r-${r}"><span class="res-ico">${matIcon(r)}</span><b>${fmtNum(player.res.mat[r] || 0)}</b><small>${RARITIES[r].label}</small></div>`).join('')}</div>
+      <div class="res-crystal"><span class="res-ico" data-lbl="CRISTAUX DE FABRICATION">${ICON_CRYSTAL}</span><b>${fmtNum(player.res.crystal || 0)}</b></div>`;
+    return;
+  }
+  _deckResMode = false;
   const editing = deckDraft && deckDraft.id;
   const tiles = decks.map(d => {
     const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
@@ -18453,6 +18519,67 @@ function renderDeckDraftBar(){
 function deckTileHtml(e, badge){
   return `${codexCardHtml(e.def, e.rar, { badge: badge > 1 ? '×' + badge : '' })}`;
 }
+// ---------- CRÉER (V0.04.56) : toutes les cartes / tous les modules, fantômes si non possédés ----------
+// Coût de fabrication : matériaux de la rareté de la carte (l'écarlate se paie en légendaires, comme la destruction). Holographique : non fabricable.
+const CRAFT_COST = { rare:{ mat:'rare', n:10 }, epique:{ mat:'epique', n:20 }, legendaire:{ mat:'legendaire', n:40 }, ecarlate:{ mat:'legendaire', n:80 } };
+function craftCostOf(rar){ return CRAFT_COST[rar] || null; }
+function renderDeckCreate(work){
+  const q = deckSearchQuery;
+  if(deckTab === 'modules'){
+    let list = [];
+    MODULE_DEFS.forEach(def => ['rare', 'epique', 'legendaire'].forEach(rar => list.push({ def, rar, own:modStackCount(def.name, rar) > 0 })));
+    if(q) list = list.filter(e => e.def.name.toLowerCase().includes(q));
+    const r = e => tierOf(e.rar);
+    list.sort(deckModSort === 'az' ? (a, b) => a.def.name.localeCompare(b.def.name) || r(b) - r(a) : (a, b) => r(b) - r(a) || a.def.name.localeCompare(b.def.name));
+    work.innerHTML = '<div class="mod-grid" id="deckList">' + (list.map(e => `<div class="mod-item"><div class="mod-card ${rarCls(e.rar)}${e.own ? '' : ' craft-ghost'}" data-name="${e.def.name}" data-rar="${e.rar}">${modCardFaceHtml(e.def, 1, e.rar)}</div></div>`).join('') || '<div class="fab-empty" style="grid-column:1/-1;">Aucun module trouvé.</div>') + '</div>';
+    work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openCraftPreview('module', c.dataset.name, c.dataset.rar); });
+    return;
+  }
+  let list = CHAR_DEFS.filter(d => fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
+  const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar);
+  list.sort(deckSort === 'rarity' ? (a, b) => r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
+  work.innerHTML = '<div class="codex-grid" id="deckList">' + (list.map(e => `<div class="codex-card ${rarCls(e.rar)}${stackCount(e.def.name, e.rar) > 0 ? '' : ' craft-ghost'}" data-name="${e.def.name}" data-rar="${e.rar}">${deckTileHtml(e, 0)}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>') + '</div>';
+  work.querySelectorAll('.codex-card').forEach(c => { c.onclick = () => openCraftPreview('card', c.dataset.name, c.dataset.rar); });
+}
+var craftTarget = null;
+function openCraftPreview(kind, name, rar){
+  if(kind === 'module'){
+    openModuleModal(name, rar, 1, { noClear:true });
+    const big = document.querySelector('#moduleModalInner .mod-big'); if(big) big.classList.toggle('craft-ghost', modStackCount(name, rar) < 1);
+  } else {
+    openCodexModal(name, rar, Object.assign({ noClear:true }, deckPeekOpts()));
+    document.getElementById('codexModalInner').classList.toggle('craft-ghost', stackCount(name, rar) < 1);
+  }
+  craftTarget = { kind, name, rar };
+  let bar = document.getElementById('craftBar');
+  if(!bar){ bar = document.createElement('div'); bar.id = 'craftBar'; document.body.appendChild(bar); }
+  renderCraftBar(); bar.classList.add('show');
+}
+function hideCraftBar(){ craftTarget = null; const b = document.getElementById('craftBar'); if(b) b.classList.remove('show'); }
+function renderCraftBar(){
+  const bar = document.getElementById('craftBar'), t = craftTarget; if(!bar || !t) return;
+  const cost = craftCostOf(t.rar);
+  if(!cost){ bar.innerHTML = '<button type="button" class="craft-btn off" disabled>NON FABRICABLE</button>'; return; }
+  const ok = ((player.res.mat && player.res.mat[cost.mat]) || 0) >= cost.n;
+  bar.innerHTML = `<button type="button" class="craft-btn${ok ? '' : ' off'}" id="craftBtn">FABRIQUER<span class="craft-dash">–</span><span class="craft-cost r-${cost.mat}"><b>${cost.n}</b>${matIcon(cost.mat)}</span></button>`;
+  document.getElementById('craftBtn').onclick = doCraft;
+}
+function doCraft(){
+  const t = craftTarget; if(!t) return;
+  const cost = craftCostOf(t.rar); if(!cost) return;
+  const have = (player.res.mat && player.res.mat[cost.mat]) || 0;
+  if(have < cost.n){ showToast('MATÉRIAUX INSUFFISANTS : ' + cost.n + ' ' + RARITIES[cost.mat].label); return; }
+  player.res.mat[cost.mat] = have - cost.n;
+  if(t.kind === 'module') acquireModule(MODULE_DEFS.find(d => d.name === t.name), t.rar);
+  else acquireCard(CHAR_DEFS.find(d => d.name === t.name), t.rar);
+  if(typeof renderResources === 'function') renderResources();
+  saveNow();
+  showToast((t.kind === 'module' ? 'MODULE FABRIQUÉ : ' : 'CARTE FABRIQUÉE : ') + t.name);
+  const el = t.kind === 'module' ? document.querySelector('#moduleModalInner .mod-big') : document.getElementById('codexModalInner');
+  if(el){ el.classList.remove('craft-ghost'); el.classList.remove('craft-pop'); void el.offsetWidth; el.classList.add('craft-pop'); setTimeout(() => el.classList.remove('craft-pop'), 900); }
+  renderDeckView();
+  renderCraftBar();
+}
 function renderDeckWork(){
   const work = document.getElementById('deckWork');
   const keepH = work.offsetHeight; if(keepH) work.style.minHeight = keepH + 'px';
@@ -18464,7 +18591,7 @@ function renderDeckWork(){
     if(!shown.length) grid.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
     shown.forEach(st => {
       const card = document.createElement('div');
-      card.className = 'codex-card ' + rarCls(st.rar) + (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0) || isHolo(st.rar)) ? ' tool-protected' : ' tool-destroy');
+      card.className = 'codex-card ' + rarCls(st.rar) + (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0)) ? ' tool-protected' : ' tool-destroy');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
       card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
@@ -18472,6 +18599,8 @@ function renderDeckWork(){
       addPreviewPress(card, st.def, st.rar, { level: st.level });
       grid.appendChild(card);
     });
+  } else if(!deckDraft && deckCreateMode){
+    renderDeckCreate(work);
   } else if(!deckDraft && deckTab === 'modules'){
     work.innerHTML = '<div class="mod-grid" id="deckList">' + (deckModStacks().map(e => deckModTile(e, false)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">' + (deckSearchQuery ? 'Aucun module trouvé.' : 'Aucun module possédé.') + '</div>') + '</div>';
     work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openModuleModal(c.dataset.name, c.dataset.rar, parseInt(c.dataset.level, 10)); });
@@ -18543,16 +18672,25 @@ function deckRefreshLeader(){
   if(deckDraft && deckDraft.leader){ const c = cards.slice().reverse().find(x => x.dataset.key === deckDraft.leader); if(c) c.classList.add('deck-leader'); }
   const v = document.getElementById('deckValidateBtn');
   v.hidden = !full;
-  const need = full && !deckDraft.leader;
+  const needMod = full && !deckModuleValid(deckDraft.module);
+  const need = full && (needMod || !deckDraft.leader);
   v.classList.toggle('need', need);
-  v.textContent = need ? 'CHOISIS TON CHEF D’ESCOUADE' : 'VALIDER LE DECK';
+  v.textContent = needMod ? 'CHOISIS LE MODULE DU DECK' : need ? 'CHOISIS TON CHEF D’ESCOUADE' : 'VALIDER LE DECK';
 }
 function setDeckDestroyMode(on){
   deckDestroyMode = !!on && !deckDraft;
+  if(deckDestroyMode){ deckCreateMode = false; hideCraftBar(); }
   setTimeout(updateNavBack, 0);
   renderDeckView();
 }
 document.getElementById('deckDestroyToggle').onclick = () => setDeckDestroyMode(!deckDestroyMode);
+function setDeckCreateMode(on){
+  deckCreateMode = !!on && !deckDraft;
+  if(deckCreateMode) deckDestroyMode = false;
+  hideCraftBar(); setTimeout(updateNavBack, 0);
+  renderDeckView();
+}
+document.getElementById('deckCreateToggle').onclick = () => setDeckCreateMode(!deckCreateMode);
 function deckRenderSwitch(){
   const sw = document.getElementById('deckSwitch'); if(!sw) return;
   sw.hidden = !!deckDestroyMode;
@@ -18589,11 +18727,14 @@ function deckPickModule(name, rar){
   if(deckDraft.module && deckDraft.cards.length === DECK_SIZE && !deckDraft.leader) showToast('CHOISIS TON CHEF D’ESCOUADE : TOUCHE UNE CARTE');
 }
 function renderDeckView(){
-  if(deckDraft) deckDestroyMode = false;
+  if(deckDraft){ deckDestroyMode = false; deckCreateMode = false; }
   const dd = document.getElementById('deckDestroyToggle');
   dd.hidden = !!deckDraft;
   dd.classList.toggle('active', deckDestroyMode);
   dd.textContent = deckDestroyMode ? 'QUITTER' : 'DÉTRUIRE';
+  const cd = document.getElementById('deckCreateToggle');
+  cd.classList.toggle('active', deckCreateMode); cd.textContent = deckCreateMode ? 'QUITTER' : 'FABRIQUER';
+  document.getElementById('deckActs').hidden = !!deckDraft;
   closeDeckPile(true);
   deckRenderSwitch();
   renderDeckPanel();
@@ -18807,7 +18948,7 @@ function navBackAction(){
   if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
-  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => { if(deckDestroyMode) setDeckDestroyMode(false); else deckLeave(); };
+  if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => { if(deckDestroyMode) setDeckDestroyMode(false); else if(deckCreateMode) setDeckCreateMode(false); else deckLeave(); };
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('modulesView').classList.contains('active')) return () => showCodexHub();
   return null;
