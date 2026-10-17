@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.63</title>
+<title>Projet MECA V0.04.64</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8836,7 +8836,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.63</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.64</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9234,9 +9234,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.63';
+var BUILD_VERSION = 'V0.04.64';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.64', items:[
+    'NOUVELLE CARTE : SCOPT (rare, Percée) — mécha-scorpion. À son arrivée, l\'emplacement brille en rouge puis fond pour former un trou en relief d\'où la carte se glisse jusqu\'à sa place.',
+    'COMBAT : la flèche bleue de défense est toujours tirée vers le bas quand on la maintient, sans partir sur le côté.',
+    'COMBAT : un Tank condamné par une action déjà planifiée ne bloque plus le ciblage des autres cartes pour les actions suivantes.',
+    'COMBAT : les craquelures s\'affichent dès le ciblage en maintien, et aussi sur une carte alliée qui va mourir de la riposte.',
+  ] },
   { v:'V0.04.63', items:[
     'NOUVELLE CARTE : DILUS (rare, Appel : pioche une carte) — mécha-crocodile des marais. À son arrivée, le champ de bataille se remplit d\'eau (les cartes restent visibles), le crocodile nage jusqu\'à la case choisie, la carte jaillit à la surface (onde de choc, vagues, gouttes, reflet), puis l\'eau se retire.',
     'NOUVELLE CARTE : KRIGER (rare, Appel : attaque directement le chef d\'escouade adverse) — mécha-guerrier à grappin. Il lance un crochet 3D au bout d\'une chaîne qui se plante dans le chef adverse, se tracte jusqu\'à lui pour l\'attaquer, puis le crochet est arraché et la carte retourne dans sa case.',
@@ -10937,6 +10943,7 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  SCOPT:     { head:'dome', shoulders:'spike', torso:'vcut', legs:'heavy', back:'cannons', arms:'thick', weapon:'rifle', emblem:'hostile' },
   KRIGER:    { head:'vfin', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
   DILUS:     { head:'crest', shoulders:'round', torso:'heavy', legs:'standard', back:'cannons', arms:'std', weapon:'cannon', emblem:'chevron' },
   HYPPER:    { head:'small', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'chevron' },
@@ -10986,6 +10993,7 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  SCOPT:     { pilot:'Lt. Zara « Dard » Okonkwo', text:"Ancienne démineuse des quartiers effondrés, Okonkwo pilote un mécha-scorpion monté sur six pattes articulées. Il se glisse sous les ruines, perce le sol là où personne ne l'attend et frappe depuis les décombres, queue dressée, laser braqué. Quand le sol se met à rougeoyer, il est déjà trop tard." },
   KRIGER:    { pilot:'Sgt. Brynja « Grappin » Halvorsen', text:"Ancienne bûcheronne de haute canopée, Halvorsen a troqué sa hache contre un grappin de siège monté sur chaîne d'acier. Elle ne charge jamais à l'aveugle : elle accroche d'abord sa cible, puis se laisse tirer à pleine vitesse, tout son poids derrière le coup. Ce qui est accroché ne s'échappe plus." },
   DILUS:     { pilot:'Lt. Naïa Tran « Mangrove »', text:"Éclaireuse des unités amphibies, Tran pilote un mécha-crocodile à l'affût sous la surface des marais. Elle attend que l'ennemi baisse la garde, jaillit des eaux d'un seul bond, et son canon de gueule fait le reste. Personne ne l'a jamais entendue arriver." },
   HYPPER:    { pilot:'Sgt. Amadou « Béton » Diallo', text:"Ancien conducteur d'engins de chantier, Diallo pilote ce colosse bâti à partir de blocs de béton armé et de plaques de blindage. Rien ne l'arrête sur une autoroute, rien ne le déplace sur un champ de bataille : il avance, encaisse, et les autres passent derrière lui." },
@@ -11232,7 +11240,13 @@ const CHAR_DEFS = [
     ultName:"CHAÎNE DE GUERRE", ultMult:1.8, ultDesc:"Plante son grappin dans la cible et se projette dessus de tout son poids",
     base:{atk:33, def:18, hp:290}, max:{atk:225, def:130, hp:1100}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kriger-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kriger-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kriger-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.64) : SCOPT, mécha-scorpion à Percée ----
+  { name:"SCOPT", rarity:"rare", color:"#c0443a", shape:"SCOPT", role:"Assaut — mécha-scorpion des ruines",
+    ultName:"AIGUILLON ÉCARLATE", ultMult:1.8, ultDesc:"Plante son dard laser dans un ennemi : coup critique garanti",
+    base:{atk:34, def:14, hp:285}, max:{atk:230, def:100, hp:1090}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/scopt-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/scopt-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11268,7 +11282,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11276,7 +11290,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14049,6 +14063,7 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
+  SCOPT:     (u, T) => hitCrit(u, T, u.ultMult),   // dard laser : critique garanti
   KRIGER:    (u, T) => hitOne(u, T, u.ultMult),   // grappin planté, puis attaque en force
   DILUS:     (u, T) => hitOne(u, T, u.ultMult),   // surgit des eaux et tire à bout portant
   HYPPER:    (u, T) => { squadShield(2); },   // dresse un blindage de béton autour de toute l'escouade
@@ -21357,7 +21372,8 @@ function btlRenderArrowsNow(){
       want.set('tg', { kind:tg.kind, a:{ x:n.x0, y:n.y0 }, b:{ x:n.x1, y:n.y1 }, mk:n.mk, dir:n.dir, lock:true, rate:14, intro:220 });
     } else if(tg.kind === 'def'){   // DÉFENDRE : la flèche part TOUJOURS du bas de la carte et est tirée vers le bas, où que soit le doigt (même sur les cartes)
       const ax = fr.left + fr.width / 2, ay = fr.bottom;
-      want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:tg.x, y:Math.max(tg.y, ay + 24) }, mk:Math.max(0, Math.min(1, (tg.y - ay) / 70)), dir:1, lock:false, rate:30, intro:220 });
+      const ddy = Math.max(tg.y - ay, 78), ddx = Math.max(-ddy * .45, Math.min(ddy * .45, tg.x - ax));   // tirée vers le bas : l'écart latéral est borné, la flèche ne part jamais de côté
+      want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:ax + ddx, y:ay + ddy }, mk:1, dir:1, lock:false, rate:30, intro:220 });
     } else {   // doigt libre : plus il passe au-dessus de la carte, plus la flèche part à la verticale vers le haut
       const ax = fr.left + fr.width / 2, ay = fr.top;
       want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:tg.x, y:tg.y }, mk:Math.max(0, Math.min(1, (ay - tg.y) / 70)), dir:-1, lock:false, rate:30, intro:220 });
@@ -22461,7 +22477,16 @@ function btlCloseMenu(keepFloat){
 // ----- ciblage (flèche qui suit le doigt) -----
 function btlTargetsFor(c, kind){
   if(kind === 'def') return btlAlly(c.side).filter(t => t.hp > 0);
-  return btlValidFoes(c.side);
+  return btlValidFoesFor(c);
+}
+// V0.04.64 : un Tank déjà condamné par une action planifiée AVANT celle-ci ne bloque plus les autres cartes
+function btlValidFoesFor(c){
+  const all = btlAlly(btlOther(c.side)).filter(t => t.hp > 0);
+  const dead = btlPredict({ skip:c, before:c.plan ? c.plan.seq : Infinity });
+  const foes = all.filter(t => !dead.has(t.uid));
+  if(!foes.length) return btlValidFoes(c.side);
+  const tanks = foes.filter(t => btlHas(t, 'tank'));
+  return tanks.length ? tanks : foes;
 }
 function btlCardAt(list, x, y, cur){
   const inR = (r, pad) => x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
@@ -22754,23 +22779,29 @@ function btlAimDown(ev){
   window.addEventListener('pointercancel', off);
 }
 // ----- croix rouge : cartes ciblées qui seront détruites en fin de tour (simulation prudente : dégâts minimum) -----
-function btlPredict(){
+function btlPredict(opt){
   const st = new Map(), get = c => { let s = st.get(c.uid); if(!s){ s = { hp:c.hp, df:Math.max(0, c.df), psh:0, php:0 }; st.set(c.uid, s); } return s; };
   const hit = (s, d, rec) => { const sh = Math.min(s.df, d); s.df -= sh; if(rec){ s.psh += sh; s.php += d - sh; } s.hp = Math.max(0, s.hp - (d - sh)); };   // rec : dégâts d'une attaque reçue (affichés sur la carte ciblée)
-  const plans = [];
-  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt && btlOnField(c)) plans.push(c); }));
+  const plans = [];   // { c, plan }
+  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt && btlOnField(c) && !(opt && c === opt.skip) && !(opt && opt.before !== undefined && (c.plan.seq || 0) >= opt.before)) plans.push({ c, plan:c.plan }); }));
+  // pendant le maintien / ciblage : l'action en cours de visée est simulée comme si elle était lancée (les craquelures apparaissent avant que le doigt se lève)
+  const tgH = BTL.tg;
+  if(!opt && tgH && tgH.shown && tgH.active && tgH.over && tgH.c && btlOnField(tgH.c)){
+    const k = plans.findIndex(e => e.c === tgH.c); if(k >= 0) plans.splice(k, 1);
+    plans.push({ c:tgH.c, plan:{ kind:tgH.kind, tgt:tgH.over.uid, heal:false, seq:1e9 } });
+  }
   plans.sort((a, b) => (a.plan.seq || 0) - (b.plan.seq || 0));
   const targeted = new Set();
-  plans.forEach(c => {
+  plans.forEach(({ c, plan }) => {
     const a = get(c); if(a.hp <= 0) return;
-    const t0 = btlCardByUid(c.plan.tgt); if(!t0 || !btlOnField(t0)) return;
+    const t0 = btlCardByUid(plan.tgt); if(!t0 || !btlOnField(t0)) return;
     const t = get(t0); if(t.hp <= 0) return;
     targeted.add(t0.uid);
-    if(c.plan.kind === 'def'){ t.df += Math.max(0, Math.round(c.df)); return; }
-    const ultA = c.plan.kind === 'ult' && !c.plan.heal;
-    if(c.plan.kind !== 'atk' && !ultA) return;
+    if(plan.kind === 'def'){ t.df += Math.max(0, Math.round(c.df)); return; }
+    const ultA = plan.kind === 'ult' && !plan.heal;
+    if(plan.kind !== 'atk' && !ultA) return;
     hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K * 0.9 * (ultA ? (c.def.ultMult || 1.5) * 1.5 : 1))), true);
-    if(!t0.leader || BTL_LEADER_COUNTER) hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K * 0.9)));
+    if(!t0.leader || BTL_LEADER_COUNTER){ hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K * 0.9))); targeted.add(c.uid); }   // l'attaquant qui meurt de la riposte reçoit aussi ses craquelures
   });
   const dead = new Set();
   const pd = new Map();
@@ -25356,6 +25387,172 @@ BTL_CARD_FX['KRIGER'] = { appel: async c => {   // grappin à chaîne planté da
   if(btlGone() || !t || t.hp <= 0 || !btlOnField(c)) return;
   await btlDoAction(c, { kind:'atk', tgt:t.uid, force:true, kriger:true });
 } };
+// ---- SCOPT : arrivée = la case rougeoie, des fissures incandescentes la parcourent, le sol fond en un trou (lèvre de lave en relief, parois rougeoyantes, fond brûlant) ; la carte glisse hors du trou ; le trou se referme et la lave refroidit ----
+async function btlScoptArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random, TP = Math.PI * 2;
+  const plate = btlQ('#btlPlate'), pr = btlRect(plate);
+  const W = Math.round(pr.width), H = Math.round(pr.height), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const mkCv = z => { const cv = document.createElement('canvas'); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;pointer-events:none;z-index:' + z + ';'; plate.appendChild(cv);
+    const g = cv.getContext('2d'); g.scale(dpr, dpr); return { cv, g }; };
+  const BK = mkCv(6), FR = mkCv(8), ctx = BK.g, fx = FR.g;
+  const tw = to.width, th = to.height, k = tw / 84, cx = to.left + tw / 2 - pr.left, cy = to.top + th / 2 - pr.top, hw = tw / 2, hh = th / 2, RAD = 6 * k;
+  const cu = u.cloneNode(true); cu.removeAttribute('id');
+  cu.style.cssText = 'position:absolute;inset:auto;left:' + (to.left - pr.left) + 'px;top:' + (to.top - pr.top) + 'px;width:' + tw + 'px;height:' + th + 'px;z-index:7;pointer-events:none;opacity:0;';
+  plate.appendChild(cu);
+  const T_G = 900, T_M0 = 650, T_M1 = 1350, T_O = 1300, T_U0 = 1400, T_U1 = 2450, T_C0 = 2200, T_C1 = 3000, T_END = 3200;
+  const AX = hw - 2.5 * k, AY = hh - 2.5 * k;
+  // fissures incandescentes : polylignes irrégulières du centre vers le bord de la case, avec embranchements
+  const cracks = [];
+  const mkCrack = (x0, y0, ang, len, depth) => {
+    const pts = [{ x:x0, y:y0 }]; let x = x0, y = y0, a = ang; const step = 5.5 * k, n = Math.max(3, Math.round(len / step));
+    for(let i = 0; i < n; i++){ a += (rnd() - .5) * .75; x += Math.cos(a) * step; y += Math.sin(a) * step; pts.push({ x, y });
+      if(depth < 2 && i > 1 && i < n - 1 && rnd() < .3) mkCrack(x, y, a + (rnd() < .5 ? -1 : 1) * (.55 + rnd() * .5), len * (.35 + rnd() * .25), depth + 1); }
+    let L = 0; pts.forEach((p, i) => { if(i) L += Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y); p.L = L; });
+    cracks.push({ pts, L, delay:depth * .18 + rnd() * .22, w:depth ? .6 : 1 });
+  };
+  for(let i = 0; i < 9; i++){ const a = i / 9 * TP + (rnd() - .5) * .5, tm = Math.min(hw / Math.max(.05, Math.abs(Math.cos(a))), hh / Math.max(.05, Math.abs(Math.sin(a)))); mkCrack(cx + Math.cos(a) * 3 * k, cy + Math.sin(a) * 3 * k, a, tm * (.8 + rnd() * .25), 0); }
+  const embers = [], sparks = [], smoke = [];
+  const t0 = performance.now(); let last = 0, raf = 0, opened = false, popped = false, settled = false, emberT = 0;
+  const rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+  const mix = (a, b, f) => [lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)];
+  const rgb = (c, a) => 'rgba(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ',' + a + ')';
+  // contour d'un super-ellipse : de l'ellipse (n=2) au carré arrondi (n grand), avec ondulation de fusion
+  const sup = (g, ax, ay, n, wob, t) => {
+    for(let i = 0; i <= 72; i++){
+      const a = i / 72 * TP, cs = Math.cos(a), sn = Math.sin(a), r = Math.pow(Math.pow(Math.abs(cs), n) + Math.pow(Math.abs(sn), n), -1 / n);
+      const w = 1 + wob * (Math.sin(3 * a + t * .009) + .6 * Math.sin(5 * a - t * .012 + 1) + .4 * Math.sin(8 * a + t * .007));
+      const x = cx + ax * cs * r * w, y = cy + ay * sn * r * w; i ? g.lineTo(x, y) : g.moveTo(x, y);
+    } g.closePath();
+  };
+  const tick = () => {
+    if(!BTL || BTL.abort){ fail('abort'); return; }
+    const t = window.__scT != null ? window.__scT : performance.now() - t0, dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+    ctx.clearRect(0, 0, W, H); fx.clearRect(0, 0, W, H);
+    const g = sm(0, T_G, t), pulse = .78 + .22 * Math.sin(t * .0125) + .06 * Math.sin(t * .031), cool = sm(T_O, T_C1, t);
+    const fade = 1 - .7 * sm(T_O, T_C1, t);
+    const A0 = E.outC(sm(T_M0, T_M1, t)), cf = 1 - E.inOut(sm(T_C0, T_C1, t)), A = A0 * Math.pow(cf, .8);
+    const nn = lerp(2, 5.2, A0), wob = (t < T_O ? .07 * (1 - sm(T_M1, T_O + 200, t)) + .012 : .014) * (A0 > .05 ? 1 : 0);
+    const ho = .9 * E.inOut(sm(T_M0 + 260, T_O, t));
+    // ---------- 1. la case rougeoie ----------
+    ctx.save(); rr(ctx, cx - hw, cy - hh, tw, th, RAD); ctx.clip(); ctx.globalCompositeOperation = 'lighter';
+    let gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, hw * 1.45); gr.addColorStop(0, 'rgba(255,80,28,' + (.5 * g * pulse * fade) + ')'); gr.addColorStop(.55, 'rgba(190,28,14,' + (.32 * g * fade) + ')'); gr.addColorStop(1, 'rgba(110,10,8,' + (.2 * g * fade) + ')');
+    ctx.fillStyle = gr; ctx.fillRect(cx - hw, cy - hh, tw, th);
+    // fissures
+    const rev = E.outC(sm(120, T_M1, t)), crA = (1 - sm(T_O, T_O + 500, t));
+    if(crA > .01){
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      cracks.forEach(cr => {
+        const p = E.cl((rev - cr.delay) / (1 - cr.delay), 0, 1); if(p <= 0) return; const lim = cr.L * p;
+        const path = () => { ctx.beginPath(); ctx.moveTo(cr.pts[0].x, cr.pts[0].y); for(let i = 1; i < cr.pts.length; i++){ const a = cr.pts[i - 1], b = cr.pts[i];
+          if(b.L <= lim) ctx.lineTo(b.x, b.y); else { const f = (lim - a.L) / (b.L - a.L); if(f > 0) ctx.lineTo(lerp(a.x, b.x, f), lerp(a.y, b.y, f)); break; } } };
+        const al = crA * pulse;
+        path(); ctx.strokeStyle = 'rgba(255,60,20,' + (.3 * al) + ')'; ctx.lineWidth = 4.2 * k * cr.w; ctx.stroke();
+        path(); ctx.strokeStyle = 'rgba(255,150,50,' + (.8 * al) + ')'; ctx.lineWidth = 2 * k * cr.w; ctx.stroke();
+        path(); ctx.strokeStyle = 'rgba(255,245,200,' + (.95 * al) + ')'; ctx.lineWidth = .9 * k * cr.w; ctx.stroke();
+      });
+    }
+    ctx.restore();
+    // liseré lumineux de la case (rouge, qui bat)
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    [[20, .05], [11, .1], [6, .2], [3, .45], [1.4, .9]].forEach(w => { rr(ctx, cx - hw, cy - hh, tw, th, RAD); ctx.strokeStyle = 'rgba(255,' + (70 + 40 * pulse | 0) + ',40,' + (w[1] * g * pulse * fade) + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); });
+    ctx.restore();
+    // ---------- 2. la lave fond le sol : lèvre en relief + trou ----------
+    if(A > .02){
+      const ax = AX * A, ay = AY * A, hotC = mix([255, 232, 150], [112, 38, 24], cool), midC = mix([255, 118, 28], [66, 24, 20], cool), edC = mix([196, 30, 10], [28, 14, 14], cool);
+      // ombre portée de la lèvre sur le sol (en bas à droite)
+      ctx.save(); ctx.translate(2.4 * k, 3.4 * k); ctx.lineJoin = 'round';
+      [[17, .1], [10, .14], [5, .2]].forEach(w => { ctx.beginPath(); sup(ctx, ax, ay, nn, wob, t); ctx.strokeStyle = 'rgba(0,0,0,' + w[1] + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); });
+      ctx.restore();
+      // halo incandescent autour de la lèvre
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      [[15, .07], [8, .15], [3.5, .3]].forEach(w => { ctx.beginPath(); sup(ctx, ax * 1.02, ay * 1.02, nn, wob, t); ctx.strokeStyle = rgb(midC, w[1] * pulse * (1 - cool * .85)); ctx.lineWidth = w[0] * k; ctx.stroke(); });
+      ctx.restore();
+      // lèvre : anneau de lave (évenodd entre le contour extérieur et le trou)
+      const rin = ax * ho * .92, rout = Math.max(rin + 2, ax * 1.18);
+      ctx.beginPath(); sup(ctx, ax, ay, nn, wob, t); if(ho > .02) sup(ctx, ax * ho, ay * ho, nn, wob * 1.4, t + 400);
+      gr = ctx.createRadialGradient(cx, cy, Math.min(rin, rout - 1), cx, cy, rout); gr.addColorStop(0, rgb(hotC, 1)); gr.addColorStop(.45, rgb(midC, 1)); gr.addColorStop(1, rgb(edC, 1));
+      ctx.fillStyle = gr; ctx.fill('evenodd');
+      // veines de lave mobiles sur la lèvre
+      ctx.save(); ctx.clip(); ctx.globalCompositeOperation = 'lighter';
+      for(let i = 0; i < 6; i++){ const a = i / 6 * TP + t * (.0011 + i * .0002), r = 1 + .02 * Math.sin(t * .004 + i); btlGlowDot(ctx, cx + Math.cos(a) * ax * .86 * r, cy + Math.sin(a) * ay * .86 * r, 9 * k, '255,200,90', .32 * (.6 + .4 * Math.sin(t * .006 + i * 2)) * (1 - cool * .9)); }
+      ctx.restore();
+      // biseau : arête extérieure éclairée en haut à gauche, sombre en bas à droite
+      const lg = ctx.createLinearGradient(cx - ax, cy - ay, cx + ax, cy + ay); lg.addColorStop(0, 'rgba(255,238,190,.95)'); lg.addColorStop(.42, 'rgba(255,200,120,.0)'); lg.addColorStop(.62, 'rgba(60,12,8,.0)'); lg.addColorStop(1, 'rgba(40,8,6,.8)');
+      ctx.beginPath(); sup(ctx, ax, ay, nn, wob, t); ctx.strokeStyle = lg; ctx.lineWidth = 1.7 * k; ctx.stroke();
+      // trou : parois, fond brûlant, ombre de la lèvre
+      if(ho > .03){
+        ctx.save(); ctx.beginPath(); sup(ctx, ax * ho, ay * ho, nn, wob * 1.4, t + 400); ctx.clip();
+        let hg = ctx.createRadialGradient(cx, cy, 0, cx, cy, ax * ho * 1.1); hg.addColorStop(0, '#040203'); hg.addColorStop(.62, '#120505'); hg.addColorStop(1, '#2c0b07');
+        ctx.fillStyle = hg; ctx.fillRect(cx - hw, cy - hh, tw, th);
+        // fond du trou qui rougeoie (lave profonde)
+        ctx.globalCompositeOperation = 'lighter';
+        const deep = (.5 + .5 * pulse) * (1 - cool * .55);
+        hg = ctx.createRadialGradient(cx, cy + ay * ho * .25, 0, cx, cy + ay * ho * .25, ax * ho); hg.addColorStop(0, 'rgba(255,92,28,' + (.5 * deep) + ')'); hg.addColorStop(.6, 'rgba(190,34,14,' + (.22 * deep) + ')'); hg.addColorStop(1, 'rgba(120,14,8,0)');
+        ctx.fillStyle = hg; ctx.fillRect(cx - hw, cy - hh, tw, th);
+        // parois qui rougeoient près de la lèvre
+        [[12, .1], [7, .17], [3.2, .3]].forEach(w => { ctx.beginPath(); sup(ctx, ax * ho, ay * ho, nn, wob * 1.4, t + 400); ctx.strokeStyle = 'rgba(255,104,34,' + (w[1] * pulse * (1 - cool * .7)) + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); });
+        // ombre de la lèvre : le haut et la gauche de la paroi plongent dans le noir
+        ctx.globalCompositeOperation = 'source-over';
+        const sg = ctx.createLinearGradient(cx - ax * ho, cy - ay * ho, cx + ax * ho * .5, cy + ay * ho * .5); sg.addColorStop(0, 'rgba(0,0,0,.72)'); sg.addColorStop(.55, 'rgba(0,0,0,0)');
+        ctx.fillStyle = sg; ctx.fillRect(cx - hw, cy - hh, tw, th);
+        ctx.restore();
+        // arête intérieure : reflet en bas à droite
+        const ig = ctx.createLinearGradient(cx - ax * ho, cy - ay * ho, cx + ax * ho, cy + ay * ho); ig.addColorStop(0, 'rgba(0,0,0,.7)'); ig.addColorStop(.5, 'rgba(0,0,0,0)'); ig.addColorStop(1, 'rgba(255,170,90,.75)');
+        ctx.beginPath(); sup(ctx, ax * ho, ay * ho, nn, wob * 1.4, t + 400); ctx.strokeStyle = ig; ctx.lineWidth = 1.3 * k; ctx.stroke();
+      }
+    }
+    // contre-jour : la carte qui monte éclaire tout autour de la lueur du fond
+    const rise = Math.sin(Math.PI * sm(T_U0, T_U1 + 350, t));
+    if(rise > .01){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, cx, cy, 62 * k, '255,84,30', .42 * rise); ctx.restore(); }
+    // ---------- 3. événements ----------
+    if(!opened && t >= T_O){ opened = true; btlSparkEmit(sparks, cx, cy, 34, 400, 680, -Math.PI / 2, 3.4, true); btlShake(plate, 2.5); btlRing(to, '#ff6a3d', false);
+      for(let i = 0; i < 7; i++) smoke.push({ x:cx + (rnd() - .5) * 40 * k, y:cy + (rnd() - .5) * 30 * k, r:7 * k, vr:(10 + rnd() * 14) * k, vy:-(14 + rnd() * 22), vx:(rnd() - .5) * 14, age:-rnd() * 260, life:1300 + rnd() * 700, a:.2 + rnd() * .12 }); }
+    if(!popped && t >= T_U1 - 180){ popped = true; btlSparkEmit(sparks, cx, cy + hh * .85, 14, 260, 520, -Math.PI / 2, 2.6, true); }
+    // braises qui s'élèvent de la lave et des fissures
+    if(t > 250 && t < T_C1){ emberT += dt * 1000; const rate = lerp(70, 26, E.cl(A0 * 1.1, 0, 1));
+      while(emberT > rate && embers.length < 70){ emberT -= rate; let x, y;
+        if(A > .3){ const a = rnd() * TP; x = cx + Math.cos(a) * AX * A * (.82 + rnd() * .22); y = cy + Math.sin(a) * AY * A * (.82 + rnd() * .22); }
+        else { x = cx + (rnd() - .5) * tw * .8; y = cy + (rnd() - .5) * th * .8; }
+        embers.push({ x, y, vx:(rnd() - .5) * 18, vy:-(26 + rnd() * 52), age:0, life:700 + rnd() * 800, r:(1 + rnd() * 1.5) * k, ph:rnd() * TP }); } }
+    for(let i = embers.length - 1; i >= 0; i--){ const e = embers[i]; e.age += dt * 1000; if(e.age >= e.life){ embers.splice(i, 1); continue; }
+      e.x += (e.vx + Math.sin(e.age * .006 + e.ph) * 9) * dt; e.y += e.vy * dt; e.vy *= (1 - .4 * dt);
+      const q = e.age / e.life, al = Math.sin(Math.PI * Math.min(1, q * 1.15)) * (.7 + .3 * Math.sin(e.age * .03 + e.ph));
+      fx.save(); fx.globalCompositeOperation = 'lighter'; btlGlowDot(fx, e.x, e.y, e.r * 4, q < .5 ? '255,170,60' : '255,90,30', .5 * al); fx.fillStyle = 'rgba(255,' + (230 - q * 140 | 0) + ',150,' + (.9 * al) + ')'; fx.beginPath(); fx.arc(e.x, e.y, e.r * (1 - q * .5), 0, TP); fx.fill(); fx.restore(); }
+    for(let i = smoke.length - 1; i >= 0; i--){ const s = smoke[i]; s.age += dt * 1000; if(s.age >= s.life){ smoke.splice(i, 1); continue; } if(s.age < 0) continue;
+      s.r += s.vr * dt; s.x += s.vx * dt; s.y += s.vy * dt; const q = s.age / s.life, al = s.a * Math.sin(Math.PI * Math.min(1, q * 1.1)) * (1 - q * .4);
+      const sg = fx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r); sg.addColorStop(0, 'rgba(46,34,32,' + al + ')'); sg.addColorStop(.6, 'rgba(34,26,26,' + (al * .55) + ')'); sg.addColorStop(1, 'rgba(30,24,24,0)');
+      fx.fillStyle = sg; fx.fillRect(s.x - s.r, s.y - s.r, s.r * 2, s.r * 2); }
+    btlSparksDraw(fx, sparks, dt, false);
+    // lueur de chaleur par-dessus la carte (s'éteint quand elle est sortie)
+    if(rise > .01){ fx.save(); fx.globalCompositeOperation = 'lighter'; btlGlowDot(fx, cx, cy, 52 * k, '255,100,40', .2 * rise); fx.restore(); }
+    // ---------- 4. la carte glisse hors du trou ----------
+    const p = sm(T_U0, T_U1, t), oc = E.outC(p);
+    if(t >= T_U0){
+      const sc = .74 + .26 * oc + .07 * Math.sin(Math.PI * p), ty = (1 - oc) * 14 * k - 7 * k * Math.sin(Math.PI * p);
+      cu.style.opacity = String(Math.min(1, p * 4));
+      cu.style.transform = 'translateY(' + ty.toFixed(2) + 'px) scale(' + sc.toFixed(3) + ')';
+      const glow = p < 1 ? .85 * (1 - p * .6) : .34 * (1 - sm(T_U1, T_C1, t)), br = .3 + .7 * sm(0, .75, p);
+      cu.style.filter = (br < .999 ? 'brightness(' + br.toFixed(3) + ') ' : '') + (glow > .02 ? 'drop-shadow(0 0 ' + (4 + 9 * (1 - p) + 3 * k).toFixed(1) + 'px rgba(255,80,35,' + glow.toFixed(3) + '))' : '');
+      cu.style.clipPath = p < 1 ? 'inset(0 0 ' + ((1 - sm(0, .5, p)) * 60).toFixed(1) + '% 0 round ' + (6 * k).toFixed(1) + 'px)' : '';
+    }
+    // ---------- 5. fin : la carte est posée ----------
+    if(t >= T_C1 && !settled){ settled = true; u.style.opacity = ''; cu.remove(); btlRing(to, '#ff6a3d', false); btlFlashEl(u, '#ffb08a', .6, 380); }
+    if(window.__scT == null){ if(t < T_END) raf = requestAnimationFrame(tick); else done(); }
+    else if(t >= T_END) done();
+  };
+  let done, fail; const pr0 = new Promise((res, rej) => { done = res; fail = rej; });
+  window.__scTick = tick;
+  try{
+    if(window.__scT == null) raf = requestAnimationFrame(tick); else tick();
+    await pr0;
+  } finally {
+    cancelAnimationFrame(raf); BK.cv.remove(); FR.cv.remove(); cu.remove(); u.style.opacity = ''; u.style.transform = ''; window.__scTick = null;
+  }
+}
+BTL_CARD_FX['SCOPT'] = { arrive: btlScoptArrive };   // arrivée : la case rougeoie, fond en un trou, la carte glisse dehors
 // ---- MED-POD : quatre câbles métalliques souples (simulation de corde), arrivée = ils harponnent la carte et la tirent dans sa case ; Baroud = ils vont chercher une carte dans la pioche adverse et la plaquent de force dans la case ----
 const BTL_MED_N = 26, BTL_MED_W = 3.5;
 const BTL_MED_LOC = { b:[[-.38, .5], [-.13, .5], [.13, .5], [.38, .5]], t:[[-.38, -.5], [-.13, -.5], [.13, -.5], [.38, -.5]], r:[[.5, -.33], [.5, -.11], [.5, .11], [.5, .33]], l:[[-.5, -.33], [-.5, -.11], [-.5, .11], [-.5, .33]] };
@@ -25979,7 +26176,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -26281,7 +26478,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -26917,7 +27114,8 @@ const DEFI_RESULT_ART_Y = {
   'TECHNOSORUS': 30,
   'HYPPER': 35,
   'DILUS': 30,
-  'KRIGER': 30
+  'KRIGER': 30,
+  'SCOPT': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
