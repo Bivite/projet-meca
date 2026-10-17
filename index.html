@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.67</title>
+<title>Projet MECA V0.04.68</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.67</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.68</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9245,9 +9245,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.67';
+var BUILD_VERSION = 'V0.04.68';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.68', items:[
+    'NOUVELLE CARTE : LACRIUM (rare, Percée) — mécha duelliste à lames jumelles. Ultime DOUBLE CROISSANT : deux coups de lame sur les cibles.',
+    'ARRIVÉE DE LACRIUM : deux grands coups de lame bleue en arc de cercle, de bas en haut, de chaque côté du champ de bataille, avec un vent flouté ; puis la carte tombe du ciel et s\'écrase dans son emplacement.',
+    'DÉFIS : LACRIUM a son propre défi, et les decks adverses ont été mis à jour.',
+    'CHEIF 117 : c\'est désormais le joueur qui joue la carte qui pioche.',
+  ] },
   { v:'V0.04.67', items:[
     'NOUVELLE CARTE : DUMADED (rare, Passif) — mécha-pieuvre à six tentacules. À chaque carte piochée (par l\'un ou l\'autre camp), une tentacule frappe une carte au hasard parmi toutes celles en jeu, alliées comprises, pour 1 dégât, puis rentre dans la carte.',
     'ARRIVÉE DE DUMADED : portée par ses six tentacules mécaniques, la carte marche vers les cartes ennemies, scanne la pioche adverse, revient sur son emplacement et s\'y écrase.',
@@ -10972,6 +10978,7 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  LACRIUM:   { head:'vfin', shoulders:'spike', torso:'vcut', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
   DUMADED:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'hostile' },
   SCOPT:     { head:'dome', shoulders:'spike', torso:'vcut', legs:'heavy', back:'cannons', arms:'thick', weapon:'rifle', emblem:'hostile' },
   KRIGER:    { head:'vfin', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
@@ -11023,6 +11030,7 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  LACRIUM:   { pilot:'Cmdt. Elias « Lame » Varga', text:"Ancien maître d'armes des galeries marchandes de la mégalopole, Varga a fait forger deux lames à champ d'énergie pour son mécha. Il n'attaque jamais de front : il frappe deux fois, en arc, de chaque côté du terrain, avant que l'air n'ait fini de siffler, puis retombe du ciel sur sa cible. Quand on voit le bleu de ses lames, la vitrine a déjà éclaté." },
   DUMADED:   { pilot:'Ing. Ilyana « Méduse » Voss', text:"Ancienne ingénieure de dragage des canaux de la mégalopole, Voss a greffé six bras de manutention sur la coque d'un dôme de forage. Chaque fois que la ville reprend son souffle, l'une de ses tentacules jaillit, frappe une cible au hasard et se replie sous la coque avant que quiconque ait compris d'où venait le coup. Pour elle, personne n'est vraiment à l'abri : les alliés non plus." },
   SCOPT:     { pilot:'Lt. Zara « Dard » Okonkwo', text:"Ancienne démineuse des quartiers effondrés, Okonkwo pilote un mécha-scorpion monté sur six pattes articulées. Il se glisse sous les ruines, perce le sol là où personne ne l'attend et frappe depuis les décombres, queue dressée, laser braqué. Quand le sol se met à rougeoyer, il est déjà trop tard." },
   KRIGER:    { pilot:'Sgt. Brynja « Grappin » Halvorsen', text:"Ancienne bûcheronne de haute canopée, Halvorsen a troqué sa hache contre un grappin de siège monté sur chaîne d'acier. Elle ne charge jamais à l'aveugle : elle accroche d'abord sa cible, puis se laisse tirer à pleine vitesse, tout son poids derrière le coup. Ce qui est accroché ne s'échappe plus." },
@@ -11283,7 +11291,13 @@ const CHAR_DEFS = [
     ultName:"ÉTREINTE ABYSSALE", ultMult:1.8, ultDesc:"Referme ses six tentacules sur un ennemi et le broie de tout son poids",
     base:{atk:30, def:18, hp:310}, max:{atk:210, def:110, hp:1150}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/dumaded-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/dumaded-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/dumaded-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.68) : LACRIUM, mécha à lames jumelles, Percée ----
+  { name:"LACRIUM", rarity:"rare", color:"#4f8cff", shape:"LACRIUM", role:"Assaut — mécha duelliste à lames jumelles",
+    ultName:"DOUBLE CROISSANT", ultMult:1.8, ultDesc:"Deux coups de lame en arc de cercle frappent deux ennemis à la fois",
+    base:{atk:36, def:12, hp:270}, max:{atk:240, def:90, hp:1000}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11319,7 +11333,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11327,7 +11341,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14109,6 +14123,7 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
+  LACRIUM:   (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); },   // deux coups de lame en arc de cercle sur deux ennemis
   DUMADED:   (u, T) => hitOne(u, T, u.ultMult),   // six tentacules referment leur étreinte sur un ennemi
   SCOPT:     (u, T) => hitCrit(u, T, u.ultMult),   // dard laser : critique garanti
   KRIGER:    (u, T) => hitOne(u, T, u.ultMult),   // grappin planté, puis attaque en force
@@ -25834,6 +25849,121 @@ async function btlOnDraw(side){
   }
 }
 BTL_CARD_FX['DUMADED'] = { arrive: btlDumadedArrive, passif:{ quand:'pioche', run: btlDumadedPassive } };
+// ================= LACRIUM : lame jumelle, PERCÉE (V0.04.68) =================
+// ARRIVÉE : deux grands coups d'épée en arc de cercle, de chaque côté du champ de bataille, de bas en haut (on ne voit que le tranchant bleu des lames et l'air qu'elles déplacent), puis la carte tombe du ciel et s'écrase dans son emplacement.
+function btlLacSoft(g, x, y, rx, ry, rot, rgb, a){   // tache lumineuse floue (dégradé radial étiré) : sert au vent, aux halos et aux traînées
+  if(a <= .003) return;
+  g.save(); g.translate(x, y); g.rotate(rot); g.scale(rx, ry);
+  const gr = g.createRadialGradient(0, 0, 0, 0, 0, 1); gr.addColorStop(0, 'rgba(' + rgb + ',' + a + ')'); gr.addColorStop(.5, 'rgba(' + rgb + ',' + (a * .42) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(0, 0, 1, 0, 6.283); g.fill(); g.restore();
+}
+// croissant de lame : bord extérieur net (le tranchant), épaisseur qui s'affine en pointe à chaque bout, dégradé radial blanc -> bleu -> transparent vers l'intérieur
+function btlLacBlade(g, P, R, a0, a1, s, k, fade){
+  const L = .66, ez = x => 1 - Math.pow(1 - x, 2.4), head = ez(Math.min(1, s)), tail = ez(Math.max(0, Math.min(1, s - L * .85)));
+  if(head <= tail + .003 || fade <= 0) return;
+  const N = 56, Tm = 46 * k, th = u => a0 + (a1 - a0) * (tail + (head - tail) * u), thick = u => Tm * Math.pow(u, 1.15) * Math.pow(1 - u, .32) / .5;
+  const out = [], inn = [];
+  for(let i = 0; i <= N; i++){ const u = i / N, a = th(u), t = thick(u); out.push({ x:P.x + Math.cos(a) * R, y:P.y + Math.sin(a) * R }); inn.push({ x:P.x + Math.cos(a) * (R - t), y:P.y + Math.sin(a) * (R - t) }); }
+  const path = () => { g.beginPath(); out.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); for(let i = N; i >= 0; i--) g.lineTo(inn[i].x, inn[i].y); g.closePath(); };
+  g.save(); g.globalCompositeOperation = 'lighter'; g.lineJoin = 'round';
+  // halo diffus autour de la lame
+  path(); g.strokeStyle = 'rgba(50,120,255,' + (.10 * fade) + ')'; g.lineWidth = 26 * k; g.stroke();
+  path(); g.strokeStyle = 'rgba(90,170,255,' + (.16 * fade) + ')'; g.lineWidth = 12 * k; g.stroke();
+  // corps : dégradé radial depuis le pivot (le tranchant est la couleur la plus claire)
+  const gr = g.createRadialGradient(P.x, P.y, R - Tm * 1.6, P.x, P.y, R + 1);
+  gr.addColorStop(0, 'rgba(30,90,255,0)'); gr.addColorStop(.45, 'rgba(60,140,255,' + (.42 * fade) + ')'); gr.addColorStop(.85, 'rgba(150,215,255,' + (.88 * fade) + ')'); gr.addColorStop(1, 'rgba(255,255,255,' + fade + ')');
+  path(); g.fillStyle = gr; g.fill();
+  // fil du tranchant : fin, plus lumineux vers la pointe
+  g.lineCap = 'round';
+  for(let i = 0; i < N; i++){ const u = (i + .5) / N, p = out[i], q = out[i + 1]; g.strokeStyle = 'rgba(235,248,255,' + (fade * (.25 + .75 * u)).toFixed(3) + ')'; g.lineWidth = (1 + 2.2 * u) * k; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(q.x, q.y); g.stroke(); }
+  g.restore();
+}
+async function btlLacriumArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), TS = btlDumTS(), rnd = Math.random;
+  const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), w = to.width, h = to.height, k = w / 84;
+  const FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H;
+  const cx = to.left + w / 2, cy = to.top + h / 2, pcy = plate.top + plate.height / 2;
+  const T_A = 260, SD = 470, T_B = T_A + 330, T_F0 = 1000, FALL = 560, T_IM = T_F0 + FALL, T_END = T_IM + 950;
+  const wr = document.createElement('div');
+  wr.style.cssText = 'position:fixed;left:0;top:0;width:' + w + 'px;height:' + h + 'px;z-index:30;pointer-events:none;transform-origin:50% 50%;will-change:transform;opacity:0';
+  wr.innerHTML = btlSmallHtml(c); fx.appendChild(wr); btlPaintIn(wr, c);
+  // les deux coups, de bas en haut : chaque lame décrit un arc de cercle de son côté du champ de bataille
+  const slashes = [
+    { t0:T_A, dir:1, R:plate.width * .66, P:{ x:plate.left - plate.width * .1, y:pcy + plate.height * .03 }, a0:1.28, a1:-1.28, tilt:-.1 },
+    { t0:T_B, dir:-1, R:plate.width * .72, P:{ x:plate.right + plate.width * .1, y:pcy - plate.height * .02 }, a0:Math.PI - 1.28, a1:Math.PI + 1.28, tilt:.1 }
+  ];
+  // vent : taches floues étirées dans le sens du souffle (jamais de traits nets), brume lumineuse, et zone de flou qui balaie le plateau
+  const blobs = [], motes = [];
+  const gust = (sl, now) => {
+    for(let i = 0; i < 34; i++){ const a = Math.atan2(-.62, sl.dir * .8) + (rnd() - .5) * .5, sp = 520 + rnd() * 760; blobs.push({ x:sl.dir > 0 ? plate.left - 60 - rnd() * 60 : plate.right + 60 + rnd() * 60, y:plate.top + plate.height * (.2 + rnd() * .85), vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, rx:(70 + rnd() * 110) * k, ry:(9 + rnd() * 20) * k, rot:a, t0:now + rnd() * 300, life:620 + rnd() * 520, a:.07 + rnd() * .11 }); }
+    for(let i = 0; i < 26; i++){ const a = Math.atan2(-.5, sl.dir) + (rnd() - .5) * 1.1, sp = 160 + rnd() * 340; motes.push({ x:plate.left + (sl.dir > 0 ? .1 : .9) * plate.width + (rnd() - .5) * plate.width * .3, y:plate.top + plate.height * (.15 + rnd() * .8), vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, r:(2 + rnd() * 4) * k, t0:now + rnd() * 380, life:700 + rnd() * 700, a:.35 + rnd() * .4 }); }
+    // zone de flou : une bande qui floute ce qu'elle traverse (backdrop-filter), poussée par le coup
+    const band = document.createElement('div'), bw = plate.width * .52;
+    band.style.cssText = 'position:fixed;pointer-events:none;z-index:29;left:' + plate.left + 'px;top:' + (plate.top - 20) + 'px;width:' + bw + 'px;height:' + (plate.height + 40) + 'px;opacity:0;will-change:transform,opacity;'
+      + '-webkit-backdrop-filter:blur(3.2px) brightness(1.12);backdrop-filter:blur(3.2px) brightness(1.12);'
+      + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 40%,#000 60%,transparent);mask-image:linear-gradient(90deg,transparent,#000 40%,#000 60%,transparent)';
+    fx.appendChild(band);
+    const x0 = sl.dir > 0 ? -bw * .6 : plate.width - bw * .4, x1 = sl.dir > 0 ? plate.width - bw * .4 : -bw * .6;
+    btlAnimR(band, [{ transform:'translateX(' + x0 + 'px) skewX(' + (sl.dir > 0 ? -14 : 14) + 'deg)', opacity:0 }, { opacity:.9, offset:.3 }, { opacity:.7, offset:.65 }, { transform:'translateX(' + x1 + 'px) skewX(' + (sl.dir > 0 ? -14 : 14) + 'deg)', opacity:0 }], { duration:1000, easing:'cubic-bezier(.3,.1,.3,1)' }).then(() => band.remove(), () => band.remove());
+  };
+  slashes.forEach(sl => { sl.fired = false; sl.glint = false; });
+  let impacted = false, landed = false, raf = 0, last = 0, done, fail; const pr0 = new Promise((res, rej) => { done = res; fail = rej; });
+  const t0 = performance.now(), cracks = [], rings = [];
+  const tick = () => {
+    if(!BTL || BTL.abort){ fail('abort'); return; }
+    const now = window.__lcT != null ? window.__lcT : (performance.now() - t0) * TS, dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+    g.clearRect(0, 0, W, H);
+    // vent : taches floues + brume
+    g.save(); g.globalCompositeOperation = 'lighter';
+    blobs.forEach(q => { const a = (now - q.t0) / q.life; if(a <= 0 || a >= 1) return; const tt = (now - q.t0) / 1000; btlLacSoft(g, q.x + q.vx * tt, q.y + q.vy * tt, q.rx * (.7 + .5 * a), q.ry * (1 + .6 * a), q.rot, '170,212,255', q.a * Math.sin(Math.PI * a)); });
+    motes.forEach(q => { const a = (now - q.t0) / q.life; if(a <= 0 || a >= 1) return; const tt = (now - q.t0) / 1000; btlLacSoft(g, q.x + q.vx * tt, q.y + q.vy * tt, q.r * 4.2, q.r * 1.3, Math.atan2(q.vy, q.vx), '200,230,255', .55 * q.a * Math.sin(Math.PI * a)); });
+    g.restore();
+    // les deux coups : amorce (éclat très fin), puis croissant de lame qui balaie
+    slashes.forEach(sl => {
+      const s = (now - sl.t0) / SD; if(s <= -.18) return;
+      if(!sl.fired && s >= 0){ sl.fired = true; gust(sl, now); btlShake(btlQ('#btlPlate'), 4.5); }
+      if(s < 0){ const a = 1 + s / .18, ang = sl.a0, px = sl.P.x + Math.cos(ang) * sl.R, py = sl.P.y + Math.sin(ang) * sl.R; g.save(); g.globalCompositeOperation = 'lighter'; btlLacSoft(g, px, py, 26 * k * a, 7 * k * a, ang + Math.PI / 2, '190,225,255', .5 * a); g.restore(); return; }
+      const fade = 1 - sm(1.0, 2.2, s); if(fade <= 0) return;
+      g.save(); g.translate(sl.P.x, sl.P.y); g.rotate(sl.tilt); g.translate(-sl.P.x, -sl.P.y);
+      btlLacBlade(g, sl.P, sl.R, sl.a0, sl.a1, s, k, E.cl(fade, 0, 1)); g.restore();
+    });
+    // chute : la carte tombe du ciel dans un sillage de vent bleu flou
+    if(now >= T_F0 && !landed){
+      const fp = sm(T_F0, T_IM, now), e = Math.pow(fp, 2.3), top = -h * 1.7, y = top + (cy - top) * e, sway = Math.sin(fp * 4.2) * w * .18 * (1 - fp), sc = 1.6 - .6 * e, rot = (1 - e) * -8;
+      wr.style.opacity = '1'; wr.style.transform = 'translate(' + (cx - w / 2 + sway) + 'px,' + (y - h / 2) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+      wr.style.filter = 'drop-shadow(0 0 ' + (10 * (1 - e) + 3) + 'px rgba(110,190,255,.8))';
+      g.save(); g.globalCompositeOperation = 'lighter'; const sp = Math.min(1, fp * 3);
+      btlLacSoft(g, cx + sway, y - h * .9 * (.4 + e), w * .5 * sc, (h * 1.5 + 160 * k * e) * sc, 0, '110,180,255', .34 * sp);
+      btlLacSoft(g, cx + sway, y - h * .5, w * .3 * sc, h * 1.0 * sc, 0, '210,236,255', .3 * sp);
+      g.restore();
+    }
+    // impact : onde de choc douce, fissures lumineuses, poussière
+    if(now >= T_IM && !impacted){
+      impacted = true; landed = true; wr.remove(); u.style.opacity = ''; rings.push({ t0:now });
+      for(let i = 0; i < 8; i++){ const a = i / 8 * 6.283 + rnd() * .5, len = w * (.7 + rnd() * .8), pts = [{ x:cx, y:cy + h * .3 }]; let x = cx, y = cy + h * .3, ang = a; for(let j = 0; j < 6; j++){ ang += (rnd() - .5) * .8; x += Math.cos(ang) * len / 6; y += Math.sin(ang) * len / 6 * .6; pts.push({ x, y }); } cracks.push(pts); }
+      btlShake(btlQ('#btlPlate'), 7);
+      btlParticles(cx, cy + h * .35, { n:16, color:'#bcd9ff', dist:w * 1.1, dur:640, size:5, spread:100 });
+      btlAnimR(u, [{ transform:'scale(1.22,.74)' }, { transform:'scale(.95,1.08)', offset:.5 }, { transform:'scale(1)' }], { duration:430, easing:'cubic-bezier(.2,.8,.4,1)' }).then(a => a.cancel(), () => {});
+      btlFlashEl(u, '#bfe4ff', .95, 480);
+      for(let i = 0; i < 20; i++){ const a = (rnd() < .5 ? 0 : Math.PI) + (rnd() - .5) * .5; motes.push({ x:cx + (rnd() - .5) * w, y:cy + h * .3, vx:Math.cos(a) * (140 + rnd() * 300), vy:-40 - rnd() * 90, r:(3 + rnd() * 5) * k, t0:now, life:600 + rnd() * 500, a:.4 + rnd() * .3 }); }
+    }
+    g.save(); g.globalCompositeOperation = 'lighter';
+    rings.forEach(r => { const a = (now - r.t0) / 760; if(a <= 0 || a >= 1) return; const e = 1 - Math.pow(1 - a, 2.2), rr = (w * .35 + plate.width * .55 * e); g.save(); g.translate(cx, cy + h * .3); g.scale(1, .34); const gr = g.createRadialGradient(0, 0, Math.max(1, rr - 22 * k), 0, 0, rr + 22 * k); gr.addColorStop(0, 'rgba(120,190,255,0)'); gr.addColorStop(.5, 'rgba(170,215,255,' + (.38 * (1 - a)) + ')'); gr.addColorStop(1, 'rgba(120,190,255,0)'); g.fillStyle = gr; g.beginPath(); g.arc(0, 0, rr + 22 * k, 0, 6.283); g.fill(); g.restore(); });
+    if(impacted){ const a = 1 - sm(T_IM, T_IM + 850, now); cracks.forEach(pts => { g.strokeStyle = 'rgba(120,190,255,' + (.28 * a) + ')'; g.lineWidth = 6 * k; g.lineJoin = 'round'; g.lineCap = 'round'; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.stroke(); g.strokeStyle = 'rgba(210,235,255,' + (.8 * a) + ')'; g.lineWidth = 1.3 * k; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.stroke(); }); }
+    g.restore();
+    if(now >= T_END){ done(); } else if(window.__lcT == null) raf = requestAnimationFrame(tick);
+  };
+  window.__lcTick = tick;
+  try{
+    if(window.__lcT == null) raf = requestAnimationFrame(tick); else tick();
+    await pr0;
+  } finally {
+    cancelAnimationFrame(raf); FC.cv.remove(); wr.remove(); u.style.opacity = ''; window.__lcTick = null;
+  }
+}
+BTL_CARD_FX['LACRIUM'] = { arrive: btlLacriumArrive };
 // ---- MED-POD : quatre câbles métalliques souples (simulation de corde), arrivée = ils harponnent la carte et la tirent dans sa case ; Baroud = ils vont chercher une carte dans la pioche adverse et la plaquent de force dans la case ----
 const BTL_MED_N = 26, BTL_MED_W = 3.5;
 const BTL_MED_LOC = { b:[[-.38, .5], [-.13, .5], [.13, .5], [.38, .5]], t:[[-.38, -.5], [-.13, -.5], [.13, -.5], [.38, -.5]], r:[[.5, -.33], [.5, -.11], [.5, .11], [.5, .33]], l:[[-.5, -.33], [-.5, -.11], [-.5, .11], [-.5, .33]] };
@@ -26035,7 +26165,7 @@ async function btlMedFetch(c, n){
   } finally { cancelAnimationFrame(raf); cv.remove(); el.remove(); }
   return true;
 }
-BTL_CARD_FX['CHEIF 117'] = { arrive: btlCheifArrive, appel: async c => { await btlPrawnShot(c, btlOther(c.side)); } };   // arrivée en vol (propulseurs), tir vers la pioche adverse : l'adversaire pioche à l'impact
+BTL_CARD_FX['CHEIF 117'] = { arrive: btlCheifArrive, appel: async c => { await btlPrawnShot(c); } };   // arrivée en vol (propulseurs) ; V0.04.68 : tir vers SA PROPRE pioche, le joueur qui pose la carte pioche à l'impact
 BTL_CARD_FX['DOZEUR'] = { appel: async c => {   // une carte au hasard de la main adverse retourne dans son deck (mélangé), puis l'adversaire pioche
   const oppS = btlOther(c.side), O = BTL.S[oppS];
   if(!O.hand.length) return;
@@ -26457,7 +26587,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -26750,7 +26880,7 @@ var CARD_FX_TXT = (function(){
     'CONQUEST':[['appel','une carte ennemie au hasard en attaque une autre de son camp.']],
     'TOA2':[['tank'], ['baroud','inflige son attaque à une carte ennemie au hasard.']],
     'MED-POD':[['baroud','prend l’apparence d’une carte de l’adversaire tirée au hasard.']],
-    'CHEIF 117':[['appel','l’adversaire pioche une carte.']],
+    'CHEIF 117':[['appel','pioche une carte.']],
     'DOZEUR':[['appel','une carte de la main de l’adversaire retourne dans son deck, qui est mélangé, puis il pioche une carte.']],
     'GRIEVER':[['appel','déclenche le Baroud d’honneur d’une carte ciblée.']],
     'HARKO':[['baroud','répartit son attaque, point par point, au hasard sur les cartes alliées : chaque point donne +1 attaque.']],
@@ -26761,7 +26891,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -27095,47 +27225,48 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "CATER-PILLARD":["K115580SLLIIXX77AAFF", "55CC880SbbLLXX77AAFF", "KK1355CC0WLLIXX77AAF", "KK1RD55800SaZYXXAAFF", "KK155CHB800aLXX77AFF", "VKK1U55CMCH800SSX77F", "4VKK155CC800SWYXX7AF", "KK11655CMC800SSLXX7A", "OK11NQ55CC8800SLX77F", "49KK11655CC8800SL7AF", "JKK11QN55CC8800SSAFF", "OKK11N55CC8800SSLXAA", "PPTTOKK1165C800SSLLA"],
-  "MED-07":["41D55C800SaaZZYIIXXA", "163UQ5CC800aaZZbXXFF", "16QQ5CCB8800ZZbLXXFF", "OK11Q5B8800ZZWIXX7FF", "4JJK11335CCH800WbXXF", "O4JKK11RQD55C8800ZXX", "4JK116R3UQ55CC8800ZX", "O4JKK116ND5CC880SbXX", "4JJ9KK116ND55CC8800X", "44VJKK11633U55CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KN5CHB8800ZWWYbLXXFF", "OKK6U5CHH880aaZXXAFF", "VK11635C8800aWWIIXXA", "9KK355CCH80aaWWbIXXF", "V9K1Q55CCH880SaaWYXX", "9KKN55CCH880aWIIXX7A", "OV9KK11NQ55CCH80WIXX", "49KK11EEUQ55CHH8800X", "VV99KK11355B8800aWXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["3UQD55CC800ZZWWLIXX7", "1DD55C800ZZWbLLIXX7F", "OKK665CC800ZZWYXXAAF", "JK663U5CC8800ZWYYXX7", "OJJK155CC8800ZZYIIXX", "OK1133QQD55M8800ZXX7", "OO44KK6355CC8800LXXA", "OO4KK113355CBB8800IX", "O4JKK1166EUQ5CC8800X", "O49KK116QQD55CC880WX", "OO44VJJKK11655CC8800", "O449KK11QD55CC8800ZX", "PP22GTTO44JKK115C880"],
-  "NEUTRON":["55C8800ZZLLIIXX7AAFF", "155C800ZWbbLXX77AAFF", "KK135CH8800ZLIXX77FF", "1155CC88SZWYLLXX7AFF", "KK11ND55CCH00bLLXXAA", "OJKK115CC8800LLIXX7A", "9KK116N55CC880SaLX7A", "4KK11EN55CC8800S77AF", "KK11N55CMC8800SSLL7F", "4VKK11N55CC8800SSL7F", "OKK11RD55CC8800SS7AF", "44KK1155CC8800SSLLXA", "PPGTTKK11ECC80SSLX7A"],
-  "HYPPER":["K55CCH800ZWWbbLLIX7A", "1EQ5CCB8800SbLLIXAFF", "KKNQ55C8800SWYYbbX7F", "R55MCC8800aWWYbLXXAF", "VK1D5CMCB8800bbLLXXA", "4KR355CMMCB8800aaYXX", "JKK11EE55CCB80YbLLXX", "49KK11RQQMCCM8800bXX", "KK11REEN55CHB8800YXX", "J9KK11REEQ5CCB800YXX", "V9KK11RRD55CMC00LLXX", "4KK11RRE5CCMBB8800XX", "PPTT4KK11RR3EE5B88XX"],
-  "TUNNELIER":["K16Q55C88ZZYbLIXX77F", "K1QDC8800SZZbIIXXAFF", "K1DD55CB880aZZWLXXFF", "KK16R3NDCC800ZZWYXX7", "JJKK113DCMC800aZXX7A", "OKK1QQ55CC8800ZbbXX7", "O4KK116DD55MCC88WXXA", "OOJKK116655CCMB8800I", "OO4JKK11QD55CC8800aW", "OJKK1163NNQ55CC8800L", "OO4VVJJKK11N55C8800X", "OO44JKK11Q55CC8800SX", "PP22TTO4JJKK1165CC80"],
-  "ARKHAUL":["V5B0SSaaYYLLIXX7AAFF", "D880SSaaWYYbLLX7AAFF", "15MC8SSYbLLIIXX7AAFF", "1RR500SSZbLLXX77AAFF", "RRDMB00SSaLLXX77AAFF", "4163355C88SSLL77AAFF", "4VJJK1NCCHSSLL77AAFF", "OOJK1Q800SSbLL77AAFF", "99KK11580SSWLL77AAFF", "OKK11UN58SSLLX77AAFF", "OOKK15CCH8SSLL77AAFF", "O4KK1R3E50SSLL77AAFF", "PPGGTTO9KRSSLL77AAFF"],
-  "JIPASIS":["6ED5SSaZZbbLIX77AAFF", "93DMBSSaZZbLXX77AAFF", "J1DDSSaaZZWWLX77AAFF", "O93QSSaZbbLLII77AAFF", "463QND5SSZYLLX77AAFF", "OO443NQQMSSbLL77AAFF", "OOUND8SSaZZLLI77AAFF", "OO4J963EQDSSLL77AAFF", "OO4JK66NQQSSLL77AAFF", "OO44JJ33UNSSLL77AAFF", "44633NQDB0SSLL77AAFF", "OO44J6RED0SSLL77AAFF", "P22GTOOJR3SSLL77AAFF"],
-  "BUZZY":["QN55CSSaYLLIIXX77AAF", "UD5C8SSaYYLLIXX77AAF", "155CC0SSaZWLLXX77AAF", "K5B800SSLLIIXX77AAFF", "9ED8800SSWYLLX77AAFF", "V1U5BB00SSbLLX77AAFF", "JKREN55CC0SSLL77AAFF", "KK115CHH0SSLLI77AAFF", "VVKK116N88SSLL77AAFF", "4JK11E5800SSLL77AAFF", "O4JKK1D558SSLL77AAFF", "4VJKK113B8SSLL77AAFF", "PP22GTT9K1SSLL77AAFF"],
-  "BRI-KB-ROCK":["OOUMMSSaZWYYbII77AFF", "OOU5MCMSSWYbIIX77AFF", "OO35MM0SSaZYLIIX7AFF", "OO9MMHHSSaWbLII7AAFF", "OOMCMB8SSZbLLIIX7AAF", "OOKNMMSSWWYIIX77AAFF", "OO49KRMMHSSLLII77AAF", "OO93EUMMH8SSLII77AAF", "OO4V1EMMSSLLIIX7AAFF", "OOVK1QNMMSSLLII7AAFF", "OOVVKUMMBSSLLII77AAF", "OO4J16MMHSSLLII77AAF", "PGGTTOOEMMSSLLI77AAF"],
-  "MED-POD":["OOMM8SaWbLLIIXX7AAFF", "OONMMBSWLLIIXX77AAFF", "OO4MMBSaWbbLLIIXAAFF", "OOMMHB0SSZZLLII77AAF", "OORQQNDMMBSSII77AAFF", "OOJEUNMMSSWYII77AAFF", "OO3QDD5MMSSZLLII77AA", "OO416QDMMSSLLII77AAF", "OOV11MMBSSbLII77AAFF", "OO166E5MMSSLII77AAFF", "OOJ93UNMMSSLII77AAFF", "OO4J996MMSSLLII7AAFF", "P2GGTTOOMMSSLLI7AAFF"],
-  "MORPHE":["V963QNNDHaaWWLLIIXFF", "49UNDCCHH8aaZZWWYLFF", "4V96UUNNMHH8aaZZWWYX", "O4VJ996RNQHHaaZWWYFF", "499663UUNNDHaaWWbLXF", "O44VV9913UUNHHaaZZYb", "O4VVJ996UUNNQCCHHBaa", "O4VVJJ993UUNNDHHaaZW", "OO4VVJJ993UUNNHHBaaW", "OO44VVJ99KK1UUNNHHaW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHaWW", "PP22GO4VVJ99RUUNNHHa"],
-  "EXO-MKIV":["9UUNHB8aaWWYbbLLI77F", "V9RUNHaaWWYYbLXX7AAF", "VVJ99UQMHBaaZWWYYbIF", "4VKUUNHHaaWWYbbLLXX7", "V99RUUNNDHHBaaWWYb7F", "VVKUUNN5HHBB8aaWWbLF", "VV993UUNNQMHHBaWYLI7", "VV99REEUUNNQQHHaWLIA", "OOVV99R3UUNMMHHBaaWY", "OVV99K1REEUUNNMHHBWW", "OOVV99RREUUQNNMMHHaW", "OVV99RREUUQNNMHHBaWW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["44UUNHHaaZZWWbbLLXAA", "VJ9RENDHHaaZZWWL7AAF", "V93UQNQDCHHaaZWWAAFF", "933UUQQNNDHHaaZWWIXA", "4V91UUNQNDHaaZWWbL7A", "O4996UUNND5CHaaWWL7A", "OVVJJ991UUNQNCH8aWWX", "44VVJ99RR3UUNN5HHaaF", "OO44VV99KUUNNQaaZZWW", "O44VVJ996UUNQNDHH0aW", "44VVJJ996R3UUNNQHHaW", "O4VVJJ99K66UUNNHHaWW", "PP22GO44VVJ99UUNNHHW"],
-  "WHIPLASH":["99UHH80aaZWWYbXX7AAF", "9EUNHH88SaaWWbLIXX7F", "VVUNNDCCH0aaWWYYIXX7", "V91UUNQQ5CHH8aaWWbXA", "99UUNQQ5CMHH0aaWWIXX", "OOVV99KRUUNN55H0aaZX", "O4V99KK11UUNNH0aaWWY", "VV99K1RUUNQNCHH88aaW", "VV99KK13UUNNCCHHB0WW", "VV99KK16UUNNQ55HHaaW", "OVV99KK116UUNNCHH0aa", "OVVJ99KK11UUNNHH8aaW", "PPTTVVJ99K113UUNNHaW"],
-  "DELOK":["VKUNNH00aaWWYYLLXXAF", "V9KUNHHBaaWWYYLLX7AF", "V91RUUNNBSaaWWYbLLAF", "VV9R3UNNCMaaWWYbbLAF", "4VVEUUNNMMHH0aaWYYLL", "VV1REUUNNCHHaWWbLLIF", "VVJ9RUUNNHHB8aZWWYbX", "VV99RREEUNNHHBaaWWbX", "OOVV99RRUUNNMMHHBaW7", "OVV9916RREEUUNNHHBaa", "4VV99RR3EUUNNMMHHWWL", "OVV99RREUUNNMHHBaaWA", "PPTVV996RREEUUNNMHHa"],
-  "TECHNOSORUS":["9633UNNHHaaZZWL7AAFF", "4496UNNHHBaaZZWLI7FF", "VV9633UNDDMHHaaWb7AF", "V993UUD5HHSaaZZWWbbF", "OVV96UUNDHBSaaZZWWAF", "OVVJJ9966UNNDHHSaWWX", "OOVVJ9R33UUNHHaaZWWI", "44VV9966RUUNNHH80SWW", "O4VVJJ996UUQQNNMHHWW", "OO44VVJ99RUUNNHaaZWW", "OO44VV9916UUNNDHHBWW", "O44VV9933UUNNQ5HHaWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9UNNDHHSaZWWYLX77AFF", "VUNNHHaWWYbLLX77AAFF", "99UNNMHHaZWWbLLI7AFF", "V99UQNNaaZZWWbLLIAAF", "V996UNNMHHaaWWY7AAFF", "VJ993UUN5HH80aaWL7AF", "OV991UNNHHaaWWLLI7AA", "OOV99UUNQNHHSSaaWW7A", "VV991EUUQNNHHSSaaL77", "VV993EUUNNHHSSaaWLLF", "OOVV993UUNNHHSSaaLLF", "OVV99RUUNNHHSSaaW7AF", "PP2OVV99UUNHHSSaaL7A"],
-  "DUMADED":["EEQDBBaaZZYYbLLIX77A", "6RREQDBBZZWYYbLLIX7F", "4V1RR3UMMBBZZWYYbLLF", "49RRND5BBZZYYbbLLIFF", "OJ1REDDMMB8WYYbbLLIA", "O41RR3EEQMMB0aZYYbbL", "466RREEQDDMMBB8ZYbbL", "OOJ9RREEQ5MHBBYbbLLX", "O44JKRREEUDMMBBWYYbb", "JK6RR3EENQQMMBYYbbLA", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "GAPIX":["633QQDDMBZZYYbLLX77F", "O6R3UQQDDMMSZZYYbLFF", "OJ633ENQQD5MBZZWYYbL", "44JJK6633QQBZZYYbLFF", "O4466RR33EQQDDZYLLXF", "OOJ66R33EQQDB0ZZWYY7", "OO4JJ663EQQDDB8ZYLLF", "OO44JJ9166RREQQDDZYY", "OO44JJ66REUQQDDMMYLF", "OO44JJ9166R3EUQQDMBb", "OO44JJ9K166RR33EEDBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
-  "EXO-MKVII":["4J66QQD80ZZIXX77AAFF", "OJJK33QQD50ZZLXX77AF", "O416633QDCC88ZZbX77F", "O6633QQDDC80aaZZIXXF", "O4JJK133EQDD5C88ZZbF", "O4JKK1663QQDDB80ZZIX", "OO4JJK1663EUQDD50ZZX", "O44VJJ6633EDDCH80ZLX", "OO44JJ9KR33QQDD5C80S", "OO44JJKK11663QQDDCB8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQDDM88", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["OJ6R33UDDHHaaZZIXX7F", "4VJ66QDDHBaZZWYIXXAA", "44VJ63QQD5HHaaZZWbb7", "OOJJ63NQDM8aZZWWL77A", "4JJ9633UQDDCHHBSaZZI", "O44VJJ633QQDCCaZWWIA", "OO4JJ96633UQQDDHaWbA", "OO44VJJ91663UNQDDHZ7", "OO4VJJ96633NQQDDHZW7", "OO44VVJJ66RR33NQQHaa", "OO44VVJJ99163QNQDD5W", "OO44VVJJ9966R33UQQDH", "PP22GOO44VJJ96633NQQ"],
-  "STAR-HUNTER":["4J663DDZZWLLIX77AAFF", "4J633DDSaZZWYIX7AAFF", "4633QQDDHaZZYbLLXAAF", "446633QNQDMMZZL77AFF", "O44JJ663QNDSZYYL7AAF", "OO44VJ9163UQQDSSZZLL", "OO44VVJ6633QDSZZLL7F", "O44JJK633EQDDCBSSZFF", "OO44JJ6633QQND8SSLL7", "OO44JJK16633QDMSSLLA", "OO44JJK6633QD8SS77AA", "OO44JJK633EQQDSSZL77", "22OO44JJK66R3QQSSLAA"],
-  "RHINO":["OK63QQDD5BSaZZWLXX7F", "44663DDCC80aaZZIXXAA", "44J1663QQDD800ZZYb7A", "O633UNQQDD58800ZZWYL", "OOJ1133EUQQNDD880ZZX", "OO4J9K633QQDD5H00WIX", "OO44VJJK6633DD5CB0ZX", "OO44VJJKK6633NQQ580W", "OO44VVJJK116633D80aZ", "OO44JJ9KK16633QQ55ML", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["JJ633QQDDBaaZWWLIXAA", "446633UQDHHaaZWIIX7A", "OO4J33UQQDDaaZWWLIIX", "4VJ9633UQQD8aZZYXX7F", "OO44JJ963UQDHZZWIXAF", "OOJJ933UNQQD55HZZWLX", "OO44VJJ966QNNQCH0ZZA", "OO44VVJJ963UQNDDM0ZZ", "OO44VVJJ66R3UUNDDZZY", "OO4VVJJ96633NQDDHHZZ", "OO44VVJJ93UQQNDDHaZZ", "OO44VVJJ9966R3NQDZZW", "PP22GGOO44JJ963UDHZZ"],
-  "CONQUEST":["J6633QDDM88ZZWWYYbXX", "4J33QDD580SaZZYbXXAF", "O4633QDDCCH00SZZWWXF", "O4J6R3QQD55C8aZZWbLL", "OO44V63QQD5800ZZXX7A", "OO44J163QQDD5C80aZWA", "OO44KK11663QQDCM0ZZX", "O44JKK6633QQDD55880Y", "OO44J9KK11663QQDD880", "OO44VJJKK11663EQQD8S", "OO44JJ116633UQQ55CCZ", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OJ6QMMSSaZZWIIXXAAFF", "O4JMM0SSaaZZYYbIIAAF", "OQD5MM800SSZZbIIAAFF", "OOJ6QMM8SSZWYbLLIIAA", "OOK3QQDMMBSSZZbIIAAF", "OO4J913DMMSSZZYLIIAA", "OO4JJ96RCMMSSZbbIIAA", "OO4663QQDMMH0SSZIIAA", "OO4JJ663EDDMMCSSIIAA", "OO44JJK166UMMSSZIIAA", "OO44JJ96REEMCMSSIIAA", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
-  "PRAWN":["OOMBSSZZWbLLIIX7AAFF", "OOJMB8SSWYYbLII77AAF", "OOUDMBSSaYYLLIIXXAAF", "OOMMCHBB0SSZWbbIIAAF", "OOKRUNMMBBSSLIIXAAFF", "OOREMMB8SSYbbLIIX7AA", "OOV99R3EEMMBSSaWIIAA", "OOEEQDMMHBSSZYYIIXAA", "OOV9REE5MMHSSYbLIIAA", "OOVJRRMMB88SSYYLIIAA", "OO4JRR3EDMM8SSYbIIAA", "OO411RREMMHBSSZbIIAA", "PPGGTTOOREEMMBBSSIAA"],
-  "HARKO":["OONMMSSaaZWWLLI7AAFF", "OO3NMMBSSaaWYYbLIXAA", "OOV3EUMMSSaWWbbIX7AA", "OOVNMMHHSSaZZYLIIXAA", "OO3NQMMHH0SSabIIXXAA", "OO9KRNMMHSSZWII7AAFF", "OO4VJ9UNNDMMHSSYIIAA", "OO99RUNDMMBBSSaIIAAF", "OO4VJ996U5MMH8SSIIAA", "OO4VVJ99K1RUMMSSIIAA", "OO44VVJRUNNMMHSSIIAA", "OO4J99K16UNMMHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
-  "DOZEUR":["63DMMB88ZZWYYbbLLIFF", "4R3QMBZYYbbLLIIX77FF", "6REQMHHBZZWYYbbLL77F", "4RR33EQDCMBBZbbLL7FF", "O4J6REQDMBBWYYbbLLI7", "OV9633EEDMBB8YYbbLLF", "OJ1RREEQQDMMBBZYbbLI", "VJJRR33EEQMBB8ZYYbbL", "O46RREEQDMMHBB88YYbb", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44RREEQMMBBYYbbL"],
-  "DILUS":["RMBB800aaYbbLLIXXAFF", "5MMBB0ZYbbLLIXX77AFF", "6RE5MMCBBaWYbbLLIXXA", "VRENMMCBB00WWYYbLLIX", "KEECMBB880aYYbbLLAAF", "4KEEN5MCCBB80YYbbLLA", "V91RREDCMCHBB8YYbbLL", "411RREE5MMCHBB0YYbbI", "OK1RREEND5MCMBB8YYbb", "KK16RR3EEDMMBB80YYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["R3EDMZZWWYYbbLLIIX7A", "4REEDMBZZYbbLLXX7AFF", "R3QQDMMBBZYYbbLLX7AF", "OJRREQ5MBSZZYYbLLIXF", "O4RREQHBB8ZZYYbbLL7A", "66RR33EEUNQ55MMYYbbL", "VJRR3NQQMMBB0ZYYbbLL", "6RR33EEQQDMMBBaWYYbL", "O4JK1RR33EEMMBBZYbbL", "OO46RREEUQDMCMBBYYbb", "OO4J66RREEUQMMBBYYbL", "OO44J16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
-  "SHADOW":["EUMBaZWWYYbbLLIX77AF", "EUNHBB0aaWYYbbLLXXAF", "ENNCMBBaaYYbbLLIXX7A", "JRREEMB8aaWWYbbLLXAF", "REENMMHBaZZWYYbbLLAF", "V9RREEUMHHZZWYYbbLLA", "V99RREEUCMMHBB0YYbLL", "OV96RREEMMHBB0aWYYLL", "VV9RREEUQMMHBBSWYYLL", "VV96RREEUDMMHHBBYYbL", "VV99KKRREEUNMMBBYYbb", "4VVJ9RREENNMMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "CATER-PILLARD":["K1155B80LLIIXX77AAFF", "55CC880cWbLLXX77AAFF", "KK1355CCH0WLLIXX77AA", "VKK1E55800SaZbXXAAFF", "KK155CCHH800bLXX77AF", "VKK155CMC800SSWIX77F", "4VKK155CC800SZWXX7AF", "KK116N55CC800SSLXX7A", "OOK11R55CC8800SLX77F", "49KK11655CC8800SL7AF", "JKK11QN55CC8800SSAFF", "OKK11N55CC8800SSLXAA", "PPTTOKK1165C800SSLLA"],
+  "MED-07":["41ND55C800ZZYbbLIXXA", "1635MCC800SaZZbbIXXF", "16QQD5CCM8800acZXXFF", "OK11Q5B8800ZZYIXX7FF", "4JJK11335CCH800cYIXX", "O4JKK11RQD55C8800ZXX", "4KK1163UQ55CC8800SZX", "OO4JKK116U5CCB880cXX", "4JJ9KK116ND55CC8800Y", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KU5CC8800aacWWYLXXFF", "KKU5CHH880SaabXX7AFF", "K1135C8800acWWLLXX7A", "9KK355CCHH80aaccWLXX", "9K1RU55CCH880aacWbXX", "OJKK55CCHH880cWLXX7A", "OVJ9KK11RN55CCH80aXX", "49KK11EUNQ55CH8800XF", "VV99KK11355B8800acXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["3Q55CC800ZZWYYLLXX7F", "K1DD55C800ZZYbLLXX7F", "OKK665CC800aZZYXXAAF", "JK663U5CC8800ZZYYXX7", "JJKK1Q55CC8800ZZYIXX", "K11R33EQQN558800aXX7", "O4KK663NQ55CCB8800XX", "OO4KK113355CCB8800IX", "O4JKK1166EUQ5CC8800X", "O49KK116QQD55CC880XX", "OO44VJJKK11655CC8800", "O449KK11QD55CC8800ZX", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["Q55C8800ZZLLIIXX7AAF", "155C800cZWbLXX77AAFF", "KK135CH8800ZLIXX77FF", "1155MCCB88SZWYLXX7FF", "KK11QD55CC00cLLIXXAA", "KK11Q5CCM8800LLIXX7A", "OKK11655CC880ScLX7AA", "O4KK11E55CC8800S77AF", "KK11N55CMCH8800SSLL7", "4VKK11N55CC8800SSL7F", "OKK11RD55CC8800SS7AF", "44KK1155CC8800SSLLXA", "PPGTTKK11ECC80SSLX7A"],
+  "HYPPER":["K55CC800aYYbbLLIIX7A", "1ED5CC8800SWbLLIXAFF", "KK55CH8800SSZWYYbbXA", "R55MCC8800cWWYbLXXAF", "K1ND5CCBB8800cWbLLXX", "K6R355CMMCB8800aZbXX", "JKK11EE55CCB80ZbLLXX", "49KK11RQQMCCM8800bXX", "KK11REEN55CHB8800YXX", "J9KK11REEQ5CCB800YXX", "V9KK11RRD55CMC00LLXX", "4KK11RRE5CCMBB8800XX", "PPTT4KK11RR3EE5B88XX"],
+  "TUNNELIER":["K16Q55C88aZZbLIXX77F", "K1QDCHB8800cZZWLLXXF", "K1DD55CC880ZZYbLXXFF", "KK163QDCC800SZZYYXX7", "JKK113NDCC800ZbLXX7A", "OKK1QQD55C8800cZbXX7", "O4KK116END55CC88YXXA", "OOJKK116655CCMB8800I", "OO4JKK11QD55CC8800bX", "OJKK1163NNQ55CMC8800", "OO4VVJJKK11N55C8800X", "OO44JKK11Q55CC8800SX", "PP22TTO4JJKK1165CC80"],
+  "ARKHAUL":["D50SSaaZWYLLIXX7AAFF", "D880SSZWYYbbLLX7AAFF", "OJ15C8SScYLLIXX7AAFF", "1UU500SSacLLXX77AAFF", "UUNDC00SSbLLXX77AAFF", "4416355C88SSLL77AAFF", "4JKK1NCCHSSWLL77AAFF", "OKK1QQ800SScLL77AAFF", "99KK11580SSLLX77AAFF", "OKK1R3EU58SSLL77AAFF", "VKK11RRQ55SSLL77AAFF", "O4KK1R3E50SSLL77AAFF", "PPGGTTO9KRSSLL77AAFF"],
+  "JIPASIS":["K66DHSScZZYbbL77AAFF", "R3DBBSSZZYbbLX77AAFF", "J1RDDSSZZbbLXX77AAFF", "OJ3QBSSccZbLLI77AAFF", "463QND5SSZZLLX77AAFF", "O44R3NNQQSScLL77AAFF", "OOVJND8SSZZbLL77AAFF", "O4J963QQDHSSLL77AAFF", "O4JK66RNQQSSLL77AAFF", "OO44JJ33UQSSLL77AAFF", "44633NQDB0SSLL77AAFF", "OO44J6RED0SSLL77AAFF", "P22GTOOJR3SSLL77AAFF"],
+  "BUZZY":["V55CSSaWYLLIIXX77AAF", "JC00SScZWLLIIXX77AAF", "3D55C0SSZYbLLXX77AAF", "JK5MB800SSYLLX77AAFF", "9EE8800SSYLLXX77AAFF", "V15BB00SScWLLX77AAFF", "OJK6EU5CC0SSLL77AAFF", "JKK115CHH0SSLL77AAFF", "9KK11N88SSWWLL77AAFF", "4JK11E5800SSLL77AAFF", "4JKK1QD558SSLL77AAFF", "O4V9KK1D00SSLL77AAFF", "PP22GTT9K1SSLL77AAFF"],
+  "BRI-KB-ROCK":["OOMMSSacZZWbIIX77AFF", "OOQMCMSSaaLIIXX77AFF", "OO35MM0SSaZbLIIX7AFF", "OOMMHHBSScWbLII7AAFF", "OOMCMB8SSaYbLLII7AAF", "OOKQMMSSZWYIIX77AAFF", "OO49RNMMHSSLLII77AAF", "OOJ93EUMM8SSLII77AAF", "OO15MMHSSWYLLII7AAFF", "OOVK1QQMMSSLLII7AAFF", "OOVVKUMMBSSLLII77AAF", "OO4J16MMHSSLLII77AAF", "PGGTTOOEMMSSLLI77AAF"],
+  "MED-POD":["OOUDMMScYbLIIXX7AAFF", "OOEUQNMMSYLIIX77AAFF", "OO5MMBSccYbLLIIXAAFF", "OOKMMC0SSaaLLII77AAF", "OORUQNDMMBSSII77AAFF", "OOJUNMMHSSZIIX77AAFF", "OO63EQDMMSSaLLII77AA", "OO41QDMM8SSLLII77AAF", "OOV11MMBSScLII77AAFF", "OO166E5MMSSLII77AAFF", "OOJ93UQMMSSLII77AAFF", "OO4J996MMSSLLII7AAFF", "P2GGTTOOMMSSLLI7AAFF"],
+  "MORPHE":["963QNDHaaccWWLLIIXFF", "49NDCCH8aaccZZWWYLFF", "496UUNMHaaccZZWWYIXA", "O4J996UQHHSaaccZWWFF", "4VV99663UUDHaacWWbLX", "O44VV991UN5HHaccZZWb", "4VVJ996UUNQNQDCCHHac", "O4VVJJ99K3UUNNDHaacc", "OO4VVJJ993UUNNHBaccW", "OO44VVJ99KK1UUNNHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9NHB8aaccWWYbbLLI77F", "9RUNCHaccZZWWYYbL7AF", "VJJ99RMHBaaccZWWYYbF", "4VVNNHH8aacWWYbbLLXX", "O9RUNNCHHBaaccWWYb7F", "UUNN5HHBB8aaccWWbLLF", "VV99R3UUNNMHHBcWYLI7", "VVJ99REEUUNQQHHBaacL", "O4VV99RUNNQMMHHBaccY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["44NMHHaaccZZWWbbLXAA", "J9QNDHSaaccZZWW7AAFF", "3UQNQDCHHaaccZWWAAFF", "33QQNNHHaaccZWWIXAAF", "4VV93NQNDHaccZWWbL7A", "O4V9966EUNNDMHB8ccWW", "OVJJ991UUNQNDH8aacWX", "44VVJ99R3UUNN5HSaccI", "OO44VV99KRUNNaacZZWW", "O44VVJ996UUNQNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["UNCHHB80aaccWYYbXXAF", "V9U88SaaccWWbLIXX7FF", "VUNNDCC0aaccWWYYIXX7", "91RUUNN5CH8SaacWbbXA", "VV9UUNNQ5CHH0accWIXX", "VV99KUUNNQQ55H0SaccY", "O4V99KK11UUNN0aaccWY", "OVV99K1RUUQNCHH88acc", "VV99KK13UUNNCCHHB0aW", "VV99KK16UUNNQ55HHacc", "OVV99KK116UUNNCHH0cc", "VV99KK11UUNNMHH8aaWW", "PPTTVVJ99K113UUNNHac"],
+  "DELOK":["VUMH00aaccWWYYLLXXAF", "V9UHBBSaacWWYYLLX7FF", "V91RUNBSaaccWWYbLLAF", "VV93UUQDSaaccWYbbLAF", "OOVVEUNNQ5HH0accWYYL", "VV1RENNDMHHaacWWbLII", "VVJ99RUUNNHHBacWWYYb", "VVJ99REUUQNHHBaccWYb", "OOVV99RRUUNNMMHHBaW7", "OVV9916RREEUUNNHHBcc", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["9633UNHaaccZZWL7AAFF", "496UD5CHHaaccZZWLII7", "V633UNDDMHHaaccWb7AF", "V993NND5accZZWWbbXXF", "V96UUQDHBSaaccZZWWAF", "OVVJJ9966UUDHHacWWXX", "OOVJ33UUNNHHaaccZWWI", "44VV9966RUUNNHH0SWWA", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaaZWWb", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9EUNHSaccZWWYLX77AFF", "UUHHaccWWYbLLX77AAFF", "V9UUQHHaccWWbLLI7AFF", "99QNNaaccZZWWbLLIAAF", "OV99NQHHaaccWY77AAFF", "VV993U5HH0aacWLL7AAF", "OVJ991UNNHHaaccLL7AA", "OV99RUUQNNHHSSaacc7A", "VV991UUQNNHHSSaaWL77", "4VV99EUNNHHSSaaWLLXF", "O4VV99UNNQHHSSaaWLLF", "OVV99RUUNNHHSSaaW7AF", "PP2OVV99UUNHHSSaaL7A"],
+  "DUMADED":["EEQDMBBccZZYYbLLX77A", "6RRNDBBaZZWYYbLLX7FF", "41RR3MMBBZZWWYYbLLIX", "4JRRD5BBSZZYYbbLLAFF", "OJJ1REDDMMB8YYbbLLXA", "41RR3EEQMMB0ScZYYbbL", "466RREEQDDMMBB8aYbbL", "OOJ9RREEQ5MHBBYYbbLL", "O44JRREEUDMMBBYYbbLX", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["93UNQHaacZZWWbII7AAF", "913UNDD5HaacZZWWII77", "VV933UNNDHHaacZWYYIA", "6633UUNNHaaccWWbL7AF", "13UUQQNNDMHaaccWWXAF", "VVJK633EUQQNH0aaccWW", "O4VV993UNQQCMHaaccW7", "OO4VVUUNQNMCHaccZWWb", "OO44VVJ96UUNNQHaccWY", "O4VVJJ9966R3UUNNHHcc", "OOVV9966REUUNNMccZWW", "OO4VVJ99R3UUNNCHHccW", "PP22GO4VV991UUNQNHcc"],
+  "GAPIX":["633QQDDM8aaZZYbLL7AF", "O6R3QQDDaZZWWYbLLIXF", "OJ633QQD5BSaZZWYbLXF", "4J6633QQ5MBaZZYbLLFF", "O4466RR33QQDCZZLLXFF", "OOJ66R33EQQDB0aZZYX7", "OO4JJ966R3EQDDBZYLLF", "OO44JJ9166RREQQDDZZY", "OO44VJJ66REQQDDMMHYL", "OO44JJ9166R3EUQQDMBb", "OO44JJ9K166RR33EEDBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
+  "EXO-MKVII":["4J66QQD80ZZIXX77AAFF", "OJJK633QQDB0ZZLXX77F", "O416633EQDC8ZZbX77AF", "6633QQDDC80SZZbbIXXF", "O4JJ133QDD5C88ZZbLFF", "O4JKK1663QQDDC80ZZIX", "OO4VJJK1663EQDD50ZZX", "O44VJJ6633EDDCH80ZLX", "OO44JJ9K33UQQDD5C80S", "OO44JJKK11663QQDDCB8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQDDM88", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["OJ633NDDHHccZZWWYIX7", "4J66QDDHBacZZWWIXXAA", "44J63QQD5HHccZZWWbb7", "OOJJ963UQQD8aacZZL7A", "4JJ633EUNQDDHHBcZZWI", "O44JJK633QQDCCaacWWA", "OO4JJ96633UQQDDHaccA", "OO44VJJ91663UNQNDDZ7", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ66R33NQQHSac", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
+  "STAR-HUNTER":["4J663DDZZWLLIX77AAFF", "4J633DDSaZZWbIX7AAFF", "4633QQDDaZZbbLLIXAAF", "4466R33NQNQDHZZL77AF", "OO44JJ663QDSZZYL7AAF", "OO44VJ9163EQQSSZZWLL", "OO44VVJ6633QDMSZZL7F", "O44JJK633EQDDCBSSZFF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSLLA", "OO44JJK6633UQD8S77AA", "OO44JJK633EQQDSSZL77", "22OO44JJK66R3QQSSLAA"],
+  "RHINO":["OK63EQQDD5SZZWYbXX7F", "44663DDCB80ZZbbLXXAF", "44J1663QDD800SacZZ7A", "O6R33QQDD58800ZZWYLX", "OOJ11R33QQDD880ZZWXF", "OO4J9K633QQDD5H00IXX", "OO44JJK6633DD5CB0aWX", "OO44VJJKK6633NQQ580X", "OO44VJJK116633D80aZW", "OO44JJ9KK16633QQ55MM", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["JJ633QQDCaaZWWYLIAAF", "44V6633QDHHcZYbLIX7A", "OO4J33EQQDaaZWWYbLII", "4J9633UQQDH8cZZWYYX7", "OO44VJJ963EQHaZZYIAF", "OOJJ933NQNQD55aZZWYL", "OO44JJ966UUQNQC0ZZWA", "OO44VVJJ963UUQDD0ZZL", "OO44VVJJ66R3UUNDDaZZ", "OO4VVJJ96633QNDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ9966R3NQDZZY", "PP22GGOO44JJ963UDHZZ"],
+  "CONQUEST":["J633QDD88cZZWWYYLXX7", "4J33QDD580aacZZWXXAF", "O4633EQNDDC00ZZWIXXF", "O4J63NQQD55C8ScZZbLX", "OO4463QQD5800ZZYXX7A", "OO44J163QQDD5C80abXA", "OO44K11663QNQDD0ZZLX", "O44JJKK6633QQD5580ZZ", "OO44J9KK11663QQDD880", "OO44VJJKK11663EQQD8S", "OO44JJ116633UQQ55CCa", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OJQMMSSZZWYbIIX7AAFF", "O4JMM0SSacZZYbbIIAAF", "O6QDMM800SScZZIIAAFF", "OOJ6QNMM8SScZZLIIXAA", "OO3QQDMMHBSSacZLIIAA", "OO4J13NDMMBSSaZZIIAA", "OO4JJ96UCMMSSaccIIAA", "OO4J66R3QDMM0SSaIIAA", "OO4JJ663EDDMMCSSIIAA", "OO44JJK166UMMSSZIIAA", "OO44JJ96REEMCMSSIIAA", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
+  "PRAWN":["OOMHBSSaaWbLLIIXAAFF", "OONMB8SSYYbLIIX77AAF", "OOCMHSSZWYYbLLIIXAAF", "OOJMMCHBB0SSaWbbIIAA", "OOJRUMMHBBSSYLLIIAAF", "OOREMMB8SScYYbLII7AA", "OO9R3EEMMBBSSWbIIXAA", "OOEEQDMMHBSSaZYYIIAA", "OOV9REE5MMHSSZbLIIAA", "OOVJRRMMB88SSYYLIIAA", "OO4JRR3EDMM8SSYbIIAA", "OO411RREMMHBSSabIIAA", "PPGGTTOOREEMMBBSSIAA"],
+  "HARKO":["OOMMSSaaccWWLLI7AAFF", "OO3MMBSSaaccWYYLIXAA", "OOV3MMSSaaccWWIX7AAF", "OOUQMMHHSSaacZWYIIAA", "OO3UQMMHH0SSccYYIIAA", "OO9KRUNMMHSSZWII7AAF", "OOKEUQN5MMHBSSZWIIAA", "OO99RUNDMMHBBSScIIAA", "OO4VJ996U5MMH8SSIIAA", "OO4VVJ99K1RMMSSWIIAA", "OO44VVJJRUNNMMSSIIAA", "OO49916UNNMMHHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
+  "DOZEUR":["63MMB8ZZWYYbbLLII7FF", "4R3QNMHBZYYbbLLIX77F", "6REQMBZZYYbbLLIIX77F", "4RR33EDCMHBBSabbLL7F", "O4JJ6REQDMBBWYYbbLL7", "O9633EEDMBB8WYYbbLLF", "OJKRR3EEQQDMMBBZYbbL", "VJJRR33EEMBB8SZYYbbL", "O46RREEQDMMHBB88YYbb", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44RREEQMMBBYYbbL"],
+  "DILUS":["RCMHBB00ccYbbLLIXXAF", "5MMBB0aYbbLLIIXX7AAF", "EU5MMCBBcZYbbLLIXX7A", "KKREMMCBB00WWYYbLLXX", "KEECMBB880cYYbbLLAAF", "O4KEED5MCBB80YYbbLLA", "91RREDCMCHBB8WYYbbLL", "411RREE5MMCHBB0YYbbI", "OK1RREEND5MCMBB8YYbb", "KK16RR3EEDMMBB80YYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["R3EDMSZZYYbbLLIIXX7A", "4REDMBZZYYbbLLIX7AFF", "R3QQDMBB8SZYYbbLLXAF", "OJRREU5MBSZZYYbLLIXF", "O4RRECBB8SZZYYbbLLI7", "V66RR33EENQ55MMYYbbL", "JRR3NQQMMBB0ZWYYbbLL", "6RR33EEQQDMMBBYYbbLX", "O4JK1RR33EEMMBBZYbbL", "OO4V6RREEQDMCMBBYYbb", "OO4J66RREEUQMMBBYYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
+  "SHADOW":["EMBaacWWYYbbLLIX77AF", "EMBB0accWWYYbbLLXAFF", "EUNDMMBBccZYYbbLLX7A", "RREEMMB8accWYYbbLLAF", "REEUMMHHBaacZYYbbLLA", "V9RREENMaaZWYYbbLLIA", "V9RREEMMHBB0WYYbLLAA", "OV96RREEMMHBB0acYYLL", "VV9RREEUUMMBBSaYYLLF", "VVJ99RREEU5MMHBBYYbL", "VV99KKRREEUNMMBBYYbb", "4VVJ9RREENNMMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27304,7 +27435,8 @@ const DEFI_RESULT_ART_Y = {
   'DILUS': 30,
   'KRIGER': 30,
   'SCOPT': 30,
-  'DUMADED': 30
+  'DUMADED': 30,
+  'LACRIUM': 40
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
