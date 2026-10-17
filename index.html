@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.68</title>
+<title>Projet MECA V0.04.69</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.68</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.69</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9245,9 +9245,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.68';
+var BUILD_VERSION = 'V0.04.69';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.69', items:[
+    'NOUVELLE CARTE : RAZOPS (rare, Appel) — rhinocéros blindé de campagne. À son arrivée, donne 3 DEF à une carte alliée ciblée.',
+    'ANIMATION DE RAZOPS : un drone 3D cyberpunk entre par la droite de l\'écran, vole jusqu\'à la carte ciblée grâce à son propulseur pulsant, la scanne (faisceau et grille holographique), lui donne ses 3 DEF puis repart vers le haut de l\'écran.',
+    'DÉFIS : RAZOPS rejoint les decks adverses des défis.',
+  ] },
   { v:'V0.04.68', items:[
     'NOUVELLE CARTE : LACRIUM (rare, Percée) — mécha duelliste à lames jumelles. Ultime DOUBLE CROISSANT : deux coups de lame sur les cibles.',
     'ARRIVÉE DE LACRIUM : deux grands coups de lame bleue en arc de cercle, de bas en haut, de chaque côté du champ de bataille, avec un vent flouté ; puis la carte tombe du ciel et s\'écrase dans son emplacement.',
@@ -10978,6 +10983,7 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  RAZOPS:    { head:'crest', shoulders:'block', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'staff', emblem:'cross' },
   LACRIUM:   { head:'vfin', shoulders:'spike', torso:'vcut', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
   DUMADED:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'hostile' },
   SCOPT:     { head:'dome', shoulders:'spike', torso:'vcut', legs:'heavy', back:'cannons', arms:'thick', weapon:'rifle', emblem:'hostile' },
@@ -11030,6 +11036,7 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  RAZOPS:    { pilot:'Dr Amara « Corne » Okoye', text:"Médecin de guerre reconvertie en pilote, Okoye a bardé un mécha de chantier de plaques blindées frappées de la croix des secours. Un bras articulé, un essaim de drones de réparation : là où RAZOPS passe, la ligne tient. Un drone se pose sur un camarade, le scanne, lui rajoute du blindage en quelques secondes, et repart déjà vers le suivant." },
   LACRIUM:   { pilot:'Cmdt. Elias « Lame » Varga', text:"Ancien maître d'armes des galeries marchandes de la mégalopole, Varga a fait forger deux lames à champ d'énergie pour son mécha. Il n'attaque jamais de front : il frappe deux fois, en arc, de chaque côté du terrain, avant que l'air n'ait fini de siffler, puis retombe du ciel sur sa cible. Quand on voit le bleu de ses lames, la vitrine a déjà éclaté." },
   DUMADED:   { pilot:'Ing. Ilyana « Méduse » Voss', text:"Ancienne ingénieure de dragage des canaux de la mégalopole, Voss a greffé six bras de manutention sur la coque d'un dôme de forage. Chaque fois que la ville reprend son souffle, l'une de ses tentacules jaillit, frappe une cible au hasard et se replie sous la coque avant que quiconque ait compris d'où venait le coup. Pour elle, personne n'est vraiment à l'abri : les alliés non plus." },
   SCOPT:     { pilot:'Lt. Zara « Dard » Okonkwo', text:"Ancienne démineuse des quartiers effondrés, Okonkwo pilote un mécha-scorpion monté sur six pattes articulées. Il se glisse sous les ruines, perce le sol là où personne ne l'attend et frappe depuis les décombres, queue dressée, laser braqué. Quand le sol se met à rougeoyer, il est déjà trop tard." },
@@ -11297,7 +11304,13 @@ const CHAR_DEFS = [
     ultName:"DOUBLE CROISSANT", ultMult:1.8, ultDesc:"Deux coups de lame en arc de cercle frappent deux ennemis à la fois",
     base:{atk:36, def:12, hp:270}, max:{atk:240, def:90, hp:1000}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art-ext.webp' },
+  // ---- Nouvelle carte RARE : RAZOPS, rhinocéros médical blindé, Appel ----
+  { name:"RAZOPS", rarity:"rare", color:"#e0883a", shape:"RAZOPS", role:"Soutien — rhinocéros blindé de campagne",
+    ultName:"ESSAIM MÉDICAL", ultMult:1.5, ultDesc:"Lance son essaim de drones sur le champ de bataille et soigne toute l'escouade",
+    base:{atk:14, def:28, hp:460}, max:{atk:92, def:240, hp:2100}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/razops-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/razops-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11333,7 +11346,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11341,7 +11354,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14123,6 +14136,7 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
+  RAZOPS:    (u, T) => healSquad(0.15),   // l'essaim de drones répare toute l'escouade (15 % des PV MAX)
   LACRIUM:   (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); },   // deux coups de lame en arc de cercle sur deux ennemis
   DUMADED:   (u, T) => hitOne(u, T, u.ultMult),   // six tentacules referment leur étreinte sur un ennemi
   SCOPT:     (u, T) => hitCrit(u, T, u.ultMult),   // dard laser : critique garanti
@@ -22434,6 +22448,7 @@ function btlPillar(r, col){
 async function btlPlay(side, c, si, fromRect, el){
   const S = BTL.S[side];
   if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
+  if(c.def && c.def.name === 'RAZOPS') btlDrSprite();   // précharge le drone 3D
   const wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }   // le joueur ne peut rien faire d'autre pendant la pose et l'effet d'Appel
   BTL.fxBusy++;
@@ -23368,6 +23383,7 @@ function btlPickTarget(c, cands, opt){
 }
 function btlAIChoose(cands, mode, dmg){
   if(mode === 'heal') return cands.slice().sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+  if(mode === 'shield') return cands.slice().sort((a, b) => (a.hp + a.df) - (b.hp + b.df))[0];   // RAZOPS : renforce la carte la plus fragile
   if(mode === 'dmg'){
     const cards = cands.filter(t => !t.leader), lead = cands.find(t => t.leader);
     const kill = cards.filter(t => t.hp + t.df <= dmg).sort((a, b) => btlPwr(b) - btlPwr(a))[0];
@@ -25964,6 +25980,121 @@ async function btlLacriumArrive(c, u, to, col){
   }
 }
 BTL_CARD_FX['LACRIUM'] = { arrive: btlLacriumArrive };
+// ================= RAZOPS : drone de campagne (Appel : +3 DEF à une carte alliée ciblée) =================
+// Un drone 3D (feuille de sprites BTL_DRONE, 12 angles) entre par la droite de l'écran, vole jusqu'à la carte ciblée grâce à son propulseur pulsant, la scanne (faisceau + grille), lui donne 3 DEF puis repart vers le haut.
+var btlDrImg = null;
+function btlDrSprite(){ if(!btlDrImg){ btlDrImg = new Image(); btlDrImg.src = BTL_DRONE.src; } return btlDrImg; }
+function btlDrDraw(g, cx, cy, DS, yaw, roll){   // deux angles voisins fondus : rotation douce
+  const im = btlDrSprite(); if(!(im.complete && im.naturalWidth)) return;
+  const B = BTL_DRONE, n = B.n, f = (((yaw % 360) + 360) % 360) / (360 / n), i0 = Math.floor(f) % n, i1 = (i0 + 1) % n, k = f - Math.floor(f);
+  g.save(); g.translate(cx, cy); g.rotate(roll); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+  g.drawImage(im, i0 * B.fw, 0, B.fw, B.fw, -DS / 2, -DS / 2, DS, DS);
+  if(k > .02){ g.globalAlpha = k; g.drawImage(im, i1 * B.fw, 0, B.fw, B.fw, -DS / 2, -DS / 2, DS, DS); }
+  g.restore();
+}
+// jet du propulseur : cône bleu-blanc qui pulse, anneaux de choc qui descendent le long du jet, halo à la tuyère (repère local : +y = sens du jet)
+function btlDrFlame(g, nx, ny, roll, len, wid, p, now){
+  g.save(); g.translate(nx, ny); g.rotate(roll); g.globalCompositeOperation = 'lighter';
+  const cone = (w, l, stops) => { const gr = g.createLinearGradient(0, 0, 0, l); stops.forEach(s => gr.addColorStop(s[0], s[1])); g.fillStyle = gr; g.beginPath(); g.moveTo(-w, 0); g.quadraticCurveTo(-w * .95, l * .5, 0, l); g.quadraticCurveTo(w * .95, l * .5, w, 0); g.closePath(); g.fill(); };
+  cone(wid * 1.9, len * 1.18, [[0, 'rgba(60,150,255,' + (.34 * p) + ')'], [.5, 'rgba(40,110,255,' + (.14 * p) + ')'], [1, 'rgba(30,90,255,0)']]);
+  cone(wid * 1.0, len, [[0, 'rgba(190,240,255,' + (.85 * p) + ')'], [.35, 'rgba(90,185,255,' + (.55 * p) + ')'], [1, 'rgba(50,130,255,0)']]);
+  cone(wid * .46, len * .62, [[0, 'rgba(255,255,255,' + Math.min(1, p) + ')'], [.5, 'rgba(210,246,255,' + (.7 * p) + ')'], [1, 'rgba(170,230,255,0)']]);
+  btlLacSoft(g, 0, wid * .15, wid * 1.5, wid * .75, 0, '170,230,255', .75 * p);
+  for(let j = 0; j < 4; j++){   // anneaux de choc : le propulseur « pulse »
+    const s = ((now / 150 + j / 4) % 1), y = s * len * .95, r = wid * (.95 - .55 * s);
+    btlLacSoft(g, 0, y, r, r * .5, 0, '215,248,255', .62 * (1 - s) * (1 - s) * p);
+  }
+  g.restore();
+}
+async function btlDroneFly(c, t){
+  const B = BTL_DRONE, E = BTL_E1, sm = (a, b, x) => E.cl((x - a) / (b - a), 0, 1), sst = x => x * x * (3 - 2 * x), TS = btlDumTS(), rnd = Math.random;
+  const FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H, tr = btlUnitRect(t), im = btlDrSprite();
+  try{ if(im.decode) await im.decode(); }catch(_){}
+  const DS = Math.max(80, Math.min(112, tr.width * 1.22)), tcx = tr.left + tr.width / 2;
+  const hx = tcx, hy = Math.max(DS * .62, tr.top - DS * .56);                      // point de vol stationnaire au-dessus de la carte
+  const sx = W + DS * .7, sy = Math.max(DS * .55, hy - Math.min(120, H * .16));      // entrée : côté droit de l'écran, un peu plus haut
+  const ex = hx + DS * .9 + (W - hx) * .3, ey = -DS * 1.5;                           // sortie : vers le haut de l'écran
+  const T_IN = 960, T_S0 = 1000, T_S1 = 2250, T_DEF = 2130, T_O0 = 2280, T_O1 = 3150, T_END = 3200;
+  const bez = (u, a, b, c2, d) => { const v = 1 - u; return v * v * v * a + 3 * v * v * u * b + 3 * v * u * u * c2 + u * u * u * d; };
+  const c1x = sx - (sx - hx) * .34, c1y = sy - 34, c2x = hx + (sx - hx) * .1, c2y = hy - 48;
+  const sparks = []; let px = sx, py = sy, vxs = 0, vys = 0, roll = 0, spd = 0, last = 0, raf = 0, defDone = false, addP = null, flash = 0, done, fail;
+  const pr0 = new Promise((res, rej) => { done = res; fail = rej; });
+  const t0 = performance.now();
+  const tick = () => {
+    if(!BTL || BTL.abort){ fail('abort'); return; }
+    const now = window.__rzT != null ? window.__rzT : (performance.now() - t0) * TS, dt = Math.min(.05, Math.max(.001, (now - last) / 1000)); if(last === 0) last = now - 16; last = now;
+    g.clearRect(0, 0, W, H);
+    // --- position / cap / poussée selon la phase ---
+    let x, y, yaw, thrust, mode;
+    if(now < T_IN){ const p = now / T_IN, u = 1 - Math.pow(1 - p, 2.7); x = bez(u, sx, c1x, c2x, hx); y = bez(u, sy, c1y, c2y, hy); yaw = 300 + 60 * sst(sm(.35, 1, p)); thrust = .9 + .6 * (1 - p); mode = 'in'; }
+    else if(now < T_O0){ x = hx + Math.sin(now / 520) * 2.2; y = hy + Math.sin(now / 330) * 2.6; yaw = 0 + Math.sin(now / 760) * 7; thrust = .52 + .06 * Math.sin(now / 90); mode = 'hover'; }
+    else { const p = sm(T_O0, T_O1, now), u = Math.pow(p, 2.1); const hx2 = hx + Math.sin(T_O0 / 520) * 2.2, hy2 = hy + Math.sin(T_O0 / 330) * 2.6; x = hx2 + (ex - hx2) * u; y = hy2 + (ey - hy2) * u - Math.sin(Math.min(1, p * 5) * Math.PI) * 5; yaw = 70 * sst(sm(0, .5, p)); thrust = .6 + 1.2 * Math.min(1, p * 2.2); mode = 'out'; }
+    const vx = (x - px) / dt, vy = (y - py) / dt; px = x; py = y;
+    vxs += (vx - vxs) * Math.min(1, dt * 9); vys += (vy - vys) * Math.min(1, dt * 9);
+    const tgtRoll = E.cl(vxs * .00034, -.34, .34) + (mode === 'hover' ? Math.sin(now / 410) * .035 : 0) + (mode === 'out' ? E.cl(vys * -.00005, 0, .12) : 0);
+    roll += (tgtRoll - roll) * Math.min(1, dt * 10);
+    spd += (Math.hypot(vxs, vys) - spd) * Math.min(1, dt * 8);
+    const pul = .86 + .14 * Math.sin(now / 38) + (rnd() - .5) * .08;
+    // --- scan : faisceau + grille + ligne qui balaie la carte ---
+    const sA = sm(T_S0, T_S0 + 230, now) * (1 - sm(T_S1 - 140, T_S1 + 80, now));
+    // ombre portée du drone sur le terrain
+    { const h = mode === 'hover' ? 1 : E.cl(1 - Math.abs(y - hy) / (H * .5), .15, 1); g.save(); g.translate(x + DS * .06, E.cl(y + DS * .82, 0, H)); g.scale(1, .3); const gr = g.createRadialGradient(0, 0, 0, 0, 0, DS * .5); gr.addColorStop(0, 'rgba(0,0,0,' + (.34 * h) + ')'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.beginPath(); g.arc(0, 0, DS * .5, 0, 6.283); g.fill(); g.restore(); }
+    if(sA > .01){
+      const lx = x + (B.ln[0] - .5) * DS, ly = y + (B.ln[1] - .5) * DS + 2, top = tr.top + 1, fl = .9 + .1 * Math.sin(now / 24);
+      g.save(); g.globalCompositeOperation = 'lighter';
+      // faisceau (trapèze du capteur à la carte)
+      const gr = g.createLinearGradient(0, ly, 0, tr.top + tr.height * .5); gr.addColorStop(0, 'rgba(160,236,255,' + (.62 * sA * fl) + ')'); gr.addColorStop(.55, 'rgba(70,190,255,' + (.2 * sA) + ')'); gr.addColorStop(1, 'rgba(70,190,255,' + (.1 * sA) + ')');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(lx - 3, ly); g.lineTo(lx + 3, ly); g.lineTo(tr.right - 2, top + tr.height * .5); g.lineTo(tr.left + 2, top + tr.height * .5); g.closePath(); g.fill();
+      g.strokeStyle = 'rgba(200,244,255,' + (.5 * sA) + ')'; g.lineWidth = 1; g.beginPath(); g.moveTo(lx - 3, ly); g.lineTo(tr.left + 2, top + tr.height * .5); g.moveTo(lx + 3, ly); g.lineTo(tr.right - 2, top + tr.height * .5); g.stroke();
+      btlLacSoft(g, lx, ly, DS * .12, DS * .12, 0, '190,245,255', .9 * sA);
+      g.restore();
+      // grille holographique + balayage, découpés à la carte
+      g.save(); g.beginPath(); g.roundRect ? g.roundRect(tr.left, tr.top, tr.width, tr.height, 7) : g.rect(tr.left, tr.top, tr.width, tr.height); g.clip(); g.globalCompositeOperation = 'lighter';
+      const ph = E.cl((now - T_S0 - 140) / (T_S1 - T_S0 - 300), 0, 1), q = ph < .5 ? ph * 2 : 2 - ph * 2, ly2 = tr.top + tr.height * (.04 + .92 * sst(q));
+      g.fillStyle = 'rgba(70,190,255,' + (.1 * sA) + ')'; g.fillRect(tr.left, tr.top, tr.width, tr.height);
+      g.strokeStyle = 'rgba(140,225,255,' + (.2 * sA) + ')'; g.lineWidth = 1; g.beginPath();
+      const cell = Math.max(7, tr.width / 9); for(let gx = tr.left + ((now * .01) % cell); gx < tr.right; gx += cell){ g.moveTo(gx, tr.top); g.lineTo(gx, tr.bottom); } for(let gy = tr.top + ((now * .014) % cell); gy < tr.bottom; gy += cell){ g.moveTo(tr.left, gy); g.lineTo(tr.right, gy); } g.stroke();
+      const dirDown = ph < .5 ? 1 : -1, tail = g.createLinearGradient(0, ly2 - dirDown * 34, 0, ly2); tail.addColorStop(0, 'rgba(90,205,255,0)'); tail.addColorStop(1, 'rgba(120,225,255,' + (.42 * sA) + ')');
+      g.fillStyle = tail; g.fillRect(tr.left, Math.min(ly2, ly2 - dirDown * 34), tr.width, 34);
+      g.shadowColor = 'rgba(120,225,255,1)'; g.shadowBlur = 9; g.fillStyle = 'rgba(235,252,255,' + (.95 * sA) + ')'; g.fillRect(tr.left, ly2 - 1, tr.width, 2); g.shadowBlur = 0;
+      g.restore();
+      // repères d'angle (verrouillage de la cible)
+      g.save(); g.strokeStyle = 'rgba(190,245,255,' + (.9 * sA * sm(T_S0 + 60, T_S0 + 360, now)) + ')'; g.lineWidth = 1.6; g.lineCap = 'round';
+      const bl = 9, o = 3 - 2 * sm(T_S0, T_S0 + 300, now); [[tr.left - o, tr.top - o, 1, 1], [tr.right + o, tr.top - o, -1, 1], [tr.left - o, tr.bottom + o, 1, -1], [tr.right + o, tr.bottom + o, -1, -1]].forEach(k => { g.beginPath(); g.moveTo(k[0] + k[2] * bl, k[1]); g.lineTo(k[0], k[1]); g.lineTo(k[0], k[1] + k[3] * bl); g.stroke(); });
+      g.restore();
+    }
+    // lueur du jet sur la carte quand le drone stationne
+    if(mode === 'hover'){ g.save(); g.globalCompositeOperation = 'lighter'; btlLacSoft(g, x, tr.top + tr.height * .1, tr.width * .62, tr.height * .16, 0, '120,210,255', .26 * sm(T_IN * .7, T_IN + 160, now) * (1 - sA * .2)); g.restore(); }
+    // --- propulseur ---
+    const nxo = (B.nz[0] - .5) * DS, nyo = (B.nz[1] - .5) * DS, cr = Math.cos(roll), sr = Math.sin(roll), nxs = x + nxo * cr - nyo * sr, nys = y + nxo * sr + nyo * cr;
+    const len = DS * (.2 + .34 * thrust + Math.min(.5, spd / 2400)) * (.9 + .1 * pul), wid = DS * .105 * (.9 + .1 * pul);
+    btlDrFlame(g, nxs, nys, roll, len, wid, pul * Math.min(1, .55 + thrust * .5), now);
+    // étincelles du jet
+    for(let i = 0, n = Math.round(thrust * 2.2 + (rnd() < .5 ? 1 : 0)); i < n; i++){ const a = roll + (rnd() - .5) * .5, sp = 150 + rnd() * 260 * thrust; sparks.push({ x:nxs + (rnd() - .5) * wid, y:nys, vx:-Math.sin(a) * sp + vxs * .15, vy:Math.cos(a) * sp + vys * .1, t0:now, life:260 + rnd() * 300, r:1 + rnd() * 1.6 }); }
+    g.save(); g.globalCompositeOperation = 'lighter';
+    for(let i = sparks.length - 1; i >= 0; i--){ const s = sparks[i], a = (now - s.t0) / s.life; if(a >= 1){ sparks.splice(i, 1); continue; } const tt = (now - s.t0) / 1000; btlLacSoft(g, s.x + s.vx * tt, s.y + s.vy * tt + 90 * tt * tt, s.r * 3.2, s.r * 3.2, 0, a < .4 ? '230,250,255' : '110,200,255', .85 * (1 - a)); }
+    g.restore();
+    // --- le drone ---
+    btlDrDraw(g, x, y, DS, yaw, roll);
+    // clignotement de verrouillage à la fin du scan + flash de la carte
+    if(now >= T_DEF && !defDone){ defDone = true; flash = now; addP = btlShieldAdd(t, 3).catch(e => { if(e === 'abort') throw e; }); }
+    if(defDone){ const a = 1 - sm(flash, flash + 420, now); if(a > .01){ g.save(); g.globalCompositeOperation = 'lighter'; g.beginPath(); g.roundRect ? g.roundRect(tr.left, tr.top, tr.width, tr.height, 7) : g.rect(tr.left, tr.top, tr.width, tr.height); g.clip(); g.fillStyle = 'rgba(150,230,255,' + (.32 * a) + ')'; g.fillRect(tr.left, tr.top, tr.width, tr.height); g.restore(); } }
+    if(now >= T_END){ done(); } else if(window.__rzT == null) raf = requestAnimationFrame(tick);
+  };
+  window.__rzTick = tick;
+  try{
+    if(window.__rzT == null) raf = requestAnimationFrame(tick); else tick();
+    await pr0;
+    if(addP) await addP;
+  } finally {
+    cancelAnimationFrame(raf); FC.cv.remove(); window.__rzTick = null;
+  }
+}
+BTL_CARD_FX['RAZOPS'] = { appel: async c => {
+  const t = await btlChoose(c, btlLiveAll(c.side), 'shield', 0, { arrow:'def' });
+  if(!t || btlGone() || !btlOnField(c)) return;
+  await btlDroneFly(c, t);
+} };
 // ---- MED-POD : quatre câbles métalliques souples (simulation de corde), arrivée = ils harponnent la carte et la tirent dans sa case ; Baroud = ils vont chercher une carte dans la pioche adverse et la plaquent de force dans la case ----
 const BTL_MED_N = 26, BTL_MED_W = 3.5;
 const BTL_MED_LOC = { b:[[-.38, .5], [-.13, .5], [.13, .5], [.38, .5]], t:[[-.38, -.5], [-.13, -.5], [.13, -.5], [.38, -.5]], r:[[.5, -.33], [.5, -.11], [.5, .11], [.5, .33]], l:[[-.5, -.33], [-.5, -.11], [-.5, .11], [-.5, .33]] };
@@ -26587,7 +26718,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -26891,7 +27022,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -26920,6 +27051,8 @@ var BTL_COIN = { n:40, w:256, h:256, src:'https://okrdywhctnlayyfltivc.supabase.
 var BTL_TUR = { ny:36, ns:4, w:256, h:256, half:1.75, voff:.38, sp:.819152, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-97309f4a6faa.webp' };
 
 var BTL_MOT = { ny:36, ns:4, w:256, h:256, half:1.8, voff:.43, sp:.819152, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-c491c77ccc99.webp' };
+
+var BTL_DRONE = { n:12, fw:256, nz:[0.5000,0.7576], ln:[0.5000,0.6407], src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-e1294ab1f6ca.webp' };
 
 document.getElementById('tileRaid').onclick = () => {
   // V0.03.04, demande d'Alex : la case reste fermée tant que la fenêtre d'évènement (5 jours sur 14)
@@ -27225,48 +27358,49 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "CATER-PILLARD":["K1155B80LLIIXX77AAFF", "55CC880cWbLLXX77AAFF", "KK1355CCH0WLLIXX77AA", "VKK1E55800SaZbXXAAFF", "KK155CCHH800bLXX77AF", "VKK155CMC800SSWIX77F", "4VKK155CC800SZWXX7AF", "KK116N55CC800SSLXX7A", "OOK11R55CC8800SLX77F", "49KK11655CC8800SL7AF", "JKK11QN55CC8800SSAFF", "OKK11N55CC8800SSLXAA", "PPTTOKK1165C800SSLLA"],
-  "MED-07":["41ND55C800ZZYbbLIXXA", "1635MCC800SaZZbbIXXF", "16QQD5CCM8800acZXXFF", "OK11Q5B8800ZZYIXX7FF", "4JJK11335CCH800cYIXX", "O4JKK11RQD55C8800ZXX", "4KK1163UQ55CC8800SZX", "OO4JKK116U5CCB880cXX", "4JJ9KK116ND55CC8800Y", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KU5CC8800aacWWYLXXFF", "KKU5CHH880SaabXX7AFF", "K1135C8800acWWLLXX7A", "9KK355CCHH80aaccWLXX", "9K1RU55CCH880aacWbXX", "OJKK55CCHH880cWLXX7A", "OVJ9KK11RN55CCH80aXX", "49KK11EUNQ55CH8800XF", "VV99KK11355B8800acXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["3Q55CC800ZZWYYLLXX7F", "K1DD55C800ZZYbLLXX7F", "OKK665CC800aZZYXXAAF", "JK663U5CC8800ZZYYXX7", "JJKK1Q55CC8800ZZYIXX", "K11R33EQQN558800aXX7", "O4KK663NQ55CCB8800XX", "OO4KK113355CCB8800IX", "O4JKK1166EUQ5CC8800X", "O49KK116QQD55CC880XX", "OO44VJJKK11655CC8800", "O449KK11QD55CC8800ZX", "PP22GTTO44JKK115C880"],
-  "NEUTRON":["Q55C8800ZZLLIIXX7AAF", "155C800cZWbLXX77AAFF", "KK135CH8800ZLIXX77FF", "1155MCCB88SZWYLXX7FF", "KK11QD55CC00cLLIXXAA", "KK11Q5CCM8800LLIXX7A", "OKK11655CC880ScLX7AA", "O4KK11E55CC8800S77AF", "KK11N55CMCH8800SSLL7", "4VKK11N55CC8800SSL7F", "OKK11RD55CC8800SS7AF", "44KK1155CC8800SSLLXA", "PPGTTKK11ECC80SSLX7A"],
-  "HYPPER":["K55CC800aYYbbLLIIX7A", "1ED5CC8800SWbLLIXAFF", "KK55CH8800SSZWYYbbXA", "R55MCC8800cWWYbLXXAF", "K1ND5CCBB8800cWbLLXX", "K6R355CMMCB8800aZbXX", "JKK11EE55CCB80ZbLLXX", "49KK11RQQMCCM8800bXX", "KK11REEN55CHB8800YXX", "J9KK11REEQ5CCB800YXX", "V9KK11RRD55CMC00LLXX", "4KK11RRE5CCMBB8800XX", "PPTT4KK11RR3EE5B88XX"],
-  "TUNNELIER":["K16Q55C88aZZbLIXX77F", "K1QDCHB8800cZZWLLXXF", "K1DD55CC880ZZYbLXXFF", "KK163QDCC800SZZYYXX7", "JKK113NDCC800ZbLXX7A", "OKK1QQD55C8800cZbXX7", "O4KK116END55CC88YXXA", "OOJKK116655CCMB8800I", "OO4JKK11QD55CC8800bX", "OJKK1163NNQ55CMC8800", "OO4VVJJKK11N55C8800X", "OO44JKK11Q55CC8800SX", "PP22TTO4JJKK1165CC80"],
-  "ARKHAUL":["D50SSaaZWYLLIXX7AAFF", "D880SSZWYYbbLLX7AAFF", "OJ15C8SScYLLIXX7AAFF", "1UU500SSacLLXX77AAFF", "UUNDC00SSbLLXX77AAFF", "4416355C88SSLL77AAFF", "4JKK1NCCHSSWLL77AAFF", "OKK1QQ800SScLL77AAFF", "99KK11580SSLLX77AAFF", "OKK1R3EU58SSLL77AAFF", "VKK11RRQ55SSLL77AAFF", "O4KK1R3E50SSLL77AAFF", "PPGGTTO9KRSSLL77AAFF"],
-  "JIPASIS":["K66DHSScZZYbbL77AAFF", "R3DBBSSZZYbbLX77AAFF", "J1RDDSSZZbbLXX77AAFF", "OJ3QBSSccZbLLI77AAFF", "463QND5SSZZLLX77AAFF", "O44R3NNQQSScLL77AAFF", "OOVJND8SSZZbLL77AAFF", "O4J963QQDHSSLL77AAFF", "O4JK66RNQQSSLL77AAFF", "OO44JJ33UQSSLL77AAFF", "44633NQDB0SSLL77AAFF", "OO44J6RED0SSLL77AAFF", "P22GTOOJR3SSLL77AAFF"],
-  "BUZZY":["V55CSSaWYLLIIXX77AAF", "JC00SScZWLLIIXX77AAF", "3D55C0SSZYbLLXX77AAF", "JK5MB800SSYLLX77AAFF", "9EE8800SSYLLXX77AAFF", "V15BB00SScWLLX77AAFF", "OJK6EU5CC0SSLL77AAFF", "JKK115CHH0SSLL77AAFF", "9KK11N88SSWWLL77AAFF", "4JK11E5800SSLL77AAFF", "4JKK1QD558SSLL77AAFF", "O4V9KK1D00SSLL77AAFF", "PP22GTT9K1SSLL77AAFF"],
-  "BRI-KB-ROCK":["OOMMSSacZZWbIIX77AFF", "OOQMCMSSaaLIIXX77AFF", "OO35MM0SSaZbLIIX7AFF", "OOMMHHBSScWbLII7AAFF", "OOMCMB8SSaYbLLII7AAF", "OOKQMMSSZWYIIX77AAFF", "OO49RNMMHSSLLII77AAF", "OOJ93EUMM8SSLII77AAF", "OO15MMHSSWYLLII7AAFF", "OOVK1QQMMSSLLII7AAFF", "OOVVKUMMBSSLLII77AAF", "OO4J16MMHSSLLII77AAF", "PGGTTOOEMMSSLLI77AAF"],
-  "MED-POD":["OOUDMMScYbLIIXX7AAFF", "OOEUQNMMSYLIIX77AAFF", "OO5MMBSccYbLLIIXAAFF", "OOKMMC0SSaaLLII77AAF", "OORUQNDMMBSSII77AAFF", "OOJUNMMHSSZIIX77AAFF", "OO63EQDMMSSaLLII77AA", "OO41QDMM8SSLLII77AAF", "OOV11MMBSScLII77AAFF", "OO166E5MMSSLII77AAFF", "OOJ93UQMMSSLII77AAFF", "OO4J996MMSSLLII7AAFF", "P2GGTTOOMMSSLLI7AAFF"],
-  "MORPHE":["963QNDHaaccWWLLIIXFF", "49NDCCH8aaccZZWWYLFF", "496UUNMHaaccZZWWYIXA", "O4J996UQHHSaaccZWWFF", "4VV99663UUDHaacWWbLX", "O44VV991UN5HHaccZZWb", "4VVJ996UUNQNQDCCHHac", "O4VVJJ99K3UUNNDHaacc", "OO4VVJJ993UUNNHBaccW", "OO44VVJ99KK1UUNNHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["9NHB8aaccWWYbbLLI77F", "9RUNCHaccZZWWYYbL7AF", "VJJ99RMHBaaccZWWYYbF", "4VVNNHH8aacWWYbbLLXX", "O9RUNNCHHBaaccWWYb7F", "UUNN5HHBB8aaccWWbLLF", "VV99R3UUNNMHHBcWYLI7", "VVJ99REEUUNQQHHBaacL", "O4VV99RUNNQMMHHBaccY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["44NMHHaaccZZWWbbLXAA", "J9QNDHSaaccZZWW7AAFF", "3UQNQDCHHaaccZWWAAFF", "33QQNNHHaaccZWWIXAAF", "4VV93NQNDHaccZWWbL7A", "O4V9966EUNNDMHB8ccWW", "OVJJ991UUNQNDH8aacWX", "44VVJ99R3UUNN5HSaccI", "OO44VV99KRUNNaacZZWW", "O44VVJ996UUNQNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
-  "WHIPLASH":["UNCHHB80aaccWYYbXXAF", "V9U88SaaccWWbLIXX7FF", "VUNNDCC0aaccWWYYIXX7", "91RUUNN5CH8SaacWbbXA", "VV9UUNNQ5CHH0accWIXX", "VV99KUUNNQQ55H0SaccY", "O4V99KK11UUNN0aaccWY", "OVV99K1RUUQNCHH88acc", "VV99KK13UUNNCCHHB0aW", "VV99KK16UUNNQ55HHacc", "OVV99KK116UUNNCHH0cc", "VV99KK11UUNNMHH8aaWW", "PPTTVVJ99K113UUNNHac"],
-  "DELOK":["VUMH00aaccWWYYLLXXAF", "V9UHBBSaacWWYYLLX7FF", "V91RUNBSaaccWWYbLLAF", "VV93UUQDSaaccWYbbLAF", "OOVVEUNNQ5HH0accWYYL", "VV1RENNDMHHaacWWbLII", "VVJ99RUUNNHHBacWWYYb", "VVJ99REUUQNHHBaccWYb", "OOVV99RRUUNNMMHHBaW7", "OVV9916RREEUUNNHHBcc", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["9633UNHaaccZZWL7AAFF", "496UD5CHHaaccZZWLII7", "V633UNDDMHHaaccWb7AF", "V993NND5accZZWWbbXXF", "V96UUQDHBSaaccZZWWAF", "OVVJJ9966UUDHHacWWXX", "OOVJ33UUNNHHaaccZWWI", "44VV9966RUUNNHH0SWWA", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaaZWWb", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9EUNHSaccZWWYLX77AFF", "UUHHaccWWYbLLX77AAFF", "V9UUQHHaccWWbLLI7AFF", "99QNNaaccZZWWbLLIAAF", "OV99NQHHaaccWY77AAFF", "VV993U5HH0aacWLL7AAF", "OVJ991UNNHHaaccLL7AA", "OV99RUUQNNHHSSaacc7A", "VV991UUQNNHHSSaaWL77", "4VV99EUNNHHSSaaWLLXF", "O4VV99UNNQHHSSaaWLLF", "OVV99RUUNNHHSSaaW7AF", "PP2OVV99UUNHHSSaaL7A"],
-  "DUMADED":["EEQDMBBccZZYYbLLX77A", "6RRNDBBaZZWYYbLLX7FF", "41RR3MMBBZZWWYYbLLIX", "4JRRD5BBSZZYYbbLLAFF", "OJJ1REDDMMB8YYbbLLXA", "41RR3EEQMMB0ScZYYbbL", "466RREEQDDMMBB8aYbbL", "OOJ9RREEQ5MHBBYYbbLL", "O44JRREEUDMMBBYYbbLX", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["93UNQHaacZZWWbII7AAF", "913UNDD5HaacZZWWII77", "VV933UNNDHHaacZWYYIA", "6633UUNNHaaccWWbL7AF", "13UUQQNNDMHaaccWWXAF", "VVJK633EUQQNH0aaccWW", "O4VV993UNQQCMHaaccW7", "OO4VVUUNQNMCHaccZWWb", "OO44VVJ96UUNNQHaccWY", "O4VVJJ9966R3UUNNHHcc", "OOVV9966REUUNNMccZWW", "OO4VVJ99R3UUNNCHHccW", "PP22GO4VV991UUNQNHcc"],
-  "GAPIX":["633QQDDM8aaZZYbLL7AF", "O6R3QQDDaZZWWYbLLIXF", "OJ633QQD5BSaZZWYbLXF", "4J6633QQ5MBaZZYbLLFF", "O4466RR33QQDCZZLLXFF", "OOJ66R33EQQDB0aZZYX7", "OO4JJ966R3EQDDBZYLLF", "OO44JJ9166RREQQDDZZY", "OO44VJJ66REQQDDMMHYL", "OO44JJ9166R3EUQQDMBb", "OO44JJ9K166RR33EEDBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
-  "EXO-MKVII":["4J66QQD80ZZIXX77AAFF", "OJJK633QQDB0ZZLXX77F", "O416633EQDC8ZZbX77AF", "6633QQDDC80SZZbbIXXF", "O4JJ133QDD5C88ZZbLFF", "O4JKK1663QQDDC80ZZIX", "OO4VJJK1663EQDD50ZZX", "O44VJJ6633EDDCH80ZLX", "OO44JJ9K33UQQDD5C80S", "OO44JJKK11663QQDDCB8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQDDM88", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["OJ633NDDHHccZZWWYIX7", "4J66QDDHBacZZWWIXXAA", "44J63QQD5HHccZZWWbb7", "OOJJ963UQQD8aacZZL7A", "4JJ633EUNQDDHHBcZZWI", "O44JJK633QQDCCaacWWA", "OO4JJ96633UQQDDHaccA", "OO44VJJ91663UNQNDDZ7", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ66R33NQQHSac", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
-  "STAR-HUNTER":["4J663DDZZWLLIX77AAFF", "4J633DDSaZZWbIX7AAFF", "4633QQDDaZZbbLLIXAAF", "4466R33NQNQDHZZL77AF", "OO44JJ663QDSZZYL7AAF", "OO44VJ9163EQQSSZZWLL", "OO44VVJ6633QDMSZZL7F", "O44JJK633EQDDCBSSZFF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSLLA", "OO44JJK6633UQD8S77AA", "OO44JJK633EQQDSSZL77", "22OO44JJK66R3QQSSLAA"],
-  "RHINO":["OK63EQQDD5SZZWYbXX7F", "44663DDCB80ZZbbLXXAF", "44J1663QDD800SacZZ7A", "O6R33QQDD58800ZZWYLX", "OOJ11R33QQDD880ZZWXF", "OO4J9K633QQDD5H00IXX", "OO44JJK6633DD5CB0aWX", "OO44VJJKK6633NQQ580X", "OO44VJJK116633D80aZW", "OO44JJ9KK16633QQ55MM", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["JJ633QQDCaaZWWYLIAAF", "44V6633QDHHcZYbLIX7A", "OO4J33EQQDaaZWWYbLII", "4J9633UQQDH8cZZWYYX7", "OO44VJJ963EQHaZZYIAF", "OOJJ933NQNQD55aZZWYL", "OO44JJ966UUQNQC0ZZWA", "OO44VVJJ963UUQDD0ZZL", "OO44VVJJ66R3UUNDDaZZ", "OO4VVJJ96633QNDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ9966R3NQDZZY", "PP22GGOO44JJ963UDHZZ"],
-  "CONQUEST":["J633QDD88cZZWWYYLXX7", "4J33QDD580aacZZWXXAF", "O4633EQNDDC00ZZWIXXF", "O4J63NQQD55C8ScZZbLX", "OO4463QQD5800ZZYXX7A", "OO44J163QQDD5C80abXA", "OO44K11663QNQDD0ZZLX", "O44JJKK6633QQD5580ZZ", "OO44J9KK11663QQDD880", "OO44VJJKK11663EQQD8S", "OO44JJ116633UQQ55CCa", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OJQMMSSZZWYbIIX7AAFF", "O4JMM0SSacZZYbbIIAAF", "O6QDMM800SScZZIIAAFF", "OOJ6QNMM8SScZZLIIXAA", "OO3QQDMMHBSSacZLIIAA", "OO4J13NDMMBSSaZZIIAA", "OO4JJ96UCMMSSaccIIAA", "OO4J66R3QDMM0SSaIIAA", "OO4JJ663EDDMMCSSIIAA", "OO44JJK166UMMSSZIIAA", "OO44JJ96REEMCMSSIIAA", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
-  "PRAWN":["OOMHBSSaaWbLLIIXAAFF", "OONMB8SSYYbLIIX77AAF", "OOCMHSSZWYYbLLIIXAAF", "OOJMMCHBB0SSaWbbIIAA", "OOJRUMMHBBSSYLLIIAAF", "OOREMMB8SScYYbLII7AA", "OO9R3EEMMBBSSWbIIXAA", "OOEEQDMMHBSSaZYYIIAA", "OOV9REE5MMHSSZbLIIAA", "OOVJRRMMB88SSYYLIIAA", "OO4JRR3EDMM8SSYbIIAA", "OO411RREMMHBSSabIIAA", "PPGGTTOOREEMMBBSSIAA"],
-  "HARKO":["OOMMSSaaccWWLLI7AAFF", "OO3MMBSSaaccWYYLIXAA", "OOV3MMSSaaccWWIX7AAF", "OOUQMMHHSSaacZWYIIAA", "OO3UQMMHH0SSccYYIIAA", "OO9KRUNMMHSSZWII7AAF", "OOKEUQN5MMHBSSZWIIAA", "OO99RUNDMMHBBSScIIAA", "OO4VJ996U5MMH8SSIIAA", "OO4VVJ99K1RMMSSWIIAA", "OO44VVJJRUNNMMSSIIAA", "OO49916UNNMMHHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
-  "DOZEUR":["63MMB8ZZWYYbbLLII7FF", "4R3QNMHBZYYbbLLIX77F", "6REQMBZZYYbbLLIIX77F", "4RR33EDCMHBBSabbLL7F", "O4JJ6REQDMBBWYYbbLL7", "O9633EEDMBB8WYYbbLLF", "OJKRR3EEQQDMMBBZYbbL", "VJJRR33EEMBB8SZYYbbL", "O46RREEQDMMHBB88YYbb", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44RREEQMMBBYYbbL"],
-  "DILUS":["RCMHBB00ccYbbLLIXXAF", "5MMBB0aYbbLLIIXX7AAF", "EU5MMCBBcZYbbLLIXX7A", "KKREMMCBB00WWYYbLLXX", "KEECMBB880cYYbbLLAAF", "O4KEED5MCBB80YYbbLLA", "91RREDCMCHBB8WYYbbLL", "411RREE5MMCHBB0YYbbI", "OK1RREEND5MCMBB8YYbb", "KK16RR3EEDMMBB80YYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["R3EDMSZZYYbbLLIIXX7A", "4REDMBZZYYbbLLIX7AFF", "R3QQDMBB8SZYYbbLLXAF", "OJRREU5MBSZZYYbLLIXF", "O4RRECBB8SZZYYbbLLI7", "V66RR33EENQ55MMYYbbL", "JRR3NQQMMBB0ZWYYbbLL", "6RR33EEQQDMMBBYYbbLX", "O4JK1RR33EEMMBBZYbbL", "OO4V6RREEQDMCMBBYYbb", "OO4J66RREEUQMMBBYYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
-  "SHADOW":["EMBaacWWYYbbLLIX77AF", "EMBB0accWWYYbbLLXAFF", "EUNDMMBBccZYYbbLLX7A", "RREEMMB8accWYYbbLLAF", "REEUMMHHBaacZYYbbLLA", "V9RREENMaaZWYYbbLLIA", "V9RREEMMHBB0WYYbLLAA", "OV96RREEMMHBB0acYYLL", "VV9RREEUUMMBBSaYYLLF", "VVJ99RREEU5MMHBBYYbL", "VV99KKRREEUNMMBBYYbb", "4VVJ9RREENNMMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "CATER-PILLARD":["K115580WLLIIXX77AAFF", "55CC880cdWLIXX77AAFF", "KK13N55CC0YLLIXX77AA", "KK1RD55800SSadZbXXAF", "KK155CC800ScLIIXX7FF", "KK1UN55CC800dWWIX77F", "4KK155CC800adWYLXXAA", "KK116N55CC8800SSXXAF", "OOK11R55CC8800dLLX7A", "449KK1155CC8800SSL77", "JKK11QN55CC8800SSddF", "OKK11N55CC8800SSddLX", "PPTTOKK1165800SSdLXA"],
+  "MED-07":["41UD55C800aZZbbLIXXA", "1635CC800ScZZWbbIXXF", "16RQQ5CCH8800dZbXXFF", "OK11Q5C8800ZZYIXX7FF", "4JJK11335CCH800dYIXX", "O4JKK11EQD558800SZXX", "4VKK1163UQ55CC8800ZX", "OO4JKK116U5CCB880dXX", "O4JJ9KK116D55CC8800Z", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KEU5C8800aadWWYbXXFF", "KKU5CCHH880acWbIXX7F", "K1135CB8800acWWLLXX7", "9KK355CCH80acdYbLIXX", "V9K155CCH880SaaccWXX", "OKK55CCHH880cWLLXX7A", "VJ9KK11RNQ55CCH80aXX", "49KK11EUNQ55CHH8800X", "V99KK11355C8800acWXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["R3Q55CC800aZZYYLXX7F", "1QDD55CM800cZZYLXX7F", "OKK665CC800aZZbXXAAF", "JK635CC8800aZZYYXX77", "JJKK1R55CC8800aZZLXX", "OK11R33EQQ558800bXX7", "O4KK663NQ55CCB8800XX", "OO4JKK113355CCB8800X", "O4JKK1166EUQ5CC8800X", "O49KK116QQD55CC880YX", "OO44VJJKK11655CC8800", "O449KK11QD55CC8800ZX", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["Q55C8800SaWbIXX7AAFF", "155C8800acdWLXX7AAFF", "KK135CB8800aLIXX7AAF", "11ND55CC88adZYXX7AFF", "KK11ND55CC00SdLIXXAF", "JKK11R5CCM8800SLLXX7", "OKK11655CC880ScLX7AA", "O49KK11E55CC8800dLLA", "KK11N55CMCH8800SSLLF", "4VKK11N55CC8800SSddL", "OKK11RD55CC8800SSdL7", "44KK1155CC8800SSdXAF", "PPGTTKK11ECC80SddLX7"],
+  "HYPPER":["KU55CC800cZYbbLLIX7A", "1ED5CC8800WWbLLIXAFF", "VKK55C8800aWWYYbbIXA", "R55MCC8800cdWYYLXXAF", "K1EQD5CCB8800dYbLLXX", "K6R355CMMCB8800acbXX", "JKK11EED55CCM80abLXX", "49KK11RRQMCCM8800bXX", "KK11REEN55CB8800YIXX", "KK11RREUQ55CB8800YXX", "V9KK11RRD55CMC00LLXX", "4KK11RE5CCMBB8800SXX", "PPTT4KK11RR3EE5B88XX"],
+  "TUNNELIER":["K16Q55C88acZZLIXX77F", "K1QDCC8800dZZWLLIXXF", "K1ENDD55C880cZZYXXFF", "KK163DCC8800SaZZWYXX", "JKK113QDCC800cZLXX7A", "OKK1QQD55C8800cdZXX7", "O4KK116END55CCB88YXX", "OOJKK116655CCMB8800I", "OO4JKK11QD55CC8800cY", "OJKK1163NNQ55CMC8800", "OO4VVJJKK11N55C8800X", "OO44JKK11UQ55CC8800X", "PP22TTO4JJKK1165CC80"],
+  "ARKHAUL":["D50SdZZWbbLLIXX7AAFF", "H880ScdZWYbbLLX7AAFF", "K6RMC8SSdYLLIXX7AAFF", "1UU500acddLLXX77AAFF", "V11EUN0SSaddLX77AAFF", "41355C880SSddLL77AFF", "JKN55C0SSddWLL77AAFF", "OK1C00SScddLLX77AAFF", "44KK1C88SSddLL77AAFF", "VJKKN50SSddLLX77AAFF", "OKKECM80SSddLL77AAFF", "KK116RQ5SSddLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
+  "JIPASIS":["6QD8SddZZYbbLI77AAFF", "V3DCBSScZZYYbL77AAFF", "6QDSaddZZWWbLX77AAFF", "OK3QBccddZbLLI77AAFF", "463QQ5MBSSddLLX7AAFF", "O463QQMMSScddLL7AAFF", "OVJ3EQQ8SSddLL77AAFF", "OOK33EQCSSddLL77AAFF", "O66R3NQQSSddLL77AAFF", "OO44J63USSddLL77AAFF", "44633DB0SSddLL77AAFF", "OOJ916QDSSddLL77AAFF", "22TOO4JRSSddLL77AAFF"],
+  "BUZZY":["55CSSaddYLLIIXX77AAF", "OC00SacdWLLIIXX77AAF", "3D5580SddWbLLXX77AAF", "KK5C800SddLLXX77AAFF", "E58800SSdZLLXX77AAFF", "V5B00SScddLLXX77AAFF", "OK1UD5C8SSddLL77AAFF", "JKK115H0SSddLL77AAFF", "KK16M0SSddWLLX77AAFF", "4JK15800SSddLL77AAFF", "4411U5C0SSddLL77AAFF", "VJK113CCSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
+  "BRI-KB-ROCK":["OOQMMSSacdYYbLLIIAFF", "OO6NMMSSdZWLIIX77AFF", "OO45MM0SSadbbIIX7AFF", "OOMMHBSSacddWLIIAAFF", "OO9ECMMSScdYbLII7AAF", "OOKQMMSSdZYLIIXX7AAF", "OO49UNNMMHSSdII77AAF", "OOJ93EUMM8SSdLII77AA", "OOV15MMHSSddYII7AAFF", "OOVK1QNMMSSddLLIIAAF", "OOVVKUMMBSSddLLII7AA", "OO4J16MMHSSddLII77AA", "PGGTTOOEMMSSdLI7AAFF"],
+  "MED-POD":["OOQMMHScddWbLIIX7AAF", "OOVRCMMSYLLIIX77AAFF", "OOD5MMSccddYLIIXAAFF", "OORMMC0SSbbLII77AAFF", "OO9RRNDMMSSdLLII7AAF", "OOVJNMMSSdZLIIX7AAFF", "OO6R3EDMMSSbLLII7AAF", "OO41EQMM8SSdLII77AAF", "OOV13MMBSScddII77AAF", "OO166E5MMSSddLII77AA", "OOJ93UQMMSSddLII77AA", "OO4J996MMSSddLLIIAAF", "P2GGTTOOMMSSddLI7AAF"],
+  "MORPHE":["963QNDMHaaccWWLLIXFF", "49EENDHaaccZZWWYLAFF", "496UUNQ8aaccZZWWYbII", "4VJ996RUQHHaaccWWbIF", "4VV99663UUDMHaaccWWY", "O44VV991UN5HHaccdZWb", "4VVJ996UUNQNQDCCHHac", "O4VVJJ99K3EUUNNHaccb", "OO4VVJJ993UUNNCaccWI", "OO44VVJ99K1UUNNHHcWL", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9RNHBaaccdWWYbLLI77A", "9RUNHaaccZZWWYbL7AFF", "V99QQHBaaccWWYYbbIIF", "VVNQ5HH8aacZWWYYbbLL", "V9RNQNDHHBaaccWWYb7F", "UUNN5MHHBB8aaccWbLXF", "VVJ99R3UUNNMHHBcWYL7", "VVJ99REEUUNQQHHBaacL", "O4VV99RRUNNMMHHBaccY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["44NQHHSaaccdZZWWYbAA", "J9UNDHaaccZZWWX7AAFF", "3UQNQDDHHaaccZWWIAAF", "K33EQQNNHHBaaccWWbXA", "4VV93NQNDMHBaccZWWb7", "OO4V9966EUNNDHB8ccWW", "OVJJ991EUUNQNHaacWYA", "44VVJ996R3UUNNHaccWI", "OO44VV99KRUNNaacZZWW", "O44VVJ996UUNQNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["EUNCHH80aaccdZWYXXAF", "V9UD88aaccdWWYLIIXX7", "VUNNCC0aaccZWWYYIX7F", "91UUNN5CH8SaaccWWbXA", "V9RUUNN5CHH0accWWIXX", "VV99KRRUUNN55H0SccZb", "4V99KK11UUNQN0aaccZW", "OVV99K1RUUNCHH8SaccA", "4VV99KK1UUNNDCHHB0aW", "VV99KK1UUNNQ55H8accI", "OVV99K116UUNNCHH0ccL", "OVVJ99KK11UUNNCHHaac", "PPTTVVJ99K113UUNNHac"],
+  "DELOK":["VUH00aaccZWWYYLLIXXA", "V9UCHHBSaacZWWYYLL7F", "V91UNMBSSaaccWWYbLAF", "VV93UUQDaaccWWYbbLAF", "VVREUNQNQ5HH0accWYYL", "VVJ1RENNDMHHaacWWbLI", "VVJ99RUUNNHHBcWWYYbb", "VV99RREUUNHHBaccZYbI", "OVV99RRUUNNQMMHHBBaW", "OVV9916RREEUUNNHHBcc", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["9633UQNHaaccZZW7AAFF", "496EU5MHHaaccZZWII7F", "V633UQNDDHHaaccdWI7A", "V993NND5accddZZWWXXF", "V96RUUDHHBBaaccZZWWX", "OVVJ9966EUHHacWWYYLX", "OOVJJ33UUNNHHaaccWWb", "44VV9966RUUNNHH0WWXA", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaacZWW", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9UNH8accdZWWYLIX7AFF", "UUHHaccdZWWYLL77AAFF", "V9UUHHSaccdWWLLI7AFF", "99KNNSSaaccdZWWbLAFF", "V99RQNHHaaccZW77AAFF", "VV99K3U5HH0SaacWLLAF", "OVJ993UNNHH8SaaccLAF", "OOV99RUUQNHHSSaaccdL", "VV991RUUNNHHSaadWL77", "4VV99EUNNHHSSaadZWLA", "O4VV99UNNQHHSSaaWAFF", "OVV99RUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["EEQDBBScdZZYYbLLX77A", "6RRDBB8ScZZWYYbLLXFF", "41RR3MMBBZZWYYbLLIXX", "46RRUDMBBZZYYbbLLAFF", "OJ91RENDDMMBBZYYbbLL", "41R3EEQMMB0SSdZYYbbL", "4966RREEQDDMMBBcYbbL", "OOJJRREEQ5MBBZYbbLLA", "O44VJRREENDMMBBZYYbb", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["93UNQCHaacdZZWWII7AF", "491UNDD5HaacZZWWII77", "VV9R33UNDHHaacZZWbLA", "66R33UUNHaaccdWWL7AF", "1R3UUQQNNDHHaaccWWYA", "VVK633UQQNH0aaccWWLF", "O4VV993UNQQDMH8aaccW", "OO4VVRUUNNMCHaccdZWW", "OO44VVJ96UUNNQHaccZW", "O4VVJJ9966R3UUNNHHcc", "OOVV9966REUUNNMccZWW", "OO4VVJ99R3UUNNCHHccW", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["88SScdYYbLLIXX77AAFF", "15SadWWYLLIIXX77AAFF", "Q5C8SScdZbLLXX77AAFF", "158800SaddLLXX77AAFF", "16H0SddWWLLIXX77AAFF", "K16D5M88SSddWLL77AFF", "9KE580SSddLLIX77AAFF", "KKRNCC8SSaddLL77AAFF", "99K11R50SSddLL77AAFF", "44KK1CM0SSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "411U55C8SSddLL77AAFF", "PPTTVKKHSSddLL77AAFF"],
+  "GAPIX":["633QQDDM8ZZYYbbLL7AF", "O6R3QQDDHSZZWWYbbLLF", "OVJ633UQQD5BZZYbbLXF", "4JK6633QQ5BZZYbbLLFF", "O4466RR33EQQDHaZYLLF", "OOJ66R33EQQDB0ZZYYb7", "OO4JJ966R3EQDDHBZYLL", "OO44JJ9166RREQQDDaZY", "OO44VJJ66REQQDDMMHYL", "OO44JJ9166R3EUQQDMBb", "OO44JJ9K166RR33EEDBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
+  "EXO-MKVII":["4JK66QQDB80ZZXX77AFF", "OJJK633EQQD0ZZLXX77F", "O416633QDC88cZZX77FF", "9K6633QQDDCH0cZZWbXX", "O4JJ9133QDD5C8cZZLFF", "O4J9KK166R3QDDC0ZZLX", "OO4VJJK1663QDD50ZZXF", "O44JJ6633EDDMCH80ZWX", "OO44JJ9K33UQQDD5C80S", "OO44JJKK11663QQDDCC8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQNDD88", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["OJ633NDDHccZZWYYIIX7", "4J66QDDCHcZZWWYbIXAA", "44J663QQDHccddZZWWI7", "OOJJ63UQDM8SaacZZ7AA", "4VJJK633ENQDDCHHcZZW", "O44JJ633QQDDCacWWbLA", "OO4JJ96633UQQDDacdIA", "OO44VJJ91663UQQDDHZ7", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ66R33UNQQHac", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
+  "STAR-HUNTER":["4J663DDSZZLLXX77AAFF", "4J633DDddZZWYbX7AAFF", "4633QQDDCHSacZZbLXAF", "O446633QQDHHSSZZL77A", "OO44JJ663UQDSaaZL7AF", "OO44J163QQSdZZWLXAFF", "OO44J6633QDMdZZWWL7F", "O44JJK633EQDDCddZAAF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSdLL", "OO44JJK6633UQD8SS77A", "OO44JJK633EQQDSSZL7A", "22OO44JJK66R3QQSSddA"],
+  "RHINO":["OK63QQDD5CSZZYYbXX7F", "4663QDDCC80ccZZLXXAF", "44J1663QDD800dZZWb7A", "O633QQDD5M8800SaZZWY", "OOJ1133QQDD880SZZWXF", "OO4JK633QQDD500YYIIA", "OO44JJK6633EDD5B0bXX", "OO44VJJKK6633NQQ580Y", "OO44VJJK116633D80cZX", "OO44JJ9KK16633QQ55MM", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["JJ633QQDDaaZWWYLLAAF", "44V6633QDHH8ccZYLLXA", "OO4J33QQDaaZWWYbLLIF", "4J9633UQQD88aacZZWYI", "OO44VJJ963EQHaaZZIAF", "OOJJ933NQNQD55aaZZWL", "OO44JJ966UUQNQC0ZZXA", "OO44VVJJ963UUQDDM0ZZ", "OO44VVJK663UUNDDSZZb", "OO4VVJJ96633QNDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ9966R3NQDaZZ", "PP22GGOO44JJ963UDHZZ"],
+  "CONQUEST":["J633QDD88aadZZWYYXX7", "4J33QDD5H0dZZWbbXXAA", "O4633QDDC00ZZWYYIXFF", "O4VJ6R3QNQD55C8dZZbX", "OO4463QQD5800aZZYX7A", "OO44J1163QQDD5C8acXA", "OO44K11663QNQDDM0ZZX", "O44JJKK6633QQD5580ZZ", "OO44JKK11663QQDD880A", "OO44JJKK11663EUQQD8W", "OO44JJ9KK116633UQQD8", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OJQMMSSaZZbIIXX7AAFF", "O4JMM0SSacdZZbbIIAAF", "O6QDMMH800SSdZZIIAAF", "OOJ96RQMMSSacZLIIXAA", "OOJ3NQQDMMBSSdZbIIAA", "OO44EQMMC880SSdZIIAA", "OO4VJJ6DMMBSSddbIIAA", "OO4J66R3QDMM0SSbIIAA", "OO4JJ663EEDMMCSSIIAA", "OO44JJK166UMMSSZIIAA", "OO44JJ96REDMMSSIIAAF", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
+  "PRAWN":["OOMB8SSZWbbLLIIXAAFF", "OOJ9UMBSSYYbLIIX77AA", "OONDMSSaZWYYbLLIIAAF", "OOJDMMBB0SScbbLIIXAA", "OOVJKRNMMBBSSYLIIAAF", "OOEUMMC8SSdZYbLII7AA", "OO49REEMMBBSScYIIXAA", "OOREEDMMHBSSacYYIIAA", "OO9REE5MMHSSaWbLIIAA", "OOJRRMMB88SSWYYLIIAA", "OO4JRR3EDMM8SSYbIIAA", "OO411RREMMHBSScbIIAA", "PPGGTTOOREEMMBBSSIAA"],
+  "HARKO":["OONMMHSSaaccWLIX7AAF", "OO4UMMCSSaacdZZWbIAA", "OOV3MMSSaaddWIXX7AAF", "OOKUUMMHSSacWYbbIIAA", "OO3UUMMHH0SScdZZIIAA", "OO9KUUNMMHSSaWII7AAF", "OOKEUQN5MMHBSSaWIIAA", "OO99RUQDCMMCHSScIIAA", "OO4VJ996U5MMH8SSIIAA", "OO4VV99KK1RMMSSWIIAA", "OO44VVJJRUNNMMSSIIAA", "OO49916UNNMMHHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
+  "DOZEUR":["63NMMBZZYYbbLLIX7AFF", "4R3QMBSZYYbbLLIIX77F", "6EEQMBcdZZYYbbLLXX7F", "4RR33EDDMBBcWbbLLII7", "OJK6REQD5MBBYYbbLLX7", "O9633EEDMBBYYbbLLXAF", "OJRR3EEQDMMBBSZYbbLL", "JJ9RR33EEUMBBZWYYbbL", "O496RREEQDMMHBB8YYbb", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44RREEQMMBBYYbbL"],
+  "DILUS":["RMMBB00ddYbbLLIXXAFF", "D5MMBB0cYbbLLIIXX7AF", "KE5MMCBBadWYbbLLXX7A", "ORENMMCBB00cZWYYLLXX", "KEECMCBB880dYYbbLLAF", "49KEEQD5MCBB0YYbbLLA", "91RREDCMCBB8YYbbLLIX", "4J11RREE5MMCHBB0YYbb", "K1RREENQ5MCMBB8YYbbF", "KK16RR3EEDMMBB80YYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["R3EDMZZWYYbbLLIIXX7A", "R3DDBBZZWYYbbLLIX7AF", "R3QQDMHBB8aWYYbbLLXA", "OJRRE5MMBaZZWWYYbLLF", "O4RREUDBB88ZZYYbbLLI", "O66RR33EEQ55MMWYYbbL", "OJRR3QQMMBB0ZYYbbLLX", "6RR33EEQQDMMBBcZYYbL", "O4J1RR33EEMMBBZYbbLL", "O4V6RREEQQDDMMBBYYbb", "OO4J66RREEUQMMBBYYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
+  "SHADOW":["EMMBaccZWWYYbbLL77AF", "EDBB0SaccZWWYYbbLLIF", "EUQNMBBaccZYYbbLL7AF", "RREEUMBaccdZWYbLLIAA", "EEUMMHBSaaccYYbbLLIA", "V9RREENMaccYYbbLLIXA", "V9RREENCMMHBB0WYYbLA", "OV96RREEMMHBB0acYYLL", "VV9RREEUUMMHBBSaYYLL", "VVJ99RREEU5MMHBBYYbL", "VV99KKRREEUNMMBBYYbb", "VVJ9RREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27436,7 +27570,8 @@ const DEFI_RESULT_ART_Y = {
   'KRIGER': 30,
   'SCOPT': 30,
   'DUMADED': 30,
-  'LACRIUM': 40
+  'LACRIUM': 40,
+  'RAZOPS': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
