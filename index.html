@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.60</title>
+<title>Projet MECA V0.04.61</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7737,7 +7737,7 @@
   }
   .btl *{ -webkit-tap-highlight-color:transparent; }
   .btl-top{ position:relative; flex:1 1 0; }
-  .btl-bottom{ position:relative; flex:1 1 0; }
+  .btl-bottom{ position:relative; flex:1 1 0; margin-top:80px; }   /* V0.04.61 : champ de bataille remonté de 40px */
   /* cartes sans décorations de collection */
   .btl .fav-star, .btl .defi-trophy-badge, .btl .notif-dot, .btl .cx-copy-badge, .btl .card-dot{ display:none !important; }
   .btl .unit.cbt .cbt-name{ max-width:94%; font-size:6cqw; letter-spacing:0; }
@@ -7836,11 +7836,24 @@
   @keyframes btlLevCur{ 0%,100%{ transform:translateY(-6px) scale(1.07); } 50%{ transform:translateY(-12px) scale(1.07); } }
   @keyframes btlLevHalo{ 0%,100%{ opacity:.72; transform:scale(.94); } 50%{ opacity:1; transform:scale(1.06); } }
   @keyframes btlLevSh{ 0%,100%{ opacity:.9; transform:scale(1); } 50%{ opacity:.5; transform:scale(.8); } }
-  .btl-x{ position:absolute; left:50%; top:50%; width:78%; aspect-ratio:1; display:block; transform:translate(-50%,-50%); pointer-events:none; z-index:7; animation:btlXIn .3s cubic-bezier(.2,.9,.3,1.2) both; }
-  .btl-x svg{ width:100%; height:100%; display:block; overflow:visible; }
-  .btl-x.out{ animation:btlXOut .18s ease-in forwards; }
-  @keyframes btlXIn{ 0%{ transform:translate(-50%,-50%) scale(1.9); opacity:0; } 60%{ transform:translate(-50%,-50%) scale(.9); opacity:1; } 100%{ transform:translate(-50%,-50%) scale(1); opacity:1; } }
-  @keyframes btlXOut{ to{ transform:translate(-50%,-50%) scale(.6); opacity:0; } }
+  .btl-x{ position:absolute; inset:0; display:block; pointer-events:none; z-index:7; }
+  .btl-unit:has(.chief) > .btl-x{ clip-path:polygon(50% 3%, 97.5% 39%, 77% 97%, 23% 97%, 2.5% 39%); }
+  .btl-x svg{ width:100%; height:100%; display:block; animation:btlCrackGrow .62s cubic-bezier(.2,.75,.25,1) both; filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.55)); }
+  .btl-x.out{ animation:btlXOut .2s ease-in forwards; }
+  .btl-x .co{ animation:btlCrackPulse 2.4s ease-in-out infinite; }
+  @keyframes btlCrackGrow{ 0%{ clip-path:circle(0% at 50% 46%); opacity:.35; } 100%{ clip-path:circle(80% at 50% 46%); opacity:1; } }
+  @keyframes btlCrackPulse{ 0%,100%{ opacity:.62; } 50%{ opacity:1; } }
+  @keyframes btlXOut{ to{ opacity:0; } }
+  /* dégâts prévus sur une carte ciblée : négatifs bleus (bouclier) / rouges (PV) */
+  .btl-pd{ position:absolute; inset:0; z-index:8; pointer-events:none; container-type:inline-size; display:flex; align-items:center; justify-content:center; gap:3cqw; transition:opacity .2s; }
+  .btl-pd.out{ opacity:0; }
+  .btl-pd span{ position:relative; display:flex; align-items:center; justify-content:center; min-width:30cqw; height:25cqw; --c:#ff3030; transition:opacity .25s, transform .25s; }
+  .btl-pd span[hidden]{ display:none; }
+  .btl-pd .pd-s{ --c:#3d9bff; } .btl-pd .pd-h{ --c:#ff3030; }
+  .btl-pd b{ position:relative; font-family:var(--font-title); font-weight:900; font-size:19cqw; line-height:1; letter-spacing:.02em; color:var(--c); -webkit-text-stroke:.6px var(--c); paint-order:stroke fill; filter:drop-shadow(0 1px 1px rgba(0,0,0,.9)); text-shadow:0 0 5px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,1), 0 2px 0 rgba(0,0,0,.9), 0 0 10px color-mix(in srgb, var(--c) 60%, transparent); font-variant-numeric:tabular-nums; }
+  .btl-pd span.zero{ opacity:0; transform:scale(.7); }
+  .btl-pd span.pop{ animation:btlPdPop .26s cubic-bezier(.2,.9,.3,1.3); }
+  @keyframes btlPdPop{ 0%{ transform:scale(1.4); } 100%{ transform:scale(1); } }
   .btl-unit.planned-heal::after{ content:""; position:absolute; inset:-3px; border-radius:8px; pointer-events:none; box-shadow:0 0 10px 2px rgba(255,210,74,.85); animation:btlPulse 1.2s ease-in-out infinite; }
   @keyframes btlPulse{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
 
@@ -8273,7 +8286,6 @@
     <button id="navCombat" class="active"><span class="nav-lbl">MENU</span><span class="nav-back-lbl">RETOUR</span><span class="notif-dot nav-dot" id="dotCombat"></span></button>
     <button id="navCodex"><span class="nav-lbl">CARTE</span><span class="nav-back-lbl">RETOUR</span><span class="notif-dot nav-dot" id="dotCodex"></span></button>
   </div>
-  <button type="button" class="ord-collect-btn" id="ordCollectBtn">RÉCOLTER<br>ET RELANCER</button>
 
   <!-- V0.03.74 (diagnostic demandé par Alex) : onerror="opacity:0" ajouté sur ce logo et sur les 16 icônes
        de case de menu (FABRIQUE/CARTE/MENU/RÉCOMPENSES, tile-*.webp) plus bas -- même constat que pour les
@@ -8557,18 +8569,6 @@
         </div>
       </div>
       </div>
-      <!-- BATAILLE (V0.04.18, demande d'Alex) : case pleine largeur sous JOUEUR / ORDRE DE MISSION -->
-      <div class="mode-row">
-      <div class="mode-tile live s-big" id="tileOrders">
-        <div class="mt-inner">
-          <span class="notif-dot tile-dot" id="dotOrders"></span>
-          <div class="mt-icon mt-target"><i class="ico-ordersbadge"></i></div>
-          <div class="mt-title">ORDRE DE MISSION</div>
-          <div class="mt-live" id="ordLive"></div>
-          <div class="ord-status-ico" id="ordStatusIco"></div>
-        </div>
-      </div>
-      </div>
       <div class="mode-row">
       <div class="mode-tile rewards s-c" id="tileRewards">
         <div class="mt-inner">
@@ -8615,82 +8615,6 @@
     </div>
   </div>
 
-  <div id="ordersView" class="sub-view">
-    <header class="inf-header">
-      <button class="back-btn" id="ordBackBtn">‹ MENU</button>
-      <div class="wave">ORDRE DE MISSION</div>
-      <div class="inf-tag" style="visibility:hidden;">·</div>
-    </header>
-    <div class="mode-grid ord-grid">
-      <div class="mode-row">
-        <div class="mode-tile live o-big" id="tileInfinite">
-          <div class="mt-inner">
-            <span class="notif-dot tile-dot" id="dotInf"></span>
-            <div class="mt-icon mt-target"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-infinite.webp" alt="" onerror="this.style.opacity='0'"></div>
-            <div class="mt-rewcol">
-              <span class="mt-rc-box"><i class="ico-goldbar"></i></span>
-              <span class="mt-rc-box"><i class="ico-xpchip"></i></span>
-              <span class="mt-rc-box"><i class="ico-mat-rare"></i></span>
-            </div>
-            <div class="mt-title">MISSION <b class="mt-one">ONE</b></div>
-            <div class="mt-record" id="infRecord">Record : —</div>
-            <div class="mt-live" id="infLive" style="display:none;"></div>
-            <div class="mt-loot" id="infLoot" style="display:none;"></div>
-            <div class="ms-block" id="msOne"></div>
-          </div>
-        </div>
-      </div>
-      <div class="mode-row">
-        <div class="mode-tile omega o-l o-solo" id="tileOmega">
-          <div class="mt-inner">
-            <span class="notif-dot tile-dot" id="dotOmega"></span>
-            <div class="mt-omega-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-omega.webp" alt="" onerror="this.style.opacity='0'"></div>
-            <div class="mt-rewcol">
-              <span class="mt-rc-box"><i class="ico-goldbar"></i></span>
-              <span class="mt-rc-box"><i class="ico-xpchip"></i></span>
-              <span class="mt-rc-box"><i class="ico-crystalgem"></i></span>
-            </div>
-            <div class="mt-title">OMEGA</div>
-            <div class="mt-live" id="omegaLive"></div>
-            <div class="ms-block" id="msOmega"></div>
-          </div>
-        </div>
-      </div>
-      <div class="mode-row">
-        <div class="mode-tile vestige o-a" id="tileVestige">
-          <div class="mt-inner">
-            <span class="notif-dot tile-dot" id="dotVestige"></span>
-            <div class="mt-vestige-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-vestige.webp" alt="" onerror="this.style.opacity='0'"></div>
-            <div class="mt-rewcol">
-              <span class="mt-rc-box"><i class="ico-goldbar"></i></span>
-              <span class="mt-rc-box"><i class="ico-rewardcard"></i></span>
-              <span class="mt-rc-box"><i class="ico-rewardmodule"></i></span>
-            </div>
-            <div class="mt-title">VESTIGE</div>
-            <div class="mt-live" id="vestigeLive" style="display:none;"></div>
-            <div class="ms-block" id="msVestige"></div>
-          </div>
-        </div>
-        <div class="mode-tile soon o-b">
-          <div class="mt-inner">
-            <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-            <div class="mt-soon">PROCHAINEMENT</div>
-          </div>
-        </div>
-        <div class="mode-tile soon o-c">
-          <div class="mt-inner">
-            <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-            <div class="mt-soon">PROCHAINEMENT</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BOSS DE RAID (V0.03.00, demande d'Alex) : écran de choix (image du boss + 3 phases + bulle de
-       récompense + lancement/tokens) et écran de combat (minuteur 2 min, PV du boss, grille des 5
-       unités actives, banc), regroupés dans le même sub-view -- #raidChoice/#raidCombat se togglent via
-       [hidden] au lieu d'ajouter un 7e id à la liste de openSub()/showHub(). -->
   <div id="raidView" class="sub-view">
     <!-- Bouton "‹ MENU" retiré (V0.03.02, demande d'Alex) : redondant avec l'onglet MENU du bandeau
          du bas, qui permet déjà de quitter l'écran (cf showHub(), désormais aussi responsable
@@ -8912,7 +8836,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.60</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.61</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9008,16 +8932,6 @@
           </div>
         </div>
         <div class="mode-row">
-          <div class="mode-tile squad cx-c" id="tileSquad">
-            <div class="mt-inner">
-              <div class="mt-squad-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-squad.webp" alt="" onerror="this.style.opacity='0'"></div>
-              <div class="mt-sub">Compose ton escouade</div>
-              <div class="mt-row">
-                <div class="mt-title">DEATH SQUAD</div>
-                <div class="mt-record" id="squadTilePower"><i class="ico-power"></i> —</div>
-              </div>
-            </div>
-          </div>
           <div class="mode-tile soon cx-d">
             <div class="mt-inner">
               <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
@@ -9103,15 +9017,6 @@
       </div>
       <button type="button" class="deck-validate" id="deckValidateBtn" hidden>VALIDER LE DECK</button>
       <div id="deckWork"></div>
-    </div>
-
-    <div id="squadView" class="sub-view">
-      <header class="inf-header">
-        <button class="back-btn" id="squadBackBtn">‹ CARTE</button>
-        <div class="wave">DEATH SQUAD</div>
-        <div class="inf-tag" id="squadPowerTag"><i class="ico-power"></i> 0</div>
-      </header>
-      <div id="squadMgr"></div>
     </div>
 
     <div id="collectionView" class="sub-view">
@@ -9329,9 +9234,17 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.60';
+var BUILD_VERSION = 'V0.04.61';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.61', items:[
+    'COMBAT : les dégâts prévus s\'affichent en chiffres seuls, centrés sur la carte (bleu = bouclier, rouge = PV) et décomptent à la résolution. Les cartes détruites montrent des craquelures en relief.',
+    'COMBAT : le champ de bataille est remonté, chaque joueur commence avec 4 cartes en main, et la courbe de mana est revue (1, 1, 2, 2, 3, 3… jusqu\'à 5).',
+    'MENU : ORDRE DE MISSION et DEATH SQUAD sont supprimés.',
+    'ÉCONOMIE : récompenses journalières, tâches et bonus de connexion rééquilibrés pour le nouveau modèle économique.',
+    'FICHE JOUEUR : statistiques nettoyées, nouvelle carte BATAILLES. TROPHÉES : 15 nouveaux trophées de bataille, de défi et de deck.',
+    'CORRECTIF : fuite mémoire en combat corrigée, et les animations ne se figent plus pendant une bataille (mode économie d\'énergie).',
+  ] },
   { v:'V0.04.60', items:[
     'DECK : les cartes sont maintenant classées par rareté par défaut à chaque ouverture.',
     'DECK : dans l\'onglet MODULES, le nombre d\'exemplaires s\'affiche en haut à droite (×X), comme sur les cartes classiques.',
@@ -10704,10 +10617,6 @@ var TUT_STEPS = [
     mock:'<div class="tut-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3z"/></svg></div>' },
   { title:'TA FICHE JOUEUR', text:'En haut de l\'écran, ton avatar affiche ton nom et ton niveau de commandant. C\'est ta carte de visite.',
     mock: () => tutIconFrom('#tilePlayer .mt-avatar', 'cyan') },
-  { title:'TON ESCOUADE', text:'Choisis les mechs qui composeront ta DEATH SQUAD avant de partir en mission. L\'ordre et les rôles comptent.',
-    mock: tutSquadMock },
-  { title:'ORDRE DE MISSION', text:'Lance une mission pour gagner de l\'expérience, de l\'or et des récompenses. Chaque mission comporte plusieurs vagues d\'ennemis.',
-    mock: () => tutIconFrom('#tileOrders .mt-icon', 'amber') },
   // V0.03.16, demande d'Alex : "met à jour le tuto pour y inclure le principe du nouveau combat avec
   // les bulles, explique correctement pour un nouveau joueur" -- deux étapes (le geste de tracé, puis
   // les effets) plutôt qu'une seule, pour rester digeste comme le reste du tutoriel ; placées juste
@@ -10855,7 +10764,14 @@ applySettings();
 var ECO = { idleMs: 6000, last: Date.now(), idle: false, paused: [] };
 function ecoOn(){ return !SETTINGS || SETTINGS.eco !== false; }
 function ecoIdle(){ return ecoOn() && ECO.idle; }
+function ecoInBattle(){ return document.body.classList.contains('btl-on'); }
+function ecoPruneLoops(){   // V0.04.61 : ECO.paused retenait des animations (donc leurs éléments, ex. flèches de bataille supprimées) jusqu'au prochain toucher -> fuite mémoire
+  if(!ECO.paused.length) return;
+  ECO.paused = ECO.paused.filter(a => { try{ const t = a.effect && a.effect.target; return !!(t && t.isConnected && a.playState === 'paused'); }catch(_){ return false; } });
+}
 function ecoPauseLoops(){
+  if(ecoInBattle()) return;   // en bataille, les effets de lumière doivent rester fluides
+  ecoPruneLoops();
   let list = [];
   try{ list = document.getAnimations(); }catch(_){ return; }
   for(const a of list){
@@ -10883,6 +10799,7 @@ window.addEventListener('scroll', () => { ECO.last = Date.now(); }, { capture:tr
 // Un halo qui pulse ou une icône qui tourne reste vivant, mais l'écran ne se redessine plus en continu.
 var ECO_FPS = 12;
 function ecoLowFps(){
+  if(ecoInBattle()) return;   // idem : pas de passage à 12 i/s pendant la bataille
   let list = [];
   try{ list = document.getAnimations(); }catch(_){ return; }
   for(const a of list){
@@ -10907,6 +10824,7 @@ function ecoLowFps(){
 // de fonction et de vérifications document.hidden que nécessaire pour un gain nul (diagnostic du 27/09/2026).
 function ecoHeartbeat1s(){
   if(!ecoOn()) return;
+  if(ecoInBattle()){ ECO.last = Date.now(); ecoPruneLoops(); return; }   // bataille : ni pause ni 12 i/s
   ecoLowFps();
   if(Date.now() - ECO.last > ECO.idleMs){ ECO.idle = true; ecoPauseLoops(); }   // repasse aussi sur les animations apparues entre-temps
 }
@@ -11692,7 +11610,7 @@ const player = {
   // playerLevels pour les cartes. Migration des anciennes sauvegardes (player.modules[name].level) dans
   // applySave().
 };
-function defaultStats(){ return { taskFull:0, tasksDone:0, kills:0, missions:0, goldEarned:0, destroyed:0, destroyedLeg:0, levelUps:0, fusedLeg:0, dailyWeeks:0, night:0, engine:0, mono:0, collects:0, cardViews:0, collVisits:0, squadEdits:0, favAdds:0, sheetVisits:0, fabRefreshes:0, fabBuyAlls:0, modFusions:0, modFusedLeg:0, modDestroyed:0, labRefreshes:0, labBuyAlls:0, boostersOpened:0,
+function defaultStats(){ return { bestStreak:0, battles:0, battlesWon:0, defisWon:0, deckEdits:0, taskFull:0, tasksDone:0, kills:0, missions:0, goldEarned:0, destroyed:0, destroyedLeg:0, levelUps:0, fusedLeg:0, dailyWeeks:0, night:0, engine:0, mono:0, collects:0, cardViews:0, collVisits:0, squadEdits:0, favAdds:0, sheetVisits:0, fabRefreshes:0, fabBuyAlls:0, modFusions:0, modFusedLeg:0, modDestroyed:0, labRefreshes:0, labBuyAlls:0, boostersOpened:0,
   // V0.02.93, demande d'Alex : "ajoute des trophées liées aux booster" -- compteur par type, en plus du
   // total boostersOpened déjà existant, pour les trophées "ouvrir N boosters de TEL type" (cf TROPHIES).
   boostersByType:{ res:0, cards:0, modules:0 } }; }
@@ -11742,9 +11660,7 @@ function missionFinished(m){
 }
 function renderMissionDots(){
   if(typeof BG_SWAP !== 'undefined' && BG_SWAP) return;
-  const one = missionFinished('one'), om = missionFinished('omega'), ve = missionFinished('vestige');
-  setDot('dotInf', one); setDot('dotOmega', om); setDot('dotVestige', ve); setDot('dotOrders', one || om || ve);
-  setDot('dotCombat', notif.player || one || om || ve || (typeof rewardsPending === 'function' && rewardsPending()));
+  setDot('dotCombat', notif.player || (typeof rewardsPending === 'function' && rewardsPending()));
 }
 function renderNotifs(){
   setDot('dotFab', notif.fab || notif.lab);
@@ -17614,7 +17530,6 @@ function doLevelUp(def, rar){
       if(stillShowingThisCard && tag){ tag.classList.remove('lvl-pop'); void tag.offsetWidth; tag.classList.add('lvl-pop'); }
       showToast(def.name + ' PASSE AU NIVEAU ' + target + ' !');
       renderCodex();
-      if(document.getElementById('squadView').classList.contains('active')) renderSquadManager();
       setTimeout(() => {
         const md = document.getElementById('codexModal');
         if(md.classList.contains('show') && md.dataset.cxCard === cardKey) openCodexModal(def.name, rar);
@@ -17854,8 +17769,7 @@ function squadModulesAvailable(){
 }
 function openSlotPicker(idx){
   pickerTargetIdx = idx;
-  if(!document.getElementById('squadView').classList.contains('active')){ enterSquadView(idx); return; }
-  renderSquadManager();
+  if(document.getElementById('squadMgr')) renderSquadManager();   // V0.04.61 : l'écran DEATH SQUAD n'existe plus
 }
 // Bascule CARTES/MODULES du sélecteur d'escouade (V0.02.51, demande d'Alex) : affiche soit les cartes
 // disponibles (comportement d'origine), soit les modules disponibles (pour le slot rectangulaire). Même
@@ -17866,6 +17780,7 @@ let squadPickMode = 'cards';   // 'cards' | 'modules'
 function renderSquadManager(){
   const idx = pickerTargetIdx == null ? 0 : pickerTargetIdx;
   const box = document.getElementById('squadMgr');
+  if(!box) return;
   const modEnt = modSqEntry(squadModule);
   const cardsHtml = squadAvailable().map(e => `
       <div class="codex-card pick-card ${rarCls(e.rar)}${e.used ? ' pick-used' : ''}" data-key="${e.key}"${e.used ? ' data-used="1"' : ''}>
@@ -18010,27 +17925,7 @@ function fitSquadTilePower(el){
     el.style.fontSize = (base * scale).toFixed(1) + 'px';
   }
 }
-function updateSquadTile(){
-  const p = squadPower();
-  // Case DEATH SQUAD du hub uniquement (demande d'Alex) : au-delà de 10 000, le nombre complet
-  // ("253 535") chevauchait l'icône ⚡ dans l'espace réduit de la case -- fmtNum() l'abrège en "253 k"
-  // à partir de ce seuil (même format déjà utilisé pour l'or/l'XP/les matériaux ailleurs dans le jeu).
-  // squadPowerTag (affiché dans la fenêtre DEATH SQUAD elle-même, où la place ne manque pas) garde
-  // volontairement le nombre complet, inchangé.
-  const t = document.getElementById('squadTilePower');
-  if(t){ t.innerHTML = ICON_POWER + ' ' + fmtNum(p); fitSquadTilePower(t); }
-  const g = document.getElementById('squadPowerTag'); if(g) g.innerHTML = ICON_POWER + ' ' + p.toLocaleString('fr-FR');
-}
-function enterSquadView(idx){
-  document.getElementById('resBar').style.display = 'none';
-  document.getElementById('codexHubView').classList.remove('active');
-  document.getElementById('squadView').classList.add('active');
-  const firstEmpty = squad.findIndex(n => !n);
-  pickerTargetIdx = typeof idx === 'number' ? idx : (firstEmpty >= 0 ? firstEmpty : 0);
-  squadPickMode = 'cards';
-  renderSquadManager();
-  scrollViewTop();
-}
+function updateSquadTile(){}   // case DEATH SQUAD supprimée
 function closeSlotPicker(){}
 // Toute modification d'escouade passe par ici (alerte si une mission est en cours)
 function changeTeam(mutate, nextIdx){
@@ -18255,7 +18150,6 @@ function showCodexHub(){
   document.getElementById('resBar').style.display = '';
   document.getElementById('codexHubView').classList.add('active');
   document.getElementById('codexMgmtView').classList.remove('active');
-  document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('modulesView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
@@ -18452,6 +18346,7 @@ function deckValidate(){
   const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: null, module: deckModuleValid(deckDraft.module) };
   const i = decks.findIndex(x => x.id === saved.id);
   if(i >= 0) decks[i] = saved; else decks.push(saved);
+  player.stats.deckEdits = (player.stats.deckEdits || 0) + 1;
   deckDraft = null;
   document.getElementById('deckPanel').open = true;
   showToast('DECK « ' + saved.name + ' » ENREGISTRÉ');
@@ -18977,7 +18872,6 @@ function navBackAction(){
   // et il ne s'affichait jamais.
   if(currentView === 'fabrique' && (document.getElementById('fabDrawView').classList.contains('active') || document.getElementById('labDrawView').classList.contains('active') || document.getElementById('boostView').classList.contains('active') || document.getElementById('shopView').classList.contains('active'))) return () => showFabHub();
   if(currentView === 'codex' && document.getElementById('codexMgmtView').classList.contains('active')) return () => showCodexHub();
-  if(currentView === 'codex' && document.getElementById('squadView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('deckView').classList.contains('active')) return () => { if(deckDestroyMode) setDeckDestroyMode(false); else if(deckCreateMode) setDeckCreateMode(false); else deckLeave(); };
   if(currentView === 'codex' && document.getElementById('collectionView').classList.contains('active')) return () => showCodexHub();
   if(currentView === 'codex' && document.getElementById('modulesView').classList.contains('active')) return () => showCodexHub();
@@ -19147,14 +19041,7 @@ function missionHeartbeat1s(){
   if(HEADLESS) return;
   if(!checkMissionEnd()){ renderMissionTimer(); updateInfRecord(); }
 }
-function syncOrdersTile(){
-  const a = document.getElementById(missionMode === 'omega' ? 'omegaLive' : 'infLive'), b = document.getElementById('ordLive');
-  if(a && b){
-    const idle = a.classList.contains('idle');
-    b.textContent = idle ? a.textContent : (missionMode === 'omega' ? 'OMEGA · ' : 'ONE · ') + a.textContent.replace('● ', '');
-    b.className = a.className; b.style.display = a.style.display;
-  }
-}
+function syncOrdersTile(){}   // case ORDRE DE MISSION supprimée
 function updateInfRecord(){
   if(BG_SWAP) return;
   const el = document.getElementById('infRecord');
@@ -19262,10 +19149,9 @@ function showHub(){
   document.getElementById('modeHub').classList.add('active');
   document.getElementById('infiniteMode').classList.remove('active');
   document.getElementById('playerView').classList.remove('active');
-  document.getElementById('squadView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -19291,25 +19177,10 @@ function enterInfinite(){
   inInfinite = true;
   if(notif.inf){ notif.inf = false; renderNotifs(); saveSoon(); }
   document.getElementById('modeHub').classList.remove('active');
-  document.getElementById('ordersView').classList.remove('active');
   document.getElementById('infiniteMode').classList.add('active');
   scrollViewTop();
   resumeBattle();
 }
-document.getElementById('tileInfinite').onclick = () => enterMission('one');
-document.getElementById('tileOmega').onclick = () => enterMission('omega');
-document.getElementById('tileVestige').onclick = () => enterMission('vestige');
-
-// Ordre de mission : sous-menu des missions (Mission ONE + prochaines missions)
-function openOrders(){
-  showHub();                                   // quitte proprement l'écran de combat (le combat continue en fond)
-  openSub('ordersView');
-  updateInfRecord();
-}
-document.getElementById('tileOrders').onclick = openOrders;
-document.getElementById('tileSquad').onclick = () => enterSquadView();
-document.getElementById('squadBackBtn').onclick = showCodexHub;
-
 // ---------- Collection : classeur de pochettes numérotées ----------
 // Chaque personnage a un numéro fixe (les futurs personnages prendront les numéros suivants).
 const CARD_NUMBERS = {
@@ -19454,7 +19325,7 @@ updateCollectionTile();
 // Récompenses : { gold, xp, mat:{rare,epique,legendaire}, card:'epique'|'legendaire'|'holo' }
 // ----- Bonus de connexion : série de jours de connexion (bloquée au 7e jour tant que le joueur revient chaque jour) -----
 // Il s'ajoute aux gains d'OR, d'XP et de MATÉRIAUX (pas aux cartes ni aux cristaux).
-const LOGIN_BONUS = [0.2, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5];
+const LOGIN_BONUS = [0.04, 0.08, 0.12, 0.16, 0.20, 0.25, 0.30];   // V0.04.61 : plafonné à +30 % (avant : jusqu'à +150 %)
 function loginBonus(){ const s = (player.login && player.login.streak) || 1; return LOGIN_BONUS[Math.max(1, Math.min(7, s)) - 1]; }
 function loginMult(){ return 1 + loginBonus(); }
 function fmtBonus(b){ return '+' + Math.round(b * 100) + ' %'; }
@@ -19617,26 +19488,27 @@ document.getElementById('rewardModal').addEventListener('click', e => { if(e.tar
 // Les récompenses grandissent avec le NIVEAU DU JOUEUR et le nombre de SEMAINES complétées.
 const DAILY_BASE = [
   { gold:50 },
-  { xp:40, mat:{ rare:2 } },
-  { gold:100, mat:{ rare:5 } },
-  { xp:90, mat:{ epique:2 } },
-  { gold:250, xp:150 },
-  { card:'epique', gold:150, mat:{ epique:3 } },
-  { card:'legendaire', gold:300, mat:{ legendaire:1 } }
+  { xp:60, mat:{ rare:2 } },
+  { gold:80, mat:{ epique:1 } },
+  { xp:100, gold:50 },
+  { card:'epique', gold:50 },
+  { xp:80, mat:{ epique:1 } },
+  { gold:100, mat:{ legendaire:1 }, crystal:1 }
 ];
+// V0.04.61 : plus de multiplicateur de niveau ni de semaine (jusqu'à ×2,8 avant) -- le nouveau modèle (plus de
+// missions, 1 booster = 1000 or, ~200 à 300 or gagnés par heure de bataille) ne supporte pas des gains qui explosent.
 function dailyWeek(){ return (player.daily.cycle || 0) + ((player.daily.day >= 7 && dailyCanClaim()) ? 1 : 0); }   // semaine affichée (0 = 1re)
-function dailyMult(){ return (1 + 0.04 * ((player.level || 1) - 1)) * (1 + 0.15 * Math.min(dailyWeek(), 12)); }
+function dailyMult(){ return 1; }
 function round10(n){ return Math.max(5, Math.round(n / 5) * 5); }
 function dailyReward(i){
-  const b = DAILY_BASE[i], m = dailyMult(), w = dailyWeek(), r = {};
-  if(b.gold) r.gold = round10(b.gold * m);
-  if(b.xp) r.xp = round10(b.xp * m);
-  if(b.mat){ r.mat = {}; MAT_ORDER.forEach(k => { if(b.mat[k]) r.mat[k] = b.mat[k] + Math.floor(w / 2) * (k === 'rare' ? 2 : 1); }); }
-  if(b.card){
-    r.card = b.card;
-    r.cardN = 1 + (b.card === 'epique' && w >= 2 ? 1 : 0) + (b.card === 'legendaire' && w >= 3 ? 1 : 0) + (w >= 6 ? 1 : 0);
-  }
-  if((i + 1) % 2 === 0) r.crystal = (r.crystal || 0) + 1;   // +1 cristal de fabrication tous les 2 jours
+  const b = DAILY_BASE[i], r = {};
+  if(b.gold) r.gold = b.gold;
+  if(b.xp) r.xp = b.xp;
+  if(b.crystal) r.crystal = b.crystal;
+  if(b.mat){ r.mat = {}; MAT_ORDER.forEach(k => { if(b.mat[k]) r.mat[k] = b.mat[k]; }); }
+  if(b.card){ r.card = b.card; r.cardN = 1; }
+  // une carte légendaire seulement au 7e jour de chaque 8e semaine (à la place du cristal)
+  if(i === 6 && dailyWeek() % 8 === 7){ r.card = 'legendaire'; r.cardN = 1; delete r.crystal; }
   return r;
 }
 function todayKey(d){ d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -20102,7 +19974,7 @@ function renderDaily(keepPos){
     // V0.02.93, demande d'Alex : "tous les 5 jours tu as droit à un booster aléatoire" -- rappel générique
     // (pas de jour précis affiché : ça dépend du cumul player.daily.total, pas de la position dans CE
     // calendrier 7 jours, cf claimDaily()).
-    + `<div class="daily-bonus">SEMAINE ${week} · ${D3T.name} · BONUS ×${dailyMult().toFixed(2).replace('.', ',')} <small>(niv. ${player.level} joueur)</small> · BOOSTER BONUS TOUS LES 5 JOURS</div>`;
+    + `<div class="daily-bonus">SEMAINE ${week} · ${D3T.name} · BOOSTER BONUS TOUS LES 5 JOURS</div>`;
   box.innerHTML = D3_PATH.filter(p => p[2]).map(p => {
     const i = p[2] - 1, st = i < done ? 'done' : i === claimIdx ? 'ready' : 'locked', rew = dailyReward(i);
     return `<div class="d3-bill" data-day="${p[2]}"><button class="daily-box ${st} ${rew.card ? 'big r-' + rew.card : ''}" data-i="${i}">${dailyBoxHtml(rew, i, st)}</button></div>`;
@@ -20324,6 +20196,26 @@ var TROPHIES = [
   { id:'boost_mod_3',   tier:5, name:'Arsenal infini',     desc:'Ouvrir 150 boosters cartes modules',               target:150, val:() => (player.stats.boostersByType || {}).modules || 0, rew:{ gold:500, card:'legendaire', booster:'modules', boosterN:3 } }
 ];
 TROPHIES = TROPHIES.filter(t => ['fus1', 'fusL', 'fus10', 'mr_fus25'].indexOf(t.id) < 0);   // V0.04.49 : plus d'upgrade
+// V0.04.61 : missions, DEATH SQUAD et upgrade de modules supprimés -> leurs trophées sont impossibles à obtenir : retirés,
+// et remplacés par des trophées de bataille / défi / deck (récompenses = celles du palier, cf TROPHY_TIERS).
+TROPHIES = TROPHIES.filter(t => !/^(wav\d+|won250|mis\d+|kil\d+\w*|pw\w+|gold\d+k|mr_wav\d+|mr_kil\w+|mr_mis\d+|mr_g\d+k|mr_pw\w+|h_mono|modFus\w*)$/.test(t.id));
+TROPHIES.push(
+  { id:'bt1',    tier:1, name:'Baptême du feu',       desc:'Gagner une bataille',                target:1,   val:() => player.stats.battlesWon || 0 },
+  { id:'bt10',   tier:1, name:'Soldat aguerri',       desc:'Gagner 10 batailles',                target:10,  val:() => player.stats.battlesWon || 0 },
+  { id:'bt25',   tier:2, name:'Vétéran',              desc:'Gagner 25 batailles',                target:25,  val:() => player.stats.battlesWon || 0 },
+  { id:'bt50',   tier:2, name:'Tacticien',            desc:'Gagner 50 batailles',                target:50,  val:() => player.stats.battlesWon || 0 },
+  { id:'bt100',  tier:3, name:'Commandant de front',  desc:'Gagner 100 batailles',               target:100, val:() => player.stats.battlesWon || 0 },
+  { id:'bt250',  tier:4, name:'Maître de guerre',     desc:'Gagner 250 batailles',               target:250, val:() => player.stats.battlesWon || 0 },
+  { id:'bt500',  tier:5, name:'Légende du front',     desc:'Gagner 500 batailles',               target:500, val:() => player.stats.battlesWon || 0 },
+  { id:'bpl25',  tier:1, name:'Toujours au front',    desc:'Jouer 25 batailles',                 target:25,  val:() => player.stats.battles || 0 },
+  { id:'str3',   tier:1, name:'Série en cours',       desc:'Enchaîner 3 victoires',              target:3,   val:() => player.stats.bestStreak || 0 },
+  { id:'str5',   tier:3, name:'Série parfaite',       desc:'Enchaîner 5 victoires',              target:5,   val:() => player.stats.bestStreak || 0 },
+  { id:'df1',    tier:1, name:'Relever le défi',      desc:'Remporter un palier de défi',        target:1,   val:() => player.stats.defisWon || 0 },
+  { id:'df10',   tier:2, name:'Chasseur de défis',    desc:'Remporter 10 paliers de défi',       target:10,  val:() => player.stats.defisWon || 0 },
+  { id:'df50',   tier:3, name:'Seigneur des défis',   desc:'Remporter 50 paliers de défi',       target:50,  val:() => player.stats.defisWon || 0 },
+  { id:'dk1',    tier:1, name:'Premier deck',         desc:'Enregistrer un deck',                target:1,   val:() => player.stats.deckEdits || 0 },
+  { id:'dk10',   tier:2, name:'Stratège',             desc:'Enregistrer 10 decks',               target:10,  val:() => player.stats.deckEdits || 0 }
+);
 function tTarget(t){ return typeof t.target === 'function' ? t.target() : t.target; }
 function tReward(t){ return t.hidden ? { card:'holo' } : (t.rew || TROPHY_TIERS[t.tier].rew); }
 function tVal(t){ try{ return t.val() || 0; }catch(_){ return 0; } }
@@ -20502,23 +20394,20 @@ var TASK_POOL = [
   { id:'login',   name:'AU RAPPORT',     desc:'Se connecter au jeu',                    target:1,  val:() => 1, core:true },
   { id:'daily',   name:'COLIS DU JOUR',  desc:'Récupérer la récompense journalière',    target:1,  val:() => player.daily.last === todayKey() ? 1 : 0, core:true },
   { id:'play',    name:'EN SERVICE',     desc:'Jouer 10 minutes',                        target:10, val:taskD('play'), unit:' min', core:true },
-  { id:'kills',   name:'NETTOYAGE',      desc:'Détruire 40 ennemis en mission',          target:40, val:taskD('kills'), core:true },
-  { id:'waves',   name:'TENIR LA LIGNE', desc:'Remporter 8 vagues',                      target:8,  val:taskD('waves') },
-  { id:'collect', name:'BUTIN',          desc:'Collecter les récompenses de mission',    target:1,  val:taskD('collects') },
+  { id:'bat',     name:'AU FRONT',       desc:'Jouer 3 batailles',                       target:3,  val:taskD('battles'), core:true },
+  { id:'win',     name:'VICTOIRE !',     desc:'Gagner 2 batailles',                      target:2,  val:taskD('battlesWon') },
   { id:'draw',    name:'EMPLETTES',      desc:'Acheter 3 cartes en Fabrique',            target:3,  val:taskD('draws') },
+  { id:'boost',   name:'RAVITAILLEMENT', desc:'Ouvrir un booster',                       target:1,  val:taskD('boostersOpened') },
+  { id:'deck',    name:'STRATÈGE',       desc:'Enregistrer un deck',                     target:1,  val:taskD('deckEdits') },
   { id:'views',   name:'INSPECTION',     desc:'Examiner 5 cartes en grand',              target:5,  val:taskD('cardViews') },
   { id:'coll',    name:'ARCHIVISTE',     desc:'Ouvrir la Collection',                    target:1,  val:taskD('collVisits') },
-  { id:'squad',   name:'STRATÈGE',       desc:'Modifier ton escouade',                   target:1,  val:taskD('squadEdits') },
   { id:'fav',     name:'COUP DE CŒUR',   desc:'Mettre une carte en favori',              target:1,  val:taskD('favAdds') },
-  { id:'sheet',   name:'DOSSIER',        desc:'Consulter ta fiche joueur',               target:1,  val:taskD('sheetVisits') },
-  { id:'gold',    name:'TIRELIRE',       desc:'Collecter 80 or en mission',              target:80, val:taskD('goldEarned') },
-  { id:'modfus',  name:'MODIFICATION',   desc:'Upgrader un module',                      target:1,  val:taskD('modFusions') },
-  { id:'moddest', name:'DÉMONTAGE',      desc:'Détruire un module',                      target:1,  val:taskD('modDestroyed') }
+  { id:'sheet',   name:'DOSSIER',        desc:'Consulter ta fiche joueur',               target:1,  val:taskD('sheetVisits') }
 ];
 // V0.02.93, demande d'Alex : "dans les tâche journalière la dernière tâche te donne un [booster]
 // aléatoire parmi les 3 chaque jour" -- booster:'random' est résolu dans grantReward() au moment précis
 // de la récupération (donc un type différent possible chaque jour), en plus des 5 cristaux déjà existants.
-const TASK_BONUS = { crystal:5, booster:'random' };
+const TASK_BONUS = { gold:60 };   // V0.04.61 : avant 5 cristaux + 1 booster par jour (≈ 2 boosters/jour, soit des dizaines d'heures de bataille)
 // Numéro de semaine calendaire (change chaque lundi)
 function calWeek(){ const d = new Date(); d.setHours(0, 0, 0, 0); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return Math.round(mon.getTime() / 604800000); }
 // Sélection + récompenses de la semaine (toujours les mêmes pendant 7 jours)
@@ -20533,17 +20422,17 @@ function tasksOfWeek(){
   // proposée à un joueur qui n'a qu'un seul module (ou aucun) -- sinon la terminer veut dire se retrouver
   // sans aucun équipement, juste pour débloquer le bonus des 10 tâches. Elle redevient éligible dès que
   // le joueur possède au moins 2 modules (il en a alors un à sacrifier sans tout perdre).
-  const eligible = TASK_POOL.filter(t => !t.core && (t.id !== 'moddest' || totalModulesOwned() > 1));
+  const eligible = TASK_POOL.filter(t => !t.core);
   const rest = eligible.map(t => [rnd(), t]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
-  const m = 1 + .05 * (lvl - 1);
+  const m = 1;   // V0.04.61 : plus de bonus de niveau sur les tâches
   const kinds = ['gold', 'xp', 'goldxp', 'matR', 'matE', 'gold', 'xp'];
   const list = core.concat(rest.slice(0, 10 - core.length)).map(t => {
     const k = kinds[Math.floor(rnd() * kinds.length)], rew = {};
-    if(k === 'gold') rew.gold = round10((15 + rnd() * 25) * m);
-    if(k === 'xp') rew.xp = round10((10 + rnd() * 20) * m);
-    if(k === 'goldxp'){ rew.gold = round10((10 + rnd() * 12) * m); rew.xp = round10((6 + rnd() * 10) * m); }
-    if(k === 'matR') rew.mat = { rare: 2 + Math.floor(rnd() * 3) };
-    if(k === 'matE') rew.mat = { epique: 1 + Math.floor(rnd() * 2) };
+    if(k === 'gold') rew.gold = round10((10 + rnd() * 12) * m);
+    if(k === 'xp') rew.xp = round10((8 + rnd() * 10) * m);
+    if(k === 'goldxp'){ rew.gold = round10((8 + rnd() * 6) * m); rew.xp = round10((5 + rnd() * 6) * m); }
+    if(k === 'matR') rew.mat = { rare: 1 + Math.floor(rnd() * 2) };
+    if(k === 'matE') rew.mat = { epique: 1 };
     return Object.assign({}, t, { rew });
   });
   taskWeekCache = { w, lvl, list };
@@ -20558,7 +20447,8 @@ function tasksSnapshot(){
     kills: player.stats.kills, collects: player.stats.collects, levelUps: player.stats.levelUps, cardViews: player.stats.cardViews,
     collVisits: player.stats.collVisits, squadEdits: player.stats.squadEdits, favAdds: player.stats.favAdds,
     sheetVisits: player.stats.sheetVisits, goldEarned: player.stats.goldEarned,
-    modFusions: player.stats.modFusions, modDestroyed: player.stats.modDestroyed };
+    modFusions: player.stats.modFusions, modDestroyed: player.stats.modDestroyed,
+    battles: player.stats.battles, battlesWon: player.stats.battlesWon, defisWon: player.stats.defisWon, deckEdits: player.stats.deckEdits, boostersOpened: player.stats.boostersOpened };
 }
 function ensureTasksDay(){
   if(!player.tasks || player.tasks.day !== todayKey()){
@@ -20939,7 +20829,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'ordersView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -20961,6 +20851,7 @@ function batStreakResolve(won){
   if(!won){ player.winStreak = 0; saveSoon(); return null; }   // l'affichage est rafraîchi par renderBataille() à la sortie du combat
   const n = Math.min(BAT_STREAK_MAX, (player.winStreak || 0) + 1);
   player.winStreak = n;
+  player.stats.bestStreak = Math.max(player.stats.bestStreak || 0, n);
   const items = grantReward({ gold: BAT_WIN_GOLD * n, xp: BAT_WIN_XP * n });   // 25 + 25 x (n-1) or ; XP au même rythme
   return { n, items };
 }
@@ -21014,7 +20905,7 @@ const BTL_HEAL_K = 0.17;        // (inutilisé depuis V0.04.26 : DÉFENDRE ajout
 const BTL_CHIEF_HP = 15, BTL_CHIEF_DEF = 10;
 const BTL_LEADER_HP_K = 2.5, BTL_LEADER_HP_ADD = 6, BTL_LEADER_DEF_K = 1.25, BTL_LEADER_MAX = 49;
 const BTL_EN_K = 7;
-const BTL_HAND_START = 3;
+const BTL_HAND_START = 4;
 const BTL_TURN_MS = 150000, BTL_HEAT_MS = 20000;
 const BTL_BACK_FALLBACK = 'rare';
 
@@ -22331,7 +22222,7 @@ function btlEndTap(){
 }
 async function btlTurn(side){
   BTL.turn++; BTL.side = side; BTL.phase = 'banner';
-  const cap = BTL.turn === 1 ? 1 : Math.min(5, Math.floor(BTL.turn / 2) + 1);
+  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1);   // V0.04.61 : 1 mana chacun au départ (J1 puis J2), puis +1 tous les 2 tours (même rythme pour les deux camps)
   BTL.cap[side] = BTL.mana[side] = cap;
   btlRenderMana();
   await btlTurnFx(side);
@@ -22818,8 +22709,8 @@ function btlAimDown(ev){
 }
 // ----- croix rouge : cartes ciblées qui seront détruites en fin de tour (simulation prudente : dégâts minimum) -----
 function btlPredict(){
-  const st = new Map(), get = c => { let s = st.get(c.uid); if(!s){ s = { hp:c.hp, df:Math.max(0, c.df) }; st.set(c.uid, s); } return s; };
-  const hit = (s, d) => { const sh = Math.min(s.df, d); s.df -= sh; s.hp = Math.max(0, s.hp - (d - sh)); };
+  const st = new Map(), get = c => { let s = st.get(c.uid); if(!s){ s = { hp:c.hp, df:Math.max(0, c.df), psh:0, php:0 }; st.set(c.uid, s); } return s; };
+  const hit = (s, d, rec) => { const sh = Math.min(s.df, d); s.df -= sh; if(rec){ s.psh += sh; s.php += d - sh; } s.hp = Math.max(0, s.hp - (d - sh)); };   // rec : dégâts d'une attaque reçue (affichés sur la carte ciblée)
   const plans = [];
   ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt && btlOnField(c)) plans.push(c); }));
   plans.sort((a, b) => (a.plan.seq || 0) - (b.plan.seq || 0));
@@ -22830,26 +22721,62 @@ function btlPredict(){
     const t = get(t0); if(t.hp <= 0) return;
     targeted.add(t0.uid);
     if(c.plan.kind === 'def'){ t.df += Math.max(0, Math.round(c.df)); return; }
-    if(c.plan.kind !== 'atk') return;
-    hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K * 0.9)));
+    const ultA = c.plan.kind === 'ult' && !c.plan.heal;
+    if(c.plan.kind !== 'atk' && !ultA) return;
+    hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K * 0.9 * (ultA ? (c.def.ultMult || 1.5) * 1.5 : 1))), true);
     if(!t0.leader || BTL_LEADER_COUNTER) hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K * 0.9)));
   });
   const dead = new Set();
-  targeted.forEach(uid => { const s = st.get(uid); if(s && s.hp <= 0) dead.add(uid); });
+  const pd = new Map();
+  targeted.forEach(uid => { const s = st.get(uid); if(s && s.hp <= 0) dead.add(uid); if(s && (s.psh > 0 || s.php > 0)) pd.set(String(uid), { sh:s.psh, hp:s.php }); });
+  dead.pd = pd;
   return dead;
 }
-const BTL_X_HTML = '<svg viewBox="0 0 100 100"><g fill="none" stroke-linecap="round"><path d="M20 20L80 80M80 20L20 80" stroke="#ff2a1c" stroke-opacity=".32" stroke-width="30"/><path d="M20 20L80 80M80 20L20 80" stroke="#4a0804" stroke-width="22"/><path d="M20 20L80 80M80 20L20 80" stroke="#e8281c" stroke-width="15"/><path d="M20 20L80 80M80 20L20 80" stroke="#ff9a90" stroke-opacity=".85" stroke-width="5" transform="translate(-1.6 -1.6)"/></g></svg>';
+// craquelures rouge sombre en relief (V0.04.61) : remplacent la croix rouge sur une carte qui va être détruite -- réseau de fissures propre à chaque carte (graine = uid)
+let btlCrSeq = 0;
+function btlRng(seed){ let a = (Math.imul((seed | 0) + 1, 2654435761) >>> 0) || 1; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function btlCrackPaths(seed){
+  const R = btlRng(seed * 7 + 3), out = [], f = n => n.toFixed(1);
+  const cx = 50 + (R() - .5) * 16, cy = 46 + (R() - .5) * 16;
+  const walk = (x, y, ang, len, w, depth) => {
+    let d = 'M' + f(x) + ' ' + f(y), run = 0; const idx = out.length; out.push(null);
+    while(run < len){
+      const seg = 4.5 + R() * 6; ang += (R() - .5) * 1.0;
+      x += Math.cos(ang) * seg; y += Math.sin(ang) * seg; run += seg;
+      if(x < 3 || x > 97 || y < 3 || y > 97){ x = Math.max(3, Math.min(97, x)); y = Math.max(3, Math.min(97, y)); d += 'L' + f(x) + ' ' + f(y); break; }
+      d += 'L' + f(x) + ' ' + f(y);
+      if(depth < 2 && R() < (depth ? .22 : .4)) walk(x, y, ang + (R() < .5 ? -1 : 1) * (.45 + R() * .8), len * (.3 + R() * .25), w * .68, depth + 1);
+    }
+    out[idx] = { d, w };
+  };
+  const n = 6 + Math.floor(R() * 2), a0 = R() * 6.28;
+  for(let k = 0; k < n; k++) walk(cx, cy, a0 + k / n * 6.28 + (R() - .5) * .7, 34 + R() * 22, 1, 0);
+  return { paths:out, cx, cy };
+}
+function btlXHtml(seed){
+  const C = btlCrackPaths(seed || 1), id = 'btlcr' + (++btlCrSeq);
+  const lay = (stroke, op, wk, cls) => '<g stroke="' + stroke + '" stroke-opacity="' + op + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + C.paths.map(p => '<path d="' + p.d + '" stroke-width="' + (p.w * wk).toFixed(2) + '"/>').join('') + '</g>';
+  return '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><defs><radialGradient id="' + id + '" cx="' + C.cx.toFixed(1) + '" cy="' + C.cy.toFixed(1) + '" r="62" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7a0000" stop-opacity=".34"/><stop offset=".55" stop-color="#4a0000" stop-opacity=".14"/><stop offset="1" stop-color="#2a0000" stop-opacity="0"/></radialGradient></defs>' +
+    '<rect width="100" height="100" fill="url(#' + id + ')"/>' +
+    '<g fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+      lay('#6a0000', .16, 6.2) + lay('#7a0000', .26, 3.6) +
+      '<g transform="translate(.9 1)">' + lay('#000', .62, 2.5) + '</g>' +
+      '<g transform="translate(-.75 -.8)">' + lay('#ff9c88', .4, 1.5) + '</g>' +
+      lay('#2b0303', 1, 2.2) + lay('#8e0c0c', 1, 1.1, 'co') + lay('#e64a36', .85, .36, 'co') +
+    '</g></svg>';
+}
 function btlMarkOff(c, now){
   const u = btlUnitEl(c); if(!u) return;
+  if(now) u.querySelectorAll('.btl-pd').forEach(x => x.remove());
   u.querySelectorAll('.btl-x').forEach(x => { if(now){ x.remove(); return; } if(x.classList.contains('out')) return; x.classList.add('out'); setTimeout(() => x.remove(), 200); });
 }
-function btlMarksClear(){ if(BTL) BTL.el.querySelectorAll('.btl-x').forEach(x => x.remove()); }
+function btlMarksClear(){ if(BTL) BTL.el.querySelectorAll('.btl-x, .btl-pd').forEach(x => x.remove()); }
 // croix « effet » (V0.04.57) : carte qui va être détruite par un module, un effet de carte, un coup critique, un camp ou l'autre (marques data-fx, non retirées par btlRenderMarks)
 function btlLethal(t, d){ return !!t && t.hp > 0 && d > 0 && d >= t.hp + Math.max(0, t.df); }
 function btlXOn(t){
   const u = t && BTL && btlUnitEl(t); if(!u) return;
   const ex = u.querySelector('.btl-x:not(.out)'); if(ex){ ex.dataset.fx = '1'; return; }
-  const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = t.uid; x.dataset.fx = '1'; x.innerHTML = BTL_X_HTML; u.appendChild(x);
+  const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = t.uid; x.dataset.fx = '1'; x.innerHTML = btlXHtml(t.uid); u.appendChild(x);
 }
 function btlXOff(t){
   const u = t && BTL && btlUnitEl(t); if(!u) return;
@@ -22857,13 +22784,49 @@ function btlXOff(t){
 }
 function btlRenderMarks(){
   if(!BTL || BTL.resolving || BTL.over) return;
-  const dead = btlPredict();
-  BTL.el.querySelectorAll('.btl-unit .btl-x:not(.out)').forEach(x => { if(!x.dataset.fx && !dead.has(x.dataset.u)){ x.classList.add('out'); setTimeout(() => x.remove(), 200); } });
+  const dead = btlPredict(), deadS = new Set([...dead].map(String));
+  BTL.el.querySelectorAll('.btl-unit .btl-x:not(.out)').forEach(x => { if(!x.dataset.fx && !deadS.has(x.dataset.u)){ x.classList.add('out'); setTimeout(() => x.remove(), 200); } });
   dead.forEach(uid => {
     const c = btlCardByUid(uid), u = c && btlUnitEl(c); if(!u) return;
     if(u.querySelector('.btl-x:not(.out)')) return;
-    const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = uid; x.innerHTML = BTL_X_HTML; u.appendChild(x);
+    const x = document.createElement('i'); x.className = 'btl-x'; x.dataset.u = uid; x.innerHTML = btlXHtml(uid); u.appendChild(x);
   });
+  btlPdSync(dead.pd);
+}
+// ----- dégâts prévus (V0.04.61) : sur chaque carte ciblée, les points qui vont être infligés s'additionnent au fil des cibles ; bleu = pris par le bouclier, rouge = pris par les PV.
+// En fin de tour, ils se décomptent vers 0 à mesure que la carte les reçoit.
+function btlPdMake(uid){
+  const e = document.createElement('i'); e.className = 'btl-pd'; e.dataset.u = uid; e._v = { s:0, h:0 };
+  e.innerHTML = '<span class="pd-s" hidden><b></b></span><span class="pd-h" hidden><b></b></span>'; return e;
+}
+function btlPdShow(e, k, n, pop){
+  const sp = e.querySelector('.pd-' + k), old = e._v[k]; e._v[k] = n;
+  if(n <= 0){ if(!sp.hidden){ sp.classList.add('zero'); btlAfter(() => { if(e._v[k] <= 0){ sp.hidden = true; sp.classList.remove('zero'); } }, 260); } return; }
+  sp.firstChild.textContent = '-' + n; sp.hidden = false; sp.classList.remove('zero');
+  if(pop && n !== old){ sp.classList.remove('pop'); void sp.offsetWidth; sp.classList.add('pop'); }
+}
+function btlPdSet(e, sh, hp){ btlPdShow(e, 's', sh, true); btlPdShow(e, 'h', hp, true); }
+function btlPdSync(pd){
+  if(!BTL) return; pd = pd || new Map();
+  BTL.el.querySelectorAll('.btl-pd:not(.out)').forEach(e => { if(!pd.has(e.dataset.u)){ e.classList.add('out'); setTimeout(() => e.remove(), 220); } });
+  pd.forEach((v, uid) => {
+    const c = btlCardByUid(+uid), u = c && btlUnitEl(c); if(!u) return;
+    let e = u.querySelector('.btl-pd:not(.out)'); if(!e){ e = btlPdMake(uid); u.appendChild(e); }
+    btlPdSet(e, v.sh, v.hp);
+  });
+}
+// à l'impact : la carte reçoit shield / hp points -> les chiffres se décomptent ; le dernier coup reçu efface l'indicateur
+function btlPdTick(t, shield, hp){
+  const u = t && btlUnitEl(t), e = u && u.querySelector('.btl-pd:not(.out)'); if(!e) return;
+  const left = [];
+  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt === t.uid && (c.plan.kind === 'atk' || (c.plan.kind === 'ult' && !c.plan.heal))) left.push(c); }));
+  const goal = { s:Math.max(0, e._v.s - shield), h:Math.max(0, e._v.h - hp) };
+  if(!left.length){ goal.s = 0; goal.h = 0; }
+  ['s', 'h'].forEach(k => {
+    const step = () => { if(!e.isConnected) return; const cur = e._v[k]; if(cur <= goal[k]) return; btlPdShow(e, k, cur - Math.max(1, Math.ceil((cur - goal[k]) / 6)), true); btlAfter(step, 55); };
+    step();
+  });
+  if(!left.length) btlAfter(() => { if(e.isConnected){ e.classList.add('out'); btlAfter(() => e.remove(), 220); } }, 520);
 }
 function btlWire(){
   btlQ('.btl-half.me').addEventListener('pointerdown', btlAimDown);
@@ -22986,6 +22949,7 @@ async function btlDoAction(c, ov){
   const before = t.hp / t.maxHp * 100, beforeC = c.hp / c.maxHp * 100;
   const dealt = Math.min(res.dmg, t.hp + t.df), taken = counter ? Math.min(counter.dmg, c.hp + c.df) : 0;
   const ap = btlApplyDmg(t, res.dmg), apc = counter ? btlApplyDmg(c, counter.dmg) : null;
+  btlPdTick(t, ap.shield, ap.hpLoss);
   const strong = ult || res.crit, col = ap.hpLoss > 0 ? (ult ? '#ffd24a' : '#ff5a5a') : '#4ea8ff';
   btlShowDmg(t, r1, tEl, ap, strong);
   btlSpark(r1, col, strong ? 1.5 : 1); btlSlash(r1, col, strong);
@@ -23129,6 +23093,7 @@ async function btlFinish(winner){
   const rm = document.getElementById('rewardModal');
   const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
+  player.stats.battles++; if(winner === 'p') player.stats.battlesWon++;
   const wr = (typeof batStreakResolve === 'function') ? batStreakResolve(winner === 'p') : null;   // série de victoires : récompense (victoire) ou remise à zéro (défaite)
   showRewardModal('', (wr && wr.items) || [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:my.artExt, artPosY:defiResultArtPosY(my.name), actionLabel:'CONTINUER' });
 }
@@ -26198,6 +26163,7 @@ function defiEndBattle(won){
   // jusqu'au prochain rafraîchissement.
   if(won){
     player.defi[def.name] = Math.max(prevDefi, tier);
+    player.stats.defisWon = (player.stats.defisWon || 0) + 1;
     saveSoon();
   }
   defiExitCombat();
@@ -26516,13 +26482,8 @@ function renderPlayerSheet(){
     </div>
 
     <div class="pv-card">
-      <div class="team-label player">DEATH SQUAD</div>
-      ${squadHtml}
-    </div>
-
-    <div class="pv-card">
-      <div class="team-label player">MEILLEURE VAGUE${bw ? ' : ' + bw.wave : ''}</div>
-      ${bestHtml}
+      <div class="team-label player">BATAILLES</div>
+      <div class="pv-best-meta">${(player.stats.battlesWon || 0)} victoire${(player.stats.battlesWon || 0) > 1 ? 's' : ''} sur ${(player.stats.battles || 0)} bataille${(player.stats.battles || 0) > 1 ? 's' : ''}${player.stats.battles ? ' · ' + Math.round(100 * (player.stats.battlesWon || 0) / player.stats.battles) + ' %' : ''}</div>
     </div>
 
     <div class="pv-grid">
@@ -26542,19 +26503,18 @@ function renderPlayerSheet(){
         <div class="pv-stat-sub">au total</div>
       </div>
       <div class="pv-stat">
-        <div class="pv-stat-label">VAGUES REMPORTÉES</div>
-        <div class="pv-stat-val">${player.wavesWon}</div>
-        <div class="pv-stat-sub">${player.defeats} défaite${player.defeats > 1 ? 's' : ''}</div>
+        <div class="pv-stat-label">BATAILLES GAGNÉES</div>
+        <div class="pv-stat-val">${player.stats.battlesWon || 0}</div>
+        <div class="pv-stat-sub">${Math.max(0, (player.stats.battles || 0) - (player.stats.battlesWon || 0))} défaite${(player.stats.battles || 0) - (player.stats.battlesWon || 0) > 1 ? 's' : ''}</div>
       </div>
     </div>
     <div class="pv-card pv-totals" id="pvTotals"></div>
 
     <div class="pv-card pv-xp-help">
       <div class="team-label player">GAGNER DE L'XP</div>
-      <div class="pv-xp-row"><span>Mission ONE</span><b>XP stockée dans tes ressources</b></div>
+      <div class="pv-xp-row"><span>Victoire en bataille</span><b>+15 à +75</b></div>
       <div class="pv-xp-row"><span>Tirage en Fabrique</span><b>+${XP_REWARDS.draw}</b></div>
       <div class="pv-xp-row"><span>Nouvelle carte débloquée</span><b>+${XP_REWARDS.newCard}</b></div>
-      <div class="pv-xp-row"><span>Upgrade de cartes</span><b>+${XP_REWARDS.fusion}</b></div>
     </div>
 
     <div class="pv-card pv-account" id="pvSaveStatus"></div>
@@ -27005,14 +26965,10 @@ function applySave(data){
     scheduleLabReset();
     notif.lab = true;
   }
-  if(data.missions){
+  if(data.missions || data.battle){   // V0.04.61 : les missions n'existent plus -- ancien état de mission ignoré
     stopTimers();
-    MSTATE = data.missions;
-    loadFields(MISSIONS[data.activeMission] ? data.activeMission : 'one');
-  } else if(data.battle){
-    const m = MISSIONS[data.battle.mode] ? data.battle.mode : 'one';
-    MSTATE = {}; MSTATE[m] = Object.assign({}, data.battle, { loot: data.loot || newLoot(), squad: (data.squad || []).slice() });
-    stopTimers(); loadFields(m);
+    MSTATE = {};
+    loadFields('one');
   }
   if(!data.m58){
     // Remise à zéro demandée : toutes les cartes repartent au niveau 1 (une seule fois)
@@ -27728,7 +27684,7 @@ window.addEventListener('pageshow', () => catchUpAllMissions());
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', ordersView:'hub', playerView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
+const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', infiniteMode:'orders', playerView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
@@ -27739,12 +27695,12 @@ function goBack(id){
   // proprement CE combat plutôt que suivre le chemin normal d'infiniteMode (openOrders(), pensé pour
   // les vraies missions) -- sinon openOrders()'s openSub('ordersView') écraserait tout de suite le
   // retour sur defiPathView fait par defiAbandonCombat() (lui-même déclenché via la garde de showHub()).
-  else if(BACK_OF[id] === 'orders'){ if(defiCombatActive) defiAbandonCombat(); else openOrders(); }
+  else if(BACK_OF[id] === 'orders'){ if(defiCombatActive) defiAbandonCombat(); else showHub(); }
   // DÉFI (V0.03.47) : la piste des paliers (defiPathView) revient à la grille des cartes (defiView),
   // pas directement au hub -- même principe de nidification que rewards/tasksView ci-dessus.
   else if(BACK_OF[id] === 'defi') renderDefi(), openSub('defiView');
   else { if(id === 'collectionView') saveNow(); showHub(); }
-  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'orders' ? document.getElementById('ordersView') : BACK_OF[id] === 'defi' ? document.getElementById('defiView') : document.getElementById('modeHub');
+  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'orders' ? document.getElementById('modeHub') : BACK_OF[id] === 'defi' ? document.getElementById('defiView') : document.getElementById('modeHub');
   to.classList.remove('back-in'); void to.offsetWidth; to.classList.add('back-in');
   setTimeout(() => to.classList.remove('back-in'), 400);
 }
@@ -27871,10 +27827,7 @@ setInterval(() => {
   });
   updateMissionTiles();
 }, 15000);   // les cases affichent le temps restant à la seconde ; la simulation d'arrière-plan n'a pas besoin d'être plus fréquente
-function catchUpAllMissions(){
-  Object.keys(MISSIONS).forEach(m => { const st = missionState(m); if(st.started) withMission(m, () => catchUpBattle()); });
-  updateMissionTiles();
-}
+function catchUpAllMissions(){}   // plus de missions en arrière-plan
 // ----- Statut de chaque mission sur les cases -----
 function missionStatus(mode){
   const st = missionState(mode);
@@ -27915,63 +27868,9 @@ function renderMissionBlock(mode, id){
 function updateMissionTiles(){
   if(BG_SWAP) return;
   renderMissionDots();
-  renderMissionBlock('one', 'msOne');
-  renderMissionBlock('omega', 'msOmega');
-  renderMissionBlock('vestige', 'msVestige');
-  [['one', 'infLive'], ['omega', 'omegaLive'], ['vestige', 'vestigeLive']].forEach(([m, id]) => {
-    const el = document.getElementById(id); if(!el) return;
-    const s = missionStatus(m);
-    // VESTIGE : le bloc en dessous (ms-block) affiche déjà le temps restant quand la mission
-    // est EN COURS, on n'y répète pas "EN COURS · Xh" en double (cf. VESTIGE, V0.02.60) -- mais on
-    // garde le texte pour l'état TERMINÉE, qui se combine bien avec l'icône ✓ de ms-block (cf. captures).
-    if(m === 'vestige' && missionState(m).started){ el.style.display = 'none'; return; }
-    el.style.display = ''; el.textContent = s.txt; el.className = s.cls;
-  });
-  const b = document.getElementById('ordLive');
-  if(b){
-    const run = Object.keys(MISSIONS).filter(m => missionState(m).started), done = Object.keys(MISSIONS).filter(m => missionState(m).missionDone);
-    if(run.length > 1){ b.textContent = '● ' + run.length + ' MISSIONS EN COURS'; b.className = 'mt-live'; }
-    else if(run.length === 1){ const s = missionStatus(run[0]); b.textContent = MISSIONS[run[0]].name.replace('MISSION ', '') + ' · ' + s.txt.replace('● ', ''); b.className = 'mt-live'; }
-    else if(done.length){ b.textContent = '✓ ' + (done.length > 1 ? done.length + ' MISSIONS TERMINÉES' : MISSIONS[done[0]].name + ' TERMINÉE'); b.className = 'mt-live done'; }
-    else { b.textContent = 'EN ATTENTE DE MISSION'; b.className = 'mt-live idle'; }
-    b.style.display = '';
-  }
-  // Case ORDRE DE MISSION : icône de statut à droite (plus de texte) — flèche qui tourne si des missions
-  // sont lancées (avec un point au centre si certaines sont encore en attente), pause si aucune ne tourne.
-  const ordIco = document.getElementById('ordStatusIco');
-  if(ordIco){
-    const total = Object.keys(MISSIONS).length;
-    const running = Object.keys(MISSIONS).filter(m => missionState(m).started).length;
-    if(running === 0){ ordIco.innerHTML = ORD_ICO_PAUSE; ordIco.className = 'ord-status-ico'; }
-    else if(running === total){ ordIco.innerHTML = ORD_ICO_SPIN; ordIco.className = 'ord-status-ico spin'; }
-    else { ordIco.innerHTML = ORD_ICO_SPIN_DOT; ordIco.className = 'ord-status-ico spin'; }
-  }
-  // DÉFI (V0.03.48, fix) : updateMissionTiles() tourne en fond toutes les secondes (missionHeartbeat1s())
-  // même PENDANT un combat défi (qui emprunte missionMode='one' comme astuce technique, cf defiEnterCombat())
-  // -- sans cette garde, ce libellé repasserait sur "MISSION ONE" une seconde après le début du combat,
-  // écrasant le "DÉFI <carte>" posé par defiEnterCombat().
   const mt = document.getElementById('infModeTagTitle'); if(mt && !defiCombatActive) mt.textContent = missionCfg().name;
-  updateOrdCollectBtn();
 }
-// Bouton flottant "RÉCOLTER ET RELANCER" : visible sur ORDRE DE MISSION dès que 2 missions ou plus
-// sont terminées (butin en attente). Un seul geste pour tout collecter sans ouvrir chaque case.
-function updateOrdCollectBtn(){
-  const btn = document.getElementById('ordCollectBtn');
-  if(!btn) return;
-  const n = Object.keys(MISSIONS).filter(m => missionState(m).missionDone).length;
-  const onOrders = document.getElementById('ordersView').classList.contains('active');
-  // V0.02.99, demande d'Alex : masqué tant que la fenêtre de récompenses (bouton RELANCER) ou la
-  // fenêtre de choix d'escouade (bouton LANCER) ouverte par collectAndRelaunchAll() est affichée --
-  // sinon ce bouton flottant reste visible derrière et fait doublon avec celui de la fenêtre.
-  const rm = document.getElementById('rewardModal'), lm = document.getElementById('launchModal');
-  const modalOpen = (rm && rm.classList.contains('show')) || (lm && lm.classList.contains('show'));
-  btn.classList.toggle('show', onOrders && n > 1 && !modalOpen);
-}
-// Collecte le butin de toutes les missions terminées, puis affiche un récapitulatif des récompenses
-// gagnées (même fenêtre que pour les trophées/tâches) avec un bouton RELANCER : c'est seulement à ce
-// clic que chaque mission collectée est effectivement relancée avec la même escouade -- depuis V0.01.89,
-// le joueur voit d'abord ce qu'il a gagné avant de relancer, au lieu que tout se fasse d'un coup en silence.
-let pendingMissionRelaunch = [];
+function updateOrdCollectBtn(){}   // supprimé avec ORDRE DE MISSION
 function collectAndRelaunchAll(){
   const done = Object.keys(MISSIONS).filter(m => missionState(m).missionDone), targets = done;
   if(!targets.length) return;
@@ -28010,7 +27909,6 @@ function processNextRelaunch(){
   switchActive(mode);
   openLaunchPicker(curSquad.some(Boolean) ? curSquad : squad, processNextRelaunch);
 }
-document.getElementById('ordCollectBtn').onclick = collectAndRelaunchAll;
 
 // =================== Sélection de l'escouade avant de lancer une mission ===================
 var launchPick = [null, null, null, null, null], launchAfter = null;
@@ -28244,15 +28142,9 @@ const HELP_CONTENT = {
   // ---------- MENU ----------
   modeHub: { title:'MENU', text:'Le menu principal :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant.</li>' +
-    '<li><b>ORDRE DE MISSION</b> — lance un combat pour gagner de l’or, de l’XP et des récompenses.</li>' +
     '<li><b>RÉCOMPENSES</b> — récompense quotidienne, trophées et tâches à réclamer.</li>' +
     '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li>' +
     '<li><b>BOSS DE RAID</b> — l’épreuve la plus difficile du jeu.</li></ul>' },
-  ordersView: { title:'ORDRE DE MISSION', text:'Choisis une mission pour ton escouade :<ul>' +
-    '<li><b>MISSION ONE</b> — 30 min, le meilleur rythme de gains.</li>' +
-    '<li><b>OMEGA</b> — 2 h, moins de gains mais 1 cristal de fabrication garanti.</li>' +
-    '<li><b>VESTIGE</b> — 2 h, 1 carte et 1 module rares garantis.</li></ul>' +
-    'Une seule mission à la fois : elle continue même si tu fermes le jeu.' },
   infiniteMode: { title:'LE COMBAT', text:'Ton escouade affronte l’ennemi vague après vague.<br><br>' +
     'Glisse le doigt pour relier jusqu’à 6 bulles d’une même ligne : <b>ATQ</b> attaque, <b>DEF</b> protège ta carte la plus résistante, <b>PV</b> soigne, et la bulle dorée <b>ULT</b> déclenche la capacité ultime du mech. Le bouton <b>AUTO</b> peut jouer les lignes à ta place.' },
   raidView: { title:'BOSS DE RAID', text:'Affronte un boss en 3 phases avec une escouade de 15 cartes.<br><br>' +
@@ -28271,11 +28163,10 @@ const HELP_CONTENT = {
   codexHubView: { title:'CARTE', text:'Tout ce qui concerne ta collection :<ul>' +
     '<li><b>GESTION DE CARTE</b> — classe, fusionne ou détruis tes cartes mechs.</li>' +
     '<li><b>COLLECTION</b> — toutes tes cartes, rangées dans un classeur.</li>' +
-    '<li><b>DEATH SQUAD</b> — compose l’escouade qui part en mission.</li></ul>' },
+    '</ul>' },
   codexMgmtView: { title:'GESTION DE CARTE', text:'Toutes tes cartes mechs : leurs statistiques, leur historique.<br><br>' +
     '<b>UPGRADE</b> fusionne plusieurs exemplaires d’une même carte pour la faire monter en rareté. <b>DÉTRUIRE</b> t’en débarrasse contre des matériaux.' },
   deckView: { title:'DECK', text:'Compose des decks de 20 cartes.<br><br>Touche <b>NOUVEAU DECK</b>, donne-lui un nom, puis glisse tes cartes vers la colonne de droite (2 exemplaires maximum d’une même carte, un seul pour une holographique). Une fois les 20 cartes en place, touche <b>VALIDER LE DECK</b>. Touche un deck pour le modifier.' },
-  squadView: { title:'DEATH SQUAD', text:'Compose l’escouade qui partira en mission : choisis tes mechs — l’ordre et les rôles comptent — et, si tu en as, une carte module pour un bonus supplémentaire.' },
   collectionView: { title:'COLLECTION', text:'Toutes les cartes que tu as déjà obtenues, rangées comme dans un classeur.<br><br>Une case vide est une carte que tu n’as pas encore.' },
   modulesView: { title:'GESTION DE MODULE', text:'La version « modules » de GESTION DE CARTE : consulte tes cartes module, fusionne-les avec <b>UPGRADE</b> ou détruis-les pour récupérer des matériaux.' }
 };
