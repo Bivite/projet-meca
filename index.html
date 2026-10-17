@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.71</title>
+<title>Projet MECA V0.04.72</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -498,13 +498,6 @@
     border-radius:50%; object-fit:cover; pointer-events:none; z-index:0; }
   .unit.cbt .cbt-gem{ position:absolute; left:var(--gx); top:var(--gy); transform:translate(-50%,-50%); font-family:var(--font-title); font-weight:900; line-height:1; color:#20150a; font-size:12cqw; text-shadow:0 1px 0 rgba(255,255,255,.3); pointer-events:none; }
   .unit.cbt .cbt-name{ position:absolute; left:50%; top:66%; transform:translate(-50%,0); max-width:74%; font-family:var(--font-ui); font-size:8cqw; font-weight:700; letter-spacing:.2px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; text-shadow:0 1px 2px #000,0 0 3px #000,0 0 5px #000; pointer-events:none; }
-  /* V0.03.86 : .cbt-name ci-dessus n'était encore utilisée nulle part (règle prête mais jamais posée
-     dans une carte) avant son 1er usage sur les cases d'escouade de raid (raidUnitCardHtml()) -- ajusté
-     à cette occasion pour les noms les plus longs (CATER-PILLARD, STAR-HUNTER...), qui débordaient de la
-     petite carte et se faisaient tronquer de façon disgracieuse (texte centré + overflow:hidden coupe des
-     DEUX côtés, sans "..." lisible). Police réduite et largeur élargie pour que tous les noms du jeu
-     tiennent sur une ligne à la taille de ces cartes. */
-  .raid-squad-grid .unit.cbt .cbt-name{ max-width:94%; font-size:6cqw; letter-spacing:0; }
   /* jauges circulaires à remplissage vertical : PV (droite) descend, ulti (gauche) monte */
   .unit.cbt .cbt-g{ position:absolute; transform:translate(-50%,-50%); width:var(--gd); aspect-ratio:1; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.05), rgba(0,0,0,.62)); box-shadow:0 0 0 1px rgba(0,0,0,.55), inset 0 0 5px rgba(0,0,0,.78); }
   /* V0.03.05/06/07 : trois tentatives (transform:scaleY, clip-path:inset, puis un simple
@@ -7185,14 +7178,6 @@
   }
   @keyframes rfFly{from{transform:rotate(35deg) translateY(-140vh);} to{transform:rotate(35deg) translateY(140vh);}}
 
-  /* ====================================================================================
-     BOSS DE RAID (V0.03.00, demande d'Alex) : évènement éphémère bi-hebdomadaire (5 jours,
-     vendredi -> mardi), case fusionnée 05+06 du MENU (ex-s-e/s-f), écran de choix (image du
-     boss/3 phases reliées par une ligne/bulle de récompense par phase/bouton de lancement +
-     tokens), sélection d'équipe (15 cartes), combat variant (2 min réelles par tentative, PV
-     du boss persistants entre tentatives, banc de 10 avec remplacement automatique). Palette
-     distincte (rouge sang/or) du violet habituel du jeu, pour bien marquer un évènement à part.
-     ==================================================================================== */
   /* ---------- BATAILLE (V0.04.18) : même recette que .raid-big (case pleine largeur biseautée), palette vert émeraude ---------- */
   /* V0.04.50 : BATAILLE en haut à droite (découpe et hauteur de l'ancienne case ORDRE DE MISSION), ORDRE DE MISSION dans la grande case du milieu (découpe et hauteur de l'ancienne case BATAILLE) */
   #modeHub .mode-grid .mode-tile#tileBattle{ --clip:polygon(var(--cut) 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - var(--cut2)),calc(100% - var(--cut2)) 100%,0 100%); height:clamp(130px, calc((100dvh - 440px) / 3), 250px); }
@@ -7300,438 +7285,17 @@
   }
   .bat-launch[hidden]{display:none;}
   .bat-launch:active{transform:translateX(-50%) translateY(2px);}
-  .mode-tile.raid-big{ height:150px; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); background:linear-gradient(160deg, #e08a8a, #8a1f1f 45%, #260606); filter:drop-shadow(0 0 12px rgba(138,31,31,.35)); }
+  /* BOSS DE RAID supprimé (V0.04.72) : la case du MENU reste, grise et fermée, avec un cadenas */
+  .mode-tile.raid-big{ height:150px; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); background:linear-gradient(160deg, #a3a7b0, #4c505a 45%, #14161c); cursor:default; }
   #modeHub .mode-row > .mode-tile.raid-big:first-child{ margin-right:0; }
-  /* V0.03.02, demande d'Alex : case passée en rouge plein (même palette que l'ancienne RÉCOMPENSES,
-     libérée par son propre passage à l'orange/jaune ci-dessous) + suppression de l'effet rayé hérité
-     du fond générique .mt-inner (repeating-linear-gradient en diagonale) -- même recette à 2 couches
-     que RÉCOMPENSES/RÉCOMPENSE JOURNALIÈRE/TROPHÉES plutôt que le hachurage par défaut. */
   .raid-big .mt-inner{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
     background:
       linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
-      linear-gradient(135deg, rgba(120,20,20,.95) 0%, rgba(120,20,20,.55) 40%, rgba(120,20,20,.2) 70%, transparent 100%);
+      linear-gradient(135deg, rgba(40,44,54,.62) 0%, rgba(40,44,54,.34) 40%, rgba(40,44,54,.12) 70%, transparent 100%);
   }
-  /* Icône BOSS DE RAID (V0.03.02, visuel fourni par Alex "ATTENTION URGENCE") : remplace le
-     pictogramme SVG générique (bouclier fissuré) par une illustration importée en <img> --
-     même principe que TIRAGE/LABO/BOOSTERS (V0.02.23/.62/.84) -- recadrée/détourée (fond
-     magenta retiré) à partir du visuel fourni. Plaque très large (ratio ~6:1) : object-fit:contain
-     dans le cadre 80%x80% la limite par la largeur, donnant une bande fine centrée plutôt qu'un
-     pictogramme carré -- cohérent avec le rendu "logo ghosté plein cadre" des autres cases. */
-  .mt-raid-ico img{width:100%; height:100%; object-fit:contain; display:block;}
-  .mode-tile:not(.soon) .mt-raid-ico{
-    position:absolute; left:50%; top:calc(50% - 14px); transform:translate(-50%,-50%);
-    width:94%; height:94%; max-width:none; max-height:none; margin:0;
-    pointer-events:none; z-index:0; opacity:.4;
-    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
-    animation:none !important;
-  }
-  .raid-big .mt-title{ color:#ffb0b0; text-shadow:0 0 10px rgba(255,40,40,.5); letter-spacing:2px; }
-  /* Barre de vie du boss (V0.03.02, demande d'Alex), entre le titre et la sous-ligne PHASE/TOKENS :
-     même recette biseautée que .raid-boss-hpbar (écran de combat) mais en plus fine, sans libellé ni
-     texte superposé (juste la barre) -- remplissage blanc uni comme demandé, se vide selon les PV
-     restants du boss sur la phase en cours (calculé dans updateRaidTile()). */
-  .raid-big .mt-raid-hpbar{
-    --cut:4px; width:100%; height:7px;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    background:rgba(0,0,0,.45); overflow:hidden; border:1px solid rgba(255,255,255,.3);
-    box-shadow:0 1px 0 rgba(255,255,255,.12) inset;
-  }
-  .raid-big .mt-raid-hpbar .fill{ height:100%; width:100%; background:#fff; box-shadow:0 0 6px rgba(255,255,255,.8); transition:width .25s; }
-  .raid-big .mt-raid-sub{ font-family:var(--font-title); font-size:10px; letter-spacing:1.2px; color:#e8c468; }
-  /* Effet glitch (V0.03.02, demande d'Alex) : réutilise telles quelles les keyframes glitchJit/glitchHue
-     déjà définies pour les trophées cachés (.tr-row.glitch) et l'encadré boss en combat (.raid-boss-box.
-     glitch), pour rester cohérent avec le langage visuel "corruption" du jeu plutôt que d'inventer un
-     nouvel effet. Micro-saccade + décalage de teinte, la plupart du temps immobile (0-88% du cycle) avec
-     un sursaut bref toutes les 2.8s. Désactivé quand la case est verrouillée (.locked, pas de raid en
-     cours) : l'animation imposerait filter:none/hue-rotate(...) en continu et écraserait le grayscale
-     de .raid-big.locked ci-dessous, qui doit rester fixe. */
-  .raid-big:not(.locked){ animation:glitchJit 2.8s steps(1) infinite; }
-  /* V0.03.04, demande d'Alex : la case reste rouge (pas de désaturation en gris/bleu) quand elle n'est
-     pas attaquable (fermée hors fenêtre, verrou entre phases, ou raid fini) -- seule l'opacité baisse,
-     pour rester dans le ton "alerte" du mode plutôt que se fondre avec le reste du hub en bleu/gris. */
-  .raid-big.locked{ opacity:.65; }
-  /* V0.03.04, demande d'Alex : curseur "fermé" (pas de main/pointeur) quand la fenêtre d'évènement n'est
-     pas ouverte -- le clic lui-même est bloqué côté JS (onclick de #tileRaid), ceci n'est qu'un indice
-     visuel cohérent avec .mode-tile.soon{cursor:default;}. */
-  .raid-big.closed{ cursor:default; }
-  .raid-big.locked .mt-raid-ico{ filter:none; }
-
-  /* Titre "BOSS DE RAID" de l'en-tête (V0.03.02, demande d'Alex) : seul élément de .inf-header
-     depuis le retrait du bouton MENU, donc déjà centré par le flex/justify-content:center hérité --
-     repris ici en verre biseauté rouge/or (même recette que .raid-boss-box) et un peu agrandi par
-     rapport au pill violet générique (.inf-header .wave, padding 9px/18px, 14px). */
-  #raidView .wave{
-    --cut:12px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    padding:13px 30px; font-size:17px; letter-spacing:4.5px;
-    color:#ffe7a8;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 42%),
-      linear-gradient(180deg, #3a1218, #170709);
-    border:1px solid rgba(255,90,78,.6);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 20px -4px rgba(255,90,78,.6), 0 6px 14px rgba(0,0,0,.5);
-    text-shadow:0 0 10px rgba(255,90,78,.5);
-  }
-
-  /* Écran RAID : encadré image du boss, verre biseauté rouge (V0.03.01, demande d'Alex : design
-     cohérent avec le reste du jeu) -- même recette que .confirm-inner (grand panneau + halo).
-     V0.03.04 (demande d'Alex) : le bandeau nom du boss n'est plus un encadré séparé collé en dessous --
-     il est maintenant DANS ce même encadré (un seul bloc, une seule bordure/clip-path/ombre), en colonne
-     flex sous la zone image. La zone image garde sa hauteur de 180px via .raid-boss-imgwrap. */
-  .raid-boss-box{
-    --cut:16px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:relative; margin:10px 14px 0; overflow:hidden;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,90,78,.32), transparent 70%),
-      linear-gradient(180deg,#2a0e12,#140608);
-    border:1px solid rgba(255,90,78,.6);
-    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 30px -8px rgba(255,90,78,.6), 0 20px 40px rgba(0,0,0,.6);
-    display:flex; flex-direction:column;
-  }
-  .raid-boss-imgwrap{ position:relative; flex:0 0 180px; display:flex; align-items:center; justify-content:center; }
-  .raid-boss-box img{ max-width:100%; max-height:100%; object-fit:contain; }
-  /* Encadré boss repris tel quel (V0.03.86, demande d'Alex) dans l'écran de COMBAT lui-même (où il
-     n'existait pas avant -- seul l'écran de choix affichait l'artwork) : même recette .raid-boss-box
-     que ci-dessus, juste une zone image plus basse (130px au lieu de 180px) pour laisser la place au
-     minuteur, à la barre de PV du boss et à l'escouade en dessous. */
-  /* min-height:0 nécessaire en plus de flex-basis (bug classique flexbox) : sans ça, le minimum
-     automatique d'un enfant flex se cale sur la taille de son contenu (ici l'image, plus haute que 130px
-     à cette largeur) et l'imgwrap grandissait quand même au-delà du flex-basis fixé. */
-  .raid-combat-bossimgwrap{ flex-basis:130px; min-height:0; overflow:hidden; }
-  /* V0.03.89 (demande d'Alex, "l'artwork doit prendre l'encadré entièrement") : en écran de choix,
-     .raid-boss-box img garde object-fit:contain (toute l'image visible, quitte à laisser des bandes).
-     Ici en combat, la zone est plus basse (130px) donc plus large que l'image une fois mise à l'échelle --
-     object-fit:contain laissait des bandes vides à gauche/droite. On force l'image à remplir tout le
-     cadre (width/height:100% + object-fit:cover), quitte à rogner légèrement les bords de l'artwork. */
-  .raid-combat-bossimgwrap .raid-boss-img{ width:100%; height:100%; object-fit:cover; }
-  /* Placeholder masqué (V0.03.03, demande d'Alex : 3 visuels fournis, un par phase, boss nommé
-     AMALGAME) -- conservé dans le DOM (sert toujours de retour visuel via #raidBossPhaseNum, inoffensif
-     resté invisible) plutôt que supprimé, pour ne pas toucher au JS qui l'alimente. */
-  .raid-boss-ph{ display:none; font-family:var(--font-title); font-size:11px; letter-spacing:1.5px; color:rgba(255,160,160,.5); text-align:center; padding:0 20px; }
-  .raid-boss-img{ display:block; }
-  .raid-boss-box.glitch{ animation:glitchJit 2.8s steps(1) infinite; }
-  /* Glitch bref à chaque coup encaissé par le boss en combat (V0.03.88, demande d'Alex), distinct du
-     .glitch ci-dessus (boucle infinie + message "LE BOSS REVIENDRA", réservé à l'état indisponible) :
-     une seule secousse courte (même esprit que glitchJit -- jitter + décalage de teinte façon interférence
-     -- mais en charge unique, posée/retirée par raidFloatDamage() à chaque dégât infligé). */
-  @keyframes glitchHit{
-    0%{filter:none;}
-    20%{filter:hue-rotate(90deg) saturate(2);}
-    45%{filter:hue-rotate(-70deg) saturate(2.4);}
-    70%{filter:hue-rotate(40deg);}
-    100%{filter:none;}
-  }
-  /* V0.03.89 (demande d'Alex, "remet l'artwork en entier correctement dans l'encadré") : le glitch de coup
-     ci-dessus déformait géométriquement l'image (translateX/skewX), ce qui pouvait donner l'impression que
-     l'artwork était coupé/mal cadré pendant l'animation. On ne garde que le filtre de couleur : l'image ne
-     bouge/ne se déforme plus jamais, seule sa teinte clignote brièvement. */
-  .raid-boss-box.hit-glitch{ animation:glitchHit .35s steps(1); }
-  /* Nom du boss (V0.03.03, puis fusionné dans l'encadré image en V0.03.04, demandes d'Alex) : plus de
-     cadre/bordure propre, juste le texte posé dans le même bloc verre biseauté que l'image, un peu plus
-     gros qu'à sa 1ère version. Nom encore générique : un seul boss pour l'instant, l'identité (nom/visuel)
-     par boss viendra plus tard quand il y en aura plusieurs à distinguer ("on verra pour chacun en
-     particulier"). */
-  .raid-boss-name{
-    padding:8px 16px 12px;
-    text-align:center; font-family:var(--font-title); font-weight:800; font-size:15px; letter-spacing:2.5px;
-    color:#ffe7a8;
-    text-shadow:0 0 8px rgba(255,90,78,.5);
-  }
-  .raid-boss-msg{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:rgba(10,4,6,.75); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
-  .raid-boss-box.glitch .raid-boss-msg{ display:flex; }
-  .raid-boss-msg .rbm-txt{ position:relative; font-family:var(--font-title); font-size:16px; font-weight:800; letter-spacing:2px; color:#fff; }
-  .raid-boss-msg .rbm-txt::before, .raid-boss-msg .rbm-txt::after{ content:attr(data-t); position:absolute; left:0; top:0; width:100%; }
-  .raid-boss-msg .rbm-txt::before{ color:#0ff; transform:translate(-2px,0); clip-path:inset(0 0 60% 0); animation:glitchA 1.3s steps(2) infinite; }
-  .raid-boss-msg .rbm-txt::after{ color:#f0f; transform:translate(2px,0); clip-path:inset(55% 0 0 0); animation:glitchB 1.7s steps(2) infinite; }
-  .raid-boss-msg .rbm-sub{ font-family:var(--font-title); font-size:12px; letter-spacing:1.2px; color:#e8c468; }
-
-  /* Piste des 3 phases reliées par une ligne, avec la position du joueur (ligne inchangée, Alex
-     l'aime ainsi -- seuls les points .rt-node passent du rond au carré biseauté, V0.03.01). */
-  .raid-track{ position:relative; display:flex; justify-content:space-between; align-items:center; margin:22px 30px 16px; }
-  .raid-track .rt-line{ position:absolute; left:20px; right:20px; top:50%; height:3px; background:rgba(255,255,255,.12); transform:translateY(-50%); z-index:0; border-radius:2px; overflow:hidden; }
-  .raid-track .rt-line .rt-fill{ position:absolute; left:0; top:0; height:100%; width:0%; background:linear-gradient(90deg,#ff5050,#e8c468); transition:width .3s; }
-  /* .rt-node : le biseau (clip-path) est posé sur un ::before en position:absolute/inset:0 plutôt
-     que directement sur .rt-node -- sinon le clip-path, qui rogne TOUT le rendu de l'élément y
-     compris ses enfants positionnés en absolu, effacerait .rt-lbl (le texte "PHASE 1/2/3" qui
-     dépasse volontairement sous le carré, comme sous l'ancien rond). .rt-node lui-même reste non
-     clippé, juste un repère de position pour le numéro et le label. */
-  .raid-track .rt-node{
-    position:relative; z-index:2; width:44px; height:44px;
-    display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-title); font-weight:800; font-size:14px; color:#aa98a0;
-  }
-  .raid-track .rt-node::before{
-    content:''; position:absolute; inset:0; z-index:-1;
-    --cut:10px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.14) 0%, transparent 42%),
-      linear-gradient(180deg,#241018,#120a0e);
-    border:1px solid rgba(255,255,255,.22);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 4px 10px rgba(0,0,0,.4);
-  }
-  .raid-track .rt-node .rt-lbl{ position:absolute; top:50px; font-size:9px; letter-spacing:1px; white-space:nowrap; color:inherit; }
-  .raid-track .rt-node.done{ color:#2a1700; }
-  .raid-track .rt-node.done::before{
-    border-color:#ffe7a8;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.32) 0%, transparent 42%),
-      linear-gradient(180deg, #ffd873 0%, #f0a91c 55%, #b86f00 100%);
-    box-shadow:0 1px 0 rgba(255,255,255,.4) inset, 0 0 16px -2px rgba(232,196,104,.7), 0 4px 10px rgba(0,0,0,.4);
-  }
-  .raid-track .rt-node.cur{ color:#fff; }
-  .raid-track .rt-node.cur::before{
-    border-color:#ffb0a9;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.24) 0%, transparent 42%),
-      linear-gradient(180deg, #ff7b70 0%, #e0392e 55%, #a81f17 100%);
-    box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 0 16px -2px rgba(255,60,60,.8), 0 4px 10px rgba(0,0,0,.4);
-    animation:raidPulse 1.4s ease-in-out infinite;
-  }
-  @keyframes raidPulse{50%{ box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 0 26px rgba(255,60,60,1), 0 4px 10px rgba(0,0,0,.4); }}
-
-  /* Boutons d'aperçu des récompenses ("les ronds" -> carrés biseautés, V0.03.01), alignés sous
-     .raid-track : mêmes marges latérales (30px) et même largeur d'item (44px) que .rt-node pour
-     que justify-content:space-between centre les 3 colonnes exactement les unes sous les autres. */
-  .raid-phase-row{ display:flex; justify-content:space-between; margin:30px 30px 10px; }
-  .raid-phase-row .rp-btn{
-    --cut:10px; border-radius:0; position:relative;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
-    color:#ffe7a8; font-size:16px;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 45%),
-      rgba(90,55,10,.3);
-    border:1px solid rgba(232,196,104,.55);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 14px -4px rgba(232,196,104,.6), 0 4px 10px rgba(0,0,0,.4);
-  }
-  .raid-phase-row .rp-btn:active{ transform:translateY(2px); box-shadow:0 0 10px -4px rgba(232,196,104,.5); }
-  /* V0.03.90 (demande d'Alex) : récompense de phase déjà récupérée (i < r.phase, même condition que
-     .rt-node.done) -- même langage visuel qu'ailleurs dans le jeu pour un "validé" (.db-check sur les
-     coffres journaliers, .task-box.done) : icône d'origine assombrie + coche dorée en surimpression. */
-  .raid-phase-row .rp-btn.claimed{ filter:grayscale(.5); }
-  .raid-phase-row .rp-btn.claimed i{ opacity:.35; }
-  .raid-phase-row .rp-btn.claimed::after{
-    content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:20px; color:#ffd65c; text-shadow:0 0 8px rgba(0,0,0,.9), 0 0 10px rgba(255,214,92,.8);
-    background:rgba(0,0,0,.35);
-  }
-  /* Corrige un bug préexistant (avant même le passage au carré) : l'icône <i class="ico-rewardsbadge">
-     utilise un masque CSS en width/height:100%, mais sans taille explicite sur le <i> lui-même (un
-     élément inline) elle restait invisible -- aucune case de récompense ailleurs dans le jeu n'utilise
-     cette icône sans un conteneur dédié déjà dimensionné (ex. .mt-gift-ico, 40px). Ajout ici d'une
-     taille explicite pour que l'icône apparaisse enfin dans le bouton carré. */
-  .raid-phase-row .rp-btn i{ display:block; width:20px; height:20px; }
-
-  /* Fenêtre flottante de détail de récompense : même recette que .confirm-inner, en plus petit */
-  .raid-reward-bubble{
-    --cut:12px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:fixed; z-index:9999; max-width:230px; padding:10px 12px;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(232,196,104,.3), transparent 70%),
-      linear-gradient(180deg, #1c140c, #0d0906);
-    border:1px solid rgba(232,196,104,.5);
-    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 24px -8px rgba(232,196,104,.5), 0 10px 24px rgba(0,0,0,.6);
-  }
-  .raid-reward-bubble .rrb-title{ font-family:var(--font-title); font-size:10px; letter-spacing:1.2px; color:#e8c468; margin-bottom:6px; }
-  .raid-reward-bubble .rrb-row{ display:flex; align-items:center; gap:6px; font-size:12px; color:#fff; padding:2px 0; }
-  .raid-reward-bubble .rrb-row i{ flex:none; width:15px; height:15px; }
-
-  .raid-launch-wrap{ margin:16px 20px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; }
-  /* Bouton de lancement : CTA plein rouge biseauté, même recette que .controls button.danger-btn */
-  .raid-launch-btn{
-    --cut:12px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    width:100%; padding:14px 10px; font-family:var(--font-title); font-weight:800; letter-spacing:1.5px; font-size:14px; color:#fff;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.26) 0%, transparent 42%),
-      linear-gradient(180deg, #ff7b70 0%, #e0392e 55%, #a81f17 100%);
-    border:1px solid #ffb0a9;
-    box-shadow:0 4px 0 #5c1210, 0 8px 20px rgba(255,40,40,.4), 0 1px 0 rgba(255,255,255,.3) inset;
-  }
-  .raid-launch-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 #5c1210, 0 1px 0 rgba(255,255,255,.3) inset; }
-  .raid-launch-btn:disabled{ opacity:.45; filter:grayscale(.6); }
-  .raid-token-regen{ font-family:var(--font-title); font-size:10px; letter-spacing:1px; color:rgba(255,255,255,.55); }
-
-  /* Combat raid : minuteur, barre de PV du boss (encadré biseauté), grille des 5 unités actives, compteur de banc */
-  .raid-combat-timer{ text-align:center; font-family:var(--font-title); font-size:24px; font-weight:800; color:#fff; margin:10px 0 2px; font-variant-numeric:tabular-nums; }
-  .raid-combat-timer.low{ color:#ff5050; }
-  .raid-boss-hpwrap{ margin:4px 20px 14px; }
-  .raid-boss-hpwrap .rbh-lbl{ display:flex; justify-content:space-between; font-family:var(--font-title); font-size:10px; letter-spacing:1px; color:#e8c468; margin-bottom:3px; }
-  .raid-boss-hpbar{
-    --cut:7px; height:14px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    background:rgba(255,255,255,.08); overflow:hidden; border:1px solid rgba(255,90,78,.4);
-    box-shadow:0 1px 0 rgba(255,255,255,.12) inset;
-  }
-  .raid-boss-hpbar .fill{ height:100%; background:linear-gradient(90deg,#ff5050,#e8c468); transition:width .25s; }
-  /* Escouade en combat (V0.03.86, demande d'Alex : "met les petites cartes (celle du mode combat) dans
-     un encadré") : avant, juste un nom + une barre de PV plate par case (.raid-unit, retiré). Chaque
-     case contient maintenant la VRAIE petite carte illustrée utilisée ailleurs en combat (.unit.cbt, cf
-     cbtPreviewHtml()/buildRoster() -- artwork, gemme de niveau, jauge de PV qui se vide réellement).
-     L'escouade de raid n'a pas de jauge d'ultime fonctionnelle (raidTick() ne fait jamais progresser
-     l'énergie), mais la jauge reste affichée à 0% : c'est la vraie carte de combat, pas une version
-     simplifiée, et une alvéole vide dans le cadre aurait l'air cassée.
-     V0.03.87 (2e passage, demande d'Alex : "un seul encadré pour les 5 cartes") : 1er essai avec un
-     encadré biseauté PAR carte (.raid-sq-cell, retiré) rejeté -- un seul grand encadré (.raid-squad-box,
-     même recette verre rouge/or que .raid-boss-box juste au-dessus) enveloppe maintenant les 5 cartes,
-     qui n'ont elles-mêmes plus de cadre propre (juste la grille à l'intérieur). */
-  .raid-squad-box{
-    --cut:14px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:relative; margin:0 14px 10px; overflow:hidden;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,90,78,.32), transparent 70%),
-      linear-gradient(180deg,#2a0e12,#140608);
-    border:1px solid rgba(255,90,78,.6);
-    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 30px -8px rgba(255,90,78,.6), 0 20px 40px rgba(0,0,0,.6);
-    padding:10px 8px 11px;
-  }
-  .raid-squad-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
-  .raid-sq-empty{ display:flex; align-items:center; justify-content:center; aspect-ratio:440/528; opacity:.4; }
-  .raid-sq-empty .rsc-dash{ font-size:14px; color:rgba(255,255,255,.4); }
-  .raid-bench-count{ text-align:center; font-family:var(--font-title); font-size:10px; letter-spacing:1px; color:rgba(255,255,255,.5); margin-bottom:8px; }
-
-  /* Sélection d'équipe (jusqu'à 15 cartes) avant de lancer le combat -- fenêtre, badge et puces de
-     filtre en verre biseauté rouge/or (V0.03.01), scopés à #raidTeamModal pour ne pas toucher
-     .codex-modal-inner ailleurs (CODEX, LOOT, etc). */
-  #raidTeamModal .codex-modal-inner{
-    --cut:16px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    display:flex; flex-direction:column; position:relative;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,90,78,.28), transparent 70%),
-      linear-gradient(180deg, #1f0f12, #0d0708);
-    border:1px solid rgba(255,90,78,.55);
-    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 28px -8px rgba(255,90,78,.55), 0 10px 24px rgba(0,0,0,.5);
-  }
-  .raid-team-count{
-    --cut:8px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    position:absolute; top:12px; left:16px; z-index:5; font-family:var(--font-title); font-weight:800; font-size:13px; color:#ffe7a8;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 45%),
-      rgba(232,196,104,.18);
-    padding:4px 10px; border:1px solid rgba(232,196,104,.55);
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-  }
-  /* V0.03.84 (demande d'Alex, 2e passage : "prends la même liste que celle du choix des cartes lors
-     du lancement des missions") : la tuile maison (.rtc-port/.rtc-name/...) est abandonnée -- on
-     reprend telle quelle la recette de .lp-list/.lp-card de renderLaunchPicker() (même grille 4
-     colonnes, mêmes cartes .codex-card complètes via codexCardHtml(), même classe .sel pour l'état
-     sélectionné) pour un rendu identique à l'écran de lancement de mission, cadre légendaire et tout.
-     .raid-team-card ne sert plus qu'à cibler le clic (toggleRaidPick) sans dupliquer le style. */
-  /* width:100% nécessaire ici (absent de .lp-list, copiée telle quelle) : #raidTeamModal utilise le
-     système .codex-modal/.codex-modal-inner, dont la règle de base pose align-items:center (centrage
-     des fenêtres CODEX/LOOT) -- sans largeur explicite, une grille avec des colonnes minmax(0,1fr)
-     s'effondre au lieu de s'étirer (constaté : grille à 30px de large, cartes invisibles). .lp-list
-     n'a jamais ce problème car sa propre fenêtre de lancement n'hérite pas de ce centrage. */
-  /* V0.03.85 (rapport d'Alex : cartes qui se chevauchent + bouton LANCER invisible) : deux correctifs.
-     1) max-height:40vh posée ICI, sur la grille elle-même, à la place du flex:1 d'origine -- copie
-     exacte du principe de .lp-list (max-height:38vh), la seule différence avec renderLaunchPicker()
-     qui n'avait pas été reproduite lors de la refonte V0.03.84. Avec flex:1, la fenêtre entière
-     (#raidTeamModal .codex-modal-inner, non plafonnée en hauteur ci-dessus) grandissait pour englober
-     TOUTE la grille plutôt que de la faire défiler en interne -- d'où une fenêtre occupant tout
-     l'écran et le bouton LANCER poussé hors de la zone visible. Avec une hauteur plafonnée posée
-     directement sur la grille, la fenêtre reprend une taille naturelle et compacte (comme CHOIX DE
-     L'ESCOUADE), et seule la grille défile.
-     2) .raid-team-card:has(> .lg-layer) hérite du même correctif min-height:auto déjà posé sur
-     .lp-card/.dl-card (V0.03.77/78) -- cause identique (cadre mécanique qui force min-height:0 +
-     overflow:visible, ce qui effondre les rangées de la grille CSS et fait chevaucher les cartes en
-     cascade) ; non reproduit ici lors de la refonte V0.03.84 car cette grille n'utilisait pas encore
-     codexCardHtml() à ce moment-là. */
-  .raid-team-grid{
-    width:100%; max-height:40vh; overflow-y:auto; overflow-x:hidden; display:grid;
-    grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; padding:40px 8px 10px 4px;
-  }
-  .raid-team-card{ padding:5px 3px 15px !important; gap:3px !important; cursor:pointer; position:relative; }
-  .raid-team-card .cx-name{ font-size:7.5px !important; } .raid-team-card .cx-lvl-tag{ font-size:7px; } .raid-team-card .cx-badge{ font-size:6px; padding:1px 4px; }
-  .raid-team-card .cx-pow{ font-size:6.5px; padding:0 3px; right:3px; bottom:2px; } .raid-team-card .cx-pow i{ font-size:6px; }
-  .raid-team-card.sel{ outline:2px solid #4dff8a; outline-offset:1px; }
-  .raid-team-grid .raid-team-card:has(> .lg-layer){ min-height:auto !important; }
-  .raid-team-launch{
-    --cut:12px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    margin:10px; padding:12px; font-family:var(--font-title); font-weight:800; letter-spacing:1.2px; color:#fff;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.26) 0%, transparent 42%),
-      linear-gradient(180deg, #ff7b70 0%, #e0392e 55%, #a81f17 100%);
-    border:1px solid #ffb0a9;
-    box-shadow:0 4px 0 #5c1210, 0 8px 20px rgba(255,40,40,.4), 0 1px 0 rgba(255,255,255,.3) inset;
-  }
-  .raid-team-launch:active{ transform:translateY(2px); box-shadow:0 1px 0 #5c1210, 0 1px 0 rgba(255,255,255,.3) inset; }
-  .raid-team-launch:disabled{ opacity:.4; filter:grayscale(.6); }
-  .raid-filter{ margin:8px 10px 0; }
-  .raid-filter summary{
-    --cut:8px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    list-style:none; cursor:pointer; font-family:var(--font-title); font-size:11px; letter-spacing:1.2px; color:#ffe7a8;
-    padding:6px 10px;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 45%),
-      rgba(232,196,104,.14);
-    border:1px solid rgba(232,196,104,.5);
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-    display:inline-block;
-  }
-  .raid-filter summary::-webkit-details-marker{ display:none; }
-  /* Rangée des boutons de classement (V0.03.06, demande d'Alex : plus de texte/boutons de rareté,
-     juste ces boutons -- affichés/masqués par le <details> au clic sur FILTRES). V0.03.07 : bouton PV
-     retiré, il ne reste que RARETÉ/NIVEAU, mis à la même longueur. Largeur fixe (pas flex:1) : .raid-filter
-     est lui-même en largeur "contenu" (son parent .codex-modal-inner est en align-items:center, donc rien
-     ne force la rangée à toute la largeur de la fenêtre) -- flex:1 n'aurait alors rien à répartir et
-     chaque bouton garderait sa largeur naturelle (RARETÉ un peu plus long que NIVEAU). */
-  .raid-sort-row{ display:flex; gap:8px; margin-top:10px; }
-  .raid-sort-row .raid-filter-opt{ width:78px; text-align:center; }
-  .raid-filter-opt{
-    --cut:7px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    font-family:var(--font-title); font-size:10px; letter-spacing:1px; padding:5px 10px;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%),
-      rgba(40,20,20,.32);
-    border:1px solid rgba(232,196,104,.3);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    color:#cfc6e6;
-    box-shadow:0 3px 0 rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.1) inset;
-  }
-  .raid-filter-opt:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.1) inset; }
-  .raid-filter-opt.active{
-    border-color:#e8c468; color:#e8c468;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.26) 0%, transparent 45%),
-      linear-gradient(180deg, rgba(232,196,104,.4), rgba(150,100,10,.4));
-    box-shadow:0 3px 0 rgba(0,0,0,.5), 0 0 12px -2px rgba(232,196,104,.6), 0 1px 0 rgba(255,255,255,.25) inset;
-  }
-  /* Bouton AUTO (V0.03.84, demande d'Alex) : remplit l'équipe en un clic avec les 15 meilleures cartes
-     possédées, classées par puissance globale (cardPower(), même formule que le badge "Puissance" du
-     Codex) -- sous le volet FILTRES. CTA plein doré pour bien le distinguer des boutons de tri. */
-  .raid-auto-btn{
-    --cut:7px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-    display:block; width:calc(100% - 20px); margin:8px 10px 0;
-    font-family:var(--font-title); font-weight:800; font-size:11px; letter-spacing:1.5px; color:#1a1208;
-    padding:7px 10px; text-align:center; cursor:pointer;
-    background:
-      linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 45%),
-      linear-gradient(180deg, #ffe7a8, #e8c468);
-    border:1px solid #fff3d4;
-    box-shadow:0 3px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset;
-  }
-  .raid-auto-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(120,80,10,.6), 0 1px 0 rgba(255,255,255,.3) inset; }
+  .raid-big .mt-soon{ color:rgba(255,255,255,.5); text-shadow:0 2px 6px rgba(0,0,0,.9); }
+  .raid-big .mt-lock{ color:rgba(255,255,255,.4); }
   /* V0.04.16 (demande d'Alex : "plus l'effet de zoom qui dérègle la vue quand j'écris") : Safari iPhone zoome
      automatiquement la page au focus d'un champ dont la police fait moins de 16 px. Tous les champs de saisie
      passent donc à 16 px (les placeholders gardent leur taille d'origine, l'aspect des champs vides ne change pas). */
@@ -8603,13 +8167,10 @@
       <!-- BOSS DE RAID (V0.03.00, demande d'Alex) : fusion des anciennes cases 05 (s-e) et 06 (s-f),
            toutes les deux encore "PROCHAINEMENT" -- une seule case pleine largeur à la place des deux,
            sur le modèle de .s-big déjà utilisé ailleurs (ex. #tileDaily) pour une tuile seule par ligne. -->
-      <div class="mode-tile raid-big" id="tileRaid">
+      <div class="mode-tile raid-big soon" id="tileRaid">
         <div class="mt-inner">
-          <span class="notif-dot tile-dot" id="dotRaid"></span>
-          <div class="mt-raid-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-raid.webp" alt=""></div>
-          <div class="mt-title">BOSS DE RAID</div>
-          <div class="mt-raid-hpbar" id="raidTileHpBar"><div class="fill" id="raidTileHpFill"></div></div>
-          <div class="mt-raid-sub" id="raidTileSub">—</div>
+          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <div class="mt-soon">PROCHAINEMENT</div>
         </div>
       </div>
       </div>
@@ -8624,82 +8185,6 @@
     <div class="res-panel" id="batPanel">
       <div class="team-label player">CHOIX DU DECK</div>
       <div id="batailleList"></div>
-    </div>
-  </div>
-
-  <div id="raidView" class="sub-view">
-    <!-- Bouton "‹ MENU" retiré (V0.03.02, demande d'Alex) : redondant avec l'onglet MENU du bandeau
-         du bas, qui permet déjà de quitter l'écran (cf showHub(), désormais aussi responsable
-         d'abandonner proprement une tentative en cours -- voir son patch plus bas). Le tag invisible
-         qui équilibrait l'ancien bouton disparaît avec lui ; .wave reste centré par .inf-header
-         (flex + justify-content:center), désormais seul élément de l'en-tête. -->
-    <header class="inf-header">
-      <div class="wave">BOSS DE RAID</div>
-    </header>
-    <div id="raidChoice">
-      <div class="raid-boss-box" id="raidBossBox">
-        <div class="raid-boss-imgwrap">
-          <img class="raid-boss-img" id="raidBossImg" alt="">
-          <div class="raid-boss-ph" id="raidBossPh">IMAGE DU BOSS<br>(PHASE <span id="raidBossPhaseNum">1</span>)</div>
-          <div class="raid-boss-msg" id="raidBossMsg">
-            <div class="rbm-txt" id="raidBossMsgTxt" data-t="LE BOSS REVIENDRA">LE BOSS REVIENDRA</div>
-            <div class="rbm-sub" id="raidBossMsgSub">—</div>
-          </div>
-        </div>
-        <div class="raid-boss-name" id="raidBossName">AMALGAME</div>
-      </div>
-      <div class="raid-track" id="raidTrack">
-        <div class="rt-line"><div class="rt-fill" id="raidTrackFill"></div></div>
-        <div class="rt-node" id="raidNode0">1<span class="rt-lbl">PHASE 1</span></div>
-        <div class="rt-node" id="raidNode1">2<span class="rt-lbl">PHASE 2</span></div>
-        <div class="rt-node" id="raidNode2">3<span class="rt-lbl">PHASE 3</span></div>
-      </div>
-      <div class="raid-phase-row">
-        <button type="button" class="rp-btn" data-ph="0"><i class="ico-rewardsbadge"></i></button>
-        <button type="button" class="rp-btn" data-ph="1"><i class="ico-rewardsbadge"></i></button>
-        <button type="button" class="rp-btn" data-ph="2"><i class="ico-rewardsbadge"></i></button>
-      </div>
-      <div class="raid-launch-wrap">
-        <button type="button" class="raid-launch-btn" id="raidLaunchBtn">LANCER LE COMBAT · <span id="raidTokenLbl">3</span>/3 TOKEN</button>
-        <div class="raid-token-regen" id="raidTokenRegen"></div>
-      </div>
-    </div>
-    <div id="raidCombat" hidden>
-      <!-- Encadré artwork du boss (V0.03.86, demande d'Alex) : jusqu'ici absent de l'écran de combat
-           lui-même, l'image du boss ne se voyait que sur l'écran de choix avant de lancer le combat. -->
-      <div class="raid-boss-box" id="raidCombatBossBox">
-        <div class="raid-boss-imgwrap raid-combat-bossimgwrap">
-          <img class="raid-boss-img" id="raidCombatBossImg" alt="">
-        </div>
-        <div class="raid-boss-name">AMALGAME</div>
-      </div>
-      <div class="raid-combat-timer" id="raidTimer">2:00</div>
-      <div class="raid-boss-hpwrap">
-        <div class="rbh-lbl"><span>BOSS · PHASE <span id="raidCombatPhaseNum">1</span></span><span id="raidBossHpTxt">0 / 0</span></div>
-        <div class="raid-boss-hpbar"><div class="fill" id="raidBossHpFill"></div></div>
-      </div>
-      <div class="raid-squad-box">
-        <div class="raid-squad-grid" id="raidSquadGrid"></div>
-      </div>
-      <div class="raid-bench-count" id="raidBenchCount"></div>
-    </div>
-  </div>
-
-  <!-- Sélection d'équipe de 15 cartes avant une tentative de raid -->
-  <div class="codex-modal" id="raidTeamModal">
-    <div class="codex-modal-inner" id="raidTeamInner">
-      <button class="cx-close" id="raidTeamClose">✕</button>
-      <div class="raid-team-count" id="raidTeamCount">0/15</div>
-      <details class="raid-filter" id="raidFilterDetails">
-        <summary>FILTRES</summary>
-        <div class="raid-sort-row" id="raidSortOpts">
-          <button type="button" class="raid-filter-opt" data-sort="rarity">RARETÉ</button>
-          <button type="button" class="raid-filter-opt active" data-sort="level">NIVEAU</button>
-        </div>
-      </details>
-      <button type="button" class="raid-auto-btn" id="raidAutoBtn">AUTO</button>
-      <div class="raid-team-grid" id="raidTeamGrid"></div>
-      <button type="button" class="raid-team-launch" id="raidTeamLaunchBtn" disabled>LANCER</button>
     </div>
   </div>
 
@@ -8848,7 +8333,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.71</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.72</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9246,9 +8731,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.71';
+var BUILD_VERSION = 'V0.04.72';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.72', items:[
+    'NOUVELLE CARTE : AMALGAME (écarlate, Percée et Baroud d\'honneur). Détruite, elle place MALGAME dans ta pioche ; MALGAME détruite place MALAME ; MALAME détruite fait piocher l\'adversaire. MALGAME et MALAME n\'existent que sur le champ de bataille.',
+    'COMBAT : entrée d\'AMALGAME entièrement animée : le plateau tremble, des éclats de verre en relief tombent dessus, la carte est catapultée sur son emplacement et le choc fait vibrer le verre.',
+    'DÉFIS : AMALGAME a son défi dans la grille.',
+    'MENU : le boss de raid est supprimé définitivement ; la case reste fermée, grise, avec un cadenas et la mention PROCHAINEMENT.',
+  ] },
   { v:'V0.04.71', items:[
     'DÉFIS : GRIEVER, CONQUEST, CHEIF 117 et MED-POD ont maintenant leur artwork dans la grille des défis.',
     'DÉFIS : les cartes holographiques (MOG-AI, ZAPPAN, MOTOKO, TOA2) ont leur propre défi, en fin de grille : 10 paliers, 3 paliers ultimate et decks adverses dédiés. Le compteur passe à 42/42.',
@@ -10997,6 +10488,9 @@ const MECH_CONFIGS = {
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
   'EXO-MKI': { head:'visor', shoulders:'block', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'rifle', emblem:'none' },
+  AMALGAME:  { head:'crest', shoulders:'spike', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'none', emblem:'hostile' },
+  MALGAME:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'hostile' },
+  MALAME:    { head:'small', shoulders:'round', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'none', emblem:'none' },
   FENCY:     { head:'helm', shoulders:'big', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'cannon', emblem:'hostile' },
   RAZOPS:    { head:'crest', shoulders:'block', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'staff', emblem:'cross' },
   LACRIUM:   { head:'vfin', shoulders:'spike', torso:'vcut', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
@@ -11052,6 +10546,7 @@ const CHAR_LORE = {
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
   'EXO-MKI': { pilot:'Unité de série XO-I', text:"Premier modèle de la gamme EXO, assemblé à la chaîne par milliers dans les hangars de la mégalopole. Sans blindage, sans pilote : un squelette d'acier, un œil rouge et un programme. Quand une unité tombe, la chaîne en lâche aussitôt une autre, qui rejoint les rangs d'en face. Détruire un EXO-MKI ne règle rien : il ne fait que changer de camp." },
+  AMALGAME:  { pilot:'Aucun — conscience collective des épaves', text:"Il n'a ni pilote ni plan. Quand une ville meurt, ses mechs détruits restent là : l'Amalgame s'est levé de cette ferraille, hérissé de pointes, tenu par des faisceaux de câbles et un seul regard rouge. Il avance, il écrase, il ne s'arrête pas. Mais ce qui tombe aujourd'hui se relèvera demain, et de ses débris le Malgame se redresse déjà." },
   FENCY:     { pilot:'Sgt. Kenji « Rempart » Mori', text:"Gardien des terrasses-temples de la haute ville, Mori conduit un mammouth d'acier bardé de plaques rivetées et de défenses en cuivre. Il ne cherche jamais à esquiver : il avance, il encaisse, et ce qui reste debout devant lui est balayé par la trompe. Les habitants disent que les cerisiers tremblent avant même que le sol ne le fasse." },
   RAZOPS:    { pilot:'Dr Amara « Corne » Okoye', text:"Médecin de guerre reconvertie en pilote, Okoye a bardé un mécha de chantier de plaques blindées frappées de la croix des secours. Un bras articulé, un essaim de drones de réparation : là où RAZOPS passe, la ligne tient. Un drone se pose sur un camarade, le scanne, lui rajoute du blindage en quelques secondes, et repart déjà vers le suivant." },
   LACRIUM:   { pilot:'Cmdt. Elias « Lame » Varga', text:"Ancien maître d'armes des galeries marchandes de la mégalopole, Varga a fait forger deux lames à champ d'énergie pour son mécha. Il n'attaque jamais de front : il frappe deux fois, en arc, de chaque côté du terrain, avant que l'air n'ait fini de siffler, puis retombe du ciel sur sa cible. Quand on voit le bleu de ses lames, la vitrine a déjà éclaté." },
@@ -11345,7 +10840,26 @@ const CHAR_DEFS = [
     ultName:"EXO-MKI SURTENSION", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, PV)",
     base:{atk:20, def:0, hp:240}, max:{atk:140, def:0, hp:1000}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/exo-mki-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/exo-mki-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/exo-mki-art-ext.webp' },
+  // ---- Trois cartes en chaîne : AMALGAME (écarlate) -> MALGAME (épique) -> MALAME (rare), Baroud d'honneur ----
+  { name:"AMALGAME", rarity:"ecarlate", color:"#b4c04a", shape:"AMALGAME", role:"Colosse — amas de ferraille vivante",
+    ultName:"AMALGAME SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:58, def:14, hp:400}, max:{atk:420, def:130, hp:1700}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/amalgame-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/amalgame-art-ext.webp' }
+];
+// Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
+const BTL_TOKEN_DEFS = [
+  { name:"MALGAME", rarity:"epique", color:"#d19a3c", shape:"MALGAME", role:"Colosse blessé — le géant en miettes",
+    ultName:"MALGAME SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:40, def:16, hp:340}, max:{atk:260, def:120, hp:1300}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malgame-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malgame-art-ext.webp' },
+  { name:"MALAME", rarity:"rare", color:"#6f9c86", shape:"MALAME", role:"Épave rampante — dernier souffle",
+    ultName:"MALAME SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:28, def:12, hp:260}, max:{atk:200, def:90, hp:1000}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malame-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malame-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11378,7 +10892,7 @@ function computeStatBounds(){
 // peut valoir plus qu'une carte à grosses stats si son effet est plus fort. Chef d'escouade : PV + DEF < 50 (cf btl.js).
 const CARD_TIERS = {
   holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI'],
-  ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
+  ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
   rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI']
@@ -11389,7 +10903,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -11756,7 +11270,6 @@ const player = {
   tasks: null,      // tâches quotidiennes du jour
   totals: null,     // ressources totales collectées depuis le début
   login: null,      // connexions : jour, série, nombre de jours
-  raid: null,       // BOSS DE RAID (V0.03.00) : cycle en cours, phase, PV du boss, verrou, tokens, escouade de 15
   lastSeenVersion: null  // dernière version dont le joueur a vu le changelog "Mise à jour"
   // (V0.02.45) L'ancien champ "modules" (état des cartes module, { nomModule: { level } }) a été retiré
   // d'ici : les modules suivent maintenant le même modèle que les cartes classiques (exemplaires par
@@ -11789,11 +11302,7 @@ function normalizePlayerExtras(){
   // une sauvegarde qui a DÉJÀ un champ boosters garde son propre compte, rien n'est réinitialisé ici :
   // seule une sauvegarde n'ayant JAMAIS eu de boosters reçoit ce 0 par défaut).
   player.boosters = Object.assign({ res:0, cards:0, modules:0 }, player.boosters || {});
-  // BOSS DE RAID (V0.03.00) : cycleIndex suit raidCycleInfo() (reset automatique de phase/verrou au
-  // changement de cycle, voir raidEnsureCycle()) -- tokens pleins par défaut pour qu'un joueur existant
-  // ne soit jamais pénalisé par l'arrivée de la fonctionnalité.
-  player.raid = Object.assign({ cycleIndex:-1, phase:0, phaseHp:null, lockUntil:0, finalClaimed:false,
-    tokens:3, tokenAt:0, squad15:[] }, player.raid || {});
+  delete player.raid;   // BOSS DE RAID supprimé (V0.04.72) : on nettoie les anciennes sauvegardes
   // DÉFI (V0.03.47, demande d'Alex) : progression par carte -- player.defi[nom] = nombre de paliers
   // déjà remportés (0-50, cf DEFI_TIERS). Object.assign comble les champs manquants sur une sauvegarde
   // antérieure à cette fonctionnalité (aucune carte n'a de clé -> toutes à 0 via defiCardProgress()).
@@ -19322,7 +18831,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -19331,13 +18840,6 @@ function showHub(){
   if(typeof updateRewardTiles === 'function') updateRewardTiles();
   updateSquadTile();
   updateCollectionTile();
-  // (V0.03.02) Reprend ici ce que faisait l'ex-#raidBackBtn : si on quitte l'écran RAID pendant une
-  // tentative en cours (quel que soit le chemin -- onglet MENU du bas, etc.), on l'abandonne proprement
-  // (raidEndAttempt('abandon') sauvegarde les PV du boss pour la prochaine tentative) plutôt que de
-  // juste couper la boucle, qui laissait raidBattleOn/raidBattleOver et l'écran dans un état incohérent.
-  if(typeof raidBattleOn !== 'undefined' && raidBattleOn && typeof raidEndAttempt === 'function') raidEndAttempt('abandon');
-  else if(typeof raidStopCombatLoop === 'function') raidStopCombatLoop();
-  if(typeof updateRaidTile === 'function') updateRaidTile();
 }
 function enterMission(mode){
   switchActive(mode);
@@ -21000,7 +20502,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'raidView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -26154,6 +25656,215 @@ BTL_CARD_FX['EXO-MKI'] = { baroud: async c => {
   const n = btlMakeCard(dest, c.def, c.rar, c.level, false);
   await btlHandToPile(dest, n, from);
 } };
+// ---- AMALGAME -> MALGAME -> MALAME : chaîne de Baroud d'honneur ----
+// La carte détruite éclate, puis son héritière se reforme en grand (comme EXO-MKI), se retourne et glisse dans la pioche du joueur qui a posé la carte (mélangée).
+// ================= AMALGAME : arrivée « verre brisé » =================
+// Le plateau tremble de plus en plus fort, des éclats de verre biseauté tombent dessus et se posent (ombres, reflets, étincelles), un reflet balaie le verre,
+// puis la carte est catapultée depuis le bord de l'écran jusqu'à son emplacement : le choc propage une onde prismatique qui fait vibrer chaque éclat.
+const BTL_GL = { lx:-.53, ly:-.85 };   // direction de la lumière (vers le haut à gauche)
+function btlGlassMake(rnd, size){
+  const n = 3 + Math.floor(rnd() * 3), a0 = rnd() * 6.283, el = .5 + rnd() * .5, pts = [];
+  for(let i = 0; i < n; i++){
+    const a = a0 + (i + (rnd() - .5) * .75) / n * 6.283, rr = size * (.55 + rnd() * .55);
+    pts.push({ x:Math.cos(a) * rr, y:Math.sin(a) * rr * el });
+  }
+  let mx = 0, my = 0; pts.forEach(p => { mx += p.x; my += p.y; }); mx /= n; my /= n;
+  pts.forEach(p => { p.x -= mx; p.y -= my; });
+  const ed = pts.map((p, i) => { const q = pts[(i + 1) % n], ex = q.x - p.x, ey = q.y - p.y, l = Math.hypot(ex, ey) || 1; let nx = ey / l, ny = -ex / l; if(nx * (p.x + q.x) + ny * (p.y + q.y) < 0){ nx = -nx; ny = -ny; } return { nx, ny }; });
+  return { pts, ed, n, size, bev:.2 + rnd() * .12, ftx:(rnd() - .5) * 2, fty:(rnd() - .5) * 2 };
+}
+// dessine un éclat : verre teinté, reflets en bande, facette inclinée, biseau éclairé (arêtes côté lumière claires, côté ombre sombres), liseré ; renvoie la position de son point le plus brillant
+function btlGlassDraw(g, s, P){
+  const pts = s.pts, n = s.n, b = s.bev, cr = Math.cos(P.rot), sr = Math.sin(P.rot), LX = BTL_GL.lx, LY = BTL_GL.ly, hi = P.hi, R = s.size * 1.15;
+  const lxl = LX * cr + LY * sr, lyl = -LX * sr + LY * cr, cs = v => Math.max(0, Math.min(1, v));
+  const path = k => { g.beginPath(); for(let i = 0; i < n; i++){ const p = pts[i]; if(i) g.lineTo(p.x * k, p.y * k); else g.moveTo(p.x * k, p.y * k); } g.closePath(); };
+  g.save(); g.translate(P.x, P.y); g.rotate(P.rot); g.scale(P.sx, P.sy); g.globalAlpha = P.a;
+  // verre : teinte froide, plus claire côté lumière
+  path(1);
+  let gr = g.createLinearGradient(lxl * R, lyl * R, -lxl * R, -lyl * R);
+  gr.addColorStop(0, 'rgba(' + s.tint + ',' + (.46 + .3 * hi).toFixed(3) + ')'); gr.addColorStop(.55, 'rgba(120,185,235,.2)'); gr.addColorStop(1, 'rgba(25,70,130,.36)');
+  g.fillStyle = gr; g.fill();
+  // facette inclinée : une moitié de l'éclat capte plus (ou moins) la lumière, ce qui change dès que l'éclat bouge
+  const m = Math.max(1, Math.floor(n / 2)), fb = (s.ftx * cr - s.fty * sr) * LX + (s.ftx * sr + s.fty * cr) * LY;
+  g.beginPath(); for(let i = 0; i <= m; i++){ const p = pts[i]; if(i) g.lineTo(p.x * (1 - b), p.y * (1 - b)); else g.moveTo(p.x * (1 - b), p.y * (1 - b)); } g.closePath();
+  g.fillStyle = fb > 0 ? 'rgba(255,255,255,' + Math.min(.6, fb * .24 * (1 + hi)).toFixed(3) + ')' : 'rgba(4,18,46,' + Math.min(.5, -fb * .3).toFixed(3) + ')'; g.fill();
+  // reflets : une large bande douce et un filet net, qui glissent quand l'éclat tourne ou que la lumière passe
+  const bp = .5 + P.band;
+  path(1 - b);
+  gr = g.createLinearGradient(lxl * R, lyl * R, -lxl * R, -lyl * R);
+  gr.addColorStop(cs(bp - .17), 'rgba(255,255,255,0)'); gr.addColorStop(cs(bp), 'rgba(255,255,255,' + Math.min(.85, .36 + .5 * hi).toFixed(3) + ')'); gr.addColorStop(cs(bp + .1), 'rgba(255,255,255,0)');
+  gr.addColorStop(cs(bp + .2), 'rgba(255,255,255,0)'); gr.addColorStop(cs(bp + .235), 'rgba(255,255,255,' + Math.min(.8, .3 + .4 * hi).toFixed(3) + ')'); gr.addColorStop(cs(bp + .27), 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fill();
+  // biseau : une bande par arête, éclairée selon son orientation
+  const lw = Math.max(.7, s.size * .035);
+  for(let i = 0; i < n; i++){
+    const p = pts[i], q = pts[(i + 1) % n], e = s.ed[i], nwx = e.nx * cr - e.ny * sr, nwy = e.nx * sr + e.ny * cr, d = nwx * LX + nwy * LY;
+    const px = p.x * (1 - b), py = p.y * (1 - b), qx = q.x * (1 - b), qy = q.y * (1 - b);
+    g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(q.x, q.y); g.lineTo(qx, qy); g.lineTo(px, py); g.closePath();
+    const eg = g.createLinearGradient((p.x + q.x) / 2, (p.y + q.y) / 2, (px + qx) / 2, (py + qy) / 2);
+    if(d > 0){ const a = Math.min(1, (.32 + .62 * d) * (1 + .55 * hi)); eg.addColorStop(0, 'rgba(255,255,255,' + a.toFixed(3) + ')'); eg.addColorStop(1, 'rgba(190,230,255,' + (a * .22).toFixed(3) + ')'); }
+    else { const a = .32 + .5 * -d; eg.addColorStop(0, 'rgba(5,18,44,' + a.toFixed(3) + ')'); eg.addColorStop(1, 'rgba(70,125,185,' + (a * .18).toFixed(3) + ')'); }
+    g.fillStyle = eg; g.fill();
+    g.lineWidth = lw; g.strokeStyle = d > 0 ? 'rgba(255,255,255,' + Math.min(1, .5 + .45 * d + .3 * hi).toFixed(3) + ')' : 'rgba(150,205,250,' + (.18 + .2 * -d).toFixed(3) + ')';
+    g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(q.x, q.y); g.stroke();
+  }
+  path(1 - b); g.lineWidth = lw * .7; g.strokeStyle = 'rgba(230,246,255,.3)'; g.stroke();
+  // sommet le plus éclairé : là où naît l'éclat
+  let bi = 0, bd = -9; pts.forEach((p, i) => { const dd = p.x * lxl + p.y * lyl; if(dd > bd){ bd = dd; bi = i; } });
+  const v = pts[bi], vx = v.x * P.sx, vy = v.y * P.sy;
+  g.restore();
+  return { x:P.x + vx * cr - vy * sr, y:P.y + vx * sr + vy * cr };
+}
+function btlGlintStar(g, x, y, r, a, rot){
+  if(a <= .02) return;
+  btlLacSoft(g, x, y, r * 1.9, r * .15, rot, '255,255,255', a);
+  btlLacSoft(g, x, y, r * .15, r * 1.9, rot, '255,255,255', a);
+  btlLacSoft(g, x, y, r * .55, r * .55, 0, '215,240,255', a * .9);
+}
+async function btlAmalArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), TS = btlDumTS(), rnd = Math.random;
+  const fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), plate = btlRect(plateEl), w = to.width, h = to.height, k = w / 84;
+  const CS = btlCanvasFx(29), CF = btlCanvasFx(31), gs = CS.ctx, gf = CF.ctx, W = CS.W, H = CS.H;
+  const cx = to.left + w / 2, cy = to.top + h / 2, dir = c.side === 'p' ? 1 : -1, vW = plate.width * 1.25;
+  const T_RU = 1100, T_RE = 1750, T_SW0 = 1450, T_SW1 = 1950, T_L = 1700, FLY = 580, T_IM = T_L + FLY, T_DIS = T_IM + 800, T_END = T_IM + 1500;
+  const prevTf = plateEl.style.transform;
+  // les éclats : plus denses autour de la case visée, jamais dessus
+  const shards = [], tints = ['215,240,255', '195,228,255', '225,218,255', '200,250,240'];
+  const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
+  const lx0 = plate.left + 6, lx1 = plate.right - 6, ly0 = plate.top + 6, ly1 = plate.bottom - 6;
+  for(let i = 0, tries = 0; i < 30 && tries < 800; tries++){
+    const big = i < 3, size = (big ? 30 + rnd() * 14 : 11 + rnd() * 17) * k;
+    const x = E.cl(cx + gauss() * plate.width * .62, lx0, lx1), y = E.cl(cy + gauss() * plate.height * .5, ly0, ly1);
+    if(Math.abs(x - cx) < w * .5 + size * .95 + 4 && Math.abs(y - cy) < h * .5 + size * .95 + 4) continue;
+    if(shards.some(q => Math.hypot(q.x - x, q.y - y) < (q.size + size) * .78)) continue;
+    const S = btlGlassMake(rnd, size); i++;
+    S.x = x; S.y = y; S.big = big; S.d = 40 + Math.pow(rnd(), .85) * 860; S.T = 400 + rnd() * 180; S.lt = S.d + S.T; S.z0 = y + 90 + rnd() * 160 + size;
+    S.sway = (rnd() - .5) * 70 * k; S.rot0 = rnd() * 6.283; S.spin = (rnd() - .5) * 9; S.tx = 6 + rnd() * 8; S.ty = 5 + rnd() * 9; S.p1 = rnd() * 6.283; S.p2 = rnd() * 6.283;
+    S.bh = (3 + rnd() * 6) * k * (big ? .6 : 1); S.tint = tints[Math.floor(rnd() * tints.length)];
+    S.dist = Math.hypot(x - cx, y - cy) || 1; S.dx = (x - cx) / S.dist; S.dy = (y - cy) / S.dist; S.wd = S.dist / vW * 1000;
+    S.fq = 11 + rnd() * 6; S.pr = ((x - plate.left) * .8 + (y - plate.top) * .6) / (plate.width * .8 + plate.height * .6); S.landed = false;
+    shards.push(S);
+  }
+  const wr = document.createElement('div');
+  wr.style.cssText = 'position:fixed;left:0;top:0;width:' + w + 'px;height:' + h + 'px;z-index:30;pointer-events:none;transform-origin:50% 50%;will-change:transform;opacity:0;filter:drop-shadow(0 0 7px rgba(150,215,255,.9))';
+  wr.innerHTML = btlSmallHtml(c); fx.appendChild(wr); btlPaintIn(wr, c);
+  const sparks = [], trail = [], rays = [];
+  const spark = (x, y, n, spd, life, rgb, now, sz) => { for(let i = 0; i < n; i++){ const a = rnd() * 6.283, v = spd * (.3 + rnd() * .7); sparks.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - spd * .25, t0:now, life:life * (.7 + rnd() * .6), r:(1.2 + rnd() * 2) * k * (sz || 1), rgb }); } };
+  let impacted = false, entered = false, flare = null, kick = 0, raf = 0, last = 0, done, fail; const pr0 = new Promise((res, rej) => { done = res; fail = rej; });
+  const t0 = performance.now();
+  const stateOf = (s, now, pdx, pdy) => {
+    if(now < s.d) return null;
+    let x = s.x, y = s.y, rot = s.rot0, z = 0, hf = 0, hi = 0, a = 1, sc = 1, lift = 0;
+    if(now < s.lt){
+      const p = (now - s.d) / s.T; z = s.z0 * (1 - p * p); hf = z / s.z0; x = s.x + s.sway * hf * Math.sin(p * 3.1 + s.p1); rot = s.rot0 + s.spin * hf; y = s.y - z; lift = z; sc = 1 + z / 900;
+    } else {
+      x += pdx; y += pdy;
+      const u2 = (now - s.lt) / 190; if(u2 < 1){ lift = s.bh * 4 * u2 * (1 - u2); y -= lift; }
+      hi += Math.exp(-(now - s.lt) / 150) * .9;
+    }
+    // balayage de lumière sur le verre posé
+    if(now >= T_SW0 && now <= T_SW1 + 400){ const sp = -.25 + 1.5 * sm(T_SW0, T_SW1, now), q = (s.pr - sp) / .09; hi += Math.exp(-q * q) * 1.1; }
+    // choc : l'onde atteint l'éclat après un délai proportionnel à sa distance ; il vibre, se soulève, glisse un peu vers l'extérieur
+    if(now >= T_IM){
+      const dtv = (now - T_IM - s.wd) / 1000;
+      if(dtv > 0){
+        const env = Math.exp(-dtv * 3.3), fall = 1 / (1 + s.dist / (plate.width * .55)), amp = (6.5 * fall + 1.4) * k, osc = Math.sin(6.283 * s.fq * dtv + s.p2), osc2 = Math.sin(6.283 * s.fq * .83 * dtv + s.p1);
+        const push = 10 * k / (1 + s.dist / (plate.width * .4)) * (1 - Math.exp(-dtv * 9));
+        x += s.dx * (amp * env * osc + push) - s.dy * amp * .5 * env * osc2; y += s.dy * (amp * env * osc + push) + s.dx * amp * .5 * env * osc2;
+        rot += .17 * env * Math.sin(6.283 * s.fq * .8 * dtv + s.p1); lift += 3.2 * k * env * Math.abs(Math.sin(6.283 * s.fq * .5 * dtv)); y -= 3.2 * k * env * Math.abs(Math.sin(6.283 * s.fq * .5 * dtv));
+        hi += 1.35 * env;
+      }
+    }
+    if(now >= T_DIS){ const v = sm(T_DIS, T_END, now); a = 1 - v * v; sc *= 1 - .18 * v; hi += Math.sin(Math.PI * Math.min(1, v * 1.15)) * 1.1; }
+    const th = hf * s.tx, ph = hf * s.ty;
+    return { x, y, rot, a: Math.max(0, a), hi, lift, sx: sc * Math.max(.2, Math.abs(Math.cos(th))), sy: sc * Math.max(.2, Math.abs(Math.cos(ph))), band: .13 * Math.sin(rot * 1.3 + s.p2) + .05 * Math.sin(now / 260 + s.p1), edge: 1 - Math.abs(Math.cos(th) * Math.cos(ph)) };
+  };
+  const tick = () => {
+    if(!BTL || BTL.abort){ fail('abort'); return; }
+    let now = 0;
+    try{
+      now = window.__amT != null ? window.__amT : (performance.now() - t0) * TS;
+      const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+      gs.clearRect(0, 0, W, H); gf.clearRect(0, 0, W, H);
+      // le plateau tremble : de plus en plus fort, puis un silence, puis le choc
+      kick *= Math.exp(-dt / .11);
+      const rum = sm(0, T_RU, now), rm = rum * rum * (1 - sm(T_RE - 350, T_RE, now)), im = now >= T_IM ? Math.exp(-(now - T_IM) / 230) : 0, A = (3.2 * rm + kick + 9 * im) * k, tt = now / 1000;
+      const pdx = A * (Math.sin(tt * 119) * .6 + Math.sin(tt * 195 + 1.3) * .4), pdy = A * .7 * (Math.sin(tt * 144 + .7) * .55 + Math.sin(tt * 232 + 2.1) * .45);
+      plateEl.style.transform = A > .02 ? 'translate(' + pdx.toFixed(2) + 'px,' + pdy.toFixed(2) + 'px) rotate(' + (pdx * .012).toFixed(3) + 'deg)' : prevTf;
+      // atterrissages : étincelles + petite secousse
+      shards.forEach(s => { if(!s.landed && now >= s.lt){ s.landed = true; spark(s.x + pdx, s.y + pdy, s.big ? 7 : 3, (s.big ? 150 : 100) * k, 380, '210,240,255', now, .9); kick += (s.big ? 1.6 : .55); } });
+      // verre : ombres puis éclats
+      const P = []; shards.forEach(s => { const q = stateOf(s, now, pdx, pdy); if(q) P.push([s, q]); });
+      P.forEach(([s, q]) => { const l3 = Math.min(q.lift, 90) + 3; btlLacSoft(gs, q.x + l3 * .3, q.y + l3 * .55 + 2, s.size * (1.05 + l3 / 260), s.size * (.8 + l3 / 260), q.rot, '0,8,20', .5 * q.a / (1 + l3 / 55)); });
+      const gl = [];
+      P.forEach(([s, q]) => { const pos = btlGlassDraw(gs, s, q); const ga = Math.min(1, q.hi - .5 + q.edge * .5); if(ga > .03) gl.push([pos, s, ga * q.a]); });
+      gf.globalCompositeOperation = 'lighter';
+      // lumière : trois faisceaux obliques qui s'éteignent avant le lancer
+      const ray = sm(250, 900, now) * (1 - sm(T_SW1, T_L + 250, now));
+      if(ray > .01) for(let i = 0; i < 3; i++) btlLacSoft(gf, plate.left + plate.width * (.16 + .34 * i), plate.top + plate.height * .38, 15 * k * (1 + i * .45), plate.height * .8, -.34, '190,225,255', .075 * ray * (.7 + .3 * Math.sin(now / 240 + i * 2.1)));
+      // la carte catapultée
+      if(now >= T_L && !impacted){
+        const t = E.cl((now - T_L) / FLY, 0, 1), arc = 4 * t * (1 - t), xx0 = E.cl(cx - dir * W * .45, -w * 1.6, W + w * 1.6), y0 = dir > 0 ? H + h * 1.8 : -h * 1.8, Hh = Math.max(220, H * .5);
+        const te = Math.pow(t, .92), x = xx0 + (cx - xx0) * te, y = y0 + (cy - y0) * te - dir * Hh * arc, sc = 1 + .85 * arc, rot = dir * Math.pow(1 - t, 1.4) * 4.4;
+        wr.style.opacity = '1'; wr.style.transform = 'translate(' + (x - w / 2) + 'px,' + (y - h / 2) + 'px) rotate(' + rot.toFixed(3) + 'rad) scale(' + sc.toFixed(3) + ')';
+        trail.push({ x, y, t:now, sc });
+        if(!entered && x > -w * .2 && x < W + w * .2 && y > -h * .2 && y < H + h * .2){ entered = true; flare = { t0:now, x:E.cl(x, 0, W), y:E.cl(y, 0, H) }; spark(flare.x, flare.y, 14, 260 * k, 420, '200,235,255', now, 1.1); }
+        if(t >= 1){
+          impacted = true; wr.style.opacity = '0'; u.style.opacity = '';
+          for(let i = 0; i < 14; i++) rays.push({ ang:i / 14 * 6.283 + (rnd() - .5) * .3, len:plate.width * (.28 + rnd() * .4), wd:(1.4 + rnd() * 2.2) * k });
+          spark(cx, cy, 40, 340 * k, 700, '205,238,255', now, 1.2); spark(cx, cy, 14, 200 * k, 900, '255,255,255', now, 1.5);
+          btlAnimR(u, [{ transform:'scale(1.22,.74)' }, { transform:'scale(.95,1.08)', offset:.5 }, { transform:'scale(1)' }], { duration:430, easing:'cubic-bezier(.2,.8,.4,1)' }).then(a => a.cancel(), () => {});
+          btlFlashEl(u, '#bfe4ff', .6, 480);
+        }
+      }
+      // traînée de lumière derrière la carte
+      for(let i = trail.length - 1; i >= 0; i--){ const q = trail[i], age = now - q.t; if(age > 300){ trail.splice(0, i + 1); break; } const a = 1 - age / 300, nx = trail[i + 1] || q, ang = Math.atan2(nx.y - q.y, nx.x - q.x); btlLacSoft(gf, q.x, q.y, w * .75 * q.sc * (.5 + .5 * a), h * .32 * q.sc, ang, '170,225,255', .3 * a * a); }
+      if(flare){ const a = 1 - sm(0, 260, now - flare.t0); if(a > 0) btlLacSoft(gf, flare.x, flare.y, w * 1.4, w * 1.4, 0, '215,240,255', .7 * a); else flare = null; }
+      // impact : éclair, anneaux prismatiques, rayons
+      if(impacted){
+        const a = now - T_IM, fl = Math.exp(-a / 170);
+        btlLacSoft(gf, cx, cy, plate.width * .42, plate.width * .42, 0, '190,225,255', .28 * fl); btlLacSoft(gf, cx, cy, w * .62, h * .62, 0, '255,255,255', .2 * fl);
+        const rr0 = a / 1000 * vW;
+        if(rr0 < plate.width * 1.25) [['255,90,170', 1.07], ['255,255,255', 1], ['70,200,255', .93]].forEach(([rgb, f]) => {
+          const rr = rr0 * f, al = Math.pow(1 - rr0 / (plate.width * 1.25), 1.6); if(rr < 2 || al <= .01) return;
+          const wd = 13 * k, gr = gf.createRadialGradient(cx, cy, Math.max(1, rr - wd), cx, cy, rr + wd);
+          gr.addColorStop(0, 'rgba(' + rgb + ',0)'); gr.addColorStop(.5, 'rgba(' + rgb + ',' + (.4 * al).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+          gf.fillStyle = gr; gf.beginPath(); gf.arc(cx, cy, rr + wd, 0, 6.283); gf.fill();
+        });
+        rays.forEach(r => { const q = a / 460; if(q < 0 || q > 1) return; const L = r.len * (1 - Math.pow(1 - Math.min(1, q * 3.2), 3)), al = (1 - q) * (1 - q);
+          gf.save(); gf.translate(cx, cy); gf.rotate(r.ang); const g2 = gf.createLinearGradient(0, 0, L, 0);
+          g2.addColorStop(0, 'rgba(255,255,255,' + (.85 * al).toFixed(3) + ')'); g2.addColorStop(.4, 'rgba(170,220,255,' + (.35 * al).toFixed(3) + ')'); g2.addColorStop(1, 'rgba(120,190,255,0)');
+          gf.fillStyle = g2; gf.beginPath(); gf.moveTo(0, -r.wd); gf.lineTo(L, 0); gf.lineTo(0, r.wd); gf.closePath(); gf.fill(); gf.restore(); });
+      }
+      // éclats de lumière sur les arêtes
+      gl.forEach(([pos, s, ga]) => btlGlintStar(gf, pos.x, pos.y, E.cl(s.size * .42, 4 * k, 15 * k), Math.min(1, ga), .3));
+      // étincelles
+      for(let i = sparks.length - 1; i >= 0; i--){ const q = sparks[i], a = (now - q.t0) / q.life; if(a >= 1){ sparks.splice(i, 1); continue; } if(a < 0) continue; const tt2 = (now - q.t0) / 1000; btlLacSoft(gf, q.x + q.vx * tt2, q.y + q.vy * tt2 + 380 * tt2 * tt2, q.r * 2.4, q.r * .9, Math.atan2(q.vy + 760 * tt2, q.vx), q.rgb, .9 * (1 - a)); }
+      gf.globalCompositeOperation = 'source-over';
+    }catch(e){ console.error(e); done(); return; }
+    if(now >= T_END){ done(); } else if(window.__amT == null) raf = requestAnimationFrame(tick);
+  };
+  window.__amTick = tick;
+  try{
+    if(window.__amT == null) raf = requestAnimationFrame(tick); else tick();
+    await pr0;
+  } finally {
+    cancelAnimationFrame(raf); CS.cv.remove(); CF.cv.remove(); wr.remove(); u.style.opacity = ''; plateEl.style.transform = prevTf; window.__amTick = null;
+  }
+}
+async function btlChainBaroud(c, nextName){
+  if(btlGone()) return;
+  const def = CHAR_DEFS.find(d => d.name === nextName) || (typeof BTL_TOKEN_DEFS !== 'undefined' ? BTL_TOKEN_DEFS.find(d => d.name === nextName) : null); if(!def) return;   // MALGAME / MALAME : cartes-jetons, uniquement sur le champ de bataille
+  const sl = btlSlotEl(c.side, c.slot), vw = innerWidth, vh = innerHeight;
+  const from = sl ? btlRect(sl) : { left:vw / 2 - 40, top:vh / 2 - 56, width:80, height:112 };
+  const n = btlMakeCard(c.side, def, def.rarity, c.level, false);
+  await btlHandToPile(c.side, n, from);
+}
+BTL_CARD_FX['AMALGAME'] = { arrive: btlAmalArrive, baroud: async c => { await btlChainBaroud(c, 'MALGAME'); } };
+BTL_CARD_FX['MALGAME'] = { baroud: async c => { await btlChainBaroud(c, 'MALAME'); } };
+BTL_CARD_FX['MALAME'] = { baroud: async c => { if(btlGone()) return; await btlDraw(btlOther(c.side)); } };
 BTL_CARD_FX['RAZOPS'] = { appel: async c => {
   const t = await btlChoose(c, btlLiveAll(c.side), 'shield', 0, { arrow:'def' });
   if(!t || btlGone() || !btlOnField(c)) return;
@@ -26782,7 +26493,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -27086,7 +26797,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -27118,16 +26829,6 @@ var BTL_MOT = { ny:36, ns:4, w:256, h:256, half:1.8, voff:.43, sp:.819152, src:'
 
 var BTL_DRONE = { n:12, fw:256, nz:[0.5000,0.7576], ln:[0.5000,0.6407], src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-e1294ab1f6ca.webp' };
 
-document.getElementById('tileRaid').onclick = () => {
-  // V0.03.04, demande d'Alex : la case reste fermée tant que la fenêtre d'évènement (5 jours sur 14)
-  // n'est pas ouverte -- distinct de .locked (qui couvre aussi le verrou de 5h entre 2 phases ET la fin
-  // des 3 phases, DEUX cas où la case doit rester ouvrable pour suivre sa progression/son décompte).
-  if(!raidState().info.active) return;
-  openSub('raidView'); renderRaidView();
-};
-// (V0.03.02) #raidBackBtn retiré -- l'abandon propre d'une tentative en cours (sauvegarde des PV du
-// boss, cf raidEndAttempt('abandon')) est désormais géré directement dans showHub(), donc peu importe
-// comment on quitte l'écran RAID (onglet MENU du bas, etc.).
 document.getElementById('tileDaily').onclick = () => { openSub('dailyView'); renderDaily(); };
 document.getElementById('tileTrophies').onclick = () => { checkTrophies(true); openSub('trophyView'); renderTrophies(); };
 document.getElementById('dailyBackBtn').onclick = () => { updateRewardTiles(); openSub('rewardsView'); };
@@ -27422,55 +27123,56 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "MOG-AI":["2O63NQQDHaccZZLLX7Ff", "2633QDDHaaccZZeWX7Ff", "2O96633EUDDHZZWYYLIX", "224V3UQNNQDDM880cZZb", "22JJKK633NQDDaaccZZL", "22O4VVJJ933NDDMCcZeI", "22OO44JJ6UQQMCaaZZWF", "22OO44JJ9663ENQN5HeY", "22OO4VJJ9916633UUMHZ", "22OO44VJJ9966R3ENDZW", "22OO44VVJ96633NQQCHB", "22OO44VVJJ9916633QHH", "PP22TOO44VVJJ96633Qb"],
-  "ZAPPAN":["GMMHaacWWLLII7AAFFff", "GQND50SSacceLIIAAFff", "GUN5MHSScZYYIIXAAFff", "GG1UUMHSaceWII77AAff", "GGOR3NSSccWYII7AAFff", "GGOOUNM8SScdZeWII7Af", "GGOO9NMMHHSScZWXAAff", "GGOOVJ99NDMMH0SIIAAf", "GGOOVJ991UUNMMSSIIff", "GGOOVV99K6QNMMSSIAff", "GGOOVVJ9915MMSScIAff", "GGOO4VV996UMMSSIIAAf", "PPGGTTOO499U5MMSSIIA"],
-  "MOTOKO":["P1NHaaccZeeWWYIIXX7A", "PVUUNCH8acdWWYYXX7AF", "PUU55HHaccdeWWYIXXAA", "PPVV3NNCCaacdeeWXAFf", "PPJ9UN55CM8SaacceeWW", "PPVV913UUNN5MC8aacZW", "PPV9UN5CHH8800aaWWXf", "PP4VV99KK1UNCCHH0aWX", "PP4VV99K1EUUD5CHHcce", "PPVVJ99KKEUNNCCHH8aX", "PPVVJ99K11UUNN5HH88A", "PP4VV99KK1UUNN5HH8eW", "PPTTVV99KK1RUUNN5HHW"],
-  "TOA2":["T5B800ceeWWLIIXXAFff", "T3EB8800ceeYbIXXAAff", "T5B8800SSdZeebIIXX7A", "TTVKUMMC00SaeeYLIIXX", "TTV9K1N5CC00eeXAAFff", "TTVJK115500SSdeeXAAf", "TTO4KK115MC00SbbXXff", "TTO4JKK1155CCM8eeIXf", "TTJKK11RU5MMC88SeeIf", "TTOOKK116UN55CC88SSI", "TTOOKK11EE55CMCMB80S", "TTOO9KK11D55CMM8800I", "PP2GGTTOOKK11655CM0e"],
-  "CATER-PILLARD":["15CH880eeLLIIXX77AFF", "KU55C80eeIXX77AAFFff", "135CC80SZeeLLIXX77AA", "V1E58800SScddZeeXXAF", "KK1D55800SdeeLIXX7FF", "OVJK155CC800deeWX77F", "4KK15CC8800adZeeYLAA", "9KK11N55C800SSeeX7AF", "OO11R55CC8800deLLX7A", "49KK11655CC8800SSL77", "JKK11QN5CC8800SSddXF", "OKK11N55CC8800SSddeL", "PPTTOKK11655C00SSdLA"],
-  "MED-07":["41ED5500ZZeeWWbLXXff", "K1635800cZZeeYYIXXff", "16QQCC800cZeeWIXXFFf", "OK11Q55CC0ZZeebXX7FF", "4JJKK11335H00ZeeIXXf", "O4VJKK113EQ55CCB0Zee", "4K113UQ55CC8800ZeWLX", "OO4VJKK116D5CC880eXf", "4JJ9KK116ND55C880aXX", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC880e", "OOVJJKK113N55CC880ee", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KU5800aaeeWWbIXXFFff", "KU5CCHH8adZeeIXX7FFf", "O163ND5C8800aceeWWXX", "4J9KK55MCH0acdZeeXXf", "9U55CC880accdeeWWIXX", "OJKK55CHH80ceeWLXX7A", "VJ9KK1NQ55CCH80SaeXX", "49KK11RUN55CHH8800eF", "V99KK11D55C8800acZeX", "4VJJ9KK11UN55CCH800e", "44V99KK11R55CCHH880X", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["3Q5C800cZZeeWYbbXX7F", "NDD5CC80ZZeeWWbXX7Ff", "OK66CC800accZeeXXAAF", "J635C8800aZZeebbXX77", "JJK55C8800SZZeebLLXX", "VKK133EQQ55C8800Sde7", "OO4KK66R355CCB8800XX", "OO4JK11335CCB8800eXA", "O4VJKK1166EQ5CC880eX", "O49KK116QQD55CC880ae", "OO44VJJKK1355CC8800e", "O449KK11QD55CC8800ZX", "PP22GTTO4JJKK115C880"],
-  "NEUTRON":["5C800cdZeeWWIXX7AAFF", "15CB00cZeeLXX7AAFFff", "9K355C800eebLIXX7AAF", "QD55CC88adZeebXX7AFF", "K116QDCC800SeeLIXAFf", "JKK1R35CC800SeeLLXX7", "KK11Q55CCB880SeeL77A", "O4KK11E55CC8800dLLAA", "KK11N55CMC88SSLLXXFF", "4VKK11N55CC880SSddLX", "OKK11RD55CC800SSdLX7", "44KK1155CC8800SSdeAF", "PPTTJKK11ECC880SddL7"],
-  "HYPPER":["K55C00cdeeWYbbLLX7Af", "1EQC8800eeYYbLLIIXFF", "KCC8800adZZeeYYbbIXA", "R5MCC800dZZeeYLXXAFf", "KK11EDCCB80SZebLLXXf", "KK11R55MCMCB80ceebXX", "KK11EEDCM8800ebbLLXX", "49KK11RRQCMCM800ebXX", "OJKK11REE55CCB800YXX", "KK11RREUQ55B8800eYXX", "V9KK11RRD55CMC00LLXX", "4KK11RECCMBB8800SeXX", "PPTT44KK11RREE5B88XX"],
-  "TUNNELIER":["K6Q5588dZZeeWLIXX77f", "K1QQND800SaZZeeXXFFf", "K1DD5880SZZeebIIXXFf", "VKK163DC800ZZeeYbbXX", "KK11R33DD5CMB0deeXX7", "OKK11EQQ55CC80ZeeX7f", "OO49KK16DD55CC88aeXX", "OOJKK1166N55CCB880IX", "OO4JKK11QD558800dZXX", "OJKK1163NNQ5CC8800eL", "OO4JJKK11R55C8800eWX", "OO44JKK11UQ55CC8800X", "PP22TTO4JJKK1165CC80"],
-  "ARKHAUL":["C8SacddeeWbLLIX7AAFF", "DC80ScdbbLLXX7AAFFff", "KKNB8SSdeWbLLXX7AAFF", "1800cddZWWLLX77AAFFf", "1Q5H0SSddeWLXX77AAFF", "49166380SSddLLX77AFF", "OJK158SSddLLXX77AAFF", "KK1Q00SSddeLLX77AAFF", "991180SSddYLLX77AAFF", "VJKK1N80SSddLL77AAFF", "OKKECM80SSddLL77AAFF", "OK116R5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
-  "JIPASIS":["6DBSddZZWbLI77AAFFff", "3DDHSSacZZLX77AAFFff", "6DSddZZeWYYLX77AAFFf", "O3QQMCddZeLL77AAFFff", "466R3QQCSSddZLL7AAFF", "OO46R3UQSSddLL7AAFFf", "O9K3EQQSSddLLX77AAFF", "O449R3QBSSddLL77AAFF", "O4966RDSSddZLL77AAFF", "OO44J63USSddLL77AAFF", "44633DB0SSddLL77AAFF", "OOJ916QDSSddLL77AAFF", "22TTOO4JSSddLL77AAFF"],
-  "BUZZY":["KRM8ddZeeYLLIXX77AAF", "00SdeeWbLLIIXX77AAFf", "4K6CH0SddZeeLLX77AAF", "K1NDM880SddZeL77AAFF", "9K5CH00SSdZbLL77AAFF", "5B00SSddeLLXX77AAFFf", "OVK1E5C8SSddLL77AAFF", "JK11H80SSddeLL77AAFF", "KK16N0SSddLLXX77AAFF", "4JK15800SSddLL77AAFF", "4411U5C0SSddLL77AAFF", "VJK113CCSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
-  "BRI-KB-ROCK":["MMSSaaddZWYLLIIAFFff", "RMM8SSaeWLIIX77AFFff", "O3MM0SSccYbII77AFFff", "KCMMSSddebLIIXAAFFff", "O9ECMMSSddbII7AAFFff", "OOKQMMSSddYIIXX7AAff", "OO49UNMMSSdLII7AAFff", "OOV93EMMSSII77AAFFff", "OO1MMHSSddZII77AAFff", "OOV1QMMSSddLIIAAFFff", "OOVDMMSSddWLLIIAAFff", "OOJ1MMHSSdLLII7AAFff", "PGGTTOODMMSSdL7AAFFf"],
-  "MED-POD":["MMSddeWbLLIIXX7AAFff", "OOUDSWYLLIIX77AAFFff", "OD5MMSdZeeLLIIAAFFff", "OV1QDMSScbII77AAFFff", "OORUQNMMBSSLLI7AAFff", "OOVKNMHSSadLII7AAFff", "OOR3EMMSScLLII7AAFff", "OOK6MM0SSddeLIIAAFff", "OO1MMBSSddeLII77AAff", "OO166MMSSdLII77AAFff", "OO3UQMMSSddLLII7AAff", "OO4VKMMSSddLIIAAFFff", "P2GGTTOOMMSSddLI7AAf"],
-  "MORPHE":["963QNDMHHaaccWWYbIXX", "49NDHaaccZZeWWIIXAFF", "496UUNaaccdZZeWWLLXA", "4J996UQHHaccdeWWYLIX", "VV99663UUQD5aacWWbIf", "O44VV993UN5HHccdZeWf", "4VVJ996REUUNNQDCHHac", "O4VVJJ99K3EUUNNHacce", "OO4VVJJ99K3UUNNCaccW", "OO44VVJ99K1UUNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["9NHBaaccZWWYYbLL77Af", "J9RNNDHaccdeeWWYbL7F", "V99RRHBaaccZWWYYbLXf", "VVN5HHaaccdeWWbbLLXA", "9RUNNHHB8aaccWWYYbIF", "96UUNQNHHBBaaccWYbLI", "VVJ993UUNNMHHB8cWWYL", "VVJ99RREEUUNQHHBaacL", "O4VV99RRNNMMHHBaccWY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["44NHHaaccZZeWWYbAAff", "J93NHaaccZZWWYYI7AAF", "K3UQNQDDHHaaccZWWIAF", "33QQNNDMHHaacceWWbAF", "4VV9R3NQNDCHaccZWW7f", "O4V9966RUNNDCHccWWAF", "OVVJJ991EUNQNHaacZWA", "44VVJJ9963UUNNHaccWX", "OO44VV99UNNSaccZZWWL", "O44VVJ996RUUNNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GOVVJJ99UUNNHHZW"],
-  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9U8aacceeWWbLIXX7Ff", "VUNN0aacceeWWbbLXX7F", "9UUNN55CHaaeeWWYXXAf", "9KKUUNNHH80accZWYLXX", "VV99RUUNN5H80SccZeeW", "V99K13UUNQN50aacceWb", "OVV99RUUN5HH8acceXXA", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1UUNNQ55H8acc", "OVV99K116UUNNMCHH0cc", "OVVJ99KK11UUNNCHHaac", "PPTTVVJ99K113UUNNHac"],
-  "DELOK":["VNH00aaccddeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNCBaaccWWYYbLIXX", "VV93UUBaaccWWYYbbLFF", "VVUUNN5MHHB0SaccWWYL", "VVKK1REENQNHHaacWWbL", "VV99RUUNNHHBcdWWYbbL", "VV99RREUUNHHBaccZbbI", "VV99RRUUNQNQMMHHBaWA", "VV9916RREEUUNQHHBacW", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["9633UNH8aaccZWYIIFFf", "496U5HH8aaccZZWLLXFF", "VK33UNDDHHaaccWX77Af", "V9963NNDaaccZZWWbIff", "V96UUDDCHaaccZZWWYIX", "OVVJ9966UMHHaacZWWYF", "OOVVJJ33UNNHHaacceWW", "44VV9966UUNNHHB0SZWW", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaaZeWW", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["99UNHaccdZeWWLLAAFFf", "VUNHaccdWWbLIX77AAFf", "VJ9UUHHacWWYLLI7AFff", "O99NNSaacceeWWLXAFFf", "V99NHH8SSaaccdW7AAFF", "VV9963UMHH0SaacWLLAF", "V99K3UQNNHH8SaaccLAF", "OVV99UUQNNHHSSaaccdL", "VV991RUUNNHSaadWLI77", "4VV99UNNHHSSaadWbLAF", "O4VV99UNNQHHSSaaWAFF", "OVV99RUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
-  "DUMADED":["EEQDBBZZeYYbLLX77Aff", "6RRDHBBadZZWYYbLLAFf", "4RR33MMBSccdZZYYbLLF", "4RRUDBBZZYYbbLLIIX7A", "OJR3EQDDMMCBcYYbbLLA", "4VR33EEUQMMB0ZYYbbLf", "46RREEQDDMMBB8eYbbL7", "OOJJRREEQ5CMBBcYbbLL", "O44VJRREENDMMBBcYYbb", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["93UUNQHaacZZWWIX7FFf", "93UNDD5MH8aacZZWWL77", "VV933UNNDHHacddZWXAf", "O6633UUNHaaccWWX7AFf", "V13UUQQNNDHBaaccWWbI", "VV33UQQNMH0aaccWWL7F", "OO4VV993EUNQH8aaccZW", "OO4VVRUUNQNCHaccZeWW", "OO44VVJ96UUNNQHaaccW", "O4VVJJ99663UUNNHHScc", "OOVV9966REUUNNMHccZW", "OO44VVJJ99UUNNHHSacc", "PP22GO4VV991UUNQNHcc"],
-  "RAZOPS":["CSSdeebLLIIXX77AAFff", "8SadZeeYLLIIXX77AAFF", "UB8SadeeWLLXX77AAFFf", "168800cddWYYLL77AAFF", "JK5M80SddeYYLL77AAFF", "O16EC88SSddeLLX77AFF", "J9K5CH0SSddLLX77AAFF", "KRND8SSddeebLL77AAFF", "9911R50SSddeLL77AAFF", "4KK1655BSSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "4116U5C8SSddLL77AAFF", "PPTTVJKKSSddLL77AAFF"],
-  "FENCY":["1155C80deYLXX77AAFff", "55C800SSeWbLLIXX77AA", "VKK1N55CCBSSeYLXX7FF", "15CH800eeYbLXX7AAFFf", "KK11D55C00eebLLXX77F", "OK11CCH800dZeeLLIX7A", "KK11R3UD55880SeeLX77", "4VKK11655880SddeeLLX", "K113Q55CC800SeeWL7AF", "JKK115MCH880SddeeXFF", "JKK115CC800SSddeeLX7", "KK11RCCB8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
-  "EXO-MKI":["MMHSSacdeeWYIIXAAFFf", "QMM8SSaacZeWYIIXXAAf", "OVNMMHBSSccWLLIIAAFf", "OO9MCMHHaacWYLIIAAff", "O4VDMMHB0SSacYIIAAff", "OOV93DMMH88SSaYIAAff", "OOV9DMMB8SScWWIIAAff", "OOVVUDMMHHSSbII7AAff", "OOVV99KRQMMHSSIIAAff", "OOJ991RNMMHHSSIIAAff", "OO4996UNNMMSSII7AAff", "OOVVJ996MMH8SSIIAAff", "PP2GGTTOO4VVMMHSSAff"],
-  "GAPIX":["633QQDDMBZZeebLLI7Af", "OK6R3QQDDZZeWYYbbLIX", "OJ633QQDBZZeYYbbLX7F", "OJ66R33EQQ5BSdZZYbII", "O4466RR33QQDacZLLIFF", "OOJ66R33EQQB80dZZYbF", "OO4JJ9663EUQDDCHZYLL", "OO44JJ9166RREEQQDcZY", "OO44VJJ66REQQDDMMHYL", "OO44VJJ166R3EQQDMBbA", "OO44JJ9K166RR33EEDBZ", "OO44JJ966RR33EEQQDMW", "PP22OO44JJ66RR33EEQB"],
-  "EXO-MKVII":["4J66QQDB0ZZeWIXX77FF", "O4JJ3QQD5ZZeeWIX77AF", "O46633QD5C8ZZeIX7AFf", "K6633QQDD0ddZZeeLIXA", "O4JJ133QDD5MCHZZXAFf", "O4J9K1663EQDDM0SZZeL", "OO4JJK163QDD5H0ZZLX7", "O44JJK6633DDMC80ZYIF", "OO44JJ933UUQQDD5C80e", "OO44JJKK1663QQDD55B8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQNDD88", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["OJ633NDDMHaccdZZeYL7", "4J66NQDDHccZZeWWbAAF", "44J663QQDHcZZeWWI7ff", "OOJJ63UQDDSaacZZW7AA", "4JJ633ENQDDHHcZZYLXF", "O44JJ633EQQDDMBacdWW", "OO4JJ9K6633UQQDDBace", "OO44VJJ91663UQNQDD8Z", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ6633UNQQHacW", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
-  "STAR-HUNTER":["4J663DDSZZYLLIX77AFF", "4J633DDBddZZebX7AFFf", "4633QQDDSadZZeLIAFFf", "44633UQQD8ZZWWLII77A", "O44JJ66R3QNDSSccZX7F", "OO44J163QQHSdZZYLXAF", "OO44J6633NQDdZZYLX7F", "O44JJK633EQDDCddZAAF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSdLL", "OO44JJK6633UQD8SS77A", "OO44JJK633QQDSSZL7AF", "22OO44JJK66R3QQSSddA"],
-  "RHINO":["OK63QQDDZZeeYbbLX7Ff", "44663DD0ZZeWXXAAFFff", "4J11663QDD5C0dZZX7Af", "O633QQDD5C00SacZZWYA", "OO4VJ133QQDDC80ZZeYF", "OO4JK633QQDD500aZeIA", "OO44JJ6633EDDC80ceYX", "OO44JJK66R33QQCC0ZeW", "OO44VJJK116633D80dZZ", "OO44JJ9KK16633QQ55MM", "O44JJKK1166R33EQNDD5", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["JJ633QQDCaaZeWWXXAAF", "446633UQDHHccZWWbAAf", "OO4JR33QQDaadZeWWLXF", "4J99633UQQD8ccdZZWbI", "OO44VJJ963QHBacZZLIF", "OOJJ96R33NQNQD5aZZYb", "OO44JJ966UUQNQDB0aZZ", "OO44VVJ9K63UUQDDM0ZZ", "OO44VVJK663UUNDDScZZ", "OO4VVJJ96633NQDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ99663UQQNHZZ", "PP22GGOO44JJ93UDDHZZ"],
-  "CONQUEST":["J633QDDCaccdZZeeXX7f", "4J33QDDC80dZZeebIXAf", "O4K1633QDD0aZZebIXXF", "O4J63QQDC88SaZZeWXXf", "OO44K163QQDCB80acZZ7", "OO44J163QQDD5CB8cZeX", "OO44K1166R3QQDDM0ZZe", "O44J6633QQDD55880bLL", "OO44J9K1663QQDD5880e", "OO44JJKK11663EUQQD8X", "OO44JJ9KK116633UQQD8", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OJQMSacZZYIIX7AAFFff", "O4JM0SccdZZebIIAAFff", "O33QDCMH00SSeII7AAff", "OOJ6QMMBSSdZbIIXAAff", "OO43NQDMMBSSdZbIIAff", "OOJJ1RD5MMSScZbIIAff", "OOJ63QDMMBSSceIIAAff", "OO663Q5MM8SSIIX7AAff", "OO44JJDDMMCSSIIAAFff", "OO4JJR3EDDMMSSIIAAff", "OO44VK66NDMMSSIIAAff", "OO4J66R33MMSSeIIAAff", "PP22GGTTOO4J3MMSSAff"],
-  "PRAWN":["QMBSSabbLLIIXXAAFFff", "9MBSSZWYYbLLII77AAff", "OEMSSaacWYLLIIAAFFff", "EMMBB0SSdbbLLIIXAAff", "OJRQMMHBSSWLLIIAAFff", "OOEUMMC88SSeYbbIIAff", "OO4REMMBBSSdLLIIAAff", "OORREQMMHSScYbIIAAff", "OO9REEMMBSScbIIXAAff", "OOJRRQMM8SSYYbIIAAff", "OOR3EEMMHB8SSYIIAAff", "OO41RREMMBSSbbIIAAff", "PPGGTTOOREEMMBBSSIAA"],
-  "HARKO":["MMHHSSaccWWbLIX7AAff", "O4VDMSSaaceWYbbIAAff", "O4MMSSaaeeWWYI7AAFff", "OUUMMHSccWYbbLIIAAff", "OO49MMHHSScWbbIIAAff", "OV9KNNMMHHSSWbIIAAff", "OOVEUN5MMSSaWLIIAAff", "OO99UQDMCMHSSWIIAAff", "OO4V99KNMMHHSSIIAAff", "OOVVEUUDMMHSSZIIAAff", "OO4VVJJ9UNMMSSIIAAff", "OOJ996NNMMHHSSIIAAff", "PP2GGTTOOVV9EMMSSIIf"],
-  "DOZEUR":["63MMBZZeYYbbLLXXAAFF", "JRR3QMBdZWYYbbLLIX7A", "6REQQMBScZZYYbbLLI77", "4JRR33EDMBB8bbLLIXFf", "OJRENQD5MBB8aYYbbLL7", "O9633EEDMHBBZYYbbLLA", "OKRR3EEUNQDMMBBZYbbL", "JJ9RR33EEUMBBZYYbbLX", "O4996RREEQDMMBBYYbbI", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44JRREEMMBBYYbbL"],
-  "DILUS":["KRMBB80WYbbLLIXXAFff", "VMMBB0eWYbbLLIXXAAFf", "EEMMBB8dZeeWYbbLLX7f", "11RREUMMBBaYYbbLLXXf", "1EEDCMCBB8eYYbbLLAFf", "9REE5MCBB80eYYbbLLXF", "1RREDMCHBBaYYbbLLXXA", "4J11RREEMMCBB80YYbbI", "O1RREEQ5MCMHBB8eYYbb", "KK16RR3EEDMMBB0eYYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["R3EDMcZZeeYYbbLLXXAA", "4RENDMBSdZZeYbbLLI7A", "JR3QQDMBBceYYbbLLXAF", "OJRREMBSacZZYYbLLIX7", "O4RREEMBB8ZZWYYbbLLA", "66RR33EEQ55MMSYYbbLX", "4JRRQQMMBB0SaZYYbbLL", "6RR33EEQMMHBBSadYYbL", "O4J1RR33EENMMBZYbbLL", "O4V6RREEQQDDMMBBYYbb", "OO4VJ66RREEQMMBBYYbL", "OO4VJJRREEUMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
-  "SHADOW":["VEMHBaZWWYYbbLL77Aff", "1REBBccZeWWYYbbLLIFf", "EUNDMBB8cceWYYbbLLFf", "RREEMBaccWWYbbLLIAAf", "JREEUMCHBaceeWYYbbLL", "V9KRREENMBaaeeYYbbLL", "OV9RREECMMCHBB0WYYbL", "VRREEQMMHBB0acYYLL7A", "VV9RREEUUMMHBBSaYYLL", "VVJ99RREE5MMHBBYYbLX", "VV99KKRREEUNMMBBYYbb", "VVJ9RREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "AMALGAME":["gQQMSZZeWWYLLIIAAFff", "g3NDDMMcdZYYbIIAAFff", "JgDDMMSZZebbIIX7AAff", "Ogg33QMSacdbbLIIAAff", "ggQNNQMMSSadZZIIXAff", "OOggQDD80SSdbIIXAAff", "OOJJK6ggDMMSZbIIAFff", "OOJ16gg3QQMMSScZIIAA", "OOJgg33QQMMBSSWIIAff", "OO446gg33MMBSSdeIIAA", "OO44JJggEDDMM0SSIAff", "OO44J166ggQMMSSIIAAf", "PP22GGTTOO4gg33MMSIA"],
+  "MOG-AI":["2O63NQQDHaccZZLLX7Ff", "2633QDDHaaccZZeWX7Ff", "2O96633UDDMHZZWYYIXF", "224V93UQNNQDDM80cZZb", "22OJJK633QDDaaccZZLL", "22O4VVJJ933ENDDMcZIf", "22OO44JJ6UQNQDHaacZW", "22OO44JJ966g3ENQN5Ha", "22OO4VVJJ9916633UMHZ", "22OO44VJJ99663EUNHZW", "22OO44VVJ96633NQQDHB", "22OO44VVJJ9916633QHH", "PP22TOO44VVJJ966g33Q"],
+  "ZAPPAN":["GMMHaadWWLLII7AAFFff", "GRND50SSacceLIIAAFff", "GUN5MHSScZYYIIXAAFff", "GG1gUUHSaceWII77AAff", "GGORgg3NSccWYII7AFff", "GGOOUNM8ScdeWYII7Aff", "GGOO9ggNMMHHSScZWXff", "GGOOV99KgENMMH0SIIAA", "GGOOVJ991ggUUNMMSAAf", "GGOOVV99K6ggQNMSSIIf", "GGOOVVJ991gg5MMSScIf", "GGOO4VV996ggUMMSSIAA", "PPGGTTOO4499ggUMMSSA"],
+  "MOTOKO":["P1NHaacceeWWYbIIXX7A", "PVUUNC8acdWWYYIXX7AF", "PUU55HHaccdeWWYIXXAA", "PPVVg3NNCCaaceeWXAFf", "PPJ9UNN55C8SaacceeWW", "PPVV913UUNN5MC8aadWb", "PP99gUU5CHH8800aaWWX", "PP4VV99KK1UNCCHH0aWX", "PP4VVJ99K1EUU5CHHcce", "PPVVJ99KKUNNCCHH8aXF", "PPVV99K11UUNN5MHHB88", "PP4VV99KK1UUNN5HHBeW", "PPTTVV99KK1RUUNN5HHW"],
+  "TOA2":["T5B800ceeWWLIIXXAAff", "T3EB8800cceeYIXXAAff", "TO5C8800dZeebIIXX7Af", "TTVKUMC00SaeeYLIIXXA", "TTO9K15CC00eeWXAAFff", "TTOVJK115500SSeeXAff", "TTO4KK11ggU5MC00ccXX", "TT4JKK11gg55CC8eeIXA", "TTVJKK11Rg5MMC88SeeI", "TTOOVKK116gQ55CC88SS", "TTOOKK11gED55CCM80AF", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
+  "CATER-PILLARD":["15CH880eeLLIIXX77AFF", "VK55C80eeIXX77AAFFff", "135CC80SZeeLLIXX77AA", "V158800SacddeeWXXAFF", "KK1D55800SdeeLIXX7FF", "OVJK155CC800deeXX77F", "4KK15CC8800adZeebLAA", "O9KK1155C8800SSeeXAF", "O11RQ55CC8800deLLX7A", "49KK11655CC8800SSL77", "KK11RN5CC8800SSddLXF", "OOKK1155CC8800SSddeL", "PPTTOKK1165C800SSdLA"],
+  "MED-07":["41ED5500ZZeeWWbLXXff", "1635800cZZeeYYLIXXff", "16QQCC800cZeeWIXXFFf", "O11Q55CCH0ZZeebLXX7F", "4JJKK1133500aeeIIXXf", "O4JKK113EQD55CC0ZeeW", "4VK113Q55CC8800ZeLXX", "O4VJKK116gEQ5CC880eX", "O4JJKK116D55CC880eXA", "44VVJKK1163355CC8800", "OO44VJKK11D55CC880Se", "OOVJJKK113Q55CC880ee", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KU5800aaeeWWbIXXFFff", "KU5CCHH8adZeeIXX7FFf", "163EQN5C8800aceeWWXX", "4J9KK55MCH0acdZeeXXf", "V955CC880acceeWYIXXf", "KKQ55CHH80ceeWLLXX7A", "V9KK1RUN55CCH80aeLXX", "4J9KK11RUN55CHH8800e", "V99KK11D55C8800acceX", "4V9KK11UN55CMCMH800e", "44V99KK11R55CCHH880X", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["3Q5C800ccZZeeWYbXX7F", "ODD5CC80ZZeeWWbXX7Ff", "OK66CC800ccZeebXXAAF", "J635C8800aZZeebbXX77", "JJKU55C8800cZZeeLLXX", "VKK133EQQ55C8800See7", "OO4KK663D55CC8800SXX", "OO4JK1133D5CCB8800eX", "O4VJKK1166Q5CC880eXF", "49KK116RQQD55CC880ef", "OO44VJJKK1355CC8800e", "O449KK11QD55CC8800Ze", "PP22GTTO4JJKK115C880"],
+  "NEUTRON":["5C800cdZeeWYIXX7AAFF", "15CB00cZeeLXX7AAFFff", "9K355C800eebLIXX7AAF", "RD55CC88cdZeebXX7AFF", "JK116RDCC800SeeLXAFf", "KK1R35CCM800SeeLLXX7", "KK11Rg55CCB880SeL77A", "4KK11EQ55CC8800dLLAA", "OKK11N55CCH88SSLLXXF", "O4VKK1155CC880SSddLX", "OKK11RE55CC800SSdLX7", "44KK1155CC8800SSdXAF", "PPTTJKK11ECC80SddLX7"],
+  "HYPPER":["K55C00ddeeWYbbLLX7Af", "1EC8800SZeeYbLLIIXFF", "KCC8800adZZeeYYbbIXA", "R5MCC800ZeeYYLXXAFff", "KK11gEDCCB80SaebLLXX", "KK11R55MCMCB80ceeXXf", "KK11EENDCM8800debLXX", "49KK11RCMCM800SSebXX", "OJKK11REE55CCB800YXX", "VKK11RREU55B8800eYXX", "V9KK11RRD55CMC00LLXX", "4KK11REUCCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
+  "TUNNELIER":["K6Q5588dZZeeWLIXX77f", "K1gQQDH800SaZZeeLXXF", "K1UDD5880ZZeebIIXXFf", "KK163DC800cZZeeWYbXX", "KK1133DD5CMB0SdeeXX7", "OKK11g3EQQ55CC88ZeXf", "OO4KK16ED55CC88ebXXA", "OOJJKK1166R55CCB880X", "OO4JKK11gQD558800dXX", "OOJKK1163Q5MMCC8800e", "OO4JJKK11g55C8800Sef", "OO44VJKK11Q55CC8800X", "PP2GTT4JJKK11635CC80"],
+  "ARKHAUL":["C8SaccddeeWLLIX7AAFF", "EC80ScdbbLLXX7AAFFff", "KKNB8SSdeWbLLXX7AAFF", "1g800acddWLLXX77AAFF", "1EQ50SSddeWLXX77AAFF", "49166380SSddLLX77AFF", "OKK158SSddYLLX77AAFF", "KK1Rg00SSddLLX77AAFF", "991180SScddLLX77AAFF", "OVJKK180SSddLL77AAFF", "KK1RgU55SSddLL77AAFF", "K116RQ5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
+  "JIPASIS":["6gDBSdZZWbLI77AAFFff", "3DDHSSacZZLX77AAFFff", "6DSddZZeWYYLX77AAFFf", "O3QQMCddZeLL77AAFFff", "4663UQQDSSddZLL7AAFF", "O4V6g3UQQSSddLL7AAFF", "O9K3QQHSSddYLL77AAFF", "4493UQQBSSddLL77AAFF", "OO66R3UQSSddLL77AAFF", "O44J3D5CSSddLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDBSSddLL77AAFF", "22TTOO4JSSddLL77AAFF"],
+  "BUZZY":["KM8SddZeeYLLIXX77AAF", "00SdeeWbLLIIXX77AAFf", "4KCH80SddZeeLLX77AAF", "K1NDM880SddZeL77AAFF", "9K5CH00SSdZbLL77AAFF", "g5BB00SSddeYLLX77AFF", "VK1EQD58SSddLL77AAFF", "J11M80SSddeLLI77AAFF", "KK16N0SSaddLLX77AAFF", "4JK15800SSddLL77AAFF", "9KK155C0SSddLL77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
+  "BRI-KB-ROCK":["QMMSSdZZebbLLIIAFFff", "gUMM8SSaWLIIX77AFFff", "4ggMM0SSaccYII77AFff", "OEMMHHSSddeWbLIAAFff", "OgEDMBSScdeII7AAFFff", "OOggMSSddWYLIIX7AAff", "OO4VggQMMBSSdLII7AAf", "OOV9gg3EMMSSLII7AAFf", "OO1ggMMHSSddZ77AAFff", "OOV1ggQMMSSddLIAAFFf", "OOVggDMMSSddLLIXAAFf", "OOJggMMHSSLLII77AAFf", "PGGTTOOggEMMSSdL7AAF"],
+  "MED-POD":["gMSddeWbLLIIXX7AAFff", "ggEUSWYLLIIX77AAFFff", "gD5MMSadeeLLIIAAFFff", "OgUDM0SSccII77AAFFff", "ORRggQNMMBSSLL7AAFff", "OOVJggNMHSSadLI7AAff", "OOg3UMSSdLLII7AAFFff", "OO4RggEMM8SSLII77AAF", "OO1ggMMBSSddeLII77ff", "OO166ggMSSdLII77AAFf", "OOVgg3QMMSSddLLII7AA", "OO49ggMMSSddLII7AAff", "P2GGTTOOggMMSSddI7AF"],
+  "MORPHE":["963QNDMHHaaccWWYbIXX", "49NDHaaccZZeWWIIXAFF", "496UUNaaccZZeWWYLLAf", "4JJ996UQHHacceWWYYIf", "VVJ99663UUQD5aacWWbf", "O44VV993UN5HHccZeWff", "4VVJ996EUUNNQDDHHSac", "O4VVJ99Kg3UUNNHHaccL", "OO4VVJJ99K3UUNNDaccW", "OO44VVJ991UUQNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99K3UUNQNMHHacW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9NMHBaaccWWYYbLX77Af", "9RUNCHaccdeeWWYbLL7F", "V99RHBSaaccZWWYYbLXf", "VVN5HHaaccdeWWbbLLXA", "9RUNNHHB8aaccWWYYbIF", "J96RUUNNHHBBaaccZWbL", "VV99K3UUNNMHHB8cWYLX", "VV99KRREEUUNCHHSaacL", "4VV99RUQNNMMHHBSaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaacb", "OVV99RREUUNNMHHBaadW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["44gNHHaaccZZeWWYbAAf", "J93NHBaaccZZWWYY7AFF", "3UQNQDDHHaaccZWWLIAF", "33QQNNDMHHaacceWWbAF", "4VV93NQNDCHSaccZWW7f", "O4V996RUNNDCHccWW7AF", "OVVJJ991UNQNHBaacWbF", "44VVJJ9963UUNNHaccZY", "OO44VV99UUNNMaacZZWW", "O44VVJ996RUUNNDHH0cW", "44VVJJ996R3UUNNHaacW", "O4VVJJ99K66UUNNHHacW", "PP22GOVVJJ99UUNNQHHW"],
+  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9U8aacceeWWbLIXX7Ff", "VUNN0aacceeWWbbLXX7F", "9UUNN55CHaaeWWYXXAff", "9KKUUNNMHH80accZZWXX", "VV99UUNN5H80cceWWbXf", "V99K1R3UUNN50aaccdeW", "VV99UUQN5HHB8SaccZeX", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1RUUNN55HaccA", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTT4VVJ99K11UUNNHac"],
+  "DELOK":["VUH00aaccddeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNCBaaccWWYYbLIXX", "VV93UUHBaaccWWYYbbLF", "VV6UUNNMHHB0accWWYLX", "VVJ1RREENNHHaacWWbLL", "VV99RUUNNHHBcceWWYbL", "VVJ99REUUNHHBSaccebb", "VV99RRUUNQNMCMHHBSaW", "VV9916RREEUUNNHHBScc", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["9633UNH8aaccZWYIIFFf", "496U5HH8aaccZZWLLXFF", "V33UNDDHHaaccWYL77Af", "V996gg3NNDaaccZZWWbI", "V96UUDDCHaaccZZWWbIX", "OVVJ9966UMHHaacZWWbF", "OO4VJK3UNNHHaaccWWXf", "44VV9966UUNNHHB0WWYb", "OO4VVJJ996UUQNNHHWWX", "OO44VVJ99gUUNHSaaZWW", "OO4VV996EUUQNN5acWWY", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9UNHBaccdeWWbLLAAFFf", "UUHHaccdWWbLIX77AAFf", "V9KUUHHacWWYLLI7AFff", "99NQNSaacceeWWYLAFFf", "V99UUNHH8aaccdW7AAFF", "VV99163UNHHSaacWLLAF", "V99KR3UNNHH8SaaccLAF", "OVV99UUQNQHHSSaaccdL", "VVJ991UUNNHSaadWWL77", "4VVJ99gUNNHHSSaadWLA", "4VV99RUNNQHHSSaaWAFF", "VV99gUUNQNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["gEEQDBBZZYYbLLX77Aff", "6RRDHBBadZZWYYbLLAFf", "4RR33MMBSccZZeYYbLLF", "4RRUDBBZZYYbbLLIIX7A", "OJRR3EDDMMCBcYYbbLLA", "4VRg33EEQMMB0ZWYYbbL", "46RREEQDDMMBB8YbbL7f", "OOJJRREEQ5CMBBeYbbLL", "OO44VJRRgEEDMMBBYYbb", "OJ6RR3EENQQMMCBYYbbL", "OO44J6RREEQMMHBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["93UNQHaacZZWWIXX7FFf", "93UNDD5MH8aacZZWWL77", "VV933UNNDHHacdZeWXAf", "6633UUNQHaaccWWX7AFf", "13UUQQNNDCHaaccdWWIX", "VV33UQQNNMHH0aaccWW7", "OO4VV993EUNQHaaccZWA", "OO4VVRgUUNNDHaccZWWX", "OO44VVJ96RUUNNHacceW", "O4VVJJ99663UUNNHHacc", "OOVV9966UUNQNHccZWWb", "OO44VVJJ99gUUNNHHacc", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["CSSdeebLLIIXX77AAFff", "8SadZZeeLLIIXX77AAFF", "gB8SdeWYbLLXX77AAFFf", "638800ddeWYYLL77AAFF", "KKN580SddZeYLL77AAFF", "O16EC88SSddeYLL77AFF", "J9K5CH0SSddLLX77AAFF", "OKEU8SSddeeLL77AAFFf", "9911U50SSddeLL77AAFF", "4KK1655CSSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
+  "FENCY":["1155C80deYLXX77AAFff", "55C800SSeWbLLIXX77AA", "OKK1UQ55CCHSeYLXX7FF", "15CH800eeYbLXX7AAFFf", "KK11E55C00eebLLXX77F", "OK11CC800aeeLLIIX7Af", "VKK113D55880SSeeLX77", "4KK11655M880SddeeWLX", "K11R355CC800SaeeL7AF", "JKK115MCH880SddeeXFF", "JKK11gN5CC800SSddee7", "KK11UDCC8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
+  "EXO-MKI":["MMHSSacdeeWYIIXAAFFf", "ggQM8SSaacZWWYIIXAAf", "OVgMMHBSSccWLLIIAAFf", "9ggMCMHHaacWYLIIAAff", "O4VDMMHB0SSacYIIAAff", "OOV9gg3MCMH88SSaYAff", "OOVggEMMB8ScWWIIAAff", "OOVVggEUMMHH8bIIAAff", "OOVV99KRggNMMHSSIAff", "OOVV996ggE5MMHSSIIff", "OO4996ggUNNMM8SSIAff", "OOVVJ996ggNMMSSIIAff", "PP2GGTTOO4VVggMHSSff"],
+  "GAPIX":["633QQDDMBZZeebLLI7Af", "O6R3QQDDZZeYYbbLLXXF", "OJ633QQDBZZeYYbbLX7F", "4J66R33EUQQ5BZZeYbII", "O4466RR33QQDHacZLLIF", "OOJ66R33EQQB80ZZeYbF", "OO4JJ9663EUQDDCZYLLI", "OO44JJ166RREEQQDZeYA", "OO44VJJK66REQQDDMMYL", "OO44VJJ166R3EQQDMBBb", "OO44JJ9K166RR33EEDBZ", "OO44JJ966RRg33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
+  "EXO-MKVII":["4J66QQDB0ZZeWIXX77FF", "O4JJ63QQD5ZZeeIXX77F", "O46633QD5C8ZZeIX7AFf", "K6633QQDD0ddZZeeLIXA", "O4JJ133NQDD5CHZZXAFf", "O4JK1663EUNQDD0ZZeLA", "OO4JJK163QDD5MH0ZZY7", "O44JJKK6633NDDCH80aZ", "OO44VVJJ933QQDD5C80e", "OO44JJKK1663QQDD55C8", "OO44JJ9KK1166R33DD8a", "OO44VJJKK16633QNDD88", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["OJ633NDDMHaccdZZeYL7", "4J66NQDDHccZZeWWbAAF", "44J63QQDHcZZeWWI77ff", "OOJJ63UUQDDaacZZX7AA", "4JJ633ENQDDMHHcZZYXF", "O44JJ633EEQQDCMacdWW", "OO4JJ9K66g33UQQDDBac", "OO44VJJ9166R3UQNDD8Z", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ6633NQQHacbX", "OO44VVJJ99163QNQDD5a", "OO44VVJJ996633UQQDHW", "PP22OO44VJJ96633NQQH"],
+  "STAR-HUNTER":["4J663DDSZZYLLIX77AFF", "4J633DDBddZZebX7AFFf", "4633QQDDSadZZLIAFFff", "44633QQD8ZZWWLIIX77A", "OO44JJ663QDSSccZX7AF", "OO44J163QQHBSadZZLXF", "OO44J6633QQDaadZZL7F", "O44JJ633EQDDCHddZLAA", "O44JJ966R33UQQDSSLL7", "OO44JJ663QQDCC0SSdLL", "OO44VJJK6633QD8SS77A", "OO44JJK633QQDMSSZL7A", "22OO44JJK66R3QQSSddA"],
+  "RHINO":["OK63QQDDZZeeYbbLX7Ff", "44663DD0ZZeWXXAAFFff", "4J11663QDD5C0ZZeX7Af", "O633QQDD5C00SdZZWYbA", "OO4J133QQDDC80ZZeWYF", "OO4JJ633QQDD500aebLA", "OO44JJ6633EDDC80eeYX", "OO44JJK66R33QQCC0eYb", "OO44JJK1166g33D80cZY", "OO44JJ9KK16633NQQN55", "O44JJKK1166R33QNDD5H", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["JJ633QQDDaaZeWWXXAAF", "44V6633QDHHccZWWbAAf", "OO4J33QQDSaadZWWLXFf", "4JJ99633UQQD8ccdZZWb", "OO44VJJ963QMHBadZZIF", "OOJJ96R33NQNQD5aacZZ", "OO44JJ966UUQNQDB0ZZb", "OO44VVJK63UUQDDM0ZZA", "OO44VVJK66g3UUNDDaZZ", "OO4VVJJ633NQDDHHZZ7A", "OO44VVJJ9Rg3QNDDHcZZ", "OO44VVJJ9966g3UNQDZZ", "PP22GGOO44JJ93UDDHZZ"],
+  "CONQUEST":["J633QDDCaccdZZeeXX7f", "4Jg33QDDB80ZZeebIXAf", "O41633QDD0ZZebbLIXXF", "O4J6g3QQDC88SaZZeWXX", "OO44K163QQDCB80cZZb7", "OO44J163QQDD5CB8adXf", "OO44K1166R3EQNQD0ZZe", "O44J96633QQDD55M80dL", "OO44J9K1663QQDD5880e", "OO44VJJKK11663QQDH8c", "OO44VJJ9KK116633QQD8", "OO44VJJKK1663QQD50ZX", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OJQMSSZZWYbIX7AAFFff", "O4Jg0SccdZZebIIAAFff", "Ogg33QDDM00SeII7AAff", "OOJ6gUQQBSZebIIXAAff", "OO44RgEQDMMScZeIAAff", "OOJJ1gD5MMSScdZIIAff", "OOJ6gg3EQCMSceIIAAff", "OOJ6Rgg3DDMM0SScIAff", "OO44JJggEDDMMCSSIIff", "OO4JJRgg3EDDMMSSIIAA", "OO44VK66ggNDMMSSIIAA", "OO4416gg33DMMSSIIAAf", "PP22GGTTOO4Jgg3MMSSf"],
+  "PRAWN":["gMBSSabbLLIIXXAAFFff", "gMBBSZWYYbLLII77AAff", "gEMSSaacWYLLIIAAFFff", "OMMBB0SdbbLLIIXAAFff", "OKKRgMMBSSWLLIIAAFff", "OO9gEUMMC8SeYbbIIAff", "OO4RggEMMBBSSdLLIAff", "OORRggEQMMHSSdYbIIAf", "OO9RggEEMMBSSWbbIAff", "OOJRRggQMM8SSYYbIAff", "OORgg3EEMMHB8SSYIIff", "OO4RggMMHBBSSbbIIAAf", "PPGGTTOORggEEMMBBSSA"],
+  "HARKO":["MMHHSSaccWWbLIX7AAff", "OVD5MSSaaccZeWbIAAff", "OO4MSSaaeeWWYI7AAFff", "OVUMMHSccWYbbLIIAAff", "O49gMMHHSSaacWIIAAff", "OOVJ9KgNNMMHcWIIAAff", "OOVggEUNN5MMSSWbIIAA", "OOJ99ggEUQCMSWIIAAff", "OO4V99KggNMMHHSSIIAA", "OO4VV99K1ggMMSSaIIff", "OO4VVJJ9ggUNMMSSIIAA", "OOVJ996ggNMMHSSIIAAf", "PP2GGTTOOVV9ggEMSSII"],
+  "DOZEUR":["63MMBaZZeYYbbLLXAAFF", "4R3QMBSdZWYYbbLLIX7A", "6REQQMBSdZZYYbbLLI77", "4KRR33EDMBB8bbLLIXFf", "OOJREQD5MBB8aYYbbLL7", "O633EEDCMBBaYYbbLLIA", "OVRR3EENQDMMBBZYbbLL", "VJJ9RR33EEMBBaZYYbbL", "O4J996RREEQDMMBBYYbb", "OO44RR3EEQ5MMBBcYYbb", "OO44VJRR3EEMMBBWYYbb", "OO6RR3EEQMMCBB8YYbbL", "22O446RR3EEMMBBYbbLL"],
+  "DILUS":["RMMBB80WYbbLLIXXAFff", "RRQBBdeeYbbLLIIXXAAf", "EMMBB8dZeeWYbbLLX7Ff", "11REUMMBBSaYYbbLLXXf", "1EEDCMCBB8eYYbbLLAFf", "EE5MCBB80SeYYbbLLXAF", "1RREDMCBBcYYbbLLIXXA", "4JJ11RREEMMCBB80YYbb", "O1RREE5MCMHBB8SeYYbb", "KK1RR3EEMMHBB80eYYbb", "9K16RREECMMBB80YYbbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["R3EDMdZZeeYYbbLLXXAA", "4RENDMBSdZZeYbbLLI7A", "JR3QQDMBBcYYbbLLXAFf", "OJRREMBSadZZYYbLLIX7", "O49RREEMBBZZYYbbLLXA", "66RR33EEQ55MMSZYYbbL", "4JRRQQMMBB0ScZYYbbLL", "6RRg33EEUQMMHBBcYYbL", "O4J1RR33EENMMBZYbbLL", "O4V6RREEQDDMMBBSYYbb", "OO4VJ6RREEQMMBB8YYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
+  "SHADOW":["VEMBaaWWYYbbLL77AFff", "1REBBccZeWWYYbbLLIFf", "EUNDMBB8cceWYYbbLLFf", "JRREEMBaccWWYbbLLAAf", "JEEUMCMHBacYYbbLLXff", "V9RREENCMMaceYYbbLLf", "OV9RREEDMMCHBB0WYYbL", "VRREEQMMCHBB0acYYLL7", "VVJ9RREEUMMBBaZYYLLX", "VVJ996RREEMMHBBdYYbL", "VV99KKRREEUNMMBBYYbb", "VV9KRREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27650,7 +27352,8 @@ const DEFI_RESULT_ART_Y = {
   'MED-POD': 17,
   'MOTOKO': 30,
   'TOA2': 37,
-  'ZAPPAN': 20
+  'ZAPPAN': 20,
+  'AMALGAME': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
@@ -27724,7 +27427,6 @@ setInterval(() => {
   tickFabTimer();
   tickLabTimer();
   missionHeartbeat1s();
-  raidHeartbeat1s();
 }, 1000);
 setInterval(() => {
   if(document.hidden) return;
@@ -29650,12 +29352,9 @@ const HELP_CONTENT = {
   modeHub: { title:'MENU', text:'Le menu principal :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant.</li>' +
     '<li><b>RÉCOMPENSES</b> — récompense quotidienne, trophées et tâches à réclamer.</li>' +
-    '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li>' +
-    '<li><b>BOSS DE RAID</b> — l’épreuve la plus difficile du jeu.</li></ul>' },
+    '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li></ul>' },
   infiniteMode: { title:'LE COMBAT', text:'Ton escouade affronte l’ennemi vague après vague.<br><br>' +
     'Glisse le doigt pour relier jusqu’à 6 bulles d’une même ligne : <b>ATQ</b> attaque, <b>DEF</b> protège ta carte la plus résistante, <b>PV</b> soigne, et la bulle dorée <b>ULT</b> déclenche la capacité ultime du mech. Le bouton <b>AUTO</b> peut jouer les lignes à ta place.' },
-  raidView: { title:'BOSS DE RAID', text:'Affronte un boss en 3 phases avec une escouade de 15 cartes.<br><br>' +
-    'Chaque tentative consomme un token (3 au maximum, qui se rechargent avec le temps). C’est bien plus difficile qu’une mission classique : mieux vaut avoir une escouade déjà développée avant de t’y risquer.' },
   rewardsView: { title:'RÉCOMPENSES', text:'Trois façons de gagner des récompenses gratuites :<ul>' +
     '<li><b>RÉCOMPENSE JOURNALIÈRE</b> — à réclamer chaque jour.</li>' +
     '<li><b>TROPHÉES</b> — des exploits à débloquer une fois pour toutes.</li>' +
@@ -29772,561 +29471,6 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
   document.addEventListener('visibilitychange', () => { if(document.hidden) saveNow(); });
 })();
 
-// ========================================================================================
-// BOSS DE RAID (V0.03.00, demande d'Alex, session du 03/10/2026) : évènement éphémère
-// bi-hebdomadaire (5 jours, vendredi -> mardi). Bloc entièrement autonome : rien ci-dessous
-// n'est appelé par le moteur de combat normal (missions/combatRound()/dealDamage()) et
-// réciproquement -- choix volontaire pour ne prendre AUCUN risque de régression sur le mode
-// de jeu existant (28 fichiers de tests). Combat du raid = boucle dédiée plus simple :
-// attaque de base (ATQ/DÉF/VIT, même formule de dégâts que dealDamage()) sans déclencher les
-// ultimes spéciaux propres à chaque carte -- simplification de portée pour cette V1, à étendre
-// plus tard si Alex le souhaite (voir le rapport de session : ça demande d'adapter
-// individuellement chacun des ~20 effets d'ultime existants pour cibler un boss unique au lieu
-// d'une escouade ennemie classique).
-// ----------------------------------------------------------------------------------------
-
-// ---------- Calendrier (fenêtre de 5 jours tous les 14 jours) ----------
-// RAID_ANCHOR : tout premier vendredi d'ouverture -- seule valeur à changer pour décaler tout
-// le calendrier bi-hebdomadaire (ex. si Alex veut avancer/reculer le lancement du 1er raid).
-const RAID_ANCHOR = new Date(2026, 9, 9, 0, 0, 0, 0).getTime(); // vendredi 9 octobre 2026, 00:00 (heure locale de l'appareil)
-const RAID_CYCLE_MS = 14 * 24 * 3600 * 1000;    // un cycle complet = 2 semaines
-const RAID_WINDOW_MS = 5 * 24 * 3600 * 1000;    // fenêtre active = 5 jours (vendredi 00:00 -> mercredi 00:00)
-const RAID_PHASE_LOCK_MS = 5 * 3600 * 1000;     // verrou entre deux phases (demande d'Alex, V0.03.00)
-const RAID_TOKEN_MAX = 3;
-const RAID_TOKEN_REGEN_MS = 2 * 3600 * 1000;    // +1 token toutes les 2h
-
-function raidCycleInfo(now){
-  now = now || Date.now();
-  if(now < RAID_ANCHOR) return { cycleIndex:-1, active:false, windowStart:RAID_ANCHOR, windowEnd:RAID_ANCHOR + RAID_WINDOW_MS, nextStart:RAID_ANCHOR };
-  const idx = Math.floor((now - RAID_ANCHOR) / RAID_CYCLE_MS);
-  const cycleStart = RAID_ANCHOR + idx * RAID_CYCLE_MS;
-  const windowEnd = cycleStart + RAID_WINDOW_MS;
-  const active = now < windowEnd;
-  const nextStart = active ? cycleStart : cycleStart + RAID_CYCLE_MS;
-  return { cycleIndex:idx, active, windowStart:cycleStart, windowEnd, nextStart };
-}
-// Remet à zéro la progression (phase/verrou/récompense finale) au passage à un nouveau cycle.
-function raidEnsureCycle(){
-  const info = raidCycleInfo();
-  if(info.cycleIndex !== player.raid.cycleIndex){
-    player.raid.cycleIndex = info.cycleIndex;
-    player.raid.phase = 0;
-    player.raid.phaseHp = null;
-    player.raid.lockUntil = 0;
-    player.raid.finalClaimed = false;
-    // V0.03.90 (demande d'Alex) : tokens remis à fond pour tout le monde au démarrage de CHAQUE nouvel
-    // évènement -- avant ça, seuls phase/phaseHp/verrou/récompense finale étaient remis à zéro au
-    // changement de cycle, les tokens restants (ou épuisés) d'un joueur se reportaient tels quels d'un
-    // raid au suivant, ce qui pouvait laisser un joueur à 0 token dès l'ouverture du nouvel évènement.
-    player.raid.tokens = RAID_TOKEN_MAX;
-    player.raid.tokenAt = 0;
-    saveSoon();
-  }
-  return info;
-}
-function raidFmtDuration(ms){
-  ms = Math.max(0, ms);
-  const s = Math.ceil(ms / 1000);
-  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
-  if(d > 0) return d + 'j ' + h + 'h';
-  if(h > 0) return h + 'h ' + String(m).padStart(2, '0');
-  if(m > 0) return m + ' min';
-  return sec + ' s';
-}
-
-// ---------- Tokens (3 max, +1 toutes les 2h) ----------
-function raidSyncTokens(){
-  const r = player.raid;
-  if(r.tokens >= RAID_TOKEN_MAX){ r.tokenAt = 0; return; }
-  if(!r.tokenAt){ r.tokenAt = Date.now(); return; }
-  const gained = Math.floor((Date.now() - r.tokenAt) / RAID_TOKEN_REGEN_MS);
-  if(gained > 0){
-    r.tokens = Math.min(RAID_TOKEN_MAX, r.tokens + gained);
-    r.tokenAt = r.tokens >= RAID_TOKEN_MAX ? 0 : r.tokenAt + gained * RAID_TOKEN_REGEN_MS;
-  }
-}
-function raidTokenMsLeft(){
-  const r = player.raid;
-  if(r.tokens >= RAID_TOKEN_MAX || !r.tokenAt) return 0;
-  return Math.max(0, RAID_TOKEN_REGEN_MS - (Date.now() - r.tokenAt));
-}
-function raidSpendToken(){
-  raidSyncTokens();
-  if(player.raid.tokens <= 0) return false;
-  player.raid.tokens--;
-  if(!player.raid.tokenAt) player.raid.tokenAt = Date.now();
-  saveSoon();
-  return true;
-}
-function raidState(){
-  raidSyncTokens();
-  const info = raidEnsureCycle();
-  const r = player.raid;
-  const now = Date.now();
-  const locked = r.lockUntil > now;
-  const finished = r.finalClaimed;
-  return { info, r, now, locked, finished, canAttempt: info.active && !locked && !finished };
-}
-
-// ---------- Boss (3 phases ; table FIXE, identique pour tout le monde -- V0.03.94) ----------
-// V0.03.93 avait remplacé la table fixe d'origine (calibrée une seule fois en V0.03.02, à un niveau de
-// CARTE 5, jamais revue depuis -- devenue trivialement facile une fois les cartes montées au-delà) par
-// un systeme qui recalculait les stats du boss à partir de l'escouade de raid du joueur lui-même
-// (proportionnel, "adaptatif"). Alex a corrigé le cap après coup : ce n'est PAS ce qu'il voulait --
-// avec un boss relatif à sa propre escouade, N'IMPORTE QUEL joueur (niveau de compte 1 ou 50) vit
-// exactement le même scénario (phase 1 facile, phase 2 correcte, phase 3 un mur), quel que soit son
-// investissement réel dans ses cartes. Demande explicite : "il ne faut pas que ca soit trop facile dès
-// la phase 1 et que ca soit de plus en plus compliqué" + "il faut trouvé un truc pour que les joueurs du
-// niveau 1 comme ceux du niveau 50 aient a peu près la même difficulté, il y a des joueurs qui
-// n'arriveront pas a terminer les 3 phases et d'autres y arriveront mais il faut qu'il aient des cartes
-// assez fort" -- donc une difficulté ABSOLUE (même boss pour tout le monde, comme à l'origine), mais
-// cette fois calibrée par simulation sur le vrai moteur de combat (raidDealDamage()) à travers tout un
-// spectre de paliers d'investissement CARTE réalistes (niveau de carte + fusion de rareté -- PAS le
-// niveau de compte, qui n'est pas le même axe de progression, cf cardTierFused/rarityMult) :
-//   TRES FAIBLE (niv. carte 5-10, commun, aucune fusion)   : phase 1 gagnable mais tendue (jusqu'à 62
-//     des 86 ticks d'une tentative) ; phase 2 anéantit l'escouade ; phase 3 hors de portée.
-//   DEBUT A MODERE (niv. 20-60, rare, aucune fusion)       : phase 1 de plus en plus facile ; phase 2
-//     devient jouable autour du niveau 60-70 (quasi à la limite du chrono) ; phase 3 reste un mur
-//     (anéantissement ou quasi aucun progrès selon le palier).
-//   INVESTI A FORT (niv. 70-150, épique/légendaire FUSIONNÉS, "cartes assez fortes") : phases 1 et 2
-//     triviales ; phase 3 ne se termine PAS en une seule tentative mais entame vraiment le boss (de 75%
-//     à 45% de PV restants selon le palier) -- un vrai siège sur 2-4 tentatives (PV persistés entre
-//     échecs + 3 tokens/cycle déjà existants), proportionné à la valeur de grantRaidFinalReward().
-//   ENDGAME (niv. 200-250, légendaire fusionné) : phase 3 se termine en 1-2 tentatives -- trivialisation
-//     naturelle de fin de jeu, pas un défaut à corriger.
-// Donc : certains joueurs (cartes peu ou pas investies) ne termineront jamais les 3 phases avec leur
-// escouade actuelle : il leur faut monter des cartes plus fort (niveau et/ou fusion de rareté), pas
-// juste continuer à jouer leur compte -- exactement ce qu'Alex demandait.
-const RAID_BOSS = [
-  { hp: 4827,  atk: 18,  def: 8 },
-  { hp: 20631, atk: 115, def: 59 },
-  { hp: 44716, atk: 441, def: 299 },
-];
-// Visuels du boss AMALGAME, un par phase (V0.03.03, fournis par Alex) : progression jour -> crépuscule
-// -> nuit illustrant sa dégradation au fil des phases (intact / bras arraché-fumant / effondré). Encodés
-// en base64 directement dans le HTML, comme l'icône de la case MENU (V0.03.02) -- pas d'upload Supabase
-// Storage, faute de mécanisme d'upload confirmé disponible via les outils MCP Supabase connectés.
-const RAID_BOSS_IMG = [
-  'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/raid/boss-phase1.webp',
-  'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/raid/boss-phase2.webp',
-  'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/raid/boss-phase3.webp',
-];
-function makeRaidBoss(phaseIdx, hpOverride){
-  const s = RAID_BOSS[phaseIdx];
-  const hp = (hpOverride != null) ? hpOverride : s.hp;
-  return { name:'AMALGAME', hp, maxHp:s.hp, atk:s.atk, def:s.def, shield:0, alive:true, isPlayer:false };
-}
-
-// ---------- Récompenses : par phase scalée au niveau (même multiplicateur que les missions,
-// levelRewardMult()) ; récompense finale fixe pour tout le monde (demande explicite d'Alex) ----------
-const RAID_PHASE_REWARD_BASE = [
-  { gold:40,  xp:25,  mat:{ rare:6,  epique:3,  legendaire:1 }, crystal:15 },
-  { gold:90,  xp:55,  mat:{ rare:10, epique:6,  legendaire:2 }, crystal:30 },
-  { gold:180, xp:110, mat:{ rare:16, epique:10, legendaire:4 }, crystal:55 },
-];
-function raidPhaseReward(phaseIdx){
-  const b = RAID_PHASE_REWARD_BASE[phaseIdx], m = levelRewardMult();
-  return { gold:Math.round(b.gold * m), xp:Math.round(b.xp * m), crystal:Math.round(b.crystal * m),
-    mat:{ rare:Math.round(b.mat.rare * m), epique:Math.round(b.mat.epique * m), legendaire:Math.round(b.mat.legendaire * m) } };
-}
-// 5 boosters ressources + 2 boosters cartes + 2 boosters modules + 10 cristaux, valeur fixe (demande d'Alex).
-function grantRaidFinalReward(){
-  const items = [];
-  items.push.apply(items, grantReward({ booster:'res', boosterN:5 }));
-  items.push.apply(items, grantReward({ booster:'cards', boosterN:2 }));
-  items.push.apply(items, grantReward({ booster:'modules', boosterN:2 }));
-  items.push.apply(items, grantReward({ crystal:10 }));
-  return items;
-}
-
-// ---------- Tuile MENU (case fusionnée 05+06) ----------
-function updateRaidTile(){
-  const tileEl = document.getElementById('tileRaid');
-  if(!tileEl) return;
-  const { info, r, now, locked, finished, canAttempt } = raidState();
-  const subEl = document.getElementById('raidTileSub');
-  const dot = document.getElementById('dotRaid');
-  tileEl.classList.toggle('locked', !canAttempt);
-  // V0.03.04, demande d'Alex : case fermée (non cliquable, cf le onclick ci-dessus) quand la fenêtre
-  // d'évènement elle-même n'est pas ouverte -- à ne pas confondre avec .locked.
-  tileEl.classList.toggle('closed', !info.active);
-  if(canAttempt) subEl.textContent = 'PHASE ' + (r.phase + 1) + '/3 · ' + r.tokens + ' TOKEN' + (r.tokens > 1 ? 'S' : '');
-  else if(finished) subEl.textContent = 'RAID TERMINÉ';
-  else if(locked) subEl.textContent = 'BOSS DE RETOUR DANS ' + raidFmtDuration(r.lockUntil - now);
-  else subEl.textContent = 'PROCHAIN RAID DANS ' + raidFmtDuration(info.nextStart - now);
-  if(dot) dot.classList.toggle('on', canAttempt && r.tokens > 0);
-  // Barre de vie (V0.03.02, masquée hors évènement disponible depuis V0.03.04 -- demande d'Alex : inutile
-  // à voir tant qu'on ne peut pas attaquer) : PV restants du boss sur la phase en cours (r.phaseHp,
-  // persistés entre tentatives) par rapport au max de cette phase. Depuis V0.03.93 ce max est calculé
-  // (RAID_BOSS[phase].hp, table fixe identique pour tout le monde) ;
-  // pleine si la phase n'a pas encore été entamée (phaseHp == null) ; vide une fois les 3 phases
-  // terminées (r.phase > 2).
-  const hpBar = document.getElementById('raidTileHpBar');
-  if(hpBar) hpBar.style.display = canAttempt ? '' : 'none';
-  const hpFill = document.getElementById('raidTileHpFill');
-  if(hpFill){
-    const phaseIdx = Math.min(r.phase, RAID_BOSS.length - 1);
-    const maxHp = RAID_BOSS[phaseIdx].hp;
-    const curHp = (r.phase > RAID_BOSS.length - 1) ? 0 : ((r.phaseHp != null) ? r.phaseHp : maxHp);
-    hpFill.style.width = Math.max(0, Math.min(100, curHp / maxHp * 100)) + '%';
-  }
-}
-
-// ---------- Écran de choix (image du boss / 3 phases / récompenses / lancement) ----------
-function renderRaidView(){
-  document.getElementById('raidChoice').hidden = false;
-  document.getElementById('raidCombat').hidden = true;
-  const { info, r, now, locked, finished, canAttempt } = raidState();
-  updateRaidTile();
-  const bossBox = document.getElementById('raidBossBox');
-  const msgTxt = document.getElementById('raidBossMsgTxt');
-  const msgSub = document.getElementById('raidBossMsgSub');
-  const showGlitch = !info.active || locked || finished;
-  bossBox.classList.toggle('glitch', showGlitch);
-  document.getElementById('raidBossPhaseNum').textContent = Math.min(r.phase + 1, 3);
-  // V0.03.04, demande d'Alex : derrière l'encadré glitché "LE BOSS REVIENDRA"/"TERMINÉ" (hors fenêtre,
-  // verrou entre phases, ou raid fini), toujours l'image de la phase 3 (boss au sol, le plus abîmé) --
-  // jamais celle de la phase en cours, qui n'a pas de sens tant qu'on ne peut pas attaquer.
-  const bossImg = document.getElementById('raidBossImg');
-  if(bossImg) bossImg.src = showGlitch ? RAID_BOSS_IMG[RAID_BOSS_IMG.length - 1] : RAID_BOSS_IMG[Math.min(r.phase, RAID_BOSS_IMG.length - 1)];
-  if(showGlitch){
-    const txt = finished ? 'TERMINÉ' : 'LE BOSS REVIENDRA';
-    msgTxt.textContent = txt; msgTxt.setAttribute('data-t', txt);
-    msgSub.textContent = finished ? 'Reviens au prochain raid.' : raidFmtDuration((locked ? r.lockUntil : info.nextStart) - now);
-  }
-  for(let i = 0; i < 3; i++){
-    const node = document.getElementById('raidNode' + i);
-    node.classList.toggle('done', i < r.phase);
-    node.classList.toggle('cur', i === r.phase && canAttempt);
-    // V0.03.90 (demande d'Alex) : la case de récompense sous une phase déjà remportée passe "validée"
-    // (coche dorée), même condition que .rt-node.done ci-dessus -- le bouton reste cliquable (aperçu
-    // toujours utile pour se rappeler ce qui a été reçu), seul son habillage change.
-    const rpBtn = document.querySelector('.raid-phase-row .rp-btn[data-ph="' + i + '"]');
-    if(rpBtn) rpBtn.classList.toggle('claimed', i < r.phase);
-  }
-  document.getElementById('raidTrackFill').style.width = (Math.min(r.phase, 3) / 3 * 100) + '%';
-  const launchBtn = document.getElementById('raidLaunchBtn');
-  const regenEl = document.getElementById('raidTokenRegen');
-  launchBtn.disabled = !canAttempt || r.tokens <= 0;
-  if(!info.active) launchBtn.innerHTML = 'ÉVÈNEMENT FERMÉ';
-  else if(finished) launchBtn.innerHTML = 'RAID TERMINÉ';
-  else if(locked) launchBtn.innerHTML = 'EN ATTENTE DU BOSS';
-  else launchBtn.innerHTML = 'LANCER LE COMBAT · ' + r.tokens + '/3 TOKEN' + (r.tokens > 1 ? 'S' : '');
-  const msLeft = raidTokenMsLeft();
-  regenEl.textContent = (canAttempt && r.tokens < RAID_TOKEN_MAX && msLeft > 0) ? ('Prochain token dans ' + raidFmtDuration(msLeft)) : '';
-}
-function raidHeartbeat1s(){
-  const view = document.getElementById('raidView');
-  if(view && view.classList.contains('active')){
-    if(raidBattleOn && !document.getElementById('raidCombat').hidden) raidRenderCombat();
-    else renderRaidView();
-  }
-  const hub = document.getElementById('modeHub');
-  if(hub && hub.classList.contains('active')) updateRaidTile();
-}
-
-// ---------- Bulle de récompense par phase (tap sur l'icône, même pictogramme que RÉCOMPENSES) ----------
-function hideRaidRewardBubble(){ const el = document.getElementById('raidRewardBubbleEl'); if(el) el.remove(); }
-function showRaidRewardBubble(phaseIdx, btn){
-  hideRaidRewardBubble();
-  const rew = raidPhaseReward(phaseIdx);
-  // V0.03.84 (demande d'Alex) : icône à gauche du texte sur chaque ligne -- on réutilise les mêmes
-  // constantes/classes d'icônes que partout ailleurs dans le jeu (ICON_GOLD/ICON_XP/ICON_CRYSTAL,
-  // matIcon() pour les matériaux) plutôt que d'en recréer.
-  const rows = [
-    rew.gold ? [ICON_GOLD, rew.gold + ' OR'] : null,
-    rew.xp ? [ICON_XP, rew.xp + ' XP'] : null,
-    rew.crystal ? [ICON_CRYSTAL, rew.crystal + ' CRISTAUX'] : null,
-    rew.mat.rare ? [matIcon('rare'), rew.mat.rare + ' MAT. RARE'] : null,
-    rew.mat.epique ? [matIcon('epique'), rew.mat.epique + ' MAT. ÉPIQUE'] : null,
-    rew.mat.legendaire ? [matIcon('legendaire'), rew.mat.legendaire + ' MAT. LÉGENDAIRE'] : null,
-  ].filter(Boolean);
-  const bubble = document.createElement('div');
-  bubble.className = 'raid-reward-bubble';
-  bubble.id = 'raidRewardBubbleEl';
-  bubble.innerHTML = '<div class="rrb-title">RÉCOMPENSE · PHASE ' + (phaseIdx + 1) + '</div>' + rows.map(r => '<div class="rrb-row">' + r[0] + '<span>' + r[1] + '</span></div>').join('');
-  document.body.appendChild(bubble);
-  const bw = bubble.offsetWidth;
-  const br = btn.getBoundingClientRect();
-  let x = br.left + br.width / 2; x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, x));
-  bubble.style.left = x + 'px';
-  bubble.style.transform = 'translateX(-50%)';
-  bubble.style.top = Math.max(10, br.top - bubble.offsetHeight - 10) + 'px';
-}
-document.addEventListener('pointerdown', (e) => {
-  if(e.target.closest('.rp-btn') || e.target.closest('.raid-reward-bubble')) return;
-  hideRaidRewardBubble();
-});
-document.querySelectorAll('#raidChoice .rp-btn').forEach(btn => {
-  btn.onclick = (e) => { e.stopPropagation(); showRaidRewardBubble(parseInt(btn.dataset.ph, 10), btn); };
-});
-document.getElementById('raidLaunchBtn').onclick = () => {
-  const st = raidState();
-  if(!st.canAttempt || st.r.tokens <= 0) return;
-  openRaidTeamPicker();
-};
-
-// ---------- Sélection d'équipe (jusqu'à 15 cartes, classement rétractable, compteur X/15) ----------
-var raidSortBy = 'level';
-var raidPicked = [];
-function ownedRaidCards(){
-  return CHAR_DEFS.filter(isOwned).map(def => {
-    const rar = effRarity(def), level = cardLevel(def.name, rar), hp = statsAtLevel(def, level, rar).hp;
-    return { def, rar, level, hp, key: def.name + '|' + rar };
-  });
-}
-function openRaidTeamPicker(){
-  raidSortBy = 'level';
-  document.querySelectorAll('#raidSortOpts .raid-filter-opt').forEach(b => b.classList.toggle('active', b.dataset.sort === 'level'));
-  document.getElementById('raidFilterDetails').open = false;
-  const owned = new Set(ownedRaidCards().map(c => c.key));
-  raidPicked = (player.raid.squad15 || []).filter(k => owned.has(k));
-  renderRaidTeamGrid();
-  document.getElementById('raidTeamModal').classList.add('show');
-}
-function closeRaidTeamPicker(){ document.getElementById('raidTeamModal').classList.remove('show'); }
-function toggleRaidPick(key){
-  const i = raidPicked.indexOf(key);
-  if(i >= 0) raidPicked.splice(i, 1);
-  else { if(raidPicked.length >= 15) return; raidPicked.push(key); }
-  renderRaidTeamGrid();
-}
-// V0.03.84 (demande d'Alex, 2e passage : "prends la même liste que celle du choix des cartes lors du
-// lancement des missions") : 1ère tentative (.cx-portrait + unitSVG() seuls) encore rejetée -- les
-// persos sans config dédiée dans MECH_CONFIGS (CATER-PILLARD, PRAWN, NEUTRON...) retombent sur une
-// forme générique (wedge/block/wing/orb) peu lisible. On reprend donc exactement la recette de
-// .lp-card dans renderLaunchPicker() (fenêtre "CHOIX DE L'ESCOUADE" avant une mission) : carte
-// .codex-card complète via codexCardHtml() (nom, rareté, niveau, cadre légendaire le cas échéant),
-// avec le badge numéroté (ordre de sélection) au lieu du ✓ utilisé là-bas.
-function renderRaidTeamGrid(){
-  const grid = document.getElementById('raidTeamGrid');
-  let cards = ownedRaidCards();
-  // Classement (V0.03.05, demande d'Alex ; bouton PV retiré en V0.03.07) : par rareté ou par niveau,
-  // du plus fort au plus faible dans les deux cas -- pour repérer vite ses meilleures cartes en tête
-  // de liste. Les PV restent affichés sur chaque tuile (c'est juste le tri par PV qui a été retiré).
-  cards = cards.slice().sort((a, b) => {
-    if(raidSortBy === 'rarity') return tierOf(b.rar) - tierOf(a.rar) || b.level - a.level;
-    return b.level - a.level;
-  });
-  grid.innerHTML = cards.map(c => {
-    const idx = raidPicked.indexOf(c.key);
-    const picked = idx >= 0;
-    return `<div class="codex-card raid-team-card ${rarCls(c.rar)}${picked ? ' sel' : ''}" data-key="${c.key}">
-      ${codexCardHtml(c.def, c.rar, { badge: picked ? String(idx + 1) : '' })}
-    </div>`;
-  }).join('');
-  grid.querySelectorAll('.raid-team-card').forEach(el => { el.onclick = () => toggleRaidPick(el.dataset.key); });
-  document.getElementById('raidTeamCount').textContent = raidPicked.length + '/15';
-  const launchBtn = document.getElementById('raidTeamLaunchBtn');
-  launchBtn.disabled = raidPicked.length < 5;
-  launchBtn.textContent = raidPicked.length < 5 ? ('SÉLECTIONNE AU MOINS 5 CARTES (' + raidPicked.length + '/5)') : 'LANCER';
-}
-// V0.03.84 (demande d'Alex) : remplit l'équipe en un clic avec les 15 meilleures cartes possédées,
-// classées par puissance globale (cardPower(), même formule que le badge "Puissance" du Codex) --
-// remplace entièrement la sélection en cours (comme un vrai "auto", pas un simple complément).
-function raidAutoPick(){
-  const cards = ownedRaidCards().slice().sort((a, b) => cardPower(b.def, b.rar, b.level) - cardPower(a.def, a.rar, a.level));
-  raidPicked = cards.slice(0, 15).map(c => c.key);
-  renderRaidTeamGrid();
-}
-document.getElementById('raidTeamClose').onclick = closeRaidTeamPicker;
-document.getElementById('raidAutoBtn').onclick = raidAutoPick;
-document.querySelectorAll('#raidSortOpts .raid-filter-opt').forEach(btn => {
-  btn.onclick = () => {
-    raidSortBy = btn.dataset.sort;
-    document.querySelectorAll('#raidSortOpts .raid-filter-opt').forEach(b => b.classList.toggle('active', b === btn));
-    renderRaidTeamGrid();
-  };
-});
-document.getElementById('raidTeamLaunchBtn').onclick = () => {
-  if(raidPicked.length < 5) return;
-  if(!raidState().canAttempt) return; // garde-fou : jamais de jeton dépensé hors évènement / pendant le verrou / raid terminé
-  if(!raidSpendToken()) return;
-  player.raid.squad15 = raidPicked.slice();
-  saveSoon();
-  closeRaidTeamPicker();
-  raidStartAttempt();
-};
-
-// ---------- Combat (boucle dédiée, autonome -- voir l'en-tête de section) ----------
-var raidTeam = [], raidBench = [], raidBoss = null, raidBattleOn = false, raidBattleOver = false, raidAttemptEndAt = 0, raidTickHandle = null, raidPhaseIdx = 0;
-function raidStartAttempt(){
-  const st = raidState();
-  raidPhaseIdx = st.r.phase;
-  const startHp = (st.r.phaseHp != null) ? st.r.phaseHp : RAID_BOSS[raidPhaseIdx].hp;
-  raidBoss = makeRaidBoss(raidPhaseIdx, startHp);
-  const keys = (player.raid.squad15 || []).slice(0, 15);
-  const built = keys.map(k => { const e = sqEntry(k); return e ? makePlayerFromDef(e.def, e.rar) : null; }).filter(Boolean);
-  raidTeam = built.slice(0, 5);
-  raidBench = built.slice(5);
-  raidBattleOn = true;
-  raidBattleOver = false;
-  raidAttemptEndAt = Date.now() + 2 * 60 * 1000;
-  document.getElementById('raidChoice').hidden = true;
-  document.getElementById('raidCombat').hidden = false;
-  document.getElementById('raidCombatPhaseNum').textContent = raidPhaseIdx + 1;
-  // Artwork du boss dans l'écran de combat (V0.03.86) : la phase ne change pas en cours de tentative
-  // (seulement entre 2 tentatives, après une victoire), donc un seul réglage au lancement suffit.
-  const combatBossImg = document.getElementById('raidCombatBossImg');
-  if(combatBossImg) combatBossImg.src = RAID_BOSS_IMG[Math.min(raidPhaseIdx, RAID_BOSS_IMG.length - 1)];
-  raidRenderCombat();
-  // V0.03.09 : clearInterval défensif avant d'en reposer un, comme startLoop() le fait déjà pour tickHandle --
-  // aucun chemin de sortie connu n'omet raidEndAttempt() (qui nettoie raidTickHandle), mais c'est désormais
-  // cohérent avec le reste du fichier et évite tout risque de double-interval si un futur appel y dérogeait.
-  clearInterval(raidTickHandle);
-  raidTickHandle = setInterval(raidTick, BASE_TICK);
-}
-function raidRefillBench(){
-  for(let i = 0; i < raidTeam.length; i++){
-    if((!raidTeam[i] || !raidTeam[i].alive) && raidBench.length) raidTeam[i] = raidBench.shift();
-  }
-}
-// Même formule de dégâts que dealDamage() (crit 18%/+60%, variance ±15%, DÉF à rendements
-// décroissants, bouclier -50%) mais sans les hooks liés aux missions (pas de rewardKill() ni
-// d'effets d'ultime spéciaux -- voir l'en-tête de section).
-// V0.03.88 (demande d'Alex) : retourne maintenant {dmg, crit} au lieu du seul montant -- raidTick() a
-// besoin de savoir si LE BOSS vient de subir un critique pour choisir la couleur du chiffre flottant
-// (raidFloatDamage(), rouge normal / jaune critique, cf CSS .float-dmg.dmg/.crit) posé sur son artwork.
-function raidDealDamage(attacker, target, mult, forceCrit){
-  const crit = forceCrit || Math.random() < 0.18;
-  const raw = attacker.atk * mult * (crit ? 1.6 : 1) * (0.85 + Math.random() * 0.3);
-  const reduction = 100 / (100 + (target.def || 0));
-  const dmg = Math.max(1, Math.round(raw * reduction * (target.shield > 0 ? 0.5 : 1)));
-  target.hp = Math.max(0, target.hp - dmg);
-  if(target.hp <= 0) target.alive = false;
-  return { dmg, crit };
-}
-// Chiffre de dégâts flottant sur l'artwork du boss + glitch de l'encadré (V0.03.88, demande d'Alex :
-// "les points de dégâts que les cartes mechs de l'escouade du joueur infligent au boss apparaissent sur
-// l'artwork en rouge, jaune pour les critiques, et ça fasse glitcher l'encadré du boss") -- même recette
-// visuelle que floatDamage() (.float-dmg/.dmg/.crit, cf CSS, déjà rouge/jaune) mais posée directement sur
-// .raid-combat-bossimgwrap (plutôt que sur une carte .unit via ROSTER_DOM, qui n'existe pas en raid), et
-// SANS les garde-fous HEADLESS/BG_SWAP/inInfinite de floatDamage() : propres au système de missions
-// normal, sans équivalent côté raid (pas de rattrapage hors-écran). Le glitch réutilise l'esthétique de
-// .raid-boss-box.glitch (même keyframes glitchJit) mais en charge courte à la demande (classe .hit-glitch,
-// retirée après coup) plutôt qu'en boucle infinie -- celle-ci reste réservée à l'état "boss indisponible"
-// (qui affiche aussi le message "LE BOSS REVIENDRA", hors de propos ici).
-function raidFloatDamage(text, cls){
-  if(document.hidden) return;
-  const wrap = document.querySelector('#raidCombatBossBox .raid-combat-bossimgwrap');
-  if(wrap){
-    const old = wrap.getElementsByClassName('float-dmg');
-    while(old.length >= 4) old[0].remove();
-    const f = document.createElement('div');
-    f.className = 'float-dmg ' + cls;
-    f.textContent = text;
-    wrap.appendChild(f);
-    setTimeout(() => { if(f.parentNode) f.remove(); }, 700);
-  }
-  const box = document.getElementById('raidCombatBossBox');
-  if(box){
-    box.classList.remove('hit-glitch');
-    void box.offsetWidth; // force le reflow pour pouvoir rejouer l'animation si un coup vient de se terminer
-    box.classList.add('hit-glitch');
-    setTimeout(() => box.classList.remove('hit-glitch'), 350);
-  }
-}
-function raidTick(){
-  if(!raidBattleOn || raidBattleOver) return;
-  if(Date.now() >= raidAttemptEndAt){ raidEndAttempt('timeout'); return; }
-  raidRefillBench();
-  const order = raidTeam.filter(u => u && u.alive).concat(raidBoss.alive ? [raidBoss] : []);
-  for(const u of order){
-    if(raidBattleOver) break;
-    if(u === raidBoss){
-      if(!raidBoss.alive) continue;
-      const allies = raidTeam.filter(p => p && p.alive);
-      if(!allies.length) continue;
-      raidDealDamage(raidBoss, allies[Math.floor(Math.random() * allies.length)], 1);
-    } else {
-      if(!u.alive) continue;
-      const hit = raidDealDamage(u, raidBoss, 1);
-      raidFloatDamage('-' + hit.dmg, hit.crit ? 'crit' : 'dmg');
-    }
-  }
-  raidRefillBench();
-  raidRenderCombat();
-  if(!raidBoss.alive){ raidEndAttempt('win'); return; }
-  if(raidTeam.every(u => !u || !u.alive) && !raidBench.length){ raidEndAttempt('wipe'); return; }
-}
-// Petite carte illustrée d'une unité d'escouade en combat de raid (V0.03.86, demande d'Alex) : même
-// recette que cbtPreviewHtml()/buildRoster() (cadre .unit.cbt par rareté, artwork, gemme de niveau) --
-// seule différence avec les autres usages de .unit.cbt : la jauge de PV doit refléter les VRAIS PV
-// restants (pas une jauge statique pleine), peinte ensuite via setCbtGaugeFill() comme en combat normal
-// (voir raidRenderCombat() juste en dessous). V0.03.87 : plus de cadre individuel par carte (.raid-sq-cell,
-// retiré) -- les 5 cartes partagent maintenant un seul grand encadré (.raid-squad-box, posé une fois dans
-// le HTML autour de #raidSquadGrid), demande d'Alex après la 1ère version à un encadré par carte.
-function raidUnitCardHtml(u){
-  if(!u) return '<div class="raid-sq-empty"><span class="rsc-dash">—</span></div>';
-  const uArt = (CHAR_DEFS.find(c => c.name === u.name) || {}).art;
-  return '<div class="unit cbt ' + cbtFrameClass(u, true) + (u.alive ? '' : ' dead') + '">' +
-      '<div class="cbt-ring"></div>' +
-      (uArt ? '<img class="cbt-art-img" style="object-position:50% ' + cbtArtPosY(u.name) + '%" src="' + uArt + '" alt="" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'">' : '') +
-      '<div class="cbt-gem"><b>' + u.level + '</b></div>' +
-      '<div class="cbt-name">' + escapeHtml(u.name) + '</div>' +
-      '<div class="cbt-g cbt-hp"><canvas></canvas></div>' +
-      '<div class="cbt-g cbt-ult"><canvas></canvas></div>' +
-    '</div>';
-}
-function raidRenderCombat(){
-  const timerEl = document.getElementById('raidTimer');
-  const remaining = Math.max(0, raidAttemptEndAt - Date.now());
-  const totalSec = Math.ceil(remaining / 1000);
-  timerEl.textContent = Math.floor(totalSec / 60) + ':' + String(totalSec % 60).padStart(2, '0');
-  timerEl.classList.toggle('low', totalSec <= 20);
-  document.getElementById('raidBossHpTxt').textContent = Math.max(0, Math.round(raidBoss.hp)).toLocaleString('fr-FR') + ' / ' + raidBoss.maxHp.toLocaleString('fr-FR');
-  document.getElementById('raidBossHpFill').style.width = Math.max(0, raidBoss.hp / raidBoss.maxHp * 100) + '%';
-  const squadGrid = document.getElementById('raidSquadGrid');
-  squadGrid.innerHTML = raidTeam.map(raidUnitCardHtml).join('');
-  // Les cartes n'ont plus de cadre individuel qui les enveloppe (V0.03.87) -- on itère directement sur
-  // les enfants de la grille (carte .unit.cbt ou alvéole vide .raid-sq-empty, cf raidUnitCardHtml()).
-  Array.from(squadGrid.children).forEach((cell, i) => {
-    const u = raidTeam[i];
-    if(!u) return;
-    const pct = Math.max(0, u.hp / u.maxHp * 100);
-    setCbtGaugeFill(cell.querySelector('.cbt-hp'), pct);
-    setCbtGaugeFill(cell.querySelector('.cbt-ult'), 0);
-  });
-  document.getElementById('raidBenchCount').textContent = raidBench.length + ' en réserve';
-}
-function raidStopCombatLoop(){
-  if(raidTickHandle){ clearInterval(raidTickHandle); raidTickHandle = null; }
-  raidBattleOn = false;
-}
-// reason: 'win' | 'timeout' | 'wipe' | 'abandon' (sortie manuelle via le bouton retour -- voir
-// son câblage plus haut) -- dans tous les cas les PV du boss déjà retirés sont conservés pour
-// la prochaine tentative (demande d'Alex), sauf en cas de victoire où la phase est actée.
-function raidEndAttempt(reason){
-  raidBattleOver = true;
-  raidStopCombatLoop();
-  player.raid.phaseHp = (raidBoss && raidBoss.alive) ? raidBoss.hp : null;
-  if(reason === 'win'){
-    const rew = raidPhaseReward(raidPhaseIdx);
-    const items = grantReward(rew);
-    const wasFinalPhase = (raidPhaseIdx >= 2);
-    player.raid.phase = raidPhaseIdx + 1;
-    player.raid.phaseHp = null;
-    if(wasFinalPhase){
-      items.push.apply(items, grantRaidFinalReward());
-      player.raid.finalClaimed = true;
-      player.raid.lockUntil = 0;
-    } else {
-      player.raid.lockUntil = Date.now() + RAID_PHASE_LOCK_MS;
-    }
-    saveSoon();
-    document.getElementById('raidCombat').hidden = true;
-    document.getElementById('raidChoice').hidden = false;
-    renderRaidView();
-    showRewardModal(wasFinalPhase ? 'RAID VAINCU !' : 'PHASE ' + (raidPhaseIdx + 1) + ' VAINCUE', items, {});
-  } else {
-    saveSoon();
-    document.getElementById('raidCombat').hidden = true;
-    document.getElementById('raidChoice').hidden = false;
-    renderRaidView();
-    if(reason !== 'abandon') showToast(reason === 'wipe' ? 'Escouade anéantie — les PV du boss restent entamés pour la prochaine tentative.' : 'Temps écoulé — les PV du boss restent entamés pour la prochaine tentative.');
-  }
-}
-updateRaidTile();
 </script>
 <script>
 // Traits lumineux de fond (tirs de balles) : purement décoratif, couleurs aléatoires
