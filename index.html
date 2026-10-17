@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.70</title>
+<title>Projet MECA V0.04.71</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7207,10 +7207,11 @@
       linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
       linear-gradient(135deg, rgba(14,100,52,.95) 0%, rgba(14,100,52,.55) 40%, rgba(14,100,52,.2) 70%, transparent 100%);
   }
+  /* V0.04.71 : icône de la case BATAILLE à la même taille que celles des autres cases (86 % du cadre, centrée, même gravure) */
   .battle-big .mt-battle-ico{
-    position:absolute; left:50%; top:calc(50% - 12px); transform:translate(-50%,-50%); width:62px; height:62px;
-    color:rgba(220,255,232,.5); pointer-events:none; z-index:0;
-    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.2)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:86%; height:86%;
+    color:#e4ffee; opacity:.2; pointer-events:none; z-index:0;
+    filter:drop-shadow(0 1.5px 0 rgba(255,255,255,.3)) drop-shadow(0 -1.5px 1px rgba(0,0,0,.9));
   }
   .battle-big .mt-title{ color:#d4ffe3; text-shadow:0 0 10px rgba(60,220,120,.55); letter-spacing:3px; position:relative; z-index:1; }
   /* Écran BATAILLE : liste des decks du joueur (mêmes tuiles que dans CARTE › DECK), un seul sélectionnable,
@@ -8847,7 +8848,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.70</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.71</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9245,9 +9246,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.70';
+var BUILD_VERSION = 'V0.04.71';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.71', items:[
+    'DÉFIS : GRIEVER, CONQUEST, CHEIF 117 et MED-POD ont maintenant leur artwork dans la grille des défis.',
+    'DÉFIS : les cartes holographiques (MOG-AI, ZAPPAN, MOTOKO, TOA2) ont leur propre défi, en fin de grille : 10 paliers, 3 paliers ultimate et decks adverses dédiés. Le compteur passe à 42/42.',
+    'MENU : l\'icône de la case BATAILLE a la même taille que celles des autres cases.',
+  ] },
   { v:'V0.04.70', items:[
     'NOUVELLE CARTE : FENCY (rare, Tank) — mammouth blindé. Les ennemis doivent l\'attaquer en priorité.',
     'NOUVELLE CARTE : EXO-MKI (rare, Baroud d\'honneur) — aucune DEF, uniquement des PV. À sa destruction, elle rejoint la pioche adverse (mélangée) : une vraie boucle de pile en pile.',
@@ -11241,27 +11247,33 @@ const CHAR_DEFS = [
   { name:"GRIEVER", rarity:"holo", holoOnly:true, color:"#e8f0ff", shape:"wing", role:"Holo — assaillant à quatre bras",
     ultName:"QUADRI-FRAPPE ÉCLAIR", ultMult:2.4, ultDesc:"Décharge ses quatre bras sur quatre cibles ennemies distinctes en une fraction de seconde, puis disparaît du champ de vision adverse grâce à sa vitesse fulgurante (esquive totale pendant quelques secondes)",
     base:{atk:66, def:16, hp:420}, max:{atk:512, def:190, hp:1700}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/griever-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/griever-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/griever-art-ext.webp' },
   { name:"MOTOKO", rarity:"holo", holoOnly:true, color:"#ffdbd1", shape:"wedge", role:"Holo — pilote tireuse d'élite",
     ultName:"TIR DE PASSAGE", ultMult:1.5, ultDesc:"Fonce à pleine vitesse et arrose trois ennemis au passage, visant toujours juste (critiques garantis sur les trois)",
     base:{atk:79, def:12, hp:380}, max:{atk:582, def:160, hp:1580}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/motoko-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/motoko-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/motoko-art-ext.webp' },
   { name:"CONQUEST", rarity:"holo", holoOnly:true, color:"#cfe8ff", shape:"orb", role:"Holo — conquérant cuirassé",
     ultName:"ARRACHEMENT BRUTAL", ultMult:2.1, ultDesc:"Empoigne le mécha ennemi le plus puissant et lui arrache un bras d'un coup critique garanti, le laissant étourdi, puis se renforce",
     base:{atk:20, def:34, hp:660}, max:{atk:150, def:360, hp:3000}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/conquest-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/conquest-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/conquest-art-ext.webp' },
   { name:"CHEIF 117", rarity:"holo", holoOnly:true, color:"#f0ecff", shape:"wedge", role:"Holo — commandant de guerre",
     ultName:"DUEL DE COMMANDEMENT", ultMult:1.8, ultDesc:"Engage en duel les deux mechs ennemis les plus puissants et les abat d'une précision militaire sans faille (critiques garantis sur les deux), puis tient sa position avec une discipline inébranlable",
     base:{atk:74, def:15, hp:410}, max:{atk:560, def:180, hp:1660}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/cheif-117-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/cheif-117-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/cheif-117-art-ext.webp' },
   { name:"MED-POD", rarity:"holo", holoOnly:true, color:"#f2eaff", shape:"orb", role:"Holo — capsule de secours",
     ultName:"RATTACHEMENT D'URGENCE", ultMult:1.5, ultDesc:"Rattache sa capsule de soins à un mécha allié tombé au combat et le relance aussitôt, pleinement réparé (soigne toute l'escouade si personne n'est tombé)",
     base:{atk:18, def:26, hp:720}, max:{atk:140, def:300, hp:2500}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/med-pod-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/med-pod-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/med-pod-art-ext.webp' },
   { name:"TOA2", rarity:"holo", holoOnly:true, color:"#ffecb8", shape:"block", role:"Holo — char d'assaut autonome",
     ultName:"BARRAGE AUTOMATISÉ", ultMult:1.4, ultDesc:"L'IA de bord calcule une frappe parfaite sur tout le champ de bataille (critique garanti sur chaque cible), puis bascule en posture défensive",
     base:{atk:24, def:36, hp:640}, max:{atk:170, def:380, hp:2900}, owned:false, seen:false,
-    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/toa2-art.webp' },
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/toa2-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/toa2-art-ext.webp' },
   // ---- Nouvelle carte RARE spécialité ATQ ----
   { name:"WHIPLASH", rarity:"rare", color:"#2fd8e8", shape:"WHIPLASH", role:"Attaquant — double lasso électrifié",
     ultName:"ÉTREINTE FOUDROYANTE", ultMult:1.6, ultDesc:"Capture deux ennemis au hasard dans ses lassos électrifiés, les étourdissant tous les deux",
@@ -11550,6 +11562,7 @@ CHAR_DEFS.forEach(c => { if(c.owned) cardLevelDist[sqKey(c.name, rarityOf(c))] =
 // Cartes de série (rare/épique/légendaire) vs les 6 holographiques uniques
 const SERIES_DEFS = CHAR_DEFS.filter(d => !d.holoOnly);
 const HOLO_DEFS   = CHAR_DEFS.filter(d => d.holoOnly);
+const DEFI_DEFS   = SERIES_DEFS.concat(HOLO_DEFS);   // V0.04.71 : les défis couvrent aussi les cartes holographiques (placées en fin de grille)
 function tierOf(r){ return RARITY_ORDER.indexOf(r); }
 function stackCount(name, r){ return (cardCopies[name] && cardCopies[name][r]) || 0; }
 function copiesOf(defOrName){
@@ -27142,7 +27155,7 @@ document.getElementById('defiBackBtn').onclick = showHub;
 // (console navigateur) lesquelles il reste à fournir, plutôt que de les recompter à la main à chaque
 // carte ajoutée. Les cases concernées affichent l'artwork gris par défaut (GREY_ART) en attendant.
 function defiExtArtMissing(){
-  return SERIES_DEFS.filter(def => !def.artExt).map(def => def.name);
+  return DEFI_DEFS.filter(def => !def.artExt).map(def => def.name);
 }
 // ---------- DÉFI : paliers par carte (V0.03.47, demande d'Alex) ----------
 // 50 paliers par carte, un combat unique chacun. Les paliers "dizaine" (10/20/30/40/50) sont des
@@ -27273,11 +27286,11 @@ function renderDefi(){
     // Filtre actif : seulement les cartes possédées et déjà certifiées (palier 50 fait), cf
     // defiUltimateReady() -- aucune case verrouillée affichée ici, un cadenas n'aurait aucun sens dans
     // cette vue ("continuer de monter" implique déjà posséder + avoir fini le défi classique).
-    const eligible = SERIES_DEFS.filter(defiUltimateReady);
+    const eligible = DEFI_DEFS.filter(defiUltimateReady);
     list.innerHTML = eligible.length ? eligible.map(cardCellHtml).join('') :
       `<div class="fab-empty">Aucune carte n'a encore débloqué le mode ultimate.<br>Termine les 10 paliers du défi classique d'une carte pour y accéder.</div>`;
   } else {
-    list.innerHTML = SERIES_DEFS.map(def => isOwned(def) ? cardCellHtml(def) : `
+    list.innerHTML = DEFI_DEFS.map(def => isOwned(def) ? cardCellHtml(def) : `
       <div class="defi-cell" data-name="${def.name}">
         <div class="defi-lock">${lockSvg}</div>
       </div>
@@ -27286,14 +27299,14 @@ function renderDefi(){
   // Compteur de l'encadré DÉFI (V0.03.44) : "X/total", X = défis débloqués -- toujours sur l'ensemble des
   // cartes (V0.03.53 : calculé depuis SERIES_DEFS plutôt que depuis le DOM, pour rester correct même
   // quand le filtre ultimate réduit la grille affichée).
-  const total = SERIES_DEFS.length;
-  const done = SERIES_DEFS.filter(isOwned).length;
+  const total = DEFI_DEFS.length;
+  const done = DEFI_DEFS.filter(isOwned).length;
   const counter = document.getElementById('defiProgressCount');
   if(counter) counter.textContent = done + '/' + total;
   // Case déverrouillée -> ouvre la piste des paliers de CETTE carte (V0.03.47, demande d'Alex).
   list.querySelectorAll('.defi-cell.unlocked').forEach(cell => {
     cell.onclick = () => {
-      const def = SERIES_DEFS.find(d => d.name === cell.dataset.name);
+      const def = DEFI_DEFS.find(d => d.name === cell.dataset.name);
       if(def) openDefiPath(def);
     };
   });
@@ -27412,6 +27425,10 @@ function renderDefiPath(){
 const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
+  "MOG-AI":["2O63NQQDHaccZZLLX7Ff", "2633QDDHaaccZZeWX7Ff", "2O96633EUDDHZZWYYLIX", "224V3UQNNQDDM880cZZb", "22JJKK633NQDDaaccZZL", "22O4VVJJ933NDDMCcZeI", "22OO44JJ6UQQMCaaZZWF", "22OO44JJ9663ENQN5HeY", "22OO4VJJ9916633UUMHZ", "22OO44VJJ9966R3ENDZW", "22OO44VVJ96633NQQCHB", "22OO44VVJJ9916633QHH", "PP22TOO44VVJJ96633Qb"],
+  "ZAPPAN":["GMMHaacWWLLII7AAFFff", "GQND50SSacceLIIAAFff", "GUN5MHSScZYYIIXAAFff", "GG1UUMHSaceWII77AAff", "GGOR3NSSccWYII7AAFff", "GGOOUNM8SScdZeWII7Af", "GGOO9NMMHHSScZWXAAff", "GGOOVJ99NDMMH0SIIAAf", "GGOOVJ991UUNMMSSIIff", "GGOOVV99K6QNMMSSIAff", "GGOOVVJ9915MMSScIAff", "GGOO4VV996UMMSSIIAAf", "PPGGTTOO499U5MMSSIIA"],
+  "MOTOKO":["P1NHaaccZeeWWYIIXX7A", "PVUUNCH8acdWWYYXX7AF", "PUU55HHaccdeWWYIXXAA", "PPVV3NNCCaacdeeWXAFf", "PPJ9UN55CM8SaacceeWW", "PPVV913UUNN5MC8aacZW", "PPV9UN5CHH8800aaWWXf", "PP4VV99KK1UNCCHH0aWX", "PP4VV99K1EUUD5CHHcce", "PPVVJ99KKEUNNCCHH8aX", "PPVVJ99K11UUNN5HH88A", "PP4VV99KK1UUNN5HH8eW", "PPTTVV99KK1RUUNN5HHW"],
+  "TOA2":["T5B800ceeWWLIIXXAFff", "T3EB8800ceeYbIXXAAff", "T5B8800SSdZeebIIXX7A", "TTVKUMMC00SaeeYLIIXX", "TTV9K1N5CC00eeXAAFff", "TTVJK115500SSdeeXAAf", "TTO4KK115MC00SbbXXff", "TTO4JKK1155CCM8eeIXf", "TTJKK11RU5MMC88SeeIf", "TTOOKK116UN55CC88SSI", "TTOOKK11EE55CMCMB80S", "TTOO9KK11D55CMM8800I", "PP2GGTTOOKK11655CM0e"],
   "CATER-PILLARD":["15CH880eeLLIIXX77AFF", "KU55C80eeIXX77AAFFff", "135CC80SZeeLLIXX77AA", "V1E58800SScddZeeXXAF", "KK1D55800SdeeLIXX7FF", "OVJK155CC800deeWX77F", "4KK15CC8800adZeeYLAA", "9KK11N55C800SSeeX7AF", "OO11R55CC8800deLLX7A", "49KK11655CC8800SSL77", "JKK11QN5CC8800SSddXF", "OKK11N55CC8800SSddeL", "PPTTOKK11655C00SSdLA"],
   "MED-07":["41ED5500ZZeeWWbLXXff", "K1635800cZZeeYYIXXff", "16QQCC800cZeeWIXXFFf", "OK11Q55CC0ZZeebXX7FF", "4JJKK11335H00ZeeIXXf", "O4VJKK113EQ55CCB0Zee", "4K113UQ55CC8800ZeWLX", "OO4VJKK116D5CC880eXf", "4JJ9KK116ND55C880aXX", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC880e", "OOVJJKK113N55CC880ee", "PP22GGTTOJJKK1155C00"],
   "BEAST":["KU5800aaeeWWbIXXFFff", "KU5CCHH8adZeeIXX7FFf", "O163ND5C8800aceeWWXX", "4J9KK55MCH0acdZeeXXf", "9U55CC880accdeeWWIXX", "OJKK55CHH80ceeWLXX7A", "VJ9KK1NQ55CCH80SaeXX", "49KK11RUN55CHH8800eF", "V99KK11D55C8800acZeX", "4VJJ9KK11UN55CCH800e", "44V99KK11R55CCHH880X", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
@@ -27453,7 +27470,7 @@ const DEFI_DECKS = {
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27626,7 +27643,14 @@ const DEFI_RESULT_ART_Y = {
   'LACRIUM': 40,
   'RAZOPS': 30,
   'FENCY': 25,
-  'EXO-MKI': 30
+  'EXO-MKI': 30,
+  'GRIEVER': 17,
+  'CONQUEST': 33,
+  'CHEIF 117': 22,
+  'MED-POD': 17,
+  'MOTOKO': 30,
+  'TOA2': 37,
+  'ZAPPAN': 20
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
