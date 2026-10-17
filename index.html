@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.69</title>
+<title>Projet MECA V0.04.70</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.69</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.70</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9245,9 +9245,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.69';
+var BUILD_VERSION = 'V0.04.70';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.70', items:[
+    'NOUVELLE CARTE : FENCY (rare, Tank) — mammouth blindé. Les ennemis doivent l\'attaquer en priorité.',
+    'NOUVELLE CARTE : EXO-MKI (rare, Baroud d\'honneur) — aucune DEF, uniquement des PV. À sa destruction, elle rejoint la pioche adverse (mélangée) : une vraie boucle de pile en pile.',
+    'ANIMATION D\'EXO-MKI : la carte éclate, se reforme en grand 1 seconde plus tard, se retourne pour montrer son dos puis glisse dans la pioche adverse.',
+    'ULTIME : RAZOPS et FENCY suivent la règle commune (statistiques doublées, nom inchangé).',
+    'DÉFIS : FENCY et EXO-MKI rejoignent les decks adverses des défis.',
+  ] },
   { v:'V0.04.69', items:[
     'NOUVELLE CARTE : RAZOPS (rare, Appel) — rhinocéros blindé de campagne. À son arrivée, donne 3 DEF à une carte alliée ciblée.',
     'ANIMATION DE RAZOPS : un drone 3D cyberpunk entre par la droite de l\'écran, vole jusqu\'à la carte ciblée grâce à son propulseur pulsant, la scanne (faisceau et grille holographique), lui donne ses 3 DEF puis repart vers le haut de l\'écran.',
@@ -10983,6 +10990,8 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  'EXO-MKI': { head:'visor', shoulders:'block', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'rifle', emblem:'none' },
+  FENCY:     { head:'helm', shoulders:'big', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'cannon', emblem:'hostile' },
   RAZOPS:    { head:'crest', shoulders:'block', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'staff', emblem:'cross' },
   LACRIUM:   { head:'vfin', shoulders:'spike', torso:'vcut', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
   DUMADED:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'hostile' },
@@ -11036,6 +11045,8 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  'EXO-MKI': { pilot:'Unité de série XO-I', text:"Premier modèle de la gamme EXO, assemblé à la chaîne par milliers dans les hangars de la mégalopole. Sans blindage, sans pilote : un squelette d'acier, un œil rouge et un programme. Quand une unité tombe, la chaîne en lâche aussitôt une autre, qui rejoint les rangs d'en face. Détruire un EXO-MKI ne règle rien : il ne fait que changer de camp." },
+  FENCY:     { pilot:'Sgt. Kenji « Rempart » Mori', text:"Gardien des terrasses-temples de la haute ville, Mori conduit un mammouth d'acier bardé de plaques rivetées et de défenses en cuivre. Il ne cherche jamais à esquiver : il avance, il encaisse, et ce qui reste debout devant lui est balayé par la trompe. Les habitants disent que les cerisiers tremblent avant même que le sol ne le fasse." },
   RAZOPS:    { pilot:'Dr Amara « Corne » Okoye', text:"Médecin de guerre reconvertie en pilote, Okoye a bardé un mécha de chantier de plaques blindées frappées de la croix des secours. Un bras articulé, un essaim de drones de réparation : là où RAZOPS passe, la ligne tient. Un drone se pose sur un camarade, le scanne, lui rajoute du blindage en quelques secondes, et repart déjà vers le suivant." },
   LACRIUM:   { pilot:'Cmdt. Elias « Lame » Varga', text:"Ancien maître d'armes des galeries marchandes de la mégalopole, Varga a fait forger deux lames à champ d'énergie pour son mécha. Il n'attaque jamais de front : il frappe deux fois, en arc, de chaque côté du terrain, avant que l'air n'ait fini de siffler, puis retombe du ciel sur sa cible. Quand on voit le bleu de ses lames, la vitrine a déjà éclaté." },
   DUMADED:   { pilot:'Ing. Ilyana « Méduse » Voss', text:"Ancienne ingénieure de dragage des canaux de la mégalopole, Voss a greffé six bras de manutention sur la coque d'un dôme de forage. Chaque fois que la ville reprend son souffle, l'une de ses tentacules jaillit, frappe une cible au hasard et se replie sous la coque avant que quiconque ait compris d'où venait le coup. Pour elle, personne n'est vraiment à l'abri : les alliés non plus." },
@@ -11307,10 +11318,22 @@ const CHAR_DEFS = [
     artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/lacrium-art-ext.webp' },
   // ---- Nouvelle carte RARE : RAZOPS, rhinocéros médical blindé, Appel ----
   { name:"RAZOPS", rarity:"rare", color:"#e0883a", shape:"RAZOPS", role:"Soutien — rhinocéros blindé de campagne",
-    ultName:"ESSAIM MÉDICAL", ultMult:1.5, ultDesc:"Lance son essaim de drones sur le champ de bataille et soigne toute l'escouade",
+    ultName:"RAZOPS SURTENSION", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:14, def:28, hp:460}, max:{atk:92, def:240, hp:2100}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/razops-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/razops-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/razops-art-ext.webp' },
+  // ---- Nouvelle carte RARE : FENCY, mammouth blindé, Tank ----
+  { name:"FENCY", rarity:"rare", color:"#c9972e", shape:"FENCY", role:"Tank — mammouth blindé des temples",
+    ultName:"FENCY SURTENSION", ultMult:1.3, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:11, def:34, hp:520}, max:{atk:76, def:292, hp:2400}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/fency-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/fency-art-ext.webp' },
+  // ---- Nouvelle carte RARE : EXO-MKI, exo-soldat de série, Baroud d'honneur (sans DEF) ----
+  { name:"EXO-MKI", rarity:"rare", color:"#a8927a", shape:"EXO-MKI", role:"Assaut — exo-soldat de série",
+    ultName:"EXO-MKI SURTENSION", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, PV)",
+    base:{atk:20, def:0, hp:240}, max:{atk:140, def:0, hp:1000}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/exo-mki-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/exo-mki-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11346,7 +11369,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11354,7 +11377,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14136,7 +14159,6 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
-  RAZOPS:    (u, T) => healSquad(0.15),   // l'essaim de drones répare toute l'escouade (15 % des PV MAX)
   LACRIUM:   (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); },   // deux coups de lame en arc de cercle sur deux ennemis
   DUMADED:   (u, T) => hitOne(u, T, u.ultMult),   // six tentacules referment leur étreinte sur un ennemi
   SCOPT:     (u, T) => hitCrit(u, T, u.ultMult),   // dard laser : critique garanti
@@ -21113,7 +21135,7 @@ const BTL_LEADER_COUNTER = false;   // V0.04.65 : le chef d'escouade ne riposte 
 const BTL_SUMMON_SICK = true;
 function btlHas(c, kw){ return !!(c && !c.leader && c.kw && c.kw.indexOf(kw) >= 0); }
 // PERCÉE : la carte posée ce tour-ci peut attaquer tout de suite, mais pas défendre (elle redevient normale au tour suivant)
-function btlNoDef(c){ return !c.leader && c.playedTurn === BTL.turn && btlHas(c, 'percee'); }
+function btlNoDef(c){ return !c.leader && ((c.playedTurn === BTL.turn && btlHas(c, 'percee')) || (typeof CARD_STATS !== 'undefined' && CARD_STATS[c.def.name] && CARD_STATS[c.def.name][1] === 0)); }   // Percée le tour de la pose ; carte sans DEF (EXO-MKI)
 function btlCanAct(c){ return !BTL_SUMMON_SICK || c.leader || c.playedTurn !== BTL.turn || btlHas(c, 'percee'); }
 async function btlTrigger(kind, c){
   if(!BTL || BTL.abort || BTL.over || !c || c.leader) return;
@@ -23281,23 +23303,43 @@ async function btlFinish(winner){
 //  ils passent par le bouclier (DEF) puis les PV, chargent la jauge d'ultimate, et ne provoquent aucune riposte.
 // =====================================================================================================
 // DOZEUR : une carte de la main retourne dans le deck (mélangé) : elle vole jusqu'à la pioche, qui est battue en riffle
-async function btlHandToPile(side, c){
-  const S = BTL.S[side], i = S.hand.indexOf(c); if(i < 0) return;
+async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vient pas de la main (EXO-MKI) ; elle est alors montrée face visible quel que soit le camp
+  const S = BTL.S[side], i = S.hand.indexOf(c); if(i < 0 && !fromRect) return;
+  const face = side === 'p' || !!fromRect;
   const hEl = btlQ((side === 'p' ? '#btlHand' : '#btlOHand') + ' [data-uid="' + c.uid + '"]');
   const pileEl = btlQ(side === 'p' ? '#btlMPile' : '#btlOPile'), to = btlPileFrom(pileEl);
   const vw = innerWidth, vh = innerHeight, W = Math.min(vw * 0.62, vh * 0.42 / BTL_RATIO), H = W * BTL_RATIO;
   const mid = { left:(vw - W) / 2, top:vh * 0.47 - H / 2, width:W, height:H };
-  const from = hEl ? btlRect(hEl) : { left:vw / 2 - W * .2, top:vh - H * .4, width:W * .4, height:H * .4 };
-  S.hand.splice(i, 1);
-  if(side === 'p') btlRenderHand(); else btlRenderOHand();
+  const from = fromRect ? fromRect : hEl ? btlRect(hEl) : { left:vw / 2 - W * .2, top:vh - H * .4, width:W * .4, height:H * .4 };
+  if(i >= 0){ S.hand.splice(i, 1); if(side === 'p') btlRenderHand(); else btlRenderOHand(); }
   const e = document.createElement('div'); e.className = 'btl-fly big'; btlPlaceFixed(e, mid);
-  if(side === 'p') e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+  if(face) e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
   else btlFlyBack(e, 'o', c.rar);
   const rot = btlRotWrap(e); btlQ('#btlFx').appendChild(e);
+  if(fromRect){   // EXO-MKI : 1 s après l'éclatement la carte se reforme en grand (face visible), se retourne (dos), puis glisse dans la pioche adverse
+    const mc = { x:mid.left + W / 2, y:mid.top + H / 2 }, col = btlRarColor(c.rar), sc = k => 'translate(' + (W * (1 - k) / 2) + 'px,' + (H * (1 - k) / 2) + 'px) scale(' + k + ')';
+    e.style.opacity = '0'; rot.firstChild.style.transform = 'rotateY(180deg)';
+    try{
+      await btlSleep(1000);
+      if(btlGone()) return;
+      btlBloom(mid, col); btlRing(mid, '#ffffff', false); btlAfter(() => { if(!btlGone()) btlRing(mid, col, false); }, 180);
+      btlParticles(mc.x, mc.y, { n:24, color:col, dist:W * .85, dur:760, size:6, inward:true, spread:360 });
+      btlParticles(mc.x, mc.y, { n:12, color:'#ffffff', dist:W * .55, dur:620, size:4, inward:true, spread:360 });
+      await btlAnim(e, [{ transform:sc(.8), opacity:0 }, { transform:sc(1.05), opacity:1, offset:.62, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:sc(1), opacity:1 }], { duration:680, easing:'ease-out' });
+      e.style.opacity = '1';
+      await btlSleep(480);
+      btlAnim(e, [{ transform:sc(1) }, { transform:sc(1.06), offset:.5 }, { transform:sc(1) }], { duration:620, easing:'ease-in-out' }).catch(() => {});
+      await btlAnim(rot.firstChild, [{ transform:'rotateY(180deg)' }, { transform:'rotateY(0deg)' }], { duration:620, easing:'ease-in-out' });
+      rot.firstChild.style.transform = 'rotateY(0deg)';
+      await btlSleep(220);
+      btlAnim(rot, [{ transform:'rotate(0deg)', offset:0 }, { transform:'rotate(0deg)', offset:.3 }, { transform:'rotate(90deg)', offset:.82 }, { transform:'rotate(90deg)', offset:1 }], { duration:820, easing:'ease-in-out' }).catch(() => {});
+      await btlAnim(e, [{ transform:btlXf(mid, mid), offset:0 }, { transform:btlXf(mid, mid, ' translateY(-5px)'), offset:.16 }, { transform:btlXf(mid, to), offset:1 }], { duration:820, easing:'cubic-bezier(.4,.1,.25,1)' });
+    } finally { e.remove(); }
+  } else {
   const lift = { left:from.left - from.width * 0.05, top:from.top - 18, width:from.width * 1.1, height:from.height * 1.1 };
   const dur = 1160;
   btlAnim(rot, [{ transform:'rotate(0deg)', offset:0 }, { transform:'rotate(0deg)', offset:.5 }, { transform:'rotate(90deg)', offset:.88 }, { transform:'rotate(90deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
-  if(side === 'p') btlAnim(rot.firstChild, [{ transform:'rotateY(180deg)', offset:0 }, { transform:'rotateY(180deg)', offset:.5 }, { transform:'rotateY(0deg)', offset:.8 }, { transform:'rotateY(0deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
+  if(face) btlAnim(rot.firstChild, [{ transform:'rotateY(180deg)', offset:0 }, { transform:'rotateY(180deg)', offset:.5 }, { transform:'rotateY(0deg)', offset:.8 }, { transform:'rotateY(0deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   try{
     await btlAnim(e, [
       { transform:btlXf(mid, from), offset:0 },
@@ -23307,6 +23349,7 @@ async function btlHandToPile(side, c){
       { transform:btlXf(mid, to), offset:1 }
     ], { duration:dur, easing:'cubic-bezier(.4,.1,.25,1)' });
   } finally { e.remove(); }
+  }
   S.pile.push(c); btlShuffle(S.pile); btlRenderPile(side, 0);
   // mélange : deux demi-paquets se séparent puis se rejoignent, deux fois
   const pr = btlRect(pileEl), fx = btlQ('#btlFx'), halves = [];
@@ -26090,6 +26133,14 @@ async function btlDroneFly(c, t){
     cancelAnimationFrame(raf); FC.cv.remove(); window.__rzTick = null;
   }
 }
+// ---- EXO-MKI : Baroud d'honneur -- à sa destruction, la carte (face visible) rejoint la pioche ADVERSE (mélangée) ; une fois piochée et détruite de l'autre côté, elle repart dans l'autre pioche : une boucle ----
+BTL_CARD_FX['EXO-MKI'] = { baroud: async c => {
+  if(btlGone()) return;
+  const dest = btlOther(c.side), sl = btlSlotEl(c.side, c.slot), vw = innerWidth, vh = innerHeight;
+  const from = sl ? btlRect(sl) : { left:vw / 2 - 40, top:vh / 2 - 56, width:80, height:112 };
+  const n = btlMakeCard(dest, c.def, c.rar, c.level, false);
+  await btlHandToPile(dest, n, from);
+} };
 BTL_CARD_FX['RAZOPS'] = { appel: async c => {
   const t = await btlChoose(c, btlLiveAll(c.side), 'shield', 0, { arrow:'def' });
   if(!t || btlGone() || !btlOnField(c)) return;
@@ -26718,7 +26769,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -27022,7 +27073,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -27358,49 +27409,51 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "CATER-PILLARD":["K115580WLLIIXX77AAFF", "55CC880cdWLIXX77AAFF", "KK13N55CC0YLLIXX77AA", "KK1RD55800SSadZbXXAF", "KK155CC800ScLIIXX7FF", "KK1UN55CC800dWWIX77F", "4KK155CC800adWYLXXAA", "KK116N55CC8800SSXXAF", "OOK11R55CC8800dLLX7A", "449KK1155CC8800SSL77", "JKK11QN55CC8800SSddF", "OKK11N55CC8800SSddLX", "PPTTOKK1165800SSdLXA"],
-  "MED-07":["41UD55C800aZZbbLIXXA", "1635CC800ScZZWbbIXXF", "16RQQ5CCH8800dZbXXFF", "OK11Q5C8800ZZYIXX7FF", "4JJK11335CCH800dYIXX", "O4JKK11EQD558800SZXX", "4VKK1163UQ55CC8800ZX", "OO4JKK116U5CCB880dXX", "O4JJ9KK116D55CC8800Z", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KEU5C8800aadWWYbXXFF", "KKU5CCHH880acWbIXX7F", "K1135CB8800acWWLLXX7", "9KK355CCH80acdYbLIXX", "V9K155CCH880SaaccWXX", "OKK55CCHH880cWLLXX7A", "VJ9KK11RNQ55CCH80aXX", "49KK11EUNQ55CHH8800X", "V99KK11355C8800acWXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["R3Q55CC800aZZYYLXX7F", "1QDD55CM800cZZYLXX7F", "OKK665CC800aZZbXXAAF", "JK635CC8800aZZYYXX77", "JJKK1R55CC8800aZZLXX", "OK11R33EQQ558800bXX7", "O4KK663NQ55CCB8800XX", "OO4JKK113355CCB8800X", "O4JKK1166EUQ5CC8800X", "O49KK116QQD55CC880YX", "OO44VJJKK11655CC8800", "O449KK11QD55CC8800ZX", "PP22GTTO44JKK115C880"],
-  "NEUTRON":["Q55C8800SaWbIXX7AAFF", "155C8800acdWLXX7AAFF", "KK135CB8800aLIXX7AAF", "11ND55CC88adZYXX7AFF", "KK11ND55CC00SdLIXXAF", "JKK11R5CCM8800SLLXX7", "OKK11655CC880ScLX7AA", "O49KK11E55CC8800dLLA", "KK11N55CMCH8800SSLLF", "4VKK11N55CC8800SSddL", "OKK11RD55CC8800SSdL7", "44KK1155CC8800SSdXAF", "PPGTTKK11ECC80SddLX7"],
-  "HYPPER":["KU55CC800cZYbbLLIX7A", "1ED5CC8800WWbLLIXAFF", "VKK55C8800aWWYYbbIXA", "R55MCC8800cdWYYLXXAF", "K1EQD5CCB8800dYbLLXX", "K6R355CMMCB8800acbXX", "JKK11EED55CCM80abLXX", "49KK11RRQMCCM8800bXX", "KK11REEN55CB8800YIXX", "KK11RREUQ55CB8800YXX", "V9KK11RRD55CMC00LLXX", "4KK11RE5CCMBB8800SXX", "PPTT4KK11RR3EE5B88XX"],
-  "TUNNELIER":["K16Q55C88acZZLIXX77F", "K1QDCC8800dZZWLLIXXF", "K1ENDD55C880cZZYXXFF", "KK163DCC8800SaZZWYXX", "JKK113QDCC800cZLXX7A", "OKK1QQD55C8800cdZXX7", "O4KK116END55CCB88YXX", "OOJKK116655CCMB8800I", "OO4JKK11QD55CC8800cY", "OJKK1163NNQ55CMC8800", "OO4VVJJKK11N55C8800X", "OO44JKK11UQ55CC8800X", "PP22TTO4JJKK1165CC80"],
-  "ARKHAUL":["D50SdZZWbbLLIXX7AAFF", "H880ScdZWYbbLLX7AAFF", "K6RMC8SSdYLLIXX7AAFF", "1UU500acddLLXX77AAFF", "V11EUN0SSaddLX77AAFF", "41355C880SSddLL77AFF", "JKN55C0SSddWLL77AAFF", "OK1C00SScddLLX77AAFF", "44KK1C88SSddLL77AAFF", "VJKKN50SSddLLX77AAFF", "OKKECM80SSddLL77AAFF", "KK116RQ5SSddLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
-  "JIPASIS":["6QD8SddZZYbbLI77AAFF", "V3DCBSScZZYYbL77AAFF", "6QDSaddZZWWbLX77AAFF", "OK3QBccddZbLLI77AAFF", "463QQ5MBSSddLLX7AAFF", "O463QQMMSScddLL7AAFF", "OVJ3EQQ8SSddLL77AAFF", "OOK33EQCSSddLL77AAFF", "O66R3NQQSSddLL77AAFF", "OO44J63USSddLL77AAFF", "44633DB0SSddLL77AAFF", "OOJ916QDSSddLL77AAFF", "22TOO4JRSSddLL77AAFF"],
-  "BUZZY":["55CSSaddYLLIIXX77AAF", "OC00SacdWLLIIXX77AAF", "3D5580SddWbLLXX77AAF", "KK5C800SddLLXX77AAFF", "E58800SSdZLLXX77AAFF", "V5B00SScddLLXX77AAFF", "OK1UD5C8SSddLL77AAFF", "JKK115H0SSddLL77AAFF", "KK16M0SSddWLLX77AAFF", "4JK15800SSddLL77AAFF", "4411U5C0SSddLL77AAFF", "VJK113CCSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
-  "BRI-KB-ROCK":["OOQMMSSacdYYbLLIIAFF", "OO6NMMSSdZWLIIX77AFF", "OO45MM0SSadbbIIX7AFF", "OOMMHBSSacddWLIIAAFF", "OO9ECMMSScdYbLII7AAF", "OOKQMMSSdZYLIIXX7AAF", "OO49UNNMMHSSdII77AAF", "OOJ93EUMM8SSdLII77AA", "OOV15MMHSSddYII7AAFF", "OOVK1QNMMSSddLLIIAAF", "OOVVKUMMBSSddLLII7AA", "OO4J16MMHSSddLII77AA", "PGGTTOOEMMSSdLI7AAFF"],
-  "MED-POD":["OOQMMHScddWbLIIX7AAF", "OOVRCMMSYLLIIX77AAFF", "OOD5MMSccddYLIIXAAFF", "OORMMC0SSbbLII77AAFF", "OO9RRNDMMSSdLLII7AAF", "OOVJNMMSSdZLIIX7AAFF", "OO6R3EDMMSSbLLII7AAF", "OO41EQMM8SSdLII77AAF", "OOV13MMBSScddII77AAF", "OO166E5MMSSddLII77AA", "OOJ93UQMMSSddLII77AA", "OO4J996MMSSddLLIIAAF", "P2GGTTOOMMSSddLI7AAF"],
-  "MORPHE":["963QNDMHaaccWWLLIXFF", "49EENDHaaccZZWWYLAFF", "496UUNQ8aaccZZWWYbII", "4VJ996RUQHHaaccWWbIF", "4VV99663UUDMHaaccWWY", "O44VV991UN5HHaccdZWb", "4VVJ996UUNQNQDCCHHac", "O4VVJJ99K3EUUNNHaccb", "OO4VVJJ993UUNNCaccWI", "OO44VVJ99K1UUNNHHcWL", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["9RNHBaaccdWWYbLLI77A", "9RUNHaaccZZWWYbL7AFF", "V99QQHBaaccWWYYbbIIF", "VVNQ5HH8aacZWWYYbbLL", "V9RNQNDHHBaaccWWYb7F", "UUNN5MHHBB8aaccWbLXF", "VVJ99R3UUNNMHHBcWYL7", "VVJ99REEUUNQQHHBaacL", "O4VV99RRUNNMMHHBaccY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["44NQHHSaaccdZZWWYbAA", "J9UNDHaaccZZWWX7AAFF", "3UQNQDDHHaaccZWWIAAF", "K33EQQNNHHBaaccWWbXA", "4VV93NQNDMHBaccZWWb7", "OO4V9966EUNNDHB8ccWW", "OVJJ991EUUNQNHaacWYA", "44VVJ996R3UUNNHaccWI", "OO44VV99KRUNNaacZZWW", "O44VVJ996UUNQNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
-  "WHIPLASH":["EUNCHH80aaccdZWYXXAF", "V9UD88aaccdWWYLIIXX7", "VUNNCC0aaccZWWYYIX7F", "91UUNN5CH8SaaccWWbXA", "V9RUUNN5CHH0accWWIXX", "VV99KRRUUNN55H0SccZb", "4V99KK11UUNQN0aaccZW", "OVV99K1RUUNCHH8SaccA", "4VV99KK1UUNNDCHHB0aW", "VV99KK1UUNNQ55H8accI", "OVV99K116UUNNCHH0ccL", "OVVJ99KK11UUNNCHHaac", "PPTTVVJ99K113UUNNHac"],
-  "DELOK":["VUH00aaccZWWYYLLIXXA", "V9UCHHBSaacZWWYYLL7F", "V91UNMBSSaaccWWYbLAF", "VV93UUQDaaccWWYbbLAF", "VVREUNQNQ5HH0accWYYL", "VVJ1RENNDMHHaacWWbLI", "VVJ99RUUNNHHBcWWYYbb", "VV99RREUUNHHBaccZYbI", "OVV99RRUUNNQMMHHBBaW", "OVV9916RREEUUNNHHBcc", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["9633UQNHaaccZZW7AAFF", "496EU5MHHaaccZZWII7F", "V633UQNDDHHaaccdWI7A", "V993NND5accddZZWWXXF", "V96RUUDHHBBaaccZZWWX", "OVVJ9966EUHHacWWYYLX", "OOVJJ33UUNNHHaaccWWb", "44VV9966RUUNNHH0WWXA", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaacZWW", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9UNH8accdZWWYLIX7AFF", "UUHHaccdZWWYLL77AAFF", "V9UUHHSaccdWWLLI7AFF", "99KNNSSaaccdZWWbLAFF", "V99RQNHHaaccZW77AAFF", "VV99K3U5HH0SaacWLLAF", "OVJ993UNNHH8SaaccLAF", "OOV99RUUQNHHSSaaccdL", "VV991RUUNNHHSaadWL77", "4VV99EUNNHHSSaadZWLA", "O4VV99UNNQHHSSaaWAFF", "OVV99RUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
-  "DUMADED":["EEQDBBScdZZYYbLLX77A", "6RRDBB8ScZZWYYbLLXFF", "41RR3MMBBZZWYYbLLIXX", "46RRUDMBBZZYYbbLLAFF", "OJ91RENDDMMBBZYYbbLL", "41R3EEQMMB0SSdZYYbbL", "4966RREEQDDMMBBcYbbL", "OOJJRREEQ5MBBZYbbLLA", "O44VJRREENDMMBBZYYbb", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["93UNQCHaacdZZWWII7AF", "491UNDD5HaacZZWWII77", "VV9R33UNDHHaacZZWbLA", "66R33UUNHaaccdWWL7AF", "1R3UUQQNNDHHaaccWWYA", "VVK633UQQNH0aaccWWLF", "O4VV993UNQQDMH8aaccW", "OO4VVRUUNNMCHaccdZWW", "OO44VVJ96UUNNQHaccZW", "O4VVJJ9966R3UUNNHHcc", "OOVV9966REUUNNMccZWW", "OO4VVJ99R3UUNNCHHccW", "PP22GO4VV991UUNQNHcc"],
-  "RAZOPS":["88SScdYYbLLIXX77AAFF", "15SadWWYLLIIXX77AAFF", "Q5C8SScdZbLLXX77AAFF", "158800SaddLLXX77AAFF", "16H0SddWWLLIXX77AAFF", "K16D5M88SSddWLL77AFF", "9KE580SSddLLIX77AAFF", "KKRNCC8SSaddLL77AAFF", "99K11R50SSddLL77AAFF", "44KK1CM0SSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "411U55C8SSddLL77AAFF", "PPTTVKKHSSddLL77AAFF"],
-  "GAPIX":["633QQDDM8ZZYYbbLL7AF", "O6R3QQDDHSZZWWYbbLLF", "OVJ633UQQD5BZZYbbLXF", "4JK6633QQ5BZZYbbLLFF", "O4466RR33EQQDHaZYLLF", "OOJ66R33EQQDB0ZZYYb7", "OO4JJ966R3EQDDHBZYLL", "OO44JJ9166RREQQDDaZY", "OO44VJJ66REQQDDMMHYL", "OO44JJ9166R3EUQQDMBb", "OO44JJ9K166RR33EEDBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
-  "EXO-MKVII":["4JK66QQDB80ZZXX77AFF", "OJJK633EQQD0ZZLXX77F", "O416633QDC88cZZX77FF", "9K6633QQDDCH0cZZWbXX", "O4JJ9133QDD5C8cZZLFF", "O4J9KK166R3QDDC0ZZLX", "OO4VJJK1663QDD50ZZXF", "O44JJ6633EDDMCH80ZWX", "OO44JJ9K33UQQDD5C80S", "OO44JJKK11663QQDDCC8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQNDD88", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["OJ633NDDHccZZWYYIIX7", "4J66QDDCHcZZWWYbIXAA", "44J663QQDHccddZZWWI7", "OOJJ63UQDM8SaacZZ7AA", "4VJJK633ENQDDCHHcZZW", "O44JJ633QQDDCacWWbLA", "OO4JJ96633UQQDDacdIA", "OO44VJJ91663UQQDDHZ7", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ66R33UNQQHac", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
-  "STAR-HUNTER":["4J663DDSZZLLXX77AAFF", "4J633DDddZZWYbX7AAFF", "4633QQDDCHSacZZbLXAF", "O446633QQDHHSSZZL77A", "OO44JJ663UQDSaaZL7AF", "OO44J163QQSdZZWLXAFF", "OO44J6633QDMdZZWWL7F", "O44JJK633EQDDCddZAAF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSdLL", "OO44JJK6633UQD8SS77A", "OO44JJK633EQQDSSZL7A", "22OO44JJK66R3QQSSddA"],
-  "RHINO":["OK63QQDD5CSZZYYbXX7F", "4663QDDCC80ccZZLXXAF", "44J1663QDD800dZZWb7A", "O633QQDD5M8800SaZZWY", "OOJ1133QQDD880SZZWXF", "OO4JK633QQDD500YYIIA", "OO44JJK6633EDD5B0bXX", "OO44VJJKK6633NQQ580Y", "OO44VJJK116633D80cZX", "OO44JJ9KK16633QQ55MM", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["JJ633QQDDaaZWWYLLAAF", "44V6633QDHH8ccZYLLXA", "OO4J33QQDaaZWWYbLLIF", "4J9633UQQD88aacZZWYI", "OO44VJJ963EQHaaZZIAF", "OOJJ933NQNQD55aaZZWL", "OO44JJ966UUQNQC0ZZXA", "OO44VVJJ963UUQDDM0ZZ", "OO44VVJK663UUNDDSZZb", "OO4VVJJ96633QNDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ9966R3NQDaZZ", "PP22GGOO44JJ963UDHZZ"],
-  "CONQUEST":["J633QDD88aadZZWYYXX7", "4J33QDD5H0dZZWbbXXAA", "O4633QDDC00ZZWYYIXFF", "O4VJ6R3QNQD55C8dZZbX", "OO4463QQD5800aZZYX7A", "OO44J1163QQDD5C8acXA", "OO44K11663QNQDDM0ZZX", "O44JJKK6633QQD5580ZZ", "OO44JKK11663QQDD880A", "OO44JJKK11663EUQQD8W", "OO44JJ9KK116633UQQD8", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OJQMMSSaZZbIIXX7AAFF", "O4JMM0SSacdZZbbIIAAF", "O6QDMMH800SSdZZIIAAF", "OOJ96RQMMSSacZLIIXAA", "OOJ3NQQDMMBSSdZbIIAA", "OO44EQMMC880SSdZIIAA", "OO4VJJ6DMMBSSddbIIAA", "OO4J66R3QDMM0SSbIIAA", "OO4JJ663EEDMMCSSIIAA", "OO44JJK166UMMSSZIIAA", "OO44JJ96REDMMSSIIAAF", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
-  "PRAWN":["OOMB8SSZWbbLLIIXAAFF", "OOJ9UMBSSYYbLIIX77AA", "OONDMSSaZWYYbLLIIAAF", "OOJDMMBB0SScbbLIIXAA", "OOVJKRNMMBBSSYLIIAAF", "OOEUMMC8SSdZYbLII7AA", "OO49REEMMBBSScYIIXAA", "OOREEDMMHBSSacYYIIAA", "OO9REE5MMHSSaWbLIIAA", "OOJRRMMB88SSWYYLIIAA", "OO4JRR3EDMM8SSYbIIAA", "OO411RREMMHBSScbIIAA", "PPGGTTOOREEMMBBSSIAA"],
-  "HARKO":["OONMMHSSaaccWLIX7AAF", "OO4UMMCSSaacdZZWbIAA", "OOV3MMSSaaddWIXX7AAF", "OOKUUMMHSSacWYbbIIAA", "OO3UUMMHH0SScdZZIIAA", "OO9KUUNMMHSSaWII7AAF", "OOKEUQN5MMHBSSaWIIAA", "OO99RUQDCMMCHSScIIAA", "OO4VJ996U5MMH8SSIIAA", "OO4VV99KK1RMMSSWIIAA", "OO44VVJJRUNNMMSSIIAA", "OO49916UNNMMHHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
-  "DOZEUR":["63NMMBZZYYbbLLIX7AFF", "4R3QMBSZYYbbLLIIX77F", "6EEQMBcdZZYYbbLLXX7F", "4RR33EDDMBBcWbbLLII7", "OJK6REQD5MBBYYbbLLX7", "O9633EEDMBBYYbbLLXAF", "OJRR3EEQDMMBBSZYbbLL", "JJ9RR33EEUMBBZWYYbbL", "O496RREEQDMMHBB8YYbb", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44RREEQMMBBYYbbL"],
-  "DILUS":["RMMBB00ddYbbLLIXXAFF", "D5MMBB0cYbbLLIIXX7AF", "KE5MMCBBadWYbbLLXX7A", "ORENMMCBB00cZWYYLLXX", "KEECMCBB880dYYbbLLAF", "49KEEQD5MCBB0YYbbLLA", "91RREDCMCBB8YYbbLLIX", "4J11RREE5MMCHBB0YYbb", "K1RREENQ5MCMBB8YYbbF", "KK16RR3EEDMMBB80YYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["R3EDMZZWYYbbLLIIXX7A", "R3DDBBZZWYYbbLLIX7AF", "R3QQDMHBB8aWYYbbLLXA", "OJRRE5MMBaZZWWYYbLLF", "O4RREUDBB88ZZYYbbLLI", "O66RR33EEQ55MMWYYbbL", "OJRR3QQMMBB0ZYYbbLLX", "6RR33EEQQDMMBBcZYYbL", "O4J1RR33EEMMBBZYbbLL", "O4V6RREEQQDDMMBBYYbb", "OO4J66RREEUQMMBBYYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
-  "SHADOW":["EMMBaccZWWYYbbLL77AF", "EDBB0SaccZWWYYbbLLIF", "EUQNMBBaccZYYbbLL7AF", "RREEUMBaccdZWYbLLIAA", "EEUMMHBSaaccYYbbLLIA", "V9RREENMaccYYbbLLIXA", "V9RREENCMMHBB0WYYbLA", "OV96RREEMMHBB0acYYLL", "VV9RREEUUMMHBBSaYYLL", "VVJ99RREEU5MMHBBYYbL", "VV99KKRREEUNMMBBYYbb", "VVJ9RREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "CATER-PILLARD":["15CH880eeLLIIXX77AFF", "KU55C80eeIXX77AAFFff", "135CC80SZeeLLIXX77AA", "V1E58800SScddZeeXXAF", "KK1D55800SdeeLIXX7FF", "OVJK155CC800deeWX77F", "4KK15CC8800adZeeYLAA", "9KK11N55C800SSeeX7AF", "OO11R55CC8800deLLX7A", "49KK11655CC8800SSL77", "JKK11QN5CC8800SSddXF", "OKK11N55CC8800SSddeL", "PPTTOKK11655C00SSdLA"],
+  "MED-07":["41ED5500ZZeeWWbLXXff", "K1635800cZZeeYYIXXff", "16QQCC800cZeeWIXXFFf", "OK11Q55CC0ZZeebXX7FF", "4JJKK11335H00ZeeIXXf", "O4VJKK113EQ55CCB0Zee", "4K113UQ55CC8800ZeWLX", "OO4VJKK116D5CC880eXf", "4JJ9KK116ND55C880aXX", "44VVJKK1163355CC8800", "OO44JKK11RUD55CC880e", "OOVJJKK113N55CC880ee", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KU5800aaeeWWbIXXFFff", "KU5CCHH8adZeeIXX7FFf", "O163ND5C8800aceeWWXX", "4J9KK55MCH0acdZeeXXf", "9U55CC880accdeeWWIXX", "OJKK55CHH80ceeWLXX7A", "VJ9KK1NQ55CCH80SaeXX", "49KK11RUN55CHH8800eF", "V99KK11D55C8800acZeX", "4VJJ9KK11UN55CCH800e", "44V99KK11R55CCHH880X", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["3Q5C800cZZeeWYbbXX7F", "NDD5CC80ZZeeWWbXX7Ff", "OK66CC800accZeeXXAAF", "J635C8800aZZeebbXX77", "JJK55C8800SZZeebLLXX", "VKK133EQQ55C8800Sde7", "OO4KK66R355CCB8800XX", "OO4JK11335CCB8800eXA", "O4VJKK1166EQ5CC880eX", "O49KK116QQD55CC880ae", "OO44VJJKK1355CC8800e", "O449KK11QD55CC8800ZX", "PP22GTTO4JJKK115C880"],
+  "NEUTRON":["5C800cdZeeWWIXX7AAFF", "15CB00cZeeLXX7AAFFff", "9K355C800eebLIXX7AAF", "QD55CC88adZeebXX7AFF", "K116QDCC800SeeLIXAFf", "JKK1R35CC800SeeLLXX7", "KK11Q55CCB880SeeL77A", "O4KK11E55CC8800dLLAA", "KK11N55CMC88SSLLXXFF", "4VKK11N55CC880SSddLX", "OKK11RD55CC800SSdLX7", "44KK1155CC8800SSdeAF", "PPTTJKK11ECC880SddL7"],
+  "HYPPER":["K55C00cdeeWYbbLLX7Af", "1EQC8800eeYYbLLIIXFF", "KCC8800adZZeeYYbbIXA", "R5MCC800dZZeeYLXXAFf", "KK11EDCCB80SZebLLXXf", "KK11R55MCMCB80ceebXX", "KK11EEDCM8800ebbLLXX", "49KK11RRQCMCM800ebXX", "OJKK11REE55CCB800YXX", "KK11RREUQ55B8800eYXX", "V9KK11RRD55CMC00LLXX", "4KK11RECCMBB8800SeXX", "PPTT44KK11RREE5B88XX"],
+  "TUNNELIER":["K6Q5588dZZeeWLIXX77f", "K1QQND800SaZZeeXXFFf", "K1DD5880SZZeebIIXXFf", "VKK163DC800ZZeeYbbXX", "KK11R33DD5CMB0deeXX7", "OKK11EQQ55CC80ZeeX7f", "OO49KK16DD55CC88aeXX", "OOJKK1166N55CCB880IX", "OO4JKK11QD558800dZXX", "OJKK1163NNQ5CC8800eL", "OO4JJKK11R55C8800eWX", "OO44JKK11UQ55CC8800X", "PP22TTO4JJKK1165CC80"],
+  "ARKHAUL":["C8SacddeeWbLLIX7AAFF", "DC80ScdbbLLXX7AAFFff", "KKNB8SSdeWbLLXX7AAFF", "1800cddZWWLLX77AAFFf", "1Q5H0SSddeWLXX77AAFF", "49166380SSddLLX77AFF", "OJK158SSddLLXX77AAFF", "KK1Q00SSddeLLX77AAFF", "991180SSddYLLX77AAFF", "VJKK1N80SSddLL77AAFF", "OKKECM80SSddLL77AAFF", "OK116R5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
+  "JIPASIS":["6DBSddZZWbLI77AAFFff", "3DDHSSacZZLX77AAFFff", "6DSddZZeWYYLX77AAFFf", "O3QQMCddZeLL77AAFFff", "466R3QQCSSddZLL7AAFF", "OO46R3UQSSddLL7AAFFf", "O9K3EQQSSddLLX77AAFF", "O449R3QBSSddLL77AAFF", "O4966RDSSddZLL77AAFF", "OO44J63USSddLL77AAFF", "44633DB0SSddLL77AAFF", "OOJ916QDSSddLL77AAFF", "22TTOO4JSSddLL77AAFF"],
+  "BUZZY":["KRM8ddZeeYLLIXX77AAF", "00SdeeWbLLIIXX77AAFf", "4K6CH0SddZeeLLX77AAF", "K1NDM880SddZeL77AAFF", "9K5CH00SSdZbLL77AAFF", "5B00SSddeLLXX77AAFFf", "OVK1E5C8SSddLL77AAFF", "JK11H80SSddeLL77AAFF", "KK16N0SSddLLXX77AAFF", "4JK15800SSddLL77AAFF", "4411U5C0SSddLL77AAFF", "VJK113CCSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
+  "BRI-KB-ROCK":["MMSSaaddZWYLLIIAFFff", "RMM8SSaeWLIIX77AFFff", "O3MM0SSccYbII77AFFff", "KCMMSSddebLIIXAAFFff", "O9ECMMSSddbII7AAFFff", "OOKQMMSSddYIIXX7AAff", "OO49UNMMSSdLII7AAFff", "OOV93EMMSSII77AAFFff", "OO1MMHSSddZII77AAFff", "OOV1QMMSSddLIIAAFFff", "OOVDMMSSddWLLIIAAFff", "OOJ1MMHSSdLLII7AAFff", "PGGTTOODMMSSdL7AAFFf"],
+  "MED-POD":["MMSddeWbLLIIXX7AAFff", "OOUDSWYLLIIX77AAFFff", "OD5MMSdZeeLLIIAAFFff", "OV1QDMSScbII77AAFFff", "OORUQNMMBSSLLI7AAFff", "OOVKNMHSSadLII7AAFff", "OOR3EMMSScLLII7AAFff", "OOK6MM0SSddeLIIAAFff", "OO1MMBSSddeLII77AAff", "OO166MMSSdLII77AAFff", "OO3UQMMSSddLLII7AAff", "OO4VKMMSSddLIIAAFFff", "P2GGTTOOMMSSddLI7AAf"],
+  "MORPHE":["963QNDMHHaaccWWYbIXX", "49NDHaaccZZeWWIIXAFF", "496UUNaaccdZZeWWLLXA", "4J996UQHHaccdeWWYLIX", "VV99663UUQD5aacWWbIf", "O44VV993UN5HHccdZeWf", "4VVJ996REUUNNQDCHHac", "O4VVJJ99K3EUUNNHacce", "OO4VVJJ99K3UUNNCaccW", "OO44VVJ99K1UUNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHacW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9NHBaaccZWWYYbLL77Af", "J9RNNDHaccdeeWWYbL7F", "V99RRHBaaccZWWYYbLXf", "VVN5HHaaccdeWWbbLLXA", "9RUNNHHB8aaccWWYYbIF", "96UUNQNHHBBaaccWYbLI", "VVJ993UUNNMHHB8cWWYL", "VVJ99RREEUUNQHHBaacL", "O4VV99RRNNMMHHBaccWY", "OVV99K1REEUUNNMHHBaW", "OOVV99RREUUQNMMHHaac", "OVV99RREUUQNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["44NHHaaccZZeWWYbAAff", "J93NHaaccZZWWYYI7AAF", "K3UQNQDDHHaaccZWWIAF", "33QQNNDMHHaacceWWbAF", "4VV9R3NQNDCHaccZWW7f", "O4V9966RUNNDCHccWWAF", "OVVJJ991EUNQNHaacZWA", "44VVJJ9963UUNNHaccWX", "OO44VV99UNNSaccZZWWL", "O44VVJ996RUUNNDHH0cW", "44VVJJ996R3UUNNQHacW", "O4VVJJ99K66UUNNHHacW", "PP22GOVVJJ99UUNNHHZW"],
+  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9U8aacceeWWbLIXX7Ff", "VUNN0aacceeWWbbLXX7F", "9UUNN55CHaaeeWWYXXAf", "9KKUUNNHH80accZWYLXX", "VV99RUUNN5H80SccZeeW", "V99K13UUNQN50aacceWb", "OVV99RUUN5HH8acceXXA", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1UUNNQ55H8acc", "OVV99K116UUNNMCHH0cc", "OVVJ99KK11UUNNCHHaac", "PPTTVVJ99K113UUNNHac"],
+  "DELOK":["VNH00aaccddeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNCBaaccWWYYbLIXX", "VV93UUBaaccWWYYbbLFF", "VVUUNN5MHHB0SaccWWYL", "VVKK1REENQNHHaacWWbL", "VV99RUUNNHHBcdWWYbbL", "VV99RREUUNHHBaccZbbI", "VV99RRUUNQNQMMHHBaWA", "VV9916RREEUUNQHHBacW", "4VV99RR3EUUNNMMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["9633UNH8aaccZWYIIFFf", "496U5HH8aaccZZWLLXFF", "VK33UNDDHHaaccWX77Af", "V9963NNDaaccZZWWbIff", "V96UUDDCHaaccZZWWYIX", "OVVJ9966UMHHaacZWWYF", "OOVVJJ33UNNHHaacceWW", "44VV9966UUNNHHB0SZWW", "OO4VVJJ996RUUQNNHHWW", "OO44VVJ99RUUNHaaZeWW", "OO4VV996REUUQNN5acWW", "O44VV9933UUNNQ5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["99UNHaccdZeWWLLAAFFf", "VUNHaccdWWbLIX77AAFf", "VJ9UUHHacWWYLLI7AFff", "O99NNSaacceeWWLXAFFf", "V99NHH8SSaaccdW7AAFF", "VV9963UMHH0SaacWLLAF", "V99K3UQNNHH8SaaccLAF", "OVV99UUQNNHHSSaaccdL", "VV991RUUNNHSaadWLI77", "4VV99UNNHHSSaadWbLAF", "O4VV99UNNQHHSSaaWAFF", "OVV99RUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["EEQDBBZZeYYbLLX77Aff", "6RRDHBBadZZWYYbLLAFf", "4RR33MMBSccdZZYYbLLF", "4RRUDBBZZYYbbLLIIX7A", "OJR3EQDDMMCBcYYbbLLA", "4VR33EEUQMMB0ZYYbbLf", "46RREEQDDMMBB8eYbbL7", "OOJJRREEQ5CMBBcYbbLL", "O44VJRREENDMMBBcYYbb", "OJK6RR3EEQQMMBBYYbbL", "OO44J6RREEQDMMBBbbLL", "OVJJRR3EEQMMCBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["93UUNQHaacZZWWIX7FFf", "93UNDD5MH8aacZZWWL77", "VV933UNNDHHacddZWXAf", "O6633UUNHaaccWWX7AFf", "V13UUQQNNDHBaaccWWbI", "VV33UQQNMH0aaccWWL7F", "OO4VV993EUNQH8aaccZW", "OO4VVRUUNQNCHaccZeWW", "OO44VVJ96UUNNQHaaccW", "O4VVJJ99663UUNNHHScc", "OOVV9966REUUNNMHccZW", "OO44VVJJ99UUNNHHSacc", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["CSSdeebLLIIXX77AAFff", "8SadZeeYLLIIXX77AAFF", "UB8SadeeWLLXX77AAFFf", "168800cddWYYLL77AAFF", "JK5M80SddeYYLL77AAFF", "O16EC88SSddeLLX77AFF", "J9K5CH0SSddLLX77AAFF", "KRND8SSddeebLL77AAFF", "9911R50SSddeLL77AAFF", "4KK1655BSSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "4116U5C8SSddLL77AAFF", "PPTTVJKKSSddLL77AAFF"],
+  "FENCY":["1155C80deYLXX77AAFff", "55C800SSeWbLLIXX77AA", "VKK1N55CCBSSeYLXX7FF", "15CH800eeYbLXX7AAFFf", "KK11D55C00eebLLXX77F", "OK11CCH800dZeeLLIX7A", "KK11R3UD55880SeeLX77", "4VKK11655880SddeeLLX", "K113Q55CC800SeeWL7AF", "JKK115MCH880SddeeXFF", "JKK115CC800SSddeeLX7", "KK11RCCB8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
+  "EXO-MKI":["MMHSSacdeeWYIIXAAFFf", "QMM8SSaacZeWYIIXXAAf", "OVNMMHBSSccWLLIIAAFf", "OO9MCMHHaacWYLIIAAff", "O4VDMMHB0SSacYIIAAff", "OOV93DMMH88SSaYIAAff", "OOV9DMMB8SScWWIIAAff", "OOVVUDMMHHSSbII7AAff", "OOVV99KRQMMHSSIIAAff", "OOJ991RNMMHHSSIIAAff", "OO4996UNNMMSSII7AAff", "OOVVJ996MMH8SSIIAAff", "PP2GGTTOO4VVMMHSSAff"],
+  "GAPIX":["633QQDDMBZZeebLLI7Af", "OK6R3QQDDZZeWYYbbLIX", "OJ633QQDBZZeYYbbLX7F", "OJ66R33EQQ5BSdZZYbII", "O4466RR33QQDacZLLIFF", "OOJ66R33EQQB80dZZYbF", "OO4JJ9663EUQDDCHZYLL", "OO44JJ9166RREEQQDcZY", "OO44VJJ66REQQDDMMHYL", "OO44VJJ166R3EQQDMBbA", "OO44JJ9K166RR33EEDBZ", "OO44JJ966RR33EEQQDMW", "PP22OO44JJ66RR33EEQB"],
+  "EXO-MKVII":["4J66QQDB0ZZeWIXX77FF", "O4JJ3QQD5ZZeeWIX77AF", "O46633QD5C8ZZeIX7AFf", "K6633QQDD0ddZZeeLIXA", "O4JJ133QDD5MCHZZXAFf", "O4J9K1663EQDDM0SZZeL", "OO4JJK163QDD5H0ZZLX7", "O44JJK6633DDMC80ZYIF", "OO44JJ933UUQQDD5C80e", "OO44JJKK1663QQDD55B8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQNDD88", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["OJ633NDDMHaccdZZeYL7", "4J66NQDDHccZZeWWbAAF", "44J663QQDHcZZeWWI7ff", "OOJJ63UQDDSaacZZW7AA", "4JJ633ENQDDHHcZZYLXF", "O44JJ633EQQDDMBacdWW", "OO4JJ9K6633UQQDDBace", "OO44VJJ91663UQNQDD8Z", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ6633UNQQHacW", "OO44VVJJ99163QNQDD5a", "OO44VVJJ9966R33QQDHW", "PP22GOO44VJJ96633NQQ"],
+  "STAR-HUNTER":["4J663DDSZZYLLIX77AFF", "4J633DDBddZZebX7AFFf", "4633QQDDSadZZeLIAFFf", "44633UQQD8ZZWWLII77A", "O44JJ66R3QNDSSccZX7F", "OO44J163QQHSdZZYLXAF", "OO44J6633NQDdZZYLX7F", "O44JJK633EQDDCddZAAF", "OO44JJ66R33QQD8SSLL7", "OO44JJ663QQDCB0SSdLL", "OO44JJK6633UQD8SS77A", "OO44JJK633QQDSSZL7AF", "22OO44JJK66R3QQSSddA"],
+  "RHINO":["OK63QQDDZZeeYbbLX7Ff", "44663DD0ZZeWXXAAFFff", "4J11663QDD5C0dZZX7Af", "O633QQDD5C00SacZZWYA", "OO4VJ133QQDDC80ZZeYF", "OO4JK633QQDD500aZeIA", "OO44JJ6633EDDC80ceYX", "OO44JJK66R33QQCC0ZeW", "OO44VJJK116633D80dZZ", "OO44JJ9KK16633QQ55MM", "O44JJKK1166R33EQNDD5", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["JJ633QQDCaaZeWWXXAAF", "446633UQDHHccZWWbAAf", "OO4JR33QQDaadZeWWLXF", "4J99633UQQD8ccdZZWbI", "OO44VJJ963QHBacZZLIF", "OOJJ96R33NQNQD5aZZYb", "OO44JJ966UUQNQDB0aZZ", "OO44VVJ9K63UUQDDM0ZZ", "OO44VVJK663UUNDDScZZ", "OO4VVJJ96633NQDDHHZZ", "OO44VVJJ93UQQNDDHcZZ", "OO44VVJJ99663UQQNHZZ", "PP22GGOO44JJ93UDDHZZ"],
+  "CONQUEST":["J633QDDCaccdZZeeXX7f", "4J33QDDC80dZZeebIXAf", "O4K1633QDD0aZZebIXXF", "O4J63QQDC88SaZZeWXXf", "OO44K163QQDCB80acZZ7", "OO44J163QQDD5CB8cZeX", "OO44K1166R3QQDDM0ZZe", "O44J6633QQDD55880bLL", "OO44J9K1663QQDD5880e", "OO44JJKK11663EUQQD8X", "OO44JJ9KK116633UQQD8", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OJQMSacZZYIIX7AAFFff", "O4JM0SccdZZebIIAAFff", "O33QDCMH00SSeII7AAff", "OOJ6QMMBSSdZbIIXAAff", "OO43NQDMMBSSdZbIIAff", "OOJJ1RD5MMSScZbIIAff", "OOJ63QDMMBSSceIIAAff", "OO663Q5MM8SSIIX7AAff", "OO44JJDDMMCSSIIAAFff", "OO4JJR3EDDMMSSIIAAff", "OO44VK66NDMMSSIIAAff", "OO4J66R33MMSSeIIAAff", "PP22GGTTOO4J3MMSSAff"],
+  "PRAWN":["QMBSSabbLLIIXXAAFFff", "9MBSSZWYYbLLII77AAff", "OEMSSaacWYLLIIAAFFff", "EMMBB0SSdbbLLIIXAAff", "OJRQMMHBSSWLLIIAAFff", "OOEUMMC88SSeYbbIIAff", "OO4REMMBBSSdLLIIAAff", "OORREQMMHSScYbIIAAff", "OO9REEMMBSScbIIXAAff", "OOJRRQMM8SSYYbIIAAff", "OOR3EEMMHB8SSYIIAAff", "OO41RREMMBSSbbIIAAff", "PPGGTTOOREEMMBBSSIAA"],
+  "HARKO":["MMHHSSaccWWbLIX7AAff", "O4VDMSSaaceWYbbIAAff", "O4MMSSaaeeWWYI7AAFff", "OUUMMHSccWYbbLIIAAff", "OO49MMHHSScWbbIIAAff", "OV9KNNMMHHSSWbIIAAff", "OOVEUN5MMSSaWLIIAAff", "OO99UQDMCMHSSWIIAAff", "OO4V99KNMMHHSSIIAAff", "OOVVEUUDMMHSSZIIAAff", "OO4VVJJ9UNMMSSIIAAff", "OOJ996NNMMHHSSIIAAff", "PP2GGTTOOVV9EMMSSIIf"],
+  "DOZEUR":["63MMBZZeYYbbLLXXAAFF", "JRR3QMBdZWYYbbLLIX7A", "6REQQMBScZZYYbbLLI77", "4JRR33EDMBB8bbLLIXFf", "OJRENQD5MBB8aYYbbLL7", "O9633EEDMHBBZYYbbLLA", "OKRR3EEUNQDMMBBZYbbL", "JJ9RR33EEUMBBZYYbbLX", "O4996RREEQDMMBBYYbbI", "OO44VRR33EEQMMBBYYbb", "OO4K166RREEQMMBBYbbL", "OO4J66RR3EEMMBBYYbLL", "P22G44JRREEMMBBYYbbL"],
+  "DILUS":["KRMBB80WYbbLLIXXAFff", "VMMBB0eWYbbLLIXXAAFf", "EEMMBB8dZeeWYbbLLX7f", "11RREUMMBBaYYbbLLXXf", "1EEDCMCBB8eYYbbLLAFf", "9REE5MCBB80eYYbbLLXF", "1RREDMCHBBaYYbbLLXXA", "4J11RREEMMCBB80YYbbI", "O1RREEQ5MCMHBB8eYYbb", "KK16RR3EEDMMBB0eYYbb", "V9K16RREECMMBB80YYbL", "9KK11RREENMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["R3EDMcZZeeYYbbLLXXAA", "4RENDMBSdZZeYbbLLI7A", "JR3QQDMBBceYYbbLLXAF", "OJRREMBSacZZYYbLLIX7", "O4RREEMBB8ZZWYYbbLLA", "66RR33EEQ55MMSYYbbLX", "4JRRQQMMBB0SaZYYbbLL", "6RR33EEQMMHBBSadYYbL", "O4J1RR33EENMMBZYbbLL", "O4V6RREEQQDDMMBBYYbb", "OO4VJ66RREEQMMBBYYbL", "OO4VJJRREEUMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
+  "SHADOW":["VEMHBaZWWYYbbLL77Aff", "1REBBccZeWWYYbbLLIFf", "EUNDMBB8cceWYYbbLLFf", "RREEMBaccWWYbbLLIAAf", "JREEUMCHBaceeWYYbbLL", "V9KRREENMBaaeeYYbbLL", "OV9RREECMMCHBB0WYYbL", "VRREEQMMHBB0acYYLL7A", "VV9RREEUUMMHBBSaYYLL", "VVJ99RREE5MMHBBYYbLX", "VV99KKRREEUNMMBBYYbb", "VVJ9RREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27571,7 +27624,9 @@ const DEFI_RESULT_ART_Y = {
   'SCOPT': 30,
   'DUMADED': 30,
   'LACRIUM': 40,
-  'RAZOPS': 30
+  'RAZOPS': 30,
+  'FENCY': 25,
+  'EXO-MKI': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
