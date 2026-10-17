@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.64</title>
+<title>Projet MECA V0.04.65</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1769,6 +1769,16 @@
     box-shadow:0 4px 0 #2e1777, 0 8px 20px rgba(124,77,255,.4), 0 1px 0 rgba(255,255,255,.3) inset;
   }
   #dlLaunchGo:active{ box-shadow:0 1px 0 #2e1777, 0 1px 0 rgba(255,255,255,.3) inset; }
+  /* V0.04.65 : lancement d'un défi = deck adverse + choix de son deck (Bataille) */
+  #defiLaunchInner .dl-sec{ margin:10px 0 2px; width:100%; text-align:center; }
+  #defiLaunchInner .dl-opp-list{ max-height:34vh; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
+  .dl-opp{ cursor:default; }
+  .dl-opp.dl-focus{ outline:2px solid #b08cff; outline-offset:-1px; border-radius:12px; box-shadow:0 0 14px rgba(176,140,255,.7); }
+  #defiDeckList{ width:100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 8px; padding:4px 0 6px; max-height:34vh; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; }
+  #defiDeckList .deck-tile{ transition:transform .15s; }
+  #defiDeckList .deck-tile:active{ transform:scale(.97); }
+  #defiDeckList .deck-tile.selected .codex-card{ outline:2px solid #b08cff; border-radius:12px; box-shadow:0 0 16px rgba(176,140,255,.6); }
+  #defiDeckList .deck-tile.selected .deck-name{ color:#d6c4ff; }
   /* V0.03.48 : aperçu de l'escouade ennemie (HOSTILES) -- même raison que .dl-mod-row/.dl-list ci-dessus,
      #defiLaunchInner est en display:flex;align-items:center (cf .codex-modal-inner), donc un enfant direct
      sans largeur explicite se réduit à son contenu (ici quasi 0, les tuiles .unit.cbt dérivent leur hauteur
@@ -8836,7 +8846,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.64</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.65</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9234,9 +9244,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.64';
+var BUILD_VERSION = 'V0.04.65';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.65', items:[
+    'DÉFIS REFAITS : chaque défi est maintenant un vrai combat de Bataille contre un deck adverse bâti autour de la carte du défi, avec un module imposé.',
+    'DÉFIS : 10 paliers par carte (au lieu de 50), sans aucune restriction de niveau ni de rareté. Le deck adverse change à chaque palier et la difficulté augmente (cartes plus fortes, IA plus agressive, chef adverse plus résistant). Il faut gagner un palier pour débloquer le suivant.',
+    'DÉFIS : le mode ULTIMATE s\'ouvre après les 10 paliers et ajoute 3 paliers (11 à 13). Paliers boss : 5, 10 et 13. Récompenses adaptées et croissantes.',
+    'DÉFIS : ta progression existante est convertie automatiquement vers la nouvelle échelle.',
+    'COMBAT : le chef d\'escouade ne riposte plus quand on l\'attaque.',
+  ] },
   { v:'V0.04.64', items:[
     'NOUVELLE CARTE : SCOPT (rare, Percée) — mécha-scorpion. À son arrivée, l\'emplacement brille en rouge puis fond pour former un trou en relief d\'où la carte se glisse jusqu\'à sa place.',
     'COMBAT : la flèche bleue de défense est toujours tirée vers le bas quand on la maintient, sans partir sur le côté.',
@@ -11698,6 +11715,15 @@ function normalizePlayerExtras(){
   // déjà remportés (0-50, cf DEFI_TIERS). Object.assign comble les champs manquants sur une sauvegarde
   // antérieure à cette fonctionnalité (aucune carte n'a de clé -> toutes à 0 via defiCardProgress()).
   player.defi = Object.assign({}, player.defi || {});
+  // V0.04.65 : refonte des défis (10 paliers + 3 ultimate) -- conversion UNE fois de l'ancienne progression (0-100) :
+  // 5 anciens paliers = 1 nouveau ; classique terminé (>= 50) -> 10 ; ultimate : 66+ -> 11, 83+ -> 12, 100 -> 13.
+  if(!player.defiV2){
+    Object.keys(player.defi).forEach(n => {
+      const o = player.defi[n] || 0;
+      player.defi[n] = o >= 100 ? 13 : o >= 83 ? 12 : o >= 66 ? 11 : o >= 50 ? 10 : Math.floor(o / 5);
+    });
+    player.defiV2 = 1;
+  }
 }
 normalizePlayerExtras();
 const XP_REWARDS = { draw: 10, newCard: 25, waveBase: 30, wavePerLevel: 10, fusion: 40 };
@@ -15063,13 +15089,13 @@ let upgradeQty = 1;         // nombre de groupes d'upgrade choisis dans la fenê
 // player.defi[def.name] (progression par PERSONNAGE, pas par exemplaire), donc rien à retenir par carte
 // -- `rar`/`level` restent dans la signature pour ne pas changer les deux appelants, mais ne servent plus.
 function defiTrophyEligible(def, rar, level){
-  return ((player.defi && player.defi[def.name]) || 0) >= 50;
+  return ((player.defi && player.defi[def.name]) || 0) >= 10;   // V0.04.65 : 10 paliers
 }
 // V0.03.52 (mode ultimate, demande d'Alex) : même principe/même raison que defiTrophyEligible()
 // ci-dessus (seuil en dur -- codexCardHtml() tourne avant que la section DÉFI du script ne déclare
 // ULTIMATE_MAX_TIER, TDZ sinon), mais au seuil 100 (palier ultimate final, 100/100).
 function defiUltimateEligible(def, rar, level){
-  return ((player.defi && player.defi[def.name]) || 0) >= 100;
+  return ((player.defi && player.defi[def.name]) || 0) >= 13;   // V0.04.65 : 13 paliers (mode ultimate)
 }
 function codexCardHtml(def, rar, opts){
   // `opts.level` permet d'afficher un palier de niveau précis (tuile de la liste GESTION DE CARTE
@@ -21023,7 +21049,7 @@ async function btlPassifs(side, quand){
   }
 }
 // RIPOSTE : quand une carte en attaque une autre, la carte attaquée riposte avec son propre ATQ (les deux subissent en même temps).
-const BTL_LEADER_COUNTER = true;    // le chef d'escouade riposte aussi quand on l'attaque (false = il ne riposte pas)
+const BTL_LEADER_COUNTER = false;   // V0.04.65 : le chef d'escouade ne riposte plus quand on l'attaque (true = il riposte)
 // Si true, une carte posée ce tour ne peut ni attaquer ni défendre avant le tour suivant, sauf PERCÉE.
 // (false = comportement actuel : toutes les cartes agissent dès qu'elles sont posées)
 const BTL_SUMMON_SICK = true;
@@ -21058,6 +21084,14 @@ function btlMakeCard(side, def, rar, level, leader, k){
     maxHp:hp, hp, energy:0, leader:!!leader, plan:null, slot:-1,
     kw:leader ? [] : (BTL_CARD_KW[def.name] || []).slice(), playedTurn:-1, ultOn:false, base:null };
 }
+// DÉFI (V0.04.65) : deck adverse imposé { focus, deck:[noms], k, lHp, lDf, ai, hand, mod } -- le chef adverse est la carte du défi (stats de chef inchangées + bonus du palier)
+function btlDefiOpp(D){
+  const def = n => CHAR_DEFS.find(x => x.name === n);
+  const mk = (n, isL) => { const df = def(n); return btlMakeCard('o', df, df.rarity, 1, isL, D.k || 1); };
+  const L = mk(D.focus, true);
+  L.maxHp = L.hp = BTL_CHIEF_HP + (D.lHp || 0); L.df = BTL_CHIEF_DEF + (D.lDf || 0);
+  return { leader:L, pile:btlShuffle(D.deck.map(n => mk(n, false))), hand:[], slots:[null, null, null] };
+}
 function btlBuildSides(d){
   const ents = d.cards.map(k => sqEntry(k)).filter(Boolean);
   const lk = deckBestKey(d.cards, d.leader);
@@ -21076,7 +21110,8 @@ function btlBuildSides(d){
   const lpool = CHAR_DEFS.filter(x => x.rarity === lead.rar);
   const strongest = lpool.reduce((b2, x) => cardPower(x, x.rarity, 1) > cardPower(b2, b2.rarity, 1) ? x : b2, lpool[0]);
   cnt[strongest.name] = 1;
-  const O = { leader:mkO(strongest, true), pile:btlShuffle(rest.map(e => mkO(pickDef(e.rar), false))), hand:[], slots:[null, null, null] };
+  let O = { leader:mkO(strongest, true), pile:btlShuffle(rest.map(e => mkO(pickDef(e.rar), false))), hand:[], slots:[null, null, null] };
+  if(d.defi) O = btlDefiOpp(d.defi);
   return { p:P, o:O };
 }
 function btlCardByUid(uid){
@@ -21912,13 +21947,15 @@ function btlStart(d){
 }
 function btlExit(){
   if(!BTL) return;
-  if(!BTL.over && typeof batStreakResolve === 'function') batStreakResolve(false);   // combat quitté avant la fin = défaite : la série retombe à 0
+  const dfx = !!(BTL.d && BTL.d.defi);
+  if(!BTL.over && !dfx && typeof batStreakResolve === 'function') batStreakResolve(false);   // combat quitté avant la fin = défaite : la série retombe à 0 (pas pour un défi)
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
   window.removeEventListener('resize', BTL.onResize);
   BTL.el.remove(); BTL = null;
   document.body.classList.remove('btl-on');
   document.getElementById('actionModal').classList.remove('show');
-  if(typeof renderBataille === 'function') renderBataille();
+  if(dfx){ if(typeof defiBtlReturn === 'function') defiBtlReturn(); }
+  else if(typeof renderBataille === 'function') renderBataille();
 }
 async function btlRun(){
   await btlSleep(250);
@@ -21932,6 +21969,7 @@ async function btlRun(){
     await Promise.all([btlQuickDeal('p'), btlQuickDeal('o')]);
     await btlSleep(70);
   }
+  for(let i = 0; i < ((BTL.d.defi && BTL.d.defi.hand) || 0); i++){ await btlQuickDeal('o'); await btlSleep(70); }
   await btlSleep(250);
   let side = BTL.first;
   while(!BTL.over){
@@ -23171,6 +23209,8 @@ async function btlFinish(winner){
   const rm = document.getElementById('rewardModal');
   const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
+  const dfx = !!(BTL.d && BTL.d.defi);   // combat de DÉFI : ni série de victoires, ni récompense de Bataille (progression/récompense du palier gérées par defiBtlShowResult)
+  if(dfx && typeof defiBtlShowResult === 'function'){ defiBtlShowResult(winner === 'p'); return; }
   player.stats.battles++; if(winner === 'p') player.stats.battlesWon++;
   const wr = (typeof batStreakResolve === 'function') ? batStreakResolve(winner === 'p') : null;   // série de victoires : récompense (victoire) ou remise à zéro (défaite)
   showRewardModal('', (wr && wr.items) || [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:my.artExt, artPosY:defiResultArtPosY(my.name), actionLabel:'CONTINUER' });
@@ -26193,8 +26233,9 @@ async function btlAI(){
   while(!BTL.over && BTL.mana.o > 0 && S.hand.length && S.slots.some(x => !x)){
     const onField = S.slots.filter(Boolean).length;
     const unplanned = S.slots.filter(c => c && !c.plan && btlCanAct(c)).length;
-    if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && Math.random() < 0.7) break;
-    if(onField >= 2 && Math.random() < 0.25) break;
+    const aiLv = (BTL.d.defi && BTL.d.defi.ai) || 0;   // DÉFI : plus le palier est haut, moins l'IA hésite à poser ses cartes
+    if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && Math.random() < 0.7 * (1 - aiLv)) break;
+    if(onField >= 2 && Math.random() < 0.25 * (1 - aiLv)) break;
     const c = S.hand.slice().sort((a, b) => btlPwr(b) - btlPwr(a))[0];
     const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(Math.random() * free.length)];
     const hand = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), rect = hand ? btlRect(hand) : btlRect(btlQ('#btlOHand'));
@@ -26314,7 +26355,8 @@ function btlModInit(d){
   };
   // V0.04.58 : l'adversaire a toujours un module (au hasard, de la même rareté que celui du joueur)
   const names = Object.keys(BTL_MODULES), rar = (d && d.module && d.module.rar) || 'rare';
-  return { p:mk(d && d.module), o:{ name:names[Math.floor(Math.random() * names.length)], rar, level:1, t:btlModT(rar, 1) } };
+  const dm = d && d.defi && d.defi.mod && BTL_MODULES[d.defi.mod] ? d.defi.mod : null;   // DÉFI : module adverse imposé par le deck
+  return { p:mk(d && d.module), o:{ name:dm || names[Math.floor(Math.random() * names.length)], rar, level:1, t:btlModT(rar, 1) } };
 }
 function btlModCanUse(side){
   const m = BTL && BTL.mod && BTL.mod[side]; if(!m || btlGone()) return false;
@@ -26552,7 +26594,7 @@ function defiExtArtMissing(){
 // combats de boss, plus gros/rouges sur la piste, et exigent un niveau minimum sur CETTE carte
 // (aucune restriction sur la carte module) -- confirmé par Alex pour le palier 20 (niveau 35,
 // interpolé entre le palier 10 à 25 et le palier 30 à 50).
-const DEFI_CHALLENGES_PER_CARD = 50;
+const DEFI_CHALLENGES_PER_CARD = 10;   // V0.04.65 : 10 paliers (avant : 50)
 // MODE ULTIMATE (V0.03.52, demande d'Alex) : prolongement du même parcours par carte, paliers 51 à
 // 100. Pas de nouveau compteur -- player.defi[nom] continue de grimper au-delà de 50 normalement, et
 // defiTierUnlockable() (plus bas) empêche tout accès au palier 51 tant que le 50 n'est pas fait (tier >
@@ -26564,10 +26606,10 @@ const DEFI_CHALLENGES_PER_CARD = 50;
 // DEFI_CHALLENGES_PER_CARD reste la frontière défi/ultimate (reste à 50, sert aussi de base à la
 // formule de récompense défi classique, inchangée) ; ULTIMATE_MAX_TIER est la nouvelle borne du
 // parcours complet, utilisée pour la boucle de la piste et pour "fait/total" (ex. "62/100").
-const ULTIMATE_MAX_TIER = 100;
+const ULTIMATE_MAX_TIER = 13;   // V0.04.65 : mode ultimate = 3 paliers de plus (11 à 13)
 function defiTierIsUltimate(tier){ return tier > DEFI_CHALLENGES_PER_CARD; }
-const DEFI_BOSS_LEVEL_GATE = { 10:25, 20:35, 30:50, 40:100, 50:150, 60:160, 70:170, 80:180, 90:190, 100:200 };
-function defiTierIsBoss(tier){ return tier % 10 === 0; }
+const DEFI_BOSS_LEVEL_GATE = {};   // V0.04.65 : plus aucun niveau/rareté requis pour un palier
+function defiTierIsBoss(tier){ return tier === 5 || tier === 10 || tier === 13; }   // V0.04.65 : paliers « boss » = 5, 10 et 13
 function defiTierLevelGate(tier){ return DEFI_BOSS_LEVEL_GATE[tier] || null; }
 function defiGateRar(gate){ return gate <= 100 ? 'RARE' : gate <= 150 ? 'ÉPIQUE' : gate <= 250 ? 'LÉGENDAIRE' : 'ÉCARLATE'; }   // V0.04.32 : les anciens seuils de niveau deviennent des raretés
 // Progression réelle d'une carte : player.defi[nom] = nombre de paliers déjà remportés (0-100 depuis
@@ -26612,40 +26654,26 @@ function defiTierUnlockable(def, tier){
 // que les autres tables de récompense du jeu (cf RAID_PHASE_REWARD_BASE/grantReward()) pour rester
 // compatible avec grantReward()/rewardChips() tels quels.
 function defiTierReward(tier){
-  // V0.03.52 : récompenses MODE ULTIMATE (paliers 51-100) -- formule dédiée (pas un simple prolongement
-  // de la formule défi, qui resterait proche de ses valeurs de fin de course) pour que ce soit "bcp plus
-  // importante que celles des paliers normaux" (demande d'Alex). u va de ~0.02 (palier 51) à 1 (palier 100).
-  if(defiTierIsUltimate(tier)){
-    const u = (tier - DEFI_CHALLENGES_PER_CARD) / (ULTIMATE_MAX_TIER - DEFI_CHALLENGES_PER_CARD);
-    if(!defiTierIsBoss(tier)){
-      return {
-        gold: Math.round(50 + 250 * u),
-        xp: Math.round(30 + 140 * u),
-        mat: { rare: Math.round(6 + 10 * u), epique: Math.round(3 + 8 * u), legendaire: Math.round(1 + 5 * u) }
-      };
-    }
-    const uidx = (tier - DEFI_CHALLENGES_PER_CARD) / 10;   // 1..5 (paliers boss 60/70/80/90/100)
-    return {
-      gold: 120 * uidx, xp: 80 * uidx, crystal: 25 * uidx,
-      mat: { rare: 8 * uidx, epique: 6 * uidx, legendaire: 3 * uidx },
-      booster: ['res', 'cards', 'modules'][(uidx - 1) % 3], boosterN: uidx + 2
-    };
-  }
-  if(!defiTierIsBoss(tier)){
-    const t = tier / DEFI_CHALLENGES_PER_CARD;
-    return {
-      gold: Math.round(5 + 30 * t),
-      xp: Math.round(3 + 19 * t),
-      mat: { rare: Math.round(1 + 4 * t), epique: tier > 10 ? Math.round(1 + 2 * t) : 0, legendaire: tier > 30 ? Math.round(1 * t) : 0 }
-    };
-  }
-  const idx = tier / 10;   // 1..5
-  return {
-    gold: 30 * idx, xp: 20 * idx, crystal: 8 * idx,
-    mat: { rare: 4 * idx, epique: 2 * idx, legendaire: idx >= 3 ? idx - 2 : 0 },
-    booster: ['res', 'cards', 'modules'][(idx - 1) % 3], boosterN: idx
-  };
+  // V0.04.65 : 10 paliers + 3 ultimate (11-13). Récompenses croissantes ; paliers 5, 10 et 13 = « boss » (cristaux + gros booster).
+  const R = DEFI_REWARDS[Math.max(1, Math.min(ULTIMATE_MAX_TIER, tier)) - 1];
+  return JSON.parse(JSON.stringify(R));
 }
+const DEFI_REWARDS = [
+  { gold:60,   xp:30,  mat:{ rare:2 } },
+  { gold:80,   xp:40,  mat:{ rare:3 }, booster:'res', boosterN:1 },
+  { gold:100,  xp:50,  mat:{ rare:4, epique:1 } },
+  { gold:125,  xp:62,  mat:{ rare:4, epique:2 }, booster:'cards', boosterN:1 },
+  { gold:200,  xp:100, crystal:15, mat:{ rare:5, epique:3 }, booster:'modules', boosterN:1 },
+  { gold:170,  xp:85,  mat:{ rare:5, epique:3, legendaire:1 } },
+  { gold:210,  xp:105, mat:{ rare:6, epique:4, legendaire:1 }, booster:'res', boosterN:2 },
+  { gold:255,  xp:128, mat:{ epique:5, legendaire:2 } },
+  { gold:300,  xp:150, mat:{ epique:6, legendaire:2 }, booster:'cards', boosterN:2 },
+  { gold:500,  xp:250, crystal:40, mat:{ epique:8, legendaire:4 }, booster:'modules', boosterN:2 },
+  { gold:900,  xp:420, crystal:60, mat:{ epique:10, legendaire:6 }, booster:'res', boosterN:3 },
+  { gold:1400, xp:640, crystal:90, mat:{ epique:12, legendaire:8 }, booster:'cards', boosterN:3 },
+  { gold:2200, xp:950, crystal:150, mat:{ epique:15, legendaire:12 }, booster:'modules', boosterN:4 }
+];
+
 // Filtre d'affichage du hub DÉFI (V0.03.53, demande d'Alex) : le bouton ULTIMATE n'ouvre PAS un accès
 // séquentiel direct aux paliers 51-100 (defiTierUnlockable() s'en charge déjà tout seul) -- il bascule
 // la LISTE elle-même pour ne montrer que les cartes "éligible a continuer de monter" (cf
@@ -26692,7 +26720,7 @@ function renderDefi(){
     // cette vue ("continuer de monter" implique déjà posséder + avoir fini le défi classique).
     const eligible = SERIES_DEFS.filter(defiUltimateReady);
     list.innerHTML = eligible.length ? eligible.map(cardCellHtml).join('') :
-      `<div class="fab-empty">Aucune carte n'a encore débloqué le mode ultimate.<br>Termine les 50 paliers du défi classique d'une carte pour y accéder.</div>`;
+      `<div class="fab-empty">Aucune carte n'a encore débloqué le mode ultimate.<br>Termine les 10 paliers du défi classique d'une carte pour y accéder.</div>`;
   } else {
     list.innerHTML = SERIES_DEFS.map(def => isOwned(def) ? cardCellHtml(def) : `
       <div class="defi-cell" data-name="${def.name}">
@@ -26823,161 +26851,134 @@ function renderDefiPath(){
   });
 }
 
-// ---------- DÉFI : fenêtre de lancement d'un palier -- carte + module (V0.03.47, demande d'Alex) ----------
-// "une seule carte celle qui correspond à la case" : la liste affiche TOUTES les piles possédées
-// (triées comme d'habitude, celles de la carte de la case en tête) mais seules celles-ci sont
-// sélectionnables -- les autres restent visibles, grisées (même traitement que .lp-card.busy).
-let defiLaunchDef = null, defiLaunchTier = 0, defiLaunchCard = null, defiLaunchModule = null;
-let defiLaunchMode = 'cards';   // 'cards' | 'modules', même principe que squadPickMode
-// Escouade ennemie de CETTE tentative (V0.03.48, demande d'Alex) : tirée UNE SEULE FOIS à l'ouverture
-// de la fenêtre (pas à chaque appel de renderDefiLaunch(), ni au lancement du combat) et conservée tant
-// que la fenêtre reste ouverte, pour que l'aperçu affiché corresponde EXACTEMENT à ce qui sera combattu
-// (freshEnemyTeam() pioche aléatoirement -- deux appels séparés donneraient deux escouades différentes).
-// Rouvrir la fenêtre (nouvelle tentative après abandon/défaite) retire une escouade fraîche.
-let defiLaunchEnemies = null;
+// ---------- DÉFI (V0.04.65) : decks adverses ----------
+// Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
+// (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT"];
+const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const DEFI_DECKS = {
+  "CATER-PILLARD":["K11Q5580LLIIXX77AAFF", "55CC880SaZLLXX77AAFF", "KK1355CC0SLLIXX77AAF", "OKK1Q55C800ZWYXXAAFF", "KK1E55CB800ZLXX77AFF", "KK1RU55CCH800SSLX77F", "4VKK1U55CC800SWXX7AF", "KK11655CMC800SSLXX7A", "OOK11N55CC8800SLX77F", "449KK1155CC8800SL7AF", "JKK11QN55CC8800SSAFF", "OKK11N55CC8800SSLXAA", "PPTTOKK1165C800SSLLA"],
+  "MED-07":["41D55C800ZZWYYLIXXAF", "163N5CC800ZZWYYLXXFF", "16QQDD5CC8800aZYLXXF", "OK116UQD5H8800ZZXXAF", "4JJK1133U5CCH800aXXF", "O4JKK11QQ55CB8800ZXX", "4JK116R3Q55CC8800SZX", "O4JKK116RN5CCB880aXX", "4JJ9KK116ND55CC8800W", "44VJKK11633U55CC8800", "OO44JKK11RUD55CC8800", "OOVJJKK113N55CC8800X", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KUN5CH8800aWWYLXXAFF", "KK6U5MCHH880aZYXXAFF", "VK11635C8800aWWIIXXA", "9KK355CCH80SaaWYIXXF", "V9K1QN55CC880aZWYXXF", "99KK655CMCH880aWIIXX", "V9KK11NQN55CCH80WIXX", "49KK11EUQD55CHH8800X", "VV99KK11355B8800aWXX", "4VJJ9KK11UN55CCH800X", "44V99KK11R55CCHH8800", "OVVKK11UUNN55CC8800X", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["3QQ55CCB800SZZLLIXX7", "1DD55C800SZZYLIIXX7A", "OVKK66E5CC800ZYYXXAA", "JK66R3U5CC8800ZWWXX7", "JJK155CMCH8800ZZWIXX", "K1133QQND55M8800YXX7", "OO44KK6355CC8800LXXA", "OO4KK113355CHB8800XA", "O4JKK1166EUQ5CC8800X", "O4V9KK116QQD55CC880X", "OO44VJJKK11655CC8800", "O449KK11QQD55CC8800X", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["55CH8800YYLLIXX7AAFF", "91Q55C800aaYLXX77AFF", "KK13D5C8800YLIXX77FF", "K1155CC88SSWYLXX7AFF", "KK11D55MCCH00aLLXXAA", "KK11N5CCH8800LLIXX7A", "9KK116N55CC880SaLX7A", "49KK11EN55CC8800S77F", "KK11EN55CMC8800SSLL7", "4KK11UN55CC8800SSL7F", "OKK11QD55CC8800SS7AF", "44KK1155CC8800SSLLXA", "PPGTTKK11ECC80SSLX7A"],
+  "HYPPER":["KR55CC800ZWWYLLIX7AF", "1R5CCMB8800LLIIXAAFF", "KKRRU55C8800WYYLLX7F", "55MCCBB8800SSaZYXXAF", "KK1U5MCCB8800aYLLXXA", "4KRR355CMCB8800ZZWXX", "KK11E55CCMMHB80WLIXX", "49KK11RQQMCCM8800LXX", "KK11EEN55MMCB8800YXX", "KK11RRQ55MCB800SYXX7", "V9KK11RREE55CMCB00XX", "4KK11RRE5CCMBB8800XX", "PPTT4KK11RR3EE5B88XX"],
+  "TUNNELIER":["K16Q55C88ZZWYIXX77FF", "K1EQDC8800aZZLIIXXAF", "K1DD55C880SZZYIXXAFF", "KK163UNDCC800ZZWLXX7", "JKK113DCC800ZZLIXX7A", "OKK1QQ55CC8800aaZXX7", "O4V9KK116DD55MCC88XX", "OOJKK116655CCMHB8800", "OO4VJKK11QD55CC8800Z", "OOJJKK1163Q55CMC8800", "OO4VVJJKK1155MC8800X", "OO44JKK11Q55CC8800SX", "PP22TTO4JJKK1165CC80"],
+  "ARKHAUL":["J580SSWWYYLLIXX7AAFF", "VB880SSaZYYLLXX7AAFF", "155CHSSaWLLIIXX7AAFF", "OO1500SSaWYLLX77AAFF", "OKQCB00SSZLLXX77AAFF", "41663355C8SSLL77AAFF", "4VJK1ECCMSSLLI77AAFF", "OOJK1N800SSaLL77AAFF", "V99KK11580SSLL77AAFF", "OKK11UN58SSLLX77AAFF", "OOKK15CCH8SSLL77AAFF", "O4KK1R3E50SSLL77AAFF", "PPGGTTO9KRSSLL77AAFF"],
+  "JIPASIS":["6D5CSSaZZYYLIX77AAFF", "93D8SSZZWYYLIX77AAFF", "DDM0SSZZWWYYLI77AAFF", "O3Q8SSaaZZLLII77AAFF", "416Q5CMSSZWYLL77AAFF", "OO433QNMMSSaLL77AAFF", "OOUDM8SSZZYLLI77AAFF", "O4J63ENQD8SSLL77AAFF", "OO4JK66QQMSSLL77AAFF", "OO44JJ33UNSSLL77AAFF", "44633NQDB0SSLL77AAFF", "OO44J6RED0SSLL77AAFF", "P22GTOOJR3SSLL77AAFF"],
+  "BUZZY":["4D5CHSSWYLLIIXX77AAF", "KDCH00SSaYLLIXX77AAF", "41U5CB0SSZYLLXX77AAF", "9K6500SSLLIIXX77AAFF", "6UDD8800SSLLXX77AAFF", "91UU5B00SSaLLX77AAFF", "KREN55CC0SSLLI77AAFF", "OO4K1RN80SSLLX77AAFF", "VVKK116N88SSLL77AAFF", "4JK11E5800SSLL77AAFF", "OJKK13D558SSLL77AAFF", "O4V9KK1D00SSLL77AAFF", "PP22GTTJ91SSLL77AAFF"],
+  "BRI-KB-ROCK":["OOMMSSaZWYYLIIX77AFF", "OOUN5MMBSSaWIIX77AFF", "OO35MM0SSZWYLIIX7AFF", "OOUDDMM8SSaZLII7AAFF", "OO9MMB8SSaYLLIIX7AAF", "OOVVJNMMSSWIIX77AAFF", "OO49KQMMSSLLII77AAFF", "OOR3EMMH88SSLII77AAF", "OO4V1EMMSSWLLII7AAFF", "OO4J99MCMSSLLII77AAF", "OOVKRRMM8SSLLII77AAF", "OO4J16MMHSSLLII77AAF", "PGGTTOOEMMSSLLI77AAF"],
+  "MED-POD":["OOMMSaZWLLIIXX77AAFF", "OOUNMM8SYYIIXX77AAFF", "OO3MM8SaaZWLLIIXAAFF", "OOMM80SSYYLLII77AAFF", "OO9QQCMMSSLLII77AAFF", "OOREMMHSSWLIIX77AAFF", "OO3ND5MMCSSZLLII77AA", "OO416NDMMSSLLII77AAF", "OOV911MMSSaLII77AAFF", "OOJKRNMMHSSLII77AAFF", "OO4JK3QMMSSLLII77AAF", "OO4VJ95MMSSLII77AAFF", "P2GGTTOOMMSSLLI7AAFF"],
+  "MORPHE":["V963EEQNNDHaaWWLLIIF", "49UNDHHaaZZWWIX7AAFF", "4V96UUNNaaZZWWLXX7FF", "4VJ996NQNHHaaWWYLXFF", "4J99663UUNNDHSaaZWWF", "O44VV9913UUNHHaaZZYY", "4VVJ996UUNNQCMHHBBaa", "O4VVJJ993UUNNCHHaaWY", "OO44VV99KK3UUNNQHHaW", "4VVJJ99K63UUQNNHHZWW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99KK3UUNQNHHaWW", "PP22GO4VVJ99RUUNNHHa"],
+  "EXO-MKIV":["9UUNHaaZWWYYLLII77AF", "V9UNMHaaWWYYLLXX7AAF", "VV99UMHBaaWWYYLLIXFF", "4VUUNMMHHaaWWYLLIXX7", "V99UNNDHHBBSaaWWYL7F", "VKEEUUNN5HHB8SaaWWYL", "VV993EUUNNQMHHBaWY7F", "OOVV99REEUUNNMMHH8aW", "OOVV99R3UUNMMHHBaaWY", "OVV99K1REEUUNNMHHBWW", "OOVV99RREUUQNNMMHHaW", "OVV99RREUUQNNMHHBaWW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["44UUNHHaaZZWWYIIXX7A", "VJ96NDCHHaaZZWWLLAAF", "V91UQNQDHHB8aaZWWAFF", "33UUQQNNCHH8SaaWWYIA", "4V916UUNQNDHaaZZWWIA", "O499K6UUNND5CHaaWW7A", "OVVJJ991UUNQNCH8SaWW", "44VVJ99RR3EUUNN5HHaa", "OO44VV99KUUNNQaaZZWW", "O44VVJ996UUNQNDHH0aW", "44VVJJ996R3UUNNQHHaW", "O4VVJJ99K66UUNNHHaWW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["99UMHH80aaZWWYXX7AAF", "9UNNHH88aaZWWIIXX7AF", "VRUNNDCCHH0SaaWWXX7F", "V91UUN5CMMHH8aZZWWXA", "O99UUNN5CHH0aaWWLXXF", "VV99KUUNQN55MMH0aaWY", "O4V99KK11UUNNH0aaWWX", "VV99K1RUUNQNCHH88aaW", "VV99KK13UUNNCCHH0WWA", "VV99KK16UUNNQ55HHaaW", "OVV99KK116UUNNCHH0aa", "OVVJ99KK11UUNNHH8aaW", "PPTTVVJ99K113UUNNHaW"],
+  "DELOK":["VUNNMH00SaaWWYYLLXAF", "V9REUNHSaaWWYYLII7AF", "V9UUNNDH0aaWWYYLLIIA", "VV93EUNQNBSaaWWYLLAF", "4VVJEUUNNMHH0aaWYYLL", "VV1REEUUNNMCHHaWWLLF", "VVJ9RUUNNHHB8SaZWWYL", "VV99REUUQNNMHHaaWWYL", "OOVV996RRUUNNMMHHBaW", "VV9911RRUUNNHBBaaWLL", "4VV99RR3EEUUNNMMHHWW", "OVV99RREUUNNMHHBaaWA", "PPTVV996RREEUUNNMHHa"],
+  "TECHNOSORUS":["9633UNNDHHaaZWIX7AAF", "4963UNNHHaaZZWL7AAFF", "VV933UNDD5HHaaZWL7AF", "V99R3UQD5HHaaZZWWYYF", "VV96UUQNDMHaaZZWWAAF", "OVVJJ9966RUNNDHHSaWW", "OOVVJ933UUQNHHaaWWYI", "44VV9966RUUNNQHH80WW", "O4VVJJ996UUQQNNHHWWL", "OO44VVJ99RUUNNHaZZWW", "OO44VV996REUUQNNHaWW", "O44VV9933UUNNQ5HHaWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9UNNMHHSaWWYYL77AAFF", "VUNNHHaZWWYLLX77AAFF", "99UNNHHBaZWWYLLI7AFF", "V99UNNM8aaZWWYYLLAFF", "V996UNMHHaaWWLX7AAFF", "VJ993UUN5HH80aaWL7AF", "OV9916UNNHHaaWWLLIAA", "OOV99UUNQNHHSSaaWW7A", "VV991EUUQNNHHSSaaL77", "VV99R3EUUNNHHSSaaLLF", "VVJ99K6UUNNHHSSaaLFF", "OVV99RUUNNHHSSaaW7AF", "PP2OVV99UUNHHSSaaL7A"],
+  "GAPIX":["6R33EEQQDDZZWLXX77AF", "O6R3QQDDBZZYYLLIIXFF", "OJ633UQQD5MBZZYYLLIX", "44J6633EQQZZYYLIIXFF", "O4466R33EEQQDDHBZWXF", "OOJ66R33UQQCM0ZZYYX7", "OO4JJ663EEQQDDMH8ZYA", "OO44JJ9166RREQQDDZYX", "OO44JJ66REUQQDDMMCYF", "OO44JJ9166RR3EUQQDBL", "OO44JJ9K166R33EEDMBZ", "OO44VJJ966RR33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
+  "EXO-MKVII":["4J66QQDBB80ZZIXX77AA", "OJJK13QQD50ZZIXX77AF", "O416633QDCB88ZZYX77F", "6633QQDDC0ZZYYLXX7FF", "O4JJK133QDD5CC88aZZF", "OO4JJK1663QDDHB80ZZX", "OO4JJ1663EQDD50SZZIX", "O44VJJK6633EDDCH80ZX", "OO44JJ9KR33QQDD5C80S", "OO44JJKK11663QQDDCB8", "OO44VJJ9KK1166R33DD8", "OO44JJKK16633UQDDM88", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["OJ633UDDHHaaZZLXX7FF", "VJ663UQDDH8aZZWWIXAA", "44VJ63QQD5HaaZZWYY7F", "OOJJ63NQD8aZZWWLI77A", "4JJ9633QQDDHHBSaZZIA", "O44VJJ633QQDCBaWWYIA", "OO4JJ996633UQQDDHaaW", "OO44VJJ91663UNQDDHZ7", "OO4VJJ96633NQQDD5HZW", "OO44VVJJ66RR33NQQHaa", "OO44VVJJ99163QNQDD5W", "OO44VVJJ9966R33UQQDH", "PP22GOO44VJJ96633NQQ"],
+  "STAR-HUNTER":["4JK66R3DDSZZLI77AAFF", "4J6R33EDDSZZWYX7AAFF", "4633QQDDCaZZWYLLXAAF", "44K633QQD5MZZLL77AFF", "O44JJK663QQDZLXX7AAF", "OO44J16R3UQQD8SSZZLL", "OO44JK6633UUQDSZZL7F", "O44JJ633EQDDCBSSZIFF", "OO44JJ6633QQND8SSLL7", "OO44JJK16633QDMSSLLA", "OO44JJK6633QD8SS77AA", "OO44JJK633EQQDSSZL77", "22OO44JJK66R3QQSSLAA"],
+  "RHINO":["OK6R3QQDD5ZZYLLXX7AF", "4663QDDCB0ZZYYIXX7AA", "44J1663QDD800aZZLX7A", "OK633QQDD58800SZZWLX", "OOJ1133EQQDDM880SZZX", "OO4VJ9K633QQDD5H00WF", "OO44VJJK6633DD5CB0YX", "OO44VVJJKK6633QQ580L", "OO44VVJJK116633D80ZZ", "OO44JJ9KK16633QQ55LL", "O44JJKK16633QQDD5B8X", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["JJ633QQD8aaZWWIIX7AA", "446633UUQDHHaZYIIX7A", "OO4JK33UQQDCHaZWWYIX", "4VVJ9633UQQDaZZXX77F", "OO44JJ963UQCHHZZWXAF", "OOJJ9K33NQQD55HSZZWW", "OO44VJJ9966QNNQCH0ZZ", "OO44VVJJ963UQNDD0ZZL", "OO44VVJJ66R3UUNDDZZX", "OO4VVJJ96633QNDDHHZZ", "OO44VVJJ93UQQNDDHaZZ", "OO44VVJJ9966R3UNQDZZ", "PP22GGOO44JJ963UDHZZ"],
+  "CONQUEST":["J6633QDD88SaZZWWLLXX", "4433QDD50aZZWYLXX7AF", "O46R33QDDC00ZZWWXAFF", "O4JK63UQQD55MC8aZZYL", "OO44V63QQD5800ZZWX7A", "OO44VJ163QQDD5C80ZYA", "OO44KK11663QQDC0ZZLX", "O44JJKK6633QQD5580ZW", "OO44J9KK11663QQDD880", "OO44VJJKK11663EQQD8S", "OO44JJ116633QQ55CSZX", "OO44VVJJKK1663QQD50Z", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OJQN5MMSSZZWYIIXAAFF", "O4JDMM0SSaZZYYIIXXAA", "OQD5MM00SSaZZII7AAFF", "OOJ6UQMMHSSaZLIIX7AA", "OO9K3QQDMMSSaZYIIAAF", "OO4J913DMMSSZYYLIIAA", "OO4JJ96RCMMSSaaYIIAA", "OO4J663NQDMM0SSYIIAA", "OO4JJ963ED5MMCSSIIAA", "OO44JJK166RMMSSZIIAA", "OO44JJ96REEMCMSSIIAA", "OO44VJ116635MMSSIIAA", "PP22GGTTOO4J3MMSSIAA"],
+  "PRAWN":["OOMC8SSYYLLIIXX7AAFF", "OO6RMSSWYYLLII77AAFF", "OO9RMCSSZWYYLLIIXAAF", "OO9MMB0SSZWYLLIIAAFF", "OOR355MCMSSYYLLIIXAA", "OOEEQMMBSSaYLIIX77AA", "OOV99R3EUMMBSSZYIIAA", "OORNDDMMHBSSZWYYIIAA", "OO4V9RREEDMMSSYLIIAA", "OOVJRREMMB8SSYYII7AA", "OO4JRR3EDMM8SSYLIIAA", "OO411RREMMHBSSZLIIAA", "PPGGTTOOREEMMBBSSIAA"],
+  "HARKO":["OO6MCMSSaaWWYLLIAAFF", "OO3NMM8SSaaZWWIXXAAF", "OOVR3NDMMSSaaZWWI7AA", "OOVNMMHSSaWYYLIIXAAF", "OO3NMMHH0SSaaLIIXXAA", "OOJ9ENQMMHSSWYII7AAF", "OO4VJ9UNNCMMHSSIIXAA", "OO99UNQDMMBBSSaIIAAF", "OO4VJ996U5MMH8SSIIAA", "OO4VVJ99K1RUMMSSIIAA", "OO44VVJRUNNMMHSSIIAA", "OO4J99K16UNMMHSSIIAA", "PP2GGTTOOVV9DMMSSIIA"],
+  "DOZEUR":["96RR3EDMB8ZZWYYLLIFF", "4RR3QMMHBZYYLLIX77FF", "6RREQMMHBZZWYYLL77FF", "4RR33NDMMBBaYYLL7AFF", "O4JREEQD5MMBBWYYLLI7", "OV16R3EEDDMMBB88YYLL", "OO1RREEQDMMHBBZYYLLI", "VJJRR33EEMMBB8SZYYLL", "O46RREEQDMMHBB88YYLL", "OO44VRR33EEQMMBBYYLL", "O44K66RREEQDMMBBYYLL", "OO4V16RR3EEDMMBBYYLL", "22O44J6RR3EEMMBBYYLL"],
+  "DILUS":["REMMBB800aaYLLIXXAFF", "EE5MMBB0ZYLLIXX77AFF", "6RREE5MMCBBaWYLLIXXA", "VVJRREEMMCBB00ZYYLLX", "KREEDCMMBB880aYYLLAA", "O49KREE5MMCCBB80YYLL", "1RREECMMCHBB88WYYLLA", "411RREE5MMCHHBB0YYLL", "OK1RREEND5MCMBB8YYLL", "KK16RR3EEDMMBB80YYLL", "49KK11RREE5MMBB0YYLL", "OO9KK11RREE5MMBBYYLL", "PPGTTOVKRREEMMBBYYLL"],
+  "CHEIF 117":["R3EEDMBZZWWYYLLIIX7A", "4REEDCBB8ZZYYLLXX7FF", "R3ENQQDMMBBZYYLLX7AF", "OJRREENQ5MMHBZZWYYLL", "O4RREEQMBB8ZZYYLLI7A", "46RR33EUNQ55MMBBYYLL", "VJRR3EENQQMMBB0ZYYLL", "OV6RR33EEQDMMBBZYYLL", "O4JK1RR33EEMMBBZYYLL", "OO4V6RREEQDMCMBBYYLL", "4496RR33EEMMBBZYYLLA", "OOVJJK6RREEUMMBBYYLL", "P22OO4J6RREEMMBBYYLL"],
+  "SHADOW":["EUMMBBaZWWYYLLIX77AF", "OEUMMBB0aaZWYYLLXAFF", "RENNCMMBBaaYYLLIXX7A", "REEMBB88SaaZWWYYLLIF", "RREENMMHHBBaZZWYYLLA", "99RREEUMMHHBZZWWYYLL", "V99KRREEUCMMHBB0YYLL", "OV96RREEMMHBB0aWYYLL", "VV9RREEUQMMHBBSWYYLL", "OVJ99RREEUNMMBB8YYLL", "VV99KKRREEUNMMBBYYLL", "4VVJ99KRREENMMBBYYLL", "PP2O4VV9RREEMMBBYYLL"]
+};
+// Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
+const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR"};   // module adverse par carte de défi (au thème de son deck)
+function defiDeckNames(focus, tier){
+  const row = DEFI_DECKS[focus], str = row && row[tier - 1];
+  if(!str) return null;
+  const out = []; for(const ch of str){ const n = DEFI_CARD_ORDER[DEFI_B36.indexOf(ch)]; if(n) out.push(n); }
+  return out.length >= 20 ? out : null;
+}
+function defiFallbackDeck(focus){   // carte sans deck dédié : le pivot + 19 cartes au hasard (2 exemplaires max)
+  const pool = CHAR_DEFS.map(d => d.name), cnt = {}, deck = [focus, focus]; cnt[focus] = 2;
+  while(deck.length < 20){ const n = pool[Math.floor(Math.random() * pool.length)]; if((cnt[n] || 0) >= 2) continue; cnt[n] = (cnt[n] || 0) + 1; deck.push(n); }
+  return deck;
+}
+function defiOppSpec(def, tier){
+  const kn = DEFI_TIER_KNOBS[Math.max(1, Math.min(ULTIMATE_MAX_TIER, tier)) - 1];
+  return Object.assign({ focus:def.name, tier, deck:defiDeckNames(def.name, tier) || defiFallbackDeck(def.name), mod:DEFI_MOD[def.name] || null }, kn);
+}
+
+// ---------- DÉFI : fenêtre de lancement d'un palier -- deck adverse + choix de TON deck (V0.04.65) ----------
+let defiLaunchDef = null, defiLaunchTier = 0, defiLaunchSpec = null, defiLaunchDeck = null, defiBtlCtx = null;
+let defiLaunchCard = null, defiLaunchModule = null, defiLaunchEnemies = null;   // anciens champs, conservés vides
 function openDefiLaunch(def, tier){
-  defiLaunchDef = def; defiLaunchTier = tier; defiLaunchModule = null; defiLaunchMode = 'cards';
-  // V0.03.48 : formule dédiée au défi (1 carte vs escouade), plus freshEnemyTeam() (formule de vague de
-  // mission, 5 cartes vs 5 ennemis) -- cf commentaire au-dessus de defiFreshEnemyTeam(). Le nom de la
-  // carte est transmis pour appliquer sa courbe dédiée si elle en a une (cf DEFI_SCALE_ANCHORS_BY_CARD).
-  defiLaunchEnemies = defiFreshEnemyTeam(tier, def.name);
-  const matching = ownedStacks().filter(st => st.def.name === def.name);
-  // Présélectionne la carte si une seule pile valide existe (évite un clic inutile quand il n'y a
-  // de toute façon qu'un seul choix possible) ; sinon le joueur doit choisir lui-même la rareté.
-  defiLaunchCard = matching.length === 1 ? sqKey(matching[0].def.name, matching[0].rar) : null;
+  defiLaunchDef = def; defiLaunchTier = tier; defiLaunchSpec = defiOppSpec(def, tier);
+  if(!decks.some(d => d.id === defiLaunchDeck)) defiLaunchDeck = decks.some(d => d.id === batSelected) ? batSelected : ((decks.find(d => d.cards.length >= 2) || {}).id || null);
   renderDefiLaunch();
   document.getElementById('defiLaunchModal').classList.add('show');
 }
 function closeDefiLaunch(){ document.getElementById('defiLaunchModal').classList.remove('show'); }
-// Aperçu de l'escouade ennemie (V0.03.48, demande d'Alex) : mêmes tuiles .unit.cbt que l'écran de
-// combat réel (cf buildRoster()) -- simple aperçu statique (PV plein, ulti vide, pas de clic, pas
-// d'animation), les cartes n'ont pas encore commencé à se battre. L'escouade vient de defiLaunchEnemies
-// (tirée une seule fois à l'ouverture, cf openDefiLaunch()) pour que l'aperçu corresponde exactement à
-// ce qui sera réellement combattu au lancement.
-function defiEnemyPreviewHtml(enemies){
-  const tiles = enemies.map((u, idx) => `
-    <div class="unit cbt foe ${cbtFrameClass(u, false)}" data-defi-prev="${idx}">
-      <div class="cbt-ring"></div>
-      <img class="cbt-art-img" style="object-position:50% ${cbtArtPosY(u.name)}%" src="${(CHAR_DEFS.find(c => c.name === u.name) || {}).art || GREY_ART}" alt="" onerror="this.onerror=null;this.src='${GREY_ART}'">
-      <div class="cbt-gem"><b>${u.level}</b></div>
-      <div class="cbt-g cbt-hp"><canvas></canvas></div>
-      <div class="cbt-g cbt-ult"><canvas></canvas></div>
-    </div>`).join('');
-  return `<div class="team-label enemy" style="margin:0 0 6px;">HOSTILES</div><div class="roster dl-enemy-roster">${tiles}</div>`;
-}
-// Peint les jauges statiques (PV 100 %, ulti 0 %) des tuiles d'aperçu -- setCbtGaugeFill() lit la taille
-// réelle du canvas via getBoundingClientRect(), donc appelé APRÈS insertion dans le DOM (cf appelant).
-function defiPaintEnemyPreviewGauges(){
-  document.querySelectorAll('#defiLaunchInner [data-defi-prev]').forEach(el => {
-    setCbtGaugeFill(el.querySelector('.cbt-hp'), 100);
-    setCbtGaugeFill(el.querySelector('.cbt-ult'), 0);
-  });
-}
 function renderDefiLaunch(){
-  const def = defiLaunchDef, tier = defiLaunchTier;
+  const def = defiLaunchDef, tier = defiLaunchTier, spec = defiLaunchSpec;
   const inner = document.getElementById('defiLaunchInner');
-  if(!def || !inner) return;
+  if(!def || !inner || !spec) return;
   const boss = defiTierIsBoss(tier);
-  const modEnt = modSqEntry(defiLaunchModule);
-  // Toutes les piles possédées, celles de la carte demandée en tête (demande d'Alex) ; sortStacks()
-  // garde ensuite le tri habituel (rareté/niveau) à l'intérieur de chacun des deux groupes.
-  const stacks = sortStacks(ownedStacks()).sort((a, b) => (b.def.name === def.name) - (a.def.name === def.name));
-  const cardsHtml = stacks.map(st => {
-    const key = sqKey(st.def.name, st.rar), match = st.def.name === def.name, sel = defiLaunchCard === key;
-    // V0.03.68 (demande d'Alex) : "le bandeau équipé" -- même bandeau .pick-used-tag que les modules
-    // juste en dessous (sel ? ÉQUIPÉ) à la place de la simple pastille ✓ (cx-copy-badge) utilisée avant,
-    // pour un traitement identique entre carte mech et carte module une fois sélectionnée.
-    return `<div class="codex-card dl-card ${rarCls(st.rar)} ${sel ? 'sel' : ''} ${match ? '' : 'off'}" data-key="${key}" data-match="${match ? '1' : '0'}">
-      ${codexCardHtml(st.def, st.rar, {})}
-      ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
-      ${match ? '' : '<div class="dl-off-tag">AUTRE CARTE</div>'}
-    </div>`;
-  }).join('');
-  const modsHtml = squadModulesAvailable().map(e => {
-    const level = moduleLevel(e.def.name, e.rar), sel = defiLaunchModule === e.key;
-    return `<div class="mod-item${sel ? ' sel' : ''}" data-modkey="${e.key}">
-      <div class="mod-card ${rarCls(e.rar)}">
-        ${modCardFaceHtml(e.def, level, e.rar)}
-        ${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}
-        ${sel ? '<div class="pick-used-tag">ÉQUIPÉ</div>' : ''}
-      </div>
-    </div>`;
-  }).join('');
+  const cnt = {}; spec.deck.forEach(n => { cnt[n] = (cnt[n] || 0) + 1; });
+  const oppCards = Object.keys(cnt).map(n => CHAR_DEFS.find(d => d.name === n)).filter(Boolean)
+    .sort((a, b) => (b.name === def.name) - (a.name === def.name) || (cardPower(b, b.rarity, 1) - cardPower(a, a.rarity, 1)));
+  const oppHtml = oppCards.map(d => `<div class="codex-card dl-card dl-opp ${rarCls(d.rarity)}${d.name === def.name ? ' dl-focus' : ''}">
+      ${codexCardHtml(d, d.rarity, {})}
+      ${cnt[d.name] > 1 ? `<div class="cx-copy-badge">×${cnt[d.name]}</div>` : ''}
+    </div>`).join('');
+  const deckHtml = decks.length ? decks.map(d => {
+    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
+    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    return `<div class="deck-tile${defiLaunchDeck === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
+  }).join('') : '<div class="fab-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
+  const ready = decks.some(d => d.id === defiLaunchDeck && d.cards.length >= 2);
   inner.innerHTML = `
     <button class="cx-close" id="dlClose">✕</button>
-    <div class="dl-count">${defiLaunchCard ? 1 : 0}/1</div>
-    <div class="team-label player" style="margin:0;">${boss ? 'BOSS · ' : ''}PALIER ${tier} — ${def.name}</div>
-    ${defiEnemyPreviewHtml(defiLaunchEnemies || [])}
-    <div class="dl-mod-row">
-      <div class="mod-slot${modEnt ? ' filled ' + rarCls(modEnt.rar) : ''}" id="dlModSlot">
-        ${modEnt ? `<div class="mod-card">${modCardFaceHtml(modEnt.def, moduleLevel(modEnt.def.name, modEnt.rar), modEnt.rar)}</div>` : `<span class="plus">+</span><span class="mod-slot-label">MODULE</span>`}
-      </div>
-    </div>
-    <div class="dl-mode-row">
-      <button type="button" class="mod-fuse-toggle" id="dlModeToggle">${defiLaunchMode === 'cards' ? 'MODULES' : 'CARTES'}</button>
-      <button type="button" class="mod-fuse-toggle" id="dlModAuto">AUTO</button>
-    </div>
-    ${defiLaunchMode === 'cards' ? `
-    <div class="press-hint">Touche une carte ${def.name} pour la sélectionner</div>
-    <div class="codex-grid dl-list">${cardsHtml || '<div class="fab-empty">Aucune carte possédée.</div>'}</div>` : `
-    <div class="press-hint">Touche un module pour l’équiper</div>
-    <div class="mod-grid dl-list">${modsHtml || '<div class="fab-empty">Aucun module possédé.</div>'}</div>`}
-    <div class="controls" style="width:100%;"><button class="primary-btn" id="dlLaunchGo" ${defiLaunchCard ? '' : 'disabled'}>LANCER LE COMBAT</button></div>`;
-  defiPaintEnemyPreviewGauges();
+    <div class="team-label player" style="margin:0;">${boss ? 'BOSS · ' : ''}${defiTierIsUltimate(tier) ? 'ULTIMATE · ' : ''}PALIER ${tier} — ${def.name}</div>
+    <div class="team-label enemy dl-sec">DECK ADVERSE</div>
+    <div class="codex-grid dl-list dl-opp-list">${oppHtml}</div>
+    <div class="team-label player dl-sec">TON DECK</div>
+    <div id="defiDeckList">${deckHtml}</div>
+    <div class="controls" style="width:100%;"><button class="primary-btn" id="dlLaunchGo" ${ready ? '' : 'disabled'}>LANCER LE COMBAT</button></div>`;
   document.getElementById('dlClose').onclick = closeDefiLaunch;
-  inner.querySelectorAll('.dl-card').forEach(el => {
-    el.onclick = () => {
-      if(el.dataset.match !== '1'){ showToast('CETTE CASE DÉFI EST RÉSERVÉE À ' + def.name); return; }
-      const key = el.dataset.key;
-      defiLaunchCard = defiLaunchCard === key ? null : key;
-      renderDefiLaunch();
-    };
-  });
-  const modSlotEl = document.getElementById('dlModSlot');
-  if(modSlotEl) modSlotEl.onclick = () => {
-    if(modEnt){ defiLaunchModule = null; renderDefiLaunch(); }
-    else { defiLaunchMode = 'modules'; renderDefiLaunch(); }
-  };
-  // V0.03.67 (demande d'Alex) : "ajoute un bouton auto à droite du bouton module" -- équipe directement
-  // le module disponible le plus puissant (modulePower(), même métrique que la puissance d'escouade
-  // affichée ailleurs), sans passer par la liste. Même esprit que pickFillAuto() pour les cartes
-  // d'escouade, mais un seul slot ici donc un simple max plutôt qu'un remplissage de plusieurs slots.
-  // V0.03.68 (demande d'Alex) : "il faut que le bouton auto sélectionne aussi la carte mech" -- même
-  // principe, mais sur les piles possédées de la carte DE CETTE CASE DÉFI (def.name, pas toutes les
-  // piles du joueur comme `stacks` plus haut) : la meilleure rareté/niveau (cardPower()) est choisie et
-  // sélectionnée comme pour un clic manuel sur la carte.
-  document.getElementById('dlModAuto').onclick = () => {
-    const matching = ownedStacks().filter(st => st.def.name === def.name);
-    if(matching.length){
-      const bestCard = matching.reduce((a, b) => cardPower(b.def, b.rar) > cardPower(a.def, a.rar) ? b : a);
-      defiLaunchCard = sqKey(bestCard.def.name, bestCard.rar);
-    }
-    const cands = squadModulesAvailable();
-    if(cands.length){
-      const best = cands.reduce((a, b) => modulePower(b.def, b.rar) > modulePower(a.def, a.rar) ? b : a);
-      defiLaunchModule = best.key;
-    } else {
-      showToast('AUCUN MODULE DISPONIBLE');
-    }
-    defiLaunchMode = 'cards';
-    renderDefiLaunch();
-  };
-  document.getElementById('dlModeToggle').onclick = () => {
-    defiLaunchMode = defiLaunchMode === 'cards' ? 'modules' : 'cards';
-    renderDefiLaunch();
-  };
-  inner.querySelectorAll('[data-modkey]').forEach(tile => {
-    tile.onclick = () => {
-      const key = tile.dataset.modkey;
-      defiLaunchModule = defiLaunchModule === key ? null : key;
-      defiLaunchMode = 'cards';
-      renderDefiLaunch();
-    };
-  });
-  document.getElementById('dlLaunchGo').onclick = () => {
-    if(!defiLaunchCard) return;
-    defiEnterCombat();
-  };
+  inner.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { defiLaunchDeck = t.dataset.deck; renderDefiLaunch(); }; });
+  document.getElementById('dlLaunchGo').onclick = () => { if(ready) defiEnterCombat(); };
+}
+// Lance le combat BATAILLE du palier : TON deck contre le deck adverse du palier (chef adverse = la carte du défi).
+function defiEnterCombat(){
+  const d = decks.find(x => x.id === defiLaunchDeck); if(!d || !defiLaunchDef || !defiLaunchSpec) return;
+  if(BTL) return;
+  defiBtlCtx = { def:defiLaunchDef, tier:defiLaunchTier };
+  closeDefiLaunch();
+  btlStart(Object.assign({}, d, { defi:defiLaunchSpec }));
+  if(!BTL) defiBtlCtx = null;   // lancement refusé (deck incomplet...)
+}
+// Fin du combat de défi (appelée par btlFinish) : progression, récompense, écran de victoire / défaite.
+function defiBtlShowResult(won){
+  const ctx = defiBtlCtx; defiBtlCtx = null;
+  if(!ctx) return;
+  const def = ctx.def, tier = ctx.tier, prev = (player.defi && player.defi[def.name]) || 0;
+  if(won && tier > prev){ player.defi[def.name] = tier; player.stats.defisWon = (player.stats.defisWon || 0) + 1; saveSoon(); }
+  const now = player.defi[def.name] || 0, artPosY = defiResultArtPosY(def.name);
+  const st = sortStacks(ownedStacks()).find(x => x.def.name === def.name), certKey = st ? sqKey(st.def.name, st.rar) : null;
+  const justCert = !won ? null : (prev < DEFI_CHALLENGES_PER_CARD && now >= DEFI_CHALLENGES_PER_CARD) ? 'gold' : (prev < ULTIMATE_MAX_TIER && now >= ULTIMATE_MAX_TIER) ? 'ultimate' : null;
+  if(won){
+    const items = tier > prev ? grantReward(defiTierReward(tier)) : [];
+    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt, artPosY, onAction: justCert && certKey ? () => openDefiCertReveal(certKey, justCert) : null });
+  } else {
+    showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, artPosY, actionLabel:'CONTINUER' });
+  }
+}
+// Retour sur la piste des paliers une fois le combat quitté (appelée par btlExit).
+function defiBtlReturn(){
+  defiBtlCtx = null;
+  openSub('defiPathView'); renderDefiPath(); defiScrollToCurTier();
 }
 document.getElementById('defiLaunchModal').addEventListener('click', e => { if(e.target.id === 'defiLaunchModal') closeDefiLaunch(); });
 
@@ -26995,58 +26996,6 @@ document.getElementById('defiLaunchModal').addEventListener('click', e => { if(e
 // goBack()/endBattle() plus bas).
 var defiCombatActive = false;   // var (V0.04.14) : lu aussi par renderLoot(), appelée avant cette ligne au chargement
 let defiSavedCtx = null;
-function defiEnterCombat(){
-  if(!defiLaunchDef || !defiLaunchCard) return;
-  const cardEnt = sqEntry(defiLaunchCard);
-  if(!cardEnt){ showToast('CARTE INTROUVABLE'); return; }
-  const def = defiLaunchDef, tier = defiLaunchTier;
-  defiSavedCtx = Object.assign(battleSnapshot(), {
-    loot: runLoot, curSquadModule,   // V0.03.61 : emprunte/restaure le module RÉEL (plus le modèle squadModule)
-    bblBoard: bblBoard.slice(), bblChain: bblChain.slice(), bblUltIdx, bblTickCounter,
-    wipeModuleTriggered, saphyrTriggered, tArmsTriggered
-  });
-  stopTimers();
-  defiCombatActive = true;
-  missionMode = 'one';   // force un mode combat normal (pas RÉCOLTE DOME) le temps du palier défi
-  curSquadModule = defiLaunchModule;
-  playerTeam = [makePlayerFromDef(cardEnt.def, cardEnt.rar)];
-  applyModuleSquadBonus(playerTeam);
-  // V0.03.48 : réutilise l'escouade DÉJÀ tirée et montrée dans l'aperçu (cf defiLaunchEnemies, fixée à
-  // l'ouverture de la fenêtre par openDefiLaunch()) plutôt que d'en retirer une nouvelle au hasard --
-  // sinon l'escouade réellement combattue ne correspondrait plus à celle que le joueur vient de voir.
-  enemyTeam = defiLaunchEnemies || defiFreshEnemyTeam(tier, defiLaunchDef && defiLaunchDef.name);
-  wave = tier;
-  runLoot = newLoot();
-  auto = false; speed = 1;
-  // V0.03.67 (demande d'Alex) : auto remis à false ci-dessus, mais #autoBtn lui-même n'était jamais
-  // resynchronisé (contrairement à defiRestoreContext()/restoreBattle() qui le font toutes les deux) --
-  // le bouton gardait donc l'affichage "AUTO : ON" d'un combat précédent tant que le joueur n'y touchait
-  // pas, alors que le moteur tournait déjà en manuel (bulles non grisées, cf .auto-locked/bblRenderBoard()
-  // qui lit bien la variable auto et grisait donc correctement -- seul le bouton mentait).
-  const defiAb = document.getElementById('autoBtn');
-  if(defiAb){ defiAb.textContent = 'AUTO : OFF'; defiAb.classList.remove('auto-on'); }
-  battleStarted = true; battleOver = false; missionDone = false; pendingNextWave = false;
-  missionEndAt = 0; runSeconds = 0; lastTickAt = Date.now();
-  bblChain = []; bblUltIdx = null; bblTickCounter = 0; bblBoard = [];
-  wipeModuleTriggered = false; saphyrTriggered = false; tArmsTriggered = false;
-  closeDefiLaunch();
-  document.getElementById('defiPathView').classList.remove('active');
-  inInfinite = true;
-  document.getElementById('infiniteMode').classList.add('active');
-  document.getElementById('collectBtn').style.display = 'none';
-  document.getElementById('infModeTagTitle').textContent = (defiTierIsBoss(tier) ? 'BOSS · ' : '') + 'DÉFI ' + def.name;
-  document.getElementById('missionTitleTxt').textContent = 'PALIER ' + tier + ' — ' + def.name;
-  document.getElementById('missionTimer').style.display = 'none';
-  document.getElementById('waveLabel').textContent = 'PALIER ' + tier;
-  document.getElementById('waveLabel').style.display = '';
-  document.getElementById('infModeTag').style.display = '';
-  document.getElementById('infStart').style.display = 'none';
-  document.getElementById('infArena').style.display = '';
-  scrollViewTop();
-  bblGenBoard();
-  render();
-  startLoop();
-}
 // Restaure EXACTEMENT l'état (mission active, escouade, module équipé...) tel qu'il était juste avant
 // que défi ne prenne possession des variables partagées (même principe que restoreBattle(), mais à
 // partir de l'instantané pris par defiEnterCombat() plutôt que de MSTATE).
@@ -29128,8 +29077,8 @@ const HELP_CONTENT = {
   dailyView: { title:'RÉCOMPENSE JOURNALIÈRE', text:'Reviens chaque jour réclamer ta récompense : elle grandit avec les jours consécutifs.<br><br>Glisse pour avancer sur la piste et découvrir les prochaines cases.' },
   trophyView: { title:'TROPHÉES', text:'Chaque trophée récompense un exploit accompli, une seule fois (or, cristaux, cartes bonus…).<br><br><b>RÉCUPÉRER TOUT</b> apparaît en bas à droite dès que plusieurs trophées sont prêts en même temps.' },
   tasksView: { title:'TÂCHES', text:'Des objectifs qui se renouvellent régulièrement : les accomplir fait progresser ta collection plus vite.<br><br><b>RÉCUPÉRER TOUT</b> apparaît dès que 2 tâches ou plus sont prêtes.' },
-  defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de paliers à vaincre un par un : plus tu avances, plus les récompenses sont généreuses, avec un combat de boss tous les 10 paliers.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> pour aller encore plus loin.' },
-  defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat contre ce même adversaire, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour choisir ta carte et un module, puis lance le combat.' },
+  defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de 10 paliers à vaincre un par un, en combat Bataille : plus tu avances, plus le deck adverse est redoutable et plus les récompenses sont généreuses.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> : 3 paliers de plus, encore plus difficiles.' },
+  defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat Bataille contre un deck bâti autour de cette carte, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour voir le deck adverse, choisir ton deck, puis lance le combat.' },
   playerView: { title:'FICHE JOUEUR', text:'Ta carte de visite : nom, niveau et statistiques cumulées depuis le début de la partie.' },
   // ---------- CARTE ----------
   codexHubView: { title:'CARTE', text:'Tout ce qui concerne ta collection :<ul>' +
