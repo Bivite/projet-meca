@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.61</title>
+<title>Projet MECA V0.04.62</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8836,7 +8836,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.61</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.62</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9234,9 +9234,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.61';
+var BUILD_VERSION = 'V0.04.62';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.62', items:[
+    'NOUVELLE CARTE : TECHNOSORUS (rare, Percée) — mécha-dinosaure. À son arrivée sur le champ de bataille, une mâchoire mécanique se referme sur la case choisie, puis s\'ouvre lentement en dévoilant la carte.',
+    'NOUVELLE CARTE : HYPPER (rare, Tank) — mécha-hippopotame de béton armé.',
+    'Le cadeau de bienvenue (module PROK-IEM) offert aux nouveaux joueurs est supprimé.',
+  ] },
   { v:'V0.04.61', items:[
     'COMBAT : les dégâts prévus s\'affichent en chiffres seuls, centrés sur la carte (bleu = bouclier, rouge = PV) et décomptent à la résolution. Les cartes détruites montrent des craquelures en relief.',
     'COMBAT : le champ de bataille est remonté, chaque joueur commence avec 4 cartes en main, et la courbe de mana est revue (1, 1, 2, 2, 3, 3… jusqu\'à 5).',
@@ -10928,6 +10933,8 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  HYPPER:    { head:'small', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'chevron' },
+  'TECHNOSORUS': { head:'small', shoulders:'big', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'gatling', dual:true, emblem:'stripes' },
   DELOK:     { head:'helm',    shoulders:'block', torso:'vcut',  legs:'standard', back:'boosters', arms:'thick', weapon:'gatling', dual:true, emblem:'chevron' },
   'GAPIX':  { head:'crest',   shoulders:'slim',  torso:'vcut',  legs:'reverse',  back:'boosters', arms:'std',   weapon:'pistol',  emblem:'chevron' },
   ARKHAUL:   { head:'hood',    shoulders:'round', torso:'box',   legs:'standard', back:'halo',     arms:'std',   weapon:'staff',   emblem:'none' },
@@ -10973,6 +10980,8 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  HYPPER:    { pilot:'Sgt. Amadou « Béton » Diallo', text:"Ancien conducteur d'engins de chantier, Diallo pilote ce colosse bâti à partir de blocs de béton armé et de plaques de blindage. Rien ne l'arrête sur une autoroute, rien ne le déplace sur un champ de bataille : il avance, encaisse, et les autres passent derrière lui." },
+  'TECHNOSORUS': { pilot:'Cpt. Rhea « Croc » Vasquez', text:"Pilote d'essai du programme TYRAN, Vasquez a dompté le premier mécha-dinosaure de l'armée : un prototype de rupture, conçu pour passer en force dès son déploiement. Ses deux canons rotatifs ouvrent la brèche, ses mâchoires de titane font le reste. Elle dit qu'il ne rugit jamais pour rien." },
   DELOK:     { pilot:'Chasseur de primes Idris « Croque-Mort » Kane', text:"Mercenaire indépendant recruté par l'armée à prix d'or, Kane ne se bat que contre paiement -- mais ses deux canons rotatifs ne ratent jamais la cible la plus recherchée du champ de bataille. Son masque doré porte une entaille gravée pour chaque contrat rempli." },
   ARKHAUL:   { pilot:'Cmdt. Dariusz Kessler', text:"Commandant du blindé volant T-99, Kessler ne recule jamais : son vaisseau encaisse les tirs ennemis pendant que ses quatre tourelles pilonnent le champ de bataille et que ses rampes larguent du renfort en pleine tempête." },
   'EXO-MKX':  { pilot:'Col. Frank « Big Frank » Kowalski', text:"Dixième variante du programme d'exosquelettes lourds EXO, blindée pour encaisser les assauts les plus violents. Ses lance-roquettes jumelés pilonnent plusieurs cibles à la fois. Kowalski n'a jamais reculé d'un mètre à son bord." },
@@ -11191,7 +11200,19 @@ const CHAR_DEFS = [
     ultName:"PRIME MAXIMALE", ultMult:2.0, ultDesc:"Vise toujours le mécha ennemi le plus puissant (la plus grosse prime) et ne rate jamais son tir (critique garanti)",
     base:{atk:62, def:9, hp:290}, max:{atk:452, def:100, hp:1260}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/delok-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/delok-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/delok-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.62) : TECHNOSORUS, mécha-dinosaure à Percée ----
+  { name:"TECHNOSORUS", rarity:"rare", color:"#c9b02f", shape:"TECHNOSORUS", role:"Assaut — mécha-tyran à mâchoires de titane",
+    ultName:"MÂCHOIRES DE TITANE", ultMult:1.8, ultDesc:"Referme ses mâchoires sur un ennemi et le broie (critique garanti)",
+    base:{atk:34, def:10, hp:300}, max:{atk:240, def:92, hp:1150}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/technosorus-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/technosorus-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.62) : HYPPER, mécha-hippopotame TANK ----
+  { name:"HYPPER", rarity:"rare", color:"#a89f8c", shape:"HYPPER", role:"Tank — colosse blindé, protège l'escouade",
+    ultName:"MUR DE BÉTON", ultMult:1.0, ultDesc:"Dresse un blindage de béton autour de toute l'escouade (bouclier)",
+    base:{atk:10, def:30, hp:440}, max:{atk:70, def:262, hp:2000}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/hypper-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/hypper-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11227,7 +11248,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11235,7 +11256,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14008,6 +14029,8 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
+  HYPPER:    (u, T) => { squadShield(2); },   // dresse un blindage de béton autour de toute l'escouade
+  'TECHNOSORUS': (u, T) => hitCrit(u, T, u.ultMult),   // referme ses mâchoires sur un ennemi : critique garanti
   DELOK:     (u, T) => hitStrongestCrit(u, T, u.ultMult),   // vise toujours le mécha ennemi le plus puissant (la plus grosse prime) et ne rate jamais son tir (critique garanti)
   JIPASIS:   (u, T) => { squadShield(2); },                                             // dôme protecteur : bouclier (-50% dégâts, 2 tours) sur toute l'escouade
   PRAWN:     (u, T) => { u.shield = 3; healSquad(0.06); },                               // bouclier qui soigne légèrement tant qu'il est actif
@@ -24586,6 +24609,254 @@ async function btlMotArrive(c, u, to, col){
   } finally { cancelAnimationFrame(raf); cv.remove(); u.style.opacity = ''; u.style.filter = ''; }
 }
 BTL_CARD_FX['MOTOKO'] = { arrive: btlMotArrive };
+// ---- TECHNOSORUS : arrivée = une mâchoire mécanique (plaques d'acier olive à bandes de danger, vérins chromés, dents d'acier) descend et remonte sur la case choisie, se referme d'un coup sec (impact, étincelles, vapeur, fissures incandescentes), reste serrée le temps que la lueur transperce les interstices, puis s'ouvre lentement en laissant la carte se dévoiler petit à petit. Dessin 100 % vectoriel (aucune image à envoyer), prérendu une fois en sprites. ----
+function btlRexJawSprite(W, P, T, upper, k){
+  const key = [Math.round(W), Math.round(P), Math.round(T), upper ? 1 : 0, k].join('/');
+  btlRexJawSprite.c = btlRexJawSprite.c || {};
+  if(btlRexJawSprite.c[key]) return btlRexJawSprite.c[key];
+  const H = P + T, cv = document.createElement('canvas'); cv.width = Math.ceil(W * k); cv.height = Math.ceil(H * k);
+  const g = cv.getContext('2d'); g.scale(k, k);
+  if(!upper){ g.translate(0, H); g.scale(1, -1); }   // mâchoire inférieure : même dessin, retourné (la lumière est inversée dans les dégradés)
+  const R = btlRng(upper ? 7 : 19);
+  const lip = x => P * (.955 + .045 * Math.sin(Math.PI * x / W));
+  const plate = () => {
+    g.beginPath(); g.moveTo(0, .6 * P); g.lineTo(.02 * W, .26 * P); g.lineTo(.07 * W, .14 * P); g.lineTo(.115 * W, .16 * P);
+    const nS = 7, sx0 = .115 * W, sx1 = .885 * W, sw = (sx1 - sx0) / nS;
+    for(let i = 0; i < nS; i++){ const tipY = P * (.015 + .05 * Math.abs(i - 3) / 3); g.lineTo(sx0 + sw * (i + .5), tipY); g.lineTo(sx0 + sw * (i + 1), P * .14); }
+    g.lineTo(.93 * W, .14 * P); g.lineTo(.98 * W, .26 * P); g.lineTo(W, .6 * P);
+    g.lineTo(.985 * W, lip(.985 * W));
+    for(let i = 0; i <= 24; i++){ const x = W * (.985 - .97 * i / 24); g.lineTo(x, lip(x)); }
+    g.lineTo(0, .6 * P); g.closePath();
+  };
+  // --- ombre portée du bord (profondeur) ---
+  // --- plaque : dégradé métal olive ---
+  plate();
+  const gb = g.createLinearGradient(0, 0, 0, P);
+  if(upper){ gb.addColorStop(0, '#8d9e3e'); gb.addColorStop(.2, '#aabd4b'); gb.addColorStop(.5, '#66752c'); gb.addColorStop(1, '#2a3213'); }
+  else { gb.addColorStop(0, '#222a10'); gb.addColorStop(.5, '#52602a'); gb.addColorStop(.86, '#97a842'); gb.addColorStop(1, '#6c7c31'); }
+  g.fillStyle = gb; g.fill();
+  g.save(); plate(); g.clip();
+  // reflet métallique large + patine
+  const sh = g.createLinearGradient(0, 0, W, 0); sh.addColorStop(0, 'rgba(0,0,0,.34)'); sh.addColorStop(.18, 'rgba(255,255,220,.0)'); sh.addColorStop(.36, 'rgba(255,255,230,.17)'); sh.addColorStop(.5, 'rgba(255,255,230,0)'); sh.addColorStop(.82, 'rgba(255,255,220,.06)'); sh.addColorStop(1, 'rgba(0,0,0,.4)');
+  g.fillStyle = sh; g.fillRect(0, 0, W, H);
+  // facettes : plaques d'armure qui se chevauchent
+  const seams = [.31, .74];
+  seams.forEach((f, i) => {
+    g.fillStyle = 'rgba(8,11,3,.72)'; g.fillRect(0, P * f, W, Math.max(1.6, P * .02));
+    g.fillStyle = 'rgba(232,244,150,.30)'; g.fillRect(0, P * f + Math.max(1.6, P * .02), W, Math.max(1, P * .012));
+    const sg = g.createLinearGradient(0, P * f - P * .06, 0, P * f); sg.addColorStop(0, 'rgba(0,0,0,0)'); sg.addColorStop(1, 'rgba(0,0,0,.28)'); g.fillStyle = sg; g.fillRect(0, P * f - P * .06, W, P * .06);
+  });
+  // joints verticaux
+  for(let i = 1; i < 6; i++){ const x = W * i / 6 + (R() - .5) * W * .02; g.fillStyle = 'rgba(8,11,3,.5)'; g.fillRect(x, P * .02, Math.max(1, W * .006), P * .27); g.fillStyle = 'rgba(232,244,150,.16)'; g.fillRect(x + Math.max(1, W * .006), P * .02, Math.max(.8, W * .004), P * .27); }
+  // rayures jaunes en biais (comme sur l'artwork du T-REX)
+  for(let j = 0; j < 8; j++){
+    const sd = j < 4 ? -1 : 1, xc = W * (.5 + sd * (.1 + .105 * (j % 4))) , w = W * .033, y0 = P * (.2 + .03 * (j % 2)), y1 = P * (.72 - .04 * (j % 3)), dx = sd * W * .05;
+    g.beginPath(); g.moveTo(xc - w, y0); g.lineTo(xc + w, y0); g.lineTo(xc + dx + w * .1, y1); g.lineTo(xc + dx - w * .1, y1 + P * .03); g.closePath();
+    const yg = g.createLinearGradient(0, y0, 0, y1); yg.addColorStop(0, '#f5cb2c'); yg.addColorStop(1, '#c4930f'); g.fillStyle = yg; g.fill();
+    g.strokeStyle = 'rgba(25,20,4,.85)'; g.lineWidth = 1.1; g.stroke();
+    g.strokeStyle = 'rgba(255,250,200,.35)'; g.lineWidth = .8; g.beginPath(); g.moveTo(xc - w * .6, y0 + 1); g.lineTo(xc + dx * .9 - w * .1, y1 - 1); g.stroke();
+  }
+  // rivets
+  const rivet = (x, y, r) => {
+    const rg = g.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r * 1.1); rg.addColorStop(0, '#f1f6bd'); rg.addColorStop(.5, '#7e8b36'); rg.addColorStop(1, '#232a0d');
+    g.fillStyle = 'rgba(0,0,0,.5)'; g.beginPath(); g.arc(x + r * .15, y + r * .25, r * 1.2, 0, 6.283); g.fill();
+    g.fillStyle = rg; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  };
+  const rr = Math.max(1.6, W * .012);
+  for(let i = 0; i < 9; i++){ rivet(W * (.15 + .7 * i / 8), P * .19, rr); rivet(W * (.15 + .7 * i / 8), P * .865, rr); }
+  // plaque centrale : bouclier + fente de visée ambrée (lueur ajoutée à chaque image)
+  const mx = W * .5, mw = W * .15;
+  g.fillStyle = '#12160a'; g.beginPath(); g.moveTo(mx - mw, P * .045); g.lineTo(mx + mw, P * .045); g.lineTo(mx + mw * .7, P * .26); g.lineTo(mx - mw * .7, P * .26); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(232,244,150,.4)'; g.lineWidth = 1; g.stroke();
+  const eg = g.createLinearGradient(mx - mw * .6, 0, mx + mw * .6, 0); eg.addColorStop(0, '#6b2f06'); eg.addColorStop(.5, '#ffc14a'); eg.addColorStop(1, '#6b2f06');
+  g.fillStyle = eg; g.fillRect(mx - mw * .6, P * .12, mw * 1.2, Math.max(2.4, P * .035));
+  // éraflures et usure
+  g.lineCap = 'round';
+  for(let i = 0; i < 46; i++){ const x = R() * W, y = R() * P * .9, l = 3 + R() * W * .06, a = -.5 + R() * 1.0 + (R() < .5 ? 0 : 1.57);
+    g.strokeStyle = R() < .55 ? 'rgba(235,245,170,' + (.07 + R() * .13) + ')' : 'rgba(5,8,2,' + (.12 + R() * .2) + ')'; g.lineWidth = .6 + R() * .8; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
+  // suie et huile aux coins
+  [[.02, .1], [.98, .1], [.5, .52]].forEach(([fx, fy], i) => { const sg = g.createRadialGradient(W * fx, P * fy, 0, W * fx, P * fy, W * (i < 2 ? .17 : .3)); sg.addColorStop(0, 'rgba(0,0,0,.4)'); sg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = sg; g.fillRect(0, 0, W, P); });
+  g.restore();
+  // chanfrein du contour
+  plate(); g.lineJoin = 'round'; g.strokeStyle = 'rgba(8,11,3,.92)'; g.lineWidth = 3; g.stroke();
+  g.save(); plate(); g.clip(); g.translate(0, upper ? 1.4 : -1.4 * 0); g.strokeStyle = 'rgba(240,250,170,.4)'; g.lineWidth = 1.2; plate(); g.stroke(); g.restore();
+  // vérins hydrauliques chromés sur les flancs
+  [.095, .905].forEach((fx, i) => {
+    const x = W * fx, w = W * .05, y0 = P * .1, y1 = P * .6;
+    const cg = g.createLinearGradient(x - w, 0, x + w, 0); cg.addColorStop(0, '#15181a'); cg.addColorStop(.28, '#dfe6e8'); cg.addColorStop(.5, '#8d979a'); cg.addColorStop(1, '#101314');
+    g.fillStyle = 'rgba(0,0,0,.45)'; g.fillRect(x - w + 2, y0 + 2, w * 2, y1 - y0);
+    g.fillStyle = cg; g.fillRect(x - w, y0, w * 2, y1 - y0);
+    g.fillStyle = '#1b1f21'; g.fillRect(x - w * 1.18, y0, w * 2.36, P * .045); g.fillRect(x - w * 1.18, y1 - P * .045, w * 2.36, P * .045);
+    const rg = g.createLinearGradient(x - w * .5, 0, x + w * .5, 0); rg.addColorStop(0, '#2a2f31'); rg.addColorStop(.4, '#f3f8f9'); rg.addColorStop(1, '#3b4143');
+    g.fillStyle = rg; g.fillRect(x - w * .42, y1, w * .84, P * (.97 - .6) * .72);
+    g.fillStyle = '#c4cdd0'; g.beginPath(); g.arc(x, P * .1 + 1, w * .5, 0, 6.283); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,.6)'; g.lineWidth = 1; for(let j = 0; j < 4; j++){ const yy = y0 + P * (.08 + .09 * j); g.beginPath(); g.moveTo(x - w, yy); g.lineTo(x + w, yy); g.stroke(); }
+  });
+  // gencive : sillon sombre et braise le long de la lèvre
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  const lipPath = () => { g.beginPath(); for(let i = 0; i <= 28; i++){ const x = W * (.03 + .94 * i / 28), y = lip(x) + P * .005; if(i) g.lineTo(x, y); else g.moveTo(x, y); } };
+  lipPath(); g.strokeStyle = '#150604'; g.lineWidth = P * .12; g.stroke();
+  g.save(); g.translate(0, P * .03); lipPath(); g.strokeStyle = 'rgba(176,42,16,.75)'; g.lineWidth = P * .035; g.stroke(); g.restore();
+  // dents
+  const nU = 9, pitch = W * .88 / nU;
+  const tooth = (xc, len, wt, lean) => {
+    const y0 = lip(xc) - P * .015;
+    g.beginPath(); g.moveTo(xc - wt / 2, y0); g.bezierCurveTo(xc - wt * .45, y0 + len * .5, xc + lean * .3 - wt * .1, y0 + len * .86, xc + lean, y0 + len);
+    g.bezierCurveTo(xc + lean * .3 + wt * .1, y0 + len * .86, xc + wt * .45, y0 + len * .5, xc + wt / 2, y0); g.closePath();
+    const tg = g.createLinearGradient(xc - wt / 2, 0, xc + wt / 2, 0); tg.addColorStop(0, '#7a7664'); tg.addColorStop(.3, '#f6f1dd'); tg.addColorStop(.62, '#cdc6ac'); tg.addColorStop(1, '#5e5a48');
+    g.fillStyle = tg; g.fill();
+    g.save(); g.clip();
+    const sg = g.createLinearGradient(0, y0, 0, y0 + len); sg.addColorStop(0, 'rgba(70,14,8,.7)'); sg.addColorStop(.42, 'rgba(70,14,8,0)'); sg.addColorStop(1, 'rgba(0,0,0,.18)'); g.fillStyle = sg; g.fillRect(xc - wt, y0, wt * 2, len + 2);
+    g.fillStyle = 'rgba(30,24,12,.5)'; g.fillRect(xc - wt, y0 + len * .55, wt * 2, Math.max(.8, len * .035));   // bague d'acier usée
+    g.restore();
+    g.strokeStyle = 'rgba(28,20,10,.95)'; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = 'rgba(255,255,250,.75)'; g.lineWidth = Math.max(.8, wt * .08); g.beginPath(); g.moveTo(xc - wt * .17, y0 + len * .12); g.lineTo(xc - wt * .04 + lean * .6, y0 + len * .8); g.stroke();
+  };
+  const lens = [1, .66, .82, .7, .9, .7, .82, .66, 1];
+  for(let i = 0; i < nU; i++){
+    const xu = W * .06 + pitch * (i + .5);
+    if(upper) tooth(xu, T * lens[i], pitch * .72, (R() - .5) * 1.4);
+    else if(i < nU - 1) tooth(xu + pitch / 2, T * (lens[i] + lens[i + 1]) / 2 * 1.08, pitch * .72, (R() - .5) * 1.4);
+  }
+  // lampes (positions renvoyées pour la lueur dynamique)
+  const out = { cv, lamps:[{ x:mx, y:P * .135 }], H };
+  return btlRexJawSprite.c[key] = out;
+}
+async function btlRexArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random;
+  const plate = btlQ('#btlPlate'), { cv, ctx, W, H } = btlCanvasFx(30);
+  const dpr = Math.min(2, window.devicePixelRatio || 1), tw = to.width, th = to.height;
+  const cx = to.left + tw / 2, cy = to.top + th / 2;
+  const Wj = tw * 2.05, P = th * .52, T = th * .34, Hs = P + T, K = Math.min(3, dpr * 1.5);
+  const SU = btlRexJawSprite(Wj, P, T, true, K), SL = btlRexJawSprite(Wj, P, T, false, K);
+  const smokeS = [0, 1, 2, 3, 4].map(i => btlSmokeSprite(i));
+  const Dc = T * .92, Dopen = th * 1.5, Dwide = th * 1.2, Dfar = th * 3.6;
+  const T_IN = 560, T_GROWL = 800, T_SNAP = 905, T_SETTLE = 1180, T_OPEN0 = 1650, T_OPEN1 = 3050, T_END = 3700;
+  const R2 = btlRng(Math.round(cx * 7 + cy));
+  // fissures incandescentes autour de la ligne de morsure
+  const cracks = [];
+  for(let i = 0; i < 9; i++){
+    const dir = i % 2 ? 1 : -1, y0 = (R2() - .5) * T * .6; let x = (R2() - .3) * Wj * .5 * dir, y = y0; const pts = [{ x, y }];
+    const n = 4 + Math.floor(R2() * 4), ang = (R2() - .5) * 1.8 + (R2() < .5 ? Math.PI * .5 : -Math.PI * .5) * (R2() < .5 ? 0 : 1);
+    let a = (dir > 0 ? 0 : Math.PI) + (R2() - .5) * 1.1 + (R2() < .4 ? (R2() < .5 ? 1 : -1) * .9 : 0);
+    for(let j = 0; j < n; j++){ const l = th * (.07 + R2() * .1); a += (R2() - .5) * .9; x += Math.cos(a) * l; y += Math.sin(a) * l; pts.push({ x, y }); }
+    cracks.push(pts);
+  }
+  const smoke = [], sparks = [];
+  let last = 0, raf = 0, hit = false, steamA = false, steamB = false, ringed = false, ringed2 = false, lastEmit = 0, openVent = 0;
+  const t0 = performance.now();
+  const puff = (x, y, vx, vy, s0, s1, life, a) => smoke.push({ x, y, vx, vy, s0, s1, life, age:0, a, si:Math.floor(rnd() * 5), rot:rnd() * 6.283, rv:(rnd() - .5) * .8 });
+  const steamJets = (n, big) => { for(const sd of [-1, 1]) for(let i = 0; i < n; i++){
+    const y = cy + (rnd() - .5) * Dc * 1.6;
+    puff(cx + sd * Wj * (.44 + rnd() * .08), y, sd * (90 + rnd() * 190) * (big ? 1.25 : 1), -(20 + rnd() * 70), tw * (.14 + rnd() * .1), tw * (.5 + rnd() * .45), 800 + rnd() * 700, .5 + rnd() * .22); } };
+  // distance entre les deux lèvres, en fonction du temps
+  const gap = t => {
+    if(t < T_IN) return lerp(Dfar, Dopen, E.outC(t / T_IN));
+    if(t < T_GROWL){ const k = (t - T_IN) / (T_GROWL - T_IN); return Dopen * (1 + .05 * Math.sin(k * Math.PI)) + Math.sin(t * .09) * 1.2 * k; }   // les vérins se tendent
+    if(t < T_SNAP - 95) return Dopen * (1 + .06 * E.outC(sm(T_GROWL, T_SNAP - 95, t)));   // dernier souffle d'ouverture avant la morsure
+    if(t < T_SNAP){ const k = (t - (T_SNAP - 95)) / 95; return lerp(Dopen * 1.06, Dc - T * .17, E.inC(k)); }   // la morsure : coup sec
+    if(t < T_OPEN0){ const tau = t - T_SNAP, Dimp = Dc - T * .17; return Dc + (Dimp - Dc) * Math.exp(-tau / 70) * Math.cos(tau / 40) + Math.sin(t * .045) * T * .012 * sm(T_SETTLE, T_SETTLE + 150, t) * (1 - sm(T_OPEN0 - 120, T_OPEN0, t)); }
+    if(t < T_OPEN1){ let q = E.inOut(sm(T_OPEN0, T_OPEN1, t)); q += Math.sin(q * 38) * .012 * (1 - q) * sm(0, .06, q); return lerp(Dc, Dwide, q); }   // ouverture lente, par à-coups hydrauliques
+    return lerp(Dwide, Dfar, E.inC(sm(T_OPEN1, T_END - 150, t)));
+  };
+  const jawsAlpha = t => t < 170 ? t / 170 : 1 - sm(T_OPEN1 + 150, T_END - 100, t);
+  const drawBrackets = (a, k) => {   // verrouillage de la case : quatre équerres ambrées qui se resserrent
+    const rx = tw * (.5 + .55 * k), ry = th * (.5 + .5 * k), l = Math.min(tw, th) * .26;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,196,70,' + a + ')'; ctx.lineWidth = 2.4;
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => { ctx.beginPath(); ctx.moveTo(cx + sx * rx, cy + sy * (ry - l)); ctx.lineTo(cx + sx * rx, cy + sy * ry); ctx.lineTo(cx + sx * (rx - l), cy + sy * ry); ctx.stroke(); });
+    ctx.restore();
+  };
+  try{
+    await new Promise((res, rej) => {
+      const tick = () => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const t = window.__rexT != null ? window.__rexT : performance.now() - t0, dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+        ctx.clearRect(0, 0, W, H);
+        const D = gap(t), ja = jawsAlpha(t);
+        const jit = (t > T_IN && t < T_SNAP - 95) ? Math.sin(t * .31) * .9 + Math.sin(t * .17) * .6 : 0;
+        const hold = sm(T_SETTLE - 150, T_OPEN0, t), openK = sm(T_OPEN0, T_OPEN1, t);
+        const glowK = Math.max(hold * (1 - sm(T_OPEN0 + 200, T_OPEN1, t) * .35), 0) * (1 - sm(T_OPEN1, T_END - 300, t));
+        // --- verrouillage de la case ---
+        if(t < T_SNAP + 40){ const k = sm(120, T_SNAP, t); drawBrackets((.35 + .35 * Math.sin(t * .03)) * Math.min(1, t / 160) * (1 - sm(T_SNAP - 30, T_SNAP + 40, t)), 1 - E.outC(k)); }
+        // --- intérieur de la gueule : braise rouge-orangé qui transperce les interstices ---
+        if(glowK > .01){
+          const pul = .85 + .15 * Math.sin(t * .02);
+          ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          btlGlowDot(ctx, cx, cy, Wj * .55, '255,70,20', .5 * glowK * pul);
+          btlGlowDot(ctx, cx, cy, Wj * .3, '255,170,60', .55 * glowK * pul);
+          ctx.restore();
+        }
+        // --- lueur de la carte qui s'éveille au moment de l'ouverture ---
+        if(openK > 0 && t < T_END){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const bl = Math.sin(Math.PI * Math.min(1, openK * 1.15)) * (1 - sm(T_OPEN1, T_END - 200, t)); btlGlowDot(ctx, cx, cy, Math.max(tw, th) * .9, '255,205,110', .42 * bl); ctx.restore(); }
+        // --- mâchoires ---
+        if(ja > .004){
+          ctx.globalAlpha = ja;
+          const yU = cy - D / 2 - P + jit, yL = cy + D / 2 - T - jit, x0 = cx - Wj / 2;
+          // ombres de contact (les mâchoires surplombent la case)
+          ctx.save(); const sgU = ctx.createLinearGradient(0, cy - D / 2, 0, cy - D / 2 + T * 1.7); sgU.addColorStop(0, 'rgba(0,0,0,.55)'); sgU.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = sgU; ctx.globalAlpha = ja * (1 - sm(0, .6, D / th)) * .9; ctx.fillRect(x0 + Wj * .04, cy - D / 2, Wj * .92, T * 1.7);
+          const sgL = ctx.createLinearGradient(0, cy + D / 2, 0, cy + D / 2 - T * 1.7); sgL.addColorStop(0, 'rgba(0,0,0,.55)'); sgL.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = sgL; ctx.fillRect(x0 + Wj * .04, cy + D / 2 - T * 1.7, Wj * .92, T * 1.7); ctx.restore();
+          ctx.globalAlpha = ja;
+          ctx.drawImage(SL.cv, x0, yL, Wj, Hs);
+          ctx.drawImage(SU.cv, x0, yU, Wj, Hs);
+          ctx.globalAlpha = 1;
+          // lampes ambrées : clignotent à la tension, s'embrasent à la morsure
+          ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          const lampA = ja * (.5 + .5 * Math.sin(t * .02)) * (t < T_SNAP ? 1 : .55) + ja * .6 * Math.max(0, 1 - (t - T_SNAP) / 420) * (t >= T_SNAP ? 1 : 0);
+          btlGlowDot(ctx, x0 + SU.lamps[0].x, yU + SU.lamps[0].y, Wj * .09, '255,190,70', Math.min(1, lampA) * .9);
+          btlGlowDot(ctx, x0 + SL.lamps[0].x, yL + Hs - SL.lamps[0].y, Wj * .09, '255,190,70', Math.min(1, lampA) * .9);
+          ctx.restore();
+        }
+        // --- impact : flash sur la ligne de morsure, fissures, étincelles, secousse ---
+        if(t >= T_SNAP && !hit){
+          hit = true; btlShake(plate, 5);
+          btlSparkEmit(sparks, cx, cy, 34, 560, 620, null, 0, true);
+          for(let i = 0; i < 16; i++){ const x = cx + (rnd() - .5) * Wj * .8; btlSparkEmit(sparks, x, cy + (rnd() - .5) * T * .4, 1, 380 + rnd() * 260, 520, (rnd() < .5 ? -1 : 1) * 1.57 + (rnd() - .5) * 1.2 - 1.57, .9, rnd() < .3); }
+          btlRing(to, '#ffd24a', false); btlAfter(() => { if(BTL) btlRing(to, '#ffffff', true); }, 60);
+          btlDust(cx, cy + th * .42, tw * 1.5, 4, true);
+          steamJets(5, true);
+        }
+        if(t >= T_SNAP){
+          const k = (t - T_SNAP) / 700;
+          if(k < 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter';
+            const fa = Math.pow(1 - k, 2);
+            const bar = ctx.createLinearGradient(cx - Wj * .55, 0, cx + Wj * .55, 0); bar.addColorStop(0, 'rgba(255,200,90,0)'); bar.addColorStop(.5, 'rgba(255,245,215,' + (.95 * fa) + ')'); bar.addColorStop(1, 'rgba(255,200,90,0)');
+            ctx.fillStyle = bar; ctx.fillRect(cx - Wj * .6, cy - 2.5 - T * .08, Wj * 1.2, 5 + T * .16);
+            btlStarFlash(ctx, cx, cy, Math.max(tw, th) * .42 * (1 - k * .4), Math.pow(1 - k, 1.6), 0);
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            cracks.forEach((pts, ci) => {
+              const grow = E.outC(sm(0, .22, k)), life = 1 - sm(.35, 1, k), n = Math.max(1, Math.floor(pts.length * grow));
+              if(life <= 0) return;
+              for(let pass = 0; pass < 2; pass++){
+                ctx.strokeStyle = pass ? 'rgba(255,238,190,' + (.85 * life) + ')' : 'rgba(255,80,20,' + (.5 * life) + ')'; ctx.lineWidth = pass ? 1.2 : 3.6;
+                ctx.beginPath(); ctx.moveTo(cx + pts[0].x, cy + pts[0].y); for(let j = 1; j < n; j++) ctx.lineTo(cx + pts[j].x, cy + pts[j].y); ctx.stroke();
+              } });
+            ctx.restore(); }
+          // éclat final quand les mâchoires se desserrent
+          if(!ringed && t >= T_OPEN0 + 180){ ringed = true; btlRing(to, '#ffb347', false); steamJets(4, false); }
+          if(!ringed2 && t >= T_OPEN1 - 200){ ringed2 = true; btlRing(to, col, false); btlRing(to, '#ffffff', true); }
+          if(t >= T_OPEN0 && t < T_OPEN1){ openVent += dt * (36 - 22 * E.inOut(openK)); while(openVent >= 1){ openVent -= 1; const sd = rnd() < .5 ? -1 : 1; puff(cx + sd * (tw * (.2 + rnd() * .3)), cy + (rnd() - .5) * D, sd * (30 + rnd() * 80), -(10 + rnd() * 35), tw * .14, tw * (.36 + rnd() * .3), 700 + rnd() * 600, .32); } }
+        }
+        // --- étincelles + vapeur ---
+        btlSparksDraw(ctx, sparks, dt, false);
+        for(let i = smoke.length - 1; i >= 0; i--){
+          const p = smoke[i]; p.age += dt * 1000; if(p.age >= p.life){ smoke.splice(i, 1); continue; }
+          const dd = Math.exp(-1.9 * dt); p.vx *= dd; p.vy = p.vy * dd - 14 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+          const k = p.age / p.life, sz = lerp(p.s0, p.s1, E.outC(Math.min(1, p.age / 900))), a = p.a * Math.min(1, p.age / 90) * (1 - sm(.45, 1, k));
+          if(a < .01) continue; ctx.globalAlpha = a; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot + p.rv * p.age * .001); ctx.drawImage(smokeS[p.si], -sz / 2, -sz / 2, sz, sz); ctx.restore(); ctx.globalAlpha = 1;
+        }
+        // --- la carte se dévoile petit à petit, au fil de l'ouverture ---
+        u.style.opacity = String(E.outC(sm(T_OPEN0 - 60, T_OPEN0 + 900, t)));
+        if(window.__rexT == null){ if(t < T_END) raf = requestAnimationFrame(tick); else res(); }
+        else if(t >= T_END) res();
+      };
+      window.__rexTick = tick;
+      if(window.__rexT == null) raf = requestAnimationFrame(tick); else tick();
+    });
+  } finally { cancelAnimationFrame(raf); cv.remove(); u.style.opacity = ''; u.style.filter = ''; window.__rexTick = null; }
+}
+BTL_CARD_FX['TECHNOSORUS'] = { arrive: btlRexArrive };
 // ---- MED-POD : quatre câbles métalliques souples (simulation de corde), arrivée = ils harponnent la carte et la tirent dans sa case ; Baroud = ils vont chercher une carte dans la pioche adverse et la plaquent de force dans la case ----
 const BTL_MED_N = 26, BTL_MED_W = 3.5;
 const BTL_MED_LOC = { b:[[-.38, .5], [-.13, .5], [.13, .5], [.38, .5]], t:[[-.38, -.5], [-.13, -.5], [.13, -.5], [.38, -.5]], r:[[.5, -.33], [.5, -.11], [.5, .11], [.5, .33]], l:[[-.5, -.33], [-.5, -.11], [-.5, .11], [-.5, .33]] };
@@ -25209,7 +25480,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -25511,7 +25782,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -26143,7 +26414,9 @@ const DEFI_RESULT_ART_Y = {
   'PRAWN': 25,
   'EXO-MKV': 25,
   'WHIPLASH': 25,
-  'DELOK': 25
+  'DELOK': 25,
+  'TECHNOSORUS': 30,
+  'HYPPER': 35
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
@@ -28221,17 +28494,8 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
   // distante plus avancée via son propre applySave() (cf plus haut dans ce fichier), ce qui écraserait
   // un cadeau déjà attribué plus tôt dans cette fonction -- en attribuant après coup, sur l'état
   // définitivement réconcilié, le cadeau ne peut ni se perdre ni être donné deux fois.
-  if(!player.prokIemGift){
-    acquireModule(MODULE_DEFS.find(d => d.name === 'PROK-IEM'), 'rare');
-    player.prokIemGift = true;
-    saveSoon();
-    // La fenêtre (cf openGiftModal(), "le nouveau design" demandé par Alex) ne s'affiche ici tout de
-    // suite que si rien d'autre ne s'affiche déjà par-dessus (gate compte/nom pour un nouveau joueur,
-    // changelog pour un joueur existant) -- sinon mise en attente, cf pendingGift/maybeOpenPendingGift()
-    // plus haut, déclenchée dès que cette fenêtre-là se ferme.
-    pendingGift = { name:'PROK-IEM', rar:'rare' };
-    maybeOpenPendingGift();
-  }
+  // V0.04.62 (demande d'Alex) : le cadeau de bienvenue PROK-IEM est supprimé -- plus aucun module offert à la première connexion.
+  if(!player.prokIemGift){ player.prokIemGift = true; saveSoon(); }
   // Correctif ponctuel modules (V0.02.66, demande d'Alex suite au signalement "toutes les cartes
   // modules en x20 sur le compte de mon ami") : un bug de applySave() (corrigé juste au-dessus dans ce
   // fichier, cf MODULE_DEFS.forEach) pouvait donner 20 exemplaires d'un module à chaque chargement
@@ -28246,8 +28510,7 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
       moduleCopies[d.name] = emptyStack();
       RARITY_ORDER.forEach(r => { delete moduleLevelDist[modKey(d.name, r)]; delete modulePlayerLevels[modKey(d.name, r)]; });
     });
-    acquireModule(MODULE_DEFS.find(d => d.name === 'PROK-IEM'), 'rare');
-    player.prokIemGift = true;    // évite tout second don si ce correctif tourne avant le bloc ci-dessus
+    player.prokIemGift = true;    // plus aucun cadeau de bienvenue (V0.04.62)
     player.modCopiesFix = true;
     validateSquad();              // revalide squadModule : vide le slot si un module retiré y était équipé
     saveSoon();
