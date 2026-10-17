@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.62</title>
+<title>Projet MECA V0.04.63</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8836,7 +8836,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.62</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.63</b></div>
   </div>
 
   <div id="infiniteMode" class="sub-view">
@@ -9234,9 +9234,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.62';
+var BUILD_VERSION = 'V0.04.63';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.63', items:[
+    'NOUVELLE CARTE : DILUS (rare, Appel : pioche une carte) — mécha-crocodile des marais. À son arrivée, le champ de bataille se remplit d\'eau (les cartes restent visibles), le crocodile nage jusqu\'à la case choisie, la carte jaillit à la surface (onde de choc, vagues, gouttes, reflet), puis l\'eau se retire.',
+    'NOUVELLE CARTE : KRIGER (rare, Appel : attaque directement le chef d\'escouade adverse) — mécha-guerrier à grappin. Il lance un crochet 3D au bout d\'une chaîne qui se plante dans le chef adverse, se tracte jusqu\'à lui pour l\'attaquer, puis le crochet est arraché et la carte retourne dans sa case.',
+  ] },
   { v:'V0.04.62', items:[
     'NOUVELLE CARTE : TECHNOSORUS (rare, Percée) — mécha-dinosaure. À son arrivée sur le champ de bataille, une mâchoire mécanique se referme sur la case choisie, puis s\'ouvre lentement en dévoilant la carte.',
     'NOUVELLE CARTE : HYPPER (rare, Tank) — mécha-hippopotame de béton armé.',
@@ -10933,6 +10937,8 @@ const MECH_CONFIGS = {
   BEAST:     { head:'helm',    shoulders:'big',   torso:'heavy', legs:'heavy',    back:'tanks',    arms:'thick', weapon:'none',    emblem:'stripes' },
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
+  KRIGER:    { head:'vfin', shoulders:'spike', torso:'heavy', legs:'standard', back:'none', arms:'thick', weapon:'lasso', emblem:'stripes' },
+  DILUS:     { head:'crest', shoulders:'round', torso:'heavy', legs:'standard', back:'cannons', arms:'std', weapon:'cannon', emblem:'chevron' },
   HYPPER:    { head:'small', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'chevron' },
   'TECHNOSORUS': { head:'small', shoulders:'big', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'gatling', dual:true, emblem:'stripes' },
   DELOK:     { head:'helm',    shoulders:'block', torso:'vcut',  legs:'standard', back:'boosters', arms:'thick', weapon:'gatling', dual:true, emblem:'chevron' },
@@ -10980,6 +10986,8 @@ const CHAR_LORE = {
   BEAST:     { pilot:'Sgt. Boris « Grizzly » Ivanov', text:"Mech lourd construit sur un châssis quadrupède, inspiré des forces spéciales arctiques de l'ancien monde. Ivanov charge en premier et laisse le blindage encaisser -- jamais vu reculer d'un pas devant un ennemi, aussi gros soit-il." },
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
+  KRIGER:    { pilot:'Sgt. Brynja « Grappin » Halvorsen', text:"Ancienne bûcheronne de haute canopée, Halvorsen a troqué sa hache contre un grappin de siège monté sur chaîne d'acier. Elle ne charge jamais à l'aveugle : elle accroche d'abord sa cible, puis se laisse tirer à pleine vitesse, tout son poids derrière le coup. Ce qui est accroché ne s'échappe plus." },
+  DILUS:     { pilot:'Lt. Naïa Tran « Mangrove »', text:"Éclaireuse des unités amphibies, Tran pilote un mécha-crocodile à l'affût sous la surface des marais. Elle attend que l'ennemi baisse la garde, jaillit des eaux d'un seul bond, et son canon de gueule fait le reste. Personne ne l'a jamais entendue arriver." },
   HYPPER:    { pilot:'Sgt. Amadou « Béton » Diallo', text:"Ancien conducteur d'engins de chantier, Diallo pilote ce colosse bâti à partir de blocs de béton armé et de plaques de blindage. Rien ne l'arrête sur une autoroute, rien ne le déplace sur un champ de bataille : il avance, encaisse, et les autres passent derrière lui." },
   'TECHNOSORUS': { pilot:'Cpt. Rhea « Croc » Vasquez', text:"Pilote d'essai du programme TYRAN, Vasquez a dompté le premier mécha-dinosaure de l'armée : un prototype de rupture, conçu pour passer en force dès son déploiement. Ses deux canons rotatifs ouvrent la brèche, ses mâchoires de titane font le reste. Elle dit qu'il ne rugit jamais pour rien." },
   DELOK:     { pilot:'Chasseur de primes Idris « Croque-Mort » Kane', text:"Mercenaire indépendant recruté par l'armée à prix d'or, Kane ne se bat que contre paiement -- mais ses deux canons rotatifs ne ratent jamais la cible la plus recherchée du champ de bataille. Son masque doré porte une entaille gravée pour chaque contrat rempli." },
@@ -11212,7 +11220,19 @@ const CHAR_DEFS = [
     ultName:"MUR DE BÉTON", ultMult:1.0, ultDesc:"Dresse un blindage de béton autour de toute l'escouade (bouclier)",
     base:{atk:10, def:30, hp:440}, max:{atk:70, def:262, hp:2000}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/hypper-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/hypper-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/hypper-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.63) : DILUS, mécha-crocodile à Appel (pioche une carte) ----
+  { name:"DILUS", rarity:"rare", color:"#4fb8a8", shape:"DILUS", role:"Éclaireur — mécha-crocodile des marais",
+    ultName:"GUEULE DU MARAIS", ultMult:1.8, ultDesc:"Surgit des eaux et tire un obus à bout portant dans la gueule d'un ennemi",
+    base:{atk:30, def:12, hp:310}, max:{atk:210, def:105, hp:1180}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/dilus-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/dilus-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.04.63) : KRIGER, mécha-guerrier à crochet, Appel (attaque directement le chef d'escouade adverse) ----
+  { name:"KRIGER", rarity:"rare", color:"#d9c27a", shape:"KRIGER", role:"Assaut — mécha-guerrier à grappin",
+    ultName:"CHAÎNE DE GUERRE", ultMult:1.8, ultDesc:"Plante son grappin dans la cible et se projette dessus de tout son poids",
+    base:{atk:33, def:18, hp:290}, max:{atk:225, def:130, hp:1100}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kriger-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kriger-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -11248,7 +11268,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -11256,7 +11276,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -14029,6 +14049,8 @@ const ULT_EFFECTS = {
   GAZELLE:   (u, T) => hitAll(u, T, u.ultMult * 0.55),                                   // frappe tous les ennemis
   TUNNELIER: (u, T) => { const t = hitCrit(u, T, u.ultMult * 0.5); if(t) t.stun = 1; u.shield = 2; },   // creuse sous la cible et perce son blindage par en dessous (critique garanti), qui reste piégée dans le trou (étourdie), puis s'enfouit (bouclier)
   WHIPLASH:  (u, T) => { const picked = hitTwo(u, T, u.ultMult * 0.55); picked.forEach(t => { if(t.alive) t.stun = 1; }); },   // capture deux ennemis au hasard dans ses lassos électrifiés et les étourdit tous les deux
+  KRIGER:    (u, T) => hitOne(u, T, u.ultMult),   // grappin planté, puis attaque en force
+  DILUS:     (u, T) => hitOne(u, T, u.ultMult),   // surgit des eaux et tire à bout portant
   HYPPER:    (u, T) => { squadShield(2); },   // dresse un blindage de béton autour de toute l'escouade
   'TECHNOSORUS': (u, T) => hitCrit(u, T, u.ultMult),   // referme ses mâchoires sur un ennemi : critique garanti
   DELOK:     (u, T) => hitStrongestCrit(u, T, u.ultMult),   // vise toujours le mécha ennemi le plus puissant (la plus grosse prime) et ne rate jamais son tir (critique garanti)
@@ -22313,6 +22335,7 @@ function btlPillar(r, col){
 // ---------- jouer une carte ----------
 async function btlPlay(side, c, si, fromRect, el){
   const S = BTL.S[side];
+  if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
   const wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }   // le joueur ne peut rien faire d'autre pendant la pose et l'effet d'Appel
   BTL.fxBusy++;
@@ -22946,18 +22969,19 @@ async function btlDoAction(c, ov){
   if(!t || t.hp <= 0 || (!p.force && okFoes.indexOf(t) < 0)) t = okFoes.find(x => !x.leader) || BTL.S[foe].leader;
   const ult = p.kind === 'ult';
   if(ult){ c.energy = 0; btlPaint(c); }
-  const rhino = !!p.rhino;
-  if(!rhino) await btlLift(el);
+  const rhino = !!p.rhino, kr = !!p.kriger;
+  if(!rhino && !kr) await btlLift(el);
   if(ult) await btlUltFx(el);
-  const lock = btlLock(c, t, ult ? 'ult' : 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
-  await btlSleep(rhino ? 300 : 420);
+  const lock = kr ? { off(){} } : btlLock(c, t, ult ? 'ult' : 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
+  await btlSleep(rhino ? 300 : kr ? 0 : 420);
   const r0 = btlRect(el), r1 = btlUnitRect(t);
   const dx = (r1.left + r1.width / 2) - (r0.left + r0.width / 2), dy = (r1.top + r1.height / 2) - (r0.top + r0.height / 2);
   const len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
   const bx = (-ux * 10).toFixed(1), by = (-uy * 10 - 12).toFixed(1);
   const hit = 'translate(' + (dx * 0.92).toFixed(1) + 'px,' + (dy * 0.92).toFixed(1) + 'px) scale(1.28)';
-  let rh = null;
+  let rh = null, kg = null;
   if(rhino){ rh = await btlRhinoRun(c, t); }
+  else if(kr){ kg = await btlKrigerGo(c, t, el); }   // KRIGER : lancer du grappin, plantage, traction jusqu'au chef
   else {
   await btlAnim(el, [{ transform:'translateY(-12px) scale(1.2)' }, { transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }], { duration:170, easing:'ease-out' });
   await btlAnim(el, [{ transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }, { transform:hit }], { duration:220, easing:BTL_E.in });
@@ -22992,7 +23016,7 @@ async function btlDoAction(c, ov){
   const tw = btlTween(t, before, t.hp / t.maxHp * 100, 640);
   const twc = counter ? btlTween(c, beforeC, c.hp / c.maxHp * 100, 640) : Promise.resolve();
   await btlSleep(strong ? 300 : 210);   // arrêt sur image : l'impact « pèse »
-  const ret = rhino ? Promise.resolve() : btlAnim(el, [{ transform:hit }, { transform:'translate(0,0) scale(.97)', offset:.62 }, { transform:'translate(0,0) scale(1)' }], { duration:480, easing:BTL_E.out }).then(() => { btlClearAnims(el); el.style.zIndex = ''; }, () => {});
+  const ret = rhino ? Promise.resolve() : kg ? kg.back() : btlAnim(el, [{ transform:hit }, { transform:'translate(0,0) scale(.97)', offset:.62 }, { transform:'translate(0,0) scale(1)' }], { duration:480, easing:BTL_E.out }).then(() => { btlClearAnims(el); el.style.zIndex = ''; }, () => {});
   await Promise.all([tw, twc]);
   if(rh) await rh.done;
   if(t.hp <= 0){
@@ -24857,6 +24881,481 @@ async function btlRexArrive(c, u, to, col){
   } finally { cancelAnimationFrame(raf); cv.remove(); u.style.opacity = ''; u.style.filter = ''; window.__rexTick = null; }
 }
 BTL_CARD_FX['TECHNOSORUS'] = { arrive: btlRexArrive };
+// ---- DILUS : arrivée = le champ de bataille se remplit d'eau (les cartes restent visibles sous la surface), une silhouette de crocodile glisse sous l'eau jusqu'à la case choisie, la carte jaillit à la surface (couronne d'éclaboussures, vagues concentriques, reflet ondulant dans l'eau), puis l'eau se retire en laissant la carte posée dans sa case. Tout est dessiné en canvas (aucune image) : caustiques prérendues, rivage ondulant avec écume, vagues, bulles, gouttes, reflet de ciel couchant. Appel : pioche une carte. ----
+function btlWaterTile(){   // caustiques : lignes de lumière entrelacées, sans raccord (256 px), prérendues une seule fois
+  if(btlWaterTile.c) return btlWaterTile.c;
+  const S = 256, cv = document.createElement('canvas'); cv.width = cv.height = S; const g = cv.getContext('2d');
+  const img = g.createImageData(S, S), d = img.data, TP = Math.PI * 2;
+  for(let y = 0; y < S; y++) for(let x = 0; x < S; x++){
+    const u = x / S * TP, v = y / S * TP;
+    const f1 = Math.sin(2 * u + 1.5 * Math.sin(3 * v + 1)) + Math.sin(3 * v + 1.5 * Math.sin(2 * u));
+    const f2 = Math.sin(3 * u + 1 + 1.3 * Math.sin(2 * v + 2)) + Math.sin(2 * v + 1.3 * Math.sin(3 * u));
+    const f3 = Math.sin(u + 2 * Math.sin(v + 4)) + Math.sin(v + 2 * Math.sin(u + 1));
+    const r1 = Math.pow(1 - Math.abs(Math.sin(f1 * 1.15)), 17), r2 = Math.pow(1 - Math.abs(Math.sin(f2 * 1.15)), 17), r3 = Math.pow(1 - Math.abs(Math.sin(f3 * 1.2)), 22);
+    const c = Math.min(1, r1 * .9 + r2 * .9 + r3 * .6), i = (y * S + x) * 4;
+    d[i] = 205 + 40 * c | 0; d[i + 1] = 245; d[i + 2] = 255; d[i + 3] = Math.min(255, c * 255) | 0;
+  }
+  g.putImageData(img, 0, 0);
+  return btlWaterTile.c = cv;
+}
+async function btlDilusArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random;
+  const plate = btlQ('#btlPlate'), slotEl = btlSlotOf(c), pr = btlRect(plate);
+  const W = Math.round(pr.width), H = Math.round(pr.height), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cv = document.createElement('canvas'); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  cv.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;pointer-events:none;z-index:6;';
+  plate.appendChild(cv); const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+  const tile = btlWaterTile(); let pat = null; try{ pat = ctx.createPattern(tile, 'repeat'); }catch(e){}
+  const tw = to.width, th = to.height, k = tw / 84, cx = to.left + tw / 2 - pr.left, cy = to.top + th / 2 - pr.top;
+  // la carte qui jaillit est un double de l'unité, posé au-dessus de l'eau (l'unité réelle reste cachée jusqu'à la fin)
+  const cu = u.cloneNode(true); cu.removeAttribute('id');
+  cu.style.cssText = 'position:absolute;inset:auto;left:' + (to.left - pr.left) + 'px;top:' + (to.top - pr.top) + 'px;width:' + tw + 'px;height:' + th + 'px;z-index:7;pointer-events:none;opacity:0;';
+  plate.appendChild(cu);
+  // le reflet : un double de la carte, retourné, dans la même case (donc à la bonne échelle)
+  let refl = null;
+  const T_F0 = 150, T_F1 = 1250, T_SW0 = 1300, T_SW1 = 2000, T_BRK = 2060, T_UP = 700, T_D0 = 3350, T_D1 = 4550, T_END = 5000;
+  const lvl = t => {   // ordonnée du rivage : l'eau monte depuis le bas, puis se retire vers le bas
+    if(t < T_D0) return lerp(H + 40, -40, E.inOut(sm(T_F0, T_F1, t)));
+    return lerp(-40, H + 40, E.inOut(sm(T_D0, T_D1, t)));
+  };
+  const depth = t => t < T_D0 ? E.outC(sm(T_F0, T_F1 + 250, t)) : 1 - .5 * E.inOut(sm(T_D0, T_D1, t));
+  const shore = (x, t, L, amp) => L + amp * (Math.sin(x * .05 + t * .0042) + .6 * Math.sin(x * .113 - t * .0065) + .35 * Math.sin(x * .021 + t * .0028));
+  // chemin du crocodile (courbe en S qui finit sous la case)
+  const fromRight = cx < W / 2, sx = fromRight ? W + 90 : -90, sy = E.cl(cy + (cy < H / 2 ? 95 : -95), 30, H - 30);
+  const P0 = { x:sx, y:sy }, P1 = { x:(sx + cx) / 2, y:cy + (cy < H / 2 ? -60 : 60) }, P2 = { x:cx, y:cy };
+  const pathAt = u => {
+    if(u < 0){ const tg = { x:2 * (P1.x - P0.x), y:2 * (P1.y - P0.y) }, l = Math.hypot(tg.x, tg.y) || 1; return { x:P0.x + tg.x / l * u * 330, y:P0.y + tg.y / l * u * 330 }; }
+    const a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, d = u * u; return { x:a * P0.x + b * P1.x + d * P2.x, y:a * P0.y + b * P1.y + d * P2.y };
+  };
+  const rips = [], parts = [], bubbles = [];
+  const ripple = (x, y, maxR, life, amp, delay) => rips.push({ x, y, maxR, life, amp, t0:(delay || 0) });
+  const streaks = []; for(let i = 0; i < 16; i++) streaks.push({ x:rnd() * W, y:rnd() * H, len:30 + rnd() * 70, sp:6 + rnd() * 14, ph:rnd() * 6.283 });
+  const stars = []; for(let i = 0; i < 14; i++) stars.push({ x:W * (.45 + rnd() * .55), y:rnd() * H, ph:rnd() * 6.283, r:2 + rnd() * 3.4 });
+  let last = 0, raf = 0, ambT = 0, brk = false, bubT = 0, wakeT = 0, drainFoam = 0, settled = false, reflOn = false;
+  const t0 = performance.now(), TP = Math.PI * 2;
+  const rrect = (x, y, w, h, r) => { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); };
+  const spawnReflection = () => {
+    refl = cu.cloneNode(true); refl.style.pointerEvents = 'none'; refl.style.zIndex = '7';
+    refl.style.transformOrigin = '50% 100%'; refl.style.opacity = '0';
+    refl.style.webkitMaskImage = refl.style.maskImage = 'linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,0) 78%)';
+    refl.style.filter = 'blur(1.1px) saturate(1.25) brightness(1.15)';
+    plate.insertBefore(refl, cu);
+  };
+  try{
+    await new Promise((res, rej) => {
+      const tick = () => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const t = window.__dilT != null ? window.__dilT : performance.now() - t0, dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+        ctx.clearRect(0, 0, W, H);
+        const L = lvl(t), dp = depth(t), amp = 5 + 5 * Math.abs(Math.sin(sm(T_F0, T_F1, t) * Math.PI)) * (t < T_D0 ? 1 : 0) + 6 * (t >= T_D0 && t < T_D1 ? 1 : 0);
+        const sweeping = (t > T_F0 && t < T_F1) || (t > T_D0 && t < T_D1);
+        const cov = E.cl((cy + 34 - L) / 90, 0, 1) * (t > T_F0 ? 1 : 0);   // la case est-elle sous l'eau ?
+        // ---------- étapes ponctuelles ----------
+        if(!brk && t >= T_BRK){
+          brk = true;
+          [0, 130, 280, 460].forEach((d, i) => ripple(cx, cy, W * (.95 - i * .08), 1900, 1 - i * .16, d));
+          ripple(cx, cy, tw * .9, 700, 1.1, 0);
+          for(let i = 0; i < 48; i++){ const a = rnd() * TP, sp = (50 + rnd() * 190) * k; parts.push({ type:'drop', x:cx + Math.cos(a) * tw * .22, y:cy + Math.sin(a) * tw * .16, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp * .8, z:2, vz:(150 + rnd() * 260) * k, r:(1.5 + rnd() * 2.2) * k, age:0, life:1400 }); }
+          for(let i = 0; i < 16; i++) parts.push({ type:'foam', x:cx + (rnd() - .5) * tw * 1.1, y:cy + (rnd() - .5) * th * .9, vx:(rnd() - .5) * 40, vy:(rnd() - .5) * 40, r:(3 + rnd() * 5) * k, age:0, life:900 + rnd() * 700 });
+          btlShake(plate, 2);
+          spawnReflection();
+        }
+        // vaguelettes ambiantes
+        if(t > T_F0 + 300 && t < T_D0){ ambT += dt * 1000; if(ambT > 300){ ambT = 0; ripple(rnd() * W, rnd() * H, 36 + rnd() * 46, 1300, .38 + rnd() * .2, 0); } }
+        // sillage du crocodile
+        const sw = sm(T_SW0, T_SW1, t), swS = E.outC(sw) * 1.0;
+        if(t > T_SW0 && t < T_SW1 + 60){ wakeT += dt * 1000; if(wakeT > 85){ wakeT = 0; const hp = pathAt(swS); ripple(hp.x, hp.y, 56 * k, 1000, .55, 0); } }
+        // bulles sous la case juste avant la surface
+        if(t > T_SW1 - 250 && t < T_BRK + 40){ bubT += dt * 1000; if(bubT > 55){ bubT = 0; bubbles.push({ x:cx + (rnd() - .5) * tw * .9, y:cy + (rnd() - .5) * th * .7, r:(1.4 + rnd() * 3) * k, age:0, life:520 + rnd() * 300, ph:rnd() * 6.283 }); } }
+        // ---------- corps de l'eau ----------
+        ctx.save();
+        rrect(5, 5, W - 10, H - 10, 10); ctx.clip();
+        const body = () => { ctx.beginPath(); ctx.moveTo(-4, H + 6); for(let x = -4; x <= W + 8; x += 6) ctx.lineTo(x, shore(x, t, L, amp)); ctx.lineTo(W + 8, H + 6); ctx.closePath(); };
+        if(L < H + 30){
+          body();
+          const wg = ctx.createLinearGradient(0, 0, 0, H); wg.addColorStop(0, 'rgba(46,160,176,' + (.24 * dp) + ')'); wg.addColorStop(.55, 'rgba(14,98,132,' + (.3 * dp) + ')'); wg.addColorStop(1, 'rgba(6,56,88,' + (.4 * dp) + ')');
+          ctx.fillStyle = wg; ctx.fill();
+          ctx.save(); body(); ctx.clip();
+          // reflet du ciel couchant
+          ctx.globalCompositeOperation = 'lighter';
+          const sg = ctx.createLinearGradient(W, 0, W * .15, H * .9); sg.addColorStop(0, 'rgba(255,150,80,' + (.26 * dp) + ')'); sg.addColorStop(.5, 'rgba(255,120,110,' + (.07 * dp) + ')'); sg.addColorStop(1, 'rgba(255,120,110,0)');
+          ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
+          // caustiques : deux couches qui dérivent en sens contraire
+          if(pat){
+            const m1 = new DOMMatrix().translate(t * .022, t * .013).scale(1.15), m2 = new DOMMatrix().translate(-t * .017, t * .024).scale(1.8);
+            ctx.globalAlpha = .3 * dp; pat.setTransform(m1); ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H);
+            ctx.globalAlpha = .18 * dp; pat.setTransform(m2); ctx.fillRect(0, 0, W, H);
+            ctx.globalAlpha = 1;
+          }
+          // éclats de lumière sur la surface
+          ctx.lineCap = 'round';
+          streaks.forEach(s => { const a = (.5 + .5 * Math.sin(t * .0018 + s.ph)) * .22 * dp, x = (s.x + t * s.sp * .02) % (W + 80) - 40; ctx.strokeStyle = 'rgba(235,252,255,' + a + ')'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x, s.y); ctx.lineTo(x + s.len, s.y + Math.sin(t * .002 + s.ph) * 2); ctx.stroke(); });
+          stars.forEach(s => { const a = Math.max(0, Math.sin(t * .004 + s.ph)) * dp; if(a < .05) return; ctx.save(); ctx.translate(s.x, s.y); ctx.fillStyle = 'rgba(255,248,225,' + (.85 * a) + ')'; ctx.beginPath(); ctx.moveTo(0, -s.r * 2.4); ctx.lineTo(s.r * .4, 0); ctx.lineTo(0, s.r * 2.4); ctx.lineTo(-s.r * .4, 0); ctx.closePath(); ctx.moveTo(-s.r * 2.4, 0); ctx.lineTo(0, s.r * .4); ctx.lineTo(s.r * 2.4, 0); ctx.lineTo(0, -s.r * .4); ctx.closePath(); ctx.fill(); btlGlowDot(ctx, 0, 0, s.r * 3, '255,235,190', .35 * a); ctx.restore(); });
+          // lueur sous la case pendant la montée
+          if(t > T_SW1 - 200 && t < T_BRK + 800){ const gk = sm(T_SW1 - 200, T_BRK, t) * (1 - sm(T_BRK + 200, T_BRK + 800, t)); btlGlowDot(ctx, cx, cy, Math.max(tw, th) * 1.15, '120,255,230', .5 * gk); }
+          ctx.globalCompositeOperation = 'source-over';
+          // le crocodile : silhouette sombre qui glisse sous la surface
+          if(t > T_SW0 - 100 && t < T_BRK + 380){
+            const alpha = .46 * sm(T_SW0 - 100, T_SW0 + 200, t) * (1 - sm(T_BRK - 60, T_BRK + 380, t)) * dp;
+            const N = 17, seg = 15 * k, plen = 520, ds = seg / plen, prof = [8, 11, 13.5, 15.5, 17, 17.5, 17, 16, 15, 14, 12.5, 11, 9.5, 8, 6.5, 5, 3.5];
+            const sp = []; for(let i = 0; i < N; i++) sp.push(pathAt(swS - i * ds));
+            const hd = (() => { const a = pathAt(swS), b = pathAt(swS - .012), l = Math.hypot(a.x - b.x, a.y - b.y) || 1; return { x:(a.x - b.x) / l, y:(a.y - b.y) / l }; })();
+            ctx.fillStyle = 'rgba(2,24,38,' + alpha + ')'; ctx.beginPath();
+            const circ = (x, y, r) => { ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, TP); };
+            for(let i = 0; i < N; i++){
+              const nx = -hd.y, ny = hd.x, off = Math.sin(i * .62 - t * .011) * (Math.pow(i / (N - 1), 1.25)) * 10 * k;
+              circ(sp[i].x + nx * off, sp[i].y + ny * off, prof[i] * k);
+              if(i === 4 || i === 9){ const ph = Math.sin(t * .012 + i), lx = nx * (prof[i] * k + 6 * k + ph * 2 * k), ly = ny * (prof[i] * k + 6 * k + ph * 2 * k); circ(sp[i].x + lx - hd.x * 2 * k, sp[i].y + ly - hd.y * 2 * k, 5 * k); circ(sp[i].x - lx - hd.x * 2 * k, sp[i].y - ly - hd.y * 2 * k, 5 * k); }
+            }
+            [[11, 7.5], [21, 6.2], [30, 5]].forEach(([d, r]) => circ(sp[0].x + hd.x * d * k, sp[0].y + hd.y * d * k, r * k));
+            ctx.fill();
+            // yeux rougeoyants sous l'eau
+            ctx.globalCompositeOperation = 'lighter';
+            const ex = sp[0].x + hd.x * 8 * k, ey = sp[0].y + hd.y * 8 * k;
+            [-1, 1].forEach(s => btlGlowDot(ctx, ex - hd.y * s * 7 * k, ey + hd.x * s * 7 * k, 8 * k, '255,70,40', .8 * (alpha / .46)));
+            ctx.globalCompositeOperation = 'source-over';
+          }
+          ctx.restore();
+          // ---------- rivage : halo d'eau peu profonde, crête, écume ----------
+          ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+          const edge = () => { ctx.beginPath(); for(let x = -4; x <= W + 8; x += 6){ const y = shore(x, t, L, amp); if(x === -4) ctx.moveTo(x, y); else ctx.lineTo(x, y); } };
+          const foamK = sweeping ? 1 : Math.max(0, 1 - Math.abs(t - (t < T_D0 ? T_F1 : T_D1)) / 500);
+          if(foamK > .02){
+            ctx.globalCompositeOperation = 'lighter';
+            [[22, .07], [12, .1], [5, .16]].forEach(([w, a]) => { edge(); ctx.strokeStyle = 'rgba(140,235,240,' + (a * foamK) + ')'; ctx.lineWidth = w; ctx.stroke(); });
+            edge(); ctx.strokeStyle = 'rgba(255,255,255,' + (.8 * foamK) + ')'; ctx.lineWidth = 2.4; ctx.setLineDash([7, 5, 2, 9, 11, 4]); ctx.lineDashOffset = -t * .05; ctx.stroke(); ctx.setLineDash([]);
+            ctx.globalCompositeOperation = 'source-over';
+            edge(); ctx.strokeStyle = 'rgba(2,38,56,' + (.35 * foamK) + ')'; ctx.lineWidth = 1.6; ctx.save(); ctx.translate(0, 2.2); ctx.stroke(); ctx.restore();
+          }
+          // écume et gouttelettes sur le rivage qui avance
+          if(sweeping){ drainFoam += dt * 60; while(drainFoam >= 1){ drainFoam -= 1; const x = rnd() * W, y = shore(x, t, L, amp); parts.push({ type:'foam', x, y, vx:(rnd() - .5) * 26, vy:(t >= T_D0 ? 36 : -30) + (rnd() - .5) * 16, r:(1.5 + rnd() * 3) * k, age:0, life:480 + rnd() * 380 }); } }
+        }
+        // ---------- ondes ----------
+        for(let i = rips.length - 1; i >= 0; i--){
+          const r = rips[i], age = t - r.t0; if(age < 0) continue; if(age >= r.life){ rips.splice(i, 1); continue; }
+          if(L >= H + 30) continue;
+          const q = age / r.life, rad = r.maxR * E.outC(Math.min(1, age / (r.life * .85))) , a = Math.pow(1 - q, 1.6) * r.amp * dp;
+          if(rad < 1 || a < .01) continue;
+          ctx.save(); ctx.beginPath(); ctx.arc(r.x, r.y, rad, 0, TP);
+          ctx.strokeStyle = 'rgba(2,34,52,' + (.34 * a) + ')'; ctx.lineWidth = 4.2 * (1 - q * .5); ctx.stroke();
+          ctx.globalCompositeOperation = 'lighter'; ctx.save(); ctx.translate(-1, -1.2); ctx.strokeStyle = 'rgba(215,250,255,' + (.8 * a) + ')'; ctx.lineWidth = 1.7 * (1 - q * .4); ctx.stroke(); ctx.restore();
+          ctx.strokeStyle = 'rgba(120,230,240,' + (.22 * a) + ')'; ctx.lineWidth = 8 * (1 - q * .5); ctx.stroke();
+          ctx.restore();
+        }
+        // bulles
+        for(let i = bubbles.length - 1; i >= 0; i--){ const b = bubbles[i]; b.age += dt * 1000; if(b.age >= b.life){ bubbles.splice(i, 1); continue; } const q = b.age / b.life, y = b.y - q * 22 * k, x = b.x + Math.sin(b.ph + q * 8) * 3 * k, a = Math.sin(q * Math.PI);
+          ctx.strokeStyle = 'rgba(225,252,255,' + (.8 * a) + ')'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.arc(x, y, b.r * (.7 + q * .5), 0, TP); ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,' + (.7 * a) + ')'; ctx.beginPath(); ctx.arc(x - b.r * .3, y - b.r * .3, Math.max(.6, b.r * .22), 0, TP); ctx.fill(); }
+        // gouttes, éclaboussures, écume
+        for(let i = parts.length - 1; i >= 0; i--){
+          const p = parts[i]; p.age += dt * 1000; if(p.age >= p.life){ parts.splice(i, 1); continue; }
+          if(p.type === 'drop'){
+            p.vz -= 620 * k * dt; p.z += p.vz * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+            if(p.z <= 0){ if(rnd() < .35) ripple(p.x, p.y, 18 + rnd() * 16, 560, .5, 0); parts.splice(i, 1); continue; }
+            const q = p.age / p.life, yy = p.y - p.z * .85, sz = p.r * (1 + p.z / (160 * k) * .35);
+            ctx.fillStyle = 'rgba(2,30,46,.28)'; ctx.beginPath(); ctx.ellipse(p.x, p.y, p.r * .9, p.r * .5, 0, 0, TP); ctx.fill();
+            ctx.fillStyle = 'rgba(205,246,255,' + (.92 * (1 - q * .4)) + ')'; ctx.beginPath(); ctx.arc(p.x, yy, sz, 0, TP); ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.beginPath(); ctx.arc(p.x - sz * .3, yy - sz * .3, sz * .38, 0, TP); ctx.fill();
+          } else {
+            p.x += p.vx * dt; p.y += p.vy * dt; const q = p.age / p.life, a = Math.sin(Math.min(1, q * 1.2) * Math.PI) * .75;
+            ctx.fillStyle = 'rgba(245,255,255,' + a + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (1 - q * .3), 0, TP); ctx.fill();
+          }
+        }
+        // onde de choc lumineuse au moment où la carte crève la surface
+        if(t >= T_BRK - 30 && t < T_BRK + 700){ const q = (t - T_BRK + 30) / 730, ro = (30 + E.outC(q) * W * .5) * 1, a = Math.pow(1 - q, 2); ctx.globalCompositeOperation = 'lighter';
+          const rg = ctx.createRadialGradient(cx, cy, Math.max(0, ro - 22), cx, cy, ro + 22); rg.addColorStop(0, 'rgba(180,255,245,0)'); rg.addColorStop(.5, 'rgba(210,255,250,' + (.3 * a) + ')'); rg.addColorStop(1, 'rgba(180,255,245,0)'); ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+          if(q < .4) btlGlowDot(ctx, cx, cy, Math.max(tw, th) * .9, '255,255,255', .28 * (1 - q / .4));
+          ctx.globalCompositeOperation = 'source-over'; }
+        // brillance de l'eau qui reste sur le plateau juste après le retrait
+        if(t >= T_D0 && L > 0){ ctx.globalCompositeOperation = 'lighter'; const wy = Math.max(0, L - 260), sg = ctx.createLinearGradient(0, wy, 0, L); sg.addColorStop(0, 'rgba(180,235,245,0)'); sg.addColorStop(1, 'rgba(180,235,245,' + (.13 * (1 - sm(T_D1 - 100, T_D1 + 400, t))) + ')'); ctx.fillStyle = sg; ctx.fillRect(0, wy, W, Math.min(L, H) - wy); ctx.globalCompositeOperation = 'source-over'; }
+        ctx.restore();
+        // ---------- la carte jaillit, flotte, puis se pose ----------
+        if(t >= T_BRK - 80){
+          const p = E.outC(sm(T_BRK - 80, T_BRK + T_UP, t)), back = 1 + .12 * Math.sin(Math.min(1, sm(T_BRK, T_BRK + T_UP, t)) * Math.PI);
+          const fl = cov, bob = Math.sin(t * .0052) * 2.4 * fl * sm(T_BRK + 300, T_BRK + 900, t), tilt = Math.sin(t * .0039 + 1) * 1.6 * fl * sm(T_BRK + 300, T_BRK + 900, t);
+          const lift = .1 * fl * p, sc = (.82 + .18 * p) * back * (1 + lift);
+          const ty = (1 - p) * th * .42 + bob;
+          cu.style.opacity = String(Math.min(1, p * 2.4));
+          cu.style.transform = 'translateY(' + ty.toFixed(2) + 'px) rotate(' + tilt.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+          cu.style.clipPath = p < .999 ? 'inset(0 0 ' + ((1 - p) * 100 * 1.05).toFixed(1) + '% 0)' : '';
+          if(refl){
+            const wob = Math.sin(t * .0071) * 2.4 * fl, wob2 = 1 + Math.sin(t * .0093 + 2) * .025 * fl;
+            refl.style.opacity = String(.62 * fl * Math.min(1, p * 1.5));
+            refl.style.transform = 'translateY(' + (3 - ty * .6).toFixed(2) + 'px) scaleY(-1) skewX(' + wob.toFixed(2) + 'deg) scaleX(' + (wob2 * sc).toFixed(3) + ')';
+          }
+          // anneau de flottaison autour de la carte (visible tant qu'elle est dans l'eau)
+          if(fl > .02){ ctx.save(); rrect(5, 5, W - 10, H - 10, 10); ctx.clip(); ctx.globalCompositeOperation = 'lighter';
+            const wr = th * .56 + Math.sin(t * .006) * 1.2, a = fl * p;
+            ctx.strokeStyle = 'rgba(215,252,255,' + (.5 * a) + ')'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.ellipse(cx, cy + th * .18 + bob, tw * .66, wr * .52, 0, 0, TP); ctx.stroke();
+            ctx.strokeStyle = 'rgba(120,235,240,' + (.22 * a) + ')'; ctx.lineWidth = 6; ctx.stroke();
+            ctx.restore(); }
+        }
+        // ---------- fin : la carte est posée ----------
+        if(t >= T_D1 && !settled){ settled = true; u.style.opacity = ''; cu.remove(); if(refl){ refl.remove(); refl = null; } btlRing(to, '#8fe8dc', false); btlFlashEl(u, '#bff6ee', .7, 420); }
+        if(window.__dilT == null){ if(t < T_END) raf = requestAnimationFrame(tick); else res(); }
+        else if(t >= T_END) res();
+      };
+      window.__dilTick = tick;
+      if(window.__dilT == null) raf = requestAnimationFrame(tick); else tick();
+    });
+  } finally {
+    cancelAnimationFrame(raf); cv.remove(); cu.remove(); if(refl) refl.remove();
+    u.style.opacity = ''; u.style.transform = ''; u.style.clipPath = ''; u.style.filter = ''; window.__dilTick = null;
+  }
+}
+BTL_CARD_FX['DILUS'] = { arrive: btlDilusArrive, appel: async c => { await btlDraw(c.side); } };   // arrivée aquatique, puis pioche une carte
+// ---- KRIGER : grappin à chaîne. La carte projette un crochet d'acier au bout d'une chaîne qui se plante dans le chef adverse, se tracte jusqu'à lui (attaque normale à l'arrivée), puis le crochet est arraché et rembobiné pendant que la carte retourne dans sa case ----
+const BTL_KR_HOOK = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-9346c42045e6.webp';   // grappin-pince rendu en 3D (relief, métal biseauté, collier doré) : 66 × 52 unités, origine en (30, 26)
+let btlKrImg = null;
+function btlKrSprite(){ if(!btlKrImg){ btlKrImg = new Image(); btlKrImg.src = BTL_KR_HOOK; } return btlKrImg; }
+function btlKrHook(ctx, x, y, ang, S, a){
+  const im = btlKrSprite();
+  if(im.complete && im.naturalWidth){   // rendu 3D ; sinon dessin vectoriel de secours
+    if(a <= .01) return;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(S, S); ctx.globalAlpha = a; ctx.drawImage(im, -30, -26, 66, 52); ctx.restore(); return;
+  }
+  btlKrHookVec(ctx, x, y, ang, S, a);
+}
+function btlKrHookVec(ctx, x, y, ang, S, a){   // grappin-pince : deux grandes lames d'acier sombre à dents intérieures, collier doré riveté, dague centrale, œillet d'attache. Pointe vers +x : dague en (20,0), œillet en (-19,0)
+  if(a <= .01) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(S, S); ctx.globalAlpha = a; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  const OUT = '#0a0c11';
+  // œillet d'attache + manchon doré
+  ctx.beginPath(); ctx.arc(-18.6, 0, 4.9, 0, Math.PI * 2); ctx.strokeStyle = OUT; ctx.lineWidth = 4; ctx.stroke();
+  ctx.strokeStyle = '#b3bcc8'; ctx.lineWidth = 2.3; ctx.stroke();
+  ctx.beginPath(); ctx.arc(-18.6, 0, 4.9, Math.PI * 1.05, Math.PI * 1.75); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1; ctx.stroke();
+  // lames
+  const blade = m => {
+    ctx.beginPath(); ctx.moveTo(-9, m * 3.2);
+    ctx.bezierCurveTo(-11, m * 17.5, 8, m * 26, 31, m * 11.5);          // dos de la lame
+    ctx.quadraticCurveTo(22, m * 14.2, 18, m * 12.7);                    // retour vers la base : tranchant intérieur
+    ctx.lineTo(19.6, m * 9.3); ctx.lineTo(14.4, m * 11.6);               // première dent
+    ctx.lineTo(11.6, m * 7.9); ctx.lineTo(8, m * 10.2);                  // seconde dent
+    ctx.lineTo(1.5, m * 5.2); ctx.lineTo(-4, m * 3.2); ctx.closePath();
+  };
+  [-1, 1].forEach(m => {
+    const g = ctx.createLinearGradient(0, m * 23, 0, m * 3);
+    g.addColorStop(0, '#d3dae3'); g.addColorStop(.22, '#8892a0'); g.addColorStop(.55, '#444b55'); g.addColorStop(1, '#171a20');
+    blade(m); ctx.fillStyle = g; ctx.fill();
+    ctx.save(); blade(m); ctx.clip();
+    // biseau : arête du dos éclairée, tranchant dans l'ombre
+    ctx.beginPath(); ctx.moveTo(-9, m * 3.2); ctx.bezierCurveTo(-11, m * 17.5, 8, m * 26, 31, m * 11.5); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 3.6; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(31, m * 11.5); ctx.quadraticCurveTo(22, m * 14.2, 18, m * 12.7); ctx.lineTo(19.6, m * 9.3); ctx.lineTo(14.4, m * 11.6); ctx.lineTo(11.6, m * 7.9); ctx.lineTo(8, m * 10.2); ctx.lineTo(1.5, m * 5.2);
+    ctx.strokeStyle = 'rgba(6,8,12,.42)'; ctx.lineWidth = 1.5; ctx.stroke();
+    // gouttière centrale, double filet
+    ctx.beginPath(); ctx.moveTo(-1, m * 8.6); ctx.bezierCurveTo(3, m * 17, 15, m * 19.4, 27, m * 12.8); ctx.strokeStyle = 'rgba(6,8,12,.65)'; ctx.lineWidth = 1.3; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-1, m * 9.7); ctx.bezierCurveTo(3, m * 18, 15, m * 20.5, 27, m * 13.8); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = .7; ctx.stroke();
+    // bande dorée à la base de la lame
+    const gi = ctx.createLinearGradient(-9, 0, 5, 0); gi.addColorStop(0, '#8d6618'); gi.addColorStop(.45, '#f3cf66'); gi.addColorStop(1, '#8a6218');
+    ctx.beginPath(); ctx.moveTo(-9, m * 2.6); ctx.lineTo(3.4, m * 4.2); ctx.lineTo(5.6, m * 13); ctx.lineTo(-9, m * 14); ctx.closePath(); ctx.fillStyle = gi; ctx.globalAlpha = a * .92; ctx.fill(); ctx.globalAlpha = a;
+    ctx.beginPath(); ctx.moveTo(3.4, m * 4.2); ctx.lineTo(5.6, m * 13); ctx.strokeStyle = 'rgba(50,34,6,.8)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.restore();
+    blade(m); ctx.strokeStyle = OUT; ctx.lineWidth = 1.5; ctx.stroke();
+  });
+  // dague centrale
+  const gs = ctx.createLinearGradient(0, -2.6, 0, 2.6); gs.addColorStop(0, '#f4f7fa'); gs.addColorStop(.45, '#9ea8b5'); gs.addColorStop(1, '#343a43');
+  ctx.beginPath(); ctx.moveTo(-2, -2.5); ctx.lineTo(14, -1.3); ctx.lineTo(21.5, 0); ctx.lineTo(14, 1.3); ctx.lineTo(-2, 2.5); ctx.closePath(); ctx.fillStyle = gs; ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(1, -1.3); ctx.lineTo(17, -.35); ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = .7; ctx.stroke();
+  // collier doré (compact, biseauté)
+  const gb = ctx.createLinearGradient(0, -6.4, 0, 6.4); gb.addColorStop(0, '#fff3bd'); gb.addColorStop(.3, '#ebc657'); gb.addColorStop(.65, '#a97f26'); gb.addColorStop(1, '#4e3a0e');
+  ctx.beginPath(); ctx.moveTo(-14.2, -3.4); ctx.lineTo(-12, -5.6); ctx.lineTo(-7.5, -6.5); ctx.lineTo(-1, -6.5); ctx.lineTo(2.6, -3.6); ctx.lineTo(2.6, 3.6); ctx.lineTo(-1, 6.5); ctx.lineTo(-7.5, 6.5); ctx.lineTo(-12, 5.6); ctx.lineTo(-14.2, 3.4); ctx.closePath();
+  ctx.fillStyle = gb; ctx.fill(); ctx.strokeStyle = '#241904'; ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-12.4, -4.4); ctx.lineTo(-7.2, -5.4); ctx.lineTo(-1.4, -5.4); ctx.strokeStyle = 'rgba(255,250,215,.9)'; ctx.lineWidth = .9; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-12.4, 4.6); ctx.lineTo(-7.2, 5.5); ctx.lineTo(-1.4, 5.5); ctx.strokeStyle = 'rgba(30,20,4,.55)'; ctx.lineWidth = .8; ctx.stroke();
+  // bague de serrage
+  ctx.beginPath(); ctx.moveTo(-5.2, -6.4); ctx.lineTo(-5.2, 6.4); ctx.strokeStyle = 'rgba(40,28,6,.75)'; ctx.lineWidth = 1.1; ctx.stroke();
+  const gbo = ctx.createRadialGradient(-9.8, -.8, .3, -9.2, 0, 2.6); gbo.addColorStop(0, '#f5f7fa'); gbo.addColorStop(.6, '#8b95a2'); gbo.addColorStop(1, '#2d333b');
+  ctx.beginPath(); ctx.arc(-9.2, 0, 2.4, 0, Math.PI * 2); ctx.fillStyle = gbo; ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 1; ctx.stroke();
+  [[-2.8, -4.2], [-2.8, 4.2]].forEach(r => { ctx.beginPath(); ctx.arc(r[0], r[1], 1.05, 0, Math.PI * 2); ctx.fillStyle = '#ffe9a0'; ctx.fill(); ctx.strokeStyle = '#2a1e06'; ctx.lineWidth = .6; ctx.stroke(); });
+  ctx.restore();
+}
+function btlKrChainDraw(ctx, pts, a, pulseS, pulseK){   // maillons alternés (de face / de profil) répartis à pas constant le long de la polyligne
+  if(a <= .01 || pts.length < 2) return;
+  const SP = 6.4, TP = Math.PI * 2; let acc = 0, k = 0, nextAt = 0;
+  ctx.save(); ctx.globalAlpha = a; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  let total = 0; const segL = []; for(let i = 1; i < pts.length; i++){ const l = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); segL.push(l); total += l; }
+  for(let i = 1; i < pts.length; i++){
+    const l = segL[i - 1]; if(l < .001) continue;
+    const ang = Math.atan2(pts[i].y - pts[i - 1].y, pts[i].x - pts[i - 1].x);
+    while(nextAt <= acc + l){
+      const f = (nextAt - acc) / l, x = pts[i - 1].x + (pts[i].x - pts[i - 1].x) * f, y = pts[i - 1].y + (pts[i].y - pts[i - 1].y) * f, s = total ? nextAt / total : 0;
+      const gl = pulseK > 0 ? Math.exp(-Math.pow((s - pulseS) / .11, 2)) * pulseK : 0;
+      const r = 160 + 95 * gl | 0, gr = 170 + 58 * gl | 0, b = 182 - 22 * gl | 0, col = 'rgb(' + r + ',' + gr + ',' + b + ')';
+      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+      if(k % 2 === 0){
+        ctx.beginPath(); ctx.ellipse(0, 0, 4.7, 2.9, 0, 0, TP); ctx.lineWidth = 3.2; ctx.strokeStyle = '#0d1015'; ctx.stroke();
+        ctx.lineWidth = 1.8; ctx.strokeStyle = col; ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(0, 0, 4.7, 2.9, 0, Math.PI * 1.12, Math.PI * 1.78); ctx.lineWidth = .8; ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(-4.1, 0); ctx.lineTo(4.1, 0); ctx.lineWidth = 3.4; ctx.strokeStyle = '#0d1015'; ctx.stroke();
+        ctx.lineWidth = 1.9; ctx.strokeStyle = gl > .02 ? col : '#79828e'; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-3.2, -.45); ctx.lineTo(3.2, -.45); ctx.lineWidth = .6; ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.stroke();
+      }
+      ctx.restore();
+      if(gl > .15){ ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, x, y, 8 * gl + 3, '255,214,130', .45 * gl); ctx.globalCompositeOperation = 'source-over'; }
+      nextAt += SP; k++;
+    }
+    acc += l;
+  }
+  ctx.restore();
+}
+async function btlKrigerGo(c, t, el){
+  const im0 = btlKrSprite(); if(!(im0.complete && im0.naturalWidth)) await new Promise(r => { im0.onload = im0.onerror = r; setTimeout(r, 600); });
+  const { cv, ctx, W, H } = btlCanvasFx(32), TP = Math.PI * 2;
+  const r0 = btlRect(el), r1 = btlUnitRect(t);
+  const c0 = { x:r0.left + r0.width / 2, y:r0.top + r0.height / 2 }, Tp = { x:r1.left + r1.width / 2, y:r1.top + r1.height / 2 };
+  const dx = Tp.x - c0.x, dy = Tp.y - c0.y, len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+  const hs = r0.width / 2, S = .92, HL = 21 * S, RL = 18.6 * S, hit = { x:dx * .92, y:dy * .92 };
+  const T_H = 130, T_L = 270, T_P = 610, T_U0 = 900, T_U1 = 1380, BACK = 600;
+  const cl = v => Math.max(0, Math.min(1, v)), eo = v => 1 - Math.pow(1 - cl(v), 3), eio = v => { v = cl(v); return v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
+  const lerp = (a, b, f) => a + (b - a) * f;
+  const sparks = [], chips = [], rings = [], rnd = btlRng(c.uid ? String(c.uid).length * 977 + 13 : 77);
+  const lines = []; for(let i = 0; i < 7; i++) lines.push({ o:(rnd() - .5) * 2 * hs * .95, L:26 + rnd() * 46, ph:rnd() });
+  const ev = { charge:false, launch:false, plant:false, pull:false, pry:false };
+  let phase = 'go', B0 = 0, raf = 0, last = 0, goRes, goRej, backRes, goSettled = false, tipLast = null;
+  const t0 = performance.now();
+  const nowT = () => window.__krT != null ? window.__krT : performance.now() - t0;
+  el.style.zIndex = 60;
+  const pose = T => {   // position / échelle de la carte (décalage par rapport à sa case)
+    if(phase === 'back'){
+      const q = (T - B0) / BACK, p = cl(q / .8), e = 1 - Math.pow(1 - p, 3);
+      const s = p < .62 ? lerp(1.28, .97, 1 - Math.pow(1 - p / .62, 2)) : lerp(.97, 1, eo((p - .62) / .38));
+      return { x:hit.x * (1 - e), y:hit.y * (1 - e), s };
+    }
+    let m, s;
+    if(T < T_L){ const p = eo(T / T_L); m = 7 * p; s = 1 + .14 * p; }
+    else if(T < T_U0){ const k = T - T_L; m = 7 + 5 * Math.sin(cl(k / 70) * Math.PI / 2) * Math.exp(-Math.max(0, k - 70) / 110); s = 1.14; }
+    else if(T < T_U1){
+      const q = (T - T_U0) / (T_U1 - T_U0);
+      if(q < .2){ const p = eo(q / .2); m = lerp(7, 12, p); s = 1.14 + .01 * p; }
+      else { const p = cl((q - .2) / .8), e = Math.pow(p, 2.1); return { x:lerp(-ux * 12, hit.x, e), y:lerp(-uy * 12, hit.y, e), s:lerp(1.15, 1.28, e) }; }
+    } else return { x:hit.x, y:hit.y, s:1.28 };
+    return { x:-ux * m, y:-uy * m, s };
+  };
+  const muzzle = P => ({ x:c0.x + P.x + ux * hs * .62 * P.s, y:c0.y + P.y + uy * hs * .62 * P.s });
+  const shockRing = (x, y, R, dur, T) => rings.push({ x, y, R, dur, t:T });
+  const tick = () => {
+    if(!BTL || BTL.abort){ fail('abort'); return; }
+    const T = nowT(), dt = Math.min(.05, Math.max(0, (T - last) / 1000)); last = T;
+    ctx.clearRect(0, 0, W, H);
+    const P = pose(T); el.style.transform = 'translate(' + P.x.toFixed(2) + 'px,' + P.y.toFixed(2) + 'px) scale(' + P.s.toFixed(3) + ')';
+    const M = muzzle(P), MF = muzzle({ x:-ux * 7, y:-uy * 7, s:1.14 });
+    const tipP = { x:Tp.x + ux * 2, y:Tp.y + uy * 2 };   // le crochet mord légèrement au-delà du centre du chef
+    // ---------- événements ponctuels ----------
+    if(phase === 'go'){
+      if(!ev.launch && T >= T_L){ ev.launch = true; btlSparkEmit(sparks, M.x, M.y, 16, 330, 380, Math.atan2(uy, ux), 1.1, true); shockRing(M.x, M.y, 26, 300, T); }
+      if(!ev.plant && T >= T_P){
+        ev.plant = true;
+        btlSparkEmit(sparks, tipP.x, tipP.y, 34, 430, 560, Math.atan2(-uy, -ux), 2.5, true);
+        for(let i = 0; i < 12; i++){ const a = Math.atan2(-uy, -ux) + (rnd() - .5) * 2.8, v = 140 + rnd() * 260; chips.push({ x:tipP.x, y:tipP.y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - 60, r:rnd() * TP, vr:(rnd() - .5) * 18, age:0, life:520 + rnd() * 380, w:2 + rnd() * 3.4, h:1.4 + rnd() * 2, gold:rnd() < .4 }); }
+        shockRing(tipP.x, tipP.y, 46, 420, T); shockRing(tipP.x, tipP.y, 28, 300, T);
+        const tEl = btlUnitEl(t); btlShake(btlQ('#btlPlate'), 3.5); if(tEl) btlFlashEl(tEl, '#ffd890', .65, 320); btlRing(r1, '#ffd890', false);
+      }
+      if(!ev.pull && T >= T_U0){ ev.pull = true; }
+    }
+    // ---------- lignes de vitesse (traction) ----------
+    if(phase === 'go' && T >= T_U0 + 120){
+      const q = cl((T - T_U0 - 120) / (T_U1 - T_U0 - 120)), sp = q * (1 - .15 * q);
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+      lines.forEach(l => {
+        const sx = c0.x + P.x + nx * l.o - ux * hs * .35, sy = c0.y + P.y + ny * l.o - uy * hs * .35, L = l.L * (.35 + sp) , ex = sx - ux * L, ey = sy - uy * L;
+        const g = ctx.createLinearGradient(sx, sy, ex, ey); g.addColorStop(0, 'rgba(255,238,196,' + (.55 * sp) + ')'); g.addColorStop(1, 'rgba(255,238,196,0)');
+        ctx.strokeStyle = g; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+      });
+      ctx.restore();
+      if(Math.random() < .55) btlSparkEmit(sparks, c0.x + P.x - ux * hs * .7 + nx * (Math.random() - .5) * hs, c0.y + P.y - uy * hs * .7 + ny * (Math.random() - .5) * hs, 1, 120, 300, Math.atan2(-uy, -ux), .7, false);
+    }
+    // ---------- position du crochet, chaîne ----------
+    let tip, hookA = 1, hookS = S, amp = 0, kk = 1.5, ph = 0, droop = 0, pulseS = -1, pulseK = 0, ang = Math.atan2(uy, ux), chainA = 1;
+    if(phase === 'go'){
+      if(T < T_H){ hookA = 0; tip = { x:M.x + ux * HL, y:M.y + uy * HL }; chainA = 0; }
+      else if(T < T_L){ const p = eo((T - T_H) / (T_L - T_H)); hookA = Math.min(1, p * 1.6); hookS = S * (.45 + .55 * p + .1 * Math.sin(p * Math.PI)); tip = { x:M.x + ux * HL * .9, y:M.y + uy * HL * .9 }; chainA = p; }
+      else if(T < T_P){
+        const q = (T - T_L) / (T_P - T_L), e = Math.pow(q, 1.7), st = { x:MF.x + ux * HL, y:MF.y + uy * HL };
+        tip = { x:lerp(st.x, tipP.x, e), y:lerp(st.y, tipP.y, e) };
+        amp = 15 * (1 - .55 * q); kk = 1.6; ph = -T * .02; droop = 11 * (1 - q); ang += Math.sin(T * .05) * .05 * (1 - q);
+        if(Math.random() < .8) btlSparkEmit(sparks, tip.x - ux * HL * .5, tip.y - uy * HL * .5, 1, 90, 260, Math.atan2(-uy, -ux), 1.3, false);
+      } else {
+        const k = T - T_P, d = 2.6 * (1 - Math.exp(-k / 60));
+        tip = { x:tipP.x + ux * d, y:tipP.y + uy * d };
+        ang += Math.sin(k * .075) * .1 * Math.exp(-k / 130);
+        if(T < T_U0){ amp = 19 * Math.exp(-k / 120); kk = 2.3; ph = k * .05; droop = 9 * Math.exp(-k / 170); }
+        else { const q = cl((T - T_U0) / (T_U1 - T_U0)); amp = 1.1 + 0 * q; kk = 7; ph = T * .12; pulseS = 1 - cl((T - T_U0 - 40) / 240); pulseK = (T - T_U0 < 300) ? 1 : 0; }
+      }
+    } else {
+      const q = (T - B0) / BACK;
+      if(!ev.pry && q >= 0){ ev.pry = true; btlSparkEmit(sparks, tipP.x, tipP.y, 14, 300, 420, Math.atan2(-uy, -ux), 1.8, true); shockRing(tipP.x, tipP.y, 30, 320, T); }
+      const w = eio((q - .08) / .8), start = { x:tipP.x + ux * 2.6, y:tipP.y + uy * 2.6 };
+      const hc0 = { x:start.x - ux * HL, y:start.y - uy * HL }, hc1 = { x:M.x + ux * 2, y:M.y + uy * 2 };
+      const hc = { x:lerp(hc0.x, hc1.x, w), y:lerp(hc0.y, hc1.y, w) };
+      tip = { x:hc.x + ux * HL, y:hc.y + uy * HL };
+      amp = 7 * Math.sin(Math.PI * w); kk = 2; ph = -T * .03; droop = 17 * Math.sin(Math.PI * Math.min(1, w * 1.05));
+      ang += Math.sin(T * .04) * .08 * Math.sin(Math.PI * w);
+      const fa = 1 - cl((q - .84) / .16); hookA = fa; hookS = S * (.5 + .5 * fa); chainA = fa;
+    }
+    const hc = { x:tip.x - Math.cos(ang) * HL * (hookS / S), y:tip.y - Math.sin(ang) * HL * (hookS / S) };
+    const ring = { x:hc.x - Math.cos(ang) * RL * (hookS / S), y:hc.y - Math.sin(ang) * RL * (hookS / S) };
+    // chaîne : points le long de A (case de la carte) → B (anneau du crochet) avec ondulation, affaissement
+    const A = { x:M.x, y:M.y }, B = ring;
+    {
+      const lx = B.x - A.x, ly = B.y - A.y, L = Math.hypot(lx, ly) || 1, tx = lx / L, ty = ly / L, px = -ty, py = tx;
+      let gx = -ty * tx, gy = 1 - ty * ty; const gm = Math.hypot(gx, gy) || 1; gx /= gm; gy /= gm;
+      const gw = Math.abs(tx);   // une ligne verticale n'a pas d'affaissement latéral : l'ondulation prend le relais
+      const dvx = gx * gw + px * .35 * (1 - gw), dvy = gy * gw + py * .35 * (1 - gw), n = 44, pts = [];
+      for(let i = 0; i <= n; i++){
+        const s = i / n, bell = 4 * s * (1 - s), wv = amp * Math.sin(s * kk * Math.PI + ph) * Math.sin(s * Math.PI);
+        pts.push({ x:A.x + lx * s + dvx * droop * bell + px * wv, y:A.y + ly * s + dvy * droop * bell + py * wv });
+      }
+      btlKrChainDraw(ctx, pts, chainA, pulseS, pulseK);
+      // treuil sur la carte : disque d'acier + point doré
+      if(chainA > .02 && L > 8){
+        ctx.save(); ctx.globalAlpha = chainA; const g = ctx.createRadialGradient(A.x - 1, A.y - 1.4, .5, A.x, A.y, 5.6); g.addColorStop(0, '#d9dee6'); g.addColorStop(.5, '#6b7380'); g.addColorStop(1, '#23272e');
+        ctx.beginPath(); ctx.arc(A.x, A.y, 5.2, 0, TP); ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = '#0c0e12'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+      }
+    }
+    // halo chaud du crochet en vol
+    if(phase === 'go' && T >= T_L && T < T_P + 90){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, tip.x - ux * 8, tip.y - uy * 8, 32, '255,206,120', .28 * (1 - cl((T - T_P) / 90))); ctx.restore(); }
+    // traînée du crochet
+    if(phase === 'go' && T >= T_L && T < T_P){
+      const q = (T - T_L) / (T_P - T_L), TL = Math.min(70, 16 + q * 90), bx = tip.x - ux * TL, by = tip.y - uy * TL;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+      const g = ctx.createLinearGradient(tip.x, tip.y, bx, by); g.addColorStop(0, 'rgba(255,236,190,.55)'); g.addColorStop(1, 'rgba(255,236,190,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(tip.x, tip.y); ctx.lineTo(bx, by); ctx.stroke(); ctx.restore();
+    }
+    btlKrHook(ctx, hc.x, hc.y, ang, hookS, hookA);
+    // éclat d'impact + anneaux
+    if(phase === 'go' && T >= T_P && T < T_P + 200){ const a = 1 - (T - T_P) / 200; btlStarFlash(ctx, tipP.x, tipP.y, 30 * (.7 + .5 * a), a, T * .003); }
+    if(phase === 'go' && T >= T_L && T < T_L + 160){ const a = 1 - (T - T_L) / 160; ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, M.x, M.y, 24, '255,214,130', .6 * a); ctx.restore(); }
+    if(phase === 'go' && T < T_L){ const p = cl(T / T_L); ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, M.x, M.y, 8 + 14 * p, '255,214,130', .55 * p); ctx.restore(); }
+    for(let i = rings.length - 1; i >= 0; i--){ const r = rings[i], q = (T - r.t) / r.dur; if(q >= 1){ rings.splice(i, 1); continue; } if(q < 0) continue;
+      const e = 1 - Math.pow(1 - q, 3); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(255,224,160,' + (.75 * (1 - q)) + ')'; ctx.lineWidth = 2.2 * (1 - q) + .6; ctx.beginPath(); ctx.arc(r.x, r.y, 4 + r.R * e, 0, TP); ctx.stroke(); ctx.restore(); }
+    // éclats de métal
+    for(let i = chips.length - 1; i >= 0; i--){ const p = chips[i]; p.age += dt * 1000; if(p.age >= p.life){ chips.splice(i, 1); continue; }
+      p.vy += 760 * dt; p.vx *= (1 - 1.2 * dt); p.x += p.vx * dt; p.y += p.vy * dt; p.r += p.vr * dt;
+      const k = 1 - p.age / p.life; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = Math.min(1, k * 1.6);
+      ctx.fillStyle = p.gold ? '#e2b84e' : '#9aa3ae'; ctx.strokeStyle = '#12151a'; ctx.lineWidth = .7; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); }
+    btlSparksDraw(ctx, sparks, dt, false);
+    // ---------- fins de phase ----------
+    if(phase === 'go' && T >= T_U1 && !goSettled){ goSettled = true; goRes(); }
+    if(phase === 'back' && T - B0 >= BACK){ finish(); return; }
+    if(window.__krT == null) raf = requestAnimationFrame(tick);
+  };
+  const finish = () => { cancelAnimationFrame(raf); cv.remove(); el.style.transform = ''; el.style.zIndex = ''; btlClearAnims(el); window.__krTick = null; if(backRes) backRes(); };
+  const fail = e => { cancelAnimationFrame(raf); cv.remove(); el.style.transform = ''; el.style.zIndex = ''; window.__krTick = null; if(!goSettled){ goSettled = true; goRej(e); } if(backRes) backRes(); };
+  const go = new Promise((res, rej) => { goRes = res; goRej = rej; });
+  window.__krTick = tick;
+  if(window.__krT == null) raf = requestAnimationFrame(tick); else tick();
+  try{ await go; } catch(e){ finish(); throw e; }
+  return {
+    back: () => new Promise(res => { backRes = res; B0 = nowT(); phase = 'back'; if(window.__krT != null){ tick(); } else if(!raf) raf = requestAnimationFrame(tick); })
+  };
+}
+BTL_CARD_FX['KRIGER'] = { appel: async c => {   // grappin à chaîne planté dans le chef adverse, la carte se tracte jusqu'à lui et l'attaque
+  const t = BTL.S[btlOther(c.side)].leader;
+  if(btlGone() || !t || t.hp <= 0 || !btlOnField(c)) return;
+  await btlDoAction(c, { kind:'atk', tgt:t.uid, force:true, kriger:true });
+} };
 // ---- MED-POD : quatre câbles métalliques souples (simulation de corde), arrivée = ils harponnent la carte et la tirent dans sa case ; Baroud = ils vont chercher une carte dans la pioche adverse et la plaquent de force dans la case ----
 const BTL_MED_N = 26, BTL_MED_W = 3.5;
 const BTL_MED_LOC = { b:[[-.38, .5], [-.13, .5], [.13, .5], [.38, .5]], t:[[-.38, -.5], [-.13, -.5], [.13, -.5], [.38, -.5]], r:[[.5, -.33], [.5, -.11], [.5, .11], [.5, .33]], l:[[-.5, -.33], [-.5, -.11], [-.5, .11], [-.5, .33]] };
@@ -25480,7 +25979,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -25782,7 +26281,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -26416,7 +26915,9 @@ const DEFI_RESULT_ART_Y = {
   'WHIPLASH': 25,
   'DELOK': 25,
   'TECHNOSORUS': 30,
-  'HYPPER': 35
+  'HYPPER': 35,
+  'DILUS': 30,
+  'KRIGER': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
