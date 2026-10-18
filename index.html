@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.77</title>
+<title>Projet MECA V0.04.78</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8203,7 +8203,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.77</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.78</b></div>
   </div>
 
     </div>
@@ -8473,9 +8473,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.77';
+var BUILD_VERSION = 'V0.04.78';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.78', items:[
+    'NOUVELLE CARTE : SYLVERLAKE (épique, 4 / 5 / 6, hydre mécanique à trois têtes). Appel : place 2 jetons ANAKA et KOTAMA (ATQ 4, DEF 0, PV 2) sur des emplacements libres de ton camp ; sans emplacement libre, ils sont perdus. Les jetons n\'existent que pendant le combat.',
+    'ANIMATIONS SYLVERLAKE : à l\'arrivée, l\'emplacement se remplit de verre liquide, trois cous se dressent l\'un après l\'autre en éclaboussant, puis la surface se fige en cristal. Appel : deux têtes se détachent en arc et plongent dans les emplacements libres avec des éclaboussures ; chaque jeton naît par une vague de verre.',
+    'DÉFIS : SYLVERLAKE ajoutée aux défis (decks adverses régénérés).',
+  ] },
   { v:'V0.04.77', items:[
     'NOUVELLE CARTE : ELYSIUM (rare, 4 / 1 / 3, mécha-faucheur). Baroud d\'honneur : à sa destruction, inflige 2 points d\'attaque à la carte qui l\'a détruite (attaque ou riposte). Sans responsable identifiable, rien ne se passe.',
     'ANIMATIONS ELYSIUM : à l\'arrivée, deux coups de faux croisés tranchent le cadre de l\'emplacement en deux, image figée un court instant, puis le cadre se recolle autour de la carte. Baroud : les deux lames se croisent en un X lumineux sur la carte responsable, qui reçoit un « −2 ».',
@@ -10196,6 +10201,9 @@ const MECH_CONFIGS = {
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
   'EXO-MKI': { head:'visor', shoulders:'block', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'rifle', emblem:'none' },
+  SYLVERLAKE:{ head:'crest', shoulders:'spike', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'cannon', emblem:'star' },
+  ANAKA:     { head:'visor', shoulders:'spike', torso:'core', legs:'standard', back:'none', arms:'std', weapon:'gatling', emblem:'hostile' },
+  KOTAMA:    { head:'vfin', shoulders:'block', torso:'core', legs:'standard', back:'none', arms:'std', weapon:'gatling', emblem:'chevron' },
   ELYSIUM:   { head:'hood', shoulders:'spike', torso:'vcut', legs:'slim', back:'none', arms:'std', weapon:'staff', emblem:'none' },
   TORTUGA:   { head:'dome', shoulders:'round', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'cannon', emblem:'chevron' },
   GOTHIKA:   { head:'helm', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'blade', emblem:'cross' },
@@ -10257,6 +10265,7 @@ const CHAR_LORE = {
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
   'EXO-MKI': { pilot:'Unité de série XO-I', text:"Premier modèle de la gamme EXO, assemblé à la chaîne par milliers dans les hangars de la mégalopole. Sans blindage, sans pilote : un squelette d'acier, un œil rouge et un programme. Quand une unité tombe, la chaîne en lâche aussitôt une autre, qui rejoint les rangs d'en face. Détruire un EXO-MKI ne règle rien : il ne fait que changer de camp." },
+  SYLVERLAKE:{ pilot:'Trois pilotes — Anaka, Sylver et Kotama', text:"Au-dessus du fleuve, l'hydre de la ville veille sur les ponts depuis un toit de verre et d'acier. Trois cous, trois cockpits, trois pilotes qui ne se parlent plus qu'en rafales. Quand elle se dresse, deux de ses têtes se détachent et plongent dans la brèche : Anaka, la rouge, qui tire la première, et Kotama, la dorée, qui tire la dernière. Seule la tête bleue reste au poste, à compter les hélicoptères." },
   ELYSIUM:   { pilot:'Lt. Aurèle « Moisson » Delcourt', text:"Dans les ruines des champs d'Élysée, Delcourt moissonnait les épaves avant que la guerre ne reprenne, et il a gardé sa faux. Son mécha blanc, léger et sans armure, ne cherche pas à gagner un duel : il le rend cher. Quiconque l'abat reçoit en retour le dernier coup de faux, croisé sur le premier, un salut d'honneur que personne n'a jamais encaissé sans sourciller." },
   TORTUGA:   { pilot:'Cap. Inès « Corail » Marais', text:"Pilote d'escorte des convois de récifs flottants, Marais conduit une tortue d'acier dont la carapace est faite de plaques hexagonales de verre blindé. Elle ne se presse jamais : à chaque tour qui passe, une plaque de plus se referme sur le flanc du mécha, avec un petit clic de serrure. Après quelques tours plus rien ne passe, ni les obus des croiseurs ni les lasers des chasseurs. Les convois disent qu'on ne bat pas TORTUGA : on arrive trop tard." },
   GOTHIKA:   { pilot:'Chev. Mathilde « Glas » Vauclair', text:"Dernière chevalière d'un ordre qui veillait sur les cathédrales en ruine, Vauclair a fait forger une claymore pour son mécha de plates rivetées. Elle n'attend pas qu'on la défie : elle plante sa lame dans le sol et laisse l'orage venir. La foudre qui s'abat ne la blesse pas, elle l'emprunte. Ce qu'elle désigne est frappé de plein fouet, et ce qui se tient à ses côtés en garde la brûlure." },
@@ -10573,7 +10582,13 @@ const CHAR_DEFS = [
     ultName:"ELYSIUM MOISSON", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:36, def:8, hp:220}, max:{atk:240, def:60, hp:800}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/elysium-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/elysium-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/elysium-art-ext.webp' },
+  // ---- Nouvelle carte ÉPIQUE : SYLVERLAKE, hydre mécanique à trois têtes, Appel (2 jetons ANAKA et KOTAMA) ----
+  { name:"SYLVERLAKE", rarity:"epique", color:"#6fb8d8", shape:"SYLVERLAKE", role:"Assaut — hydre mécanique à trois têtes",
+    ultName:"SYLVERLAKE TRIPLE SOUFFLE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:44, def:30, hp:360}, max:{atk:300, def:220, hp:1500}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/sylverlake-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/sylverlake-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -10586,7 +10601,18 @@ const BTL_TOKEN_DEFS = [
     ultName:"MALAME SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:28, def:12, hp:260}, max:{atk:200, def:90, hp:1000}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malame-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malame-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/malame-art-ext.webp' },
+  // Jetons de SYLVERLAKE (Appel) : n'existent que sur le champ de bataille
+  { name:"ANAKA", rarity:"rare", color:"#e0443a", shape:"ANAKA", role:"Tête d'hydre — jeton de SYLVERLAKE",
+    ultName:"ANAKA SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:40, def:0, hp:120}, max:{atk:260, def:0, hp:500}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/anaka-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/anaka-art-ext.webp' },
+  { name:"KOTAMA", rarity:"rare", color:"#e0a63a", shape:"KOTAMA", role:"Tête d'hydre — jeton de SYLVERLAKE",
+    ultName:"KOTAMA SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:40, def:0, hp:120}, max:{atk:260, def:0, hp:500}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kotama-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kotama-art-ext.webp' }
 ];
 
 // Classification automatique : chaque carte est rangée dans la catégorie
@@ -10620,7 +10646,7 @@ const CARD_TIERS = {
   holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI'],
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
-  epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
+  epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE'],
   rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM']
 };
 const CARD_STATS = {
@@ -10629,7 +10655,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3], 'SYLVERLAKE':[4,5,6], 'ANAKA':[4,0,2], 'KOTAMA':[4,0,2]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -23367,6 +23393,145 @@ BTL_CARD_FX['ELYSIUM'] = { arrive: btlElysArrive, baroud: async c => {
   await btlSleep(120);
 } };
 
+// ---- SYLVERLAKE : hydre à trois têtes. Arrivée : l'emplacement se remplit de verre liquide, trois cous se dressent l'un après l'autre en éclaboussant, la surface se fige en cristal.
+//      Appel : deux têtes (ANAKA, KOTAMA) se détachent en arc et plongent dans les emplacements libres ; chaque jeton naît par une vague de verre ----
+function btlSylvDrop(arr, x, y, n, vmin, vmax, col, up){
+  for(let i = 0; i < n; i++){ const a = (up ? -Math.PI / 2 : 0) + (Math.random() - .5) * (up ? 2.2 : 6.283), v = vmin + Math.random() * (vmax - vmin);
+    arr.push({ x:x + (Math.random() - .5) * 8, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v, age:0, life:520 + Math.random() * 520, r:1.6 + Math.random() * 2.6, c:Math.random() < .3 ? col : '200,236,255' }); }
+}
+function btlSylvDraw(ctx, arr, dt){
+  for(let i = arr.length - 1; i >= 0; i--){ const p = arr[i]; p.age += dt * 1000; if(p.age > p.life){ arr.splice(i, 1); continue; }
+    p.vy += 620 * dt; p.vx *= 1 - dt * .8; p.x += p.vx * dt; p.y += p.vy * dt; const k = 1 - p.age / p.life;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, p.x, p.y, p.r * 2 * (.6 + k), p.c, .5 * k); ctx.restore();
+    ctx.fillStyle = 'rgba(235,248,255,' + (.8 * k) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * .55, 0, 6.283); ctx.fill(); }
+}
+function btlSylvRrect(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+async function btlSylvArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random, back = k => { const c1 = 1.5, x = k - 1; return 1 + (c1 + 1) * x * x * x + c1 * x * x; };
+  const { cv, ctx } = btlCanvasFx(31), plate = btlQ('#btlPlate'), fx = btlQ('#btlFx');
+  const tw = to.width, th = to.height, L = to.left, T0 = to.top;
+  const T_UP = [620, 930, 1240], UPD = 700, T_FULL = 2000, T_CRY0 = 2250, T_CRY1 = 2900, T_END = 3500;
+  const wrap = document.createElement('div'); wrap.style.cssText = 'position:fixed;left:' + L + 'px;top:' + T0 + 'px;width:' + tw + 'px;height:' + th + 'px;z-index:30;pointer-events:none;overflow:hidden;border-radius:6px';
+  fx.appendChild(wrap);
+  const strips = [0, 1, 2].map(i => { const cl = u.cloneNode(true); cl.style.cssText = 'position:absolute;left:0;top:0;width:' + tw + 'px;height:' + th + 'px;margin:0;opacity:1;will-change:transform;transform:translateY(108%);clip-path:inset(0 ' + ((2 - i) / 3 * 100).toFixed(2) + '% 0 ' + (i / 3 * 100).toFixed(2) + '%)'; wrap.appendChild(cl); return cl; });
+  // facettes de cristal : grille irrégulière de triangles, révélés de gauche à droite
+  const NX = 6, NY = 6, V = []; for(let j = 0; j <= NY; j++) for(let i = 0; i <= NX; i++) V.push({ x:L + tw * (i / NX + (i > 0 && i < NX ? (rnd() - .5) * .13 : 0)), y:T0 + th * (j / NY + (j > 0 && j < NY ? (rnd() - .5) * .13 : 0)) });
+  const F = []; for(let j = 0; j < NY; j++) for(let i = 0; i < NX; i++){ const a = V[j * (NX + 1) + i], b = V[j * (NX + 1) + i + 1], c2 = V[(j + 1) * (NX + 1) + i], d = V[(j + 1) * (NX + 1) + i + 1];
+    [[a, b, c2], [b, d, c2]].forEach((p, q) => F.push({ p, t:T_CRY0 + (((i + q * .5) / NX) * .78 + rnd() * .22) * (T_CRY1 - T_CRY0 - 160), a:.07 + rnd() * .2 })); }
+  const drops = [], ripples = []; let ups = [false, false, false], cry = false, full = false;
+  const t0 = performance.now(); let last = t0, raf = 0;
+  try{
+    await new Promise((res, rej) => {
+      const tick = now => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const t = now - t0, dt = Math.min(.05, (now - last) / 1000); last = now;
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        // cous qui se dressent
+        for(let i = 0; i < 3; i++){ const k = sm(T_UP[i], T_UP[i] + UPD, t); strips[i].style.transform = 'translateY(' + ((1 - back(k)) * 108).toFixed(2) + '%)';
+          if(k > .3 && !ups[i]){ ups[i] = true; const x = L + tw * (i + .5) / 3; btlSylvDrop(drops, x, T0 + th * .18, 18, 120, 330, '255,255,255', true); ripples.push({ x, y:T0 + th * .12, t0:t }); btlShake(plate, 3); } }
+        if(t >= T_FULL && !full){ full = true; wrap.remove(); u.style.opacity = '1'; }
+        // verre liquide (clippé à l'emplacement)
+        const fill = E.outC(sm(0, 700, t)), la = t < 700 ? .8 : t < 1250 ? .8 - .38 * sm(700, 1250, t) : .42, ca = 1 - sm(T_CRY0, T_CRY0 + 450, t), A = la * ca;
+        if(A > .01){
+          ctx.save(); btlSylvRrect(ctx, L, T0, tw, th, 6); ctx.clip();
+          const sy = T0 + th * (1 - fill * 1.04), amp = th * .03 * (1 - .4 * fill) * (1 - sm(T_FULL, T_CRY0, t) * .8), ys = x => sy + amp * Math.sin(x / tw * 9 + t / 150) + amp * .5 * Math.sin(x / tw * 17 - t / 95);
+          ctx.beginPath(); ctx.moveTo(L - 2, ys(L)); for(let x = L; x <= L + tw + 3; x += 3) ctx.lineTo(x, ys(x)); ctx.lineTo(L + tw + 2, T0 + th + 2); ctx.lineTo(L - 2, T0 + th + 2); ctx.closePath();
+          const g = ctx.createLinearGradient(0, sy, 0, T0 + th); g.addColorStop(0, 'rgba(190,232,255,' + A + ')'); g.addColorStop(.5, 'rgba(110,184,240,' + A + ')'); g.addColorStop(1, 'rgba(60,110,215,' + (A * 1.05) + ')'); ctx.fillStyle = g; ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,' + (.85 * ca) + ')'; ctx.lineWidth = 1.6; ctx.beginPath(); for(let x = L; x <= L + tw; x += 3){ x === L ? ctx.moveTo(x, ys(x)) : ctx.lineTo(x, ys(x)); } ctx.stroke();
+          // reflet qui glisse sur le verre
+          const sx = L + ((t / 900) % 2) * tw * 1.2 - tw * .3; ctx.globalCompositeOperation = 'lighter'; const gs = ctx.createLinearGradient(sx - 14, 0, sx + 14, 0); gs.addColorStop(0, 'rgba(255,255,255,0)'); gs.addColorStop(.5, 'rgba(255,255,255,' + (.2 * ca) + ')'); gs.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gs; ctx.fillRect(sx - 14, T0, 28, th);
+          ctx.restore();
+        }
+        // ondes à la surface
+        for(let i = ripples.length - 1; i >= 0; i--){ const r = ripples[i], k = (t - r.t0) / 700; if(k >= 1){ ripples.splice(i, 1); continue; }
+          ctx.save(); ctx.strokeStyle = 'rgba(235,248,255,' + (.8 * (1 - k)) + ')'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.ellipse(r.x, r.y, tw * .08 + tw * .26 * k, th * .03 + th * .06 * k, 0, 0, 6.283); ctx.stroke(); ctx.restore(); }
+        // cristallisation
+        if(t >= T_CRY0){
+          if(!cry){ cry = true; btlShake(plate, 3.5); btlRing(to, '#d6efff', false); btlFlashEl(u, '#ffffff', .55, 520); }
+          const fa = 1 - sm(T_CRY1 + 100, T_END, t);
+          ctx.save(); btlSylvRrect(ctx, L, T0, tw, th, 6); ctx.clip();
+          F.forEach(f => { if(t < f.t) return; const k = sm(f.t, f.t + 160, t), flash = Math.max(0, 1 - (t - f.t) / 220);
+            ctx.beginPath(); ctx.moveTo(f.p[0].x, f.p[0].y); ctx.lineTo(f.p[1].x, f.p[1].y); ctx.lineTo(f.p[2].x, f.p[2].y); ctx.closePath();
+            ctx.fillStyle = 'rgba(232,247,255,' + ((f.a * .55 * k + flash * .32) * fa) + ')'; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,' + ((.55 * k + flash * .4) * fa) + ')'; ctx.lineWidth = 1; ctx.stroke(); });
+          ctx.restore();
+        }
+        btlSylvDraw(ctx, drops, dt);
+        if(t < T_END) raf = requestAnimationFrame(tick); else res();
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  } finally { cancelAnimationFrame(raf); cv.remove(); wrap.remove(); u.style.opacity = '1'; }
+}
+// Appel : deux têtes se détachent en arc et plongent dans les emplacements libres
+async function btlSylvAppel(c){
+  if(btlGone() || !btlOnField(c)) return;
+  const S = BTL.S[c.side], free = [0, 1, 2].filter(i => !S.slots[i]);
+  const from = btlRect(btlSlotOf(c)), E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
+  const items = ['ANAKA', 'KOTAMA'].map((nm, i) => {
+    const def = BTL_TOKEN_DEFS.find(d => d.name === nm), slot = free[i], it = { def, i, col:i ? '#e0a63a' : '#e0443a', rgb:i ? '255,190,70' : '255,90,70', delay:i * 400 };
+    if(slot != null){ const n = btlMakeCard(c.side, def, def.rarity, c.level, false); n.playedTurn = BTL.turn; n.slot = slot; S.slots[slot] = n; it.n = n; it.to = btlRect(btlSlotEl(c.side, slot)); }
+    else it.to = null;   // pas d'emplacement libre : la tête se disperse en l'air, le jeton est perdu
+    return it;
+  });
+  const fx = btlQ('#btlFx'), plate = btlQ('#btlPlate'), { cv, ctx } = btlCanvasFx(31);
+  const tw = from.width, th = from.height, hs = tw * .86, FL = 1250, T_BIRTH = 640;
+  const drops = [], trails = [], waves = [], cx0 = from.left + tw / 2, cy0 = from.top + th / 2;
+  items.forEach(it => {
+    const e = document.createElement('div'); e.style.cssText = 'position:fixed;left:0;top:0;width:' + hs + 'px;height:' + hs + 'px;margin:' + (-hs / 2) + 'px 0 0 ' + (-hs / 2) + 'px;border-radius:50%;z-index:32;pointer-events:none;opacity:0;will-change:transform;'
+      + 'background:url(' + it.def.artExt + ') 50% 38%/165% auto, #1a2230;border:2px solid ' + it.col + ';box-shadow:0 0 14px ' + it.col + ',inset 0 0 10px rgba(255,255,255,.5)';
+    fx.appendChild(e); it.el = e;
+    const tx = it.to ? it.to.left + it.to.width / 2 : cx0 + (it.i ? 1 : -1) * tw * .9, ty = it.to ? it.to.top + it.to.height / 2 : cy0 - th * 1.5;
+    it.p0 = { x:cx0, y:cy0 }; it.p2 = { x:tx, y:ty }; it.pc = { x:(cx0 + tx) / 2 + (it.i ? 1 : -1) * tw * .25, y:Math.min(cy0, ty) - Math.max(th * 2.1, Math.abs(ty - cy0) * .45) };
+    it.state = 0; it.hist = [];
+  });
+  const born = it => {   // le jeton naît par une brève vague de verre
+    const tr = it.to; btlSylvDrop(drops, tr.left + tr.width / 2, tr.top + tr.height * .5, 30, 140, 420, it.rgb, true);
+    waves.push({ t0:performance.now(), r:tr, rgb:it.rgb }); btlRing(tr, '#d6efff', false); btlShake(plate, 5);
+    btlPutCard(it.n); const u = btlUnitEl(it.n);
+    if(u){ u.style.opacity = '0'; btlAnim(u, [{ opacity:0, transform:'scale(.55)', filter:'brightness(2.6)' }, { opacity:1, transform:'scale(1.06)', filter:'brightness(1.5)', offset:.55 }, { opacity:1, transform:'scale(1)', filter:'brightness(1)' }], { duration:520, easing:'cubic-bezier(.2,.8,.3,1)' }).then(() => { u.style.opacity = ''; }, () => { u.style.opacity = ''; }); }
+    btlRenderArrows(); btlRefreshCan();
+  };
+  const t0 = performance.now(); let last = t0, raf = 0;
+  try{
+    await new Promise((res, rej) => {
+      const tick = now => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const t = now - t0, dt = Math.min(.05, (now - last) / 1000); last = now;
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        let alive = false;
+        items.forEach(it => {
+          const lt = t - it.delay; if(it.state >= 2){ return; } alive = true; if(lt < 0) return;
+          const k = E.cl(lt / FL, 0, 1), p = E.inOut(k) * .35 + k * .65, q = 1 - p;
+          const x = q * q * it.p0.x + 2 * q * p * it.pc.x + p * p * it.p2.x, y = q * q * it.p0.y + 2 * q * p * it.pc.y + p * p * it.p2.y;
+          const sc = k < .3 ? .35 + .85 * E.outC(k / .3) : 1.2 - .5 * sm(.5, 1, k), rot = (it.i ? 1 : -1) * 360 * E.outC(k) * .9;
+          if(it.state === 0){ it.state = 1; btlSylvDrop(drops, cx0, cy0 - th * .2, 14, 100, 280, it.rgb, true); btlShake(plate, 3); }
+          it.el.style.opacity = k < .06 ? String(k / .06) : '1'; it.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sc.toFixed(3) + ') rotate(' + rot.toFixed(1) + 'deg)';
+          it.hist.push({ x, y, t:lt }); while(it.hist.length && lt - it.hist[0].t > 340) it.hist.shift();
+          ctx.save(); ctx.globalCompositeOperation = 'lighter'; it.hist.forEach(h => { const a = 1 - (lt - h.t) / 340; btlGlowDot(ctx, h.x, h.y, hs * .55 * a, it.rgb, .5 * a); }); ctx.restore();
+          if(k >= 1){ it.state = 2; it.el.remove(); if(it.n){ btlSylvDrop(drops, x, y, 34, 160, 460, it.rgb, true); btlSylvDrop(drops, x, y, 14, 120, 300, '255,255,255', false); it.birthAt = t + 60; } else { btlSylvDrop(drops, x, y, 30, 90, 300, it.rgb, false); } }
+        });
+        items.forEach(it => { if(it.birthAt && !it.born && t >= it.birthAt){ it.born = true; born(it); } if(it.birthAt && t < it.birthAt + T_BIRTH) alive = true; });
+        // vagues de verre : trois contours qui s'élargissent autour de l'emplacement
+        for(let i = waves.length - 1; i >= 0; i--){ const w = waves[i], k = (now - w.t0) / 620; if(k >= 1){ waves.splice(i, 1); continue; }
+          for(let j = 0; j < 3; j++){ const kk = E.cl(k * 1.3 - j * .16, 0, 1); if(kk <= 0) continue; const g = 1 + kk * .55 + j * .06, rw = w.r.width * g, rh = w.r.height * g;
+            ctx.save(); ctx.strokeStyle = 'rgba(' + (j ? '200,236,255' : w.rgb) + ',' + (.85 * (1 - kk)) + ')'; ctx.lineWidth = 2.2 - j * .5; ctx.shadowColor = 'rgba(' + w.rgb + ',.8)'; ctx.shadowBlur = 8;
+            btlSylvRrect(ctx, w.r.left + w.r.width / 2 - rw / 2, w.r.top + w.r.height / 2 - rh / 2, rw, rh, 8 + 10 * kk); ctx.stroke(); ctx.restore(); } }
+        btlSylvDraw(ctx, drops, dt);
+        if(drops.length || waves.length) alive = true;
+        if(alive && t < 6000) raf = requestAnimationFrame(tick); else res();
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  } finally {
+    cancelAnimationFrame(raf); cv.remove(); items.forEach(it => { if(it.el) it.el.remove(); if(it.n && BTL && S.slots[it.n.slot] === it.n && !btlUnitEl(it.n)) btlPutCard(it.n); });
+    if(BTL){ btlRenderArrows(); btlRefreshCan(); }
+  }
+}
+BTL_CARD_FX['SYLVERLAKE'] = { arrive: btlSylvArrive, appel: btlSylvAppel };
+BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
+
 // mots-clés (le Tank et la Percée n'ont pas d'effet propre : ils sont lus par les règles)
 (function(){
   const K = {
@@ -23374,7 +23539,7 @@ BTL_CARD_FX['ELYSIUM'] = { arrive: btlElysArrive, baroud: async c => {
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
     'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
-    'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'BUZZY':['passif'],
+    'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'SYLVERLAKE':['appel'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
   Object.keys(K).forEach(n => { BTL_CARD_KW[n] = K[n]; });
@@ -23674,6 +23839,7 @@ var CARD_FX_TXT = (function(){
     'JIPASIS':[['appel','soigne 5 PV, répartis au hasard sur les alliés blessés.']],
     'ZAPPAN':[['baroud','ajoute son attaque à celle d’une carte alliée au hasard.']],
     'ELYSIUM':[['baroud','inflige 2 points d’attaque à la carte qui l’a détruite.']],
+    'SYLVERLAKE':[['appel','place 2 jetons ANAKA et KOTAMA (ATQ 4, DEF 0, PV 2) sur des emplacements libres de son camp.']],
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'TORTUGA':[['tank'],['passif','en fin de tour, gagne 1 DEF.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
@@ -24007,59 +24173,60 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "AMALGAME":["gMhhaZZWjjLIIXiAAFff", "gNDDMMSadZZYIiiAAFff", "gDM8hSadZZejjIIAAFff", "Ogg3NMhhScdZebIIiAff", "OOggQMMhSSZZbjjIIAff", "OO9ggDD0hhSScYjjIIff", "OO4JJ6ggDMMcejLIIAff", "OOJ1ggQQDMMSSZebAAff", "OOJgg33QCMMhSSYjjIff", "OO496gg33MMhSSZIIiAA", "OO44JJggEDDMM0SSjjIf", "OO44J166ggQMMSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
-  "MOG-AI":["2O46QNMHhhccdZZWYjI7", "26QDDHhhaccddZZWj7Ff", "29663UDDHhhSZZWYbbIF", "22OOVJ93UND0hhSccZZA", "224J63QQNDDMMhSaaccZ", "22O4VVJJ933NDDhZLiFf", "22OO44J63EUQQhhaadWI", "22O4JJ9633ENND5Hhhbi", "22OO4VVJ9916633UQHhZ", "22OO44VJJ99663EUQNHW", "22OO44VVJ996633NQHBh", "22OO44VVJJ9916633QHH", "PP22TOO44VVJ9633QDhh"],
-  "ZAPPAN":["GHHBSadWWjLIIXiAAFff", "GgNM0SSaccWjLII7AFff", "G6UNMHSSaacZbjIAAFff", "GG1UUHScbjjIXi77AAff", "GGg3UNSaccWjjII7AFff", "GGO9ggUNM8hSacWIIiff", "GGOOggNMMHHhSSadWjAf", "GGOOV99KENMMH0SSjIIf", "GGOOVJ991ggUUNMMSSjA", "GGOOVV996ggQNMMSjIAf", "GGOOVVJ9916ggMMSScjf", "GGOO4VV996ggUMMSSjIA", "PPGGTTOO499ggU5MMSSf"],
-  "MOTOKO":["PNH8aaccdeWWLLXXiAFf", "PVUUNaaceWWbIXXi7AFf", "PUUDCHH8accZeeWWLi7f", "PP4VVgENNCaaceWjXiiF", "PP9RUN5C88aaccWWLXii", "PP4VV91gUUNNQC8addWX", "PP99KUU5HH8800aaWWjX", "PP4VV99KK1UNCMCHH0aW", "PP4VVJ99K1EUU5CHHcce", "PPVVJ99KKEUNN55HH8aL", "PPOVV99K11UUNN5HHB88", "PP4VV99KK1UUNN5CHHWi", "PPTTVV99KK1RUUNN5HHW"],
-  "TOA2":["T800hZeWbbjIXXiiAAFf", "T58800haeejIXXiiAAff", "TOK1C0ZebIXXii7AAFff", "TTV1MM0ZeeWWbIIXXiiA", "TT15CC00SSeeYjiiAAFf", "TTVJ11g5800hSSeXXiif", "TT4VKK11gg5C00ddeejI", "TT4JKK116gD5C8ejIiiA", "TTVKK11U5MMC88SeejLI", "TTOO4VKK1gQ55CC88SSX", "TTOOKK11gD55CCMHH88A", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
-  "CATER-PILLARD":["RD580eeLLIIXXii77AFF", "D55M0heeWjIXXii77AFF", "K135M0aeeWLLXXii77AA", "1CC800SddeeYbXiiAFFf", "JK1g55MCH00SeeLii7FF", "K1Q58800adZeeWXXi77F", "KK15C8800cdeebLXiiAA", "O9KK11658800SSeeX7AF", "O11Q55CC8800SdLLXi7A", "49KK11655CC8800SSL77", "OKK11R5MCC8800SSddeF", "OOKK1155CC8800SSddLi", "PPTTOKK1165C800SSdLA"],
-  "MED-07":["J1RQ50dZZeeYYXXiiFff", "O16C800aZZebLIXXiiff", "165C0hhdZeeWjIXXiiFF", "11ENQ55H8hhZeebIXii7", "4JJKK1133500eebjLXii", "OJ1163EQD55C8heeWXii", "O4K11Q55CCM8800ZZXXi", "OJKK116R3E5CC80ejXXi", "4JKK116g3NDCC880eXXA", "44VJKK1163355CC880Ze", "OO44VJKK11D55CC80See", "OOVJJKK113Q55CC880ei", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["1U500adeWWjLXXiiFFff", "KKEU5HHaeeYIXXii7Fff", "15CC8800aceeWWXXii7F", "49Q55CH0aceebjLXXiif", "9K55C0hacZeeWWIXXiif", "KKN55MCHH80SceeWXiiA", "VVKKN55CH880SaeLXXiA", "49KK11UUN55CHH800XiF", "V99KK11D55CC800aceef", "4V9KK11UN55CMCMH00ee", "44V99KK1155CCHH880SX", "OVVKK11UUNN55CC800XX", "PPGTTVJ99KK1155CHH0e"],
-  "EXO-MKX":["C80hhcdZZeeYbXXii7Ff", "QDDC80hcZZeeWYXXii7F", "KDD580hdZeebXXiiAAFf", "4K6QD5880cdZeebXXii7", "4JK1NQQ5CM880eeYXXif", "OOK1g3U55C8800ZeeW7F", "O4KK66UQ55CC8800ZeXX", "O4KK113Q55CCB8800ZLi", "O4JKK116Q5CCH880WXi7", "OO49KK116gUD55CC880i", "OO44VJKK1355CMC8800e", "O449KK11QQD55CC8800X", "PP22GTTO44JKK115C880"],
-  "NEUTRON":["5C0aeeYYIXXii7AAFFff", "D55C0heebjLXXii7AAFF", "49KC800deeLLXXii7AAF", "VK5CCH88cdeeXXi7AFFf", "K11E55CC80SSeejLiiAF", "OVKK13QCC800SeLLXii7", "16R55CC880SeeLXii7AA", "4KK11Q55CCB8800dLLAF", "OOKK1155CC88SSLLIXXF", "O4VKK1155CC880SSddLX", "OKK11EU55CC800SSdeL7", "44KK1155CC8800SSdXAF", "PPGTTJKK11CC80SddLX7"],
-  "HYPPER":["U5C00heeYbbLLXii7Aff", "E5800aZeeWbLLIIXiiFF", "C8800ccdeeYYbbLXiiAf", "K11RgMH0aaeeYjLXXiiA", "KK11EUCCB0eebbjLLXXi", "11Rg5MCMCB880eeXXiif", "OKK11EE55M80ebLXXiFf", "49KK11RUUCMCM00ebXXi", "OJKK11REE55CCB800YXX", "V9KK11RREU55B800eYXX", "V9KK11RRD5CMC800LLXX", "4VKK11RECCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
-  "TUNNELIER":["KD88hhZZeeYLLXXii77f", "KND00hhZeeWYbjIXXiiF", "K3QD558cZeeYIIXXiiFf", "4KK163Q00cdZZeeXXiiA", "JKK11gUND55C8ZZeeXii", "OKK113EQQ588hejXXii7", "O4KK16EQD55CC8ceeXiA", "OOJJKK1166R5CCB880XX", "OO4JKK11gE558800hZee", "OOJKK116NNQ5CC8800Ze", "OOJJKK11Rgg355C8800i", "OO44VJKK1155CC8800he", "PP2GTT4JJKK11635CC80"],
-  "ARKHAUL":["CSccdWYLLIXii7AAFFff", "C0SacdWWLLIXXii7AAFF", "RC8SScdeYLLXXii7AAFF", "5C00cddeYYjLL77AAFFf", "150hSSddZeWYLI77AAFF", "1635588SSddLLX77AAFF", "K1R5MM8SSddbLL77AAFF", "KK1UN00SSddjLL77AAFF", "911gB80SSddLLX77AAFF", "OVKK1M80SSddLL77AAFF", "4KK115CSSaddLL77AAFF", "K116RR5SSddeLL77AAFF", "PPGGTTKUSSddLL77AAFF"],
-  "JIPASIS":["QDCSdZZjLIXii77AAFFf", "DHhhSSZZeeLIXi77AAFF", "O6gDSaaddZbLXi77AAFF", "g3QDhhSddZjjLL77AAFF", "OO463ESScddLLX77AAFF", "O46R3USSddWWjLL7AAFF", "OO93MhSSddbLLI77AAFF", "44V9R3QCSSddLL77AAFF", "O4966EUQSSddLL77AAFF", "O44JD5CSSddZLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDCSSddLL77AAFF", "22TTOO4KSSddLL77AAFF"],
-  "BUZZY":["BScddZeWWLLXXi77AAFf", "11hSddYLLIIXXii77AAF", "580SaddeLLIXii77AAFf", "O1CHB0SSddebLi77AAFF", "1880SSadeeLLIX77AAFF", "KCC800SSaddejLL77AFF", "1RD5CHSSddeYLL77AAFF", "JK11N80SSddeLL77AAFF", "OKK160SSddeLL77AAFFf", "4JK15800SSddLL77AAFF", "9KK1550SSddLLX77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
-  "BRI-KB-ROCK":["MMSacddbjjLLIIXiAFff", "O8SSWYbjjLIIX77AFFff", "5MM0SScZeejjII77AFff", "OOJJMMddYjjLIiAAFFff", "OgECHhSSejjLIIAAFFff", "OggNMSSaddZYjjII7AAf", "OO4RgMCMSSdWjjLI7AAF", "OO9gg3MMHSSWII77AAFF", "OOJ1ggMMSScddjj77AAF", "OOV1ggQMMSSddjIAAFff", "OO49ggNMMSSdjII77AAF", "OOJggMMHSSjLL77AAFff", "PGGTTOOggEMMSSdj7AAF"],
-  "MED-POD":["SddeYYjjLLIIXi7AAFff", "OOV8SZYjjLLII7AAFFff", "ONMhScjjLLIIii7AAFFf", "1ggHSSeWjIIX77AAFFff", "VRggCMSSWWjjLLI7AAFf", "OggQMSScjjLLIIX7AAff", "OO4VggMHhSSjLLII7AAF", "OO9ggU5MMHSSjLII77AA", "OO1ggCMMSSddjjLIi77A", "OO166ggMSSdjjL77AAFf", "OOVgg3QMMSSddLI7AFff", "OO49ggMMSSddjjLLIIAf", "P2GGTTOOggMMSSdd7AFf"],
-  "MORPHE":["J9NDHhaaccZZeWWbbIIX", "93NDHaaccZZWWbLLIIAf", "96RUUQNQhaaccZZWWbAf", "4996g3UHHhaaccZWWLLi", "VV9966UUD5aacZeWWLXi", "4VV9933UQN5HHhhccWii", "OVVJ9963EEUUNNHHacIX", "OO4VVJJ993EUUNNHacci", "O44VV993UUNNQQMHHhcW", "OO44VVJ991UUQNQNHHcW", "OO4VVJ99K6UUNQNHH0aa", "OO44VVJ99K3UUNNHHacW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["99NHBaaccWWYYbbjLX7A", "9RUNMHacceWWYbL7FFff", "V99HBaacceWWYYbbLXXi", "VV6NHHhaacZWWbbLLAff", "J99RNNHHBaaccdWWYYbF", "V6UUNNHHBBaaccdWbLLA", "VV993UUNNMHHBcZWYLLA", "VV99KREEUUNDHHaacWWL", "4VV99RRUUNNMMHHBaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaacf", "OVV99RRgEUUNNMHHBaaW", "PP4VV99RREUUNN5MHHBW"],
-  "EXO-MKV":["NQQCHHBaaccdZZeWWjif", "93QNHaaccdZZWWbII7AF", "4JRUNHHBhhSaaccZWWFF", "RgENNHHhhaaccZZeWWAF", "O4VV93NNDDH8accZWWXi", "VV9963UNNDDHHhccWW7A", "O4VVJ991UNNHHBhaaceW", "VVJJ99K33UUNN5Haaccd", "OO4VV99R3UNQNQaacZWW", "O4VVJJ9963UUNNHH0ScW", "O44VVJ9966UUNNDHH0aW", "O4VVJJ99K66UUNNHHacW", "PP22GOVVJJ99UUNNQHHW"],
-  "WHIPLASH":["UNHH0aacceeWjLiiAFFf", "V9RUaaccZeeWWjXXiiAF", "VUNQN80haaccWWXXiFff", "9UUNN5CH8aaZWWbXiiAf", "9UUNNMHH80aacceeWYbX", "VV99UUNNH880ccZeYXii", "VV991g3UUNN50aacceWi", "VV99RUUN5HHB8accYbXi", "4VV99KK11EUUNNHHaWIX", "VVJ99KK1UUNN55HBSacc", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTTVV99KK113UUNNHac"],
-  "DELOK":["VUH00aacceWWYYLLXAff", "V9UHB8aacWWYYbbLIXFf", "V93UNBaaccdZWWYbbLLF", "VV9UUD5HaaccdZWYbbLL", "VV6UNNMHHB0accWYYLXX", "OVVR3EUNNHHaacWWbLLI", "OVV9RUUNNHHBhcWWYbAf", "VV99KRgEUUNHHBaccYbf", "VV99RRUUNNMCMHHBaWWY", "VV9916RREEUUNNHHBccY", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["963UNHaaccZZWbIIiAFF", "9UQDHHSaaccZZWbIIX7A", "VUNDDHHBaaccZZWbjL77", "V99NNQDaccZZeeWWjjL7", "V96UUQDHaaccZeWWbLFF", "OVVJ9966UHHhaccdWWbI", "OO4VJ3UNNHHhaaccZWWi", "44VV9966UUNNHHB0dWWb", "O4VVJ99K6UUQQNNHHaWW", "OO4VVJ99UUQNHhhaaWWb", "OO4VV9966UUQNNHaccWW", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9UNCHhaccdeWWLLAAFFf", "UUHHaccWWYjLI77AAFff", "V9UUQHHacWWbjLLXi7AF", "V99NNChhSaaccWWbjLFF", "V99gNHHBaaccWWX7AAFF", "VV99163UQHHBSaacWLLF", "V993UUNNMHHSaaccLAAF", "OVV99RUUNHHSSaaccdYL", "VVJ991UUNNHSaadZWL77", "4VVJ99gUNNHHSSaadWLA", "VV99KK6UNNHHSSaaddWF", "VV99RgUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
-  "DUMADED":["EEQQDBBdZYYbjjLL77Ff", "J6RRBBcZZeYYbLLIIiAf", "ORR3QMMBdZZYYbLLXFff", "RR3NNDCBBaZZYYbbLLX7", "VJR3EDDMMBhYYbbLLAFf", "OR33EEMMB0ZZYYbbjLXX", "O4J9RREEDMMBB8YbbLi7", "OOJK6RRgEEQDMBBYbbLL", "O4JRRg3EENDMMBBWYYbb", "OOJ6RREEQQMMBBZYYbbL", "OO44JJ6RREEQMMBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["99UNHhhaacZZWWYYjLFF", "O493UNH8SaacZZWWL77A", "4VVJ9UNHHSacZZWYiAff", "63UUNDHaaccZZWWjIX7A", "OJ1UUNNDHhaaccZZWWLf", "OOVV6UQNHH0haaccZZWW", "4VV99REUNQQHhaaccZWA", "O4VVREUUNNHhhaccWWXi", "OO44VV9K6gUUNNHSaccW", "O4VVJJ99663UUNNHHcce", "OOVV9966RgUUNQNccWWI", "OO4VVJ99g3UUNNDHHacc", "PP22GO4VV991UUNQNHcc"],
-  "RAZOPS":["HSSdeYbjLLIXXii77AAf", "VMSdZeebLLXXi77AAFFf", "BScdeYYjLLXXii77AAFF", "6g3CC00aaddLLX77AAFF", "9QN80SaddebLLi77AAFF", "16RCC8SSaddLLIi77AFF", "JKK5CB0SSddeLL77AAFF", "OVKgECSSddLLii77AAFF", "V991150SSddLLi77AAFF", "44KK1N0SSddeLL77AAFF", "OJ9KK1CSSddLLX77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
-  "FENCY":["1N5580hdZeXXii77AAFf", "J15588ceWWLLXXii77AA", "KU5C88SSZeWLIXXii7FF", "K55C0ceeYjLIXii7AAFF", "K1N55800ceeLLXii77FF", "J11QCC800heebLLIii7A", "VK11EU55C880SeeLXi77", "4KK116N55880SddZeeLi", "K11R35CC800SceeLX7AF", "JJKK11NCC880SddeeXFF", "JKK11gN5CC800SSddee7", "VKK11DCC8800SSdeeiAA", "PP2GTTKK11558SSddeeF"],
-  "EXO-MKI":["MMHhacZWjjIIXiiAAFFf", "R8SSaaccZZWjjIIXiAAf", "OVgQDMHSSccjjIIXAAFf", "OJgMCMHHScZWbbjjIAff", "VggE5MCMH0SaacIIAAff", "OV99gg3DMMH8SSaZjjff", "OOV9gECMMBcWWjjIIAff", "OOVVggEMMHH8SSeXAAff", "OOVV99KggUQMMHSSjIff", "OOVVJ9ggUUMMCSSjLIff", "OO4996ggUNNMM8SSjIff", "OOVVJ996ggNMMSSjjIff", "PP2GGTTOO4VVggMHSSff"],
-  "GAPIX":["J633QMBhhdZZbLLI7Aff", "6RQQDDhhScdZZYYbbLLf", "O4J63Q5HBhhZZeYYbbLf", "K6633EQQ5BhhSZZWYbLf", "44J66RR3QQDhhcZeLLIF", "OOJ66R3EQQB80hhdZZYF", "OO4JJK663EEQDDhWYLLA", "O44JJ166RRgEQQDCHhZY", "OO44JJK66R33DMMHZYYL", "OO44VJJ166REQDMBBhhb", "OO44JJ9K66RR33EEQD5B", "OO44JJ966RRg33EEQQMh", "PP22OO44JJ66RR33EEQB"],
-  "EXO-MKVII":["J663DH80hhZZYXXi7AFF", "J3QQD588hhZZeLXii77F", "466QQD88hhZZIXXii7AF", "66NQQDD0hhZZeYIiiAff", "4JK1R33QQDDH8hZZIXiA", "O4663QNQDD50hZZeXiAF", "OO4JJK16QNQDD80hhaI7", "O44JJKK6633DDCH80hcZ", "OO44VJJ93UQDD5C80hhi", "OO44JJKK1633DD55B8hh", "O44JJ9KK11663QQDD8aZ", "OO44VJJKK16633NDDC8Z", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["4J3NDDHhhSccdZZWb7ff", "4J63DDHhcZZeWWXAAFff", "4J633NQHhhcZZWWjji77", "JJ63EUQDhhaacZZWY7AA", "O4JJR3NQQDDHHaccZZFF", "OJJ6g33EENQDChacZZWW", "OO4JJ96633UQQDDCacLi", "OO44VJJ9163UQNDD8SZ7", "OO44VJJ996633UQQHhaI", "OO44VVJJ6633NQHhaace", "OO44VVJJ9916633NQCha", "OO44VVJJ96633QQDHSWA", "PP22GOO44VJJ9663NQQh"],
-  "STAR-HUNTER":["463QQDDaZZWbLLX77AFF", "46QDDhhddZZeYIi7AFFf", "4J633DhhSZZbLLiiAFFf", "O44K6QD8hhZZWLIXX77A", "O44J6633DhSSZWY7AFff", "OO44J633QQ5ChhSadbLF", "O4466R33QQD5hhdbbL7F", "O44JJ633EQQDDMHddZAA", "O44VJJ966R33QQSSZLL7", "OO44JJ6633ED0hhSSdLL", "OO44VJJK66QQD5SSZ77A", "OO44JJK633QNQhSSZL7A", "22TOO44JJK663QQSSddA"],
-  "RHINO":["463QDhhZZeebbLXii7Ff", "163QDDHhhZZeeXiiAFFf", "663QQDD55B80haZZjX7f", "J133QDDC80hhcZZWbXAf", "O4J133QQDC0hhZZbXXiF", "O4JJ11633QDMB0hhcbLi", "44JJK6633EDD80hhaiFf", "OO4JK633QQDCC0hhZYbi", "OO44JJK116633QD80heb", "OO44JJ9KK16633NQQN58", "O44JJKK116633QNDD5HS", "OO44JJKK116633EQQ55Z", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["4633QQChhaaZWWYXAFFf", "OOVJ66QHHhhcdZXXiAAf", "O4433QQHhhSaaZWWYXif", "OO9963UQQDhcdZZWLAff", "OO4VJJ9K63QCHHhhaZZe", "OOJJ9UNNQQD55hhaZZeb", "OO44J963EUUQNDC0hdZZ", "OO44VVJJ6UUQQDM0hZZA", "OO44VVJK66UUNDDhhZZb", "OO44VVJJ996QQNDHHhZZ", "OO44VVJJ9RgQNDDHhcZZ", "OO44VVJ9966NQQDDhZZW", "PP22GGOO44JJ93UDDHZZ"],
-  "CONQUEST":["46QDDhhcZZeebjXXi7ff", "Og33QDD0hhdZZjLXXiAf", "OO6QDD50hhaccZZLIXiF", "633QQDC8hhacZZWYjXXi", "OJ133QQDD880hhcZZeeX", "441633QQDD5C8hhcXXif", "OO4JK11663EQNQ0hhSZi", "O44JJ66gQQD55MM880ZZ", "OO4J9K16633QQDD5880i", "OO44VJJKK1663EQQ58hf", "OO44VJJ9KK11663QQD8Z", "OO44JJKK1663QQD50hZb", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OQMhadZZYjjIIX7AAFff", "Og3Q0ddZZjjIIiiAAFff", "ODDM00hSSZZjjIi7AAff", "OO46hSScZWYjjIIiAAff", "OO4g3UQDDMMhSejIiAff", "OOVJJ1ggQD5MMhjIAAff", "OOJ6ggDMHhSZejjIiAAf", "OOK6gg3UDDMM0hSSjIff", "OO4JJggEDD5MMBSSjjAA", "OO4JJgg3UDDMMHSSjjIf", "OO44JJRgg3EDMMSSIAff", "OO4416gg3DMMSSZjIIAA", "P22GGTTOO4JggQQMMjjf"],
-  "GOTHIKA":["43QQDDhaacZZeWjj77AF", "JJ93QQDHhadZZWbjiiFf", "633UQQDDHBhacZZWbiFF", "O3NQQNDDHhhcZZebL7Af", "4463UQQDhhcZZeWWjIi7", "OOVJ1633UNQDDBhhaaWi", "OOJJ16R3UQNQDDHhhSWf", "O4VVJ6633QNNDD5500hh", "OO44VVJJ99133QDhhaZZ", "OO44VVJ99633UUNDhhcZ", "OO44VVJJ99K63NQDDMhh", "OO44VJJ99K6633UUQ5hh", "PP22GOO44VJJ9966QMhh"],
-  "TORTUGA":["1800ccddeejLLIXXiFFf", "65C00ScdZeeLXXi77AAF", "5C800deeYLLIXXi77AFf", "VKD5CB80ejLLXXii7AFf", "911D5800hSceIXXii7AA", "6g55MC80SeeLXXiiAAFF", "K13CC8800SSejXXii77F", "VJK1U55C88SdeLXXiiAF", "KK11Q55H80SdZeXii7AF", "V9KK11g5C880SSXiiAFF", "4KK11QQ55C800SSdLii7", "VKK1655CC8800SSdLiiF", "PPTT4KK1155H8SSddLii"],
-  "ELYSIUM":["JSSaaccejIIXi7AAFFff", "MSaacdWWYbjLIIAAFFff", "gUD8SSccWWjLIIiAAFff", "ENNDMMadWWbjjIIXAAff", "O9gNMMSacdWbjjI7AAff", "OO4VggQMMHB8WWjjIIAA", "OO4ggUNNDMBSSaejjIAf", "OOV99ggNDMMHSSdjjIff", "OO4VV9ggMMH8SSaWjjII", "OOVJ996gg3UUMMSjjIIf", "OOVV99KRggMMCHSSjjAf", "OOVVJ9gg3UNMMSSjjIIf", "PPGGTTOOVJ96ggNMSjjA"],
-  "PRAWN":["MBddYbjjLLIIXXAAFFff", "MBBSaYYbjjLIIX77AAff", "EMHhSSdYbjLLIIXAAFff", "gNDMMBB0SSZbbLIIiAff", "ORgUNMMHBjjLLIIXAAff", "O9ggEEMMSYbbjIIXiAAf", "OO4RggECMMBhSSjLLIff", "OOVRRggEMMhSSYjIIAff", "OO9RggEEMMBSSaebjjIf", "OOJ9RRggUMMSSYYbjjIf", "OO9Rgg3EEMMHBSYjjIAf", "OO4JRggMMBBSSbbjIAAf", "PPGGTTOORggEEMMBBSSj"],
-  "HARKO":["ggSaccWYjLLIXXi7AAff", "V5SSaaccebjjIXiAAFff", "gg5SSaaWWbjjIi7AAFff", "ggUQMMHhceeWbIIXAAff", "49MMHHSSccbjjIIXAAff", "9KRggNNMMHeWjIIXAAff", "OOV6gUQNMMHSSWjIIAff", "OOJ99RggEUDSSWjjIIAA", "OO4V99KggNMMHHSSIIAf", "OO4VV99K1ggMMSSajjII", "OO4VVJJ9ggUNMMSSjIIf", "OOVJ996ggNMMHSSjIIAf", "PP2GGTTOOVV9ggEMSjII"],
-  "DOZEUR":["DMMBhacZZYYbbLLIIAAf", "RDMBhScZZWYYbbLLX7Af", "6REQQMB8SZYYbbLLXX7f", "O4RREDMMBB8ZZYbbLLiF", "O496REDMBBhSeYYbbLL7", "K3EEDDCMBBhZeYYbbLLA", "ORR3EENQDMMBBhZWYbbL", "JJ9RR33EEQMBBeWYYbbL", "OO496RREEDMMBB8YYbbI", "OO44RR3EE5MMBBhYYbbf", "OO44VJRR3EEMMBBcYYbb", "OO66RREEQQDMMBBYYbbL", "22O446RREEQMMBBYbbLL"],
-  "DILUS":["RUMBB0ZZeeYbbjjLLXFF", "MMHBB0ZeWYbbLLXXiiAA", "EMMCBBdeYbbjLLXii7Ff", "1RE5MMBBcceeWYYLLXXi", "1EEMCCBBYYbbjLLXXiFF", "VKEED5MBB80YYbbLLIiA", "KK1RREEMCCBBYYbbLLXf", "4JK11RREEMMCBB80YYbb", "OJ1RREEUMMBB88YYbbXi", "4KK1RREEMMBB80eYYbbI", "9K16RREECMMBB80YYbLf", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["REDMBhcZZeYYbbLLXAff", "JREQQMB8ZZWYbbLLXAff", "JRMBBhhSaZYYbbLLiAFf", "4RREMMBhcZZYYbbLLX7f", "RR3EQQHBBhScYYbbLLAA", "O66RR3EE55MMcZWYYbbL", "OO44VRRQMMBB0eYYbbLL", "OV6RR33EEMMBBhYYbLIf", "O4J1RREEQNMMBZZYbbLL", "OO4V6RREEDMCMBBZYYbb", "OO4VJRREEMMBB88hYYbL", "OO4VJJRRgEEMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
-  "SHADOW":["VEMBhadWWYYbbLLXi77A", "3EBBScceWWYYbbLLXiFf", "EUNMBBccZYYbbLLIiAFf", "RREECMBBSaccZWYbjLLf", "EEUQMMHBaacYYbbLLiiF", "OV9RREENDMhaYYbbLLif", "V9RREEDMMHBB0SWYYbLF", "VRREEUMMCHBB80acYYLL", "VVJ9RREEUMMBBacYYbLL", "VVJ996RRgEEMMHBBYYbL", "VV99KRREEUNNMMBBYYbb", "VV9KRREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "AMALGAME":["gNkhhSZZWjjLIIXiAAff", "gDDMMSaadZZLIiiAAFff", "JgQM8hSdZZejjIIAAFff", "OOgg3kkMhScdZeIIiAff", "ggUQQMMhhSZbjjIIiAff", "OO9ggkkDD0hSSZejjIIf", "OO4JJ6ggNDMMhdjIIAff", "OOK1ggQDMMhhSSciAAff", "OO4gg33kkCMMhSSZjIff", "OO496gg3QQkkMMSSIIAA", "OO44JJggEEDMM0SSjjIf", "OO44J166ggMMhSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
+  "MOG-AI":["2O63NNQQkhhSccdZjIX7", "2J3QDHhhaccddZZWj7Ff", "2966UkDDHhhSZZWYbbIF", "22V33UQQND0hhcdZWWAA", "22JJ633UQNQDMMhhaacc", "2244VVJ9KgNQNkDDZZjF", "22OO4JJ633EUkkhhaadW", "22O44JJ9633NNkkDHci7", "22O4VVJ991663UNQQkHZ", "22OO44VVJJ996EQNDCZW", "22OO4VVJ996633NkkHBh", "22OO44VVJ996633Qk5HH", "PP22TOO44VVJ933kkDDh"],
+  "ZAPPAN":["GJCHSadWWjLIIXiAAFff", "GgNM0SSaccWjLII7AFff", "G6UNMHHSSaacZbjIAAff", "GG3UUH8ScbjjIXi7AAff", "GGVg3NHSaccWjjII7Aff", "GGO9ggUNM8SacWIIiiff", "GGOOggNMMHHBSSeWbjif", "GGOOV99KENMMH0SSjIIf", "GGOOVVJ991ggUNMMSSjA", "GGOOVV996RggNMMSjIAf", "GGOOVV99K16ggMMSScjf", "GGOO4VV996ggUMMSSjIA", "PPGGTTOO499ggU5MMSSf"],
+  "MOTOKO":["PNH8aaccdeWWLLXXiAFf", "PVKUUNaaceWWbXXi7AFf", "PUUCHHB8aacceeWWLi7f", "PP4UkDHHBhacceWWXiiF", "PP9RUND5M88aaccWWXii", "PP4VV91RUUNNC8hadeWX", "PP99K6UUkHH800aaWWXA", "PP4VV99KK1UNDMCHH0aW", "PP4VVJ99K1UU5CHHcceF", "PPVVJ99KKEUNN55MHH8a", "PPOVV99K11UUNN5CHH88", "PP4VV99KK1UUNN5CHHWi", "PPTTVV99KK1UUNN5HHWb"],
+  "TOA2":["T800aeWYbjjIXXiiAAFf", "T58800haeejIXXiiAAff", "TOK5C0cZeIXXii7AAFff", "TT1MM0cZeeWWYIIXXiiA", "TT1U5CC00SeeYjiiAAFf", "TTK11g5800SSeWYjXiif", "TT4KK11gg5C00hheeWjI", "TT4JKK116gE5C8ejIiiA", "TTKK11UN5MMC88SeeWjI", "TTOO4VKK1Rg55CC88SSX", "TTOOJKK11gE55CCMH88A", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
+  "CATER-PILLARD":["D580SeeLLIIXXii77AFF", "55C0eeWjjLIXXii77AFF", "K13N50aeeWLLXXii77AA", "1CC800SdeebXXiiAFFff", "KK155MCH00hSeeLii7FF", "K1Q58800aadeeYXXi77F", "KK15C8800cdeeLXiiAAf", "O99KK11658800SSeeXAF", "11RUQ55CC8800dLLXi7A", "49KK11655CC8800SSL77", "OKK11RN5CC8800SSddeF", "OOKK1155CC8800SSddLi", "PPTTOKK1165C800SSdLA"],
+  "MED-07":["4150hSadZZeeYXXiiFff", "16C800hhZZbbLIXXiiff", "16Qk5CH0heeYjXXiiFFf", "O11Nkk558cZeeIIXii7F", "JJK1133500ZeebjLLXii", "J1163EQkD55C8heeXXii", "OK1163Q5CCM8800haYXi", "OJKK116R3Ek5CC80eYXi", "O4JKK1163DCCB880heXX", "44KK11663355CC880deY", "O44VJJKK11k55CC80See", "OOVJJKK11RQ55CC880ei", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["1U500adeWWjLXXiiFFff", "KKU5HHhaeebLIXXii7Ff", "15CC8800aceeWWXXii7F", "96Q55CH0aceebjLXXiif", "9KK55C0hacZeeWYXXiif", "KKUNN55CHHB80ceeWXii", "VKKUNN55CH880aeWXXiA", "4J9KK11UUN55CHH800Xi", "V99KK11gD55C8800acee", "4V9KK11UNN55CCMH00ee", "44V99KK11U55CCHH880X", "OVVKK11UUNN55CC800XX", "PPGTTV99KK1155CMHH80"],
+  "EXO-MKX":["QkC80cdZZeeYbXXii7Ff", "DDC80hhdZZeeWYXXii7F", "KQkDD580ceeXXiiAAFff", "O4K6D5880cdZeebXXii7", "O4K13QN5C880heeYXXif", "K1gUQ55C8800hhZeeW7F", "4VKK66QQD55C8800heXX", "O4KK11RQD55CB8800ZLi", "OO4JKK1166E5CC880ZXi", "OO49KK116UD55CC880hi", "OO44VJKK116N55C880eX", "O44KK113QQD55CC8800X", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["5C0aeeYYIXXii7AAFFff", "D55C0ebjjLXXii7AAFFf", "4KCB800deeLLXXii7AAF", "K5CCH88cdeeWXXi7AFFf", "V11E55CC80SeejLLiiAF", "OKK13QCC800SeWLLXii7", "16R55CCB880SeejLXi7A", "4KK11R55CCHB8800dLLA", "OOJKK1155CC88SSLLXXF", "O4KK1155CC880SSddYLX", "OKK11EU55CC800SSdeL7", "44KK1155CC8800SSdXAF", "PPGTTJKK11CC80SddLX7"],
+  "HYPPER":["U5C00eeYbbjLLXii7Aff", "E5800aZeeWbLLIIXiiFF", "C8800ccdeeYYbbLXiiAf", "K11RMH0heeYbbjLXXiiA", "VKK11kDCB0eebbLLXXiF", "11Rg5MCMCB880eejXXii", "OKK11gEEN5580ebLXXiF", "4VV9KK11RCMCM00ebXXi", "OJKK11REE55CCB800YXX", "VVKK11RRE55B8800eYXX", "9KK11RRE55CMC00bLLXX", "4VKK11RECCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
+  "TUNNELIER":["KQkDM88ZZeejLXXii77f", "KNkD00hhZeeWYbIXXiiF", "OJKgQD558cZeeYIXXiiF", "4KK163QQ00acdeeYXiiA", "OVJKK11D55C8hZZeeXii", "OOKK113kk588heXXii7F", "KK163EQD55CC8hdeeXiA", "OJJKK1166R5CCB880hXX", "OOJKK11g3EQk558800ee", "OOJJKK116NQQ5CC8800e", "OOJJKK11g3U55C8800hi", "O4JKK11R33k55CC8800e", "PP2GTT4JJKK11635CC80"],
+  "ARKHAUL":["CSccdWYLLIXii7AAFFff", "5SdZejLLIXXii7AAFFff", "9UCSScdeYLLXXii7AAFF", "k5C00cddeYYLL77AAFFf", "150SSddZZeWLIi77AAFF", "1635588SSddLLX77AAFF", "K1RN5M8SScddLL77AAFF", "VKK1Nk00SSddLL77AAFF", "911gB80SSddLLX77AAFF", "OKK1M80SSddYLL77AAFF", "OOKKCH80SSddLL77AAFF", "K11RU58SSddeLL77AAFF", "PPGGTTKUSSddLL77AAFF"],
+  "JIPASIS":["OkDCSdZZLIXii77AAFFf", "DhhSSZZeYLIIi77AAFFf", "6DhhSaaddZbLXi77AAFF", "OREUkhddZjjLLi77AAFF", "463HhhSScddWLL77AAFF", "V3UkDhSSddZWLLX7AAFF", "OOQkBhSScddLLI77AAFF", "O4V9R33BSSddLL77AAFF", "OOV63UDhSSddLL77AAFF", "O44JJQ5BSSddLL77AAFF", "4933QDB0SSddLL77AAFF", "OOJ16RDCSSddLL77AAFF", "22TTOO4KSSddLL77AAFF"],
+  "BUZZY":["BScddZeWWLLXXi77AAFf", "11SddYjLLIIXXii77AAF", "580SaddeLLIXii77AAFf", "1QCHB0SScddeLi77AAFF", "1880SSdeebLLIX77AAFF", "K1kDB80SSddebLL77AFF", "1EU5CHSSddZeLL77AAFF", "JK11N80SSddeLL77AAFF", "4KK11CB8SSddLL77AAFF", "O9KK10SSddLLXX77AAFF", "4JK1R5CSSddeLL77AAFF", "49KK11QCSSddLL77AAFF", "PP22GT18SSddLL77AAFF"],
+  "BRI-KB-ROCK":["MScddWbbjjLLIIiAFFff", "Ok8SSadjLIIXX77AFFff", "5MM0SScZeejjII77AFff", "OOKKMMddYjjLIiAAFFff", "OJECSSdejjIIi7AAFFff", "OggNMSSaddZbjjII7AAf", "OO4RgMCMSSdjjLIX7AAF", "OO9gg3MMHSSYII77AAFF", "OOJ1ggMhSSddjjLII7AA", "OOV1RggMMSSddjIAAFff", "OO49ggNMMSSdjII77AAF", "OOJJggMMSSjLL77AAFff", "PGGTTOOggEMMSSdj7AAF"],
+  "MED-POD":["SddeYYjjLLIIXi7AAFff", "OO8SZWYjjLLII7AAFFff", "ONMhScjjLLIIii7AAFFf", "1ggHhSSWjIIX77AAFFff", "ggUDMSSWWjjLLIX7AAFf", "OJggQMSScjjLLIX7AAff", "OO4VJggMSSjLLIIi7AAF", "OO9ggU5MMHSSjLII77AA", "OO1ggkCMMSSddjjLI77A", "OO6gg3M8SSdjjL77AAFf", "OO4VRggMMSSddLI7AFff", "OO49ggMMSSddjjLLIIAf", "P2GGTTOOggMMSSdd7AFf"],
+  "MORPHE":["49NkDHaaccZZeWWbbIIX", "9QNDHaaccZZWWbLLIIAf", "96UUQNQSaaccdZZWWiAf", "9963UkMHHhaaccZWWbLi", "VV9966UUD5aacZeWWjLX", "O4VV99633UNkHHccWjji", "VVJ993EUUNNDHHhacIXF", "OVVJJ993UUNQNkHhaccL", "O44VVJJ99UUNNkkaccZW", "OO44VV991R3UUNQNHHcW", "OO4VVJ99K63UUNNHH0aa", "OO44VVJ99KUUNQNHHacW", "PP22GTO4VVJ99UUNNHHc"],
+  "EXO-MKIV":["9NHBaaccWWYYbbjLX7AA", "9RUNMHacceWWYbL7FFff", "V99MHBaacceWWYYbbXXi", "VV6NHHhaacZWWbbLLAff", "99KRNNHHBaaccdWWYYbI", "UUNNHHBBaacceWWbLL7A", "VV993UUNNMMHHBacWYLA", "VV99REEUUNDMHHaacYYL", "4VV99RRUNNMMHHBaccYX", "OVV991RREEUUNNMHHBaW", "OVV99RRgEUUNMMHHSaac", "4VVJ99REEUUNNMHHBaaW", "PP4VV99RREUUNN5MHHBW"],
+  "EXO-MKV":["NQkDCHHhaaccdZZeWWif", "9QQNHBaaccddZZWWII7F", "4UNkk5HHBSSaaccZWWFF", "NNkHHhSaaccZZeWWIiAF", "VV9933ENNQDHhaccWWjX", "VV996EUNNkDHHccZWW7A", "O4VJ991UUNNkCHaacWIf", "44VV99K33UUNNHaccd7f", "OO4VV99R3UNNhhaacZWW", "4VVJJ9963UUNNHH0hcWY", "O44VVJ996UUNNDDHH0aW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["UNHH0aacceeWjLiiAFFf", "V9UkSaaccZeeWWXXiiAF", "VRUNN80haaccWWXXiFff", "9gUUNND5H8aacZWbXiiA", "9UUNNQHH80accZeeWbbX", "VV99UUNNH880accZYjif", "VV9913UUNN50haacceWi", "VV99RUUN5CHH8accZeXi", "4VVJ99KK11EUUNNHHaWX", "VVJ99KK1UUNN55HBaccY", "OOVV99K116UUNNCHH0cc", "OVVJ99KK11UUNNH8aaWW", "PPTTVV99KK113UUNNHac"],
+  "DELOK":["VUH00aacceWWYYLLXAff", "V9UHB8aacWWYYbbLIXFf", "V93UNBaaccdZWWYbbLLF", "VV9EUU5HaaccZeWYbbLL", "VV6EUNNHH0accZZWYYLX", "OVVR3ENNMHHaacWWbLIX", "VV9RgUUNQNHHBBcWWYbi", "VV99KRgEUUNHHBhaccZb", "VV99RRUUNNMCMHHBaaWY", "VV991RREEUUNNHHB8ccb", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV99RREEUUNNMHH8c"],
+  "TECHNOSORUS":["96UNDHaaccZZWbIIiAFF", "9UUQDHHaaccZZWbIIX7A", "VUNDDHHBaaccZZWbjL77", "V99NQNkkDaccZZeeWWL7", "V96UUDMHhaaccZWWbFFf", "VVJJ9966UQkHHaccdeWW", "O4VJUNNkHHhaaccZWWbj", "VV996633UUNNHHB0cWWf", "O4VVJ996UUQNNMHHhcWW", "OO4VVJ99UUNkkHhaaeWW", "OO4VV9966gUUNNHhacWW", "O44VV9933UUQNNHHcWWX", "PP22GOOVV99UUNNQkHWW"],
+  "SCOPT":["9UNMHHhaccdeWWLAAFFf", "UUHHaccWWYjLI77AAFff", "V9UUQHHacWWbjLLXi7AF", "99NNChSaaccWWbjLXiFF", "V99NHHBhaaccWXX7AAFF", "VV9913UQCHHSaacWLL7F", "VV993UNNMHHSaaccLAAF", "VV99RUUNHHSSaaccdZWL", "VVJ991UUNNHSaaddWL77", "4VVJ99UNNHHSSaadWjLA", "4VV99RUUNNHHSSaaWAFF", "VV99RgUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["EEkDBBhhdZYYbjLL77Ff", "JRRQDMBBaZeYYbLLIiAf", "4RRQMMBhdZZYYbLLXFff", "OOJRRQDBBcZZYYbbLLX7", "JR3EkDDMMBBWYYbbLLFf", "R33EEQkMMB0haZZYYbbL", "OJ9RR3EEDMMBB8YbbjL7", "OOJK6RREEQDMBBhYbbLL", "OJRR33EEDMMBBhaYYbbi", "OO4JK6RREEQMMBBYYbbL", "O44K66RREEQMMBBhbbLL", "OVJJRR3EEQMMHBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["9UNkHhaacZZWWYYjLAFF", "9933UNHhSaacZZWWL77A", "4VV93UUNHHacZZWYiAff", "V6UUNDHaaccZZWWbjI7A", "J1UUNNDHhhaaccZWWYLf", "OOVVUNH0hhaaccZZWWI7", "OO4VV99UNQkHSaaccWAF", "OVV3EUUNNkkHSaccZWWi", "4VV96UUNNQkHhhSaccWL", "O4VVJ99K66g3UUNNHHcc", "OOVVJ9966RgUUNQNccWW", "OO4VVJ99g3EUUNNHHccW", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["HhSScdeYjLLIXXii77AA", "gMSadeeWbLLXXi77AAFF", "kCScdZeYLLXXii77AAFF", "3CC800haddYbLL77AAFF", "9RN80SddebbLLi77AAFF", "1UCC88SSddbLLIi77AFF", "JK5CMB0SSddeLL77AAFF", "OVKCHSSddjLLii77AAFF", "V991150SSddLLi77AAFF", "O44KK10SSddeLL77AAFF", "9KK1QCMSSddLLX77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
+  "FENCY":["1Q5580hdZeXXii77AAFf", "K155M88ceWWLXXii77AA", "K5C88SSZeWWLIXXii7FF", "K55C0dZeejLIXii7AAFF", "OK155800deeLLXii77FF", "JJ11RCC800ceejLLii7A", "K11EU55C880SeeWLXi77", "4KK116N55880SaddeeLi", "K11Rg35CC800SeeLX7AF", "OJJKK11CC880SddeeXFF", "JKK11N5CC800SSddeei7", "VKK11ECC8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
+  "EXO-MKI":["kMMHacZWjjIIXiiAAFFf", "9UkSSaaccZZWjjIIXAAf", "VgEQQMHSSccjjIIXAAFf", "OKgMCMHHSccZWbjjIAff", "VggD5MMH0SacbIIAAFff", "O4V99ggDMMHSSaajjAff", "OOV9gCMMBcWWjjIIAFff", "OOVVggMMHH8hSSYAAFff", "OOVV99RggNMMHSSjIXff", "OOVVJ9ggUUNDMMSSjIff", "OO4996ggUNNMM8SSjIff", "OOVVJ996ggNMMSSjjIff", "PP2GGTTOO4VVggMHSSff"],
+  "GAPIX":["6QQkkMBhhZZebLLI7Aff", "O6RgkDDhhScdZZYYbbLL", "463kkD5HBhhZZeYYbbLf", "O663QQk5MBhhZWYbLLXf", "OK66RR33kDhhdZZLLIFf", "O466REQQkHB80hhZZeYi", "OJJ663EQQkDDMBhYLLXF", "OOJJ166RR33EQkDCHhZY", "OO44JJK66R3QMMHZZYYL", "OO44VJJ166REQkkDMCBb", "OO44JJ9K66RR33EEQk5B", "OO44JJ966RR33EEQkMhh", "PP22OO44JJ66RR3EEQQB"],
+  "EXO-MKVII":["OJ63kkDH80aZZXXi7AFF", "OO3kD588hhZZeYLii77F", "OJ63kD88hhZZjIXXi7AF", "J6NQkDD0hhZZeYIiiAff", "O44K1QQkDD8hSZZjIIXA", "OO466R3QQkDD50ZeYiAF", "OO44JJKK1QQkkDD880hb", "O44JJKK6633QkDDC80eI", "OO44VVJJ93QkkDD5C80i", "OO44JKK1663EQkkDD558", "OO44JJ9KK1166gUQQDD8", "OO44VJJKK16633QDDC8Z", "PP22GTTOO44JJ66QDD00"],
+  "GAZELLE":["J3UQNkDDHhccddZZX7ff", "4J633kDHcZZeWWXAAFff", "OJ63NkkHhhcZZWWjji77", "JJUQkkDDhaacZZYX7AAF", "OO4JJR3QNQDDHHhaccIF", "OJJ633EQQkDChhacZWWF", "OO44JJ966UkkDD5MhacZ", "OO44VJJ99163UUQNDhZ7", "OO4VJJ996633UQkHhhaI", "O44VVJJ63UNQQkkDHacc", "OO44VVJJ99166QNkkaZZ", "OO44VVJJ9963UQQkDHhW", "PP22OO44VJJ9K6633Nkh"],
+  "STAR-HUNTER":["46QDDhhaZZWbLLX77AFF", "4JQDDhhddZZeYIi7AFFf", "4QQkDDhhScZZjLLiAFFf", "44K6kkD8hhZZWLIXX77A", "44J633kDDhSSZZW7AFff", "OO44J63QQkChhSacdZLF", "O44J63QQkkD5hcdZbL7F", "OO44JJ633EQDDMHddZAA", "OO44VJ966R33QDhSSLL7", "OO44JJ663kkDD0SSdZLL", "OO44VJJK663QQ5hSS77A", "OO44JJ63QQkkMHhSSL7A", "22TOO44JJK663QQSSddA"],
+  "RHINO":["O3kkDhhZZeebbLXii7Ff", "163QDDHhhZZeeXiiAFFf", "OJJ3QkDD55B80aZZjX7f", "JJ133QQkDC80hdZZbXAf", "OO433QQkkD55C0hYbIXi", "O4411633kDMC0hhcdZLi", "4JJK66g33kkDDC80ZbiF", "OO44K6R33QkkDCC0hcZi", "OO44JK1166g33QQkD80d", "OO4JJ9KK16633QQk55MM", "OO44VJJKK116633EDD5h", "OO44JJKK116633EQQ5h7", "PP22TTOO44JJK1633k5h"],
+  "KRIGER":["63QQkkBhhaaZWWYXAFFf", "V663QQDHHhhcZeXXiAAf", "O33QQkkHhhSaaZWWYXif", "O996UQQkDhhcdZZWLAff", "O44V9633EQkkHhaZZLIf", "OO4J9NNkkD55hhSaZZeb", "OO4J9633EUUNkDC0hZZe", "OO44VVJ13UUQkDDMBhZZ", "OO4VVJK663UUNkDDZZej", "OO44VVJJ996QQNkDHHZZ", "OO44VVJJ3QNkDHBhScZZ", "OO44VVJ9963UNQkkDDZZ", "PP22GGOO44JJ93UQkHZZ"],
+  "CONQUEST":["O3QkkDhcZZeebjXXi7ff", "4J3QkkD0hhdZZIXXiAff", "O6QkDD50hhacdZZLIXiF", "OO6QQkkDC8hdZZWYbjXX", "OJ13QQkkDC80hdZZeX7f", "41633QQkDD5C8hhcZjXX", "OO4K11663EQQkk0hhSZi", "OO4JJKK6633QQD5580hh", "OO4JJ1663QQkD55M880i", "OO44VJJKK166gQQk5H8h", "OO44VJJ9KK116633QQk8", "OO44JJKK166gg3QQk50h", "PP22GTTOO4JJ11663QQD"],
+  "GRIEVER":["OQkMadZZYjjIIX7AAFff", "OgQ0hddZZjjIIiiAAFff", "OkDDM00SSZZjjIi7AAff", "OO63QkSSdWYjjIIiAAff", "OO4JgkDMMhSSZejjIAff", "OO4JJ1gg5MMhWjIiAAff", "OOJ6ggQkkDMHhSjjIAAf", "OOVJK6ggDMM0SSZjIiff", "OOJJgg3EDD5MMCSSjjAA", "OOVJJKgg33DDMMSSjjIf", "OO44JJgg3EUDMMSSIAff", "OO4416ggQQDMMSSjIIAA", "P22GGTTOO4JggQQMMSjj"],
+  "GOTHIKA":["4J3QQkhaacZZeWjj77AF", "O933QkDHHhaZZeWbjiif", "OJ3UQkDDHBhacZZWbiFF", "ONQNkkDDHhhcZZebL7Af", "K33UQkkDDhhcZZeWWji7", "OJJ16UUNkkDhhaaZZWiA", "OOJJ16RRUNkkDDHhhZWf", "OVVJ6633QNNDD5500hhZ", "OO44VVJJ9913QQkkDhha", "OO44VVJJ996g33UUQQhh", "OO44VVJJ99K6NkkD5Mhh", "OO44VJJ99K6633UUk8hh", "PP22GOO44VJJ99663Mhh"],
+  "TORTUGA":["1800ccddeejLLIXXiFFf", "65C00ScZeeLXXi77AAFf", "5C800hdeeYLLIXXi77AF", "KEk5CB80eWLLXXii7AFf", "J911E5800SdejXXii7AA", "6UN55C80heeLXXiiAAFF", "K13kCC8800SSeXXii77F", "VKK155C88SeWLXXiiAFf", "JKK11R5580SdebXii7AF", "V9KK11g5C880SSXiiAFF", "4KK11RQ55C800SSdLii7", "KK1655CC8800SSdbLiiF", "PPTT4JKK11558SSddLii"],
+  "ELYSIUM":["SSaaccejLIIXi7AAFFff", "MSaacdWWYbjLIIAAFFff", "gkD8SSccWWjLIIXAAFff", "ENNDMMaeWWYbjjIIAAff", "O9NMMhSacdWbjjI7AAff", "O4VRggQMMCH8WWjjIIAA", "OO4ggUNNDMBhSSajjIAf", "OOV99ggNDMMHhSSjjIff", "OO4VV9ggMMH8SSaWjjII", "OOVJ996gg3UUMMSjjIIf", "OOVV99KggUDMMHSSjjAf", "OOVVJ9gg3UNMMSSjjIIf", "PPGGTTOOVJ96ggNMSSjj"],
+  "SYLVERLAKE":["JgQQkDDhSZZeWXXii7Ff", "6QkDD8hhadZZbjjXXiiA", "K66QkDD0hhZZeXi7AFff", "4466kk55hhcZZeWWYXAF", "OVJ1633EQQkk5CC0hZji", "JJK1633QQkkChhYYbjXi", "O44JJ1633QQkkC800YbX", "O44V9KK6633NQQkk5CdZ", "OO4JJK1663QkkD500cZe", "44JJ9KK116633NNkkhhi", "OO44JJKK663NkkDDH00i", "OO44VJJ9KK116633kkhe", "PP22GTTOO44JJ166QNkk"],
+  "PRAWN":["MBdeYbjjLLIIXXAAFFff", "MB8aWYYbjjLLII77AAff", "EMHSSdYbjLLIIXiAAFff", "gENMMBB0SSZbbLIIiAff", "OVJRgQMMBjjLLIIXAAff", "O9ggEEMMSYbbjjIIXAAf", "OO4RggECCMMSSjLLIiff", "OOVJRRgEMMhSSYjjIAff", "OORggEEMMBhSScbjjIAf", "OO9KRRggUMMSSYYbjjIf", "OOJ9Rgg3EEMMBSYjjIAf", "OO4JRggMMBBSSbbjIAAf", "PPGGTTOORggEEMMBBSSj"],
+  "HARKO":["ggSaccWYjLLIXXi7AAff", "5SSaacceWbjjIXiAAFff", "gg5SSaaWWbjjIi7AAFff", "RggUMMHhhceWbIIXAAff", "9k5MMHHSScddYjIIAAff", "9RggNNMMHhWjLIIXAAff", "OOV6ggUQNMMHSSWjIIAf", "OOJ99RggEUDSSWjjIIAA", "OO4V99KggNMMHHSSIIAf", "OO4VV99K1ggMMSSajjII", "OO4VVJ9KggUNMMSSjIIf", "OOVJ996ggNMMHSSjIIAf", "PP2GGTTOOVV9ggEMSjII"],
+  "DOZEUR":["DMMBhacZZYYbbLLIIAAf", "RkDMBScZZWYYbbLLX7Af", "OO6REMB8hSYYbbLLXX7f", "JRR3EQMMBB8aZZbbjLLF", "46REkDMBBhSeYYbbLL7A", "K3EEkDDMBBZeYYbbLLAF", "OJRR3EEQQNkMMBBYbbLX", "JJ9RRg33EEQMBBZYYbbL", "OO4J996RREEDMMBBYYbb", "OO44RRgEEk55MMBBYYbb", "OO44JRRg3EEMMBBaYYbb", "OO4J66RR3EEMMBBYYbLL", "22O446RREEQMMBBYbbLL"],
+  "DILUS":["RMBB0ZZeeWYbbjjLLXFF", "MCMHBB0ZeWYbbLLXXiiA", "EMMBBdZeYbbjLLXii7Ff", "1RE5MMBBcceeWYYjLLXX", "1EEDMCBBYYbbjLLXXiFF", "KEE5MBB80WYYbbLLIiAF", "KK1RRgEMCCBBYYbbLLXF", "4JK11RREEMMCBB80YYbb", "OVJ1RREEMMBB88YYbbXi", "4J9KK1RREEMMBB0eYYbb", "K16RRgEECCMMBB80YYbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["REDCMhcZZeYYbbLLXAff", "O4KREMBB8ZZYbbLLXXff", "JRUkkMBBcZYYbbLLiAFf", "RREQkMMBccZZYYbLLX7f", "RREQkBBhScZYYbbLLIAA", "V66RREE55MMhdZZYYbbL", "OO44RRgMMBB0hWYYbbLL", "OV6RRg3EEMMHBBZYYbjL", "O4J1RREEQQNMMBBZYbbL", "OO4V6RREEDMCMBBcYYbb", "O4V99RREEkMMBBhZYYbL", "OOVJJRRgEEMMBBhYYbbL", "P22O66RREEkMMBBYbbLL"],
+  "SHADOW":["VEMBhadWWYYbbLLXi77A", "3EBBScceWWYYbbjLLXFf", "EUNMBBhccZYYbbLLIiAF", "RREECMCBSaccZWYbjLLf", "EEUQMMHBaacYYbbLLiiF", "OV9RRgEENDMaYYbbjLLi", "V9RREEDMMHBB0SWYYbLF", "VRREEUDMMHBB80acYYLL", "VVJ9RREEUMMBBadeYYLL", "VVJ996RRgEEMMHBBYYbL", "VV99KRREEUNNMMBBYYbb", "VV9K6RREENNMMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -24208,7 +24375,8 @@ const DEFI_RESULT_ART_Y = {
   'AMALGAME': 30,
   'GOTHIKA': 30,
   'TORTUGA': 50,
-  'ELYSIUM': 50
+  'ELYSIUM': 50,
+  'SYLVERLAKE': 40
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
