@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.74</title>
+<title>Projet MECA V0.04.75</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8199,7 +8199,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.74</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.75</b></div>
   </div>
 
     </div>
@@ -8450,9 +8450,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.74';
+var BUILD_VERSION = 'V0.04.75';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.75', items:[
+    'NOUVELLE CARTE : GOTHIKA (rare, 5 / 2 / 4, mécha-chevalier à claymore). Appel : inflige 3 points d\'attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite (la DEF absorbe d\'abord ; le chef d\'escouade n\'a pas de voisines).',
+    'ANIMATIONS GOTHIKA : à l\'arrivée, la claymore de l\'artwork tombe et s\'enfonce dans la case, chauffe, la foudre la frappe depuis le haut de l\'écran puis un flash blanc allume les biseaux du plateau et révèle la carte ; à l\'Appel, un arc doré frappe la cible (−3) puis se ramifie vers ses voisines (−1).',
+    'COMBAT : quand le joueur n\'a plus de mana, le bouton FIN passe tout seul en verre vert : une seule pression suffit pour finir le tour.',
+    'DÉFIS : GOTHIKA ajoutée aux défis (decks adverses régénérés).',
+  ] },
   { v:'V0.04.74', items:[
     'COMBAT : l\'aperçu de la phase de plan affiche aussi la riposte prévue sur la carte qui attaque (PV ou bouclier perdus), avec le même décompte que sur la cible au moment des coups. Pas de riposte affichée quand on vise le chef d\'escouade.',
     'PERFORMANCE : seconde purge du code mort (action d\'ultime à bouton, panneau de niveau des cartes et des modules, restes de Death Squad). Les ultimes automatiques ne changent pas.',
@@ -10156,6 +10162,7 @@ const MECH_CONFIGS = {
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
   'EXO-MKI': { head:'visor', shoulders:'block', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'rifle', emblem:'none' },
+  GOTHIKA:   { head:'helm', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'blade', emblem:'cross' },
   AMALGAME:  { head:'crest', shoulders:'spike', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'none', emblem:'hostile' },
   MALGAME:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'hostile' },
   MALAME:    { head:'small', shoulders:'round', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'none', emblem:'none' },
@@ -10214,6 +10221,7 @@ const CHAR_LORE = {
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
   'EXO-MKI': { pilot:'Unité de série XO-I', text:"Premier modèle de la gamme EXO, assemblé à la chaîne par milliers dans les hangars de la mégalopole. Sans blindage, sans pilote : un squelette d'acier, un œil rouge et un programme. Quand une unité tombe, la chaîne en lâche aussitôt une autre, qui rejoint les rangs d'en face. Détruire un EXO-MKI ne règle rien : il ne fait que changer de camp." },
+  GOTHIKA:   { pilot:'Chev. Mathilde « Glas » Vauclair', text:"Dernière chevalière d'un ordre qui veillait sur les cathédrales en ruine, Vauclair a fait forger une claymore pour son mécha de plates rivetées. Elle n'attend pas qu'on la défie : elle plante sa lame dans le sol et laisse l'orage venir. La foudre qui s'abat ne la blesse pas, elle l'emprunte. Ce qu'elle désigne est frappé de plein fouet, et ce qui se tient à ses côtés en garde la brûlure." },
   AMALGAME:  { pilot:'Aucun — conscience collective des épaves', text:"Il n'a ni pilote ni plan. Quand une ville meurt, ses mechs détruits restent là : l'Amalgame s'est levé de cette ferraille, hérissé de pointes, tenu par des faisceaux de câbles et un seul regard rouge. Il avance, il écrase, il ne s'arrête pas. Mais ce qui tombe aujourd'hui se relèvera demain, et de ses débris le Malgame se redresse déjà." },
   FENCY:     { pilot:'Sgt. Kenji « Rempart » Mori', text:"Gardien des terrasses-temples de la haute ville, Mori conduit un mammouth d'acier bardé de plaques rivetées et de défenses en cuivre. Il ne cherche jamais à esquiver : il avance, il encaisse, et ce qui reste debout devant lui est balayé par la trompe. Les habitants disent que les cerisiers tremblent avant même que le sol ne le fasse." },
   RAZOPS:    { pilot:'Dr Amara « Corne » Okoye', text:"Médecin de guerre reconvertie en pilote, Okoye a bardé un mécha de chantier de plaques blindées frappées de la croix des secours. Un bras articulé, un essaim de drones de réparation : là où RAZOPS passe, la ligne tient. Un drone se pose sur un camarade, le scanne, lui rajoute du blindage en quelques secondes, et repart déjà vers le suivant." },
@@ -10509,7 +10517,13 @@ const CHAR_DEFS = [
     ultName:"AMALGAME SURTENSION", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:58, def:14, hp:400}, max:{atk:420, def:130, hp:1700}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/amalgame-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/amalgame-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/amalgame-art-ext.webp' },
+  // ---- Nouvelle carte RARE : GOTHIKA, mécha-chevalier à claymore, Appel (foudre ramifiée) ----
+  { name:"GOTHIKA", rarity:"rare", color:"#e08a3c", shape:"GOTHIKA", role:"Assaut — mécha-chevalier à claymore",
+    ultName:"GOTHIKA SURTENSION", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:44, def:16, hp:290}, max:{atk:290, def:110, hp:1050}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gothika-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gothika-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -10557,7 +10571,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -10565,7 +10579,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -17178,6 +17192,7 @@ function btlRenderMana(){
     box.innerHTML = h;
   });
   btlRefreshCan();
+  btlEndSync();
 }
 
 // ---------- flèches (attaque rouge / défense bleue / ultime or) ----------
@@ -18184,12 +18199,23 @@ async function btlManaGain(side){
   await btlSleep(560);
 }
 // ---------- tours ----------
-function btlSetEnd(on){ const b = btlQ('#btlEnd'); if(!b) return; b.disabled = !on; if(!on) btlEndDisarm(); }
+function btlSetEnd(on){ const b = btlQ('#btlEnd'); if(!b) return; b.disabled = !on; if(!on) btlEndDisarm(); else btlEndSync(); }
 // FIN : double appui. Le premier appui passe le bouton au vert (armé, 4 s), le second valide la fin du tour.
+// V0.04.75 : plus de mana à utiliser -> le bouton passe tout seul au vert (armé tant que le mana reste à 0) : un seul appui termine le tour.
 function btlEndDisarm(){
   if(!BTL) return;
   const b = btlQ('#btlEnd'); if(b) b.classList.remove('arm', 'go');
-  clearTimeout(BTL.endArm); BTL.endArm = 0;
+  clearTimeout(BTL.endArm); BTL.endArm = 0; BTL.endAuto = false;
+}
+function btlEndSync(){
+  if(!BTL) return;
+  const b = btlQ('#btlEnd'); if(!b) return;
+  const can = !b.disabled && BTL.phase === 'plan' && BTL.side === 'p' && !!BTL.endRes && !BTL.over && !BTL.abort;
+  if(can && BTL.mana.p <= 0){
+    if(BTL.endAuto && b.classList.contains('arm')) return;
+    clearTimeout(BTL.endArm); BTL.endArm = 0; BTL.endAuto = true;
+    if(!b.classList.contains('arm')){ b.classList.add('arm'); btlHexRing(btlRect(b), '#5dffa0', true); }
+  } else if(BTL.endAuto) btlEndDisarm();   // du mana est revenu (plan annulé) ou le tour change : le bouton redevient bleu
 }
 // onde circulaire autour du bouton FIN (centrée sur lui, de la couleur du verre)
 function btlHexRing(r, col, inward){
@@ -18288,6 +18314,7 @@ async function btlPlay(side, c, si, fromRect, el){
   const S = BTL.S[side];
   if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
   if(c.def && c.def.name === 'RAZOPS') btlDrSprite();   // précharge le drone 3D
+  if(c.def && c.def.name === 'GOTHIKA') btlGothSprite();   // précharge l'épée de l'artwork
   const wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }   // le joueur ne peut rien faire d'autre pendant la pose et l'effet d'Appel
   BTL.fxBusy++;
@@ -18819,7 +18846,7 @@ function btlWire(){
   BTL.el.querySelectorAll('.btl-half').forEach(h => h.addEventListener('pointerdown', btlFieldHoldDown));
   BTL.el.addEventListener('contextmenu', e => e.preventDefault());
   btlQ('#btlEnd').onclick = btlEndTap;
-  BTL.el.addEventListener('pointerdown', e => { if(BTL && !(e.target.closest && e.target.closest('#btlEnd'))) btlEndDisarm(); }, true);   // toute autre action désarme le bouton
+  BTL.el.addEventListener('pointerdown', e => { if(BTL && !BTL.endAuto && !(e.target.closest && e.target.closest('#btlEnd'))) btlEndDisarm(); }, true);   // toute autre action désarme le bouton (sauf s'il s'est armé tout seul faute de mana)
   // tap sur une carte alliée du champ de bataille
   btlQ('.btl-half.me').addEventListener('click', e => {
     if(BTL.noClick){ BTL.noClick = false; return; }
@@ -19222,14 +19249,15 @@ async function btlHit(src, t, dmg, opt){
   opt = opt || {};
   if(btlGone() || !t || t.hp <= 0 || dmg <= 0) return;
   if(btlLethal(t, dmg)) btlXOn(t);   // effet / module mortel : croix avant le tir
-  const ret = src ? btlReticle(t, 'fx') : null;
+  const ret = (src && !opt.noRet) ? btlReticle(t, 'fx') : null;
   if(ret) await btlSleep(300);
-  if(src) await (opt.drill ? btlDrillDrop(t) : opt.ball ? btlBallDrop(t) : opt.missile ? btlMissileDrop(src, t) : opt.gun ? btlGunShot(src, t) : btlBeam(btlUnitRect(src), btlUnitRect(t), 'fx', !!opt.fast)).catch(e => { if(e === 'abort') throw e; });
+  if(src) await (opt.shot ? opt.shot(src, t) : opt.drill ? btlDrillDrop(t) : opt.ball ? btlBallDrop(t) : opt.missile ? btlMissileDrop(src, t) : opt.gun ? btlGunShot(src, t) : btlBeam(btlUnitRect(src), btlUnitRect(t), 'fx', !!opt.fast)).catch(e => { if(e === 'abort') throw e; });
   if(ret) ret.off();
   if(btlGone() || t.hp <= 0) return;
   const r1 = btlUnitRect(t), tEl = btlUnitEl(t), before = t.hp / t.maxHp * 100;
   const dealt = Math.min(dmg, t.hp + t.df), ap = btlApplyDmg(t, dmg), col = ap.hpLoss > 0 ? '#ff9a2a' : '#4ea8ff';
-  btlShowDmg(t, r1, tEl, ap, false);
+  btlShowDmg(t, r1, tEl, ap, !!opt.strong);
+  if(opt.onHit) opt.onHit(t, r1, ap);   // à l'instant de l'impact (GOTHIKA : l'arc se ramifie vers les voisines)
   if(!opt.missile){
     btlSpark(r1, col, 1); btlRing(r1, col, false); btlFlashEl(tEl, col, .9, 340);
     btlParticles(r1.left + r1.width / 2, r1.top + r1.height / 2, { n:7, color:col, dist:42, dur:460, size:5 });
@@ -19592,23 +19620,23 @@ function btlBoltPts(a, b, depth, k){   // éclair : déplacement du point milieu
   }
   return pts;
 }
-function btlBoltDraw(ctx, pts, a, w, col){   // 4 couches additives : halo large, halo bleu, coeur clair, filet blanc
-  const c = col || [90, 170, 255];
+function btlBoltDraw(ctx, pts, a, w, col, core){   // 4 couches additives : halo large, halo bleu (ou doré), coeur clair, filet blanc
+  const c = col || [90, 170, 255], k = core || [190, 230, 255];
   ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalCompositeOperation = 'lighter';
   ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (.1 * a) + ')'; ctx.lineWidth = w * 4.4; btlStrokePts(ctx, pts);
   ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (.26 * a) + ')'; ctx.lineWidth = w * 2.3; btlStrokePts(ctx, pts);
-  ctx.strokeStyle = 'rgba(190,230,255,' + (.75 * a) + ')'; ctx.lineWidth = w; btlStrokePts(ctx, pts);
+  ctx.strokeStyle = 'rgba(' + k[0] + ',' + k[1] + ',' + k[2] + ',' + (.75 * a) + ')'; ctx.lineWidth = w; btlStrokePts(ctx, pts);
   ctx.strokeStyle = 'rgba(255,255,255,' + a + ')'; ctx.lineWidth = Math.max(.8, w * .42); btlStrokePts(ctx, pts);
   ctx.globalCompositeOperation = 'source-over';
 }
-function btlBoltFull(ctx, A, B, a, w, branches, depth){   // éclair principal + ramifications
+function btlBoltFull(ctx, A, B, a, w, branches, depth, col, core){   // éclair principal + ramifications
   const main = btlBoltPts(A, B, depth || 6, .42);
-  btlBoltDraw(ctx, main, a, w);
+  btlBoltDraw(ctx, main, a, w, col, core);
   for(let i = 0; i < branches; i++){
     const k = 4 + Math.floor(Math.random() * (main.length - 8)), p = main[k], ang = Math.atan2(B.y - A.y, B.x - A.x) + (Math.random() < .5 ? -1 : 1) * (.45 + Math.random() * .6), L = 40 + Math.random() * 90;
     const br = btlBoltPts(p, { x:p.x + Math.cos(ang) * L, y:p.y + Math.sin(ang) * L }, 4, .5);
-    btlBoltDraw(ctx, br, a * .8, w * .5);
-    if(Math.random() < .5){ const q = br[Math.floor(br.length * .6)], an2 = ang + (Math.random() - .5) * 1.4; btlBoltDraw(ctx, btlBoltPts(q, { x:q.x + Math.cos(an2) * L * .5, y:q.y + Math.sin(an2) * L * .5 }, 3, .5), a * .6, w * .3); }
+    btlBoltDraw(ctx, br, a * .8, w * .5, col, core);
+    if(Math.random() < .5){ const q = br[Math.floor(br.length * .6)], an2 = ang + (Math.random() - .5) * 1.4; btlBoltDraw(ctx, btlBoltPts(q, { x:q.x + Math.cos(an2) * L * .5, y:q.y + Math.sin(an2) * L * .5 }, 3, .5), a * .6, w * .3, col, core); }
   }
   return main;
 }
@@ -19755,6 +19783,244 @@ async function btlConqArrive(c, u, to, col){
     cancelAnimationFrame(raf); cv.remove(); u.style.opacity = ''; u.style.transform = ''; u.style.filter = '';
   }
 }
+
+// ---- GOTHIKA (Appel) : une claymore se plante dans la case, chauffe, la foudre tombe du haut de l'écran ; flash blanc qui allume les biseaux du plateau, la carte apparaît ----
+const BTL_GOLD = [255, 176, 64], BTL_GOLD_CORE = [255, 238, 178];
+function btlGothHeat(q, am){   // chaleur 0..1.25 -> acier / rouge cerise / orange / blanc-jaune (rgba, l'alpha donne la part de métal recouverte)
+  const S = [[0, 190, 40, 10, 0], [.35, 232, 62, 16, .6], [.7, 255, 140, 40, .88], [1, 255, 225, 150, .95], [1.25, 255, 252, 235, 1]];
+  q = Math.max(0, Math.min(1.25, q)); let i = 1; while(i < S.length - 1 && S[i][0] < q) i++;
+  const a = S[i - 1], b = S[i], f = (q - a[0]) / (b[0] - a[0]), m = n => a[n] + (b[n] - a[n]) * f;
+  return 'rgba(' + (m(1) | 0) + ',' + (m(2) | 0) + ',' + (m(3) | 0) + ',' + (m(4) * (am == null ? 1 : am)).toFixed(3) + ')';
+}
+// épée, pointe en bas : (x, y) = la pointe ; d = dimensions déjà mises à l'échelle ; h = chaleur ; rot = vacillement autour de la pointe
+function btlGothSwordVec(ctx, d, x, y, rot, h, a){
+  const { BL, bw, GW, gh, GL, pr } = d;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha = a;
+  const poly = () => { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(bw, -BL * .13); ctx.lineTo(bw, -BL); ctx.lineTo(-bw, -BL); ctx.lineTo(-bw, -BL * .13); ctx.closePath(); };
+  let g = ctx.createLinearGradient(-bw, 0, bw, 0);
+  g.addColorStop(0, '#566073'); g.addColorStop(.42, '#c2ccd9'); g.addColorStop(.5, '#f3f7fb'); g.addColorStop(.58, '#95a1b2'); g.addColorStop(1, '#475165');
+  poly(); ctx.fillStyle = g; ctx.fill();
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(36,44,58,.55)'; ctx.lineWidth = bw * .32; ctx.beginPath(); ctx.moveTo(0, -BL * .1); ctx.lineTo(0, -BL * .93); ctx.stroke();   // gouttière
+  if(h > .01){   // la lame chauffe depuis la pointe (enfoncée dans la case) vers la garde
+    g = ctx.createLinearGradient(0, 0, 0, -BL);
+    for(let i = 0; i <= 4; i++) g.addColorStop(i / 4, btlGothHeat(h * 1.55 - i / 4 * .55));
+    poly(); ctx.fillStyle = g; ctx.fill();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = 'rgba(255,' + (150 + 90 * Math.min(1, h) | 0) + ',70,' + (.7 * Math.min(1, h)) + ')'; ctx.lineWidth = bw * .26; ctx.beginPath(); ctx.moveTo(0, -BL * .1); ctx.lineTo(0, -BL * .93); ctx.stroke();
+    for(let i = 0; i < 6; i++) btlGlowDot(ctx, 0, -BL * (.08 + i * .17), bw * (3.6 + 3 * h), '255,120,32', .2 * Math.min(1.2, h) * (1 - i * .08));
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  // garde en croissant, quillons recourbés vers la pointe
+  const gy = -BL;
+  g = ctx.createLinearGradient(0, gy - gh, 0, gy + gh * 2.4); g.addColorStop(0, '#e2c27e'); g.addColorStop(.55, '#9a7840'); g.addColorStop(1, '#5e4824');
+  ctx.beginPath(); ctx.moveTo(-GW / 2, gy + gh * 2.4); ctx.quadraticCurveTo(-GW * .42, gy - gh * .2, -bw * 1.6, gy - gh); ctx.lineTo(bw * 1.6, gy - gh);
+  ctx.quadraticCurveTo(GW * .42, gy - gh * .2, GW / 2, gy + gh * 2.4); ctx.quadraticCurveTo(GW * .4, gy + gh * .9, bw * 1.4, gy + gh * .5); ctx.lineTo(-bw * 1.4, gy + gh * .5);
+  ctx.quadraticCurveTo(-GW * .4, gy + gh * .9, -GW / 2, gy + gh * 2.4); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,240,200,.55)'; ctx.lineWidth = Math.max(.8, gh * .12); ctx.stroke();
+  // poignée cuir à bandes, pommeau
+  const g0 = gy - gh, g1 = g0 - GL;
+  g = ctx.createLinearGradient(-bw * 1.2, 0, bw * 1.2, 0); g.addColorStop(0, '#2a1d17'); g.addColorStop(.5, '#6b4a36'); g.addColorStop(1, '#241913');
+  ctx.fillStyle = g; ctx.fillRect(-bw * 1.15, g1, bw * 2.3, GL);
+  ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.lineWidth = Math.max(.8, bw * .22);
+  for(let i = 0; i < 6; i++){ const yy = g1 + GL * (i + .5) / 6; ctx.beginPath(); ctx.moveTo(-bw * 1.15, yy + bw * .5); ctx.lineTo(bw * 1.15, yy - bw * .5); ctx.stroke(); }
+  g = ctx.createRadialGradient(-pr * .3, g1 - pr * 1.3, pr * .1, 0, g1 - pr, pr * 1.2); g.addColorStop(0, '#fff1c4'); g.addColorStop(.5, '#b8924a'); g.addColorStop(1, '#5e4824');
+  ctx.beginPath(); ctx.arc(0, g1 - pr, pr, 0, 6.283); ctx.fillStyle = g; ctx.fill();
+  if(h > .6){ ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, 0, g1 - pr, pr * 2.4, '255,170,70', .35 * Math.min(1.2, h - .5)); ctx.globalCompositeOperation = 'source-over'; }
+  ctx.restore();
+}
+let btlGothImg = null;
+function btlGothSprite(){ if(!btlGothImg){ btlGothImg = new Image(); btlGothImg.src = BTL_GOTHSWORD.src; } return btlGothImg; }
+async function btlGothArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
+  const SW = BTL_GOTHSWORD, img = btlGothSprite();
+  if(!img.complete) await new Promise(r => { img.onload = img.onerror = r; });
+  const useImg = img.naturalWidth > 0;   // image de l'épée absente (réseau, fichier non téléversé) : épée dessinée au trait, même emplacement
+  const { cv, ctx, W, H } = btlCanvasFx(30), plate = btlQ('#btlPlate'), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const tw = to.width, th = to.height, k = tw / 84, cx = to.left + tw / 2, cy = to.top + th / 2, RAD = 6 * k;
+  // l'épée de l'artwork : on ne voit que la partie au-dessus du sol de la case, le reste de la lame est enfoncé
+  const entryY = cy + th * .1, hid = .4 * (SW.tip - SW.guardBot) * SW.h, yE = SW.tip * SW.h - hid;
+  let visH = th * 2.2; if(entryY - visH < 6) visH = entryY - 6;
+  const ks = visH / yE, sw = SW.w * ks, sh = SW.h * ks, topY = entryY - yE * ks, sx = cx - SW.cx * sw;
+  const guardY = topY + SW.guardBot * sh, bladeHW = SW.bladeHW * sw, pm = { x:cx, y:topY + 4 * ks };
+  const oc = document.createElement('canvas'); oc.width = Math.ceil(sw * dpr); oc.height = Math.ceil(sh * dpr); const og = oc.getContext('2d');
+  const bevels = [].slice.call(BTL.el.querySelectorAll('.btl-slot')).map(btlRect), pr0 = btlRect(plate);
+  const T_DROP = 520, T_HEAT0 = 620, T_HEAT1 = 1950, T_VIG = 1650, T_B0 = 2240, T_B1 = 2480, T_FL = 2290, T_REV = 2400, T_END = 3300;
+  const PRE = [[1900, 1960], [2030, 2080]];
+  const rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+  const sparks = [], embers = []; let arcs = [], arcT = -1e9, bA = null, bT = -1e9, preA = null, preT = -1e9, planted = false, struck = false, revealed = false;
+  const t0 = performance.now(); let last = t0, raf = 0;
+  const bladePt = f => entryY - f * (entryY - guardY);   // f = 0 au sol, 1 sous la garde
+  try{
+    await new Promise((res, rej) => {
+      const tick = () => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const now = performance.now(), t = window.__gtT != null ? window.__gtT : now - t0, dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+        ctx.clearRect(0, 0, W, H);
+        const heat = E.inOut(sm(T_HEAT0, T_HEAT1, t)), pulse = .82 + .18 * Math.sin(t * .02) + .05 * Math.sin(t * .053), swA = 1 - E.inOut(sm(T_REV + 20, T_REV + 280, t));
+        // ---------- 1. ciel d'orage ----------
+        const vg = sm(T_VIG, T_VIG + 450, t) * (1 - sm(T_FL, T_FL + 90, t));
+        if(vg > .01){ ctx.fillStyle = 'rgba(6,6,18,' + (.34 * vg) + ')'; ctx.fillRect(0, 0, W, H); }
+        // ---------- 2. la case rougeoie ----------
+        const glow = heat * (1 - .8 * sm(T_REV, T_END, t));
+        if(glow > .01){
+          ctx.save(); rr(ctx, to.left, to.top, tw, th, RAD); ctx.clip(); ctx.globalCompositeOperation = 'lighter';
+          const gr = ctx.createRadialGradient(cx, entryY, 0, cx, entryY, th * .85);
+          gr.addColorStop(0, 'rgba(255,120,40,' + (.55 * glow * pulse) + ')'); gr.addColorStop(.6, 'rgba(200,50,16,' + (.26 * glow) + ')'); gr.addColorStop(1, 'rgba(120,20,10,0)');
+          ctx.fillStyle = gr; ctx.fillRect(to.left, to.top, tw, th); ctx.restore();
+          ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          [[10, .06], [5, .14], [2.5, .4], [1.2, .85]].forEach(w => { rr(ctx, to.left, to.top, tw, th, RAD); ctx.strokeStyle = 'rgba(255,' + (110 + 50 * pulse | 0) + ',50,' + (w[1] * glow * pulse) + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); });
+          ctx.restore();
+        }
+        // ---------- 3. le trou où l'épée s'enfonce (moitié arrière), l'épée, puis la lèvre avant ----------
+        const fall = E.inC(sm(0, T_DROP, t)), since = t - T_DROP, rx = tw * .24, ry = th * .075, holeA = planted ? 1 : 0;
+        if(t >= T_DROP && !planted){ planted = true;
+          btlDust(cx, entryY, tw * 1.1, 2, false); btlRing(to, '#ffb25a', false); btlShake(plate, 4.5);
+          btlSparkEmit(sparks, cx, entryY, 24, 360, 520, -1.57, 2.6, true); btlParticles(cx, entryY, { n:8, color:'#ffd9a0', dist:tw * .6, dur:520, size:4, spread:200 }); }
+        const holeF = (1 - .85 * sm(T_REV, T_END, t)) * holeA;
+        if(holeF > .01){
+          ctx.save(); ctx.translate(cx, entryY); ctx.scale(1, ry / rx);
+          let g2 = ctx.createRadialGradient(0, 0, 0, 0, 0, rx * 1.25); g2.addColorStop(0, 'rgba(0,0,0,' + (.85 * holeF) + ')'); g2.addColorStop(.62, 'rgba(8,4,4,' + (.6 * holeF) + ')'); g2.addColorStop(1, 'rgba(8,4,4,0)');
+          ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(0, 0, rx * 1.25, 0, 6.283); ctx.fill(); ctx.restore();
+        }
+        const yOff = -(topY + sh + 14) * (1 - fall) + (since > 0 ? sh * .035 * (1 - E.outC(sm(T_DROP, T_DROP + 300, t))) : 0);   // chute, puis un léger plongeon de plus à l'impact
+        const wob = since > 0 ? Math.sin(since * .05) * .06 * Math.exp(-since / 240) : 0, over = sm(T_B0, T_B0 + 120, t), hh = heat + .38 * over;
+        if(t < T_DROP && fall > .08){ const g2 = ctx.createLinearGradient(0, topY + yOff - 150, 0, topY + yOff); g2.addColorStop(0, 'rgba(255,240,210,0)'); g2.addColorStop(1, 'rgba(255,240,210,' + (.3 * fall) + ')');
+          ctx.fillStyle = g2; ctx.fillRect(cx - tw * .05, topY + yOff - 150, tw * .1, 150); }   // traînée de vitesse
+        if(swA > .01){
+          ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, entryY + 1); ctx.clip(); ctx.globalAlpha = swA;
+          ctx.translate(cx, entryY); ctx.rotate(wob); ctx.translate(-cx, -entryY);
+          if(useImg){
+            let src = img;
+            if(hh > .01){   // chauffe : teinte la lame depuis le sol vers la garde (l'image est recolorée sur sa propre silhouette)
+              og.setTransform(1, 0, 0, 1, 0, 0); og.clearRect(0, 0, oc.width, oc.height); og.drawImage(img, 0, 0, oc.width, oc.height); og.globalCompositeOperation = 'source-atop';
+              const gy0 = (yE / SW.h) * oc.height, gy1 = SW.guardBot * oc.height, gr2 = og.createLinearGradient(0, gy0, 0, gy1);
+              for(let i = 0; i <= 4; i++) gr2.addColorStop(i / 4, btlGothHeat(hh * 1.55 - i / 4 * .55, .66));   // alpha plafonné : on garde la texture de l'acier sous la chaleur
+              og.fillStyle = gr2; og.fillRect(0, 0, oc.width, oc.height);
+              if(hh > .55){ og.fillStyle = 'rgba(255,170,70,' + (.4 * Math.min(1, hh - .55)) + ')'; og.fillRect(0, 0, oc.width, SW.guardBot * oc.height); }   // garde, poignée et pommeau rougeoient aussi
+              og.globalCompositeOperation = 'source-over'; src = oc;
+            }
+            ctx.drawImage(src, sx, topY + yOff, sw, sh);
+          } else {
+            const hw = (SW.guardBot - SW.guardTop) * sh;
+            btlGothSwordVec(ctx, { BL:(SW.tip - SW.guardBot) * sh, bw:bladeHW, GW:SW.guardHW * 2 * sw, gh:hw / 2.4, GL:SW.guardTop * sh * .62, pr:SW.guardHW * sw * .22 }, cx, topY + yOff + SW.tip * sh, 0, hh, 1);
+          }
+          if(hh > .05){ ctx.globalCompositeOperation = 'lighter';
+            for(let i = 0; i < 6; i++) btlGlowDot(ctx, cx, bladePt(.08 + i * .17), bladeHW * (3.4 + 3 * hh), '255,120,32', .2 * Math.min(1.2, hh) * (1 - i * .08));
+            ctx.globalCompositeOperation = 'source-over'; }
+          ctx.restore();
+        }
+        if(holeF > .01){   // lèvre avant du trou : l'épée disparaît derrière
+          ctx.save(); ctx.translate(cx, entryY); ctx.scale(1, ry / rx); ctx.lineCap = 'round';
+          ctx.strokeStyle = 'rgba(14,8,6,' + (.9 * holeF) + ')'; ctx.lineWidth = 3.2 * k * (rx / ry) * .45; ctx.beginPath(); ctx.arc(0, 0, rx * .62, .05 * Math.PI, .95 * Math.PI); ctx.stroke();
+          ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(255,' + (120 + 60 * heat | 0) + ',50,' + (.8 * heat * holeF * pulse) + ')'; ctx.lineWidth = 1.5 * k * (rx / ry) * .45; ctx.beginPath(); ctx.arc(0, 0, rx * .62, .05 * Math.PI, .95 * Math.PI); ctx.stroke();
+          ctx.restore();
+          if(heat > .05) btlGlowDot(ctx, cx, entryY, tw * .36, '255,150,60', .5 * heat * holeF);
+        }
+        // braises qui montent de la lame
+        if(heat > .06 && swA > .4 && rnd() < heat * .7) embers.push({ x:cx + (rnd() - .5) * bladeHW * 2.6, y:bladePt(rnd() * .9), vx:(rnd() - .5) * 16, vy:-(26 + rnd() * 60), age:0, life:800 + rnd() * 600, r:1 + rnd() * 1.6 });
+        ctx.globalCompositeOperation = 'lighter';
+        for(let i = embers.length - 1; i >= 0; i--){ const e = embers[i]; e.age += dt * 1000; if(e.age >= e.life){ embers.splice(i, 1); continue; }
+          e.x += e.vx * dt; e.y += e.vy * dt; const q = 1 - e.age / e.life; btlGlowDot(ctx, e.x, e.y, e.r * 3.4 * (.5 + q * .5), '255,' + (140 + 80 * q | 0) + ',60', .85 * q); }
+        ctx.globalCompositeOperation = 'source-over';
+        // ---------- 4. la foudre ----------
+        for(let i = 0; i < PRE.length; i++) if(t >= PRE[i][0] && t < PRE[i][1]){   // éclairs annonciateurs, fins, qui n'atteignent pas le sol
+          if(t - preT > 38){ preT = t; preA = { x:cx + (rnd() - .5) * 160, y:-12 }; }
+          btlBoltFull(ctx, preA, pm, .5 + rnd() * .3, 1.7, 2, 7, BTL_GOLD, BTL_GOLD_CORE);
+          ctx.fillStyle = 'rgba(255,240,205,.07)'; ctx.fillRect(0, 0, W, H); }
+        if(t >= T_B0 && t < T_B1){
+          if(!struck){ struck = true; btlShake(plate, 9); btlSparkEmit(sparks, pm.x, pm.y, 40, 520, 640, null, 0, true); }
+          if(t - bT > 46 || !bA){ bT = t; bA = { x:cx + (rnd() - .5) * 90, y:-12 }; }
+          const a = (.78 + rnd() * .22) * (1 - sm(T_B1 - 100, T_B1, t));
+          btlBoltFull(ctx, bA, pm, a, 4.6, 7, 7, BTL_GOLD, BTL_GOLD_CORE);
+          btlBoltFull(ctx, { x:bA.x + (rnd() - .5) * 30, y:-12 }, { x:pm.x + (rnd() - .5) * 8, y:pm.y }, a * .55, 2.3, 2, 6, BTL_GOLD, BTL_GOLD_CORE);
+          btlGlowDot(ctx, pm.x, pm.y, tw * 1.7, '255,225,150', .75 * a); btlStarFlash(ctx, pm.x, pm.y, tw * .55, a, t * .003);
+        }
+        if(t >= T_B0 && t < T_REV + 80){   // l'électricité parcourt la lame et crépite autour
+          if(t - arcT > 44){ arcT = t; arcs = []; for(let i = 0; i < 4; i++){ const py = bladePt(.1 + rnd() * .85) , sx2 = (rnd() < .5 ? -1 : 1) * (tw * .12 + rnd() * tw * .3);
+            arcs.push(btlBoltPts({ x:cx, y:py }, { x:cx + sx2, y:py + (rnd() - .5) * th * .32 }, 3, .55)); } }
+          arcs.forEach(p => btlBoltDraw(ctx, p, .8, 1.7 * k, BTL_GOLD, BTL_GOLD_CORE));
+        }
+        // ---------- 5. flash blanc : il allume les biseaux de tout le plateau ----------
+        const fa = t >= T_FL ? sm(T_FL, T_FL + 90, t) * Math.pow(1 - sm(T_REV + 60, T_REV + 720, t), 1.4) : 0;
+        if(fa > .005){
+          ctx.fillStyle = 'rgba(255,251,238,' + (fa * .94) + ')'; ctx.fillRect(0, 0, W, H);
+          const bv = Math.pow(fa, .55); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round';
+          const edge = (r, rad) => [[11, .07], [5.5, .2], [2.6, .55], [1.2, .95]].forEach(w => { rr(ctx, r.left, r.top, r.width, r.height, rad); ctx.strokeStyle = 'rgba(255,244,214,' + (w[1] * bv) + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); });
+          bevels.forEach(r => edge(r, RAD)); edge(pr0, 14 * k);
+          ctx.restore();
+          btlGlowDot(ctx, cx, cy, Math.max(W, H) * .5, '255,236,190', .5 * fa);
+        }
+        // ---------- 6. la carte apparaît dans le flash, l'épée se volatilise en étincelles ----------
+        if(t >= T_REV && !revealed){ revealed = true;
+          for(let i = 0; i < 4; i++) btlSparkEmit(sparks, cx + (rnd() - .5) * bladeHW * 2, bladePt(.15 + i * .27), 14, 300, 700, null, 0, true);
+          btlRing(to, '#fff1c8', false); btlAfter(() => { if(BTL) btlRing(to, col, false); }, 180);
+          btlParticles(cx, cy, { n:16, color:'#ffe2a0', dist:tw * .95, dur:640, size:5 }); btlShake(plate, 6); }
+        if(t >= T_REV){
+          const rk = sm(T_REV, T_REV + 420, t), br = sm(T_REV, T_REV + 560, t), s2 = 1 + .12 * (1 - E.outC(rk));
+          u.style.opacity = '1'; u.style.transform = 'scale(' + s2.toFixed(3) + ')';
+          u.style.filter = br < 1 ? 'brightness(' + (1 + 1.7 * (1 - E.outC(br))).toFixed(2) + ')' : '';
+        }
+        btlSparksDraw(ctx, sparks, dt, false);
+        if(t < T_END) raf = requestAnimationFrame(tick); else res();
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  } finally {
+    cancelAnimationFrame(raf); cv.remove(); u.style.opacity = ''; u.style.transform = ''; u.style.filter = '';
+  }
+}
+// arc doré qui crépite de A vers un ou plusieurs points B ; charge = durée de préparation (crépitement en A) ; la promesse se résout à l'impact (ms), les étincelles finissent seules
+function btlGothArc(A, Bs, ms, opt){
+  opt = opt || {};
+  const { cv, ctx, W, H } = btlCanvasFx(31), charge = opt.charge || 0, w = opt.w || 3.4, br = opt.branches == null ? 4 : opt.branches, sparks = [], rnd = Math.random, E = BTL_E1;
+  const t0 = performance.now(); let last = t0, raf = 0, burst = false, done = false;
+  return new Promise((res, rej) => {
+    const stop = e => { cancelAnimationFrame(raf); cv.remove(); if(e) rej(e); };
+    const tick = () => {
+      if(!BTL || BTL.abort){ stop('abort'); return; }
+      const now = performance.now(), t = now - t0, dt = Math.min(.05, (now - last) / 1000); last = now;
+      ctx.clearRect(0, 0, W, H);
+      if(t < charge){
+        const q = t / charge; btlGlowDot(ctx, A.x, A.y, 16 + 34 * q, '255,200,100', .55 * q);
+        for(let i = 0; i < 3; i++){ const an = rnd() * 6.283, L = 12 + rnd() * 30 * q; btlBoltDraw(ctx, btlBoltPts(A, { x:A.x + Math.cos(an) * L, y:A.y + Math.sin(an) * L }, 3, .5), .45 + .5 * q, 1.4, BTL_GOLD, BTL_GOLD_CORE); }
+      } else if(t < ms){
+        const q = (t - charge) / (ms - charge), a = (.72 + rnd() * .28) * (1 - .8 * E.cl((q - .75) / .25, 0, 1));
+        Bs.forEach(B => {
+          btlBoltFull(ctx, A, B, a, w, br, 6, BTL_GOLD, BTL_GOLD_CORE);
+          btlBoltFull(ctx, A, { x:B.x + (rnd() - .5) * 12, y:B.y + (rnd() - .5) * 12 }, a * .5, w * .5, 1, 5, BTL_GOLD, BTL_GOLD_CORE);
+          btlGlowDot(ctx, B.x, B.y, 26 + 34 * q, '255,215,140', .6 * a);
+        });
+        btlGlowDot(ctx, A.x, A.y, 24, '255,200,100', .45 * a);
+        if(!burst && q > .55){ burst = true; Bs.forEach(B => btlSparkEmit(sparks, B.x, B.y, 16, 420, 520, null, 0, true)); }
+      }
+      btlSparksDraw(ctx, sparks, dt, false);
+      if(t >= ms && !done){ done = true; res(); }
+      if(t < ms + 450) raf = requestAnimationFrame(tick); else stop();
+    };
+    raf = requestAnimationFrame(tick);
+  });
+}
+BTL_CARD_FX['GOTHIKA'] = { arrive: btlGothArrive, appel: async c => {   // 3 points à une cible ennemie choisie, puis 1 point à chacune de ses voisines (emplacements adjacents)
+  const t = await btlChoose(c, btlLiveAll(btlOther(c.side)), 'dmg', 3, { arrow:'def' });
+  if(!t || !btlOnField(c) || btlGone()) return;
+  const ctr = r => ({ x:r.left + r.width / 2, y:r.top + r.height / 2 });
+  let nbP = [];
+  await btlHit(c, t, 3, {
+    strong:true,
+    shot:(src, tg) => { btlFlashEl(btlUnitEl(src), '#ffd27a', 1, 420); return btlGothArc(ctr(btlUnitRect(src)), [ctr(btlUnitRect(tg))], 760, { charge:300, w:4, branches:5 }); },
+    onHit:(tg, r1) => {
+      if(tg.leader) return;   // le chef n'a pas de voisines
+      const S = BTL.S[tg.side], from = ctr(r1), nb = [S.slots[tg.slot - 1], S.slots[tg.slot + 1]].filter(n => n && n.hp > 0);
+      if(!nb.length) return;
+      const arc = btlSleep(220).then(() => btlGothArc(from, nb.map(n => ctr(btlUnitRect(n))), 560, { w:2.6, branches:2 }));   // l'arc se ramifie vers les voisines, une fois la cible touchée
+      nbP = nb.map(n => btlHit(c, n, 1, { noRet:true, shot:() => arc }));
+    }
+  });
+  await Promise.all(nbP);
+} };
 
 // CHEIF 117 : la carte décolle, survole le champ de bataille sur deux propulseurs (flammes + fumée), se place au-dessus de son emplacement puis s'y écrase
 function btlFlameDraw(ctx, x, y, dx, dy, L, W, t, ph){
@@ -22752,7 +23018,7 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -23055,7 +23321,7 @@ var CARD_FX_TXT = (function(){
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
-    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
+    'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'GOTHIKA':[['appel','inflige 3 points d’attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
   const out = {};
   Object.keys(X).forEach(n => { out[n] = X[n].map(e => [e[0], e[1] || T[e[0]]]); });
@@ -23086,6 +23352,9 @@ var BTL_TUR = { ny:36, ns:4, w:256, h:256, half:1.75, voff:.38, sp:.819152, src:
 var BTL_MOT = { ny:36, ns:4, w:256, h:256, half:1.8, voff:.43, sp:.819152, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-c491c77ccc99.webp' };
 
 var BTL_DRONE = { n:12, fw:256, nz:[0.5000,0.7576], ln:[0.5000,0.6407], src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-e1294ab1f6ca.webp' };
+
+// GOTHIKA : sprite de l'épée extraite de l'artwork (lame redressée, pointe en bas ; pommeau, poignée, garde et lame alignés sur un même axe ; repères en fractions de la hauteur / largeur)
+var BTL_GOTHSWORD = { w:60, h:365, cx:0.5067, guardTop:0.1535, guardBot:0.2149, tip:0.9901, bladeHW:0.2, guardHW:0.4067, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-fa9dcee6fc34.webp' };
 
 document.getElementById('tileDaily').onclick = () => { openSub('dailyView'); renderDaily(); };
 document.getElementById('tileTrophies').onclick = () => { checkTrophies(true); openSub('trophyView'); renderTrophies(); };
@@ -23381,56 +23650,57 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "AMALGAME":["gQQMSZZeWWYLLIIAAFff", "g3NDDMMcdZYYbIIAAFff", "JgDDMMSZZebbIIX7AAff", "Ogg33QMSacdbbLIIAAff", "ggQNNQMMSSadZZIIXAff", "OOggQDD80SSdbIIXAAff", "OOJJK6ggDMMSZbIIAFff", "OOJ16gg3QQMMSScZIIAA", "OOJgg33QQMMBSSWIIAff", "OO446gg33MMBSSdeIIAA", "OO44JJggEDDMM0SSIAff", "OO44J166ggQMMSSIIAAf", "PP22GGTTOO4gg33MMSIA"],
-  "MOG-AI":["2O63NQQDHaccZZLLX7Ff", "2633QDDHaaccZZeWX7Ff", "2O96633UDDMHZZWYYIXF", "224V93UQNNQDDM80cZZb", "22OJJK633QDDaaccZZLL", "22O4VVJJ933ENDDMcZIf", "22OO44JJ6UQNQDHaacZW", "22OO44JJ966g3ENQN5Ha", "22OO4VVJJ9916633UMHZ", "22OO44VJJ99663EUNHZW", "22OO44VVJ96633NQQDHB", "22OO44VVJJ9916633QHH", "PP22TOO44VVJJ966g33Q"],
-  "ZAPPAN":["GMMHaadWWLLII7AAFFff", "GRND50SSacceLIIAAFff", "GUN5MHSScZYYIIXAAFff", "GG1gUUHSaceWII77AAff", "GGORgg3NSccWYII7AFff", "GGOOUNM8ScdeWYII7Aff", "GGOO9ggNMMHHSScZWXff", "GGOOV99KgENMMH0SIIAA", "GGOOVJ991ggUUNMMSAAf", "GGOOVV99K6ggQNMSSIIf", "GGOOVVJ991gg5MMSScIf", "GGOO4VV996ggUMMSSIAA", "PPGGTTOO4499ggUMMSSA"],
-  "MOTOKO":["P1NHaacceeWWYbIIXX7A", "PVUUNC8acdWWYYIXX7AF", "PUU55HHaccdeWWYIXXAA", "PPVVg3NNCCaaceeWXAFf", "PPJ9UNN55C8SaacceeWW", "PPVV913UUNN5MC8aadWb", "PP99gUU5CHH8800aaWWX", "PP4VV99KK1UNCCHH0aWX", "PP4VVJ99K1EUU5CHHcce", "PPVVJ99KKUNNCCHH8aXF", "PPVV99K11UUNN5MHHB88", "PP4VV99KK1UUNN5HHBeW", "PPTTVV99KK1RUUNN5HHW"],
-  "TOA2":["T5B800ceeWWLIIXXAAff", "T3EB8800cceeYIXXAAff", "TO5C8800dZeebIIXX7Af", "TTVKUMC00SaeeYLIIXXA", "TTO9K15CC00eeWXAAFff", "TTOVJK115500SSeeXAff", "TTO4KK11ggU5MC00ccXX", "TT4JKK11gg55CC8eeIXA", "TTVJKK11Rg5MMC88SeeI", "TTOOVKK116gQ55CC88SS", "TTOOKK11gED55CCM80AF", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
-  "CATER-PILLARD":["15CH880eeLLIIXX77AFF", "VK55C80eeIXX77AAFFff", "135CC80SZeeLLIXX77AA", "V158800SacddeeWXXAFF", "KK1D55800SdeeLIXX7FF", "OVJK155CC800deeXX77F", "4KK15CC8800adZeebLAA", "O9KK1155C8800SSeeXAF", "O11RQ55CC8800deLLX7A", "49KK11655CC8800SSL77", "KK11RN5CC8800SSddLXF", "OOKK1155CC8800SSddeL", "PPTTOKK1165C800SSdLA"],
-  "MED-07":["41ED5500ZZeeWWbLXXff", "1635800cZZeeYYLIXXff", "16QQCC800cZeeWIXXFFf", "O11Q55CCH0ZZeebLXX7F", "4JJKK1133500aeeIIXXf", "O4JKK113EQD55CC0ZeeW", "4VK113Q55CC8800ZeLXX", "O4VJKK116gEQ5CC880eX", "O4JJKK116D55CC880eXA", "44VVJKK1163355CC8800", "OO44VJKK11D55CC880Se", "OOVJJKK113Q55CC880ee", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KU5800aaeeWWbIXXFFff", "KU5CCHH8adZeeIXX7FFf", "163EQN5C8800aceeWWXX", "4J9KK55MCH0acdZeeXXf", "V955CC880acceeWYIXXf", "KKQ55CHH80ceeWLLXX7A", "V9KK1RUN55CCH80aeLXX", "4J9KK11RUN55CHH8800e", "V99KK11D55C8800acceX", "4V9KK11UN55CMCMH800e", "44V99KK11R55CCHH880X", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["3Q5C800ccZZeeWYbXX7F", "ODD5CC80ZZeeWWbXX7Ff", "OK66CC800ccZeebXXAAF", "J635C8800aZZeebbXX77", "JJKU55C8800cZZeeLLXX", "VKK133EQQ55C8800See7", "OO4KK663D55CC8800SXX", "OO4JK1133D5CCB8800eX", "O4VJKK1166Q5CC880eXF", "49KK116RQQD55CC880ef", "OO44VJJKK1355CC8800e", "O449KK11QD55CC8800Ze", "PP22GTTO4JJKK115C880"],
-  "NEUTRON":["5C800cdZeeWYIXX7AAFF", "15CB00cZeeLXX7AAFFff", "9K355C800eebLIXX7AAF", "RD55CC88cdZeebXX7AFF", "JK116RDCC800SeeLXAFf", "KK1R35CCM800SeeLLXX7", "KK11Rg55CCB880SeL77A", "4KK11EQ55CC8800dLLAA", "OKK11N55CCH88SSLLXXF", "O4VKK1155CC880SSddLX", "OKK11RE55CC800SSdLX7", "44KK1155CC8800SSdXAF", "PPTTJKK11ECC80SddLX7"],
-  "HYPPER":["K55C00ddeeWYbbLLX7Af", "1EC8800SZeeYbLLIIXFF", "KCC8800adZZeeYYbbIXA", "R5MCC800ZeeYYLXXAFff", "KK11gEDCCB80SaebLLXX", "KK11R55MCMCB80ceeXXf", "KK11EENDCM8800debLXX", "49KK11RCMCM800SSebXX", "OJKK11REE55CCB800YXX", "VKK11RREU55B8800eYXX", "V9KK11RRD55CMC00LLXX", "4KK11REUCCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
-  "TUNNELIER":["K6Q5588dZZeeWLIXX77f", "K1gQQDH800SaZZeeLXXF", "K1UDD5880ZZeebIIXXFf", "KK163DC800cZZeeWYbXX", "KK1133DD5CMB0SdeeXX7", "OKK11g3EQQ55CC88ZeXf", "OO4KK16ED55CC88ebXXA", "OOJJKK1166R55CCB880X", "OO4JKK11gQD558800dXX", "OOJKK1163Q5MMCC8800e", "OO4JJKK11g55C8800Sef", "OO44VJKK11Q55CC8800X", "PP2GTT4JJKK11635CC80"],
-  "ARKHAUL":["C8SaccddeeWLLIX7AAFF", "EC80ScdbbLLXX7AAFFff", "KKNB8SSdeWbLLXX7AAFF", "1g800acddWLLXX77AAFF", "1EQ50SSddeWLXX77AAFF", "49166380SSddLLX77AFF", "OKK158SSddYLLX77AAFF", "KK1Rg00SSddLLX77AAFF", "991180SScddLLX77AAFF", "OVJKK180SSddLL77AAFF", "KK1RgU55SSddLL77AAFF", "K116RQ5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
-  "JIPASIS":["6gDBSdZZWbLI77AAFFff", "3DDHSSacZZLX77AAFFff", "6DSddZZeWYYLX77AAFFf", "O3QQMCddZeLL77AAFFff", "4663UQQDSSddZLL7AAFF", "O4V6g3UQQSSddLL7AAFF", "O9K3QQHSSddYLL77AAFF", "4493UQQBSSddLL77AAFF", "OO66R3UQSSddLL77AAFF", "O44J3D5CSSddLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDBSSddLL77AAFF", "22TTOO4JSSddLL77AAFF"],
-  "BUZZY":["KM8SddZeeYLLIXX77AAF", "00SdeeWbLLIIXX77AAFf", "4KCH80SddZeeLLX77AAF", "K1NDM880SddZeL77AAFF", "9K5CH00SSdZbLL77AAFF", "g5BB00SSddeYLLX77AFF", "VK1EQD58SSddLL77AAFF", "J11M80SSddeLLI77AAFF", "KK16N0SSaddLLX77AAFF", "4JK15800SSddLL77AAFF", "9KK155C0SSddLL77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
-  "BRI-KB-ROCK":["QMMSSdZZebbLLIIAFFff", "gUMM8SSaWLIIX77AFFff", "4ggMM0SSaccYII77AFff", "OEMMHHSSddeWbLIAAFff", "OgEDMBSScdeII7AAFFff", "OOggMSSddWYLIIX7AAff", "OO4VggQMMBSSdLII7AAf", "OOV9gg3EMMSSLII7AAFf", "OO1ggMMHSSddZ77AAFff", "OOV1ggQMMSSddLIAAFFf", "OOVggDMMSSddLLIXAAFf", "OOJggMMHSSLLII77AAFf", "PGGTTOOggEMMSSdL7AAF"],
-  "MED-POD":["gMSddeWbLLIIXX7AAFff", "ggEUSWYLLIIX77AAFFff", "gD5MMSadeeLLIIAAFFff", "OgUDM0SSccII77AAFFff", "ORRggQNMMBSSLL7AAFff", "OOVJggNMHSSadLI7AAff", "OOg3UMSSdLLII7AAFFff", "OO4RggEMM8SSLII77AAF", "OO1ggMMBSSddeLII77ff", "OO166ggMSSdLII77AAFf", "OOVgg3QMMSSddLLII7AA", "OO49ggMMSSddLII7AAff", "P2GGTTOOggMMSSddI7AF"],
-  "MORPHE":["963QNDMHHaaccWWYbIXX", "49NDHaaccZZeWWIIXAFF", "496UUNaaccZZeWWYLLAf", "4JJ996UQHHacceWWYYIf", "VVJ99663UUQD5aacWWbf", "O44VV993UN5HHccZeWff", "4VVJ996EUUNNQDDHHSac", "O4VVJ99Kg3UUNNHHaccL", "OO4VVJJ99K3UUNNDaccW", "OO44VVJ991UUQNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "44VVJ99K3UUNQNMHHacW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["9NMHBaaccWWYYbLX77Af", "9RUNCHaccdeeWWYbLL7F", "V99RHBSaaccZWWYYbLXf", "VVN5HHaaccdeWWbbLLXA", "9RUNNHHB8aaccWWYYbIF", "J96RUUNNHHBBaaccZWbL", "VV99K3UUNNMHHB8cWYLX", "VV99KRREEUUNCHHSaacL", "4VV99RUQNNMMHHBSaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaacb", "OVV99RREUUNNMHHBaadW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["44gNHHaaccZZeWWYbAAf", "J93NHBaaccZZWWYY7AFF", "3UQNQDDHHaaccZWWLIAF", "33QQNNDMHHaacceWWbAF", "4VV93NQNDCHSaccZWW7f", "O4V996RUNNDCHccWW7AF", "OVVJJ991UNQNHBaacWbF", "44VVJJ9963UUNNHaccZY", "OO44VV99UUNNMaacZZWW", "O44VVJ996RUUNNDHH0cW", "44VVJJ996R3UUNNHaacW", "O4VVJJ99K66UUNNHHacW", "PP22GOVVJJ99UUNNQHHW"],
-  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9U8aacceeWWbLIXX7Ff", "VUNN0aacceeWWbbLXX7F", "9UUNN55CHaaeWWYXXAff", "9KKUUNNMHH80accZZWXX", "VV99UUNN5H80cceWWbXf", "V99K1R3UUNN50aaccdeW", "VV99UUQN5HHB8SaccZeX", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1RUUNN55HaccA", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTT4VVJ99K11UUNNHac"],
-  "DELOK":["VUH00aaccddeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNCBaaccWWYYbLIXX", "VV93UUHBaaccWWYYbbLF", "VV6UUNNMHHB0accWWYLX", "VVJ1RREENNHHaacWWbLL", "VV99RUUNNHHBcceWWYbL", "VVJ99REUUNHHBSaccebb", "VV99RRUUNQNMCMHHBSaW", "VV9916RREEUUNNHHBScc", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["9633UNH8aaccZWYIIFFf", "496U5HH8aaccZZWLLXFF", "V33UNDDHHaaccWYL77Af", "V996gg3NNDaaccZZWWbI", "V96UUDDCHaaccZZWWbIX", "OVVJ9966UMHHaacZWWbF", "OO4VJK3UNNHHaaccWWXf", "44VV9966UUNNHHB0WWYb", "OO4VVJJ996UUQNNHHWWX", "OO44VVJ99gUUNHSaaZWW", "OO4VV996EUUQNN5acWWY", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9UNHBaccdeWWbLLAAFFf", "UUHHaccdWWbLIX77AAFf", "V9KUUHHacWWYLLI7AFff", "99NQNSaacceeWWYLAFFf", "V99UUNHH8aaccdW7AAFF", "VV99163UNHHSaacWLLAF", "V99KR3UNNHH8SaaccLAF", "OVV99UUQNQHHSSaaccdL", "VVJ991UUNNHSaadWWL77", "4VVJ99gUNNHHSSaadWLA", "4VV99RUNNQHHSSaaWAFF", "VV99gUUNQNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
-  "DUMADED":["gEEQDBBZZYYbLLX77Aff", "6RRDHBBadZZWYYbLLAFf", "4RR33MMBSccZZeYYbLLF", "4RRUDBBZZYYbbLLIIX7A", "OJRR3EDDMMCBcYYbbLLA", "4VRg33EEQMMB0ZWYYbbL", "46RREEQDDMMBB8YbbL7f", "OOJJRREEQ5CMBBeYbbLL", "OO44VJRRgEEDMMBBYYbb", "OJ6RR3EENQQMMCBYYbbL", "OO44J6RREEQMMHBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["93UNQHaacZZWWIXX7FFf", "93UNDD5MH8aacZZWWL77", "VV933UNNDHHacdZeWXAf", "6633UUNQHaaccWWX7AFf", "13UUQQNNDCHaaccdWWIX", "VV33UQQNNMHH0aaccWW7", "OO4VV993EUNQHaaccZWA", "OO4VVRgUUNNDHaccZWWX", "OO44VVJ96RUUNNHacceW", "O4VVJJ99663UUNNHHacc", "OOVV9966UUNQNHccZWWb", "OO44VVJJ99gUUNNHHacc", "PP22GO4VV991UUNQNHcc"],
-  "RAZOPS":["CSSdeebLLIIXX77AAFff", "8SadZZeeLLIIXX77AAFF", "gB8SdeWYbLLXX77AAFFf", "638800ddeWYYLL77AAFF", "KKN580SddZeYLL77AAFF", "O16EC88SSddeYLL77AFF", "J9K5CH0SSddLLX77AAFF", "OKEU8SSddeeLL77AAFFf", "9911U50SSddeLL77AAFF", "4KK1655CSSddLL77AAFF", "OJ9KK1CCSSddLL77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
-  "FENCY":["1155C80deYLXX77AAFff", "55C800SSeWbLLIXX77AA", "OKK1UQ55CCHSeYLXX7FF", "15CH800eeYbLXX7AAFFf", "KK11E55C00eebLLXX77F", "OK11CC800aeeLLIIX7Af", "VKK113D55880SSeeLX77", "4KK11655M880SddeeWLX", "K11R355CC800SaeeL7AF", "JKK115MCH880SddeeXFF", "JKK11gN5CC800SSddee7", "KK11UDCC8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
-  "EXO-MKI":["MMHSSacdeeWYIIXAAFFf", "ggQM8SSaacZWWYIIXAAf", "OVgMMHBSSccWLLIIAAFf", "9ggMCMHHaacWYLIIAAff", "O4VDMMHB0SSacYIIAAff", "OOV9gg3MCMH88SSaYAff", "OOVggEMMB8ScWWIIAAff", "OOVVggEUMMHH8bIIAAff", "OOVV99KRggNMMHSSIAff", "OOVV996ggE5MMHSSIIff", "OO4996ggUNNMM8SSIAff", "OOVVJ996ggNMMSSIIAff", "PP2GGTTOO4VVggMHSSff"],
-  "GAPIX":["633QQDDMBZZeebLLI7Af", "O6R3QQDDZZeYYbbLLXXF", "OJ633QQDBZZeYYbbLX7F", "4J66R33EUQQ5BZZeYbII", "O4466RR33QQDHacZLLIF", "OOJ66R33EQQB80ZZeYbF", "OO4JJ9663EUQDDCZYLLI", "OO44JJ166RREEQQDZeYA", "OO44VJJK66REQQDDMMYL", "OO44VJJ166R3EQQDMBBb", "OO44JJ9K166RR33EEDBZ", "OO44JJ966RRg33EEQQDM", "PP22OO44JJ66RR3EEQQB"],
-  "EXO-MKVII":["4J66QQDB0ZZeWIXX77FF", "O4JJ63QQD5ZZeeIXX77F", "O46633QD5C8ZZeIX7AFf", "K6633QQDD0ddZZeeLIXA", "O4JJ133NQDD5CHZZXAFf", "O4JK1663EUNQDD0ZZeLA", "OO4JJK163QDD5MH0ZZY7", "O44JJKK6633NDDCH80aZ", "OO44VVJJ933QQDD5C80e", "OO44JJKK1663QQDD55C8", "OO44JJ9KK1166R33DD8a", "OO44VJJKK16633QNDD88", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["OJ633NDDMHaccdZZeYL7", "4J66NQDDHccZZeWWbAAF", "44J63QQDHcZZeWWI77ff", "OOJJ63UUQDDaacZZX7AA", "4JJ633ENQDDMHHcZZYXF", "O44JJ633EEQQDCMacdWW", "OO4JJ9K66g33UQQDDBac", "OO44VJJ9166R3UQNDD8Z", "OO4VJJ96633EUQQDH8aZ", "OO44VVJJ6633NQQHacbX", "OO44VVJJ99163QNQDD5a", "OO44VVJJ996633UQQDHW", "PP22OO44VJJ96633NQQH"],
-  "STAR-HUNTER":["4J663DDSZZYLLIX77AFF", "4J633DDBddZZebX7AFFf", "4633QQDDSadZZLIAFFff", "44633QQD8ZZWWLIIX77A", "OO44JJ663QDSSccZX7AF", "OO44J163QQHBSadZZLXF", "OO44J6633QQDaadZZL7F", "O44JJ633EQDDCHddZLAA", "O44JJ966R33UQQDSSLL7", "OO44JJ663QQDCC0SSdLL", "OO44VJJK6633QD8SS77A", "OO44JJK633QQDMSSZL7A", "22OO44JJK66R3QQSSddA"],
-  "RHINO":["OK63QQDDZZeeYbbLX7Ff", "44663DD0ZZeWXXAAFFff", "4J11663QDD5C0ZZeX7Af", "O633QQDD5C00SdZZWYbA", "OO4J133QQDDC80ZZeWYF", "OO4JJ633QQDD500aebLA", "OO44JJ6633EDDC80eeYX", "OO44JJK66R33QQCC0eYb", "OO44JJK1166g33D80cZY", "OO44JJ9KK16633NQQN55", "O44JJKK1166R33QNDD5H", "OO44JJKK116633EQQD55", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["JJ633QQDDaaZeWWXXAAF", "44V6633QDHHccZWWbAAf", "OO4J33QQDSaadZWWLXFf", "4JJ99633UQQD8ccdZZWb", "OO44VJJ963QMHBadZZIF", "OOJJ96R33NQNQD5aacZZ", "OO44JJ966UUQNQDB0ZZb", "OO44VVJK63UUQDDM0ZZA", "OO44VVJK66g3UUNDDaZZ", "OO4VVJJ633NQDDHHZZ7A", "OO44VVJJ9Rg3QNDDHcZZ", "OO44VVJJ9966g3UNQDZZ", "PP22GGOO44JJ93UDDHZZ"],
-  "CONQUEST":["J633QDDCaccdZZeeXX7f", "4Jg33QDDB80ZZeebIXAf", "O41633QDD0ZZebbLIXXF", "O4J6g3QQDC88SaZZeWXX", "OO44K163QQDCB80cZZb7", "OO44J163QQDD5CB8adXf", "OO44K1166R3EQNQD0ZZe", "O44J96633QQDD55M80dL", "OO44J9K1663QQDD5880e", "OO44VJJKK11663QQDH8c", "OO44VJJ9KK116633QQD8", "OO44VJJKK1663QQD50ZX", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OJQMSSZZWYbIX7AAFFff", "O4Jg0SccdZZebIIAAFff", "Ogg33QDDM00SeII7AAff", "OOJ6gUQQBSZebIIXAAff", "OO44RgEQDMMScZeIAAff", "OOJJ1gD5MMSScdZIIAff", "OOJ6gg3EQCMSceIIAAff", "OOJ6Rgg3DDMM0SScIAff", "OO44JJggEDDMMCSSIIff", "OO4JJRgg3EDDMMSSIIAA", "OO44VK66ggNDMMSSIIAA", "OO4416gg33DMMSSIIAAf", "PP22GGTTOO4Jgg3MMSSf"],
-  "PRAWN":["gMBSSabbLLIIXXAAFFff", "gMBBSZWYYbLLII77AAff", "gEMSSaacWYLLIIAAFFff", "OMMBB0SdbbLLIIXAAFff", "OKKRgMMBSSWLLIIAAFff", "OO9gEUMMC8SeYbbIIAff", "OO4RggEMMBBSSdLLIAff", "OORRggEQMMHSSdYbIIAf", "OO9RggEEMMBSSWbbIAff", "OOJRRggQMM8SSYYbIAff", "OORgg3EEMMHB8SSYIIff", "OO4RggMMHBBSSbbIIAAf", "PPGGTTOORggEEMMBBSSA"],
-  "HARKO":["MMHHSSaccWWbLIX7AAff", "OVD5MSSaaccZeWbIAAff", "OO4MSSaaeeWWYI7AAFff", "OVUMMHSccWYbbLIIAAff", "O49gMMHHSSaacWIIAAff", "OOVJ9KgNNMMHcWIIAAff", "OOVggEUNN5MMSSWbIIAA", "OOJ99ggEUQCMSWIIAAff", "OO4V99KggNMMHHSSIIAA", "OO4VV99K1ggMMSSaIIff", "OO4VVJJ9ggUNMMSSIIAA", "OOVJ996ggNMMHSSIIAAf", "PP2GGTTOOVV9ggEMSSII"],
-  "DOZEUR":["63MMBaZZeYYbbLLXAAFF", "4R3QMBSdZWYYbbLLIX7A", "6REQQMBSdZZYYbbLLI77", "4KRR33EDMBB8bbLLIXFf", "OOJREQD5MBB8aYYbbLL7", "O633EEDCMBBaYYbbLLIA", "OVRR3EENQDMMBBZYbbLL", "VJJ9RR33EEMBBaZYYbbL", "O4J996RREEQDMMBBYYbb", "OO44RR3EEQ5MMBBcYYbb", "OO44VJRR3EEMMBBWYYbb", "OO6RR3EEQMMCBB8YYbbL", "22O446RR3EEMMBBYbbLL"],
-  "DILUS":["RMMBB80WYbbLLIXXAFff", "RRQBBdeeYbbLLIIXXAAf", "EMMBB8dZeeWYbbLLX7Ff", "11REUMMBBSaYYbbLLXXf", "1EEDCMCBB8eYYbbLLAFf", "EE5MCBB80SeYYbbLLXAF", "1RREDMCBBcYYbbLLIXXA", "4JJ11RREEMMCBB80YYbb", "O1RREE5MCMHBB8SeYYbb", "KK1RR3EEMMHBB80eYYbb", "9K16RREECMMBB80YYbbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["R3EDMdZZeeYYbbLLXXAA", "4RENDMBSdZZeYbbLLI7A", "JR3QQDMBBcYYbbLLXAFf", "OJRREMBSadZZYYbLLIX7", "O49RREEMBBZZYYbbLLXA", "66RR33EEQ55MMSZYYbbL", "4JRRQQMMBB0ScZYYbbLL", "6RRg33EEUQMMHBBcYYbL", "O4J1RR33EENMMBZYbbLL", "O4V6RREEQDDMMBBSYYbb", "OO4VJ6RREEQMMBB8YYbL", "OO44K16RREEMMBBYbbLL", "22GO4JJRREEMMBBYYbbL"],
-  "SHADOW":["VEMBaaWWYYbbLL77AFff", "1REBBccZeWWYYbbLLIFf", "EUNDMBB8cceWYYbbLLFf", "JRREEMBaccWWYbbLLAAf", "JEEUMCMHBacYYbbLLXff", "V9RREENCMMaceYYbbLLf", "OV9RREEDMMCHBB0WYYbL", "VRREEQMMCHBB0acYYLL7", "VVJ9RREEUMMBBaZYYLLX", "VVJ996RREEMMHBBdYYbL", "VV99KKRREEUNMMBBYYbb", "VV9KRREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "AMALGAME":["gMhhSZZeWWYLLIIAAFff", "gDDMMddZZYbLIIXAAFff", "gEDMMhhScZZbIIX7AAff", "gg3MhhSacdZbbLIIAAff", "OORRggQMMSSaZeYIIAff", "OggDD80hhSSdbIIXAAff", "OO4JK6ggDMMHSacIIAff", "OOJ1ggQQDMMSSadZIIAA", "OOJgg33QMMBhhSSWIIAf", "OO496gg33MMhhSSZIIAA", "OO44JJggEDDMM0SSIAff", "OO44J166ggQMMSSIIAAf", "PP22GGTTOO4ggQMMSZIA"],
+  "MOG-AI":["2O46QNNhhaccZZLLX7Ff", "26QDDHhhaaccZZeWX7Ff", "29663EUDDMHHhhZZWYYX", "22OVJ93UNNDM80hhcZZb", "224JK6R3QQDDhaaccZLL", "224VVJJ9g33ENNDDhdZI", "22OO44J63EUNQhhaaWbI", "22O4JJ96g33ENND5HhhZ", "22O4VVJ9916633UNQHhZ", "22OO44VJJ99663EUQNHW", "22OO44VVJ96633NDCHhh", "22OO44VVJJ9916633QHH", "PP22TOO44VVJ96g33QDh"],
+  "ZAPPAN":["GMMHadWWbLLII7AAFFff", "GUND50SSacceLIIAAFff", "GUN5MHSScZZYYIIAAFff", "GG1ggUUHSacIIX77AAff", "GGOgg3NSSccWYII7AFff", "GGOOUNM8SceeWYII7Aff", "GGOOggNMMHHSSadWYAff", "GGOOV99KgENMMH0SIIAA", "GGOOVJ991ggUUNMMSAAf", "GGOOVV99K6ggQNMSSIAf", "GGOOVVJ991gg5MMSScIf", "GGOO4VV996ggUMMSSIAA", "PPGGTTOO4499ggUMMSSA"],
+  "MOTOKO":["P1NHaaccZeeWWbIIXX7A", "PVUUNC8acdWWYYIXX7AF", "P6UU5HHaccdZeWWIXXAA", "PP3UCCHHhacceeWWXAFf", "PP9KUUNN55C8aacceeWW", "PPOVV913UUNN5C8aceWb", "PP99UU5CHH8800haaWWX", "PP4VV99KK1UNCCHH0aWX", "PP4VVJ99K1EUU5CHHcce", "PPVVJ99KKUNNCCHH8aIX", "PPOVV99K11UUNN5HHB88", "PP4VV99KK1UUNN5CHHeW", "PPTTVV99KK1RUUNN5HHW"],
+  "TOA2":["T5B800deeWWLIIXXAAff", "T3B8800cceeYIXXAAFff", "TO95C8800cdZeeIIXXAf", "TTKMC00SeeWWYbLIIXXA", "TT9K1Q5CC00eeWXAAFff", "TTOKK11gU5500SeWXAff", "TTO4KK11ggU5MC00ddXX", "TT4KK116ggD5CH8eeIXA", "TTVJKK11g5MMC88SSeeI", "TTOOVKK116Rg55CC88SS", "TTOOKK11gD55CCMHH88A", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
+  "CATER-PILLARD":["1N5C880eeLLIIXX77AFF", "55CC80heeWLIXX77AFFf", "K135CC80SZeeLLXX77AA", "158800ScdeeWYbXXAFFf", "K1D55800SeeLLIXX7FFf", "KK1Q55CC800deeWYY77F", "4KK15CC8800acdeebLAA", "O9KK1155C8800SSeeXAF", "O11RQ55CC8800deLLX7A", "49KK11655CC8800SSL77", "OKK11R5MCC8800SSddXF", "OOKK1155CC8800SSddeL", "PPTTOKK1165C800SSdLA"],
+  "MED-07":["J1Q5500ZZeeWYbLXXFff", "165800hacZZeeYLIXXff", "16CC800hhcZeeWIXXFFf", "11QD55CH0hhZeebLXX7F", "4JJKK1133500haeeLIXX", "OJKK1163EQD55CC0heeW", "O4K11Q55CCM8800ZeWYX", "OJKK1163EQ5CC880heWX", "O4JKK1163D55CCB880Xf", "44VJKK1163355CC8800Y", "OO44VJKK11D55CC880Se", "OOVJJKK113Q55CC880ee", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["KgU5800adeeWWbIXXFFf", "KUD5CCHH8aeeYIXX7Fff", "1R3EQ5C8800aceeWWXX7", "4J9KKg55MCH0aaceeXXf", "J955CC880acdZeeWWXXf", "KKR55CHH80ceeWLLXX7A", "VV9KK1RN55CCH80aeLXX", "4J9KK11UN55CHH8800Se", "V99KK11D55C8800acdeX", "4V9KK11UN55CMCMH800e", "44V99KK1155CCHH880SX", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
+  "EXO-MKX":["5C800hhccZZeeWYbXX7F", "UQDD5CC80ZeeYYbXX7Ff", "KDDCC800hcdZeebXXAAF", "4QD5C8800acZeebbXX77", "4VJKQQ55MC8800ceeLXX", "OOKK163E55C8800SZeeW", "O4KK66UQD55CC8800ZXX", "OO4J9K1135CCB8800ZeX", "O4VJKK1166Q5CCH880eX", "OO49KK116gD55CC880Se", "OO44VJJKK1355CC8800e", "O449KK11QQD55CC8800e", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["5C800cdZeeWYIXX7AAFF", "1CB800haceeLXX7AAFFf", "4JK55CB800ceeLXX7AAF", "E55CC88SacdeebXX7AFF", "KK116ECC800hSSeeLXAF", "KK135CCM800SSeeLLXX7", "KK11Rg55CCB880SeL77A", "4KK11EQ55CCB8800dLLA", "OKK11N55CCH88SSLLXXF", "O4VKK1155CC880SSddLX", "OKK11EU55CC800SSdLX7", "44KK1155CC8800SSdXAF", "PPTTJKK11ECC80SddLX7"],
+  "HYPPER":["K55C00ddeeWYbbLLX7Af", "1EUC8800ZeeYbLLIIXFF", "KKCC8800aaceeYYbbXAf", "Rg5MCCH800aaeeYLXXAf", "KK11UDCCB80haebLLXXF", "KK11Rg55MCMCB80deXXf", "KK11EENCM8800eebLXXF", "49KK11RCMCM800SSebXX", "OJKK11REE55CCB800YXX", "VKK11RREU55B8800eYXX", "V9KK11RRE55CMC00LLXX", "4VKK11RECCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
+  "TUNNELIER":["KD5588hZZeeYIIXX77ff", "K1D800hhSaZeeWLIXXFf", "K13QD5880ZeeWbIIXXFf", "49KK163QC00cZZeeWbXX", "JKK11QD5C0ZZeeLXX7Af", "OKK113QQ55CC88hheXFf", "O4KK16EQD55CCB88ceXX", "OOJJKK1166R55CCB880X", "OO4JKK11D558800hZeXX", "OOJKK116NQ5MCC8800Ze", "OOJJKK11Rgg355C8800e", "OO44VJKK1155CC8800hX", "PP22TTO4JJKK1165CC80"],
+  "ARKHAUL":["C8SacddeeWLLIX7AAFFf", "EC80ScdbbLLXX7AAFFff", "KKQB8SSdeYbLLXX7AAFF", "1800haddeWLLXX77AAFF", "1Q5H0SSddYLXX77AAFFf", "49166380SSddLLX77AFF", "K1Q5M8SSddZLLX77AAFF", "49KKC88SSddZLL77AAFF", "911B80SSddeLLX77AAFF", "OVJKK180SSddLL77AAFF", "KK1RgU55SSddLL77AAFF", "K116RQ5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
+  "JIPASIS":["QDBhSdZZWbLI77AAFFff", "EDHhSSacZZLX77AAFFff", "O6DSddZZWYLX77AAFFff", "3QMChhddZeLL77AAFFff", "OO4V663DSSaddLL7AAFF", "O4V6R3UQhSSddLL7AAFF", "OO93MHhSSddZLL77AAFF", "449R3UQBSSddLL77AAFF", "O4JJ166SScddLL77AAFF", "O44J63UQSSddLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDCSSddLL77AAFF", "22TTOO4KSSddLL77AAFF"],
+  "BUZZY":["KN8SddZeeYLLIXX77AAF", "10SdeeWbLLIIXX77AAFf", "46H0SddZeeLLXX77AAFf", "9K1ENM80SaddeL77AAFF", "9K5C00SSacdLLI77AAFF", "5CB00hSSddZeLLX77AFF", "K1EQD58SSddWLL77AAFF", "JJ11N80SSddeLL77AAFF", "OKK160SScddLLX77AAFF", "4JK15800SSddLL77AAFF", "9KK155C0SSddLL77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
+  "BRI-KB-ROCK":["MMSSadZeWbbLLIIAFFff", "6MMhSSWWYbLII77AFFff", "gg5MM0SScdYbII77AFff", "OgEMMHSScddLIIXAAFff", "OggMCHBSSddII7AAFFff", "OggQMSSddZLIIXX7AAff", "OO4VggQMMBSSdLII7AAf", "OOV9gg3EMMSSLII7AAFf", "OO1ggMMSSaddI77AAFff", "OOV1ggQMMSSddLIAAFFf", "OOVggDMMSSddZLLIAAFf", "OOJggMMHSSLLII77AAFf", "PGGTTOOggEMMSSdL7AAF"],
+  "MED-POD":["gMScddeWLLIIXX7AAFff", "ggDSZWWLLIIX77AAFFff", "ggE5MMSaeeLLIIAAFFff", "1gQDMSSccWII77AAFFff", "OORggUUMMBSSLL7AAFff", "OOVJggNMHSSdbLI7AAff", "OOg3UMHSSeLLII7AAFff", "OO49RggEMMSSLII77AAF", "OO1ggMMBhSSddLII77ff", "OO166ggMSSdLII77AAFf", "OOVgg3QMMSSddLLII7AA", "OO49ggMMSSddLII7AAff", "P2GGTTOOggMMSSddI7AF"],
+  "MORPHE":["J9NNDHhaaccZWWYYbIIX", "93NDHaaccZZeWWIIXAFF", "96UUQNaaccZZeWWYLLAf", "49963UHHhaccZeWWYLIf", "VVJ9966RgUUD5aaccZWW", "4VV99gg33UQN5HHhccWf", "OVVJ9963EUUNNDHHSacF", "O4VVJ99K3UUNNMHHhacc", "44VVJ993UUNNMhhaccWI", "OO44VVJ991UUQNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "O44VVJ99KUUNNMHHacZW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9NNHBaaccWWYYbLX77Af", "9RUNHBaccdeeWWYbLL7F", "OV99KQHBaaccZWWYYbbf", "VVN5HHaacddeWWbbLLXA", "V9RNNHHB8aaccZWWYbIF", "J96UUNQNHHBBaaccWbbL", "VV99K3UUNNMHHB8cWYYL", "VV99KREEUUNCHHSSaacL", "4VV99RUQNNMMHHBSaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaacd", "OVV99RRgEUUNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["NQQHHhaaccZZWWXXAAff", "93QNHBaaccZZWWYY7AFF", "JK3UNDHHhhaaccZWWIAF", "NNCHHhhaaccZZeWWbLAF", "O4VV9g3NNDCHSaccZWW7", "V9963UNNDDHhSccWW7AF", "O4VJ991UUNNHHBhaaccW", "VVJJ9933UUNN5HaaccZI", "OO4VV993UNQNQMaacWWY", "O4VVJJ996R3UUNNHH0cW", "O44VVJ9966UUNNDHH0aW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9KUMChaacceeWWbXX7F", "VUNN0aaccdeeWWLXX7Ff", "9UUNND55HaaceWYXXAff", "9KKUUNNMHH80aaccZWXX", "VV99gUUNN5H80ccdeWYX", "V99K1R3UUNN50aacceeW", "VV99UUQN5HHB8SaacceX", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1RUUNN55HBacc", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTT4VVJ99K11UUNNHac"],
+  "DELOK":["VUH00aaccdeeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNDBaaccWWYYbLIXX", "4VV9UUCaaccWYYbbLIXF", "VVEUUNN5HH0SaccWWYYL", "VVKR3ENNHHSaacWWbLLF", "VV9RUUNNMHHBcdWWYbAf", "VV99KRgEUUNHHBaccdWb", "VV99RRUUNNMCMHHBSaWW", "VV9916RREEUUNNHHBccW", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["963UNHHaaccZZWYAAFFf", "96UQDMHHaaccZZWLXAFF", "V6UNDDHHaaccZZWIX7Af", "V996NNQDhhaccZZWWbbI", "V96UUQDDHaaccZZWWbLF", "VVJ9966UMHHhaacWWbbF", "O4VJg3UNNMHHhaaccWWY", "44VV9966UUNNHHB0cZWW", "OO4VVJ99K6UUQNNHHWWY", "OO4VVJ99UUQNHhhaaWWY", "OO4VV996UUQNN5aacWWF", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9UNHBaccdWWbLLAAFFff", "UUHHhaccdWWbLIX77AAF", "V9UUMHHacWWYLLI7AFff", "99RgNNSaaccWWYLAFFff", "VV99UNHH8aacceW7AAFF", "VV99163UNHHBSaacWLLF", "V993UNNHHSSaaccLLAAF", "OVV99UUNQHHSSaaccdWL", "VVJ991UUNNHSaadWYL77", "4VVJ99gUNNHHSSaadWLA", "VV99KK6UNNHHSSaaddWF", "VV99gUUNQNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["EEQQDBBhZZYYbLL77Aff", "J6RRBBcdZZYYbLLIXAFf", "ORR3UQMMBcdZZeYYbLLF", "RR3DBBZZWYYbbLLIIX7A", "JR3EDDMMCBhSdYYbbLLA", "OVR33EEMMB0hZZWYYbbL", "O4J9RRgEEDMMBB8YbbL7", "OOJJRREEQ5CMBBYbbLLf", "O4VJRRg3EENDMMBBYYbb", "OOJ6RREENQMMCBZYYbbL", "OO44JJ6RREEQMMBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["9UNHhhaacZZWWIXX7FFf", "O493UN5MH8aacZZWWL77", "4VVJ9UNMHHacZZeeWXAf", "63UUNQDHaaccZWWX7AFf", "OJJ1UUNNCHhaaccdZWWX", "OVV6UNNMHH0haaccZZWW", "O4VV99EUNQQHhaaccZWA", "O4VVRgEUUNNHhhSaccWW", "OO44VV9K6RgUUNNHaccW", "O4VVJJ99663UUNNHHccd", "OOVV9966RUUNQNHccWWf", "OO4VVJ99g3UUNNDHHccW", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["CSSdeebLLIIXX77AAFff", "N8SadeYbLLIXX77AAFFf", "Kg880SSdeeWWLL77AAFF", "638800ddZeYLLX77AAFF", "KKN580SddZZeLL77AAFF", "16EQC88SSddZeLL77AFF", "9KK5C0SSddLLIX77AAFF", "OKgEU8SSddeeLL77AAFF", "9911U50SSddeLL77AAFF", "4KK1655CSSddLL77AAFF", "O9KK1CCMSSddLL77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
+  "FENCY":["1155C80deYLXX77AAFff", "U55C800SeWbLLIXX77AA", "KK1RQ55CCHSeWYLXX7FF", "1g5C800ceeYLIXX7AAFF", "K11E55CM00ceeLLXX77F", "K11gQCC800eebLLIIX7A", "VKK113D55880SSeeLX77", "4KK11655M880SddeeLXX", "K11R355CC800SeebL7AF", "JKK11N5C880SddeeIXFF", "JKK11gN5CC800SSddee7", "VKK11DCC8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
+  "EXO-MKI":["MMHhSSaceeWYIIXAAFFf", "gMM8hSSaacWWYYbIIAAf", "VgQMMHBSSccWLLIIAAFf", "ggDMMHHBacWYbLIIAAff", "O4VDMMHB0SSacZIIAAff", "OOV9gg3MCMH88SSaZAff", "OOVggECMM8ScWWIIAAff", "OOVVggEUMMHH8cIIAAff", "OOVV99KggUQMMHSSIAff", "OOVVJ9ggUUNMMCSIAAff", "OO4996ggUNNMM8SSIAff", "OOVVJ996ggNMMSSIIAff", "PP2GGTTOO4VVggMHSSff"],
+  "GAPIX":["J633QCMhhZZeebLLI7Af", "6RQQDDhhZZeYYbbLLXXF", "O4J63Q5BhhZZeYYbbLXF", "6633UQQ5BhhSZZeYbLII", "4466RR3QQDhhcZbLLIFF", "OOJ66R3EQQB0hcZZY7Ff", "OO4VJJ9663EEQDDhYLLI", "O44JJ166RREQQDCHhZeY", "OO44JJK66R33DMMHZWYL", "OO44VJJ166REQDMBBhhb", "OO44JJ9K166RR33EEQDB", "OO44JJ966RRg33EEQQMh", "PP22OO44JJ66RR33EEQB"],
+  "EXO-MKVII":["J663DB0hhZZeWIXX77FF", "J3QQD55hhZZeeIXX77AF", "466QQD5C8hhZZeIX7AFf", "K66QQDD0hhddZZeeLIXA", "4J1g33QNQDD5ChZZIXAF", "4VK1663EQNQDD0hZZeLA", "OO4JJK16QQDD5MH0hhZ7", "44JJKK6633NDDCH80hZb", "OO44VJJ93UQDD5C80hhe", "OO44JJKK1633DD55B8hh", "O44JJ9KK11663QQDD8ZZ", "OO44VJJKK16633NDD88Z", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["4JQNDDMHhhaccdZZeYL7", "4J63QDDHhccZZeWWbAAF", "4JK633QHhhcZZeWW77ff", "JJ63UUQDDhhaacZZX7AA", "O4JJ3ENQQDDHHacZZYLF", "OJJ633ENQDDBhacZZeWW", "OO4JJ9K6633UQQDDBhac", "OO44VJJ9166R3UQNDD8Z", "OO44VJJ996633UQQHHha", "OO44VVJJ6633NQHhacdZ", "OO44VVJJ9916633NQCha", "OO44VVJJ996633UQQDHW", "PP22GOO44VJJ9663NQQh"],
+  "STAR-HUNTER":["4V63QQDDZZYLLIX77AFF", "46QDDBhhddZZebX7AFFf", "4J633DhhSadZZeLIAFFf", "O4466UQDhhZZWWLII77A", "O44J6633UQDhSddZX7AF", "OO441633QQChhSadYLIF", "OO446633QQD5hhaadL7F", "O44JJ633EQQDDHddZLAA", "O44JJ966R33UQQSSZLL7", "OO44JJ6633ED0hhSSdLL", "OO44VJJK663QQDSSZ77A", "OO44JJK633QNQhSSZL7A", "22TOO44JJK663QQSSddA"],
+  "RHINO":["4K63QDhhZZeeYbbLX7Ff", "63QDD0hhZZeWXXAAFFff", "11663QQDD5C0hZZeX7Af", "J33QDD5C00hhSdZZWYbA", "O4VJ133QQDC80hhZZeYF", "O4JJK633QD500hhaZeLA", "44JJ6633EDD80hhdZeXF", "OO4VJK633NQDCC0hhZZe", "OO44JJK1166g33QD80ad", "OO44JJ9KK16633NQQN55", "O44JJKK1166R33QNDD5H", "OO44JJKK116633EQQ55Z", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["4633QQDhhaaZeWWXXAAF", "OOVJ66QHHhhccZWWbAAf", "O4433QQhhSaadZWWLXFf", "OO963UQQD88hccddZZWL", "O4VJJ963QMHBhhacZZIF", "OO4JJ9NNQQD5hhSacZZY", "OO44J963EUUQNDB0hZZb", "OO44VVJJ16UUQNDhZZLA", "OO44VVJK66gUUNDDhZZb", "OO44VVJJ996QQNDHHhZZ", "OO44VVJJ9RgQNDDHhcZZ", "OO44VVJ9966gUNQQDDZZ", "PP22GGOO44JJ93UDDHZZ"],
+  "CONQUEST":["46QDDChhaccdZZeeXX7f", "Jg33QDB80hhZZeebIXAf", "OOK16QDD0hhZZebbIXXF", "6g33QQDC88hhSaZZeWXX", "OJK133QQDCC80hhcZZb7", "441633QQDD5CC8hhadXf", "OO4JK1166R3QNQD0hhZe", "O44JJ66QQD55M80ZZeL7", "OO4J9K16633QQDD5880e", "OO44VJJKK11663QQH8he", "OO44VJJ9KK11663QQD8Z", "OO44JJKK1663QQD50haY", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OQMhSSacZZIXX7AAFFff", "Og3Q0hScddZZbIIAAFff", "OggDCM00hSZZeII7AAff", "OO4V6gQChSZeYbIIAAff", "OO4Rgg3QDDMMhScIAAff", "OOJJ1gUQD5MMSdeIIAff", "OOJ6ggECMhhSdZIIAAff", "OOJ6gg3UDDMM0SSdIAff", "OO44JJggDDMMCSSIIFff", "OO4JJgg3UDDMMSSIIAAF", "OO44JJRgg3EDMMSSIIAA", "OO4416gg33DMMSSIIAAf", "PP22GGTTOO4JggQMMSSf"],
+  "GOTHIKA":["43QQDDhaacZZWb77AFff", "JJ93QQDHhaddZZWYYFff", "633UQQDDhaacZZWAAFFf", "OJ33NQNDHhhccdZZYI7A", "4466g3UQQDhhccZZWWIf", "OOJ1633UUNQDDBhhaZWf", "OOJJ16R3UQNNQDDHhhdW", "O44VVJ663QNNDD500hh7", "OO44VVJJ99133QDhhaZZ", "OO44VVJ99633UUNDhhZb", "OO44VVJJ99K663NQQMhh", "OO44VJJ99K6633UUQ5hh", "PP22GOO44VJJ99663Mhh"],
+  "PRAWN":["gMBScWbbLLIIXXAAFFff", "gMBBSZWYYbLLII77AAff", "gEMSSadWYbLLIIAAFFff", "OMMBB0SeYbbLLIIAAFff", "OKRgNMMHBSSLLIIXAAff", "OOV9ggEMMC8SYbbIIAff", "OO4RggEMMBBSSeLLIAff", "OORRggEUMMHSSdeYIIAf", "OO9RggEEMMBSSdZbIAff", "OOJ9RRggQMMSSYYbIAff", "OORgg3EEMMHB8SSYIIff", "OO4JRggMMBBSSbbIAAff", "PPGGTTOORggEEMMBBSSA"],
+  "HARKO":["KKQMMSSaccWWbIX7AAff", "OE5MhSSaaccZWWbIAAff", "OOg5MSSaaZeWWI7AAFff", "OUMMHSaccddWWLIIAAff", "O49MMHHhSScWbbIIAAff", "OOJ9KgNNMMHdWWIIAAff", "OOVggEUNN5MMSScWIIAA", "OOJ99RggEUDMSWIIAAff", "OO4V99KggNMMHHSSIIAA", "OO4VV99K1ggMMSSaIIff", "OO4VVJJ9ggUNMMSSIIAA", "OOVJ996ggNMMHSSIIAAf", "PP2GGTTOOVV9ggEMSSII"],
+  "DOZEUR":["DMMBhaZZeYYbbLLXAAFF", "VRQDMBhZZeYYbbLLIX7A", "6REUQQMMBdZWYYbbLL77", "4RREDMBBZZbbLLIIX7Ff", "O4REQD5MBB8hcYYbbLL7", "3EEDDCMBBhcZYYbbLLIA", "OVRR3EENQDMMBBhZYbbL", "VJJ9RR33EEQMBBcYYbbL", "OO46RREEDMMHBB88YYbb", "OO44RR3EE5MMBBhdYYbb", "OO44VJRR3EEMMBBaYYbb", "OO66RREEQQDMMBBYYbbL", "22O446RREEQMMBBYbbLL"],
+  "DILUS":["RNMBB80WYbbLLIXXAFff", "MMBB0eWWYbbLLIXXAAFf", "EDMMBB8haeeYbbLLXX7f", "V11REMMBBSacYYbLLXXf", "1EEDCMCBB8heYYbbLLFF", "EEUD5MHBB80eYYbbLLXA", "J1RREEMCBBdYYbbLLXXA", "4JJ11RREEMMCBB80YYbb", "O1RREEU5MMBB8eYYbbIX", "KK1RR3EEMMHBB80eYYbb", "9K16RREECMMBB80dYYbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["REDMhZZeeYYbbLLXXAAf", "JREQQMBZZeeWYbbLLI7A", "JKRMBBhhcZYYbbLLXAFf", "4RREUMBhaadZZYYbLLI7", "9RR3EQNQBBhZYYbbLLAF", "O446RR3EEU5MMZZYYbbL", "OO44RRUQMMBB0dYYbbLL", "OV6RRg33EEMMHBBeYYbL", "O4J1RREEQNMMBBZZYbbL", "OO46RREEUDMCMBBWYYbb", "OO4VJRREEMMBB8hYYbL7", "OO4VJJRRgEEMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
+  "SHADOW":["VEMBaaWWYYbbLL77AFff", "1EBBSaccWWYYbbLLIFff", "EUNMBB8cceYYbbLLXFFf", "RRgEENMBBaccdWYbLLXA", "KEEUDMMHBacYYbbLLXff", "V9RRgEENCMMadYYbbLLf", "V9RREEQDMMCHBB0WYYbL", "VRREEMMCHBB80SacYYLL", "VVJ9RREEUMMBBaZYYbLL", "VVJ996RRgEEMMHBBYYbL", "VV99KRREEUNMMBBYYbbL", "OVV996RREEMMHBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -23576,7 +23846,8 @@ const DEFI_RESULT_ART_Y = {
   'MOTOKO': 30,
   'TOA2': 37,
   'ZAPPAN': 20,
-  'AMALGAME': 30
+  'AMALGAME': 30,
+  'GOTHIKA': 30
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
