@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.73</title>
+<title>Projet MECA V0.04.74</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3524,10 +3524,7 @@
       linear-gradient(180deg,#ffd873,#f0a91c);}
   .lp-quick button.off{opacity:.45;}
   .lp-quick button:active{transform:translateY(2px); box-shadow:none;}
-  #lvlPanel .controls button{
-    --cut:8px; border-radius:0;
-    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
-  }
+  
   .lp-cost{display:flex; justify-content:center; gap:16px; font-family:var(--font-title); font-size:14px; font-weight:900; color:#fff;}
   .lp-cost span{display:inline-flex; align-items:center; gap:5px;}
   .lp-cost span.bad{color:#ff7b70;}
@@ -6160,13 +6157,13 @@
      centrage flex plutôt qu'en alignement par défaut sur la ligne de base, pour que les chiffres en
      gras (plus grands) restent bien calés avec le reste du texte malgré la police display. Scopé à
      #modLvlPanel pour ne pas toucher le panneau des mechs qui utilise les mêmes classes .lp-head/.lp-cost. */
-  #modLvlPanel .lp-head{display:flex; align-items:center; justify-content:center; gap:4px;}
-  #modLvlPanel .lp-head b, #modLvlPanel .lp-head i{line-height:1;}
+  
+  
   /* "14 / 50" (V0.02.36m, demande d'Alex) : alignement par le bas plutôt que par le centre -- le petit
      texte "/ 50" reste correctement calé sur "14" au lieu de sembler flotter au-dessus. */
-  #modLvlPanel .lp-cost span{align-items:flex-end;}
-  #modLvlPanel .lp-cost i{align-self:center;}
-  #modLvlPanel .lp-cost i, #modLvlPanel .lp-cost span, #modLvlPanel .lp-cost small{line-height:1;}
+  
+  
+  
   /* Bouton AMÉLIORER du panneau (V0.02.36m, demande d'Alex) : même dégradé or biseauté que les autres
      boutons de confirmation du jeu (#rwOk, #lootGo) au lieu du violet générique de .primary-btn. */
   #modLpGo{
@@ -6914,7 +6911,7 @@
   .codex-modal.lvl-open .cx-close-round,
   .codex-modal.lvl-open .cx-close{display:none !important;}
   /* Idem pour le panneau de montée de niveau des modules (V0.02.36k) */
-  .codex-modal.lvl-open #modLvlOpenBtn{display:none !important;}
+  
 
   /* Cartes déjà placées dans l'escouade (fenêtre Death Squad) */
   .codex-card.pick-used{filter:grayscale(.85) brightness(.55); opacity:.75; cursor:default;}
@@ -7301,7 +7298,6 @@
   .btl-pd span.zero{ opacity:0; transform:scale(.7); }
   .btl-pd span.pop{ animation:btlPdPop .26s cubic-bezier(.2,.9,.3,1.3); }
   @keyframes btlPdPop{ 0%{ transform:scale(1.4); } 100%{ transform:scale(1); } }
-  .btl-unit.planned-heal::after{ content:""; position:absolute; inset:-3px; border-radius:8px; pointer-events:none; box-shadow:0 0 10px 2px rgba(255,210,74,.85); animation:btlPulse 1.2s ease-in-out infinite; }
   @keyframes btlPulse{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
 
   /* bouton FIN */
@@ -7494,7 +7490,6 @@
   .btl-b:active{ filter:brightness(1.2); }
   .btl-b.atk{ border-color:rgba(255,196,196,.85); background:linear-gradient(160deg, rgba(255,255,255,.4) 0%, transparent 42%), linear-gradient(180deg, #ff5a5a, #c01818 60%, #6a0808); box-shadow:0 3px 0 #3a0404; }
   .btl-b.def{ border-color:rgba(186,218,255,.85); background:linear-gradient(160deg, rgba(255,255,255,.4) 0%, transparent 42%), linear-gradient(180deg, #4ca2ff, #1a60d2 60%, #0b3079); box-shadow:0 3px 0 #04163a; }
-  .btl-b.ult{ border-color:rgba(255,238,170,.9); color:#2a1a00; text-shadow:none; background:linear-gradient(160deg, rgba(255,255,255,.5) 0%, transparent 42%), linear-gradient(180deg, #ffd95a, #d8960d 60%, #8a5a05); box-shadow:0 3px 0 #4a2f02; }
   .btl-b.dis{ border-color:rgba(255,255,255,.22); color:rgba(255,255,255,.42); text-shadow:none; background:linear-gradient(180deg, #4a4f5c, #31353f 60%, #1f222a); box-shadow:0 3px 0 #101218; cursor:not-allowed; }
   .btl-b.dis:active{ filter:none; }
   .btl-b.clr{ flex:0 0 44px; padding:11px; border-color:rgba(255,255,255,.45); background:linear-gradient(160deg, rgba(255,255,255,.35) 0%, transparent 42%), rgba(70,76,92,.85); box-shadow:0 3px 0 #1a1d28; }
@@ -8204,7 +8199,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.73</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.74</b></div>
   </div>
 
     </div>
@@ -8455,9 +8450,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.73';
+var BUILD_VERSION = 'V0.04.74';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.74', items:[
+    'COMBAT : l\'aperçu de la phase de plan affiche aussi la riposte prévue sur la carte qui attaque (PV ou bouclier perdus), avec le même décompte que sur la cible au moment des coups. Pas de riposte affichée quand on vise le chef d\'escouade.',
+    'PERFORMANCE : seconde purge du code mort (action d\'ultime à bouton, panneau de niveau des cartes et des modules, restes de Death Squad). Les ultimes automatiques ne changent pas.',
+  ] },
   { v:'V0.04.73', items:[
     'COMBAT : les dégâts infligés sont exactement égaux à l\'ATQ de la carte (plus de variation aléatoire ni de coups critiques). L\'aperçu de la phase de plan indique les dégâts réels : bouclier retiré en bleu, PV perdus en rouge. La riposte vaut l\'ATQ de la carte attaquée.',
     'COMBAT : DÉFENDRE affiche « +X » sur la carte ciblée (aperçu puis application). À l\'ultime, la DEF doublée affiche « +X » au déclenchement et « -X » quand elle retombe à la fin.',
@@ -10676,10 +10675,8 @@ const playerLevels = {};
 
 // ---------- Expérience des cartes ----------
 // Chaque carte qui participe à un combat gagne de l'XP (moins en cas de défaite).
-const CARD_MAX_LEVEL = 300;
 // Niveau maximum selon la rareté : l'upgrade d'une carte débloque des niveaux supplémentaires
 const LEVEL_CAP = { rare: 100, epique: 150, legendaire: 250, ecarlate: 400, holo: 300 };
-function levelCap(def){ return LEVEL_CAP[effRarity(def)] || CARD_MAX_LEVEL; }
 // XP versée au butin par vague gagnée
 // cardXp suit la même clé par rareté que playerLevels (voir ci-dessus).
 const cardXp = {};
@@ -10789,14 +10786,6 @@ function levelDist(name, rar){
 function topOwnedLevel(name, rar){ return cardLevel(name, rar); }
 // Fait progresser UN SEUL exemplaire (toujours celui du palier le plus haut de la pile, décision
 // d'Alex V0.01.88) de `cur` à `target`, sans jamais toucher aux autres exemplaires de la pile.
-function advanceTopCopy(name, rar, cur, target){
-  return;   // V0.04.32 : plus de montée de niveau
-  const key = sqKey(name, rar), d = levelDist(name, rar);
-  d[cur] = (d[cur] || 1) - 1;
-  if(d[cur] <= 0) delete d[cur];
-  d[target] = (d[target] || 0) + 1;
-  playerLevels[key] = target;
-}
 // Répartition par défaut quand aucun choix manuel n'est fait (fusion/destruction automatiques, ex.
 // bouton AUTO) : consomme les paliers les plus bas d'abord, pour toujours protéger en priorité les
 // exemplaires les plus investis.
@@ -10874,7 +10863,7 @@ const player = {
   // playerLevels pour les cartes. Migration des anciennes sauvegardes (player.modules[name].level) dans
   // applySave().
 };
-function defaultStats(){ return { bestStreak:0, battles:0, battlesWon:0, defisWon:0, deckEdits:0, taskFull:0, tasksDone:0, goldEarned:0, destroyed:0, destroyedLeg:0, levelUps:0, fusedLeg:0, dailyWeeks:0, night:0, engine:0, mono:0, cardViews:0, collVisits:0, squadEdits:0, favAdds:0, sheetVisits:0, fabRefreshes:0, fabBuyAlls:0, modFusions:0, modFusedLeg:0, modDestroyed:0, labRefreshes:0, labBuyAlls:0, boostersOpened:0,
+function defaultStats(){ return { bestStreak:0, battles:0, battlesWon:0, defisWon:0, deckEdits:0, taskFull:0, tasksDone:0, goldEarned:0, destroyed:0, destroyedLeg:0, levelUps:0, fusedLeg:0, dailyWeeks:0, night:0, engine:0, cardViews:0, collVisits:0, squadEdits:0, favAdds:0, sheetVisits:0, fabRefreshes:0, fabBuyAlls:0, modFusions:0, modFusedLeg:0, modDestroyed:0, labRefreshes:0, labBuyAlls:0, boostersOpened:0,
   // V0.02.93, demande d'Alex : "ajoute des trophées liées aux booster" -- compteur par type, en plus du
   // total boostersOpened déjà existant, pour les trophées "ouvrir N boosters de TEL type" (cf TROPHIES).
   boostersByType:{ res:0, cards:0, modules:0 } }; }
@@ -10890,7 +10879,7 @@ function normalizePlayerExtras(){
   delete player.totals.mat.holo;
   player.login = Object.assign({ last:'', streak:0, real:0, best:0, days:0 }, player.login || {});
   player.stats = Object.assign(defaultStats(), player.stats || {});
-  ['kills', 'missions', 'collects'].forEach(k => { delete player.stats[k]; });   // compteurs des anciennes missions
+  ['kills', 'missions', 'collects', 'mono'].forEach(k => { delete player.stats[k]; });   // compteurs des anciennes missions
   player.troph = { r: Object.assign({}, (player.troph && player.troph.r) || {}), c: Object.assign({}, (player.troph && player.troph.c) || {}) };
   player.daily = Object.assign({ day:0, last:'', total:0, cycle:0 }, player.daily || {});
   player.winStreak = Math.max(0, Math.min(5, Math.floor(player.winStreak || 0)));   // série de victoires BATAILLE
@@ -11185,14 +11174,6 @@ function moduleLevel(name, rar){
 // toucher aux autres exemplaires -- équivalent de advanceTopCopy() pour les cartes. Appelé par
 // doModuleLevelUp() (le bouton ▲ AMÉLIORER existant reste inchangé dans son fonctionnement pour le
 // joueur, il ne fait maintenant progresser que le meilleur exemplaire de la rareté affichée).
-function advanceTopModCopy(name, rar, cur, target){ return;   // V0.04.32 : plus de niveaux de module
-  if(target <= cur) return;
-  const key = modKey(name, rar), d = modLevelDist(name, rar);
-  d[cur] = (d[cur] || 1) - 1;
-  if(d[cur] <= 0) delete d[cur];
-  d[target] = (d[target] || 0) + 1;
-  modulePlayerLevels[key] = target;
-}
 // Répartition par défaut (paliers les plus bas consommés en premier) -- équivalent de defaultSelection().
 function modDefaultSelection(name, rar, need){
   const d = modLevelDist(name, rar), tiers = modLevelTiers(name, rar);
@@ -11260,30 +11241,9 @@ function modRollRarity(){
 // ~900 matériaux RARE pour aller de 1 à 100, ~600 ÉPIQUE pour 1 à 150, ~450 LÉGENDAIRE pour 1 à 250
 // (de quoi finir un module rare en une grosse semaine de jeu régulier, un légendaire en plusieurs
 // semaines -- à ajuster avec Alex selon le ressenti une fois en jeu).
-const MODULE_UPGRADE_CURVE = {
-  rare:       { base:0.0793, exp:1.2 },
-  epique:     { base:0.0212, exp:1.2 },
-  legendaire: { base:0.0048, exp:1.2 }
-};
-function moduleUpgradeCost(level, rar){
-  const c = MODULE_UPGRADE_CURVE[rar] || MODULE_UPGRADE_CURVE.legendaire;
-  return Math.max(1, Math.round(c.base * Math.pow(level, c.exp)));
-}
 // Coût cumulé pour sauter plusieurs niveaux d'un coup (panneau de montée de niveau, V0.02.36k, demande
 // d'Alex : même principe de sélecteur de niveau -/+/MAX que pour les mechs, sur le même schéma que
 // lvlCost()/maxAffordableLevel() plus haut).
-function moduleLvlCost(from, to, rar){ return 0;   // V0.04.32 : plus de niveaux de module
-  let total = 0;
-  for(let L = from; L < to; L++) total += moduleUpgradeCost(L, rar);
-  return total;
-}
-function maxAffordableModuleLevel(from, rar){
-  const cap = moduleLevelCap(rar);
-  const have = Math.floor(player.res.mat[rar] || 0);
-  let total = 0, L = from;
-  while(L < cap){ const c = moduleUpgradeCost(L, rar); if(total + c > have) break; total += c; L++; }
-  return L;
-}
 function moduleEffIcon(kind){
   return `<svg class="mod-eff-ico ${kind}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round">
     <path d="M32 6 L54 14 V30 C54 45 44 54 32 58 C20 54 10 45 10 30 V14 Z"/>
@@ -11511,16 +11471,12 @@ function openModuleModal(name, rar, level, opts){
     <div class="mod-desc" id="modDescText" hidden>${def.descFor(val)}</div>
     
   `;
-  const lvlBtn = document.getElementById('modLvlOpenBtn');
-  if(lvlBtn) lvlBtn.onclick = () => toggleModuleLevelPanel(def, rar);
   document.getElementById('moduleModal').classList.add('show');
 }
 function closeModuleModal(){
   hideCraftBar();
   if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
-  document.getElementById('moduleModal').classList.remove('show', 'lvl-open');
-  const panel = document.getElementById('modLvlPanel');
-  if(panel) panel.classList.remove('show');
+  document.getElementById('moduleModal').classList.remove('show');
 }
 document.getElementById('moduleModal').addEventListener('click', e => { if(e.target.id === 'moduleModal') closeModuleModal(); });
 // ---------- Fenêtre de révélation d'un cadeau (V0.02.63, demande d'Alex) ----------
@@ -11555,76 +11511,6 @@ document.getElementById('giftClose').onclick = () => document.getElementById('gi
 // la connaît déjà) -- auparavant ces 3 fonctions recalculaient modEffRarity(def) elles-mêmes, ce qui
 // faisait AMÉLIORER la mauvaise tuile dès qu'un module était possédé à plusieurs raretés à la fois
 // (la rareté effective/la plus haute, même si le joueur avait ouvert la fiche d'une rareté inférieure).
-var modLvlTarget = 0;
-function toggleModuleLevelPanel(def, rar){
-  const panel = document.getElementById('modLvlPanel');
-  if(!panel) return;
-  const md = document.getElementById('moduleModal');
-  if(panel.classList.contains('show')){
-    panel.classList.remove('show');
-    if(md) md.classList.remove('lvl-open');
-    // Le panneau se referme : le texte repasse à la valeur actuelle (plus de prévisualisation en vert).
-    const desc = document.getElementById('modDescText');
-    if(desc) desc.innerHTML = def.descFor(moduleValue(def, moduleLevel(def.name, rar)));
-    return;
-  }
-  modLvlTarget = moduleLevel(def.name, rar) + 1;   // par défaut : un seul niveau, comme pour les mechs
-  panel.classList.add('show');
-  if(md) md.classList.add('lvl-open');
-  renderModuleLevelPanel(def, rar);
-}
-function renderModuleLevelPanel(def, rar){
-  const panel = document.getElementById('modLvlPanel');
-  if(!panel) return;
-  const cur = moduleLevel(def.name, rar);
-  // Coût payé dans les matériaux de la rareté COURANTE `rar` (V0.02.55, cf MODULE_UPGRADE_CURVE plus
-  // haut -- ne dépend plus de def.rarity comme avant).
-  const cap = moduleLevelCap(rar);
-  const maxAff = maxAffordableModuleLevel(cur, rar);
-  modLvlTarget = Math.min(Math.max(modLvlTarget, cur + 1), cap);
-  const cost = moduleLvlCost(cur, modLvlTarget, rar);
-  const have = Math.floor(player.res.mat[rar] || 0);
-  const okMat = cost <= have;
-  panel.innerHTML = `
-    <div class="lp-head">Nv. <b>${cur}</b> <i>→</i> <b class="up" id="modLpTarget">${modLvlTarget}</b> <small class="lp-cap">/${cap}</small></div>
-    <div class="lp-quick">
-      <button data-add="-1" ${modLvlTarget <= cur + 1 ? 'class="off"' : ''}>−</button>
-      <button data-add="1" class="${modLvlTarget >= cap ? 'off' : ''}">+</button>
-      <button data-max="1" class="${maxAff > cur ? '' : 'off'}">MAX</button>
-    </div>
-    <div class="lp-cost">
-      <span class="${okMat ? '' : 'bad'}">${matIcon(rar)}${fmtNum(cost)} <small>/ ${fmtNum(have)}</small></span>
-    </div>
-    <div class="controls" style="width:100%;"><button class="primary-btn" id="modLpGo" ${okMat ? '' : 'disabled'}>${okMat ? 'AMÉLIORER' : 'MATÉRIAUX INSUFFISANTS'}</button></div>`;
-  panel.querySelectorAll('[data-add]').forEach(btn => btn.onclick = () => { modLvlTarget = Math.min(cap, Math.max(cur + 1, modLvlTarget + parseInt(btn.dataset.add))); renderModuleLevelPanel(def, rar); });
-  panel.querySelector('[data-max]').onclick = () => { if(maxAff > cur){ modLvlTarget = maxAff; renderModuleLevelPanel(def, rar); } else showToast('RESSOURCES INSUFFISANTES'); };
-  document.getElementById('modLpGo').onclick = () => doModuleLevelUp(def, rar);
-  // Prévisualisation : le texte sous la carte affiche déjà la valeur au niveau visé, en vert
-  // (mod-desc-hi), tant que le panneau reste ouvert -- demande d'Alex.
-  const desc = document.getElementById('modDescText');
-  if(desc) desc.innerHTML = def.descFor(moduleValue(def, modLvlTarget), true);
-}
-function doModuleLevelUp(def, rar){
-  const cur = moduleLevel(def.name, rar), target = Math.min(modLvlTarget, moduleLevelCap(rar));
-  const cost = moduleLvlCost(cur, target, rar);
-  const have = Math.floor(player.res.mat[rar] || 0);
-  if(target <= cur || cost > have) return;
-  player.res.mat[rar] -= cost;
-  advanceTopModCopy(def.name, rar, cur, target);
-  saveSoon();
-  
-  
-  const panel = document.getElementById('modLvlPanel');
-  if(panel) panel.classList.remove('show');
-  document.getElementById('moduleModal').classList.remove('lvl-open');
-  showToast('MODULE AMÉLIORÉ : ' + def.name + ' NV. ' + target);
-  // Rouvre sur la MÊME rareté qu'avant (pas modEffRarity() par défaut) -- sinon un module possédé à
-  // plusieurs raretés bascule sur la plus haute après l'amélioration, même si le joueur était en train
-  // d'améliorer une tuile inférieure (même bug que celui corrigé ci-dessus, V0.02.48). Si ce palier
-  // vient d'atteindre son plafond (V0.02.55), openModuleModal() le détecte tout seul et affiche
-  // "NIVEAU MAX ATTEINT" à la place du bouton AMÉLIORER -- rien de plus à faire ici.
-  openModuleModal(def.name, rar);
-}
 // ---------- UPGRADE des modules (exemplaires + fusion de rareté, V0.02.45, demande d'Alex) ----------
 // Même principe que l'UPGRADE des cartes classiques (3 RARES -> 1 ÉPIQUE, 5 ÉPIQUES -> 1 LÉGENDAIRE,
 // cf FUSION_NEED) : chaque exemplaire de module garde son propre niveau (moduleLevelDist), et si la
@@ -11964,7 +11850,6 @@ function sqEntry(key){
   const rar = rarityOf(def);   // V0.04.49 : rareté unique, une ancienne clé « NOM|autre rareté » pointe sur la bonne carte
   return { def, rar, key: sqKey(name, rar) };
 }
-function squadEntries(list){ return (list || squad).map((k, i) => { const e = sqEntry(k); return e ? Object.assign({ i }, e) : null; }).filter(Boolean); }
 // V0.04.14 : ramène en LÉGENDAIRE les modules ÉCARLATES déjà possédés (exemplaires + niveaux, plafonnés
 // au niveau max légendaire) -- les modules n'ont pas de version écarlate.
 function migrateModulesNoEcarlate(){
@@ -14338,132 +14223,7 @@ function lvlCost(from, to){ return { gold:0, xp:0 };   // V0.04.32 : plus de niv
   for(let L = from; L < to; L++){ const c = lvlStepCost(L); gold += c.gold; xp += c.xp; }
   return { gold, xp };
 }
-function maxAffordableLevel(from, cap){
-  cap = cap || CARD_MAX_LEVEL;
-  let gold = 0, xp = 0, L = from;
-  const G = Math.floor(player.res.gold || 0), X = Math.floor(player.res.xp || 0);
-  while(L < cap){ const c = lvlStepCost(L); if(gold + c.gold > G || xp + c.xp > X) break; gold += c.gold; xp += c.xp; L++; }
-  return L;
-}
-var lvlTarget = 0, lvlAnimating = false;
-function toggleLevelPanel(def, rar){
-  const panel = document.getElementById('lvlPanel');
-  if(!panel) return;
-  const md = document.getElementById('codexModal');
-  if(panel.classList.contains('show')){
-    panel.classList.remove('show');
-    if(md) md.classList.remove('lvl-open');
-    const cur = cardLevel(def.name, rar), st = statsAtLevel(def, cur, rar);
-    showStatGains(st, null);
-    return;
-  }
-  const cur = cardLevel(def.name, rar);
-  lvlTarget = Math.min(cur + 1, levelCap(def));   // par défaut : un seul niveau
-  panel.classList.add('show');
-  // Panneau ouvert : on masque le bouton de montée de niveau et la croix,
-  // le joueur ferme en touchant à côté de la carte.
-  if(md) md.classList.add('lvl-open');
-  renderLevelPanel(def, rar);
-  const inner = document.getElementById('codexModalInner');
-  if(inner) inner.scrollTo({ top: inner.scrollHeight, behavior:'smooth' });
-}
-function renderLevelPanel(def, rar){
-  const panel = document.getElementById('lvlPanel');
-  if(!panel) return;
-  const cur = cardLevel(def.name, rar);
-  const cap = levelCap(def);
-  const maxAff = maxAffordableLevel(cur, cap);
-  lvlTarget = Math.min(Math.max(lvlTarget, cur + 1), cap);
-  const cost = lvlCost(cur, lvlTarget);
-  const okGold = cost.gold <= Math.floor(player.res.gold || 0), okXp = cost.xp <= Math.floor(player.res.xp || 0);
-  const a = statsAtLevel(def, cur, rar), b = statsAtLevel(def, lvlTarget, rar);
-  const row = (k, l) => `<div class="lp-st"><span>${l}</span><b>${a[k]}</b><i>→</i><b class="up">${b[k]}</b><em>+${b[k] - a[k]}</em></div>`;
-  panel.innerHTML = `
-    <div class="lp-head">Nv. <b>${cur}</b> <i>→</i> <b class="up" id="lpTarget">${lvlTarget}</b> <small class="lp-cap">/${cap}</small></div>
-    <div class="lp-quick">
-      <button data-add="-1" ${lvlTarget <= cur + 1 ? 'class="off"' : ''}>−</button>
-      <button data-add="1" ${lvlTarget >= cap ? 'class="off"' : ''}>+</button>
-      <button data-max="1" class="${maxAff > cur ? '' : 'off'}">MAX</button>
-    </div>
-    <div class="lp-cost">
-      <span class="${okGold ? '' : 'bad'}"><i>${ICON_GOLD}</i>${fmtNum(cost.gold)} <small>/ ${fmtNum(player.res.gold || 0)}</small></span>
-      <span class="${okXp ? '' : 'bad'}"><i>${ICON_XP}</i>${fmtNum(cost.xp)} <small>/ ${fmtNum(player.totalXp || 0)}</small></span>
-    </div>
-    <div class="lp-stats">${row('hp','PV')}${row('atk','ATQ')}${row('def','DEF')}</div>
-    <div class="controls" style="width:100%;"><button class="primary-btn" id="lpGo" ${okGold && okXp ? '' : 'disabled'}>${okGold && okXp ? 'AMÉLIORER' : (okGold ? 'XP INSUFFISANTE' : 'OR INSUFFISANT')}</button></div>`;
-  panel.querySelectorAll('[data-add]').forEach(btn => btn.onclick = () => { lvlTarget = Math.max(cur + 1, Math.min(cap, lvlTarget + parseInt(btn.dataset.add))); renderLevelPanel(def, rar); });
-  panel.querySelector('[data-max]').onclick = () => { if(maxAff > cur){ lvlTarget = maxAff; renderLevelPanel(def, rar); } else showToast('RESSOURCES INSUFFISANTES'); };
-  document.getElementById('lpGo').onclick = () => doLevelUp(def, rar);
-  showStatGains(a, b);
-}
 // Affiche le gain prévu à côté de chaque stat de la fiche : « 800 +3 »
-function showStatGains(a, b){
-  ['hp','atk','def'].forEach(k => {
-    const el = document.getElementById('cxSt' + k);
-    if(!el) return;
-    const d = b ? b[k] - a[k] : 0;
-    el.innerHTML = a[k] + (d > 0 ? `<span class="st-plus">+${d}</span>` : '');
-    if(el.closest('.lg-st')) el.className = lgDigCls(a[k]);
-  });
-}
-function doLevelUp(def, rar){
-  if(lvlAnimating) return;
-  const cur = cardLevel(def.name, rar), target = Math.min(lvlTarget, levelCap(def));
-  const cost = lvlCost(cur, target);
-  if(target <= cur || cost.gold > Math.floor(player.res.gold || 0) || cost.xp > Math.floor(player.res.xp || 0)) return;
-  player.res.gold -= cost.gold;
-  player.res.xp -= cost.xp;
-  advanceTopCopy(def.name, rar, cur, target);   // (V0.01.88) seul le meilleur exemplaire de la pile monte
-  player.stats.levelUps += target - cur;
-  cardXp[sqKey(def.name, rar)] = 0;
-  saveNow();
-  renderResources();
-  // Animation : le niveau et les stats montent progressivement jusqu'au niveau visé
-  lvlAnimating = true;
-  // Identité de la carte concernée par CETTE animation : si le joueur ferme la fiche puis en ouvre
-  // une autre pendant les ~1,5s de l'animation, on ne doit ni réécrire ses stats ni la rouvrir de force.
-  const cardKey = def.name + '|' + rar;
-  const panel = document.getElementById('lvlPanel');
-  if(panel) panel.classList.remove('show');
-  // le panneau se referme : on réaffiche le bouton de niveau et la croix
-  const md0 = document.getElementById('codexModal');
-  if(md0) md0.classList.remove('lvl-open');
-  const tag = document.getElementById('cxLvlTag');
-  playCardToss('level', { banner: 'NIVEAU ' + target, sub: def.name });
-  const steps = target - cur, dur = Math.min(1500, 300 + steps * 60), t0 = performance.now();
-  const frame = (now) => {
-    const k = Math.min(1, (now - t0) / dur), ease = 1 - Math.pow(1 - k, 3);
-    const L = Math.round(cur + (target - cur) * ease);
-    const st = statsAtLevel(def, L, rar);
-    // La fiche affichée est peut-être celle d'une AUTRE carte désormais (le joueur a navigué pendant
-    // l'animation) : dans ce cas on ne touche plus au DOM, ces id peuvent appartenir à cette autre carte.
-    const stillShowingThisCard = document.getElementById('codexModal').dataset.cxCard === cardKey;
-    if(stillShowingThisCard){
-      if(tag) tag.textContent = tag.classList.contains('lg-gem') ? L : 'Nv. ' + L;
-      const pw = document.getElementById('cxPow');
-      if(pw) pw.innerHTML = '' + cardPower(def, rar, L).toLocaleString('fr-FR');
-      const fin = statsAtLevel(def, target, rar);
-      ['hp','atk','def'].forEach(key => {
-        const el = document.getElementById('cxSt' + key); if(!el) return;
-        const left = fin[key] - st[key];
-        el.innerHTML = st[key] + (left > 0 ? `<span class="st-plus">+${left}</span>` : '');
-        if(el.closest('.lg-st')) el.className = lgDigCls(st[key]);
-      });
-    }
-    if(k < 1) requestAnimationFrame(frame);
-    else {
-      lvlAnimating = false;
-      if(stillShowingThisCard && tag){ tag.classList.remove('lvl-pop'); void tag.offsetWidth; tag.classList.add('lvl-pop'); }
-      showToast(def.name + ' PASSE AU NIVEAU ' + target + ' !');
-      
-      setTimeout(() => {
-        const md = document.getElementById('codexModal');
-        if(md.classList.contains('show') && md.dataset.cxCard === cardKey) openCodexModal(def.name, rar);
-      }, 1350);
-    }
-  };
-  requestAnimationFrame(frame);
-}
 function openCodexModal(name, rar, opts){
   if(player.stats) player.stats.cardViews++;
   document.getElementById('codexModal').classList.remove('lvl-open');
@@ -14525,17 +14285,6 @@ function openCodexModal(name, rar, opts){
   const cxCloseBtn = document.getElementById('cxCloseBtn');
   if(cxCloseBtn) cxCloseBtn.onclick = closeCodexModal;
   setupLorePin();
-  const lvlBtn = document.getElementById('lvlOpenBtn');
-  if(lvlBtn){
-    // Pas assez d'or / d'XP pour gagner au moins 1 niveau : bouton grisé
-    const cur = cardLevel(def.name, rar), c1 = lvlStepCost(cur);
-    const lackGold = c1.gold > Math.floor(player.res.gold || 0), lackXp = c1.xp > Math.floor(player.res.xp || 0);
-    if(lackGold || lackXp){
-      lvlBtn.classList.add('off');
-      lvlBtn.innerHTML = '▲ MONTÉE DE NIVEAU<small>' + (lackGold && lackXp ? 'OR ET XP INSUFFISANTS' : lackGold ? 'OR INSUFFISANT' : 'XP INSUFFISANTE') + '</small>';
-      lvlBtn.onclick = () => showToast('RESSOURCES INSUFFISANTES : ' + fmtNum(c1.gold) + ' OR · ' + fmtNum(c1.xp) + ' XP POUR 1 NIVEAU');
-    } else lvlBtn.onclick = () => { lvlBtn.classList.toggle('on'); toggleLevelPanel(def, rar); };
-  }
   const favBtn = document.getElementById('cxFavBtn');
   if(favBtn) favBtn.onclick = (e) => {
     e.stopPropagation();
@@ -14558,7 +14307,7 @@ function closeCodexModal(){
   hideCraftBar();
   if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   const m = document.getElementById('codexModal');
-  m.classList.remove('show', 'lvl-open');
+  m.classList.remove('show');
   const lb = document.getElementById('loreBubble'); if(lb) lb.classList.remove('show');
 }
 document.getElementById('codexModal').addEventListener('click', (e) => {
@@ -14615,7 +14364,7 @@ function cardPower(def, rar, level){
 // texte posé, et on réduit la police juste ce qu'il faut pour qu'il tienne sur une ligne, sans jamais
 // repasser sous ~68% de sa taille normale (reste lisible). N'affecte que la case DEATH SQUAD du hub ;
 // squadPowerTag (fenêtre DEATH SQUAD elle-même, où la place ne manque pas) n'est pas concerné.
-function updateSquadTile(){}   // case DEATH SQUAD supprimée
+// case DEATH SQUAD supprimée
 // Toute modification d'escouade passe par ici (alerte si une mission est en cours)
 // Équipe le module dans l'unique slot module de l'escouade (V0.02.51, demande d'Alex) -- un seul
 // exemplaire possible, donc pas d'échange à gérer comme pour placeCardInSlot().
@@ -14667,7 +14416,7 @@ function showCodexHub(){
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
   updateDeckTile();
-  updateSquadTile();
+  
   updateCollectionTile();
 }
 document.getElementById('tileFabTirage').onclick = enterFabDraw;
@@ -15472,7 +15221,7 @@ function showHub(){
   const tAllBtn = document.getElementById('tasksClaimAllBtn');
   if(tAllBtn) tAllBtn.classList.remove('show');
   if(typeof updateRewardTiles === 'function') updateRewardTiles();
-  updateSquadTile();
+  
   updateCollectionTile();
 }
 // ---------- Collection : classeur de pochettes numérotées ----------
@@ -16478,8 +16227,6 @@ function checkTrophies(quiet){
   // conditions des trophées cachés
   const h = new Date().getHours();
   if(h === 3) player.stats.night = 1;
-  const es = squadEntries();
-  if(es.length === 5 && es.every(e => categoryOf(e.def) === categoryOf(es[0].def))) player.stats.mono = 1;
   const fresh = [];
   TROPHIES.forEach(t => {
     if(player.troph.r[t.id]) return;
@@ -17585,9 +17332,6 @@ function btlRenderArrowsNow(){
   }
   btlArSync(want);
   btlRenderMarks();
-  // halo doré sur les cartes dont l'ultime de soin est planifié
-  BTL.el.querySelectorAll('.btl-unit.planned-heal').forEach(u => u.classList.remove('planned-heal'));
-  BTL.S.p.slots.forEach(c => { if(c && c.plan && c.plan.heal){ const u = btlUnitEl(c); if(u) u.classList.add('planned-heal'); } });
 }
 function btlBeam(r0, r1, kind, fast){
   const intro = (fast ? 170 : 300) * BTL_TS, ar = btlArrowNew(kind, { introMs:intro, rate:40 });
@@ -18960,10 +18704,9 @@ function btlPredict(opt){
     const t = get(t0); if(t.hp <= 0) return;
     targeted.add(t0.uid);
     if(plan.kind === 'def'){ const add = Math.max(0, Math.round(a.df)); t.df += add; t.pa += add; return; }   // DEF ajoutée = la DEF que le défenseur aura à cet instant
-    const ultA = plan.kind === 'ult' && !plan.heal;
-    if(plan.kind !== 'atk' && !ultA) return;
-    hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K * (ultA ? (c.def.ultMult || 1.5) * 1.5 : 1))), true);
-    if(!t0.leader || BTL_LEADER_COUNTER){ hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K))); targeted.add(c.uid); }   // l'attaquant qui meurt de la riposte reçoit aussi ses craquelures
+    if(plan.kind !== 'atk') return;
+    hit(t, Math.max(1, Math.round(c.atk * BTL_ATK_K)), true);
+    if(!t0.leader || BTL_LEADER_COUNTER){ hit(a, Math.max(1, Math.round(t0.atk * BTL_ATK_K)), true); targeted.add(c.uid); }   // la riposte prévue s'affiche sur l'attaquant (V0.04.74) ; s'il en meurt, il reçoit aussi ses craquelures
   });
   const dead = new Set();
   const pd = new Map();
@@ -19058,15 +18801,17 @@ function btlPdSync(pd){
 function btlPdTick(t, shield, hp, add){
   const u = t && btlUnitEl(t), e = u && u.querySelector('.btl-pd:not(.out)'); if(!e) return;
   const left = [], leftDef = [];
-  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt === t.uid){ if(c.plan.kind === 'atk' || (c.plan.kind === 'ult' && !c.plan.heal)) left.push(c); else if(c.plan.kind === 'def') leftDef.push(c); } }));
+  ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(c => { if(c && c.plan && c.plan.tgt === t.uid){ if(c.plan.kind === 'atk') left.push(c); else if(c.plan.kind === 'def') leftDef.push(c); } }));
+  // riposte encore à venir : la carte a elle-même une attaque planifiée (sur une carte qui ripostera) -> son chiffre de riposte reste affiché
+  const ownT = t.plan && t.plan.kind === 'atk' && t.plan.tgt ? btlCardByUid(t.plan.tgt) : null, ownCounter = !!ownT && btlOnField(ownT) && (!ownT.leader || BTL_LEADER_COUNTER);
   const goal = { s:Math.max(0, e._v.s - (shield || 0)), h:Math.max(0, e._v.h - (hp || 0)), a:Math.max(0, e._v.a - (add || 0)) };
-  if(!left.length){ goal.s = 0; goal.h = 0; }
+  if(!left.length && !ownCounter){ goal.s = 0; goal.h = 0; }
   if(!leftDef.length) goal.a = 0;
   ['a', 's', 'h'].forEach(k => {
     const step = () => { if(!e.isConnected) return; const cur = e._v[k]; if(cur <= goal[k]) return; btlPdShow(e, k, cur - Math.max(1, Math.ceil((cur - goal[k]) / 6)), true); btlAfter(step, 55); };
     step();
   });
-  if(!left.length && !leftDef.length) btlAfter(() => { if(e.isConnected){ e.classList.add('out'); btlAfter(() => e.remove(), 220); } }, 520);
+  if(!left.length && !leftDef.length && !ownCounter) btlAfter(() => { if(e.isConnected){ e.classList.add('out'); btlAfter(() => e.remove(), 220); } }, 520);
 }
 function btlWire(){
   btlQ('.btl-half.me').addEventListener('pointerdown', btlAimDown);
@@ -19144,28 +18889,13 @@ async function btlDoAction(c, ov){
     await btlSettle(el);
     return;
   }
-  if(p.kind === 'ult' && p.heal){
-    if(carry) carry.die(160);
-    c.energy = 0; btlPaint(c);
-    await btlLift(el);
-    await btlUltFx(el);
-    const amount = Math.round(c.maxHp * 0.22 * (c.def.ultMult || 1.3));
-    const allies = btlAlly(c.side).filter(t => t.hp > 0);
-    for(const t of allies){ await btlBeam(btlRect(el), btlUnitRect(t), 'ult'); btlHeal(t, amount, '#ffd24a'); }
-    await btlSleep(420);
-    await btlSettle(el);
-    return;
-  }
-  // attaque / ultime offensif : lever, reculer (anticipation), foncer, impact + arrêt sur image, retour amorti
+  // attaque : lever, reculer (anticipation), foncer, impact + arrêt sur image, retour amorti
   let t = btlCardByUid(p.tgt);
   const okFoes = btlValidFoes(c.side);
   if(!t || t.hp <= 0 || (!p.force && okFoes.indexOf(t) < 0)) t = okFoes.find(x => !x.leader) || BTL.S[foe].leader;
-  const ult = p.kind === 'ult';
-  if(ult){ c.energy = 0; btlPaint(c); }
   const rhino = !!p.rhino, kr = !!p.kriger;
   if(!rhino && !kr) await btlLift(el);
-  if(ult) await btlUltFx(el);
-  const lock = kr ? { off(){} } : btlLock(c, t, ult ? 'ult' : 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
+  const lock = kr ? { off(){} } : btlLock(c, t, 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
   await btlSleep(rhino ? 300 : kr ? 0 : 420);
   const r0 = btlRect(el), r1 = btlUnitRect(t);
   const dx = (r1.left + r1.width / 2) - (r0.left + r0.width / 2), dy = (r1.top + r1.height / 2) - (r0.top + r0.height / 2);
@@ -19181,7 +18911,7 @@ async function btlDoAction(c, ov){
   }
   const tEl = btlUnitEl(t);
   lock.off();
-  const res = btlCalcDmg(c, t, ult ? (c.def.ultMult || 1.5) * 1.5 : 1);
+  const res = btlCalcDmg(c, t, 1);
   // riposte : la carte attaquée (hors chef d'escouade) frappe en retour avec son ATQ, en même temps
   const counter = (!t.leader || BTL_LEADER_COUNTER) ? btlCalcDmg(t, c, 1, true) : null;
   if(btlLethal(t, res.dmg)) btlXOn(t);
@@ -19190,17 +18920,17 @@ async function btlDoAction(c, ov){
   const dealt = Math.min(res.dmg, t.hp + t.df), taken = counter ? Math.min(counter.dmg, c.hp + c.df) : 0;
   const ap = btlApplyDmg(t, res.dmg), apc = counter ? btlApplyDmg(c, counter.dmg) : null;
   btlPdTick(t, ap.shield, ap.hpLoss);
-  const strong = ult || res.crit, col = ap.hpLoss > 0 ? (ult ? '#ffd24a' : '#ff5a5a') : '#4ea8ff';
+  const strong = res.crit, col = ap.hpLoss > 0 ? '#ff5a5a' : '#4ea8ff';
   btlShowDmg(t, r1, tEl, ap, strong);
   btlSpark(r1, col, strong ? 1.5 : 1); btlSlash(r1, col, strong);
-  btlParticles(r1.left + r1.width / 2, r1.top + r1.height / 2, { n:ult ? 16 : 9, color:col, dist:ult ? 70 : 46, dur:520, size:6 });
+  btlParticles(r1.left + r1.width / 2, r1.top + r1.height / 2, { n:9, color:col, dist:46, dur:520, size:6 });
   btlRing(r1, col, false);
-  btlFlashEl(tEl, col, .95, 380); btlRecoil(tEl, ux, uy, ult ? 12 : 8);
+  btlFlashEl(tEl, col, .95, 380); btlRecoil(tEl, ux, uy, 8);
   btlShake(btlQ('#btlPlate'), Math.min(8, 2 + res.dmg / Math.max(1, t.maxHp) * 16 + (strong ? 2 : 0)));
   if(counter){
     const rc = btlRect(el);
     const cc = apc.hpLoss > 0 ? '#ff5a5a' : '#4ea8ff';
-    btlAfter(() => { if(BTL && !BTL.abort) btlShowDmg(c, btlRect(btlSlotOf(c)), btlUnitEl(c), apc, false); }, 460);   // la riposte s'affiche sur l'attaquant une fois revenu à sa place : pas de chiffres qui se chevauchent
+    btlAfter(() => { if(BTL && !BTL.abort){ btlPdTick(c, apc.shield, apc.hpLoss); btlShowDmg(c, btlRect(btlSlotOf(c)), btlUnitEl(c), apc, false); } }, 460);   // la riposte s'affiche sur l'attaquant une fois revenu à sa place : pas de chiffres qui se chevauchent
     btlSpark(rc, cc, .8); btlFlashEl(el, cc, .8, 380);
     btlParticles(rc.left + rc.width / 2, rc.top + rc.height / 2, { n:6, color:cc, dist:34, dur:480, size:5 });
   }
