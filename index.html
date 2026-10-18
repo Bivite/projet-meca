@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.75</title>
+<title>Projet MECA V0.04.76</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8199,7 +8199,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.75</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.76</b></div>
   </div>
 
     </div>
@@ -8405,11 +8405,30 @@
       <input id="nmPass" class="acc-input" type="password" autocomplete="new-password" placeholder="Mot de passe (6 caractères min.)">
       <div class="acc-msg" id="nmAccMsg"></div>
       <div class="nm-login" id="nmLoginToggle">Déjà un compte&nbsp;? <a href="#" id="nmSwitchMode">Se connecter</a></div>
+      <div class="nm-login" id="nmForgotRow" style="display:none;"><a href="#" id="nmForgotLink">Mot de passe oublié&nbsp;?</a></div>
       <div class="controls" style="width:100%;">
         <button id="nmAccOk" class="primary-btn">CRÉER MON COMPTE</button>
       </div>
       <!-- TEMPORAIRE (test artefact) : à retirer avant diffusion publique -->
       <div class="nm-login" id="nmGuestRow" style="margin-top:8px;"><a href="#" id="nmGuestSkip">Jouer sans compte (test)</a></div>
+    </div>
+
+    <div class="nm-step" id="nmRecoverStep" style="display:none;">
+      <input id="nmRecEmail" class="acc-input" type="email" autocomplete="email" placeholder="Adresse e-mail" spellcheck="false">
+      <div class="acc-msg" id="nmRecMsg"></div>
+      <div class="nm-login" id="nmRecBackRow"><a href="#" id="nmRecBackLink">&larr; Retour à la connexion</a></div>
+      <div class="controls" style="width:100%;">
+        <button id="nmRecOk" class="primary-btn">ENVOYER LE LIEN</button>
+      </div>
+    </div>
+
+    <div class="nm-step" id="nmNewPassStep" style="display:none;">
+      <input id="nmNewPass" class="acc-input" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe (6 caractères min.)">
+      <div class="acc-msg" id="nmNewPassMsg"></div>
+      <div class="controls" style="width:100%;">
+        <button id="nmNewPassCancel">PLUS TARD</button>
+        <button id="nmNewPassOk" class="primary-btn">ENREGISTRER</button>
+      </div>
     </div>
 
     <div class="nm-step" id="nmNameStep" style="display:none;">
@@ -8450,9 +8469,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.75';
+var BUILD_VERSION = 'V0.04.76';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.76', items:[
+    'NOUVELLE CARTE : TORTUGA (rare, 1 / 3 / 5, mécha-tortue de récif). Tank. Passif : à la fin de ton tour, gagne 1 DEF (cumulable sans plafond, affichée en « +1 » bleu).',
+    'ANIMATIONS TORTUGA : à l\'arrivée, elle tombe lourdement (le plateau tremble d\'un cran, anneau de poussière) puis une ruche de plaques de verre hexagonales s\'ouvre et se referme plaque par plaque avec un clic métallique ; à chaque fin de tour, une onde lumineuse parcourt la carapace puis le « +1 » bleu s\'élève au centre de la carte.',
+    'COMPTE : « Mot de passe oublié ? » sur l\'écran de connexion. Un lien est envoyé par e-mail ; il rouvre le jeu et permet de choisir un nouveau mot de passe.',
+    'DÉFIS : TORTUGA ajoutée aux défis (decks adverses régénérés).',
+  ] },
   { v:'V0.04.75', items:[
     'NOUVELLE CARTE : GOTHIKA (rare, 5 / 2 / 4, mécha-chevalier à claymore). Appel : inflige 3 points d\'attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite (la DEF absorbe d\'abord ; le chef d\'escouade n\'a pas de voisines).',
     'ANIMATIONS GOTHIKA : à l\'arrivée, la claymore de l\'artwork tombe et s\'enfonce dans la case, chauffe, la foudre la frappe depuis le haut de l\'écran puis un flash blanc allume les biseaux du plateau et révèle la carte ; à l\'Appel, un arc doré frappe la cible (−3) puis se ramifie vers ses voisines (−1).',
@@ -10162,6 +10187,7 @@ const MECH_CONFIGS = {
   TUNNELIER: { head:'dome',    shoulders:'big',   torso:'box',   legs:'heavy',    back:'none',     arms:'thick', weapon:'drill',   emblem:'stripes' },
   WHIPLASH:  { head:'mono',    shoulders:'slim',  torso:'vcut',  legs:'slim',     back:'none',     arms:'std',   weapon:'lasso',   dual:true, emblem:'chevron' },
   'EXO-MKI': { head:'visor', shoulders:'block', torso:'box', legs:'standard', back:'none', arms:'std', weapon:'rifle', emblem:'none' },
+  TORTUGA:   { head:'dome', shoulders:'round', torso:'heavy', legs:'heavy', back:'dish', arms:'thick', weapon:'cannon', emblem:'chevron' },
   GOTHIKA:   { head:'helm', shoulders:'big', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'blade', emblem:'cross' },
   AMALGAME:  { head:'crest', shoulders:'spike', torso:'heavy', legs:'heavy', back:'cannons', arms:'thick', weapon:'none', emblem:'hostile' },
   MALGAME:   { head:'dome', shoulders:'spike', torso:'heavy', legs:'heavy', back:'none', arms:'thick', weapon:'none', emblem:'hostile' },
@@ -10221,6 +10247,7 @@ const CHAR_LORE = {
   TUNNELIER: { pilot:'Cpl. Dimitri « Taupe » Novak', text:"Mech de forage reconverti pour le combat, équipé d'une tarière capable de percer la roche comme le blindage ennemi. Novak a passé quinze ans dans les mines avant l'effondrement -- aujourd'hui il ouvre des brèches sous les lignes adverses avec la même patience qu'il creusait une galerie, et ne remonte jamais les mains vides." },
   WHIPLASH:  { pilot:'Cpl. Rosa « Lasso » Herrera', text:"Ancienne technicienne des lignes à haute tension, Herrera a reconverti ses câbles de sécurité en deux lance-lassos électrifiés. Elle immobilise ses cibles à distance avec la même précision qu'elle réparait un pylône en pleine tempête -- une fois ficelées, elles ne bougent plus." },
   'EXO-MKI': { pilot:'Unité de série XO-I', text:"Premier modèle de la gamme EXO, assemblé à la chaîne par milliers dans les hangars de la mégalopole. Sans blindage, sans pilote : un squelette d'acier, un œil rouge et un programme. Quand une unité tombe, la chaîne en lâche aussitôt une autre, qui rejoint les rangs d'en face. Détruire un EXO-MKI ne règle rien : il ne fait que changer de camp." },
+  TORTUGA:   { pilot:'Cap. Inès « Corail » Marais', text:"Pilote d'escorte des convois de récifs flottants, Marais conduit une tortue d'acier dont la carapace est faite de plaques hexagonales de verre blindé. Elle ne se presse jamais : à chaque tour qui passe, une plaque de plus se referme sur le flanc du mécha, avec un petit clic de serrure. Après quelques tours plus rien ne passe, ni les obus des croiseurs ni les lasers des chasseurs. Les convois disent qu'on ne bat pas TORTUGA : on arrive trop tard." },
   GOTHIKA:   { pilot:'Chev. Mathilde « Glas » Vauclair', text:"Dernière chevalière d'un ordre qui veillait sur les cathédrales en ruine, Vauclair a fait forger une claymore pour son mécha de plates rivetées. Elle n'attend pas qu'on la défie : elle plante sa lame dans le sol et laisse l'orage venir. La foudre qui s'abat ne la blesse pas, elle l'emprunte. Ce qu'elle désigne est frappé de plein fouet, et ce qui se tient à ses côtés en garde la brûlure." },
   AMALGAME:  { pilot:'Aucun — conscience collective des épaves', text:"Il n'a ni pilote ni plan. Quand une ville meurt, ses mechs détruits restent là : l'Amalgame s'est levé de cette ferraille, hérissé de pointes, tenu par des faisceaux de câbles et un seul regard rouge. Il avance, il écrase, il ne s'arrête pas. Mais ce qui tombe aujourd'hui se relèvera demain, et de ses débris le Malgame se redresse déjà." },
   FENCY:     { pilot:'Sgt. Kenji « Rempart » Mori', text:"Gardien des terrasses-temples de la haute ville, Mori conduit un mammouth d'acier bardé de plaques rivetées et de défenses en cuivre. Il ne cherche jamais à esquiver : il avance, il encaisse, et ce qui reste debout devant lui est balayé par la trompe. Les habitants disent que les cerisiers tremblent avant même que le sol ne le fasse." },
@@ -10523,7 +10550,13 @@ const CHAR_DEFS = [
     ultName:"GOTHIKA SURTENSION", ultMult:1.5, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:44, def:16, hp:290}, max:{atk:290, def:110, hp:1050}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gothika-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gothika-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gothika-art-ext.webp' },
+  // ---- Nouvelle carte RARE : TORTUGA, mécha-tortue de récif, Tank + Passif (+1 DEF à chaque fin de tour) ----
+  { name:"TORTUGA", rarity:"rare", color:"#b49a5e", shape:"TORTUGA", role:"Tank — mécha-tortue de récif",
+    ultName:"TORTUGA CARAPACE", ultMult:1.3, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:10, def:26, hp:520}, max:{atk:68, def:240, hp:2300}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/tortuga-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/tortuga-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -10571,7 +10604,7 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
@@ -10579,7 +10612,7 @@ const CARD_STATS = {
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
   'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
-  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4]
+  'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5]
 };
 CHAR_DEFS.forEach(d => {
   Object.keys(CARD_TIERS).forEach(r => { if(CARD_TIERS[r].indexOf(d.name) >= 0){ d.rarity = r; d.holoOnly = (r === 'holo'); } });
@@ -18977,12 +19010,12 @@ async function btlDoAction(c, ov){
   await btlSleep(420);
 }
 // DÉFENDRE : la DEF de la carte est ajoutée au bouclier (DEF) de la cible, même si celle-ci est à 0
-async function btlShieldAdd(t, amount, fromPlan){
+async function btlShieldAdd(t, amount, fromPlan, o){
   if(amount <= 0) return;
   t.df += amount;
   if(fromPlan) btlPdTick(t, 0, 0, amount);   // le +X prévu sur la carte se décompte à mesure que la DEF est ajoutée
   const r = btlUnitRect(t), el = btlUnitEl(t);
-  btlFloatNum(r, '+' + amount, 'shield'); btlStatPop(el, 's-def', '#4ea8ff');
+  btlFloatNum(r, '+' + amount, 'shield', o && o.num); btlStatPop(el, 's-def', '#4ea8ff');
   btlRing(r, '#4ea8ff', false); btlFlashEl(el, '#4ea8ff', .8, 420);
   btlParticles(r.left + r.width / 2, r.top + r.height * .7, { n:9, color:'#4ea8ff', dist:46, dur:760, size:5, rise:true, spread:220 });
   if(el) btlSetStat(el, 's-def', btlFmtN(t.df));
@@ -23012,13 +23045,193 @@ BTL_CARD_FX['BUZZY'] = { passif:{ quand:'fin', run: async c => {
   const t = btlRnd(btlLiveAll(c.side).filter(x => x !== c && x.hp < x.maxHp)); if(t && btlOnField(c)) await btlShieldHeal(c, t, 1);
 } } };
 
+// ---------- TORTUGA : carapace de 19 plaques hexagonales de verre ----------
+// rosace centrée sur la carte (pointe en haut) ; R = rayon d'une plaque (les plaques se touchent), x/y = centre, d = anneau (0 centre, 2 bord)
+function btlTortHex(to, big){   // big : la ruche de l'arrivée déborde un peu de la carte
+  const tw = to.width, th = to.height, R = tw * (big ? .135 : .086), cx = to.left + tw / 2, cy = to.top + th * (big ? .5 : .43), pl = [], S3 = Math.sqrt(3);
+  for(let q = -2; q <= 2; q++) for(let r = -2; r <= 2; r++){ const s = -q - r; if(Math.abs(s) > 2) continue;
+    const x = cx + R * S3 * (q + r / 2), y = cy + R * 1.5 * r, an = Math.atan2(y - cy, x - cx);
+    pl.push({ x, y, d:Math.max(Math.abs(q), Math.abs(r), Math.abs(s)), ang:(an + Math.PI * 2.5) % (Math.PI * 2) }); }   // ang : 0 en haut, croît dans le sens horaire
+  return { pl, R, cx, cy };
+}
+function btlTortV(x, y, R, sy){   // sommets d'une plaque ; sy < 1 : elle se rabat vers sa charnière (sommet haut)
+  const V = [], top = y - R;
+  for(let i = 0; i < 6; i++){ const an = (60 * i - 30) * Math.PI / 180; V.push([x + R * Math.cos(an), top + (y + R * Math.sin(an) - top) * sy]); }
+  return V;
+}
+function btlTortPath(ctx, V){ ctx.beginPath(); V.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); }
+// alvéole laissée par une plaque ouverte : fond sombre, lueur froide du côté de la charnière
+function btlTortHole(ctx, x, y, R, open, k){
+  if(open < .01) return;
+  const V = btlTortV(x, y, R, 1), g = ctx.createLinearGradient(0, y - R, 0, y + R);
+  g.addColorStop(0, 'rgba(70,170,215,' + (.6 * open) + ')'); g.addColorStop(.45, 'rgba(8,20,32,' + (.74 * open) + ')'); g.addColorStop(1, 'rgba(3,8,14,' + (.82 * open) + ')');
+  btlTortPath(ctx, V); ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = 'rgba(120,205,235,' + (.55 * open) + ')'; ctx.lineWidth = 1 * k; ctx.stroke();
+}
+// une plaque de verre biseautée ; o.glass = opacité du verre, o.sy = rabattement, o.flash = clic métallique (0..1), o.lit = onde lumineuse (0..1)
+function btlTortPlate(ctx, x, y, R, o, k){
+  const sy = o.sy == null ? 1 : o.sy, V = btlTortV(x, y, R, sy), gl = o.glass == null ? 1 : o.glass, top = y - R, h = (2 * R) * sy;
+  if(gl > .01){
+    const g = ctx.createLinearGradient(x - R, top, x + R * .6, top + h);
+    g.addColorStop(0, 'rgba(215,243,255,' + (.36 * gl) + ')'); g.addColorStop(.5, 'rgba(120,190,215,' + (.17 * gl) + ')'); g.addColorStop(1, 'rgba(50,110,140,' + (.22 * gl) + ')');
+    btlTortPath(ctx, V); ctx.fillStyle = g; ctx.fill();
+    ctx.lineCap = 'round';
+    for(let i = 0; i < 6; i++){   // biseau : arêtes tournées vers la lumière (haut gauche) claires, les autres sombres
+      const A = V[i], B = V[(i + 1) % 6], na = i * 60 * Math.PI / 180, dot = Math.cos(na) * -.6 + Math.sin(na) * -.8;
+      ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]);
+      if(dot > 0){ ctx.strokeStyle = 'rgba(240,252,255,' + (.9 * dot * gl) + ')'; ctx.lineWidth = 1.5 * k; } else { ctx.strokeStyle = 'rgba(6,24,38,' + (.6 * -dot * gl) + ')'; ctx.lineWidth = 1.3 * k; }
+      ctx.stroke();
+    }
+    btlTortPath(ctx, V); ctx.strokeStyle = 'rgba(190,228,245,' + (.4 * gl) + ')'; ctx.lineWidth = .7 * k; ctx.stroke();
+    ctx.save(); btlTortPath(ctx, V); ctx.clip();   // reflet en diagonale
+    const sx = x - R * 1.2 + (o.shine == null ? .35 : o.shine) * R * 2.4;
+    ctx.fillStyle = 'rgba(255,255,255,' + (.2 * gl) + ')'; ctx.beginPath(); ctx.moveTo(sx, top); ctx.lineTo(sx + R * .42, top); ctx.lineTo(sx - R * .5, top + h); ctx.lineTo(sx - R * .92, top + h); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  if(o.flash > .01 || o.lit > .01){
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    if(o.flash > .01){ const f = o.flash; btlTortPath(ctx, V); ctx.fillStyle = 'rgba(230,248,255,' + (.34 * f) + ')'; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,' + (.95 * f) + ')'; ctx.lineWidth = 2 * k; ctx.stroke(); }
+    if(o.lit > .01){ const l = o.lit, g = ctx.createRadialGradient(x, y, 0, x, y, R * 1.05);
+      g.addColorStop(0, 'rgba(210,244,255,' + (.7 * l) + ')'); g.addColorStop(1, 'rgba(70,170,235,' + (.38 * l) + ')');
+      btlTortPath(ctx, V); ctx.fillStyle = g; ctx.fill();
+      [[5.5, .1], [2.8, .28], [1.4, .95]].forEach(w => { btlTortPath(ctx, V); ctx.strokeStyle = 'rgba(' + (w[0] > 2 ? '90,185,255' : '225,248,255') + ',' + (w[1] * l) + ')'; ctx.lineWidth = w[0] * k; ctx.stroke(); }); }
+    ctx.restore();
+  }
+}
+const btlTortSpiral = hx => hx.pl.slice().sort((a, b) => b.d - a.d || a.ang - b.ang);   // du bord vers le centre, dans le sens horaire
+const btlTortScatter = hx => hx.pl.slice().sort((a, b) => ((Math.sin(a.x * 12.9898 + a.y * 78.233) * 43758.5453) % 1) - ((Math.sin(b.x * 12.9898 + b.y * 78.233) * 43758.5453) % 1));   // ordre fixe, en apparence désordonné
+
+// ARRIVÉE : la carte tombe de haut, s'écrase (le plateau tremble d'un cran, anneau de poussière), la carapace s'ouvre en plaques de verre qui se referment une à une avec un clic métallique
+async function btlTortArrive(c, u, to, col){
+  if(!u) return;
+  u.style.opacity = '0';
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
+  const { cv, ctx, W, H } = btlCanvasFx(30), plate = btlQ('#btlPlate');
+  const tw = to.width, th = to.height, k = tw / 84, cx = to.left + tw / 2, baseY = to.top + th * .97, hx = btlTortHex(to, true), Rd = hx.R * .92;
+  const T_IMP = 560, T_OPEN0 = 640, T_CLOSE0 = 1120, STEP = 62, CDUR = 190, ODUR = 230, FALL = th * 1.6 + 28;
+  const order = btlTortScatter(hx); order.forEach((p, i) => { p.cs = T_CLOSE0 + i * STEP; p.os = T_OPEN0 + p.d * 55; p.clicked = false; });
+  const T_LAST = T_CLOSE0 + (order.length - 1) * STEP + CDUR, T_FADE0 = T_LAST + 160, T_FADE1 = T_FADE0 + 520, T_END = 3200;
+  const puffs = []; for(let i = 0; i < 28; i++) puffs.push({ a:i / 28 * 6.283 + rnd() * .18, v:.82 + rnd() * .36, s:.7 + rnd() * .7, g:168 + rnd() * 34 });
+  const sparks = []; let hit = false;
+  const t0 = performance.now(); let last = t0, raf = 0;
+  u.style.transformOrigin = '50% 100%';
+  // pendant la chute, une copie de la carte vole au-dessus de tout le plateau (la vraie carte reste cachée dans sa case jusqu'à l'impact)
+  const gh = u.cloneNode(true); gh.style.cssText = 'position:fixed;left:' + to.left + 'px;top:' + to.top + 'px;width:' + tw + 'px;height:' + th + 'px;margin:0;z-index:25;pointer-events:none;transform-origin:50% 100%;opacity:0;will-change:transform,opacity;';
+  btlQ('#btlFx').appendChild(gh);
+  try{
+    await new Promise((res, rej) => {
+      const tick = () => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const now = performance.now(), t = window.__tgT != null ? window.__tgT : now - t0, dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+        ctx.clearRect(0, 0, W, H);
+        // ---------- 1. chute : lourde, elle accélère jusqu'au sol ----------
+        const fall = E.inC(sm(0, T_IMP, t)), since = t - T_IMP;
+        if(t < T_IMP){
+          const sh = .15 + .85 * fall, rx = tw * (.18 + .36 * fall);   // ombre au sol qui grandit à mesure qu'elle approche
+          ctx.fillStyle = 'rgba(0,0,0,' + (.5 * sh) + ')'; ctx.beginPath(); ctx.ellipse(cx, baseY - 1, rx, rx * .2, 0, 0, 6.283); ctx.fill();
+          if(fall > .1){ const g = ctx.createLinearGradient(0, to.top - FALL * (1 - fall) - th * .9, 0, to.top - FALL * (1 - fall));   // traînée de vitesse
+            g.addColorStop(0, 'rgba(220,235,245,0)'); g.addColorStop(1, 'rgba(220,235,245,' + (.18 * fall) + ')'); ctx.fillStyle = g; ctx.fillRect(cx - tw * .42, to.top - FALL * (1 - fall) - th * .9, tw * .84, th * .9); }
+          gh.style.opacity = String(E.cl(t / 90, 0, 1));
+          gh.style.transform = 'translateY(' + (-FALL * (1 - fall)).toFixed(1) + 'px) scale(' + (1 + .3 * (1 - fall)).toFixed(3) + ')';
+        } else {
+          if(!hit){ hit = true; gh.remove();   // IMPACT
+            btlShake(plate, 6); btlRing(to, col, false); btlFlashEl(u, '#ffffff', .75, 320);
+            btlDust(cx, baseY, tw * 1.5, 3, true); btlSparkEmit(sparks, cx, baseY - 2, 16, 300, 420, -1.57, 2.9, false);
+            btlParticles(cx, baseY - 4, { n:10, color:'#d9c9a0', dist:tw * .8, dur:520, size:4, spread:170 }); }
+          const sq = Math.exp(-since / 120) * Math.cos(since * .03), sy = 1 - .1 * sq, sx = 1 + .06 * sq;   // écrasement amorti
+          u.style.opacity = '1'; u.style.transform = 'scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
+          const sh = 1 - sm(T_IMP, T_IMP + 500, t);
+          if(sh > .01){ ctx.fillStyle = 'rgba(0,0,0,' + (.4 * sh) + ')'; ctx.beginPath(); ctx.ellipse(cx, baseY - 1, tw * .54, tw * .11, 0, 0, 6.283); ctx.fill(); }
+        }
+        // ---------- 2. anneau de poussière qui s'étale et se dissipe ----------
+        const q = sm(T_IMP, T_IMP + 1250, t);
+        if(q > 0 && q < 1){
+          const rx = tw * (.3 + .8 * E.outC(q)), ry = rx * .26, al = Math.pow(1 - q, 1.35) * sm(0, .06, q);
+          puffs.forEach(p => { const px = cx + Math.cos(p.a) * rx * p.v, py = baseY - 4 + Math.sin(p.a) * ry * p.v - q * 9 * k, r = (6 + 15 * E.outC(q)) * k * p.s, g = p.g | 0;
+            const gr = ctx.createRadialGradient(px, py, 0, px, py, r);
+            gr.addColorStop(0, 'rgba(' + (g + 30) + ',' + (g + 22) + ',' + (g + 8) + ',' + (.6 * al) + ')'); gr.addColorStop(1, 'rgba(' + g + ',' + (g - 6) + ',' + (g - 18) + ',0)');
+            ctx.fillStyle = gr; ctx.fillRect(px - r, py - r, r * 2, r * 2); });
+          if(q < .5){ ctx.strokeStyle = 'rgba(255,240,205,' + (.42 * (1 - q * 2)) + ')'; ctx.lineWidth = 1.4 * k; ctx.beginPath(); ctx.ellipse(cx, baseY - 4, rx * 1.02, ry * 1.02, 0, 0, 6.283); ctx.stroke(); }
+        }
+        // ---------- 3. les plaques de verre : elles s'ouvrent d'un coup depuis le centre, puis se referment une à une ----------
+        if(t >= T_IMP){
+          const gA = sm(T_IMP, T_IMP + 70, t) * (1 - sm(T_FADE0, T_FADE1, t));
+          if(gA > .005){
+            const st = hx.pl.map(p => {
+              let o = 0, flash = 0, sh = .35;
+              if(t >= p.cs + CDUR){ o = 0; const a = t - p.cs - CDUR; flash = Math.pow(1 - sm(0, 260, a), 1.5); sh = .35 + a / 700;
+                if(!p.clicked){ p.clicked = true; for(let i = 0; i < 2; i++){ const an = (60 * (i ? 1 : 2) - 30) * Math.PI / 180; btlSparkEmit(sparks, p.x + Rd * Math.cos(an), p.y + Rd * Math.sin(an), 3, 140, 280, null, 0, false); } } }
+              else if(t >= p.cs){ const pr = sm(p.cs, p.cs + CDUR, t); o = 1 - pr * pr * pr; }
+              else if(t >= p.os + ODUR) o = 1;
+              else if(t >= p.os) o = E.outC(sm(p.os, p.os + ODUR, t));
+              const a = t - p.cs - CDUR, vib = a > 0 ? .05 * Math.sin(a * .06) * Math.exp(-a / 80) : 0;   // petite vibration au clic
+              return { p, o, sy:Math.max(.1, 1 - .86 * o + vib), flash, shine:sh };
+            });
+            ctx.save(); ctx.globalAlpha = gA;
+            st.forEach(s => btlTortHole(ctx, s.p.x, s.p.y, Rd, s.o, k));
+            st.forEach(s => btlTortPlate(ctx, s.p.x, s.p.y, Rd, { sy:s.sy, glass:.55 + .45 * (1 - s.o), flash:s.flash, shine:s.shine }, k));
+            ctx.restore();
+          }
+        }
+        btlSparksDraw(ctx, sparks, dt, true);
+        if(t < T_END) raf = requestAnimationFrame(tick); else res();
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  } finally {
+    cancelAnimationFrame(raf); cv.remove(); gh.remove(); u.style.opacity = ''; u.style.transform = ''; u.style.transformOrigin = '';
+  }
+}
+// EFFET DE FIN DE TOUR : une onde de lumière parcourt la carapace, plaque après plaque, du bord vers le centre ; au centre, +1 DEF (le « +1 » bleu s'élève au milieu de la carte)
+async function btlTortWave(c, onPeak){
+  const to = btlUnitRect(c); if(!to) return;
+  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
+  const { cv, ctx, W, H } = btlCanvasFx(30), tw = to.width, k = tw / 84, hx = btlTortHex(to), Rd = hx.R * .92, seq = btlTortSpiral(hx);
+  const T0 = 90, STEP = 50, T_PEAK = T0 + (seq.length - 1) * STEP, T_END = T_PEAK + 560, sparks = [];
+  seq.forEach((p, i) => { p.t = T0 + i * STEP; });
+  const t0 = performance.now(); let last = t0, raf = 0, peaked = false;
+  try{
+    await new Promise((res, rej) => {
+      const tick = () => {
+        if(!BTL || BTL.abort){ rej('abort'); return; }
+        const now = performance.now(), t = window.__tgT != null ? window.__tgT : now - t0, dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+        ctx.clearRect(0, 0, W, H);
+        const env = sm(0, 140, t) * (1 - sm(T_END - 340, T_END, t));   // la grille de verre apparaît, puis se dissout
+        ctx.save(); ctx.globalAlpha = env;
+        hx.pl.forEach(p => {
+          const tau = t - p.t, lit = tau < 0 ? 0 : (tau < 70 ? tau / 70 : Math.exp(-(tau - 70) / 190));
+          btlTortPlate(ctx, p.x, p.y, Rd * (1 + .05 * lit), { glass:.5, lit, shine:.35 + E.cl(tau / 900, 0, 1) * .5 }, k);
+        });
+        ctx.restore();
+        // tête de l'onde : un point lumineux qui court de plaque en plaque
+        const idx = (t - T0) / STEP;
+        if(idx > -.5 && idx <= seq.length - 1 + .3){ const i0 = E.cl(Math.floor(idx), 0, seq.length - 1), i1 = Math.min(seq.length - 1, i0 + 1), f = E.cl(idx - i0, 0, 1), A = seq[i0], B = seq[i1], x = A.x + (B.x - A.x) * f, y = A.y + (B.y - A.y) * f;
+          ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, x, y, hx.R * 1.7, '130,215,255', .85); btlGlowDot(ctx, x, y, hx.R * .6, '255,255,255', .9); ctx.restore(); }
+        if(t >= T_PEAK && !peaked){ peaked = true;
+          btlSparkEmit(sparks, hx.cx, hx.cy, 14, 200, 380, null, 0, false); if(onPeak) onPeak(); }
+        if(peaked){ const a = 1 - sm(T_PEAK, T_PEAK + 420, t); if(a > .01){ ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          btlGlowDot(ctx, hx.cx, hx.cy, hx.R * (2 + 3 * (1 - a)), '120,200,255', .75 * a); btlGlowDot(ctx, hx.cx, hx.cy, hx.R * 1.1, '255,255,255', .85 * a); ctx.restore(); } }
+        btlSparksDraw(ctx, sparks, dt, true);
+        if(t < T_END) raf = requestAnimationFrame(tick); else res();
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  } finally { cancelAnimationFrame(raf); cv.remove(); }
+}
+BTL_CARD_FX['TORTUGA'] = { arrive: btlTortArrive, passif:{ quand:'fin', run: async c => {
+  if(!btlOnField(c)) return;
+  let add = null;
+  await btlTortWave(c, () => { if(btlOnField(c)) add = btlShieldAdd(c, 1, false, { num:{ dx:0, ty:.5 } }); });
+  if(add) await add;
+} } };
+
 // mots-clés (le Tank et la Percée n'ont pas d'effet propre : ils sont lus par les règles)
 (function(){
   const K = {
     'PRAWN':['baroud'], 'MOG-AI':['appel'], 'SHADOW':['appel'], 'BRI-KB-ROCK':['baroud'], 'GAPIX':['appel'], 'GAZELLE':['appel'],
     'STAR-HUNTER':['appel'], 'NEUTRON':['tank'], 'CONQUEST':['appel'], 'TOA2':['tank', 'baroud'], 'MED-POD':['baroud'],
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
-    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
+    'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'BUZZY':['passif'],
     'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank']
   };
@@ -23319,6 +23532,7 @@ var CARD_FX_TXT = (function(){
     'JIPASIS':[['appel','soigne 5 PV, répartis au hasard sur les alliés blessés.']],
     'ZAPPAN':[['baroud','ajoute son attaque à celle d’une carte alliée au hasard.']],
     'BUZZY':[['passif','en fin de tour, soigne 1 PV à un allié blessé.']],
+    'TORTUGA':[['tank'],['passif','en fin de tour, gagne 1 DEF.']],
     'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
     'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'GOTHIKA':[['appel','inflige 3 points d’attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
@@ -23650,57 +23864,58 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA"];
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA"];
 const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const DEFI_DECKS = {
-  "AMALGAME":["gMhhSZZeWWYLLIIAAFff", "gDDMMddZZYbLIIXAAFff", "gEDMMhhScZZbIIX7AAff", "gg3MhhSacdZbbLIIAAff", "OORRggQMMSSaZeYIIAff", "OggDD80hhSSdbIIXAAff", "OO4JK6ggDMMHSacIIAff", "OOJ1ggQQDMMSSadZIIAA", "OOJgg33QMMBhhSSWIIAf", "OO496gg33MMhhSSZIIAA", "OO44JJggEDDMM0SSIAff", "OO44J166ggQMMSSIIAAf", "PP22GGTTOO4ggQMMSZIA"],
-  "MOG-AI":["2O46QNNhhaccZZLLX7Ff", "26QDDHhhaaccZZeWX7Ff", "29663EUDDMHHhhZZWYYX", "22OVJ93UNNDM80hhcZZb", "224JK6R3QQDDhaaccZLL", "224VVJJ9g33ENNDDhdZI", "22OO44J63EUNQhhaaWbI", "22O4JJ96g33ENND5HhhZ", "22O4VVJ9916633UNQHhZ", "22OO44VJJ99663EUQNHW", "22OO44VVJ96633NDCHhh", "22OO44VVJJ9916633QHH", "PP22TOO44VVJ96g33QDh"],
-  "ZAPPAN":["GMMHadWWbLLII7AAFFff", "GUND50SSacceLIIAAFff", "GUN5MHSScZZYYIIAAFff", "GG1ggUUHSacIIX77AAff", "GGOgg3NSSccWYII7AFff", "GGOOUNM8SceeWYII7Aff", "GGOOggNMMHHSSadWYAff", "GGOOV99KgENMMH0SIIAA", "GGOOVJ991ggUUNMMSAAf", "GGOOVV99K6ggQNMSSIAf", "GGOOVVJ991gg5MMSScIf", "GGOO4VV996ggUMMSSIAA", "PPGGTTOO4499ggUMMSSA"],
-  "MOTOKO":["P1NHaaccZeeWWbIIXX7A", "PVUUNC8acdWWYYIXX7AF", "P6UU5HHaccdZeWWIXXAA", "PP3UCCHHhacceeWWXAFf", "PP9KUUNN55C8aacceeWW", "PPOVV913UUNN5C8aceWb", "PP99UU5CHH8800haaWWX", "PP4VV99KK1UNCCHH0aWX", "PP4VVJ99K1EUU5CHHcce", "PPVVJ99KKUNNCCHH8aIX", "PPOVV99K11UUNN5HHB88", "PP4VV99KK1UUNN5CHHeW", "PPTTVV99KK1RUUNN5HHW"],
-  "TOA2":["T5B800deeWWLIIXXAAff", "T3B8800cceeYIXXAAFff", "TO95C8800cdZeeIIXXAf", "TTKMC00SeeWWYbLIIXXA", "TT9K1Q5CC00eeWXAAFff", "TTOKK11gU5500SeWXAff", "TTO4KK11ggU5MC00ddXX", "TT4KK116ggD5CH8eeIXA", "TTVJKK11g5MMC88SSeeI", "TTOOVKK116Rg55CC88SS", "TTOOKK11gD55CCMHH88A", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
-  "CATER-PILLARD":["1N5C880eeLLIIXX77AFF", "55CC80heeWLIXX77AFFf", "K135CC80SZeeLLXX77AA", "158800ScdeeWYbXXAFFf", "K1D55800SeeLLIXX7FFf", "KK1Q55CC800deeWYY77F", "4KK15CC8800acdeebLAA", "O9KK1155C8800SSeeXAF", "O11RQ55CC8800deLLX7A", "49KK11655CC8800SSL77", "OKK11R5MCC8800SSddXF", "OOKK1155CC8800SSddeL", "PPTTOKK1165C800SSdLA"],
-  "MED-07":["J1Q5500ZZeeWYbLXXFff", "165800hacZZeeYLIXXff", "16CC800hhcZeeWIXXFFf", "11QD55CH0hhZeebLXX7F", "4JJKK1133500haeeLIXX", "OJKK1163EQD55CC0heeW", "O4K11Q55CCM8800ZeWYX", "OJKK1163EQ5CC880heWX", "O4JKK1163D55CCB880Xf", "44VJKK1163355CC8800Y", "OO44VJKK11D55CC880Se", "OOVJJKK113Q55CC880ee", "PP22GGTTOJJKK1155C00"],
-  "BEAST":["KgU5800adeeWWbIXXFFf", "KUD5CCHH8aeeYIXX7Fff", "1R3EQ5C8800aceeWWXX7", "4J9KKg55MCH0aaceeXXf", "J955CC880acdZeeWWXXf", "KKR55CHH80ceeWLLXX7A", "VV9KK1RN55CCH80aeLXX", "4J9KK11UN55CHH8800Se", "V99KK11D55C8800acdeX", "4V9KK11UN55CMCMH800e", "44V99KK1155CCHH880SX", "OVVKK11UUNN55CC8800e", "PPGTTVJ99KK1155CHH80"],
-  "EXO-MKX":["5C800hhccZZeeWYbXX7F", "UQDD5CC80ZeeYYbXX7Ff", "KDDCC800hcdZeebXXAAF", "4QD5C8800acZeebbXX77", "4VJKQQ55MC8800ceeLXX", "OOKK163E55C8800SZeeW", "O4KK66UQD55CC8800ZXX", "OO4J9K1135CCB8800ZeX", "O4VJKK1166Q5CCH880eX", "OO49KK116gD55CC880Se", "OO44VJJKK1355CC8800e", "O449KK11QQD55CC8800e", "PP22GTTO44JKK115C880"],
-  "NEUTRON":["5C800cdZeeWYIXX7AAFF", "1CB800haceeLXX7AAFFf", "4JK55CB800ceeLXX7AAF", "E55CC88SacdeebXX7AFF", "KK116ECC800hSSeeLXAF", "KK135CCM800SSeeLLXX7", "KK11Rg55CCB880SeL77A", "4KK11EQ55CCB8800dLLA", "OKK11N55CCH88SSLLXXF", "O4VKK1155CC880SSddLX", "OKK11EU55CC800SSdLX7", "44KK1155CC8800SSdXAF", "PPTTJKK11ECC80SddLX7"],
-  "HYPPER":["K55C00ddeeWYbbLLX7Af", "1EUC8800ZeeYbLLIIXFF", "KKCC8800aaceeYYbbXAf", "Rg5MCCH800aaeeYLXXAf", "KK11UDCCB80haebLLXXF", "KK11Rg55MCMCB80deXXf", "KK11EENCM8800eebLXXF", "49KK11RCMCM800SSebXX", "OJKK11REE55CCB800YXX", "VKK11RREU55B8800eYXX", "V9KK11RRE55CMC00LLXX", "4VKK11RECCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
-  "TUNNELIER":["KD5588hZZeeYIIXX77ff", "K1D800hhSaZeeWLIXXFf", "K13QD5880ZeeWbIIXXFf", "49KK163QC00cZZeeWbXX", "JKK11QD5C0ZZeeLXX7Af", "OKK113QQ55CC88hheXFf", "O4KK16EQD55CCB88ceXX", "OOJJKK1166R55CCB880X", "OO4JKK11D558800hZeXX", "OOJKK116NQ5MCC8800Ze", "OOJJKK11Rgg355C8800e", "OO44VJKK1155CC8800hX", "PP22TTO4JJKK1165CC80"],
-  "ARKHAUL":["C8SacddeeWLLIX7AAFFf", "EC80ScdbbLLXX7AAFFff", "KKQB8SSdeYbLLXX7AAFF", "1800haddeWLLXX77AAFF", "1Q5H0SSddYLXX77AAFFf", "49166380SSddLLX77AFF", "K1Q5M8SSddZLLX77AAFF", "49KKC88SSddZLL77AAFF", "911B80SSddeLLX77AAFF", "OVJKK180SSddLL77AAFF", "KK1RgU55SSddLL77AAFF", "K116RQ5SSddeLL77AAFF", "PPGGTTKRSSddLL77AAFF"],
-  "JIPASIS":["QDBhSdZZWbLI77AAFFff", "EDHhSSacZZLX77AAFFff", "O6DSddZZWYLX77AAFFff", "3QMChhddZeLL77AAFFff", "OO4V663DSSaddLL7AAFF", "O4V6R3UQhSSddLL7AAFF", "OO93MHhSSddZLL77AAFF", "449R3UQBSSddLL77AAFF", "O4JJ166SScddLL77AAFF", "O44J63UQSSddLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDCSSddLL77AAFF", "22TTOO4KSSddLL77AAFF"],
-  "BUZZY":["KN8SddZeeYLLIXX77AAF", "10SdeeWbLLIIXX77AAFf", "46H0SddZeeLLXX77AAFf", "9K1ENM80SaddeL77AAFF", "9K5C00SSacdLLI77AAFF", "5CB00hSSddZeLLX77AFF", "K1EQD58SSddWLL77AAFF", "JJ11N80SSddeLL77AAFF", "OKK160SScddLLX77AAFF", "4JK15800SSddLL77AAFF", "9KK155C0SSddLL77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
-  "BRI-KB-ROCK":["MMSSadZeWbbLLIIAFFff", "6MMhSSWWYbLII77AFFff", "gg5MM0SScdYbII77AFff", "OgEMMHSScddLIIXAAFff", "OggMCHBSSddII7AAFFff", "OggQMSSddZLIIXX7AAff", "OO4VggQMMBSSdLII7AAf", "OOV9gg3EMMSSLII7AAFf", "OO1ggMMSSaddI77AAFff", "OOV1ggQMMSSddLIAAFFf", "OOVggDMMSSddZLLIAAFf", "OOJggMMHSSLLII77AAFf", "PGGTTOOggEMMSSdL7AAF"],
-  "MED-POD":["gMScddeWLLIIXX7AAFff", "ggDSZWWLLIIX77AAFFff", "ggE5MMSaeeLLIIAAFFff", "1gQDMSSccWII77AAFFff", "OORggUUMMBSSLL7AAFff", "OOVJggNMHSSdbLI7AAff", "OOg3UMHSSeLLII7AAFff", "OO49RggEMMSSLII77AAF", "OO1ggMMBhSSddLII77ff", "OO166ggMSSdLII77AAFf", "OOVgg3QMMSSddLLII7AA", "OO49ggMMSSddLII7AAff", "P2GGTTOOggMMSSddI7AF"],
-  "MORPHE":["J9NNDHhaaccZWWYYbIIX", "93NDHaaccZZeWWIIXAFF", "96UUQNaaccZZeWWYLLAf", "49963UHHhaccZeWWYLIf", "VVJ9966RgUUD5aaccZWW", "4VV99gg33UQN5HHhccWf", "OVVJ9963EUUNNDHHSacF", "O4VVJ99K3UUNNMHHhacc", "44VVJ993UUNNMhhaccWI", "OO44VVJ991UUQNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "O44VVJ99KUUNNMHHacZW", "PP22GO4VVJ99RUUNNHHc"],
-  "EXO-MKIV":["9NNHBaaccWWYYbLX77Af", "9RUNHBaccdeeWWYbLL7F", "OV99KQHBaaccZWWYYbbf", "VVN5HHaacddeWWbbLLXA", "V9RNNHHB8aaccZWWYbIF", "J96UUNQNHHBBaaccWbbL", "VV99K3UUNNMHHB8cWYYL", "VV99KREEUUNCHHSSaacL", "4VV99RUQNNMMHHBSaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaacd", "OVV99RRgEUUNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
-  "EXO-MKV":["NQQHHhaaccZZWWXXAAff", "93QNHBaaccZZWWYY7AFF", "JK3UNDHHhhaaccZWWIAF", "NNCHHhhaaccZZeWWbLAF", "O4VV9g3NNDCHSaccZWW7", "V9963UNNDDHhSccWW7AF", "O4VJ991UUNNHHBhaaccW", "VVJJ9933UUNN5HaaccZI", "OO4VV993UNQNQMaacWWY", "O4VVJJ996R3UUNNHH0cW", "O44VVJ9966UUNNDHH0aW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
-  "WHIPLASH":["UNHH0aacceeWIXXAFFff", "V9KUMChaacceeWWbXX7F", "VUNN0aaccdeeWWLXX7Ff", "9UUNND55HaaceWYXXAff", "9KKUUNNMHH80aaccZWXX", "VV99gUUNN5H80ccdeWYX", "V99K1R3UUNN50aacceeW", "VV99UUQN5HHB8SaacceX", "4VV99KK11EUUNNDHHaWX", "VVJ99KK1RUUNN55HBacc", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTT4VVJ99K11UUNNHac"],
-  "DELOK":["VUH00aaccdeeWWYYLLXA", "V9UHBaacdWWYYbLLX7FF", "V93UNDBaaccWWYYbLIXX", "4VV9UUCaaccWYYbbLIXF", "VVEUUNN5HH0SaccWWYYL", "VVKR3ENNHHSaacWWbLLF", "VV9RUUNNMHHBcdWWYbAf", "VV99KRgEUUNHHBaccdWb", "VV99RRUUNNMCMHHBSaWW", "VV9916RREEUUNNHHBccW", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
-  "TECHNOSORUS":["963UNHHaaccZZWYAAFFf", "96UQDMHHaaccZZWLXAFF", "V6UNDDHHaaccZZWIX7Af", "V996NNQDhhaccZZWWbbI", "V96UUQDDHaaccZZWWbLF", "VVJ9966UMHHhaacWWbbF", "O4VJg3UNNMHHhaaccWWY", "44VV9966UUNNHHB0cZWW", "OO4VVJ99K6UUQNNHHWWY", "OO4VVJ99UUQNHhhaaWWY", "OO4VV996UUQNN5aacWWF", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
-  "SCOPT":["9UNHBaccdWWbLLAAFFff", "UUHHhaccdWWbLIX77AAF", "V9UUMHHacWWYLLI7AFff", "99RgNNSaaccWWYLAFFff", "VV99UNHH8aacceW7AAFF", "VV99163UNHHBSaacWLLF", "V993UNNHHSSaaccLLAAF", "OVV99UUNQHHSSaaccdWL", "VVJ991UUNNHSaadWYL77", "4VVJ99gUNNHHSSaadWLA", "VV99KK6UNNHHSSaaddWF", "VV99gUUNQNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
-  "DUMADED":["EEQQDBBhZZYYbLL77Aff", "J6RRBBcdZZYYbLLIXAFf", "ORR3UQMMBcdZZeYYbLLF", "RR3DBBZZWYYbbLLIIX7A", "JR3EDDMMCBhSdYYbbLLA", "OVR33EEMMB0hZZWYYbbL", "O4J9RRgEEDMMBB8YbbL7", "OOJJRREEQ5CMBBYbbLLf", "O4VJRRg3EENDMMBBYYbb", "OOJ6RREENQMMCBZYYbbL", "OO44JJ6RREEQMMBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
-  "LACRIUM":["9UNHhhaacZZWWIXX7FFf", "O493UN5MH8aacZZWWL77", "4VVJ9UNMHHacZZeeWXAf", "63UUNQDHaaccZWWX7AFf", "OJJ1UUNNCHhaaccdZWWX", "OVV6UNNMHH0haaccZZWW", "O4VV99EUNQQHhaaccZWA", "O4VVRgEUUNNHhhSaccWW", "OO44VV9K6RgUUNNHaccW", "O4VVJJ99663UUNNHHccd", "OOVV9966RUUNQNHccWWf", "OO4VVJ99g3UUNNDHHccW", "PP22GO4VV991UUNQNHcc"],
-  "RAZOPS":["CSSdeebLLIIXX77AAFff", "N8SadeYbLLIXX77AAFFf", "Kg880SSdeeWWLL77AAFF", "638800ddZeYLLX77AAFF", "KKN580SddZZeLL77AAFF", "16EQC88SSddZeLL77AFF", "9KK5C0SSddLLIX77AAFF", "OKgEU8SSddeeLL77AAFF", "9911U50SSddeLL77AAFF", "4KK1655CSSddLL77AAFF", "O9KK1CCMSSddLL77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
-  "FENCY":["1155C80deYLXX77AAFff", "U55C800SeWbLLIXX77AA", "KK1RQ55CCHSeWYLXX7FF", "1g5C800ceeYLIXX7AAFF", "K11E55CM00ceeLLXX77F", "K11gQCC800eebLLIIX7A", "VKK113D55880SSeeLX77", "4KK11655M880SddeeLXX", "K11R355CC800SeebL7AF", "JKK11N5C880SddeeIXFF", "JKK11gN5CC800SSddee7", "VKK11DCC8800SSdeeXAA", "PP2GTTKK11558SSddeeF"],
-  "EXO-MKI":["MMHhSSaceeWYIIXAAFFf", "gMM8hSSaacWWYYbIIAAf", "VgQMMHBSSccWLLIIAAFf", "ggDMMHHBacWYbLIIAAff", "O4VDMMHB0SSacZIIAAff", "OOV9gg3MCMH88SSaZAff", "OOVggECMM8ScWWIIAAff", "OOVVggEUMMHH8cIIAAff", "OOVV99KggUQMMHSSIAff", "OOVVJ9ggUUNMMCSIAAff", "OO4996ggUNNMM8SSIAff", "OOVVJ996ggNMMSSIIAff", "PP2GGTTOO4VVggMHSSff"],
-  "GAPIX":["J633QCMhhZZeebLLI7Af", "6RQQDDhhZZeYYbbLLXXF", "O4J63Q5BhhZZeYYbbLXF", "6633UQQ5BhhSZZeYbLII", "4466RR3QQDhhcZbLLIFF", "OOJ66R3EQQB0hcZZY7Ff", "OO4VJJ9663EEQDDhYLLI", "O44JJ166RREQQDCHhZeY", "OO44JJK66R33DMMHZWYL", "OO44VJJ166REQDMBBhhb", "OO44JJ9K166RR33EEQDB", "OO44JJ966RRg33EEQQMh", "PP22OO44JJ66RR33EEQB"],
-  "EXO-MKVII":["J663DB0hhZZeWIXX77FF", "J3QQD55hhZZeeIXX77AF", "466QQD5C8hhZZeIX7AFf", "K66QQDD0hhddZZeeLIXA", "4J1g33QNQDD5ChZZIXAF", "4VK1663EQNQDD0hZZeLA", "OO4JJK16QQDD5MH0hhZ7", "44JJKK6633NDDCH80hZb", "OO44VJJ93UQDD5C80hhe", "OO44JJKK1633DD55B8hh", "O44JJ9KK11663QQDD8ZZ", "OO44VJJKK16633NDD88Z", "PP22GTTOO44J663QDD00"],
-  "GAZELLE":["4JQNDDMHhhaccdZZeYL7", "4J63QDDHhccZZeWWbAAF", "4JK633QHhhcZZeWW77ff", "JJ63UUQDDhhaacZZX7AA", "O4JJ3ENQQDDHHacZZYLF", "OJJ633ENQDDBhacZZeWW", "OO4JJ9K6633UQQDDBhac", "OO44VJJ9166R3UQNDD8Z", "OO44VJJ996633UQQHHha", "OO44VVJJ6633NQHhacdZ", "OO44VVJJ9916633NQCha", "OO44VVJJ996633UQQDHW", "PP22GOO44VJJ9663NQQh"],
-  "STAR-HUNTER":["4V63QQDDZZYLLIX77AFF", "46QDDBhhddZZebX7AFFf", "4J633DhhSadZZeLIAFFf", "O4466UQDhhZZWWLII77A", "O44J6633UQDhSddZX7AF", "OO441633QQChhSadYLIF", "OO446633QQD5hhaadL7F", "O44JJ633EQQDDHddZLAA", "O44JJ966R33UQQSSZLL7", "OO44JJ6633ED0hhSSdLL", "OO44VJJK663QQDSSZ77A", "OO44JJK633QNQhSSZL7A", "22TOO44JJK663QQSSddA"],
-  "RHINO":["4K63QDhhZZeeYbbLX7Ff", "63QDD0hhZZeWXXAAFFff", "11663QQDD5C0hZZeX7Af", "J33QDD5C00hhSdZZWYbA", "O4VJ133QQDC80hhZZeYF", "O4JJK633QD500hhaZeLA", "44JJ6633EDD80hhdZeXF", "OO4VJK633NQDCC0hhZZe", "OO44JJK1166g33QD80ad", "OO44JJ9KK16633NQQN55", "O44JJKK1166R33QNDD5H", "OO44JJKK116633EQQ55Z", "PP22TTOO44JJK1633QQ5"],
-  "KRIGER":["4633QQDhhaaZeWWXXAAF", "OOVJ66QHHhhccZWWbAAf", "O4433QQhhSaadZWWLXFf", "OO963UQQD88hccddZZWL", "O4VJJ963QMHBhhacZZIF", "OO4JJ9NNQQD5hhSacZZY", "OO44J963EUUQNDB0hZZb", "OO44VVJJ16UUQNDhZZLA", "OO44VVJK66gUUNDDhZZb", "OO44VVJJ996QQNDHHhZZ", "OO44VVJJ9RgQNDDHhcZZ", "OO44VVJ9966gUNQQDDZZ", "PP22GGOO44JJ93UDDHZZ"],
-  "CONQUEST":["46QDDChhaccdZZeeXX7f", "Jg33QDB80hhZZeebIXAf", "OOK16QDD0hhZZebbIXXF", "6g33QQDC88hhSaZZeWXX", "OJK133QQDCC80hhcZZb7", "441633QQDD5CC8hhadXf", "OO4JK1166R3QNQD0hhZe", "O44JJ66QQD55M80ZZeL7", "OO4J9K16633QQDD5880e", "OO44VJJKK11663QQH8he", "OO44VJJ9KK11663QQD8Z", "OO44JJKK1663QQD50haY", "PP22GTTOO44JJ11663QQ"],
-  "GRIEVER":["OQMhSSacZZIXX7AAFFff", "Og3Q0hScddZZbIIAAFff", "OggDCM00hSZZeII7AAff", "OO4V6gQChSZeYbIIAAff", "OO4Rgg3QDDMMhScIAAff", "OOJJ1gUQD5MMSdeIIAff", "OOJ6ggECMhhSdZIIAAff", "OOJ6gg3UDDMM0SSdIAff", "OO44JJggDDMMCSSIIFff", "OO4JJgg3UDDMMSSIIAAF", "OO44JJRgg3EDMMSSIIAA", "OO4416gg33DMMSSIIAAf", "PP22GGTTOO4JggQMMSSf"],
-  "GOTHIKA":["43QQDDhaacZZWb77AFff", "JJ93QQDHhaddZZWYYFff", "633UQQDDhaacZZWAAFFf", "OJ33NQNDHhhccdZZYI7A", "4466g3UQQDhhccZZWWIf", "OOJ1633UUNQDDBhhaZWf", "OOJJ16R3UQNNQDDHhhdW", "O44VVJ663QNNDD500hh7", "OO44VVJJ99133QDhhaZZ", "OO44VVJ99633UUNDhhZb", "OO44VVJJ99K663NQQMhh", "OO44VJJ99K6633UUQ5hh", "PP22GOO44VJJ99663Mhh"],
-  "PRAWN":["gMBScWbbLLIIXXAAFFff", "gMBBSZWYYbLLII77AAff", "gEMSSadWYbLLIIAAFFff", "OMMBB0SeYbbLLIIAAFff", "OKRgNMMHBSSLLIIXAAff", "OOV9ggEMMC8SYbbIIAff", "OO4RggEMMBBSSeLLIAff", "OORRggEUMMHSSdeYIIAf", "OO9RggEEMMBSSdZbIAff", "OOJ9RRggQMMSSYYbIAff", "OORgg3EEMMHB8SSYIIff", "OO4JRggMMBBSSbbIAAff", "PPGGTTOORggEEMMBBSSA"],
-  "HARKO":["KKQMMSSaccWWbIX7AAff", "OE5MhSSaaccZWWbIAAff", "OOg5MSSaaZeWWI7AAFff", "OUMMHSaccddWWLIIAAff", "O49MMHHhSScWbbIIAAff", "OOJ9KgNNMMHdWWIIAAff", "OOVggEUNN5MMSScWIIAA", "OOJ99RggEUDMSWIIAAff", "OO4V99KggNMMHHSSIIAA", "OO4VV99K1ggMMSSaIIff", "OO4VVJJ9ggUNMMSSIIAA", "OOVJ996ggNMMHSSIIAAf", "PP2GGTTOOVV9ggEMSSII"],
-  "DOZEUR":["DMMBhaZZeYYbbLLXAAFF", "VRQDMBhZZeYYbbLLIX7A", "6REUQQMMBdZWYYbbLL77", "4RREDMBBZZbbLLIIX7Ff", "O4REQD5MBB8hcYYbbLL7", "3EEDDCMBBhcZYYbbLLIA", "OVRR3EENQDMMBBhZYbbL", "VJJ9RR33EEQMBBcYYbbL", "OO46RREEDMMHBB88YYbb", "OO44RR3EE5MMBBhdYYbb", "OO44VJRR3EEMMBBaYYbb", "OO66RREEQQDMMBBYYbbL", "22O446RREEQMMBBYbbLL"],
-  "DILUS":["RNMBB80WYbbLLIXXAFff", "MMBB0eWWYbbLLIXXAAFf", "EDMMBB8haeeYbbLLXX7f", "V11REMMBBSacYYbLLXXf", "1EEDCMCBB8heYYbbLLFF", "EEUD5MHBB80eYYbbLLXA", "J1RREEMCBBdYYbbLLXXA", "4JJ11RREEMMCBB80YYbb", "O1RREEU5MMBB8eYYbbIX", "KK1RR3EEMMHBB80eYYbb", "9K16RREECMMBB80dYYbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
-  "CHEIF 117":["REDMhZZeeYYbbLLXXAAf", "JREQQMBZZeeWYbbLLI7A", "JKRMBBhhcZYYbbLLXAFf", "4RREUMBhaadZZYYbLLI7", "9RR3EQNQBBhZYYbbLLAF", "O446RR3EEU5MMZZYYbbL", "OO44RRUQMMBB0dYYbbLL", "OV6RRg33EEMMHBBeYYbL", "O4J1RREEQNMMBBZZYbbL", "OO46RREEUDMCMBBWYYbb", "OO4VJRREEMMBB8hYYbL7", "OO4VJJRRgEEMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
-  "SHADOW":["VEMBaaWWYYbbLL77AFff", "1EBBSaccWWYYbbLLIFff", "EUNMBB8cceYYbbLLXFFf", "RRgEENMBBaccdWYbLLXA", "KEEUDMMHBacYYbbLLXff", "V9RRgEENCMMadYYbbLLf", "V9RREEQDMMCHBB0WYYbL", "VRREEMMCHBB80SacYYLL", "VVJ9RREEUMMBBaZYYbLL", "VVJ996RRgEEMMHBBYYbL", "VV99KRREEUNMMBBYYbbL", "OVV996RREEMMHBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
+  "AMALGAME":["gMMhhSaZZWLIIXiAAFff", "gDDMMhadZZeWYIIAAFff", "gDMM8hSaddZZIIiAAFff", "gg3MMhhScdZebbIIAAff", "OORRggQMMhSSZZbIIAff", "OggDD80hhSSceYIIAAff", "OO4JK6ggDMMHSdbIIAff", "OOJ1ggQQDMMSSZebIIAA", "OOJgg33QCMMhSSYIIiAf", "OO496gg33MMhhSSZIIAA", "OO44JJggEDDMM0SSIAff", "OO44J166ggQMMSSIIAAf", "PP22GGTTOO4ggQMMSZIA"],
+  "MOG-AI":["2O4V6QNHhhccZZbLXi7F", "26QDDHhhccZZWYbbi7Ff", "29663UDDHhhSaZZWYbIF", "22OOVJ93UNQD0hhcZZbA", "224J63QQDDMhSaaccZLL", "224VVJJ9K33ENNDDhhZe", "22OO44J63EUNQhhaacWI", "22O4JJ96g33ENND5Hhha", "22O4VVJ9916633UNQHhZ", "22OO44VJJ99663EUQNHW", "22OO44VVJ996633NQHBh", "22OO44VVJJ9916633QHH", "PP22TOO44VVJ96g33QDh"],
+  "ZAPPAN":["GUMMH8hacWWLIIAAFFff", "GN50SSaccLIIXiAAFFff", "GUN5MHSSacZZbIIAAFff", "GG1gUUHScbIIXi77AAff", "GGOgg3UNSccZWII7AFff", "GGOO9gUNMhSacWII7Aff", "GGOOggNMMHHSSZeWbAff", "GGOOV99KgENMMH0SIIAA", "GGOOVJ991ggUUNMMSAAf", "GGOOVV99K6ggQNMSSIIf", "GGOOVVJ991gg5MMSScIf", "GGOO4VV996ggUMMSSIAA", "PPGGTTOO499ggU5MMSSA"],
+  "MOTOKO":["PNH8aaccdWWbLIXXiAFf", "PVUUNaacZeWWIXXi7AFf", "PUUCHHB8accdeeWWYLi7", "PP4VVNNDBhaaceWXiiFf", "PPO9UN5C8aaccWWLXii7", "PPOVV913UUNNC8acdWXf", "PP99KUU5HH8800aaWWXi", "PP4VV99KK1UNCMCHH0aW", "PP4VVJ99K1EUU5CHHcce", "PPVVJJ99KKEUNN55HH8a", "PPOVV99K11UUNN5HHB88", "PP4VV99KK1UUNN5CHHWi", "PPTTVV99KK1RUUNN5HHW"],
+  "TOA2":["TD800eeWWLIIXXiiAAff", "TD58800ddZeIXXiiAAff", "TOK1C0ZeebIIXXii7AAf", "TTVV1M0SeeYbLIIXXiiA", "TT91Q5CC00eeWiiAAFff", "TTOVK11g5800hSeWXiAf", "TTO4VKK11gg5MC00ddee", "TT4KK116ggD5C8eIIiiA", "TTVKK11gU5MMC88SeeLI", "TTOO4VKK1gQ55CC88SSX", "TTOOKK11gD55CCMHH88A", "TTOO9KK11ggE55MC8800", "PP2GGTTOOKK11655CM0e"],
+  "CATER-PILLARD":["5HB80eeLLIIXXii77AFF", "55C0heeWLIXXii77AFFf", "K1350SZeeLLIXXii77AA", "1CC800ScdeebXXiiAFFf", "K1D55C00SeeLLIii7FFf", "J1Q58800dZeeWYXXi77F", "KK15C8800ddebbLXiiAA", "O9KK11658800SSeeX7AF", "O11Q55CC8800SdLLXi7A", "49KK11655CC8800SSL77", "OKK11R5MCC8800SSddeF", "OOKK1155CC8800SSddLi", "PPTTOKK1165C800SSdLA"],
+  "MED-07":["J1Q5C0ZZeeWYbLXXiiff", "16C800hdZZYbLIXXiiff", "V165CH0hhcZeeXXiiFFf", "11QD558hhaZeeLIXii7F", "4JJK1133500haeeLIXii", "OJ1163EQD55C8heeWXii", "O4K11Q55CCM8800ZWYXi", "OVJKK1163QD5CC80eXii", "4JKK116g3NDCC880eXXA", "44VJKK1163355CC880eY", "OO44VJKK11D55CC80See", "OOVJJKK113Q55CC880ei", "PP22GGTTOJJKK1155C00"],
+  "BEAST":["1gU500aceeWWIXXiiFFf", "KKU5CHHaeeYIXXii7Fff", "1U5CC8800SaceeWWii7F", "4J9g55CH0aacdeeLXXii", "V9K55C0acdeeWYIXXiif", "KKR55MMCHH80ceeWXiiA", "VVKKRN55CH880aeLXXiA", "49KK11UN55CHH800SXiF", "V99KK11D55CC800acdee", "4V9KK11UN55CMCMH00ee", "44V99KK1155CCHH880SX", "OVVKK11UUNN55CC800XX", "PPGTTVJ99KK1155CHH0e"],
+  "EXO-MKX":["C80hhcZZeeWYbbXXii7F", "QDDC80SZeeYYbXXii7Ff", "KDD580hcdZeebXXiiAAF", "4K6QD5880accdZeXXii7", "4JK1QQ5MC880deeWLXXi", "OOVK13E55C8800SZee7f", "O4KK66UQ55CC8800ZeXX", "O4KK113Q55CCB8800ZLi", "O4VJKK116Q5CCH880Xi7", "OO49KK116gUD55CC880i", "OO44VJKK11655MC880eX", "O449KK11QQD55CC8800X", "PP22GTTO44JKK115C880"],
+  "NEUTRON":["65C0cdZeeWYIXXiiAAFF", "g55CB0adeLXXii7AAFFf", "4JKC8800ceeLXXii7AAF", "KE5CC88SacdeeXXi7AFF", "J11E55CC80hSSeeLiiAF", "OKK13UNCC800SeLLXii7", "16Q55CC880hSeeLXi7AA", "4KK11Q55CCB8800dLLAF", "OKK11N55CCH88SSLLXXF", "O4VKK1155CC880SSddLX", "OKK11EU55CC800SSdeL7", "44KK1155CC8800SSdXAF", "PPTTJKK11CC80SddLX7F"],
+  "HYPPER":["5C00ddeeWYbbLLXii7Af", "E5800SZeeYbLLIIXiiFF", "C8800acdZeeYYbbLXiiA", "K11RgM0ZZeeYLXXiiAFf", "KK11ECCB0SaeebLLXXii", "11Rg5MCMCB880hdeeXXi", "KK11EEND55M80eebLXXi", "49KK11RUUCMCM00ebXXi", "OJKK11REE55CCB800YXX", "VKK11RREU55B8800eYXX", "V9KK11RRE55CMC00LLXX", "4VKK11RECCMBB8800eXX", "PPTT44KK11RREE5B88XX"],
+  "TUNNELIER":["KD88hdZZeeWLIXXii77f", "KD00hhSaZeeWLIXXiiFf", "K3QD558ZeeWbIIXXiiFf", "4KK163Q00cZeeYbXXiiA", "JKK11D55MCSZZeeXii7f", "OKK11g3EQQ588heXXii7", "O4KK16EQD55CC8ceeXiA", "OJKK1166NQ5CCB880IXX", "OO4JKK11D558800hZeef", "OOJKK116NQ5MCC8800Ze", "OOJJKK11Rgg355C8800i", "OO44VJKK1155CC8800he", "PP2GTT4JJKK11635CC80"],
+  "ARKHAUL":["CSddeeWYbLLIXii7AAFF", "E5SdWbbLLXXii7AAFFff", "9NBSSdeWbLLXXii7AAFF", "5C00ddebLLXXi77AAFFf", "V150SSddeYYLI77AAFFf", "91635588SSddLLX77AFF", "KK1RN58SSaddLL77AAFF", "JJ1C8SScddebLL77AAFF", "911B80SSddLLX77AAFFf", "OVKK1M80SSddLL77AAFF", "4KK115CSSddZLL77AAFF", "K116RQ5SSddeLL77AAFF", "PPGGTTKUSSddLL77AAFF"],
+  "JIPASIS":["QDBSddZZLIXi77AAFFff", "gDHhSSddZZLIX77AAFFf", "O6gDSaaddZZLX77AAFFf", "3NDhhSddZLLii77AAFFf", "OO463ESSddWbLL77AAFF", "O4V6RR3SSddWLLi7AAFF", "OO93MHhSSaddLL77AAFF", "449R3UQBSSddLL77AAFF", "OOVV663QSSddLL77AAFF", "O44JD5CSSddZLL77AAFF", "44633EC0SSddLL77AAFF", "OOJ16RDCSSddLL77AAFF", "22TTOO4KSSddLL77AAFF"],
+  "BUZZY":["VNBddZeWbLLXXi77AAFf", "10ScdYLLIIXXii77AAFf", "580SddZeLLIXii77AAFf", "91ENQC0SddebLi77AAFF", "1880SSaddeLLIX77AAFF", "KCB800SSddZeLLi77AFF", "1RD5CHSSddeLLX77AAFF", "JK11M80SSddeLL77AAFF", "OKK160SSddeeLL77AAFF", "4JK15800SSddLL77AAFF", "9KK1550SSddLLX77AAFF", "O49KK11CSSddLL77AAFF", "PP22T1E8SSddLL77AAFF"],
+  "BRI-KB-ROCK":["MMSScddWbbLLIIiAFFff", "MM8SSWYbLIIXi77AFFff", "gg5MM0SScdZeII77AFff", "OJMMSSddeYLIIiAAFFff", "OgEMCHhSSdeII7AAFFff", "ORggMMSSaddYYII7AAff", "OO4RggMMBSSdWLII7AAf", "OOV9gg3MMSSLII7AAFFf", "OO1ggMMSSddbI77AAFff", "OOV1ggQMMSSddLIAAFFf", "OOVggEMMSSaddLLIAAFf", "OOJggMMHSSLLII77AAFf", "PGGTTOOggEMMSSdL7AAF"],
+  "MED-POD":["gMSddeYYLLIIXi7AAFff", "VggQM8SaYLLII7AAFFff", "g5MMHhSbLLIIiiAAFFff", "V1gEMSSdeIIX77AAFFff", "OVggUQCMMSSWLL7AAFff", "OOggQMSScdLLIIX7AAff", "OOgg3UMSSLLII7AAFFff", "OO49ggUMMSSLII77AAFF", "OO1ggMMBSSddLIIi77ff", "OO166ggMSSdLII77AAFf", "OOVgg3QMMSSddLLII7AA", "OO49ggMMSSddLII7AAff", "P2GGTTOOggMMSSddI7AF"],
+  "MORPHE":["J9NDHhaaccdZZWWYYIIX", "93NDHHaaccZZWWYLIIAf", "96UUQNNaaccZZWWbLAff", "499K6g3UHHhaaccWWYLf", "VV9966UUD5hSaacdZWWL", "4VV99g33UQN5HHhhccWf", "OVVJ9963EUUNNDHHacWF", "O4VVJ99K3UUNNMHHhacc", "O44VVJJ993UUNNhhaccW", "OO44VVJ991UUQNNMHHcW", "OO4VVJ99K6UUNQNHH0aa", "OO44VVJ99K3UUNNHHacW", "PP22GO4VVJ99RUUNNHHc"],
+  "EXO-MKIV":["9NHB8aaccWWYYbbLXi7A", "9RUNHBaccdWWYbLL7Fff", "V99HBhSSaaccdWWYYbbL", "VV6NHHaaceeWWYbbLLAf", "J99RNNHHBaaccWWYbbXF", "K6RUUNNHHBBaaccWbbLA", "VV99K3UUNNMHHB8cWYYL", "VV99REEUUNCHHSaacWLL", "4VV99RRUUNNMMHHBaccY", "VV991REEUUNQNMMHHBaW", "OVV99RREUUQNMMHHaace", "OVV99RRgEUUNNMHHBaaW", "PP44VV99RREUUNNMHHBW"],
+  "EXO-MKV":["NQQHHaaccdZZWWbiiAAf", "93QNDHaaccZZWWYbI7AF", "4JUNQMHHhhaaccZWWAFF", "ONNDHHhhaaccdZZWWAFf", "O4VV93NNDDHhaccZWWX7", "V9963UUNNDDHhccWW7AF", "O4VVJ991UNNHHBhaacdW", "VVJJ99K33UUNN5Haaccb", "OO4VV99R3UNQNQaacZWW", "O4VVJJ9963UUNNHH0ScW", "O44VVJ9966UUNNDHH0aW", "O4VVJJ99K66UUNNHHacW", "PP22GO44VVJ99UUNNHHW"],
+  "WHIPLASH":["UNHH0aacceeWIiiAFFff", "V9U8haaccdeWWYLXXiiF", "VUNN0aaccdWWLXXi7Fff", "9gUUNN5CH8haaZWWbXiA", "9UUNNMHH80aaccZeeWXX", "VV99UUNNH880hccZeYXi", "V9913UUNN50SaacceWif", "VV99UUQN5HHB8aaccWXi", "4VV99KK11UUNNDHHaWXF", "VVJ99KK1RUUNN55HBacc", "OOVV99K116UUNNCHH0cc", "OVV99KK11UUNNCMHHaac", "PPTTVV99KK113UUNNHac"],
+  "DELOK":["VUUH00aaccWWYYbLLAff", "V9UHB8SaacZWWYYbLIFf", "V93UNBaaccZWWYYbbLIF", "4VV9UUCaaccZWYYbbLIF", "VV6UNNMHHB0accWYYLXX", "VVR3ENNMHHSaacWWbLLF", "VV9RgUUNNMHHBceWWYbA", "VV99KRgEUUNHHBaccebX", "VV99RRUUNNMCMHHBSaWX", "VV9916RREEUUNNHHBccX", "O4VV99RR3EUUNNMHHaaL", "OVV99RR3EUUNNHHBccWL", "PPTVV996RREEUUNNMHHc"],
+  "TECHNOSORUS":["963UNHaaccZZWYIIAFFf", "O9UQDHHSaaccZZWYII7A", "V6UNDDHHaaccZZWYLi7A", "V99KNNQDaccddZZWWii7", "V96EUUQDHaaccdZZWWLF", "VVJ9966UNHHhaaccWWbI", "O4VJ3UNNMHHhhaaccZWW", "44VV9966UUNNHHB0adWW", "OO4VVJ99K6UUQNNHHZWW", "OO4VVJ99UUQNHhhaaZWW", "OO4VV9966UUQNNHaccWW", "O44VV99R33UUNN5HHcWW", "PP22GOOVVJ99UUNNQHWW"],
+  "SCOPT":["9UNCHaccddWWLLAAFFff", "UUHHacceeWWYLIi77AAF", "V9gUUMHHacZWWLLXi7AF", "99NNBSSaaccZWWLiFFff", "VV99NHH8aaccWW7AAFFf", "OVV99163UHHBSaacWLLF", "V993UUNNHHSaaccLLAAF", "OVV99RUUNHHSSaaccdLX", "VVJ991UUNNHSaadZWL77", "4VVJ99gUNNHHSSaadWLA", "VV99KK6UNNHHSSaaddWF", "VV99RgUUNNHHSSaaddWL", "PP2OVV99UUNHHSSaaddL"],
+  "DUMADED":["EEQQDCBBcZYYbLLii77f", "J6RRgHBBdZZYYbLLIXAf", "ORR3QMMBZZeeWYYbLLFf", "RR3DCMMBBaZZWYYbbLL7", "JR3EEUDDMMBheYYbbLLA", "OR33EEMMB0ZZWYYbbLXi", "O4J9RREEDMMBB8hYbbL7", "OOJKRRgEEQD5MBBYbbLL", "O4VJRRg3EENDMMBBYYbb", "OOJ6RREEQQMMBBZYYbbL", "OO44JJ6RREEQMMBBbbLL", "OVJJRR3EEQDMMBBYbbLL", "22G446RREEDMMBBYYbbL"],
+  "LACRIUM":["9UNH8hhaacZZWWLXXiFF", "O49963UNHSaacZZWWL77", "4VVJ9RgUNHHacZZWXAff", "63UUNDHHSaaccZWWYi7A", "OJ1UUNNDHhaaccZeWWYL", "OVV6UQNNHH0haaccZZWW", "4VV99REUNQQHhaaccZWA", "O4VVRgEUUNNHhhaccWWX", "OO44VV9K6gUUNNHSaccW", "O4VVJJ99663UUNNHHccd", "OOVV9966RgUUNQNHccWW", "OO4VVJ99g3UUNNDHHacc", "PP22GO4VV991UUNQNHcc"],
+  "RAZOPS":["SScdYLLIIXXii77AAFff", "KSSacdebLLXXi77AAFFf", "BSdeWYbLLXXii77AAFFf", "63CC00ddZZLLX77AAFFf", "9QM80SaaddeLLi77AAFF", "16RCCH8SSddZLLi77AFF", "9KK5C0SSddeLLI77AAFF", "OVKgECSSddLLii77AAFF", "9911U50SSddLLi77AAFF", "44KK1N0SSddeLL77AAFF", "OJ9KK1CSSddLLX77AAFF", "4V1165C8SSddLL77AAFF", "PPTTVJKNSSddLL77AAFF"],
+  "FENCY":["15580deYLXXii77AAFff", "1U5588SebLLIXXii77AA", "KUQQ5CH88SeYLXXii7FF", "Kg55C0eeYbLIXii7AAFF", "K1E55M800eebLLXii77F", "11gQCC800eebLLIIii7A", "VK11D55C880SSeeLXi77", "4KK116N55880SddeeYLi", "K11R35CC800SceeLX7AF", "JJKK11NCC880SddeeXFF", "JKK11gN5CC800SSddee7", "VKK11DCC8800SSdeeiAA", "PP2GTTKK11558SSddeeF"],
+  "EXO-MKI":["MMHhSSacZWIIXiiAAFFf", "RgM8SSaaccZZWIIXiAAf", "VRgQNDMMHSSccIIXAAFf", "ggENMMHHBccZWbIIAAff", "O4VDMMCH0SSaacIIAAff", "OOV9gg3DMMH88SSaaAff", "OOV9ggMMBBScWWIIAFff", "OOVVggEMMHH8dWIIAAff", "OOVV99KggUQMMHSSIAff", "OOVV996gg5MMHHSSIIff", "OO4996ggUNNMM8SSIAff", "OOVVJ996ggNMMSSIIAff", "PP2GGTTOO4VVggMHSSff"],
+  "GAPIX":["J633QMhhSdZZbLL7AAff", "6RQQDDhhacZZYYbbLLIf", "O4J63Q5BhhacZZYYbLFf", "J6633EQQ5BhhSZZWYbIf", "4466RR3QQDHhhdZbLLIF", "OOJ66Rg3EQQB80hdZZYF", "OO4VJJK663EEQDDhYLLA", "O44JJ166RREQQDCHhZYf", "OO44JJK66R33DMMHZYLX", "OO44VJJ166REQDMBBhhb", "OO44JJ9K66RR33EEQD5B", "OO44JJ966RRg33EEQQMh", "PP22OO44JJ66RR33EEQB"],
+  "EXO-MKVII":["J663DH0hhZZYIXXi77FF", "JK3QQD58hhZZeXii77AF", "466QQD8hhZZIXXii77AF", "66QQDDM0hhdZZeeYIiiA", "4JK133QNQDD8hhZZIXAF", "4663QNQDD5M0hZZeWiAF", "OO4JJK16QQDDMH80hha7", "44JJKK6633NDDCH80hcZ", "OO44VJJ93UQDD5C80hhi", "OO44JJKK1633DD55B8hh", "O44JJ9KK11663QQDD8ZZ", "OO44VJJKK16633NDDC8Z", "PP22GTTOO44J663QDD00"],
+  "GAZELLE":["4J3NDDHhhccZZWbbL7ff", "4J63DDHhcdZZeWWXAAFf", "4J633QHhhcZZWWLii77f", "JJ63EUQDhhaacZZWX7AA", "O4JJ3ENQQDDMHHcZZYbF", "OJJ633EENQDBhacZZWWf", "OO4JJ96633UQQDDBhacL", "OO44VJJ916R3UQNDD8Z7", "OO44VJJ996633UQQHHha", "OO44VVJJ6633NQHhacdZ", "OO44VVJJ9916633NQCha", "OO44VVJJ996633UQQDHW", "PP22GOO44VJJ9663NQQh"],
+  "STAR-HUNTER":["463QQDDaZZWYLLI77AFF", "46QDDHhhcddZZX7AAFff", "4J633DhhSZZebLLiAFFf", "O4466QDhhZZWLIIXX77A", "O44VJ66R33DhSZeeY7AF", "OO44633QQ5ChhSdZbLIF", "O4466R33QQD5hhaadL7F", "O44JJ633EQQDDHddZLAA", "O44JJ966R33UQQSSZLL7", "OO44JJ6633ED0hhSSdLL", "OO44VJJK66QQD5SSZ77A", "OO44JJK633QNQhSSZL7A", "22TOO44JJK663QQSSddA"],
+  "RHINO":["463QDhhacZZebLXii7Ff", "16gg3QDDBhhZZeeXiAFF", "663QQDD5580hZZYXi7Af", "J9133UQDDC80hhaZZebX", "O4J133QQDC0hhaZZWXiF", "O4JJK11633QDB0hhabLi", "44JJK6633EDD80hhaeiF", "OO4JK633QQDCC0hhaZXi", "OO44JJK116633QD80hae", "OO44JJ9KK16633NQQN55", "O44JJKK1166R33QNDD5H", "OO44JJKK116633EQQ55Z", "PP22TTOO44JJK1633QQ5"],
+  "KRIGER":["4633QQhhaaZWWYXAAFFf", "OOVJ66gQHHhhccZeWWAA", "OO4433QQhhaaZeWWXXFf", "OO9963UQQD8hcdZZeeWL", "O4VJJ963QNCHHhhaZZeI", "OO4JJ9NNQQD5hhSaadZZ", "OO44J963EUUQNDB0hcZZ", "OO44VVJJ16UUQNDMhZZA", "OO44VVJK66gUUNDDhcZZ", "OO44VVJJ996QQNDHHhZZ", "OO44VVJJ9RgQNDDHhcZZ", "OO44VVJ9966gUNQQDDZZ", "PP22GGOO44JJ93UDDHZZ"],
+  "CONQUEST":["46QDDhhaccdZZeeXXii7", "O33QD0hhcZZIXXiiAAff", "OO6QDD50hhZZYbbLIXiF", "633UQQDC8hhZZWYbXXif", "OJ133QQDC880hhcdZZeX", "4416g33QQDD5C8hhebXX", "OO4JK11663QNQD0hhSZi", "O44JJ66QQD55M80ZZL7f", "OO4J9K16633QQDD5880i", "OO44VJJKK1663EQQ58he", "OO44VJJ9KK11663QQD8Z", "OO44JJKK1663QQD50hYb", "PP22GTTOO44JJ11663QQ"],
+  "GRIEVER":["OQMhSSadZZYIIX7AAFff", "Og3Q0hScZZeeIIiAAFff", "OggDDM00hSZZIIi7AAff", "OO46RgChScZZWIIiAAff", "OO4g3EQDMMhSSeIiAAff", "OOJJ1ggUQD5MMSeIIAff", "OOJ6ggCMhSZeIIiAAFff", "OOK6gg3UDDMM0SSeIAff", "OO4JJggEDD5MMBSSIIff", "OO4JJgg3UDDMMHSSIIAA", "OO44JJRgg3EDMMSSIIAA", "OO4416gg3DMMSSZIIAAf", "P22GGTTOO4JggQQMMSSf"],
+  "GOTHIKA":["43QQDDhaacdZZWii77AF", "JJ93QQDHhaaZZWbiiFff", "633UQQDDBhacZZWbiAFF", "OK3NQQNDDHhhcdZZb7Af", "446g3UQQDhhcZZeWWIi7", "OOVJ16g33UNQDDBhhaZW", "OOJJ16RR3UQNQDDHhheW", "O4VVJ6633QNNDD5500hh", "OO44VVJJ99133QDhhaZZ", "OO44VVJ99633UUNDhhcZ", "OO44VVJJ99K663NQQMhh", "OO44VJJ99K6633UUQ5hh", "PP22GOO44VJJ9966QMhh"],
+  "TORTUGA":["1800ccdeebbLLIXXiFFf", "65C00SceeYbLXXi77AAF", "5C800deeWLIIXXi77AFf", "KKD5CB80hSeeLXXii7AF", "911D5800SebIXXii7AAf", "6R55MC80eeLXXiiAAFFf", "K1R3CC8800hSeXXii77F", "VJK155C88SSceLXXiiAF", "KK11Q55H80SdeYXii7AF", "V9KK115C880SSeXiiAFF", "4KK11QQ55C800SSdLii7", "VKK1655CC8800SSdLiiF", "PPTT4KK1155H8SSddLii"],
+  "PRAWN":["gMBSddYbLLIIXXAAFFff", "gMBBSSaYYbLIIX77AAff", "gEMSSceYbLLIIXAAFFff", "OQNMMBB0hSZbbIIAAFff", "OOVRgNMMHBSLLIIXAAff", "OOgEDMM8SWYbbIIiAAff", "OO4RggECMMBSSeLLIAff", "OORRggEUMMHSSdYIIAff", "OO9RggEEMMBSSZebIAff", "OOJ9RRggUMMSSYYbIAff", "OO9Rgg3EEMMHBSSYIIff", "OO4JRggMMBBSSbbIIAAf", "PPGGTTOORggEEMMBBSSA"],
+  "HARKO":["MMSSacceWYLLIXX7AAff", "OV5MSSaaccebIXiAAFff", "OO5MSSaaWWbIii7AAFff", "OUMMHScdeeWWbLIIAAff", "O49MMHHSScbbIIXiAAff", "OO9KgNQMMHeWLIIXAAff", "OOVggUNN5MMSSdWIIAAF", "OOJ99RggEUDMSWIIAAff", "OO4V99KggNMMHHSSIIAA", "OO4VV99K1ggMMSSaIIff", "OO4VVJJ9ggUNMMSSIIAA", "OOVJ996ggNMMHSSIIAAf", "PP2GGTTOOVV9ggEMSSII"],
+  "DOZEUR":["DMMBhZZeYYbbLLIXXAAF", "VRDMMBhaZZWYYbbLL7Af", "6REQQMB8SZeWYYbbLLX7", "4JRREDMMBB8ZZYbbLLiF", "O49RRED5MBBhdYYbbLL7", "J3EEDDCMBBhdZYYbbLLA", "ORR3EENQDMMBBhZWYbbL", "VJJ9RR33EEQMBBdYYbbL", "OO496RREEDMMHBB8YYbb", "OO44RR3EE5MMBBheYYbb", "OO44VJRR3EEMMBBaYYbb", "OO66RREEQQDMMBBYYbbL", "22O446RREEQMMBBYbbLL"],
+  "DILUS":["RMBB0eeWYbbLLIXXiiAF", "MMBB0hSZeYbbLLXXiAAF", "gEMMCBBaeeYbbLLXii7F", "1RE5MMBBhcceWYYbLLXX", "1EEDMCCBBYYbbLLXXiiF", "KEEUD5MHBB80YYbbLLiA", "KK1RREEMCBBeYYbbLLXA", "4JK11RREEMMCBB80YYbb", "OJ1RREEUMMBB88YYbbXi", "4KK1RREEMMHBB80eYYbb", "9K16RREECMMBB80eYYbL", "O9KK11RREEMMBB8YYbbL", "PPGTTOKRREEMMBBYYbLL"],
+  "CHEIF 117":["REDMhacZZYYbbLLXAAff", "JREQMB8ZZWWYbbLLIAff", "JRMMBBhhZZeYYbbLLAFf", "4JRREUMBhaZZeYYbbLL7", "RR3EQQHBBhSaYYbbLLAA", "OV66RR3EE55MMaZYYbbL", "OO44VRRQMMBB0eYYbbLL", "OV6RR33EEMMBBheYYbLI", "O4J1RREEQNMMBZZYbbLL", "OO46RREEUDMCMBBWYYbb", "OO4VJRREEMMBB8hYYbL7", "OO4VJJRRgEEMMBBYYbbL", "P22OO46RREEMMBBYbbLL"],
+  "SHADOW":["VEMBSacWWYYbbLLi77Af", "1EMBBccdWWYYbbLLXiFf", "EUNDMHBBccYYbbLLXAff", "RREEQMBBacceWYYbLLiA", "ggEEUNDMMHBacZYYbbLL", "V9RRgEENNCMhaeYYbbLL", "V9RREEQDDMMHBB0WYYbL", "VRREEMMCHBB80SacYYLL", "VVJ9RREEUMMBBaacYYLL", "VVJ996RRgEEMMHBBYYbL", "VV99KRREEUNNMMBBYYbb", "VV9KRREENN5MMBBYYbbL", "PP24VV9RREEMMBBYYbbL"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -23847,7 +24062,8 @@ const DEFI_RESULT_ART_Y = {
   'TOA2': 37,
   'ZAPPAN': 20,
   'AMALGAME': 30,
-  'GOTHIKA': 30
+  'GOTHIKA': 30,
+  'TORTUGA': 50
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
@@ -24335,6 +24551,8 @@ function supaErrMsg(e){
   if(/invalid login credentials/i.test(m)) return 'E-mail ou mot de passe incorrect.';
   if(/password.*(least|character|6)/i.test(m)) return 'Le mot de passe doit faire au moins 6 caractères.';
   if(/unable to validate email|invalid.*email/i.test(m)) return 'Adresse e-mail invalide.';
+  if(/different from the old password/i.test(m)) return 'Choisis un mot de passe différent de l\'ancien.';
+  if(/rate limit|too many|security purposes/i.test(m)) return 'Trop de demandes — patiente un peu avant de redemander un lien.';
   if(/network|failed to fetch/i.test(m)) return 'Impossible de joindre le serveur — vérifie ta connexion.';
   return m || 'Une erreur est survenue. Réessaie.';
 }
@@ -24852,6 +25070,8 @@ function openNameModal(){
   nameModalFirst = false;
   nmGateActive = false;
   document.getElementById('nmAccountStep').style.display = 'none';
+  document.getElementById('nmRecoverStep').style.display = 'none';
+  document.getElementById('nmNewPassStep').style.display = 'none';
   document.getElementById('nmNameStep').style.display = '';
   document.getElementById('nmTitle').textContent = 'CHANGER DE NOM';
   document.getElementById('nmSub').textContent = 'Ton nouveau nom de joueur';
@@ -24898,6 +25118,8 @@ function openAccountGateModal(){
   nmGateMode = 'signup';
   document.getElementById('nmAccountStep').style.display = '';
   document.getElementById('nmNameStep').style.display = 'none';
+  document.getElementById('nmRecoverStep').style.display = 'none';
+  document.getElementById('nmNewPassStep').style.display = 'none';
   renderNmGateStep();
   document.getElementById('nameModal').classList.add('show');
   setTimeout(() => { const e = document.getElementById('nmEmail'); if(e) e.focus(); }, 50);
@@ -24912,8 +25134,90 @@ function renderNmGateStep(){
     ? 'Pas encore de compte&nbsp;? <a href="#" id="nmSwitchMode">Créer un compte</a>'
     : 'Déjà un compte&nbsp;? <a href="#" id="nmSwitchMode">Se connecter</a>';
   document.getElementById('nmSwitchMode').onclick = e => { e.preventDefault(); nmGateMode = isLogin ? 'signup' : 'login'; renderNmGateStep(); };
+  document.getElementById('nmForgotRow').style.display = isLogin ? '' : 'none';
   const msg = document.getElementById('nmAccMsg'); if(msg) msg.textContent = '';
 }
+// ----- Mot de passe oublié : Supabase envoie un lien par e-mail (/auth/v1/recover). Le lien rouvre le jeu avec
+// #access_token=…&type=recovery dans l'adresse ; bootSave() le détecte (supaParseRecoveryHash) et ouvre la
+// fenêtre « nouveau mot de passe » (nmOpenNewPass), qui pose le mot de passe via PUT /auth/v1/user. -----
+var nmRecoveryTokens = null, nmRecoveryError = null;
+function supaParseRecoveryHash(){
+  try{
+    const h = (location.hash || '').replace(/^#/, ''); if(!h || h.indexOf('=') < 0) return;
+    const q = new URLSearchParams(h);
+    if(q.get('type') === 'recovery' && q.get('access_token')){
+      nmRecoveryTokens = { access_token:q.get('access_token'), refresh_token:q.get('refresh_token') || '', expires_in:+q.get('expires_in') || 3600, token_type:q.get('token_type') || 'bearer' };
+    } else if(q.get('error_code') === 'otp_expired' || (q.get('error') === 'access_denied' && q.get('error_code'))){
+      nmRecoveryError = 'Ce lien a expiré ou a déjà été utilisé — demande-en un nouveau.';
+    } else return;
+    history.replaceState(null, '', location.pathname + location.search);   // le jeton ne reste pas dans la barre d'adresse
+  }catch(_){}
+}
+async function supaRecoveryAdopt(){   // transforme le jeton du lien en session (récupère la fiche du compte)
+  if(!nmRecoveryTokens) return;
+  try{
+    const u = await supaFetch('/auth/v1/user', { method:'GET', noAuth:true, headers:{ Authorization:'Bearer ' + nmRecoveryTokens.access_token } });
+    writeSupaSession(Object.assign({ user:u }, nmRecoveryTokens));
+  }catch(_){ nmRecoveryTokens = null; nmRecoveryError = 'Ce lien a expiré ou a déjà été utilisé — demande-en un nouveau.'; }
+}
+function nmGateGoRecover(msg, isErr){
+  document.getElementById('nmAccountStep').style.display = 'none';
+  document.getElementById('nmNewPassStep').style.display = 'none';
+  document.getElementById('nmRecoverStep').style.display = '';
+  document.getElementById('nmRecEmail').value = document.getElementById('nmEmail').value || '';
+  document.getElementById('nmTitle').textContent = 'MOT DE PASSE OUBLIÉ';
+  document.getElementById('nmSub').textContent = 'On t\'envoie un lien par e-mail.';
+  document.getElementById('nmRecOk').textContent = 'ENVOYER LE LIEN';
+  const m = document.getElementById('nmRecMsg'); m.textContent = msg || ''; m.style.color = isErr ? 'var(--ember)' : 'var(--text-dim)';
+}
+function nmGateBackFromRecover(){
+  document.getElementById('nmRecoverStep').style.display = 'none';
+  document.getElementById('nmAccountStep').style.display = '';
+  nmGateMode = 'login'; renderNmGateStep();
+}
+function nmOpenNewPass(){   // fenêtre « nouveau mot de passe » après clic sur le lien reçu par e-mail
+  ['nmAccountStep','nmRecoverStep','nmNameStep'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+  document.getElementById('nmNewPassStep').style.display = '';
+  document.getElementById('nmTitle').textContent = 'NOUVEAU MOT DE PASSE';
+  document.getElementById('nmSub').textContent = 'Choisis ton nouveau mot de passe.';
+  document.getElementById('nmNewPass').value = ''; document.getElementById('nmNewPassMsg').textContent = '';
+  document.getElementById('nameModal').classList.add('show');
+  setTimeout(() => document.getElementById('nmNewPass').focus(), 50);
+}
+(function(){
+  const emailEl = document.getElementById('nmRecEmail'), msgEl = document.getElementById('nmRecMsg');
+  const setMsg = (t, isErr) => { msgEl.textContent = t || ''; msgEl.style.color = isErr ? 'var(--ember)' : 'var(--text-dim)'; };
+  document.getElementById('nmForgotLink').onclick = e => { e.preventDefault(); nmGateGoRecover(); };
+  document.getElementById('nmRecBackLink').onclick = e => { e.preventDefault(); nmGateBackFromRecover(); };
+  document.getElementById('nmRecOk').onclick = async () => {
+    const email = (emailEl.value || '').trim(), btn = document.getElementById('nmRecOk');
+    if(!email){ setMsg('Renseigne ton e-mail.', true); return; }
+    btn.disabled = true; setMsg('Envoi…');
+    try{
+      // le lien ramène au jeu, à l'adresse où il est ouvert en ce moment (elle doit figurer dans les « Redirect URLs » du projet Supabase)
+      const back = location.href.split('#')[0].split('?')[0];
+      await supaFetch('/auth/v1/recover?redirect_to=' + encodeURIComponent(back), { method:'POST', noAuth:true, body: JSON.stringify({ email }) });
+      setMsg('Lien envoyé ! Ouvre l\'e-mail (regarde aussi les indésirables) et clique dessus : le jeu se rouvre pour choisir ton nouveau mot de passe.');
+      btn.textContent = 'RENVOYER LE LIEN';
+    }catch(err){ setMsg(supaErrMsg(err), true); }
+    btn.disabled = false;
+  };
+  const npMsg = (t, isErr) => { const m = document.getElementById('nmNewPassMsg'); m.textContent = t || ''; m.style.color = isErr ? 'var(--ember)' : 'var(--text-dim)'; };
+  const finish = () => { document.getElementById('nmNewPassStep').style.display = 'none'; closeNameModal(true); nmRecoveryTokens = null; checkChangelogOnLogin(); };
+  document.getElementById('nmNewPassCancel').onclick = finish;
+  document.getElementById('nmNewPassOk').onclick = async () => {
+    const pass = document.getElementById('nmNewPass').value || '', btn = document.getElementById('nmNewPassOk');
+    if(pass.length < 6){ npMsg('Le mot de passe doit faire au moins 6 caractères.', true); return; }
+    btn.disabled = true; npMsg('Enregistrement…');
+    try{
+      await ensureFreshSupaSession();
+      await supaFetch('/auth/v1/user', { method:'PUT', body: JSON.stringify({ password:pass }) });
+      npMsg('Mot de passe mis à jour !');
+      setTimeout(finish, 900);
+    }catch(err){ npMsg(supaErrMsg(err), true); }
+    btn.disabled = false;
+  };
+})();
 function nmGateGoToNameStep(){
   document.getElementById('nmAccountStep').style.display = 'none';
   document.getElementById('nmNameStep').style.display = '';
@@ -25302,11 +25606,18 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
   nmGateIsNewPlayer = !(local && applySave(local));
   updateLogin(); updateDailyStreak(); renderLoginBonus();
   renderNotifs();
+  // Lien « mot de passe oublié » reçu par e-mail : le jeton de l'adresse devient la session (le joueur est reconnecté),
+  // puis on lui demande son nouveau mot de passe.
+  supaParseRecoveryHash();
+  await supaRecoveryAdopt();
   // Tente de retrouver une session de compte déjà enregistrée sur cet appareil, en silence.
   const connected = await connectCloud();
   if(!connected){
     // Aucun compte relié sur cet appareil : fenêtre obligatoire (compte -> nom) avant de pouvoir jouer.
     openAccountGateModal();
+    if(nmRecoveryError) nmGateGoRecover(nmRecoveryError, true);   // lien périmé : on propose d'en demander un autre
+  } else if(nmRecoveryTokens){
+    nmOpenNewPass();
   } else {
     checkChangelogOnLogin();
   }
