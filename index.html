@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.80</title>
+<title>Projet MECA V0.04.81</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7173,7 +7173,7 @@
   /* Calque plein écran (z 20 : au-dessus de la barre de navigation, sous les fenêtres z 30+). La plaque de métal est en
      relief ; tout le reste (mana, FIN, boutons d'action, bannières, pièce) suit la recette « verre biseauté ». */
   .btl{
-    --sw:min(21.6vw, 11.2vh); --hw:min(31vw, 13.2vh); --R:290px; --cut:10px;
+    --sw:min(20vw, 10.4vh); --hw:min(31vw, 13.2vh); --R:290px; --cut:10px;
     position:fixed; inset:0; z-index:20; display:flex; flex-direction:column; overflow:hidden;
     padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px);
     background:radial-gradient(120% 70% at 50% 50%, #1d2c48 0%, #0d1424 58%, #070a12 100%);
@@ -7694,6 +7694,45 @@
   .btl-cbanner .cb-scan{ position:absolute; top:0; bottom:0; left:0; width:26%; background:linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); transform:translateX(-120%); pointer-events:none; }
   @keyframes cbGlitch{ 0%{ transform:translate(0,0); } 6%{ transform:translate(-3px,0); } 9%{ transform:translate(3px,1px); } 12%{ transform:translate(0,0); } 55%{ transform:translate(2px,0); } 57%{ transform:translate(-2px,-1px); } 59%{ transform:translate(0,0); } 100%{ transform:translate(0,0); } }
   @keyframes cbGhost{ 0%{ opacity:0; } 6%{ opacity:.85; transform:translate(-4px,0); clip-path:inset(0 0 55% 0); } 9%{ opacity:.85; transform:translate(4px,0); clip-path:inset(45% 0 0 0); } 12%{ opacity:0; } 55%{ opacity:.8; transform:translate(-3px,0); clip-path:inset(30% 0 30% 0); } 59%{ opacity:0; } 100%{ opacity:0; } }
+
+/* ----- refonte champ de bataille V0.04.81 : néons pilotés par --lt (haut, rouge) et --lb (bas, bleu) ----- */
+.btl-plate{ --lt:#ff2f3f; --lb:#2f8cff; }
+.btl-pcb .pc-lg.lt{ fill:var(--lt); color:var(--lt); filter:drop-shadow(0 0 2px var(--lt)) drop-shadow(0 0 6px var(--lt)); transition:fill .9s ease-out, filter .9s ease-out; }
+.btl-pcb .pc-lg.lb{ fill:var(--lb); color:var(--lb); filter:drop-shadow(0 0 2px var(--lb)) drop-shadow(0 0 6px var(--lb)); transition:fill .9s ease-out, filter .9s ease-out; }
+.btl-pcb .pc-lg .lg{ animation:btlLgB 3.4s ease-in-out infinite; }
+@keyframes btlLgB{ 0%,100%{ opacity:.62; } 45%{ opacity:1; } }
+.btl-plate.lit .pc-lg{ transition:fill .22s ease-out, filter .22s ease-out; }
+.btl-plate.lit .pc-lg.lt{ filter:drop-shadow(0 0 3px var(--lt)) drop-shadow(0 0 10px var(--lt)) drop-shadow(0 0 18px var(--lt)); }
+.btl-plate.lit .pc-lg.lb{ filter:drop-shadow(0 0 3px var(--lb)) drop-shadow(0 0 10px var(--lb)) drop-shadow(0 0 18px var(--lb)); }
+.btl-plate.lit .pc-lg .lg{ animation:btlLgL .9s ease-in-out infinite; }
+@keyframes btlLgL{ 0%,100%{ opacity:.8; } 50%{ opacity:1; } }
+.btl-mid-ln{ background:linear-gradient(180deg, var(--lt) 0 1.2px, #07090c 1.2px 3.8px, var(--lb) 3.8px 5px); transition:background .9s; }
+.btl-slot{ background:linear-gradient(165deg, #0a1220, #111c30); }
+.btl-slot::before{ --k:rgba(70,150,255,.8); }
+
+/* ----- texture du champ de bataille (V0.04.81) ----- */
+.btl-body-in .pc-tx, .btl-body-in .pc-lc{ position:absolute; left:0; width:100%; pointer-events:none; }
+.btl-body-in .pc-lc{ animation:pcBreath 3.6s ease-in-out infinite;
+  -webkit-mask-image:linear-gradient(90deg, rgba(0,0,0,.82) 0, rgba(0,0,0,.82) 38%, #000 50%, rgba(0,0,0,.82) 62%, rgba(0,0,0,.82) 100%); mask-image:linear-gradient(90deg, rgba(0,0,0,.82) 0, rgba(0,0,0,.82) 38%, #000 50%, rgba(0,0,0,.82) 62%, rgba(0,0,0,.82) 100%);
+  -webkit-mask-size:260% 100%; mask-size:260% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
+.btl-body-in .pc-lc.t{ animation:pcBreath 3.6s ease-in-out infinite, pcSweepT 5.2s linear infinite; }
+.btl-body-in .pc-lc.b{ animation:pcBreath 3.6s ease-in-out -1.8s infinite, pcSweepB 5.2s linear -2.6s infinite; }
+@keyframes pcBreath{ 0%,100%{ opacity:.88; } 50%{ opacity:1; } }
+@keyframes pcSweepT{ from{ -webkit-mask-position:100% 0; mask-position:100% 0; } to{ -webkit-mask-position:0% 0; mask-position:0% 0; } }
+@keyframes pcSweepB{ from{ -webkit-mask-position:0% 0; mask-position:0% 0; } to{ -webkit-mask-position:100% 0; mask-position:100% 0; } }
+.btl-plate.lit .btl-body-in .pc-lc.t{ filter:brightness(1.25) drop-shadow(0 0 5px var(--lt)) drop-shadow(0 0 12px var(--lt)); animation-duration:.9s, 1.6s; }
+.btl-plate.lit .btl-body-in .pc-lc.b{ filter:brightness(1.25) drop-shadow(0 0 5px var(--lb)) drop-shadow(0 0 12px var(--lb)); animation-duration:.9s, 1.6s; }
+.btl-plate.pt-on .btl-screw, .btl-plate.pt-on .btl-mid::before{ display:none; }
+.btl-plate.pt-on .btl-slot{ background:none; box-shadow:inset 0 3px 7px rgba(0,0,0,.55); }
+.btl-plate.pt-on .btl-slot.leader{ box-shadow:none; }
+.btl-plate.pt-on .btl-mid-ln{ transition:none; }
+/* centrage des petites cartes : le contour de chaque cadre est légèrement décalé dans son image (gemme en haut à gauche), on le recentre dans l'alvéole (mesuré sur le rendu) */
+.btl .btl-unit .unit.cbt{ left:var(--cdx,0%); top:var(--cdy,0%); }
+.btl .unit.cbt.f-rare{ --cdx:-.7%; --cdy:-1.6%; }
+.btl .unit.cbt.f-epique{ --cdx:-.3%; --cdy:-1.3%; }
+.btl .unit.cbt.f-legendaire{ --cdx:-1.1%; --cdy:-1.3%; }
+.btl .unit.cbt.f-holo{ --cdx:.2%; --cdy:-1.6%; }
+.btl .unit.cbt.f-ecarlate{ --cdx:-.2%; --cdy:-1.4%; }
 /* ===== nouvelles petites cartes de combat (V0.04.21) : cadres carrés intégrés en base64, 4 verres ATK / DEF / ULT / PV ===== */
 .btl{
   --cbt-rar:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-d2b511694f05.webp);
@@ -8222,7 +8261,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.80</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.81</b></div>
   </div>
 
     </div>
@@ -8492,9 +8531,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.80';
+var BUILD_VERSION = 'V0.04.81';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.81', items:[
+    'CHAMP DE BATAILLE (Batailles et Défis) : la plaque est entièrement dessinée en code, sans aucune image : acier brossé, fibre de carbone tissée, plaques biseautées, vis, grilles d\'aération et néons dans des logements creusés. Elle s\'adapte à tous les écrans, les cases font maintenant 78 px sur téléphone, et la composition est symétrique entre le joueur et l\'adversaire.',
+    'LUMIÈRES : quand une carte légendaire, écarlate ou holo est posée, les néons de la plaque prennent la couleur de sa rareté puis reviennent au rouge (adversaire) et au bleu (joueur).',
+    'CARTES : les petites cartes sont recentrées dans leur emplacement (le contour de chaque cadre était décalé de 1 à 2 px).',
+    'FUMÉE : à chaque pioche, une chance sur deux que le côté qui pioche souffle de la fumée par ses bouches d\'aération (grille de la couronne et alvéoles). Volutes, jets ou filaments éclairés par les néons, différents à chaque fois.',
+  ] },
   { v:'V0.04.80', items:[
     'PIOCHES : les deux piles sont maintenant des tiroirs toujours ouverts glissés sous le champ de bataille (adversaire en haut à gauche, joueur en bas à droite), à la place des excroissances. Les cartes restent visibles, à demi recouvertes par le bord de la plaque.',
     'PIOCHES : à chaque pioche, la carte glisse hors du tiroir avec la même animation, et son dos se dévoile petit à petit en sortant.',
@@ -17908,52 +17953,100 @@ function btlCircuit(){
   const W = Math.round(br.width), H = Math.round(br.height); if(W < 50) return;
   svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   const top = pr.top - br.top, bot = pr.bottom - br.top, my = mr.top - br.top + mr.height / 2, cx = W / 2;
-  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  let d = '', dots = '';
-  const dot = (x, y) => { dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2" />'; };
-  const pad = (x, y) => { dots += '<rect x="' + (x - 2).toFixed(1) + '" y="' + (y - 2).toFixed(1) + '" width="4" height="4" />'; };
-  // piste horizontale avec un décrochage à 45° : de x0 à x1, du niveau ya au niveau yb
-  const run = (x0, x1, ya, yb, jx) => {
-    const dir = x1 > x0 ? 1 : -1, dy = yb - ya, j0 = x0 + dir * jx;
-    d += 'M' + x0 + ' ' + ya + 'H' + j0 + 'L' + (j0 + dir * Math.abs(dy)) + ' ' + yb + 'H' + x1;
-  };
-  // bande haute et bande basse (au-dessus / au-dessous des cases)
-  [[top + 3.5, top + 9, 1], [bot - 3.5, bot - 9, -1]].forEach(([ya, yb]) => {
-    run(28, cx - 70, ya, yb, 40 + rnd() * 30); dot(28, ya); dot(cx - 70, yb);
-    run(W - 28, cx + 70, yb, ya, 40 + rnd() * 30); dot(W - 28, yb); pad(cx + 70, ya);
-    run(cx - 62, cx - 20, yb, ya, 14); run(cx + 62, cx + 20, ya, yb, 14);
-  });
-  const lx = 10;
-  // flancs de la rainure centrale
-  [[my - 13, my - 17], [my + 13, my + 17]].forEach(([ya, yb], k) => {
-    run(lx, cx - 38, ya, yb, 20 + rnd() * 16); dot(lx, ya); pad(cx - 38, yb);
-    run(W - 10, cx + 38, ya, yb, 36 + rnd() * 20); pad(W - 10, ya); dot(cx + 38, yb);
-    run(lx + 50, lx + 90, yb, ya, 10);
-  });
-  // flancs verticaux (marges gauche / droite) avec une coupure au milieu
-  [5.5, W - 5.5].forEach(x => {
-    d += 'M' + x + ' ' + (top + 14) + 'V' + (my - 22) + 'M' + x + ' ' + (my + 22) + 'V' + (bot - 14);
-    dot(x, top + 14); dot(x, bot - 14);
-  });
+  const rel = e => { const r = e.getBoundingClientRect(); return { x:r.left - br.left, y:r.top - br.top, w:r.width, h:r.height }; };
+  const sl = Array.from(BTL.el.querySelectorAll('.btl-slot:not(.leader)')).map(e => Object.assign(rel(e), { side:e.dataset.side }));
+  const ld = Array.from(BTL.el.querySelectorAll('.btl-slot.leader')).map(e => Object.assign(rel(e), { side:e.dataset.side }));
+  const f = n => n.toFixed(1);
+  const poly = pts => pts.map(p => f(p[0]) + ',' + f(p[1])).join(' ');
   // silhouette unique de la plaque : excroissance haute (temps) ; les piles de pioche sont des tiroirs ouverts dans le bord
-  const Tc = 36, Tr = 76, cc = 9, P0 = top, Pb = bot, xl = 88, xr = W - 88;
-  // haut : pile adverse (gauche) + temps (droite) ; bas : FIN (gauche) + pile joueur (droite)
+  const Tc = 36, cc = 9, P0 = top, Pb = bot, xr = W - 88;
   const P = [[cc, P0], [xr - 66, P0], [xr - 50, P0 - Tc], [xr + 50, P0 - Tc], [xr + 66, P0], [W - cc, P0], [W, P0 + cc],
     [W, Pb - cc], [W - cc, Pb], [cc, Pb], [0, Pb - cc], [0, P0 + cc]];
   body.style.clipPath = 'polygon(' + P.map(p => p[0].toFixed(1) + 'px ' + p[1].toFixed(1) + 'px').join(',') + ')';
   body.style.webkitClipPath = body.style.clipPath;
   ['.btl-hot-in', '.btl-glow', '.btl-heat'].forEach(sel => { const e = btlQ(sel); if(e){ e.style.clipPath = body.style.clipPath; e.style.webkitClipPath = body.style.clipPath; } });
-  // liseré usiné qui suit le contour, 4 px à l'intérieur
   const inset = (pts, dd) => pts.map((p, i) => {
     const a = pts[(i + pts.length - 1) % pts.length], b = pts[(i + 1) % pts.length];
     const n = (u, v) => { const dx = v[0] - u[0], dy = v[1] - u[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
     const n1 = n(a, p), n2 = n(p, b), k = 1 + n1[0] * n2[0] + n1[1] * n2[1];
     return [p[0] + dd * (n1[0] + n2[0]) / k, p[1] + dd * (n1[1] + n2[1]) / k];
   });
+  // ----- armure : fibre de carbone, plaques d'acier chanfreinées, cadres des emplacements, néons rouge (haut) / bleu (bas) -----
+  let g = '<defs>' +
+    '<pattern id="pcCarb" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="4" fill="#0a0c0f"/><rect width="2" height="4" fill="#1b1f25"/><rect x="2" width=".7" height="4" fill="#2a3038" opacity=".55"/></pattern>' +
+    '<linearGradient id="pcSt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a828e"/><stop offset=".45" stop-color="#4a515b"/><stop offset="1" stop-color="#3a4049"/></linearGradient>' +
+    '<linearGradient id="pcSd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c424b"/><stop offset="1" stop-color="#20252c"/></linearGradient>' +
+    '<linearGradient id="pcSb" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a828e"/><stop offset=".45" stop-color="#4a515b"/><stop offset="1" stop-color="#3a4049"/></linearGradient>' +
+    '<linearGradient id="pcShO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".6" stop-color="#000" stop-opacity="0"/></linearGradient>' +
+    '<linearGradient id="pcShP" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".6" stop-color="#000" stop-opacity="0"/></linearGradient>' +
+    '</defs>';
+  const chamf = (x0, y0, x1, y1, c) => [[x0 + c, y0], [x1 - c, y0], [x1, y0 + c], [x1, y1 - c], [x1 - c, y1], [x0 + c, y1], [x0, y1 - c], [x0, y0 + c]];
+  const panel = (pts, fill, shade) => '<polygon points="' + poly(pts) + '" fill="' + fill + '" stroke="rgba(0,0,0,.8)" stroke-width="1.2"/>' +
+    (shade ? '<polygon points="' + poly(pts) + '" fill="url(#' + shade + ')"/>' : '') +
+    '<polyline points="' + poly([pts[6], pts[7], pts[0], pts[1]]) + '" fill="none" stroke="rgba(190,205,225,.28)" stroke-width="1" transform="translate(.6,.6)"/>';
+  const chev = (x, y, h, n, dir) => { let s = ''; for(let i = 0; i < n; i++){ const xx = x + i * 7; s += '<polygon points="' + poly([[xx, y + h], [xx + 3.5, y + h], [xx + 3.5 + dir * h * .6, y], [xx + dir * h * .6, y]]) + '" fill="#6d7581" opacity=".8"/>'; } return s; };
+  const rivet = (x, y, r) => '<circle cx="' + f(x) + '" cy="' + f(y) + '" r="' + (r || 1.8) + '" fill="#8a929d" stroke="#14171b" stroke-width=".8"/>';
+  const left = ld.length ? ld[0].x + ld[0].w + 4 : 98, rgt = W - 6;
+  [['o', 1], ['p', -1]].forEach(([sd, dirY]) => {
+    const row = sl.filter(s => s.side === sd), y0 = Math.min.apply(null, row.map(s => s.y)), y1 = Math.max.apply(null, row.map(s => s.y + s.h));
+    const edge = sd === 'o' ? top : bot;           // bord extérieur de la plaque côté de ce camp
+    const inner = sd === 'o' ? my - mr.height / 2 : my + mr.height / 2;   // bord de la bande centrale
+    // bande de fibre de carbone entre le bord extérieur et les cases, et entre les cases et la bande centrale
+    const cy0 = sd === 'o' ? edge + 21 : y1 + 9, cy1 = sd === 'o' ? y0 - 9 : edge - 21;
+    g += panel(chamf(left + 4, cy0, rgt - 2, cy1, 6), 'url(#pcCarb)', sd === 'o' ? 'pcShO' : 'pcShP');
+    const iy0 = sd === 'o' ? y1 + 9 : inner + 3, iy1 = sd === 'o' ? inner - 3 : y0 - 9;
+    g += panel(chamf(left + 4, iy0, rgt - 2, iy1, 6), 'url(#pcCarb)', sd === 'o' ? 'pcShP' : 'pcShO');
+    // stries d'acier aux extrémités de la bande intérieure
+    const my0 = Math.min(iy0, iy1) + 4, mh = Math.abs(iy1 - iy0) - 8;
+    g += chev(left + 12, my0, mh, 4, sd === 'o' ? 1 : -1) + chev(rgt - 40, my0, mh, 4, sd === 'o' ? -1 : 1);
+    // cadres d'emplacement : cuvette cerclée d'acier, rivets aux angles
+    row.forEach(s => {
+      const e = 6;
+      g += '<rect x="' + f(s.x - e) + '" y="' + f(s.y - e) + '" width="' + f(s.w + 2 * e) + '" height="' + f(s.h + 2 * e) + '" rx="10" fill="url(#pcSt)" stroke="rgba(0,0,0,.75)" stroke-width="1"/>' +
+        '<rect x="' + f(s.x - e + .8) + '" y="' + f(s.y - e + .8) + '" width="' + f(s.w + 2 * e - 1.6) + '" height="' + f(s.h + 2 * e - 1.6) + '" rx="9.3" fill="none" stroke="rgba(220,230,245,.42)" stroke-width="1"/>' +
+        rivet(s.x - e + 4, s.y - e + 3.6, 1.4) + rivet(s.x + s.w + e - 4, s.y - e + 3.6, 1.4) + rivet(s.x - e + 4, s.y + s.h + e - 3.6, 1.4) + rivet(s.x + s.w + e - 4, s.y + s.h + e - 3.6, 1.4);
+    });
+  });
+  // ----- rebords latéraux : biseau d'acier -----
+  g += '<rect x="0" y="' + f(top + 8) + '" width="7" height="' + f(bot - top - 16) + '" fill="url(#pcSd)"/><rect x="' + (W - 7) + '" y="' + f(top + 8) + '" width="7" height="' + f(bot - top - 16) + '" fill="url(#pcSd)"/>' +
+    '<path d="M7 ' + f(top + 10) + 'V' + f(bot - 10) + 'M' + (W - 7) + ' ' + f(top + 10) + 'V' + f(bot - 10) + '" stroke="rgba(0,0,0,.6)" stroke-width="1"/>';
+  // ----- néons : un groupe haut (rouge) et un groupe bas (bleu), couleur pilotée par --lt / --lb -----
+  const seg = (x0, x1, y, h, dy) => '<polygon points="' + poly(dy > 0 ? [[x0, y + h], [x0 + h, y], [x1, y], [x1 - h, y + h]] : [[x0, y], [x0 + h, y + h], [x1, y + h], [x1 - h, y]]) + '"/>';
+  const lights = (cls, y, dy, rimY) => {
+    const specs = [[16, 56, 0], [64, 118, 1], [cx - 44, cx + 44, 2], [cx + 54, cx + 112, 3], [W - 92, W - 44, 4], [W - 38, W - 16, 5]];
+    let s = '<g class="pc-lg ' + cls + '">';
+    specs.forEach(([a, b, k]) => { s += '<g class="lg" style="animation-delay:' + (k * .38) + 's">' + seg(a, b, y + (k === 2 ? dy * 1.5 : 0), k === 2 ? 5 : 3.6, dy) + '</g>'; });
+    s += '<g class="lg" style="animation-delay:.9s"><rect x="' + (W - 6) + '" y="' + f(rimY) + '" width="2.6" height="22"/></g><g class="lg" style="animation-delay:1.6s"><rect x="3.4" y="' + f(rimY) + '" width="2.6" height="14"/></g>';
+    return s + '</g>';
+  };
+  // rebord extérieur haut / bas : plaque d'acier chanfreinée portant les néons
+  const rimH = 24;
+  g += '<polygon points="' + poly([[cc, top], [W - cc, top], [W, top + cc], [W, top + rimH], [W - 14, top + rimH + 4], [14, top + rimH + 4], [0, top + rimH], [0, top + cc]]) + '" fill="url(#pcSt)" stroke="rgba(0,0,0,.65)" stroke-width="1"/>' +
+    '<polygon points="' + poly([[cc, bot], [W - cc, bot], [W, bot - cc], [W, bot - rimH], [W - 14, bot - rimH - 4], [14, bot - rimH - 4], [0, bot - rimH], [0, bot - cc]]) + '" fill="url(#pcSb)" stroke="rgba(0,0,0,.65)" stroke-width="1"/>' +
+    '<path d="M16 ' + f(top + 12.5) + 'H' + (W - 16) + '" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/><path d="M16 ' + f(bot - 12.5) + 'H' + (W - 16) + '" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>';
+  // consoles d'acier qui descendent du rebord, portant chacune un trait lumineux
+  const brk = (x0, x1, yy, dy) => '<polygon points="' + poly([[x0, yy], [x1, yy], [x1 - 9, yy + dy * 9], [x0 + 9, yy + dy * 9]]) + '" fill="url(#' + (dy > 0 ? 'pcSt' : 'pcSb') + ')" stroke="rgba(0,0,0,.7)" stroke-width="1"/>';
+  [[cx - 56, cx + 56], [34, 92], [W - 92, W - 34]].forEach(([a, b]) => { g += brk(a, b, top + rimH + 3, 1) + brk(a, b, bot - rimH - 3, -1); });
+  // noeud central : octogone d'acier derrière le bouton de fin de tour
+  const hx = cx, hy = my, R1 = 54;
+  g += '<polygon points="' + poly([0, 1, 2, 3, 4, 5, 6, 7].map(i => [hx + Math.cos(Math.PI / 8 + i * Math.PI / 4) * R1 * 1.15, hy + Math.sin(Math.PI / 8 + i * Math.PI / 4) * R1 * .9])) + '" fill="url(#pcSd)" stroke="rgba(0,0,0,.8)" stroke-width="1.2"/>' +
+    '<polygon points="' + poly([0, 1, 2, 3, 4, 5, 6, 7].map(i => [hx + Math.cos(Math.PI / 8 + i * Math.PI / 4) * R1 * 1.02, hy + Math.sin(Math.PI / 8 + i * Math.PI / 4) * R1 * .8])) + '" fill="none" stroke="rgba(190,205,225,.3)" stroke-width="1"/>';
+  g += lights('lt', top + 5, 1, top + 8) + lights('lb', bot - 9, -1, bot - 30);
   const hair = 'M' + inset(P, 4).map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
-  svg.innerHTML = '<path d="' + hair + '" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1" stroke-linejoin="miter"/>' +
-    '<g fill="none" stroke="rgba(150,178,205,.2)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"/></g>' +
-    '<g fill="#232830" stroke="rgba(150,178,205,.3)" stroke-width="1">' + dots + '</g>';
+  svg.innerHTML = '<g id="pcArmor">' + g + '</g><path d="' + hair + '" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1" stroke-linejoin="miter"/>';
+
+  // ----- champ de bataille généré : géométrie réelle des éléments relevée dans le DOM, en coordonnées de la plaque -----
+  try{
+    const ox = pr.left - br.left, oy = pr.top - br.top, rp = s => ({ s:s.side, x:s.x - ox, y:s.y - oy, w:s.w, h:s.h });
+    const o = sl.filter(s => s.side === 'o').map(rp).sort((a, b) => a.x - b.x), p = sl.filter(s => s.side === 'p').map(rp);
+    if(o.length === 3 && p.length === 3){
+      const Wp = pr.width, Hp = pr.height, m1 = mr.top - pr.top, m2 = mr.bottom - pr.top;
+      const mods = ['#btlOMod', '#btlMod'].map((sel, i) => { const e = btlQ(sel); if(!e) return null; const r = e.getBoundingClientRect(); return { s:i ? 'p' : 'o', x:r.left - pr.left, y:r.top - pr.top, w:r.width, h:r.height }; });
+      const dm = [{ s:'o', x:30, y:18, w:39, h:39 }, { s:'p', x:30, y:Hp - 58, w:39, h:39 }];
+      const G = { W:Wp, H:Hp, ext:36, slots:o.concat(p), leaders:ld.map(rp), mods:mods.map((m, i) => m && m.w > 4 ? m : dm[i]), mid:{ y1:m1, y2:m2 }, hex:{ x:Wp / 2 - 31, y:m1, w:62, h:m2 - m1 }, tab:{ x:Wp - 88 - 60, w:120, h:36 } };
+      btlPlateTex(body, { G, mid1:m1, mid2:m2, H:Hp }, pr.top - br.top);
+    }
+  }catch(e){ console.error(e); }
 }
 
 // ---------- démarrage ----------
@@ -18208,6 +18301,7 @@ async function btlBurnDraw(side, c){
 }
 async function btlDraw(side){
   const S = BTL.S[side]; if(!S.pile.length) return false;
+  btlSmokeMaybe(side);   // 1 pioche sur 2 : fumée par les bouches d'aération du côté qui pioche
   if(S.hand.length >= BTL_HAND_MAX){ const x = S.pile.pop(); const rb = await btlBurnDraw(side, x); await btlOnDraw(side); return rb; }
   const c = S.pile.pop(); S.hand.push(c);
   const pileEl = btlQ(side === 'p' ? '#btlMPile' : '#btlOPile');
@@ -18447,6 +18541,63 @@ function btlPillar(r, col){
   return btlAnim(e, [{ transform:'scaleY(.08)', opacity:0 }, { transform:'scaleY(1)', opacity:.8, offset:.3, easing:'cubic-bezier(.2,.7,.3,1)' }, { transform:'scaleY(1.05)', opacity:0 }], { duration:900, easing:'ease-out' }).then(() => e.remove(), () => e.remove());
 }
 // ---------- jouer une carte ----------
+// lumières du champ de bataille : à l'arrivée d'une carte légendaire (ou plus rare), les néons prennent la couleur de sa rareté puis reviennent rouge (haut) / bleu (bas)
+const BTL_HI_RAR = { legendaire:1, ecarlate:1, holo:1 };
+const BTL_LG_T = [255, 52, 64], BTL_LG_B = [48, 140, 255];
+function btlHexRgb(h){ h = String(h).replace('#', ''); if(h.length === 3) h = h.replace(/./g, '$&$&'); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function btlLgVars(){
+  const pl = btlQ('#btlPlate'); if(!pl || !BTL.lg) return;
+  pl.style.setProperty('--lt', 'rgb(' + BTL.lg.t.map(Math.round).join(',') + ')'); pl.style.setProperty('--lb', 'rgb(' + BTL.lg.b.map(Math.round).join(',') + ')');
+}
+// fondu de couleur des néons (image par image : le calque de lumière est repeint à chaque pas)
+function btlLightsTo(t, b, ms){
+  if(!BTL.lg) BTL.lg = { t:BTL_LG_T.slice(), b:BTL_LG_B.slice() };
+  const L = BTL.lg, ft = L.t.slice(), fb = L.b.slice(), tok = BTL.lgTok = (BTL.lgTok || 0) + 1, t0 = performance.now();
+  const step = now => {
+    if(!BTL || BTL.lgTok !== tok) return;
+    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 2);
+    L.t = ft.map((v, i) => v + (t[i] - v) * e); L.b = fb.map((v, i) => v + (b[i] - v) * e);
+    if(BTL.pt) BTL.pt.paint(); btlLgVars();
+    if(k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+function btlLights(rar, ms){
+  if(!BTL_HI_RAR[rar]) return;
+  const pl = btlQ('#btlPlate'); if(!pl) return;
+  const col = btlHexRgb(btlRarColor(rar)), id = BTL.litId = (BTL.litId || 0) + 1;
+  pl.classList.add('lit'); btlLightsTo(col, col, 240);
+  btlAfter(() => { if(!BTL || BTL.litId !== id) return; pl.classList.remove('lit'); btlLightsTo(BTL_LG_T, BTL_LG_B, 1000); }, ms);
+}
+// ---------- champ de bataille généré en code (V0.04.81) : acier, carbone, plaques, vis et néons dessinés dans des canvas (aucune image) ----------
+function btlPlateTex(body, g, top){
+  try{
+    const dpr = Math.min(3, window.devicePixelRatio || 1), ext = 36, plate = btlQ('#btlPlate'); if(!plate) return;
+    const R = btlPlateGen(g.G, dpr), Wd = R.Wd, Hd = R.Hd;
+    const mk = (cls, y, h) => { const c = document.createElement('canvas'); c.className = cls; c.width = Wd; c.height = Math.round(h * dpr); c.style.cssText = 'top:' + (top - ext + y) + 'px;height:' + h + 'px;'; return c; };
+    const hm = Math.round((g.mid1 + g.mid2) / 2 * dpr) / dpr + ext, hmd = Math.round(hm * dpr);
+    const cb = R.base; cb.className = 'pc-tx'; cb.style.cssText = 'top:' + (top - ext) + 'px;height:' + (g.H + ext) + 'px;';
+    const ct = mk('pc-lc t', 0, hm), cl = mk('pc-lc b', hm, g.H + ext - hm);
+    const tmp = document.createElement('canvas'), tx = tmp.getContext('2d');
+    const mixW = (col, k) => col.map(v => v + (255 - v) * k);
+    const paint = () => {
+      const L = BTL.lg || (BTL.lg = { t:BTL_LG_T.slice(), b:BTL_LG_B.slice() });
+      [[ct, 0, hmd, L.t], [cl, hmd, Hd - hmd, L.b]].forEach(([cv, y0, h, col]) => {
+        const c = cv.getContext('2d'); c.clearRect(0, 0, cv.width, cv.height);
+        if(tmp.width !== Wd || tmp.height !== h){ tmp.width = Wd; tmp.height = h; }
+        [[R.halo, col, .95], [R.core, mixW(col, .12), 1], [R.hot, mixW(col, .72), 1]].forEach(([m, cc, al]) => {
+          tx.globalCompositeOperation = 'source-over'; tx.clearRect(0, 0, Wd, h); tx.drawImage(m, 0, y0, Wd, h, 0, 0, Wd, h);
+          tx.globalCompositeOperation = 'source-in'; tx.fillStyle = 'rgb(' + cc.map(Math.round).join(',') + ')'; tx.fillRect(0, 0, Wd, h);
+          c.globalAlpha = al; c.drawImage(tmp, 0, 0); c.globalAlpha = 1;
+        });
+      });
+    };
+    BTL.pt = { paint, spots:R.spots }; paint(); btlLgVars(); btlSmokePrewarm();
+    body.insertBefore(cl, body.firstChild); body.insertBefore(ct, body.firstChild); body.insertBefore(cb, body.firstChild);
+    plate.classList.add('pt-on');
+    const arm = btlQ('#pcArmor'); if(arm) arm.style.display = 'none';
+  }catch(e){ console.error(e); }
+}
 async function btlPlay(side, c, si, fromRect, el){
   const S = BTL.S[side];
   if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
@@ -18460,6 +18611,7 @@ async function btlPlay(side, c, si, fromRect, el){
   if(side === 'p') btlRenderHand(); else btlRenderOHand();
   btlRenderMana();
   const slot = btlSlotEl(side, si), to = btlRect(slot), col = btlRarColor(c.rar);
+  btlLights(c.rar, 1500);
   btlPlaceFixed(el, fromRect);
   if(side === 'o'){   // la carte de l'adversaire se retourne en vol : elle se dévoile exactement comme celle du joueur
     el.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
@@ -23930,6 +24082,495 @@ var BTL_AEGIS = { main:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/obje
 
 var BTL_RHINO = { n:16, w:480, h:276, tx:0.9887, ty:0.5189, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-d83ce63ee5a4.webp' };
 var BTL_COIN = { n:40, w:256, h:256, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-c4e02ba06e39.webp' };
+
+// ===== champ de bataille généré en code (V0.04.81) : acier brossé, fibre de carbone tissée, plaques biseautées, vis, tubes néon =====
+// Aucune image : tout est dessiné au chargement dans des canvas (matières procédurales + géométrie des blocs).
+// G = { W, H, ext, slots:[{s,x,y,w,h}], leaders:[...], mods:[...], mid:{y1,y2}, hex:{x,y,w,h}, tab:{x,w,h} } en px CSS, repère = coin haut-gauche de la plaque.
+function btlPlateGen(G, dpr){
+  const S = dpr, W = G.W, H = G.H, EX = G.ext, Wd = Math.round(W * S), Hd = Math.round((H + EX) * S);
+  let sd = 20240611; const rnd = () => { sd = sd + 0x6D2B79F5 | 0; let t = Math.imul(sd ^ sd >>> 15, 1 | sd); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const cvs = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+  const base = cvs(Wd, Hd), c = base.getContext('2d'); c.setTransform(S, 0, 0, S, 0, EX * S);
+  const LX = -.56, LY = -.83;                           // direction vers la lumière (haut-gauche)
+  // La scène est dessinée dans un repère de référence (382 × 381, téléphone 390 px) puis déformée par morceaux pour épouser les vraies cases :
+  // les positions des cases, du rail central et des chefs sont des points d'appui ; l'épaisseur des cadres reste constante.
+  const Wr = 382, Hr = 381, ER = 4.5, YM = 190;         // YM : axe de symétrie haut / bas (repère de référence)
+  const Gr = { W:Wr, H:Hr, ext:EX, slots:[0, 1, 2].map(i => ({ s:'o', x:105 + 94 * i, y:44, w:78, h:78 })).concat([0, 1, 2].map(i => ({ s:'p', x:105 + 94 * i, y:258, w:78, h:78 }))),
+    leaders:[{ s:'o', x:11, y:83, w:78, h:71 }, { s:'p', x:11, y:226, w:78, h:71 }], mods:[{ s:'o', x:30, y:18, w:39, h:39 }, { s:'p', x:30, y:323, w:39, h:39 }],
+    mid:{ y1:154, y2:226 }, hex:{ x:160, y:154, w:62, h:72 }, tab:{ x:234, w:120, h:36 } };
+  const WARP = (() => {
+    const os = G.slots.filter(q => q.s === 'o').sort((a, b) => a.x - b.x), ps = G.slots.filter(q => q.s === 'p'), ld = G.leaders[0] || { x:11, w:78 };
+    const px = [[0, 0], [11, ld.x], [89, ld.x + ld.w]], py = [[0, 0]];
+    os.forEach((q, i) => { const r = 105 + 94 * i; px.push([r - ER, q.x - ER], [r, q.x], [r + 78, q.x + q.w], [r + 78 + ER, q.x + q.w + ER]); });
+    px.push([Wr, W]);
+    const o0 = os[0], p0 = ps[0] || { y:H - 123, h:78 };
+    py.push([44 - ER, o0.y - ER], [44, o0.y], [122, o0.y + o0.h], [122 + ER, o0.y + o0.h + ER], [154, G.mid.y1], [226, G.mid.y2], [258 - ER, p0.y - ER], [258, p0.y], [336, p0.y + p0.h], [336 + ER, p0.y + p0.h + ER], [Hr, H]);
+    const mono = a => { for(let i = 1; i < a.length; i++) if(a[i][1] <= a[i - 1][1] + .01) a[i][1] = a[i - 1][1] + .01; return a; };
+    mono(px); mono(py);
+    const rx = px.map(q => q[0]), ax = px.map(q => q[1]), ry = py.map(q => q[0]), ay = py.map(q => q[1]);
+    const pw = (rv, av) => v => { if(v <= rv[0]) return av[0] + v - rv[0]; for(let i = 1; i < rv.length; i++) if(v <= rv[i]) return av[i - 1] + (av[i] - av[i - 1]) * (v - rv[i - 1]) / (rv[i] - rv[i - 1]); return av[av.length - 1] + v - rv[rv.length - 1]; };
+    const WX = pw(rx, ax), WY = pw(ry, ay);
+    const mp = q => [WX(q[0]), WY(q[1])];
+    // polygone (fermé) ou ligne (ouverte) : les arêtes qui franchissent un point d'appui sont coupées pour que la déformation reste fidèle
+    const WP = (p, open) => { const n = p.length, o = [], m = n - (open ? 1 : 0);
+      for(let i = 0; i < n; i++){ const a = p[i]; o.push(mp(a)); if(i >= m) continue; const b = p[(i + 1) % n], ts = [];
+        for(const x of rx) if((a[0] - x) * (b[0] - x) < 0) ts.push((x - a[0]) / (b[0] - a[0]));
+        for(const y of ry) if((a[1] - y) * (b[1] - y) < 0) ts.push((y - a[1]) / (b[1] - a[1]));
+        ts.sort((u, v) => u - v).forEach(t => o.push(mp([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]))); }
+      return o; };
+    return { WX, WY, mp, WP };
+  })();
+  const WP = WARP.WP;
+  const f1 = n => n.toFixed(2);
+
+  // ---------- matières ----------
+  const wrapNoise = (n, cell) => { const g = Math.max(2, Math.round(n / cell)), a = new Float32Array(g * g); for(let i = 0; i < a.length; i++) a[i] = rnd();
+    const o = new Float32Array(n * n); for(let y = 0; y < n; y++){ const fy = y * g / n, y0 = Math.floor(fy), ty = fy - y0, sy = ty * ty * (3 - 2 * ty);
+      for(let x = 0; x < n; x++){ const fx = x * g / n, x0 = Math.floor(fx), tx = fx - x0, sx = tx * tx * (3 - 2 * tx);
+        const i00 = a[(y0 % g) * g + x0 % g], i10 = a[(y0 % g) * g + (x0 + 1) % g], i01 = a[((y0 + 1) % g) * g + x0 % g], i11 = a[((y0 + 1) % g) * g + (x0 + 1) % g];
+        o[y * n + x] = (i00 * (1 - sx) + i10 * sx) * (1 - sy) + (i01 * (1 - sx) + i11 * sx) * sy; } } return o; };
+  // acier : carte de luminance (128 = neutre) appliquée en « overlay » sur une couleur de plaque
+  const steelTile = () => {
+    const n = 384, m1 = wrapNoise(n, 128), m2 = wrapNoise(n, 40), m3 = wrapNoise(n, 11), t = cvs(n, n), tx = t.getContext('2d'), im = tx.createImageData(n, n), d = im.data;
+    const row = new Float32Array(n * n); for(let i = 0; i < row.length; i++) row[i] = rnd();
+    for(let y = 0; y < n; y++){ let acc = 0; const r = 10; for(let k = -r; k <= r; k++) acc += row[y * n + (k + n) % n];
+      for(let x = 0; x < n; x++){ const br = (acc / (2 * r + 1) - .5) * 3.4;
+        acc += row[y * n + (x + r + 1) % n] - row[y * n + (x - r + n) % n];
+        const i = y * n + x, v = 128 + (m1[i] - .5) * 110 + (m2[i] - .5) * 58 + (m3[i] - .5) * 26 + br * 30 + (rnd() - .5) * 24;
+        const q = Math.max(0, Math.min(255, v)); d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = q; d[i * 4 + 3] = 255; } }
+    tx.putImageData(im, 0, 0);
+    const line = (x0, y0, x1, y1, col, w) => { tx.strokeStyle = col; tx.lineWidth = w; for(const ox of [-n, 0, n]) for(const oy of [-n, 0, n]){ tx.beginPath(); tx.moveTo(x0 + ox, y0 + oy); tx.lineTo(x1 + ox, y1 + oy); tx.stroke(); } };
+    for(let i = 0; i < 70; i++){ const x = rnd() * n, y = rnd() * n, a = (rnd() - .5) * .45, l = 12 + rnd() * 80; line(x, y, x + Math.cos(a) * l, y + Math.sin(a) * l, rnd() < .55 ? 'rgba(255,255,255,' + (.14 + rnd() * .2) + ')' : 'rgba(0,0,0,' + (.2 + rnd() * .25) + ')', .5 + rnd() * .6); }
+    return t;
+  };
+  // carbone : fils à 45°, perles brillantes alignées le long des fils (réseau de perles en quinconce)
+  const carbonTile = () => {
+    const p = Math.max(4, Math.round(2.0 * S)), N = 2 * p, t = cvs(N, N), tx = t.getContext('2d');
+    tx.fillStyle = '#080a0d'; tx.fillRect(0, 0, N, N);
+    const bead = (x, y) => { for(const ox of [-N, 0, N]) for(const oy of [-N, 0, N]){ tx.save(); tx.translate(x + ox, y + oy); tx.rotate(-Math.PI / 4); tx.scale(1.8, 1);
+        let g = tx.createRadialGradient(-.3, -.3, 0, 0, 0, p * .55); g.addColorStop(0, 'rgba(205,213,224,1)'); g.addColorStop(.4, 'rgba(118,128,141,.95)'); g.addColorStop(1, 'rgba(26,31,38,0)');
+        tx.fillStyle = g; tx.beginPath(); tx.arc(0, 0, p * .55, 0, 6.3); tx.fill(); tx.restore(); } };
+    // fil : bande sombre qui relie les perles (diagonale « / »)
+    tx.strokeStyle = 'rgba(70,80,92,.55)'; tx.lineWidth = Math.max(1, p * .36);
+    for(const ox of [-N, 0, N]){ tx.beginPath(); tx.moveTo(ox, N * .5 + 0); tx.lineTo(ox + N * .5, 0); tx.moveTo(ox + N * .5, N); tx.lineTo(ox + N, N * .5); tx.stroke(); }
+    bead(p * .5, p * .5); bead(p * 1.5, p * 1.5);
+    // reflet : ombre au sommet de chaque fil
+    return t;
+  };
+  const meshTile = () => {
+    const N = Math.max(6, Math.round(3.4 * S)), t = cvs(N, N), tx = t.getContext('2d'); tx.fillStyle = '#05070a'; tx.fillRect(0, 0, N, N);
+    tx.lineWidth = Math.max(1, S * .42); tx.strokeStyle = 'rgba(176,188,204,.6)'; for(const o of [-N, 0, N]){ tx.beginPath(); tx.moveTo(o, 0); tx.lineTo(o + N, N); tx.moveTo(o + N, 0); tx.lineTo(o, N); tx.stroke(); }
+    tx.strokeStyle = 'rgba(0,0,0,.65)'; tx.lineWidth = Math.max(1, S * .3); for(const o of [-N, 0, N]){ tx.beginPath(); tx.moveTo(o + .8, 0); tx.lineTo(o + N + .8, N); tx.moveTo(o + N + .8, 0); tx.lineTo(o + .8, N); tx.stroke(); }
+    return t;
+  };
+  const patOf = (cv, k) => { const p = c.createPattern(cv, 'repeat'); if(p.setTransform) p.setTransform(new DOMMatrix().scale(1 / S * (k || 1))); return p; };
+  const steelP = patOf(steelTile(), 1), carbP = patOf(carbonTile(), 1), meshP = patOf(meshTile(), 1);
+
+  // ---------- géométrie ----------
+  const area = p => p.reduce((s, a, i) => { const b = p[(i + 1) % p.length]; return s + a[0] * b[1] - b[0] * a[1]; }, 0) / 2;
+  const insetP = (p, d) => { const sg = area(p) > 0 ? 1 : -1; return p.map((q, i) => { const a = p[(i + p.length - 1) % p.length], b = p[(i + 1) % p.length];
+      const nn = (u, v) => { const dx = v[0] - u[0], dy = v[1] - u[1], l = Math.hypot(dx, dy) || 1; return [-sg * dy / l, sg * dx / l]; };
+      const n1 = nn(a, q), n2 = nn(q, b), k = 1 + n1[0] * n2[0] + n1[1] * n2[1]; return [q[0] + d * (n1[0] + n2[0]) / Math.max(.3, k), q[1] + d * (n1[1] + n2[1]) / Math.max(.3, k)]; }); };
+  const path = p => { c.beginPath(); p.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); };
+  const rr = (x, y, w, h, r, sg) => { sg = sg || 3; const o = []; [[x + w - r, y + r, -90], [x + w - r, y + h - r, 0], [x + r, y + h - r, 90], [x + r, y + r, 180]].forEach(([cx, cy, a0]) => { for(let k = 0; k <= sg; k++){ const a = (a0 + 90 * k / sg) * Math.PI / 180; o.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); } }); return o; };
+  const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  const rgba = (a, al) => 'rgba(' + Math.round(a[0]) + ',' + Math.round(a[1]) + ',' + Math.round(a[2]) + ',' + f1(al) + ')';
+  // miroir bas : la lumière reste en haut-gauche, seule la géométrie est retournée
+  const MY = y => 2 * YM - y;
+  const fl = p => p.map(q => [q[0], MY(q[1])]);
+
+  // ---------- biseau : chaque côté reçoit la lumière selon son orientation ----------
+  const MIDC = [104, 114, 128], HIC = [246, 250, 255], LOC = [4, 6, 9];
+  const bbox = p => p.reduce((m, q) => [Math.min(m[0], q[0]), Math.min(m[1], q[1]), Math.max(m[2], q[0]), Math.max(m[3], q[1])], [1e9, 1e9, -1e9, -1e9]);
+  function bevel(p, o){
+    const w = o.w || 1.8, inn = insetP(p, w), sg = area(p) > 0 ? 1 : -1, n = p.length, rec = o.rec ? -1 : 1, hiA = o.hi == null ? .95 : o.hi, loA = o.lo == null ? .8 : o.lo;
+    c.save();
+    for(let i = 0; i < n; i++){
+      const a = p[i], b = p[(i + 1) % n], a2 = inn[i], b2 = inn[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1;
+      const ox = sg * dy / l, oy = -sg * dx / l, s = (ox * LX + oy * LY) * rec;           // >0 : face éclairée
+      if(Math.abs(s) < .05) continue;
+      const lit = s > 0, col = lit ? mix(o.mid || MIDC, o.hic || HIC, Math.pow(s, .7)) : mix(o.mid || MIDC, o.loc || LOC, Math.pow(-s, .6)), al = lit ? hiA * Math.pow(s, .5) : loA * Math.pow(-s, .45);
+      const g = c.createLinearGradient(a[0], a[1], a[0] - ox * w, a[1] - oy * w);
+      g.addColorStop(0, rgba(col, al)); g.addColorStop(lit ? .45 : .6, rgba(col, al * (o.fade == null ? .5 : o.fade * 1.6))); g.addColorStop(1, rgba(col, al * (o.fade == null ? .22 : o.fade)));
+      c.fillStyle = g; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.lineTo(b2[0], b2[1]); c.lineTo(a2[0], a2[1]); c.closePath(); c.fill();
+      if(o.spec !== false && s > .3){   // arête vive : fine ligne presque blanche au bord, puis un reflet plus doux juste dessous
+        c.strokeStyle = rgba(HIC, Math.min(1, .95 * s + .1)); c.lineWidth = .7; c.beginPath(); c.moveTo(a[0] - ox * .35, a[1] - oy * .35); c.lineTo(b[0] - ox * .35, b[1] - oy * .35); c.stroke();
+        c.strokeStyle = rgba(HIC, .22 * s); c.lineWidth = .6; c.beginPath(); c.moveTo(a[0] - ox * 1.5, a[1] - oy * 1.5); c.lineTo(b[0] - ox * 1.5, b[1] - oy * 1.5); c.stroke();
+      } else if(o.spec !== false && s < -.3){   // lèvre basse : fin rappel de lumière sur le bord sombre
+        c.strokeStyle = rgba([150, 165, 185], .3 * -s); c.lineWidth = .5; c.beginPath(); c.moveTo(a[0] - ox * .3, a[1] - oy * .3); c.lineTo(b[0] - ox * .3, b[1] - oy * .3); c.stroke();
+      }
+    }
+    c.restore();
+  }
+  // fissures en fil de fer : trait sombre + liseré clair
+  function crack(x, y, len, a0){
+    c.save(); c.lineJoin = 'round'; const pts = [[x, y]]; let a = a0 == null ? rnd() * 6.28 : a0;
+    for(let k = 0; k < len; k++){ a += (rnd() - .5) * 1.0; x += Math.cos(a) * 3; y += Math.sin(a) * 3; pts.push([x, y]); }
+    [[.5, .6, 'rgba(210,222,238,.22)'], [0, 0, 'rgba(0,0,0,.6)']].forEach(([dx, dy, col]) => { c.strokeStyle = col; c.lineWidth = .55; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0] + dx, q[1] + dy) : c.moveTo(q[0] + dx, q[1] + dy)); c.stroke(); });
+    c.restore();
+  }
+  // plaque d'acier en relief
+  function plate(p, o){
+    o = o || {}; p = WP(p);
+    c.save();
+    if(o.sh !== 0){ c.shadowColor = 'rgba(0,0,0,.85)'; c.shadowBlur = (o.sh || 2.6) * S; c.shadowOffsetY = (o.shy == null ? 1.2 : o.shy) * S; c.fillStyle = '#05070a'; path(p); c.fill(); }
+    c.restore(); c.save(); path(p); c.clip();
+    const bb = bbox(p), bw = bb[2] - bb[0], bh = bb[3] - bb[1], X0 = bb[0] - 2, Y0 = bb[1] - 2, XW = bw + 4, YH = bh + 4;
+    const t = o.tone == null ? .5 : o.tone, sil = t > 1.2, c1 = mix([40, 47, 57], [132, 144, 158], t), c2 = mix(c1, mix([24, 29, 36], [74, 84, 97], t), o.flat == null ? (sil ? .4 : 1) : o.flat);
+    const g = c.createLinearGradient(bb[0], bb[1], bb[0] + bw * .55, bb[3]); g.addColorStop(0, rgba(c1, 1)); g.addColorStop(1, rgba(c2, 1));
+    c.fillStyle = g; c.fillRect(X0, Y0, XW, YH);
+    c.globalCompositeOperation = 'overlay'; c.globalAlpha = o.tex == null ? (sil ? .55 : 1) : o.tex; c.fillStyle = steelP; c.fillRect(X0, Y0, XW, YH);
+    c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1;
+    // reflet : bande de lumière en diagonale + éclairage doux du haut
+    const sh = c.createLinearGradient(bb[0], bb[1], bb[0] + bw * .35 + bh * .9, bb[1] + bh * .9 + bw * .12);
+    sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(.34, 'rgba(235,242,255,' + (o.sheen == null ? .1 : o.sheen) + ')'); sh.addColorStop(.52, 'rgba(255,255,255,0)'); c.fillStyle = sh; c.fillRect(X0, Y0, XW, YH);
+    const gl = c.createLinearGradient(0, bb[1], 0, bb[3]); gl.addColorStop(0, 'rgba(255,255,255,' + (o.gl == null ? .1 : o.gl) + ')'); gl.addColorStop(.45, 'rgba(255,255,255,0)'); gl.addColorStop(1, 'rgba(0,0,0,.26)');
+    c.fillStyle = gl; c.fillRect(X0, Y0, XW, YH);
+    // fissures
+    if(bw * bh > 700 && o.cracks === true){ const nc = Math.min(4, Math.round(bw * bh / 1800) + 1); for(let i = 0; i < nc; i++){ const e = rnd(); const x = bb[0] + rnd() * bw, y = bb[1] + (e < .5 ? 0 : bh * rnd()); crack(x, y, 6 + Math.round(rnd() * 12)); } }
+    // ombre intérieure le long des bords bas / droite
+    c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 4.5 * S; c.shadowOffsetX = -.8 * S; c.shadowOffsetY = -1.4 * S; c.strokeStyle = '#000'; c.lineWidth = 3; path(p); c.stroke();
+    c.shadowColor = 'transparent'; c.shadowBlur = 0; c.shadowOffsetX = 0; c.shadowOffsetY = 0;
+    bevel(p, { w: o.w || 1.9, hi: o.hi, lo: o.lo, mid: o.mid, hic: o.hic });
+    c.restore();
+    c.strokeStyle = 'rgba(1,2,4,.95)'; c.lineWidth = sil ? 1.5 : 1.05; path(p); c.stroke();
+  }
+  // cuvette creusée (fibre de carbone ou fond sombre) : biseau inversé, ombre portée vers l'intérieur
+  function pocket(p, o){
+    o = o || {}; p = WP(p);
+    c.save(); path(p); c.clip();
+    const bb = bbox(p), X0 = bb[0] - 2, Y0 = bb[1] - 2, XW = bb[2] - bb[0] + 4, YH = bb[3] - bb[1] + 4;
+    c.fillStyle = o.fill || '#07090c'; c.fillRect(X0, Y0, XW, YH);
+    if(o.mesh){ c.fillStyle = meshP; c.fillRect(X0, Y0, XW, YH); const g = c.createLinearGradient(0, bb[1], 0, bb[3]); g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(.4, 'rgba(0,0,0,.1)'); g.addColorStop(1, 'rgba(0,0,0,.35)'); c.fillStyle = g; c.fillRect(X0, Y0, XW, YH); }
+    if(o.carbon){
+      c.fillStyle = carbP; c.globalAlpha = o.carbon === true ? 1 : o.carbon; c.fillRect(X0, Y0, XW, YH); c.globalAlpha = 1;
+      const g = c.createLinearGradient(0, bb[1], 0, bb[3]); g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(.3, 'rgba(0,0,0,.05)'); g.addColorStop(1, 'rgba(0,0,0,.3)'); c.fillStyle = g; c.fillRect(X0, Y0, XW, YH);
+    }
+    c.shadowColor = 'rgba(0,0,0,.95)'; c.shadowBlur = (o.ish || 3) * S; c.shadowOffsetX = 1 * S; c.shadowOffsetY = 1.5 * S; c.strokeStyle = '#000'; c.lineWidth = 4; path(p); c.stroke();
+    c.restore();
+    c.save(); path(p); c.clip(); bevel(p, { w: o.w || 1.5, rec: true, hi: .8, lo: .9, fade: .15 }); c.restore();
+    c.strokeStyle = 'rgba(1,2,4,.95)'; c.lineWidth = .9; path(p); c.stroke();
+  }
+  // arête d'une marche d'acier : ombre portée + fil clair
+  function ridge(pts, o){ o = o || {}; pts = WP(pts, true); c.save(); c.lineJoin = 'round'; c.lineCap = 'butt';
+    c.strokeStyle = 'rgba(0,0,0,.8)'; c.lineWidth = (o.w || 1.1) + .9; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1] + .9) : c.moveTo(q[0], q[1] + .9)); c.stroke();
+    c.strokeStyle = 'rgba(' + (o.col || '226,234,246') + ',' + (o.a == null ? .85 : o.a) + ')'; c.lineWidth = o.w || 1.1; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.stroke(); c.restore(); }
+  function bolt(x, y, r){
+    [x, y] = WARP.mp([x, y]);
+    r = r || 2.3; c.save();
+    c.fillStyle = 'rgba(0,0,0,.6)'; c.beginPath(); c.arc(x + .3, y + .5, r + .9, 0, 6.3); c.fill();
+    c.fillStyle = 'rgba(210,222,238,.28)'; c.beginPath(); c.arc(x - .1, y - .2, r + .75, Math.PI * .95, Math.PI * 1.95); c.lineTo(x, y); c.fill();   // éclat sur le bord éclairé
+    const g = c.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r); g.addColorStop(0, '#d9e0ea'); g.addColorStop(.45, '#7d8794'); g.addColorStop(1, '#2c333c');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 6.3); c.fill();
+    c.strokeStyle = 'rgba(0,0,0,.75)'; c.lineWidth = .55; c.beginPath(); c.arc(x, y, r, 0, 6.3); c.stroke();
+    const a = (x * 7.3 + y * 3.1) % 3.14; c.strokeStyle = 'rgba(8,10,14,.85)'; c.lineWidth = Math.max(.7, r * .32); c.beginPath(); c.moveTo(x - Math.cos(a) * r * .65, y - Math.sin(a) * r * .65); c.lineTo(x + Math.cos(a) * r * .65, y + Math.sin(a) * r * .65); c.stroke();
+    c.strokeStyle = 'rgba(235,242,250,.4)'; c.lineWidth = .45; c.beginPath(); c.moveTo(x - Math.cos(a) * r * .65 + .3, y - Math.sin(a) * r * .65 + .45); c.lineTo(x + Math.cos(a) * r * .65 + .3, y + Math.sin(a) * r * .65 + .45); c.stroke();
+    c.restore();
+  }
+  // rainure gravée : trait sombre + liseré clair décalé
+  function seam(pts, o){ o = o || {}; pts = WP(pts, true); c.save(); c.lineJoin = 'round'; c.lineCap = 'round';
+    c.strokeStyle = 'rgba(205,218,235,' + (o.hi == null ? .3 : o.hi) + ')'; c.lineWidth = o.w || .7; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0] + .5, q[1] + .7) : c.moveTo(q[0] + .5, q[1] + .7)); c.stroke();
+    c.strokeStyle = 'rgba(2,4,6,' + (o.lo == null ? .85 : o.lo) + ')'; c.lineWidth = o.w || .7; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.stroke(); c.restore(); }
+  // évents : barres obliques à lèvre claire
+  function vents(x, y, w, h, n, sl, T, o){ // n fentes réparties sur w ; sl = inclinaison horizontale (px, + : le haut penche à droite)
+    const T0 = T || (p => p); T = p => T0(p).map(WARP.mp); o = o || {}; const pitch = o.pitch || w / n, bw = o.bw || pitch * .56;
+    for(let i = 0; i < n; i++){ const x0 = x + i * pitch;
+      const p = T([[x0 + sl, y], [x0 + sl + bw, y], [x0 + bw, y + h], [x0, y + h]]);
+      c.fillStyle = '#030406'; path(p); c.fill();
+      c.strokeStyle = 'rgba(0,0,0,.9)'; c.lineWidth = .9; path(p); c.stroke();
+      c.strokeStyle = 'rgba(235,242,252,' + (o.a == null ? .85 : o.a) + ')'; c.lineWidth = .7; c.beginPath(); c.moveTo(p[3][0], p[3][1]); c.lineTo(p[2][0], p[2][1]); c.lineTo(p[1][0], p[1][1]); c.stroke();
+      if(o.tip){ const q = T([[x0 + .3, y + h - 1.4], [x0 + bw - .3, y + h - 1.4], [x0 + bw - .3, y + h], [x0 + .3, y + h]]); c.fillStyle = 'rgba(240,246,255,.9)'; path(q); c.fill(); } } }
+
+  // ---------- calques de lumière (blanc + alpha, teintés à l'exécution) ----------
+  const halo = cvs(Wd, Hd), core = cvs(Wd, Hd), hot = cvs(Wd, Hd), hx = halo.getContext('2d'), kx = core.getContext('2d'), tx2 = hot.getContext('2d');
+  [hx, kx, tx2].forEach(x => x.setTransform(S, 0, 0, S, 0, EX * S));
+  const tubes = [];    // { pts, w } en coordonnées du demi-plateau haut ; dupliqué en miroir pour le bas
+  function tube(pts, w, mirror){
+    pts = WP(pts, true);
+    const draw = (ctx, ww, blur, a) => { ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = '#fff'; ctx.globalAlpha = a;
+      if(blur){ const OFF = 4000; ctx.shadowColor = '#fff'; ctx.shadowBlur = blur * S; ctx.shadowOffsetX = OFF * S; ctx.translate(-OFF, 0); }
+      ctx.lineWidth = ww; ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke(); ctx.restore(); };
+    draw(hx, w * 3.2, Math.min(11, 3 + w * 2.4), 1); draw(hx, w * 1.8, Math.min(4, 1.4 + w), 1); draw(kx, w, 0, 1); draw(tx2, Math.max(.6, w * .42), 0, 1);
+  }
+
+  // pièce lumineuse pleine (polygone) : halo flou + cœur + point chaud réduit autour du centre (la teinte est appliquée à l'exécution)
+  function lamp(pts){
+    pts = WP(pts);
+    const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, cy = pts.reduce((a, q) => a + q[1], 0) / pts.length;
+    const sc = k => pts.map(q => [cx + (q[0] - cx) * k, cy + (q[1] - cy) * k]);
+    const fillIn = (ctx, p, blur, a) => { ctx.save(); ctx.fillStyle = '#fff'; ctx.globalAlpha = a;
+      if(blur){ const OFF = 4000; ctx.shadowColor = '#fff'; ctx.shadowBlur = blur * S; ctx.shadowOffsetX = OFF * S; ctx.translate(-OFF, 0); }
+      ctx.beginPath(); p.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath(); ctx.fill(); ctx.restore(); };
+    fillIn(hx, pts, 7, .85); fillIn(kx, sc(.9), 0, .5);
+  }
+
+  // ---------- la scène ----------
+  const spots = [];   // bouches d'aération (fumée) : repère de la plaque, en px CSS
+  btlPlateScene({ spots, c, S, W:Wr, H:Hr, EX, YM, MY, fl, path:p => path(WP(p)), rr, plate, pocket, bevel, bolt, seam, ridge, vents, tube, lamp, mix, rgba, insetP, area, rnd, carbP, steelP, WX:WARP.WX, WY:WARP.WY }, Gr);
+  return { base, halo, core, hot, Wd, Hd, spots };
+}
+
+// ----- scène du champ de bataille : blocs d'acier, carbone, néons (demi-plateau haut dessiné, bas obtenu par miroir) -----
+// Coordonnées en px CSS, repère de référence = coin haut-gauche de la plaque (le générateur déforme ensuite pour épouser les vraies cases).
+// Règles de cohérence : en-tête symétrique gauche / droite autour de l'axe x = W/2, modules alignés sur une grille, néons dans des logements creusés
+// (deux tailles seulement : longs 17 px, courts 12 px), biseaux et chanfreins identiques partout, rien de flottant.
+function btlPlateScene(K, G){
+  const { spots, c, S, W, H, EX, YM, MY, plate, pocket, bevel, bolt, seam, ridge, vents, tube, lamp, rr, fl, mix, rgba, insetP, path, WX, WY } = K;
+  const ID = p => p, T1 = (T, q) => T([q])[0], mir = p => p.map(q => [W - q[0], q[1]]);
+  const sl = G.slots.filter(s => s.s === 'o').sort((a, b) => a.x - b.x), E = 4.5;
+  const MC = YM, bx = G.tab.x, bw = G.tab.w;
+  const P = [[9, 0], [bx - 6, 0], [bx + 10, -36], [bx + bw - 10, -36], [bx + bw + 6, 0], [W - 9, 0], [W, 9], [W, H - 9], [W - 9, H], [9, H], [0, H - 9], [0, 9]];
+  c.fillStyle = '#06080b'; path(P); c.fill();
+  plate(P, { tone: 0.72, w: 2.4, sh: 0, gl: .18, hi: 1, cracks: false });
+  const WIN = [[12, 3.2], [W - 12, 3.2], [W - 5, 9], [W - 5, H - 9], [W - 12, H - 3.2], [12, H - 3.2], [5, H - 9], [5, 9]];
+  pocket(WIN, { fill: '#07090c', w: 1.2, ish: 2.5 });
+  pocket([[bx + 13, -27], [bx + bw - 13, -27], [bx + bw - 5, -3], [bx + 5, -3]], { fill: '#04070b', ish: 3 });   // capot du temps
+  plate([[12.5, 3.7], [W - 12.5, 3.7], [W - 5.5, 9.5], [W - 5.5, H - 9.5], [W - 12.5, H - 3.7], [12.5, H - 3.7], [5.5, H - 9.5], [5.5, 9.5]], { tone: 0.34, w: 1.2, sh: 0, gl: .12, sheen: .12 });   // corps d'acier
+  const chamf = (x0, y0, x1, y1, k) => [[x0 + k, y0], [x1 - k, y0], [x1, y0 + k], [x1, y1 - k], [x1 - k, y1], [x0 + k, y1], [x0, y1 - k], [x0, y0 + k]];
+
+  const half = T => {
+    const Pl = (p, o) => plate(T(p), o), Po = (p, o) => pocket(T(p), o), Tu = (p, w) => tube(T(p), w), Sm = (p, o) => seam(T(p), o), Rg = (p, o) => ridge(T(p), o);
+    const B = (x, y, r) => bolt(...T1(T, [x, y]), r), sym = f => { f(p => p); f(mir); };
+    const haut = T([[0, 0]])[0][1] === 0;
+    // bouche d'aération : on mémorise son ouverture (px de la plaque, après déformation) pour la fumée
+    const Sp = (k, q) => { const a = q.map(v => T1(T, v)), xs = a.map(v => WX(v[0])), ys = a.map(v => WY(v[1])); spots.push({ s:haut ? 'o' : 'p', k, x0:Math.min(...xs), x1:Math.max(...xs), y0:Math.min(...ys), y1:Math.max(...ys) }); };
+    const SIL = { tone: 1.5, w: 1.5, hi: 1, cracks: false };                 // plaque d'argent
+    const SLOT = { fill: haut ? '#0b0507' : '#050a10', w: .8, ish: .8 };      // logement de néon
+    const CARB = { carbon: true, w: 1.2, ish: 1.8 };                          // bloc de carbone
+    const VOID = { fill: '#04060a', w: 1.1, ish: 1.6 };                       // alvéole d'aération
+
+    // ===== bord supérieur et en-tête : même dessin à gauche et à droite (miroir autour de x = W/2) =====
+    sym(M => {
+      Pl(M([[10, 5], [15, 3.7], [57, 3.7], [61, 8], [61, 11], [14.5, 11], [10, 9]]), SIL);                 // barre de rebord
+      const q = T1(T, M([[6.5, 10]])[0]); bolt(q[0], q[1], 2.4);                                            // vis d'angle
+      Po(M([[63, 3.7], [79, 3.7], [79, 9.5], [63, 9.5]]), SLOT);                                           // deux néons courts
+      Tu(M([[65.2, 5.5], [76.8, 5.5]]), 1.4); Tu(M([[65.2, 7.9], [76.8, 7.9]]), 1.2);
+      Pl(M([[80, 3.7], [97, 3.7], [104, 24], [87, 24]]), SIL);                                             // plaque inclinée
+      Po(M([[101.5, 3.7], [123, 3.7], [123, 15.5], [105, 15.5]]), CARB);                                   // bande de carbone
+      Po(M([[105.4, 17.2], [122.6, 17.2], [122.6, 20.8], [105.4, 20.8]]), SLOT); Tu(M([[107.4, 19], [120.6, 19]]), 1.4);   // néon long
+      Pl(M([[102, 26.5], [123, 26.5], [123, 31], [102, 31]]), SIL);                                        // rail d'argent
+    });
+
+    // ===== couronne : deux ailes d'argent en V autour de la grille d'aération centrale =====
+    const WG = { tone: 1.55, w: 1.8, hi: 1, sheen: .24, cracks: false };
+    Po([[149.5, 4.3], [170, 3.7], [212, 3.7], [232.5, 4.3], [226.3, 17.2], [213.5, 17.2], [211, 23], [205, 25.6], [191, 27.2], [177, 25.6], [171, 23], [168.5, 17.2], [155.7, 17.2]], { fill: haut ? '#18070a' : '#07121f', ish: 2.4, w: 1.3 });
+    sym(M => {
+      Pl(M([[125, 4.3], [147.1, 4.3], [155.7, 17.2], [170, 17.2], [180.7, 30.8], [125, 30.8]]), WG);
+      Tu(M([[157, 7.4], [168, 7.4]]), 2.2);
+      Po(M([[133, 19], [145, 19], [148, 22], [148, 27], [145, 30], [133, 30]]), { fill: '#0a0d12', ish: 1.6, w: 1 });
+      const q = T1(T, M([[140.5, 24.5]])[0]); bolt(q[0], q[1], 2.4); const q2 = T1(T, M([[168.6, 21.6]])[0]); bolt(q2[0], q2[1], 1.8);
+      Po(M([[156, 33.5], [179, 33.5], [181, 40], [158, 40]]), CARB);
+    });
+    Pl([[177, 27], [205, 27], [205, 31], [177, 31]], WG);
+    Pl([[186.4, 24.2], [195.6, 24.2], [194, 31], [188, 31]], WG);
+    Pl([[176.4, 7.4], [205.6, 7.4], [208, 10.4], [208, 21.6], [204.4, 25.4], [177.6, 25.4], [174, 21.6], [174, 10.4]], { tone: 1.35, w: 1.5, hi: 1, cracks: false });
+    Sp('g', [[178.4, 9.8], [205.6, 23.2]]);
+    Po([[178.4, 9.8], [203.6, 9.8], [205.6, 11.6], [205.6, 20.6], [202.8, 23.2], [179.2, 23.2], [176.4, 20.6], [176.4, 11.6]], { fill: '#020305', ish: 1.6, w: 1.1 });
+    for(let k = 0; k < 6; k++){ const y = 12 + k * 1.95; Rg([[178.6, y], [203.4, y]], { w: 1.05, a: .8, col: '206,218,234' }); }
+    Sm([[186, 10.4], [186, 22.6]], { hi: .35, w: 1 }); Sm([[196, 10.4], [196, 22.6]], { hi: .35, w: 1 });
+    Pl([[179, 31], [203, 31], [197, 46], [185, 46]], { tone: 1.5, w: 1.6, hi: 1 });
+
+    // ===== colonne gauche : module, alvéole du chef, bande de carbone en diagonale avec sa rainure lumineuse =====
+    Sm([[6.5, 74], [60, 74], [66, 80], [100, 80]], { hi: .22 });
+    const mod = G.mods.find(m => m.s === 'o') || { x: 30, y: 18, w: 39, h: 39 };
+    Pl(rr(mod.x - 5, mod.y - 5, mod.w + 10, mod.h + 10, 3, 2), { tone: 0.80, w: 2.2, hic: [226, 214, 190], mid: [128, 118, 102], cracks: false });
+    Po(rr(mod.x - 1, mod.y - 1, mod.w + 2, mod.h + 2, 2, 2), { fill: '#0a1019', ish: 2.5 });
+    [[-2.7, -2.7], [mod.w + 2.7, -2.7], [-2.7, mod.h + 2.7], [mod.w + 2.7, mod.h + 2.7]].forEach(d => B(mod.x + d[0], mod.y + d[1], 1.5));
+    const ld = G.leaders.find(l => l.s === (haut ? 'o' : 'p'));   // le pentagone pointe vers le haut des deux côtés (pas de miroir pour le joueur)
+    pocket([[.5, 0], [1, .38], [.79, 1], [.21, 1], [0, .38]].map(q => [ld.x - 1 + q[0] * (ld.w + 2), ld.y - 2 + q[1] * (ld.h + 4)]), { fill: '#091019', ish: 3, w: 1.6 });
+    Po([[77, 26.5], [88, 26.5], [92, 32], [100.5, 47], [100.5, 72], [94, 72], [77, 56]], CARB);
+    Po([[78.6, 57.8], [92.4, 70.7], [90.6, 72.7], [76.8, 59.7]], { fill: haut ? '#0b0608' : '#06090e', ish: .9, w: .9 });
+    Tu([[79.6, 60.4], [90.2, 70.3]], .75);
+    Po([[92, 90], [99.5, 90], [99.5, 148], [92, 148]], { carbon: true, w: 1, ish: 1.2 });
+    Pl([[76, 150], [100, 150], [100, 154], [76, 154]], SIL);
+
+    // ===== bandes sous les cases : trois modules identiques par colonne (aération, aération, carbone) au-dessus d'un rail =====
+    const cell = (Mf, o) => {
+      const TM = p => T(Mf(p));
+      Sp('c', Mf([[104, 129], [124, 149]])); Sp('c', Mf([[127, 129], [149, 149]]));
+      Po(Mf(chamf(104, 129, 124, 149, 2.5)), VOID);
+      vents(108.4, 130.8, 0, 16.6, 4, -3.2, TM, { pitch: 3.8, bw: 2 });
+      Po(Mf(chamf(127, 129, 149, 149, 2.5)), VOID);
+      vents(130.4, 131.6, 0, 14.4, 4, -2.6, TM, { pitch: 4.4, bw: 2.4, tip: true });
+      Po(Mf(chamf(152, 129, 184, 149, 2.5)), CARB);
+      Pl(Mf([[104, 150.8], [184, 150.8], [184, 153.4], [104, 153.4]]), SIL);
+    };
+    cell(p => p); cell(mir); cell(p => p.map(q => [q[0] + 188, q[1]]));
+    // piliers entre les cases : même bande de carbone dans les deux interstices
+    [191, 285].forEach(g => Po([[g - 1.7, 47], [g + 1.7, 47], [g + 1.7, 152], [g - 1.7, 152]], { carbon: true, w: .9, ish: .8 }));
+
+    // ===== bloc de carbone au-dessus de la case de droite =====
+    Po([[289, 26.5], [366, 26.5], [372, 32], [372, 39], [289, 39]], CARB);
+
+    // ===== cadres des cases =====
+    sl.forEach(s => {
+      Pl(rr(s.x - E, s.y - E, s.w + 2 * E, s.h + 2 * E, 6, 3), { tone: 0.66, w: 1.9, hi: 1, cracks: false });
+      Po(rr(s.x - 1, s.y - 1, s.w + 2, s.h + 2, 4.2, 3), { fill: '#0a1220', ish: 3.2, w: 1.3 });
+    });
+
+    // ===== barre centrale (moitié haute ; le bas est le miroir) : embouts, plaques hexagonales, bandes de carbone, rail d'argent =====
+    sym(M => {
+      Pl(M([[5.5, 152], [22, 168], [22, 176.5], [5.5, 176.5]]), SIL);
+      const q = T1(T, M([[10, 166]])[0]); bolt(q[0], q[1], 2.2);
+      Pl(M([[49, 163], [54, 158], [80, 158], [85, 163], [80, 168.4], [54, 168.4]]), { tone: 0.5, w: 1.4, cracks: false });
+      const q2 = T1(T, M([[82.2, 163.2]])[0]); bolt(q2[0], q2[1], 1.3);
+      Po(M([[104, 159.5], [168, 159.5], [172, 168], [104, 168]]), { carbon: true, w: 1.1, ish: 1.6 });
+      Pl(M([[24, 171.6], [186, 171.6], [186, 175.4], [24, 175.4]]), { tone: 1.59, w: 1.3, hi: 1, cracks: false });
+      const q3 = T1(T, M([[26.6, 173.5]])[0]); bolt(q3[0], q3[1], 1.2); const q4 = T1(T, M([[183.4, 173.5]])[0]); bolt(q4[0], q4[1], 1.2);
+    });
+  };
+  half(ID); half(fl);
+
+  // rail central : rails latéraux (repères gravés) + tranchées centrales à losanges, symétriques ; haut : repères clairs, bas : bleutés
+  [[7, 98]].forEach(r => { const pp = [[r[0], MC - 12], [r[1], MC - 12], [r[1], MC + 12], [r[0], MC + 12]]; pocket(pp, { fill: '#0c1522', ish: 2.2, w: 1.3 }); pocket(mir(pp), { fill: '#0c1522', ish: 2.2, w: 1.3 }); });
+  const tr = [[104, MC - 14], [186, MC - 14], [186, MC + 14], [104, MC + 14], [100, MC + 10], [100, MC - 10]];
+  [tr, mir(tr)].forEach(pp => pocket(pp, { fill: '#070c14', ish: 2.6, w: 1.5 }));
+  [0, 1].forEach(k => { for(let j = 0; j < 5; j++){ const dx = k ? W - (110 + 16.5 * j) : 110 + 16.5 * j, d = [[dx, MC - 8], [dx + 3.6, MC], [dx, MC + 8], [dx - 3.6, MC]];
+    c.fillStyle = '#010204'; path(d); c.fill(); c.strokeStyle = 'rgba(120,150,190,.28)'; c.lineWidth = .6; path(d); c.stroke(); } });
+  c.save(); for(let x = 10.5; x < W - 8; x += 6.25){ if((x > 98 && x < W - 98)) continue; const X = WX(x), Y1 = WY(MC - 9), Y2 = WY(MC + 5.4), Y3 = WY(MC - 5.4), Y4 = WY(MC + 9); c.fillStyle = 'rgba(214,224,238,.82)'; c.fillRect(X, Y1, .9, Y3 - Y1); c.fillStyle = 'rgba(120,200,255,.8)'; c.fillRect(X, Y2, .9, Y4 - Y2); } c.restore();
+}
+
+// ===== fumée des bouches d'aération (V0.04.81) =====
+// À chaque pioche : une chance sur deux que le côté qui pioche souffle de la fumée par ses bouches d'aération (grille de la couronne + six alvéoles).
+// Tout est dessiné en canvas, aucune image : volutes pré-rendues (bruit fractal à domaine déformé, éclairé), émetteurs tirés au hasard à chaque fois
+// (bouches actives, style jet / volutes / filaments, force, durée, vent, rafales), flottabilité + turbulence, reflet des néons de la plaque.
+const BTL_SMOKE = { sp:[], parts:[], ems:[], cv:null, ctx:null, raf:0, last:0, T:0, ts:BTL_TS * .6, tc:{}, manual:false, dpr:1, W:0, H:0 };
+let _smSeed = (Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0;
+function btlSmRn(){ _smSeed = _smSeed + 0x6D2B79F5 | 0; let t = Math.imul(_smSeed ^ _smSeed >>> 15, 1 | _smSeed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }   // générateur à part : ne touche jamais au hasard du jeu
+
+// une volute : nuage de bruit déformé (volutes), dense au centre, bords effilochés, ombré vers le bas-droite
+function btlSmokeMakeSprite(){
+  const rn = btlSmRn, N = 112, c = document.createElement('canvas'); c.width = c.height = N;
+  const g = c.getContext('2d'), im = g.createImageData(N, N), d = im.data, tab = new Float32Array(256);
+  for(let i = 0; i < 256; i++) tab[i] = rn();
+  const nz = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), tx = x - xi, ty = y - yi, sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty), X = xi & 15, Y = yi & 15, X1 = (xi + 1) & 15, Y1 = (yi + 1) & 15;
+    const a = tab[Y << 4 | X], b = tab[Y << 4 | X1], c2 = tab[Y1 << 4 | X], d2 = tab[Y1 << 4 | X1], u = a + (b - a) * sx; return u + (c2 + (d2 - c2) * sx - u) * sy; };
+  const fbm = (x, y) => { let v = 0, a = .5, f = 1; for(let o = 0; o < 4; o++){ v += a * nz(x * f + o * 7.3, y * f + o * 3.1); f *= 2.03; a *= .5; } return v; };
+  const ox = rn() * 12, oy = rn() * 12, k = 2.5 + rn() * 1.3, warp = 1.7 + rn() * 1.1, th = .24 + rn() * .08;
+  for(let y = 0; y < N; y++) for(let x = 0; x < N; x++){
+    const u = x / (N - 1) * 2 - 1, v = y / (N - 1) * 2 - 1, r = Math.sqrt(u * u + v * v), i = (y * N + x) * 4;
+    if(r >= 1){ d[i + 3] = 0; continue; }
+    const px = (u * .5 + .5) * k + ox, py = (v * .5 + .5) * k + oy, q1 = fbm(px, py), q2 = fbm(px + 5.2, py + 1.3);
+    const w = fbm(px + warp * q1, py + warp * q2), w2 = fbm(px + warp * q1 - .06, py + warp * q2 - .08);
+    const s = Math.max(0, 1 - r) , fall = s * s * (3 - 2 * Math.min(1, s * 1.7));
+    const a = Math.max(0, Math.min(1, (w - th) * 3.1)) * fall;
+    const sh = Math.max(.3, Math.min(1, .7 + (w2 - w) * 10)), L = 96 + 128 * sh;
+    d[i] = L - 6; d[i + 1] = L - 1; d[i + 2] = L + 7; d[i + 3] = Math.min(255, a * 300);
+  }
+  g.putImageData(im, 0, 0);
+  return c;
+}
+// préchauffage : une volute par tic, après la mise en place de la plaque (pas de saccade)
+function btlSmokePrewarm(){
+  const S = BTL_SMOKE; if(S.sp.length >= 6) return;
+  setTimeout(() => { if(S.sp.length < 6){ try{ S.sp.push(btlSmokeMakeSprite()); }catch(e){ console.error(e); return; } btlSmokePrewarm(); } }, 260);
+}
+function btlSmokeTinted(i, side){
+  const S = BTL_SMOKE, key = i + side; if(S.tc[key]) return S.tc[key];
+  const L = BTL.lg || { t:BTL_LG_T, b:BTL_LG_B }, col = side === 'o' ? L.t : L.b, sp = S.sp[i], c = document.createElement('canvas'); c.width = sp.width; c.height = sp.height;
+  const g = c.getContext('2d'); g.drawImage(sp, 0, 0); g.globalCompositeOperation = 'source-atop'; g.fillStyle = 'rgb(' + col.map(Math.round).join(',') + ')'; g.fillRect(0, 0, c.width, c.height);
+  return (S.tc[key] = c);
+}
+function btlSmokeColor(side){ const L = BTL.lg || { t:BTL_LG_T, b:BTL_LG_B }; return (side === 'o' ? L.t : L.b).map(Math.round); }
+
+// bouches d'aération d'un côté, en px de l'écran (relatifs au calque d'effets)
+function btlSmokeVents(side){
+  const pl = btlQ('#btlPlate'), fx = btlQ('#btlFx'), sp = BTL.pt && BTL.pt.spots; if(!pl || !fx || !sp) return [];
+  const pr = pl.getBoundingClientRect(), fr = fx.getBoundingClientRect(), ox = pr.left - fr.left, oy = pr.top - fr.top;
+  return sp.filter(v => v.s === side).map(v => ({ k:v.k, x0:ox + v.x0, x1:ox + v.x1, y0:oy + v.y0, y1:oy + v.y1 }));
+}
+// styles : jet (court, nerveux, haut), volutes (lent, large, qui roule), filaments (fins, serpentins)
+const BTL_SMOKE_ST = {
+  jet:    { rate:115, speed:[130, 200], drag:1.0, s0:.58, grow:3.3, life:[1.9, 2.6], alpha:.92, spread:.12, buoy:60, turb:26 },
+  volutes:{ rate:36,  speed:[66, 108],  drag:.85,  s0:.85, grow:3.5, life:[2.2, 3.1], alpha:.64, spread:.34, buoy:72, turb:40 },
+  fil:    { rate:66,  speed:[92, 150],  drag:.95,  s0:.42, grow:3.0, life:[2.0, 2.9], alpha:.58, spread:.2,  buoy:64, turb:58 }
+};
+function btlSmokeEnsure(){
+  const S = BTL_SMOKE, fx = btlQ('#btlFx'); if(!fx) return false;
+  while(S.sp.length < 4) S.sp.push(btlSmokeMakeSprite());
+  if(!S.cv || !S.cv.isConnected){
+    const cv = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1), W = fx.clientWidth || innerWidth, H = fx.clientHeight || innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.className = 'btl-smoke'; cv.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;pointer-events:none;';
+    fx.insertBefore(cv, fx.firstChild); S.cv = cv; S.ctx = cv.getContext('2d'); S.dpr = dpr; S.W = W; S.H = H;
+  }
+  return true;
+}
+// 1 pioche sur 2, un côté souffle de la fumée (opt.force pour les tests)
+function btlSmokeMaybe(side, opt){
+  try{ if(!BTL || BTL.abort || !BTL.pt || !BTL.pt.spots) return; if((opt && opt.force) || btlSmRn() < .5) btlSmokeBurst(side, opt); }catch(e){ console.error(e); }
+}
+function btlSmokeBurst(side, opt){
+  opt = opt || {}; const rn = btlSmRn, S = BTL_SMOKE, vents = btlSmokeVents(side); if(!vents.length || !btlSmokeEnsure()) return;
+  S.sp[Math.floor(rn() * S.sp.length)] = btlSmokeMakeSprite(); S.tc = {};   // un grain neuf à chaque fois : jamais deux fumées identiques
+  const names = ['jet', 'volutes', 'fil'], r = rn(), evSt = opt.style || (r < .34 ? 'jet' : r < .68 ? 'volutes' : 'fil');
+  const wind = (rn() - .5) * 38 * (rn() < .3 ? .2 : 1), gust = { a:3 + rn() * 7, f:.5 + rn() * 1.1, p:rn() * 6.28 };
+  const act = vents.filter(v => rn() < (v.k === 'g' ? .9 : .6));
+  while(act.length < 4){ const v = vents[Math.floor(rn() * vents.length)]; if(act.indexOf(v) < 0) act.push(v); }
+  const power = .75 + rn() * .5;
+  act.forEach(v => {
+    const st = rn() < .26 ? names[Math.floor(rn() * 3)] : evSt, P = BTL_SMOKE_ST[st];
+    S.ems.push({ v, side, st, P, t0:S.T + (st === 'jet' ? rn() * .22 : rn() * .5), dur:st === 'jet' ? .42 + rn() * .5 : st === 'volutes' ? 1 + rn() * .9 : .8 + rn() * 1.1,
+      acc:0, lean:(rn() - .5) * .55 + wind * .004, pw:power * (.85 + rn() * .3), wind, gust, ph:rn() * 6.28 });
+  });
+  if(!S.raf && !S.manual) { S.last = 0; S.raf = requestAnimationFrame(btlSmokeLoop); }
+}
+function btlSmokeLoop(now){
+  const S = BTL_SMOKE; S.raf = 0;
+  if(!BTL || BTL.abort || !S.cv || !S.cv.isConnected){ btlSmokeStop(); return; }
+  const dt = S.last ? Math.min(.05, (now - S.last) / 1000) : .016; S.last = now;
+  btlSmokeStep(dt / S.ts);
+  if(S.ems.length || S.parts.length) S.raf = requestAnimationFrame(btlSmokeLoop); else btlSmokeStop();
+}
+function btlSmokeStop(){
+  const S = BTL_SMOKE; if(S.raf){ cancelAnimationFrame(S.raf); S.raf = 0; }
+  S.parts.length = 0; S.ems.length = 0; if(S.cv){ S.cv.remove(); S.cv = null; S.ctx = null; }
+}
+function btlSmokeStep(dt){
+  const S = BTL_SMOKE, rn = btlSmRn, ctx = S.ctx; if(!ctx) return;
+  S.T += dt; const T = S.T, parts = S.parts;
+  // émission
+  for(let k = S.ems.length - 1; k >= 0; k--){
+    const e = S.ems[k], loc = T - e.t0, P = e.P; if(loc < 0) continue;
+    if(loc > e.dur){ S.ems.splice(k, 1); continue; }
+    const u = loc / e.dur, env = e.st === 'jet' ? Math.pow(1 - u, 1.4) * Math.min(1, loc / .05) : e.st === 'volutes' ? Math.pow(Math.sin(Math.PI * Math.min(1, u * .96 + .02)), .6) : (.62 + .38 * Math.sin(loc * 7 + e.ph)) * (1 - u * u * u);
+    e.acc += P.rate * e.pw * env * dt;
+    const v = e.v, w = v.x1 - v.x0, h = v.y1 - v.y0;
+    while(e.acc >= 1){ e.acc--; if(parts.length > 320) continue;
+      const ang = -Math.PI / 2 + e.lean + (rn() - .5) * 2 * P.spread, sp = (P.speed[0] + (P.speed[1] - P.speed[0]) * rn()) * e.pw;
+      const s0 = w * P.s0 * (.8 + .4 * rn());
+      parts.push({ x:v.x0 + w * (.1 + .8 * rn()), y:v.y0 + h * (.28 + .3 * rn()), ox:0, oy:0, vx:Math.cos(ang) * sp, vy:Math.sin(ang) * sp, s0, s1:s0 * P.grow * (.75 + .5 * rn()), rot:rn() * 6.28, vr:(rn() - .5) * .9,
+        life:(P.life[0] + (P.life[1] - P.life[0]) * rn()) * (.9 + .2 * e.pw), age:0, al:P.alpha * (.8 + .4 * rn()), i:Math.floor(rn() * S.sp.length), fl:rn() < .5, side:e.side, e, P,
+        p1:rn() * 6.28, p2:rn() * 6.28, f1:.035 + rn() * .03, f2:.05 + rn() * .04, tr:0 });
+      const q = parts[parts.length - 1]; q.ox = q.x; q.oy = q.y; }
+  }
+  // mouvement
+  for(let k = parts.length - 1; k >= 0; k--){
+    const p = parts[k]; p.age += dt; if(p.age >= p.life){ parts.splice(k, 1); continue; }
+    const u = p.age / p.life, P = p.P, e = p.e, dr = Math.exp(-P.drag * dt);
+    p.vx *= dr; p.vy *= dr;
+    p.vy -= P.buoy * dt * (.4 + .6 * u);                                                           // flottabilité : la fumée chaude monte
+    const tu = P.turb * (.25 + .75 * Math.min(1, u * 2));
+    p.vx += tu * (Math.sin(p.y * p.f1 + T * 1.6 + p.p1) + .6 * Math.sin(p.x * p.f2 - T * 2.2 + p.p2)) * dt;   // turbulence : filaments qui ondulent
+    p.vy += tu * .35 * Math.sin(p.x * p.f1 * 1.3 + T * 1.9 + p.p2) * dt;
+    const wd = e.wind + e.gust.a * Math.sin(T * e.gust.f + e.gust.p);                                 // vent + rafales, de plus en plus portée en altitude
+    p.x += (p.vx + wd * (.15 + .85 * u)) * dt; p.y += p.vy * dt;
+    p.rot += p.vr * dt;
+  }
+  // dessin : corps gris-bleuté puis reflet additif de la couleur des néons (qui s'éteint en montant)
+  const dpr = S.dpr, W = S.W, H = S.H; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, S.cv.width, S.cv.height); ctx.globalCompositeOperation = 'source-over';
+  const draw = (p, img, a) => { const u = p.age / p.life, ez = 1 - (1 - u) * (1 - u), s = p.s0 + (p.s1 - p.s0) * ez, c = Math.cos(p.rot) * s * dpr, sn = Math.sin(p.rot) * s * dpr, f = p.fl ? -1 : 1;
+    ctx.setTransform(c * f / img.width, sn * f / img.width, -sn / img.height, c / img.height, p.x * dpr, p.y * dpr); ctx.globalAlpha = a; ctx.drawImage(img, -img.width / 2, -img.height / 2); };
+  const env = p => { const u = p.age / p.life, fi = Math.min(1, u / .1), fo = u < .22 ? 1 : Math.pow(1 - (u - .22) / .78, 1.35); return p.al * fi * fi * (3 - 2 * fi) * fo; };
+  for(let k = 0; k < parts.length; k++){ const p = parts[k]; draw(p, S.sp[p.i], env(p)); }
+  ctx.globalCompositeOperation = 'lighter';
+  for(let k = 0; k < parts.length; k++){ const p = parts[k], d = Math.hypot(p.x - p.ox, p.y - p.oy), g = Math.exp(-d / 70) * (1 - p.age / p.life); if(g < .02) continue; draw(p, btlSmokeTinted(p.i, p.side), env(p) * g * .5); }
+  // lueur de la bouche pendant qu'elle souffle
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  S.ems.forEach(e => { const loc = T - e.t0; if(loc < 0 || loc > e.dur + .25) return; const v = e.v, w = v.x1 - v.x0, cx = (v.x0 + v.x1) / 2, cy = (v.y0 + v.y1) / 2, col = btlSmokeColor(e.side), a = Math.max(0, 1 - Math.max(0, loc - e.dur) / .25) * .38;
+    const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * .95); gr.addColorStop(0, 'rgba(' + col.join(',') + ',' + a.toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + col.join(',') + ',0)');
+    ctx.globalAlpha = 1; ctx.fillStyle = gr; ctx.fillRect(cx - w, cy - w, w * 2, w * 2); });
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
 
 var BTL_TUR = { ny:36, ns:4, w:256, h:256, half:1.75, voff:.38, sp:.819152, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-97309f4a6faa.webp' };
 
