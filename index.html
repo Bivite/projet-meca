@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.90</title>
+<title>Projet MECA V0.04.91</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7077,6 +7077,7 @@
   /* V0.04.50 : BATAILLE en haut à droite (découpe et hauteur de l'ancienne case ORDRE DE MISSION), ORDRE DE MISSION dans la grande case du milieu (découpe et hauteur de l'ancienne case BATAILLE) */
   #modeHub .mode-grid .mode-tile#tileBattle{ --clip:polygon(var(--cut) 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - var(--cut2)),calc(100% - var(--cut2)) 100%,0 100%); height:clamp(130px, calc((100dvh - 440px) / 3), 250px); }
   #modeHub .mode-grid .mode-tile#tileBattle .mt-inner{ padding-left:38px; }
+  #modeHub .mode-grid .mode-tile#tileBattle .mt-title{ font-size:12.5px; letter-spacing:1.6px; white-space:nowrap; }
   #modeHub .mode-grid .mode-tile#tileOrders{ --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); height:120px; margin-right:0; }
   #modeHub .mode-grid .mode-tile#tileOrders .tile-dot{ top:12px; right:12px; }
   .mode-tile.battle-big{ height:120px; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); background:linear-gradient(160deg, #9be8b4, #1f8f4e 45%, #05210f); filter:drop-shadow(0 0 12px rgba(40,190,100,.32)); }
@@ -7191,6 +7192,14 @@
   }
   .raid-big .mt-soon{ color:rgba(255,255,255,.5); text-shadow:0 2px 6px rgba(0,0,0,.9); }
   .raid-big .mt-lock{ color:rgba(255,255,255,.4); }
+  /* V0.04.91 : la grande case du milieu est ouverte -- BATAILLE, sans icône, palette rouge (même recette que .battle-big) */
+  .mode-tile.raid-big.bat-open{ cursor:pointer; background:linear-gradient(160deg, #ffb8ad, #d2352b 45%, #2c0806); filter:drop-shadow(0 0 12px rgba(235,64,52,.34)); }
+  .raid-big.bat-open .mt-inner{
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
+      linear-gradient(135deg, rgba(128,18,12,.95) 0%, rgba(128,18,12,.55) 40%, rgba(128,18,12,.2) 70%, transparent 100%);
+  }
+  .raid-big.bat-open .mt-title{ color:#ffe3de; text-shadow:0 0 10px rgba(255,96,78,.55); letter-spacing:3px; position:relative; z-index:1; }
   /* V0.04.16 (demande d'Alex : "plus l'effet de zoom qui dérègle la vue quand j'écris") : Safari iPhone zoome
      automatiquement la page au focus d'un champ dont la police fait moins de 16 px. Tous les champs de saisie
      passent donc à 16 px (les placeholders gardent leur taille d'origine, l'aspect des champs vides ne change pas). */
@@ -8124,6 +8133,14 @@
       <div class="mode-tile battle-big s-b" id="tileBattle">
         <div class="mt-inner">
           <div class="mt-battle-ico"><i class="ico-ordersbadge"></i></div>
+          <div class="mt-title">ENTRAÎNEMENT IA</div>
+        </div>
+      </div>
+      </div>
+      <div class="mode-row">
+      <!-- BATAILLE (grande case du milieu, ouverte en V0.04.91 sur demande d'Alex) : aucune icône, palette rouge ; la fonction viendra plus tard. -->
+      <div class="mode-tile raid-big bat-open" id="tileRaid">
+        <div class="mt-inner">
           <div class="mt-title">BATAILLE</div>
         </div>
       </div>
@@ -8143,17 +8160,6 @@
           <div class="mt-defi-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-defi.webp" alt=""></div>
           <div class="mt-title">DÉFI</div>
           <div class="mt-sub" id="defiTileSub">Défis à débloquer</div>
-        </div>
-      </div>
-      </div>
-      <div class="mode-row">
-      <!-- BOSS DE RAID (V0.03.00, demande d'Alex) : fusion des anciennes cases 05 (s-e) et 06 (s-f),
-           toutes les deux encore "PROCHAINEMENT" -- une seule case pleine largeur à la place des deux,
-           sur le modèle de .s-big déjà utilisé ailleurs (ex. #tileDaily) pour une tuile seule par ligne. -->
-      <div class="mode-tile raid-big soon" id="tileRaid">
-        <div class="mt-inner">
-          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-          <div class="mt-soon">PROCHAINEMENT</div>
         </div>
       </div>
       </div>
@@ -8316,7 +8322,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.90</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.91</b></div>
   </div>
 
     </div>
@@ -8586,9 +8592,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.90';
+var BUILD_VERSION = 'V0.04.91';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.91', items:[
+    'MENU : la grande case est ouverte et s\'appelle BATAILLE (rouge, sans icône), placée entre la rangée JOUEUR / ENTRAÎNEMENT IA et la rangée RÉCOMPENSES / DÉFI. Elle n\'a pas encore de fonction : un appui affiche « bientôt disponible ».',
+    'MENU : l\'ancienne case BATAILLE s\'appelle maintenant ENTRAÎNEMENT IA (aide et tutoriel mis à jour).',
+  ] },
   { v:'V0.04.90', items:[
     'Écran VS : avant chaque combat (Bataille et Défis), un écran d\'entrée présente les deux camps. Fond noir qui s\'illumine en rouge (adversaire) et bleu (toi), un VS en métal chauffé frappe l\'écran, les modules des deux decks glissent depuis leur bord avec les noms, puis le VS refroidit en acier gris, tout s\'éteint et le champ de bataille apparaît en fondu enchaîné jusqu\'au pile ou face. En Défi, l\'adversaire porte le nom de la carte du défi.',
     'Dos de cartes : tous les dos de la liste ont maintenant la même taille, avec le nom en noir en dessous.',
@@ -10083,7 +10093,7 @@ var TUT_STEPS = [
     mock:'<div class="tut-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3z"/></svg></div>' },
   { title:'TA FICHE JOUEUR', text:'En haut de l\'écran, ton avatar affiche ton nom et ton niveau de commandant. C\'est ta carte de visite.',
     mock: () => tutIconFrom('#tilePlayer .mt-avatar', 'cyan') },
-  { title:'LA BATAILLE', text:'Choisis l\'un de tes decks dans la case BATAILLE du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner.',
+  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner.',
     mock: () => tutIconFrom('#tileBattle .mt-battle-ico', 'green') },
   { title:'CAPACITÉS ULTIMES', text:'Les dégâts infligés ou reçus par une carte remplissent sa jauge d\'ultime. Quand elle est pleine, l\'ultime se déclenche tout seul au début du tour suivant : ATQ, DEF et PV sont doublés jusqu\'à la fin du tour.',
     mock: tutUltimateMock },
@@ -17472,6 +17482,7 @@ function renderBataille(){
   batSyncLaunch();
 }
 document.getElementById('tileBattle').onclick = () => { batSelected = null; renderBataille(); openSub('batailleView'); };
+document.getElementById('tileRaid').onclick = () => showToast('BATAILLE : bientôt disponible');   // V0.04.91 : case ouverte, fonction à venir
 document.getElementById('batLaunchBtn').onclick = () => {
   const d = decks.find(x => x.id === batSelected); if(!d) return;
   btlStart(d);
@@ -27565,10 +27576,11 @@ const HELP_CONTENT = {
   // ---------- MENU ----------
   modeHub: { title:'MENU', text:'Le menu principal :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant.</li>' +
-    '<li><b>BATAILLE</b> — affronte un adversaire avec l’un de tes decks.</li>' +
+    '<li><b>ENTRAÎNEMENT IA</b> — affronte un adversaire contrôlé par l’IA avec l’un de tes decks.</li>' +
+    '<li><b>BATAILLE</b> — bientôt disponible.</li>' +
     '<li><b>RÉCOMPENSES</b> — récompense quotidienne, trophées et tâches à réclamer.</li>' +
     '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li></ul>' },
-  batailleView: { title:'BATAILLE', text:'Choisis l’un de tes decks, puis touche <b>LANCER LE COMBAT</b>.<br><br>' +
+  batailleView: { title:'ENTRAÎNEMENT IA', text:'Choisis l’un de tes decks, puis touche <b>LANCER LE COMBAT</b>.<br><br>' +
     'À chaque tour, pose des cartes grâce à ton mana, prépare leurs attaques ou leurs défenses, puis touche <b>FIN</b> : tes actions se jouent dans l’ordre où tu les as lancées. Détruis le chef d’escouade adverse pour gagner.<br><br>' +
     'Chaque victoire d’affilée allume un point de <b>WINSTREAK</b> et augmente la récompense ; une défaite remet la série à zéro.' },
   rewardsView: { title:'RÉCOMPENSES', text:'Trois façons de gagner des récompenses gratuites :<ul>' +
