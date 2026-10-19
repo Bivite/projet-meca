@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.82</title>
+<title>Projet MECA V0.04.83</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3399,7 +3399,7 @@
   .deck-split #deckLeft .codex-grid{grid-template-columns:repeat(2,minmax(0,1fr)); padding:0; gap:8px;}
   #deckLeft.drop-ok{outline:2px dashed rgba(255,79,106,.7); outline-offset:3px; border-radius:12px;}
   #deckRight{
-    position:sticky; top:6px; align-self:start; max-height:calc(100dvh - 120px); overflow-y:auto; overflow-x:hidden;
+    position:sticky; top:6px; align-self:start; height:calc(100dvh - 162px - env(safe-area-inset-bottom, 0px)); overflow-y:auto; overflow-x:hidden;
     border-radius:14px; padding:0 6px 8px; box-sizing:border-box;
     background:linear-gradient(180deg, rgba(77,148,255,.14), rgba(0,0,0,.35)); border:1px solid rgba(77,148,255,.45);
     display:flex; flex-direction:column; gap:8px; overscroll-behavior:contain;
@@ -8265,7 +8265,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.82</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.83</b></div>
   </div>
 
     </div>
@@ -8535,9 +8535,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.82';
+var BUILD_VERSION = 'V0.04.83';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.83', items:[
+    'SAUVEGARDE : correction d\'un bug qui bloquait l\'envoi de ta partie en ligne pour certains comptes. Les cartes fabriquées (ou toute autre progression) pouvaient disparaître à la relance du jeu. La partie est de nouveau sauvegardée en ligne normalement.',
+    'BATAILLE : le joueur qui ne commence pas démarre maintenant avec 1 mana de plus à son premier tour (2 mana au lieu de 1), pour compenser l\'avantage de celui qui joue en premier. Valable aussi pour l\'adversaire.',
+    'DECK : ajouter ou retirer une carte du deck est environ 2,5 fois plus rapide (plus de reconstruction complète de l\'écran), et la colonne de droite descend maintenant jusqu\'en bas, même presque vide.',
+  ] },
   { v:'V0.04.82', items:[
     'FLAMMES : les cartes qui peuvent encore agir portent maintenant un vrai trait de flamme animé (particules qui montent et se tordent), rouge côté ennemi pour attaquer et bleu côté opposé pour défendre. Elles s\'éteignent d\'elles-mêmes quand plus rien ne peut agir et se réduisent toutes seules sur un téléphone lent.',
     'FLUIDITÉ EN COMBAT : correction d\'une saccade introduite en V0.04.81. Les ombres de la plaque du champ de bataille sont maintenant calculées une seule fois au lieu d\'être recalculées à chaque image (environ trois fois moins de travail par image).',
@@ -14919,6 +14924,75 @@ function doCraft(){
   renderDeckView();
   renderCraftBar();
 }
+// V0.04.83 : ajouter / retirer une carte ne reconstruit plus tout l'écran (4 300 éléments + redécodage de toutes les images = 0,5 à 1 s de blocage).
+// On garde les cartes déjà affichées (liste de gauche et colonne de droite), on n'ajoute / retire / met à jour que celles qui changent.
+function deckFastRender(work, list, n){
+  const split = work._dkSplit, lf = split.querySelector('#deckLeft'), col = split.querySelector('#deckRight');
+  if(!lf || !col || !lf.firstElementChild) return false;
+  const grid = lf.firstElementChild, pool = work._dkPool || (work._dkPool = new Map());
+  const old = new Map();
+  grid.querySelectorAll(':scope > .deck-drag-card').forEach(el => old.set(el.dataset.key, el));
+  const keep = new Set();
+  list.forEach((x, i) => {
+    let el = old.get(x.key) || pool.get(x.key);
+    if(!el){
+      el = document.createElement('div'); el.className = 'codex-card deck-drag-card ' + rarCls(x.st.rar); el.dataset.key = x.key;
+      el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem;
+      const e = sqEntry(x.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
+      deckAttachDrag(el, 'list', x.key);
+    } else if(el._rem !== x.rem){ el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem; }
+    pool.delete(x.key); keep.add(el);
+    if(grid.children[i] !== el) grid.insertBefore(el, grid.children[i] || null);
+  });
+  old.forEach((el, k) => { if(!keep.has(el)){ el.remove(); pool.set(k, el); } });
+  // colonne de droite : on garde les cartes existantes (même carte = même élément), on refait le reste (module, compteur, piles)
+  const sorted = deckDraft.cards.map((k, i) => ({ k, i, e: sqEntry(k) })).filter(x => x.e)
+    .sort((a, b) => cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i);
+  const byName = {};
+  sorted.forEach(x => { (byName[x.e.def.name] = byName[x.e.def.name] || []).push(x); });
+  const groups = Object.keys(byName).map(nm => byName[nm].sort((a, b) => tierOf(b.e.rar) - tierOf(a.e.rar) || cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i));
+  groups.sort((a, b) => cardPower(b[0].e.def, b[0].e.rar) - cardPower(a[0].e.def, a[0].e.rar) || a[0].i - b[0].i);
+  const dkCard = (x, cls) => `<div class="codex-card deck-drag-card ${cls} ${rarCls(x.e.rar)}" data-idx="${x.i}" data-key="${x.k}">${deckTileHtml(x.e, 0)}</div>`;
+  const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack${g[1] ? ' pile' : ''}">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
+    : '<div class="deck-right-empty">Glisse tes cartes ici</div>';
+  const cp = new Map();
+  col.querySelectorAll('.deck-drag-card').forEach(el => { const a = cp.get(el.dataset.key); if(a) a.push(el); else cp.set(el.dataset.key, [el]); });
+  const tmp = document.createElement('div');
+  tmp.innerHTML = deckModSlotHtml() + `<div class="deck-count${n === DECK_SIZE ? ' full' : ''}" id="deckCount">${n} / ${DECK_SIZE}</div>` + rightHtml;
+  tmp.querySelectorAll('.deck-drag-card').forEach(nw => {
+    const a = cp.get(nw.dataset.key), el = a && a.shift();
+    if(el){ el.className = nw.className; el.dataset.idx = nw.dataset.idx; nw.replaceWith(el); }
+    else {
+      const e = sqEntry(nw.dataset.key); if(e) addPreviewPress(nw, e.def, e.rar, deckPeekOpts());
+      deckAttachDrag(nw, 'deck', +nw.dataset.idx);
+    }
+  });
+  col.replaceChildren(...tmp.childNodes);
+  document.getElementById('deckModSlot').addEventListener('click', () => { if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); } });
+  col.querySelectorAll('.deck-stack').forEach(stk => stk.addEventListener('click', ev => {
+    if(Date.now() - (col._scrolledAt || 0) < 350) return;
+    const full = deckDraft && deckDraft.cards.length === DECK_SIZE;
+    const pile = stk.classList.contains('pile');
+    if(pile && !stk.classList.contains('open')){ openDeckPile(stk); return; }
+    if(pile && !full){ closeDeckPile(); return; }
+  }));
+  return true;
+}
+// V0.04.83 : la colonne de droite descend toujours jusqu'en bas de la zone visible (au-dessus de la barre du bas), même presque vide
+function deckFitColumn(){
+  const col = document.getElementById('deckRight'), sc = document.getElementById('codexView');
+  if(!col || !sc) return;
+  const full = Math.max(180, sc.clientHeight - 14);
+  const room = sc.getBoundingClientRect().bottom - col.getBoundingClientRect().top - 8;
+  col.style.height = Math.max(180, Math.min(full, room)) + 'px';
+}
+(function(){
+  const sc = document.getElementById('codexView'); let raf = 0;
+  const go = () => { if(raf) return; raf = requestAnimationFrame(() => { raf = 0; if(deckDraft && document.getElementById('deckView').classList.contains('active')) deckFitColumn(); }); };
+  if(sc) sc.addEventListener('scroll', go, { passive:true });
+  window.addEventListener('resize', go);
+  window.deckFitSoon = go;
+})();
 function renderDeckWork(){
   const work = document.getElementById('deckWork');
   const keepH = work.offsetHeight; if(keepH) work.style.minHeight = keepH + 'px';
@@ -14969,6 +15043,13 @@ function renderDeckWork(){
     const dkCard = (x, cls) => `<div class="codex-card deck-drag-card ${cls} ${rarCls(x.e.rar)}" data-idx="${x.i}" data-key="${x.k}">${deckTileHtml(x.e, 0)}</div>`;
     const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack${g[1] ? ' pile' : ''}">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
       : '<div class="deck-right-empty">Glisse tes cartes ici</div>';
+    const dkSig = deckTab + '|' + deckFilter + '|' + deckSort + '|' + deckSearchQuery;
+    if(!modMode && list.length && work._dkSplit && work._dkSplit === work.firstElementChild && work._dkSig === dkSig && deckFastRender(work, list, n)){
+      requestAnimationFrame(() => { work.style.minHeight = ''; });
+      window.deckFitSoon();
+      return;
+    }
+    const remBy = {}; list.forEach(x => { remBy[x.key] = x.rem; });
     work.innerHTML = `<div class="deck-split">
       <div id="deckLeft"><div class="${modMode ? 'mod-grid deck-mod-grid' : 'codex-grid'}">${leftHtml}</div></div>
       <div id="deckRight">${deckModSlotHtml()}<div class="deck-count${n === DECK_SIZE ? ' full' : ''}" id="deckCount">${n} / ${DECK_SIZE}</div>${rightHtml}</div>
@@ -14977,6 +15058,7 @@ function renderDeckWork(){
       const e = sqEntry(el.dataset.key);
       if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
       deckAttachDrag(el, 'list', el.dataset.key);
+      el._rem = remBy[el.dataset.key];
     });
     work.querySelectorAll('#deckRight .deck-drag-card').forEach(el => {   // pile : devant ET derrière
       const e = sqEntry(el.dataset.key);
@@ -14996,6 +15078,8 @@ function renderDeckWork(){
       if(pile && !stk.classList.contains('open')){ openDeckPile(stk); return; }
       if(pile && !full){ closeDeckPile(); return; }   // pile ouverte, deck incomplet : toucher la referme
     }));
+    work._dkSplit = work.firstElementChild; work._dkSig = dkSig; work._dkPool = new Map();
+    window.deckFitSoon(); setTimeout(window.deckFitSoon, 550);   // 2e passage : l'écran finit son fondu d'ouverture
   }
   requestAnimationFrame(() => { work.style.minHeight = ''; });
 }
@@ -15261,7 +15345,7 @@ function deckAttachDrag(el, from, ref){
     cleanup();
     if(!was || !commit) return;
     if(from === 'list'){ if(inside) deckAddCard(ref); }
-    else if(!inside) deckRemoveCard(ref);
+    else if(!inside) deckRemoveCard(+el.dataset.idx);
   };
   el.addEventListener('pointerup', e => finish(e, true));
   el.addEventListener('pointercancel', e => finish(e, false));
@@ -18495,7 +18579,8 @@ function btlEndTap(){
 async function btlTurn(side){
   BTL.turn++; BTL.side = side; BTL.phase = 'banner';
   const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1);   // V0.04.61 : 1 mana chacun au départ (J1 puis J2), puis +1 tous les 2 tours (même rythme pour les deux camps)
-  BTL.cap[side] = BTL.mana[side] = cap;
+  const bonus = BTL.turn === 2 ? 1 : 0;   // V0.04.83 : le joueur qui ne commence pas a 1 mana de plus à son premier tour (compense l'avantage du 1er joueur)
+  BTL.cap[side] = BTL.mana[side] = cap + bonus;
   btlRenderMana();
   await btlTurnFx(side);
   if(!await btlDraw(side)){ await btlFatigue(side); if(BTL.over || BTL.abort) return; }
@@ -26081,7 +26166,8 @@ function saveProgress(sv){
   const p = sv.player, t = p.totals || {}, st = p.stats || {};
   // lastHiddenAt est un horodatage (Date.now()), pas une statistique de progression :
   // il ne doit jamais entrer dans le score (sinon un timestamp récent écrase un vrai niveau élevé).
-  const stats = Object.keys(st).reduce((a, k) => k === 'lastHiddenAt' ? a : a + (+st[k] || 0), 0);
+  const SKIP_ST = { lastHiddenAt:1, kills:1, missions:1, collects:1, mono:1 };   // horodatage + anciens compteurs supprimés au chargement (normalizePlayerExtras)
+  const stats = Object.keys(st).reduce((a, k) => SKIP_ST[k] ? a : a + (+st[k] || 0), 0);
   const cards = Object.values(sv.cardCopies || {}).reduce((a, c) => a + Object.values(c || {}).reduce((x, y) => x + (+y || 0), 0), 0);
   return (p.level || 1) * 1e9 + (t.gold || 0) + (t.xp || 0) + stats * 10 + cards;
 }
@@ -26183,6 +26269,7 @@ async function connectCloud(){
     if(best && best !== local){
       applySave(best);
       writeLocalSave(best);
+      try{ cloud.remoteProgress = Math.min(cloud.remoteProgress, saveProgress(serializeSave())); }catch(_){}   // V0.04.83 : le chargement peut normaliser des données ; on ne se bloque jamais sur un score que l'état chargé ne peut pas atteindre
     }
     // Si la fenêtre obligatoire (compte -> nom) est en cours, c'est elle qui pilote les étapes :
     // on ne referme/débloque pas la fenêtre depuis ici pour ne pas sauter l'étape du nom.
