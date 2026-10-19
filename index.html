@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.84</title>
+<title>Projet MECA V0.04.86</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7180,6 +7180,13 @@
     background:radial-gradient(120% 70% at 50% 50%, #1d2c48 0%, #0d1424 58%, #070a12 100%);
     touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; font-family:var(--font-ui);
   }
+  .btl::before{
+    content:""; position:absolute; inset:0; z-index:0; pointer-events:none; box-sizing:border-box;
+    --mb-w:min(100vw, 520px);
+    border-style:solid; border-color:transparent;
+    border-width:calc(var(--mb-w) * 200 / 986) 0 calc(var(--mb-w) * 255 / 986) 0;
+    border-image:url("https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-08892f3d5b04.webp") 200 0 255 0 fill / calc(var(--mb-w) * 200 / 986) 0 calc(var(--mb-w) * 255 / 986) 0 stretch;
+  }
   .btl *{ -webkit-tap-highlight-color:transparent; }
   .btl-top{ position:relative; flex:1 1 0; }
   .btl-bottom{ position:relative; flex:1 1 0; margin-top:80px; }   /* V0.04.61 : champ de bataille remonté de 40px */
@@ -7666,11 +7673,12 @@
 .btl .btl-slot.leader{ aspect-ratio:1312/1199; background:none; box-shadow:none; border-radius:0; }
 .btl .btl-slot.leader::before{ display:none; }
 .btl .unit.cbt.chief{ aspect-ratio:auto; width:100%; height:100%; --cbt-img:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-b451c68f1f8c.webp);
-  filter:drop-shadow(0 .6cqw .9cqw rgba(0,0,0,.55)); }
+  translate:0 -5%; filter:drop-shadow(0 .7cqw .9cqw rgba(0,0,0,.2)); }
 .btl .unit.cbt.chief .cbt-ring{ z-index:2; background:var(--cbt-img) center/100% 100% no-repeat; }
 .btl .unit.cbt.chief .chief-fill{ position:absolute; inset:0; z-index:0; pointer-events:none;
   clip-path:polygon(50% 3%, 97.5% 39%, 77% 97%, 23% 97%, 2.5% 39%);
   background:radial-gradient(ellipse 60% 55% at 50% 42%, rgba(70,96,130,.34), rgba(10,14,22,.82) 78%); }
+.btl .unit.cbt.chief .chief-fill.has-art{ background-image:var(--ca); background-size:cover; background-position:50% 18%; background-repeat:no-repeat; }
 .btl .unit.cbt.chief .cbt-st.s2{ left:33.6%; top:77.6%; width:12.3%; height:13.8%; }
 .btl .unit.cbt.chief .cbt-st.s4{ left:54%; top:77.6%; width:12.3%; height:13.8%; }
 
@@ -8266,7 +8274,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.84</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.86</b></div>
   </div>
 
     </div>
@@ -8536,9 +8544,16 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.84';
+var BUILD_VERSION = 'V0.04.86';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.86', items:[
+    'Musique de fond en boucle sur tous les écrans, coupée en combat (Bataille et Défi) avec un fondu, volume réglable dans les options.',
+  ] },
+  { v:'V0.04.85', items:[
+    'Combat (Bataille et Défi) : nouveau fond d\'écran métallique.',
+    'Combat : l\'illustration du chef d\'escouade remplit sa case (plus de partie noire), la case est légèrement surélevée avec une ombre plus claire.',
+  ] },
   { v:'V0.04.84', items:[
     'Deck : fabriquer une carte, chercher, filtrer et revenir à la liste ne reconstruisent plus toutes les cartes (fabrication presque instantanée).',
     'Deck : à l\'ouverture d\'un nouveau deck ou de FABRIQUER, les premières cartes s\'affichent tout de suite, le reste arrive juste après.',
@@ -10135,6 +10150,41 @@ var ECO = { idleMs: 6000, last: Date.now(), idle: false, paused: [] };
 function ecoOn(){ return !SETTINGS || SETTINGS.eco !== false; }
 function ecoIdle(){ return ecoOn() && ECO.idle; }
 function ecoInBattle(){ return document.body.classList.contains('btl-on'); }
+var MUSIC_URL = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/audio/Musique%20Principale.mp3';
+var MUS = { ctx:null, gain:null, src:null, buf:null, busy:false, failAt:0, susp:0 };
+function musWanted(){ return !document.hidden && !document.body.classList.contains('btl-on') && (SETTINGS.music || 0) > 0; }
+function musVol(){ return Math.max(0, Math.min(1, (SETTINGS.music || 0) / 100)) * 0.8; }
+function musSync(){
+  const m = MUS; if(!m.ctx || !m.gain) return;
+  const want = musWanted(), t = m.ctx.currentTime;
+  clearTimeout(m.susp);
+  m.gain.gain.cancelScheduledValues(t);
+  if(want){
+    if(m.ctx.state === 'suspended') m.ctx.resume().catch(() => {});
+    m.gain.gain.setTargetAtTime(musVol(), t, .6);
+  } else {
+    m.gain.gain.setTargetAtTime(0, t, document.hidden ? .05 : .3);
+    m.susp = setTimeout(() => { if(!musWanted() && m.ctx.state === 'running') m.ctx.suspend().catch(() => {}); }, 2500);   // plus de calcul audio quand on n'entend rien
+  }
+}
+async function musStart(){
+  const m = MUS; if(m.src || m.busy || Date.now() - m.failAt < 60000) return;
+  m.busy = true;
+  try{
+    if(!m.ctx){
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      m.ctx = new AC(); m.gain = m.ctx.createGain(); m.gain.gain.value = 0; m.gain.connect(m.ctx.destination);
+      m.ctx.resume().catch(() => {});
+    }
+    if(!m.buf){ const r = await fetch(MUSIC_URL); if(!r.ok) throw new Error('musique ' + r.status); m.buf = await m.ctx.decodeAudioData(await r.arrayBuffer()); }
+    const so = m.ctx.createBufferSource(); so.buffer = m.buf; so.loop = true; so.connect(m.gain); so.start(0); m.src = so;
+    musSync();
+  }catch(e){ m.failAt = Date.now(); }
+  finally{ m.busy = false; }
+}
+['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if(MUS.src){ if(MUS.ctx.state === 'suspended' && musWanted()) musSync(); } else musStart(); }, { capture:true, passive:true }));
+document.addEventListener('visibilitychange', musSync);
+new MutationObserver(musSync).observe(document.body, { attributes:true, attributeFilter:['class'] });
 function ecoPruneLoops(){   // V0.04.61 : ECO.paused retenait des animations (donc leurs éléments, ex. flèches de bataille supprimées) jusqu'au prochain toucher -> fuite mémoire
   if(!ECO.paused.length) return;
   ECO.paused = ECO.paused.filter(a => { try{ const t = a.effect && a.effect.target; return !!(t && t.isConnected && a.playState === 'paused'); }catch(_){ return false; } });
@@ -17426,7 +17476,7 @@ async function btlUltEnd(side){
 function btlFmtN(n){ n = Math.max(0, Math.round(n)); return n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n); }
 function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class="cbt-st ' + cls + '"><b class="' + (L >= 4 ? 'l4' : L === 2 ? 'l2' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
 function btlSmallHtml(c){
-  if(c.leader) return '<div class="unit cbt chief"><i class="chief-fill"></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>';   // case pentagonale du chef : DEF à gauche, PV à droite, centre vide (artwork plus tard)
+  if(c.leader){ const ca = c.def && c.def.art ? c.def.art.replace(/[()\s'"]/g, ch => encodeURIComponent(ch)) : ''; return '<div class="unit cbt chief"><i class="chief-fill' + (ca ? ' has-art' : '') + '"' + (ca ? ' style="--ca:url(' + ca + ')"' : '') + '></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>'; }   // case pentagonale du chef : illustration du chef dans la case (V0.04.85), DEF à gauche, PV à droite
   const art = winArt(c.def), af = winFocus(c.def);
   return '<div class="unit cbt f-' + c.rar + (c.ultOn ? ' ult-on' : btlUltReady(c) ? ' ult-rdy' : '') + btlCanCls(c) + '">' +
     '<div class="cbt-flame"></div><div class="cbt-can"></div>' +
@@ -24432,7 +24482,7 @@ function btlPlateGen(G, dpr){
       c.fillStyle = carbP; c.globalAlpha = o.carbon === true ? 1 : o.carbon; c.fillRect(X0, Y0, XW, YH); c.globalAlpha = 1;
       const g = c.createLinearGradient(0, bb[1], 0, bb[3]); g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(.3, 'rgba(0,0,0,.05)'); g.addColorStop(1, 'rgba(0,0,0,.3)'); c.fillStyle = g; c.fillRect(X0, Y0, XW, YH);
     }
-    c.shadowColor = 'rgba(0,0,0,.95)'; c.shadowBlur = (o.ish || 3) * S; c.shadowOffsetX = 1 * S; c.shadowOffsetY = 1.5 * S; c.strokeStyle = '#000'; c.lineWidth = 4; path(p); c.stroke();
+    c.shadowColor = 'rgba(0,0,0,' + (o.sh == null ? .95 : o.sh) + ')'; c.shadowBlur = (o.ish || 3) * S; c.shadowOffsetX = 1 * S; c.shadowOffsetY = 1.5 * S; c.strokeStyle = o.sh == null ? '#000' : 'rgba(0,0,0,' + o.sh + ')'; c.lineWidth = 4; path(p); c.stroke();
     c.restore();
     c.save(); path(p); c.clip(); bevel(p, { w: o.w || 1.5, rec: true, hi: .8, lo: .9, fade: .15 }); c.restore();
     c.strokeStyle = 'rgba(1,2,4,.95)'; c.lineWidth = .9; path(p); c.stroke();
@@ -24563,7 +24613,7 @@ function btlPlateScene(K, G){
     Po(rr(mod.x - 1, mod.y - 1, mod.w + 2, mod.h + 2, 2, 2), { fill: '#0a1019', ish: 2.5 });
     [[-2.7, -2.7], [mod.w + 2.7, -2.7], [-2.7, mod.h + 2.7], [mod.w + 2.7, mod.h + 2.7]].forEach(d => B(mod.x + d[0], mod.y + d[1], 1.5));
     const ld = G.leaders.find(l => l.s === (haut ? 'o' : 'p'));   // le pentagone pointe vers le haut des deux côtés (pas de miroir pour le joueur)
-    pocket([[.5, 0], [1, .38], [.79, 1], [.21, 1], [0, .38]].map(q => [ld.x - 1 + q[0] * (ld.w + 2), ld.y - 2 + q[1] * (ld.h + 4)]), { fill: '#091019', ish: 3, w: 1.6 });
+    pocket([[.5, 0], [1, .38], [.79, 1], [.21, 1], [0, .38]].map(q => [ld.x - 1 + q[0] * (ld.w + 2), ld.y - 2 - ld.h * .05 + q[1] * (ld.h + 4)]), { fill: '#3a434f', ish: 2.2, w: 1.2, sh: .3 });
     Po([[77, 26.5], [88, 26.5], [92, 32], [100.5, 47], [100.5, 72], [94, 72], [77, 56]], CARB);
     Po([[78.6, 57.8], [92.4, 70.7], [90.6, 72.7], [76.8, 59.7]], { fill: haut ? '#0b0608' : '#06090e', ish: .9, w: .9 });
     Tu([[79.6, 60.4], [90.2, 70.3]], .75);
@@ -26920,7 +26970,7 @@ document.getElementById('helpModal').addEventListener('click', e => { if(e.targe
 document.querySelectorAll('#optTheme button').forEach(b => b.onclick = () => { SETTINGS.theme = b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optFps button').forEach(b => b.onclick = () => { SETTINGS.fps = +b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optEco button').forEach(b => b.onclick = () => { SETTINGS.eco = b.dataset.v === '1'; saveSettings(); renderOptions(); ecoWake(); });
-document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); };
+document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); if(MUS.src) musSync(); else musStart(); };
 document.getElementById('optVfx').oninput = e => { SETTINGS.vfx = +e.target.value; saveSettings(); renderOptions(); };
 document.getElementById('optExportBtn').onclick = exportSaveFile;
 document.getElementById('optImportBtn').onclick = openImportChooser;
