@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.88</title>
+<title>Projet MECA V0.04.89</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3383,6 +3383,32 @@
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut)); }
   #deckView .deck-switch button.on{color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.34) 0%, transparent 42%), linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);}
   #deckLeft .deck-mod-grid{grid-template-columns:1fr; gap:10px; padding:4px 0 10px;}
+  #deckView .deck-switch{grid-template-columns:1fr 1fr 1.3fr;}
+  #deckView .deck-switch button[data-t="backs"]{font-size:9.5px; letter-spacing:1px; padding:11px 4px;}
+  #deckView.deck-tab-backs .deck-tools{display:none;}
+  .dk-back-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; padding:14px 2px 10px;}
+  .dk-back-grid.mod{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .deck-split #deckLeft .dk-back-grid{grid-template-columns:repeat(2,minmax(0,1fr)); padding:4px 0 10px; gap:10px 6px;}
+  .deck-split #deckLeft .dk-back-grid.mod{grid-template-columns:1fr;}
+  .dk-back{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; -webkit-tap-highlight-color:transparent; min-width:0;}
+  .dk-back .bk-img{position:relative; width:100%; aspect-ratio:195/272; display:flex; align-items:center; justify-content:center;}
+  .dk-back.mod .bk-img{aspect-ratio:900/506;}
+  .dk-back img{width:100%; height:100%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.55)); pointer-events:none;}
+  .dk-back.lock img{filter:grayscale(1) brightness(.32) contrast(.9);}
+  .dk-back .bk-lock{position:absolute; left:50%; top:50%; width:30%; transform:translate(-50%,-50%); color:rgba(255,255,255,.8); filter:drop-shadow(0 1px 3px rgba(0,0,0,.8));}
+  .dk-back .bk-lock svg{width:100%; height:auto; display:block;}
+  .dk-back.sel .bk-img::after{content:''; position:absolute; inset:-3px; border:2px solid #ffd978; border-radius:10px; box-shadow:0 0 16px rgba(255,200,74,.55); pointer-events:none;}
+  .dk-back .bk-ok{position:absolute; right:-2px; top:-4px; width:20px; height:20px; border-radius:50%; background:#ffd978; color:#3a2a00; font-size:12px; line-height:20px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.6);}
+  .dk-back small{font-family:var(--font-title); font-weight:900; font-size:9px; letter-spacing:1.2px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.7); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .deck-mod-vit, .deck-tile .deck-empty{aspect-ratio:900/506;}
+  .deck-mod-vit{width:100%; display:flex; align-items:center; justify-content:center; pointer-events:none;}
+  .deck-mod-vit .mod-card{width:100%;}
+  .deck-tile.editing .deck-mod-vit .mod-card{outline:2px solid #4d94ff; border-radius:6px;}
+  #batailleList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #5dffa0; border-radius:6px; box-shadow:0 0 16px rgba(93,255,160,.55);}
+  #defiDeckList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #b08cff; border-radius:6px; box-shadow:0 0 16px rgba(176,140,255,.6);}
+  .br-bwin{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-radius:10px; background:radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), #0c0a14 75%);}
+  .br-bwin img{width:86%; height:70%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
+  .br-bwin b{font-family:var(--font-title); font-size:9px; letter-spacing:1.2px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8);}
   .deck-mod-grid .mod-card.deck-mod-sel{box-shadow:0 0 0 2px #ffd978, 0 0 16px rgba(255,200,74,.55); border-radius:6px;}
   .deck-mod-slot{flex:none; margin:6px 0 0;}
   .deck-mod-slot .mod-card{cursor:pointer;}
@@ -7838,17 +7864,7 @@
               <div class="mt-sub">Les cartes de la Fabrique</div>
             </div>
           </div>
-          <div class="mode-tile labo s-b" id="tileFabLabo">
-            <div class="mt-inner">
-              <span class="notif-dot tile-dot" id="dotFabLabo"></span>
-              <div class="mt-labo-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-labo.webp" alt="" onerror="this.style.opacity='0'"></div>
-              <div class="mt-title">LABO</div>
-              <div class="mt-sub">Les modules de la Fabrique</div>
-            </div>
-          </div>
-        </div>
-        <div class="mode-row">
-          <div class="mode-tile boost s-c" id="tileFabBoost">
+          <div class="mode-tile boost s-b" id="tileFabBoost">
             <div class="mt-inner">
               <span class="notif-dot tile-dot" id="dotFabBoost"></span>
               <div class="mt-boost-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-boost.webp" alt="" onerror="this.style.opacity='0'"></div>
@@ -7856,16 +7872,16 @@
               <div class="mt-sub">Boîtes de butin aléatoire</div>
             </div>
           </div>
-          <div class="mode-tile shop s-d" id="tileFabShop">
+        </div>
+        <div class="mode-row">
+          <div class="mode-tile shop s-c" id="tileFabShop">
             <div class="mt-inner">
               <div class="mt-shop-ico"><img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-shop.webp" alt="" onerror="this.style.opacity='0'"></div>
               <div class="mt-title">BOUTIQUE</div>
               <div class="mt-sub">Offres à venir</div>
             </div>
           </div>
-        </div>
-        <div class="mode-row">
-          <div class="mode-tile soon s-big">
+          <div class="mode-tile soon s-d">
             <div class="mt-inner">
               <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
               <div class="mt-soon">PROCHAINEMENT</div>
@@ -8024,7 +8040,7 @@
             <button type="button" class="sh-step-btn" id="shopBoostCardsMinus" aria-label="Diminuer">−</button>
           </div>
         </div>
-        <div class="tr-row shop-row boost-modules">
+        <div class="tr-row shop-row boost-modules" hidden style="display:none">
           <div class="sh-medal" id="shopBoostModulesIcon"></div>
           <div class="tr-body">
             <div class="sh-xp-amt" id="shopBoostModulesAmt">1 <small>CARTES MODULES</small></div>
@@ -8274,7 +8290,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.88</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.89</b></div>
   </div>
 
     </div>
@@ -8336,7 +8352,7 @@
       </details>
       <div class="deck-acts" id="deckActs"><button type="button" class="codex-tool-btn create" id="deckCreateToggle">FABRIQUER</button><button type="button" class="codex-tool-btn destroy" id="deckDestroyToggle">DÉTRUIRE</button></div>
       <div class="deck-draft-bar" id="deckDraftBar" hidden></div>
-      <div class="deck-switch" id="deckSwitch"><button type="button" data-t="cards" class="on">CARTES</button><button type="button" data-t="modules">MODULES</button></div>
+      <div class="deck-switch" id="deckSwitch"><button type="button" data-t="cards" class="on">CARTES</button><button type="button" data-t="modules">MODULES</button><button type="button" data-t="backs">DOS DE CARTES</button></div>
       <div class="codex-tools deck-tools">
         <details class="codex-filter" id="deckFilterDetails">
           <summary>FILTRES</summary>
@@ -8544,9 +8560,15 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.88';
+var BUILD_VERSION = 'V0.04.89';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.89', items:[
+    'Modules : le LABO est fermé. Tous les joueurs possèdent tous les modules (1 exemplaire de chacun, sans rareté) et choisissent librement celui de leur deck. Les boosters modules disparaissent (les anciens deviennent des boosters cartes).',
+    'Dos de cartes : nouveau bouton DOS DE CARTES dans DECK. Chaque deck a son dos pour les cartes et son dos pour le module. Le dos choisi est celui de la pile en combat et des cartes cachées du booster (celui du premier deck). La vitrine d\'un deck est maintenant son module.',
+    'Dos à gagner : 5 % des boosters ressources contiennent un dos de carte (épique, légendaire ou écarlate ; module : épique ou légendaire). Un dos obtenu ne retombe plus. Le dos holographique s\'obtient avec le trophée « Maître de l\'ultimate » : terminer complètement 5 défis en mode ultimate.',
+    'Combat : l\'adversaire joue avec un deck totalement aléatoire ; deux cartes détruites en même temps s\'effondrent ensemble ; le son de pose se joue quand la carte se pose vraiment ; les cartes de la pioche glissent sous la plaque au lieu de la traverser.',
+  ] },
   { v:'V0.04.88', items:[
     'Sons des cartes obtenues : le son de la rareté (épique, légendaire, écarlate, holographique) se joue quand la carte s\'affiche en grand après un achat ou un tirage de la Fabrique, et quand une carte de booster est dévoilée.',
     'Combat : quand une carte passe en ultimate, ses flammes d\'attaque deviennent orange au lieu de rouges.',
@@ -8728,7 +8750,7 @@ var CHANGELOG = [
     'DESTRUCTION : rare 5 matériaux rares, épique 10 épiques, légendaire 20 légendaires, écarlate 40 légendaires, holographique 100 légendaires. Les cartes holographiques sont maintenant destructibles.',
     'BOUTIQUE : nouveaux prix des matériaux (rare 14 or, épique 42, légendaire 112,5 l\'unité ; 40 légendaires = 4 500 or).',
     'DECK : un module est obligatoire pour valider un deck.',
-    'MODULES : le texte de l\'effet s\'affiche dans l\'encadré sous le nom sur toutes les cartes modules (liste, deck, labo, fiche).',
+    'MODULES : le texte de l\'effet s\'affiche dans l\'encadré sous le nom sur toutes les cartes modules (liste, deck, fiche).',
   ] },
   { v:'V0.04.55', items:[
     'DECK, onglet MODULES : encadré RECHERCHER et bouton FILTRES (classement par rareté ou A-Z) comme pour les cartes.',
@@ -8749,7 +8771,7 @@ var CHANGELOG = [
   ] },
   { v:'V0.04.52', items:[
     'CARTES : les grandes cartes reprennent les couleurs des petites : ATQ en gris, DEF en bleu, PV en rouge.',
-    'TAUX DE DROP : TIRAGE et boosters cartes mechs : rare 75 %, épique 15 %, légendaire 5 %, écarlate 4 %, holographique 1 %. LABO et boosters modules : rare 85 %, épique 10 %, légendaire 5 %. Les boosters gardent au moins une carte ou un module épique dans le dernier emplacement.',
+    'TAUX DE DROP : TIRAGE et boosters cartes mechs : rare 75 %, épique 15 %, légendaire 5 %, écarlate 4 %, holographique 1 %. Les boosters cartes gardent au moins une carte épique dans le dernier emplacement.',
   ] },
   { v:'V0.04.51', items:[
     'BATAILLE : nouvel encadré WINSTREAK au-dessus du choix du deck. 5 points (gemmes dorées) qui s\'allument à chaque victoire d\'affilée, avec le montant d\'or gagné gravé dedans. Une défaite (ou un combat quitté) remet la série à 0.',
@@ -10044,13 +10066,11 @@ var TUT_STEPS = [
     mock: () => tutIconFrom('#tileFabTirage .mt-tirage-ico', 'green') },
   { title:'DECK', text:'Dans l\'onglet CARTE, la case DECK te permet de composer tes decks de 20 cartes avec leur module, de fabriquer des cartes avec des matériaux et de détruire celles dont tu n\'as plus besoin.',
     mock: () => tutIconFrom('#tileDeck .mt-deck-ico', 'green') },
-  { title:'LES MODULES', text:'Une carte module n\'est pas un mech : c\'est une capacité de ton deck, que tu déclenches une fois par tour contre du mana (soin, dégâts, pioche…). Chaque deck en possède une, à choisir dans l\'onglet MODULES du DECK.',
+  { title:'LES MODULES', text:'Une carte module n\'est pas un mech : c\'est une capacité de ton deck, que tu déclenches une fois par tour contre du mana (soin, dégâts, pioche…). Tous les modules sont à toi : choisis-en un par deck, dans l\'onglet MODULES du DECK.',
     mock: tutModuleMock },
-  { title:'LA LABO', text:'Obtiens des cartes module à la Fabrique, dans la case LABO, puis gère ta collection dans DECK, onglet MODULES.',
-    mock: () => tutIconFrom('#tileFabLabo .mt-labo-ico', 'blue') },
   // V0.02.93, demande d'Alex : "rajoute le principe des booster dans le tutoriel" -- juste après LA LABO,
   // fin du groupe d'étapes consacré à la Fabrique, comme les autres cases de ce hub ci-dessus.
-  { title:'LES BOOSTERS', text:'La case BOOSTERS de la Fabrique garde les boosters ressources, cartes mechs et cartes modules que tu obtiens en jeu : glisse-en un sur le socle pour l\'ouvrir et révéler 5 récompenses d\'un coup.',
+  { title:'LES BOOSTERS', text:'La case BOOSTERS de la Fabrique garde les boosters ressources et cartes mechs que tu obtiens en jeu : glisse-en un sur le socle pour l\'ouvrir et révéler 5 récompenses d\'un coup.',
     mock: () => tutIconFrom('#tileFabBoost .mt-boost-ico', 'amber') },
   { title:'LES RARETÉS', text:'Rare, épique, légendaire… Qui sait, il existe peut-être quelque part des cartes encore plus rares que légendaire.',
     mock: tutRaretesMock },
@@ -11196,6 +11216,9 @@ function normalizePlayerExtras(){
   // une sauvegarde qui a DÉJÀ un champ boosters garde son propre compte, rien n'est réinitialisé ici :
   // seule une sauvegarde n'ayant JAMAIS eu de boosters reçoit ce 0 par défaut).
   player.boosters = Object.assign({ res:0, cards:0, modules:0 }, player.boosters || {});
+  // V0.04.89 : dos de cartes possédés (le dos RARE est offert, pour les cartes comme pour les modules)
+  player.backs = Object.assign({}, player.backs || {});
+  ['card', 'mod'].forEach(k => { player.backs[k] = Object.assign({}, player.backs[k] || {}); player.backs[k].rare = true; });
   delete player.raid;   // BOSS DE RAID supprimé (V0.04.72) : on nettoie les anciennes sauvegardes
   // DÉFI (V0.03.47, demande d'Alex) : progression par carte -- player.defi[nom] = nombre de paliers
   // déjà remportés (0-50, cf DEFI_TIERS). Object.assign comble les champs manquants sur une sauvegarde
@@ -11220,9 +11243,9 @@ function cardHasNotif(def){ return !def.seen || !!notif.cards[def.name]; }
 function setDot(id, on){ const el = document.getElementById(id); if(el) el.classList.toggle('on', !!on); }
 // Pastille de mission : uniquement quand CETTE mission est terminée et que ses récompenses attendent d'être collectées
 function renderNotifs(){
-  setDot('dotFab', notif.fab || notif.lab);
+  notif.lab = false;
+  setDot('dotFab', notif.fab);
   setDot('dotFabTirage', notif.fab);   // même signal, sur la case du hub FABRIQUE (depuis V0.01.69, l'onglet s'ouvre d'abord sur ce hub)
-  setDot('dotFabLabo', notif.lab);     // même principe, pour la case LABO (V0.02.62)
   setDot('dotPlayer', notif.player);
   
   if(typeof renderRewardDots === 'function') renderRewardDots();
@@ -11411,7 +11434,14 @@ function modKey(name, rar){ return name + '|' + rar; }
 // jour) est géré séparément, cf player.prokIemGift et son attribution dans bootSave() plus bas --
 // PAS ici, puisque ce bloc ne s'exécute qu'à l'initialisation du script, avant qu'une éventuelle
 // sauvegarde existante (qui a droit au même cadeau une fois) ne soit restaurée par applySave().
-MODULE_DEFS.forEach(d => { moduleCopies[d.name] = emptyStack(); });
+// V0.04.89 : les modules n'ont plus de rareté ni de niveau et ne s'obtiennent plus : chaque joueur en possède exactement 1 exemplaire de chaque (réimposé à chaque chargement).
+function modForceAll(){
+  MODULE_DEFS.forEach(d => {
+    const st = emptyStack(); st[d.rarity || 'rare'] = 1; moduleCopies[d.name] = st;
+    RARITY_ORDER.forEach(r => { delete moduleLevelDist[modKey(d.name, r)]; delete modulePlayerLevels[modKey(d.name, r)]; });
+  });
+}
+modForceAll();
 function modStackCount(name, r){ return (moduleCopies[name] && moduleCopies[name][r]) || 0; }
 // Total de modules possédés, toutes sortes et raretés confondues (V0.02.99, demande d'Alex -- cf
 // TASK_POOL plus bas, tâche 'moddest') : utilisé pour ne jamais proposer la tâche "détruire un module"
@@ -11433,6 +11463,7 @@ function modOwnedStacks(){
 // mission VESTIGE). Même principe : capture modLevelDist() AVANT d'incrémenter moduleCopies pour que
 // le nouvel exemplaire entre bien au niveau 1, sans toucher aux exemplaires déjà possédés.
 function acquireModule(def, rar){
+  return;   // V0.04.89 : plus aucun module à obtenir (tous les joueurs les ont tous)
   rar = rar || def.rarity;
   const d = modLevelDist(def.name, rar);
   moduleCopies[def.name][rar] = (moduleCopies[def.name][rar] || 0) + 1;
@@ -13762,7 +13793,7 @@ renderLab();
 // l'ouverture par glisser-déposer tactile vers le socle central, puis révélation à 5 cases disposées en
 // pentagone (même géométrie que teamStarHtml()) qu'on retourne une par une. En attendant cette future
 // case d'achat, phase de test : chaque joueur démarre avec x50 de chaque type (cf player.boosters).
-const BOOST_TYPES = ['res', 'cards', 'modules'];
+const BOOST_TYPES = ['res', 'cards'];   // V0.04.89 : plus de boosters modules
 const BOOST_LABEL = { res:'RESSOURCES', cards:'CARTES MECHS', modules:'CARTES MODULES' };
 // Mêmes teintes que .boost-box.TYPE/.bb-icon (CSS) -- réutilisées en JS pour colorer le coffre de
 // l'animation d'ouverture (--rc/--rc-glow/--rc-tint, cf .bob-chest).
@@ -13840,6 +13871,34 @@ const BOOST_MODULE_BACK = {
   epique: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/module-back-epique.webp',
   legendaire: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/module-back-legendaire.webp'
 };
+// ---------- DOS DE CARTES (V0.04.89) ----------
+// Chaque deck a SON dos pour les cartes classiques (backCard) et SON dos pour le module (backMod). Rare = offert d'office ;
+// épique / légendaire / écarlate : booster RESSOURCES (5 % par booster, même poids que la rareté de la carte) ; holographique : trophée.
+// Un dos obtenu ne retombe plus jamais ; ils ne se détruisent ni ne se fabriquent. Pas de dos module écarlate ni holo.
+const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'holo'], mod:['rare', 'epique', 'legendaire'] };
+const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', holo:'HOLOGRAPHIQUE' };
+const BACK_COLOR = { rare:'#5aa2ff', epique:'#c07dff', legendaire:'#ffae45', ecarlate:'#ff4d6a', holo:'#8ff3ff' };
+const BACK_DROP_CHANCE = 0.05, BACK_DROP_W = { epique:15, legendaire:5, ecarlate:4 };
+function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
+function backSrc(kind, rar){ return (kind === 'mod' ? BOOST_MODULE_BACK : BOOST_CARD_BACK)[rar] || BOOST_CARD_BACK.rare; }
+function deckBack(d, kind){
+  const r = d && (kind === 'mod' ? d.backMod : d.backCard);
+  return (r && BACK_RARS[kind].includes(r) && backOwned(kind, r)) ? r : 'rare';
+}
+function backGive(kind, rar){ player.backs[kind][rar] = true; }
+function rollBackDrop(){
+  if(Math.random() >= BACK_DROP_CHANCE) return null;
+  const pool = [];
+  ['card', 'mod'].forEach(k => BACK_RARS[k].forEach(r => { if(BACK_DROP_W[r] && !backOwned(k, r)) pool.push({ kind:k, rar:r }); }));
+  if(!pool.length) return null;
+  let t = 0; pool.forEach(x => { t += BACK_DROP_W[x.rar]; });
+  let r = Math.random() * t;
+  for(const x of pool){ r -= BACK_DROP_W[x.rar]; if(r < 0) return x; }
+  return pool[pool.length - 1];
+}
+function backWinHtml(res){
+  return '<div class="br-bwin ' + rarCls(res.rar) + '"><img src="' + backSrc(res.bt, res.rar) + '" alt="" draggable="false" onerror="this.style.opacity=\'0\'"><b>DOS ' + (res.bt === 'mod' ? 'MODULE' : 'DE CARTE') + '</b></div>';
+}
 // Préchargement (V0.02.96, migration Supabase Storage) : BOOST_CARD_BACK et BOOST_MODULE_BACK ne sont
 // plus du base64 inline (disponible instantanément, intégré au HTML) mais des URLs Supabase Storage --
 // une image distante doit être téléchargée avant de s'afficher. Ces dos sont montrés DÈS L'OUVERTURE de
@@ -13949,6 +14008,8 @@ function openBoostResources(){
     const kind = rollBoostResource();
     out.push({ kind, amount: boostResourceAmount(kind) });
   }
+  const bk = rollBackDrop();   // V0.04.89 : 5 % de chances qu'une des 5 cases soit un dos de carte
+  if(bk) out[Math.floor(Math.random() * out.length)] = { kind:'back', bt:bk.kind, rar:bk.rar, amount:1 };
   return out;
 }
 // Génère les 5 résultats d'un Booster CARTES MECHS : [{ def, rar }] -- garantie épique+ parmi les 5
@@ -14111,7 +14172,7 @@ function openBoosterFlow(type){
   }
   // Applique tout de suite les gains (rien n'est perdu si la fenêtre est fermée en cours de route).
   if(type === 'res'){
-    results.forEach(r => applyBoostResource(r.kind, r.amount));
+    results.forEach(r => { if(r.kind === 'back') backGive(r.bt, r.rar); else applyBoostResource(r.kind, r.amount); });
   } else if(type === 'cards'){
     results.forEach(r => { acquireCard(r.def, r.rar); addXP(XP_REWARDS.draw); });
   } else {
@@ -14141,10 +14202,10 @@ function openBoosterFlow(type){
   // BOOST_RES_HALO_RAR[res.kind]), le burst reçoit .boom-leg (halo plus grand, pulse plus longtemps, cf
   // CSS) et ses couleurs sont réécrites en orange vif (BOOST_LEGENDARY_COLOR) à la place de la teinte du
   // type.
-  const hasLegendary = results.some(r => (type === 'res' ? BOOST_RES_HALO_RAR[r.kind] : r.rar) === 'legendaire');
+  const hasLegendary = results.some(r => (type === 'res' ? (r.kind === 'back' ? r.rar : BOOST_RES_HALO_RAR[r.kind]) : r.rar) === 'legendaire');
   // V0.03.75 : même traitement "burst spécial" pour une ÉCARLATE (cartes mechs seulement, pas de
   // ressource/module écarlate) -- prioritaire sur légendaire pour le choix de couleur puisque plus rare.
-  const hasEcarlate = type === 'cards' && results.some(r => r.rar === 'ecarlate');
+  const hasEcarlate = results.some(r => r.rar === 'ecarlate');
   const burst = document.createElement('div');
   burst.className = 'boost-open-burst' + ((hasLegendary || hasEcarlate) ? ' boom-leg' : '');
   const col = hasEcarlate ? BOOST_ECARLATE_COLOR : hasLegendary ? BOOST_LEGENDARY_COLOR : (BOOST_TYPE_COLOR[type] || BOOST_TYPE_COLOR.cards);
@@ -14159,10 +14220,10 @@ function openBoosterFlow(type){
   results.forEach((res, i) => {
     const slot = document.createElement('div');
     slot.className = 'br-slot';
-    const halo = type === 'res' ? BOOST_RES_HALO_RAR[res.kind] : res.rar;
+    const halo = type === 'res' ? (res.kind === 'back' ? res.rar : BOOST_RES_HALO_RAR[res.kind]) : res.rar;
     slot.innerHTML = `<div class="br-slot-glow ${rarCls(halo)}"></div>`;
     const content = document.createElement('div');
-    if(type === 'res'){
+    if(type === 'res' && res.kind !== 'back'){
       content.className = 'br-res-case unrevealed ' + rarCls(halo);
       content.innerHTML = `<div class="brc-ico">${BOOST_RES_ICON[res.kind]}</div><div class="brc-amt">+${fmtNum(res.amount)}</div>`;
       content.onclick = () => {
@@ -14177,9 +14238,8 @@ function openBoosterFlow(type){
       // (portrait) pour les cartes -- cf comment sur BOOST_MODULE_BACK plus haut. Holo module absent
       // pour l'instant -> repli sur le dos carte holo (portrait, absorbé par object-fit:contain), pas
       // sur le dos module rare (qui afficherait la mauvaise couleur de rareté).
-      const backImg = type === 'cards'
-        ? (BOOST_CARD_BACK[res.rar] || BOOST_CARD_BACK.rare)
-        : (BOOST_MODULE_BACK[res.rar] || BOOST_CARD_BACK[res.rar] || BOOST_CARD_BACK.rare);
+      // V0.04.89 : le dos montré est celui du PREMIER deck du joueur (rare par défaut), quelle que soit la carte cachée dessous
+      const backImg = BOOST_CARD_BACK[deckBack(decks[0] || null, 'card')] || BOOST_CARD_BACK.rare;
       // V0.02.96, migration Supabase Storage : backImg est maintenant une URL distante (plus du base64
       // inline) -- préchargée dès le lancement (cf preloadBoosterBacks() plus haut) donc normalement déjà
       // en cache, mais onerror masque proprement l'image si le réseau venait à manquer (repli visuel
@@ -14188,7 +14248,7 @@ function openBoosterFlow(type){
       backFace.innerHTML = `<div class="br-back ${rarCls(res.rar)}"><img class="br-back-img" src="${backImg}" alt="" onerror="this.style.opacity='0'"></div>`;
       const frontFace = document.createElement('div');
       frontFace.className = 'br-face front';
-      frontFace.innerHTML = type === 'cards'
+      frontFace.innerHTML = res.kind === 'back' ? backWinHtml(res) : type === 'cards'
         ? (isLgFrame(res.rar) ? lgLayerHtml(res.def, res.rar) : `<div class="fab-card ${rarCls(res.rar)}" style="position:relative; width:100%; height:100%;"><div class="cx-portrait ${catCls(res.def)}">${catEmblem(res.def)}${unitSVG(res.def.color, res.def.shape)}</div><div class="cx-name" style="color:${res.def.color}">${res.def.name}</div>${rarTag(res.rar)}</div>`)
         : `<div class="mod-card ${rarCls(res.rar)}">${modCardFaceHtml(res.def, 1, res.rar)}</div>`;
       card.appendChild(backFace); card.appendChild(frontFace);
@@ -14708,12 +14768,6 @@ function enterFabDraw(){
   if(notif.fab){ notif.fab = false; renderNotifs(); saveSoon(); }
 }
 // Équivalent de enterFabDraw() ci-dessus pour LABO (V0.02.62).
-function enterLabDraw(){
-  document.getElementById('fabHubView').classList.remove('active');
-  document.getElementById('labDrawView').classList.add('active');
-  renderLab();
-  if(notif.lab){ notif.lab = false; renderNotifs(); saveSoon(); }
-}
 function showCodexHub(){
   document.getElementById('resBar').style.display = '';
   document.getElementById('codexHubView').classList.add('active');
@@ -14725,7 +14779,6 @@ function showCodexHub(){
 }
 document.getElementById('tileFabTirage').onclick = enterFabDraw;
 document.getElementById('fabDrawBackBtn').onclick = showFabHub;
-document.getElementById('tileFabLabo').onclick = enterLabDraw;
 document.getElementById('labDrawBackBtn').onclick = showFabHub;
 
 
@@ -14740,9 +14793,15 @@ var deckDraft = null;        // { id|null, name, cards:[] }
 var deckFilter = 'all', deckSort = 'rarity', deckSearchQuery = '';
 var deckModSort = 'rarity';   // classement des modules : 'rarity' ou 'az'
 var deckTab = 'cards';   // V0.04.54 : liste affichée dans l'écran DECK : 'cards' (cartes classiques) ou 'modules'
+var deckBacksMode = false;   // V0.04.89 : bouton DOS DE CARTES -- la liste montre les dos (cartes ou modules selon l'onglet)
 var deckCreateMode = false;   // V0.04.56 : bouton CRÉER de l'écran DECK (fabrication de cartes / modules en matériaux)
 var deckDestroyMode = false;   // V0.04.48 : bouton DÉTRUIRE de l'écran DECK (même fenêtre que GESTION DE CARTE)
 const DECK_SIZE = 20;
+function deckShowcaseHtml(d){
+  const m = deckModuleValid(d.module), def = m && MODULE_DEFS.find(x => x.name === m.name);
+  if(!def) return '<div class="deck-empty"><span>?</span></div>';
+  return `<div class="deck-mod-vit"><div class="mod-card ${rarCls(m.rar)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), m.rar)}</div></div>`;
+}
 function deckKeyName(k){ return String(k).split('|')[0]; }
 function deckCount(cards, key){ let n = 0; cards.forEach(k => { if(k === key) n++; }); return n; }
 function deckNameCount(cards, name){ let n = 0; cards.forEach(k => { if(deckKeyName(k) === name) n++; }); return n; }
@@ -14789,7 +14848,7 @@ function deckPeekOpts(){ return { noLevel:true, noCopies:true, noFav:true, noInf
 
 // --- Navigation ---
 function enterDeckView(){
-  deckDestroyMode = false; deckCreateMode = false; deckTab = 'cards'; hideCraftBar();
+  deckDestroyMode = false; deckCreateMode = false; deckBacksMode = false; deckTab = 'cards'; hideCraftBar();
   deckDraft = null;   // V0.04.16 : on rouvre toujours la case DECK sur la liste de cartes, jamais dans un deck resté ouvert
   // V0.04.16 : recherche, filtre et classement reviennent à zéro à chaque ouverture de la case DECK
   deckFilter = 'all'; deckSort = 'rarity'; deckSearchQuery = '';
@@ -14808,7 +14867,7 @@ function deckDraftDirty(){
   if(!deckDraft) return false;
   if(!deckDraft.id) return true;                       // nouveau deck : tout est à perdre
   const d = decks.find(x => x.id === deckDraft.id);
-  return !d || d.name !== deckDraft.name || d.cards.length !== deckDraft.cards.length || d.cards.some((k, i) => k !== deckDraft.cards[i]);
+  return !d || d.name !== deckDraft.name || d.cards.length !== deckDraft.cards.length || d.cards.some((k, i) => k !== deckDraft.cards[i]) || deckBack(d, 'card') !== deckBack(deckDraft, 'card') || deckBack(d, 'mod') !== deckBack(deckDraft, 'mod') || ((d.module && d.module.name) || '') !== ((deckDraft.module && deckDraft.module.name) || '');
 }
 function deckLeave(){
   if(!deckDraftDirty()){ deckDraft = null; showCodexHub(); return; }
@@ -14856,21 +14915,21 @@ function openDeckNameModal(initial, onOk){
 // --- Actions sur le deck en cours ---
 function deckStartNew(){
   if(deckDraft){ showToast('TERMINE OU ANNULE LE DECK EN COURS'); return; }
-  deckTab = 'cards';
+  deckTab = 'cards'; deckBacksMode = false;
   openDeckNameModal('', name => {
-    deckDraft = { id:null, name, cards:[], leader:null, module:null };
+    deckDraft = { id:null, name, cards:[], leader:null, module:null, backCard:'rare', backMod:'rare' };
     renderDeckView();
   });
 }
 function deckStartEdit(id){
   if(deckDraft){ showToast('TERMINE OU ANNULE LE DECK EN COURS'); return; }
   const d = decks.find(x => x.id === id); if(!d) return;
-  deckTab = 'cards';
+  deckTab = 'cards'; deckBacksMode = false;
   // reprend les cartes encore possédées (une carte détruite depuis ne peut plus rester dans le deck)
   const cards = [];
   d.cards.forEach(k => { if(!deckAddCheck(cards, k)) cards.push(k); });
   const lost = d.cards.length - cards.length;
-  deckDraft = { id:d.id, name:d.name, cards, leader:null, module:deckModuleValid(d.module) };
+  deckDraft = { id:d.id, name:d.name, cards, leader:null, module:deckModuleValid(d.module), backCard:deckBack(d, 'card'), backMod:deckBack(d, 'mod') };
   if(lost > 0) showToast(lost + ' CARTE' + (lost > 1 ? 'S' : '') + ' DU DECK NE SONT PLUS DISPONIBLES');
   document.getElementById('deckPanel').open = false;
   renderDeckView();
@@ -14881,7 +14940,7 @@ function deckAddCard(key){
   if(msg){ showToast(msg); return false; }
   deckDraft.cards.push(key);
   const toMod = deckDraft.cards.length === DECK_SIZE && modOwnedStacks().length > 0;   // 20 cartes : on passe à la liste des modules
-  if(toMod){ deckTab = 'modules'; deckResetSearch(); }
+  if(toMod){ deckTab = 'modules'; deckBacksMode = false; deckResetSearch(); }
   renderDeckView();
   if(toMod && !deckDraft.module) showToast('CHOISIS LE MODULE DU DECK');
   return true;
@@ -14889,7 +14948,7 @@ function deckAddCard(key){
 function deckRemoveCard(idx){
   if(!deckDraft || idx < 0 || idx >= deckDraft.cards.length) return;
   deckDraft.cards.splice(idx, 1);
-  deckTab = 'cards';   // une carte sort du deck : retour à la liste des cartes
+  deckTab = 'cards'; deckBacksMode = false;   // une carte sort du deck : retour à la liste des cartes
   if(deckDraft.leader && !deckDraft.cards.includes(deckDraft.leader)) deckDraft.leader = null;
   renderDeckView();
 }
@@ -14898,11 +14957,11 @@ function deckValidate(){
   // V0.04.56 : un module est désormais obligatoire pour valider un deck
   if(!deckModuleValid(deckDraft.module)){
     deckDraft.module = null;
-    if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); }
+    if(deckTab !== 'modules' || deckBacksMode){ deckTab = 'modules'; deckBacksMode = false; deckResetSearch(); renderDeckView(); }
     showToast(modOwnedStacks().length ? 'CHOISIS D’ABORD LE MODULE DU DECK' : 'UN MODULE EST OBLIGATOIRE : FABRIQUE-EN UN');
     return;
   }
-  const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: null, module: deckModuleValid(deckDraft.module) };
+  const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: null, module: deckModuleValid(deckDraft.module), backCard: deckBack(deckDraft, 'card'), backMod: deckBack(deckDraft, 'mod') };
   const i = decks.findIndex(x => x.id === saved.id);
   if(i >= 0) decks[i] = saved; else decks.push(saved);
   player.stats.deckEdits = (player.stats.deckEdits || 0) + 1;
@@ -14917,7 +14976,7 @@ function deckValidate(){
 // --- Module du deck (V0.04.53) : un module possédé, utilisable une fois par tour pendant la bataille (case entre les deux chefs d'escouade) ---
 function deckModuleValid(m){
   if(!m || typeof m.name !== 'string' || !MODULE_DEFS.some(d => d.name === m.name)) return null;
-  return modStackCount(m.name, m.rar) > 0 ? { name:m.name, rar:m.rar } : null;
+  return { name:m.name, rar:(MODULE_DEFS.find(d => d.name === m.name) || {}).rarity || 'rare' };   // V0.04.89 : tous les modules sont possédés, sans rareté
 }
 function deckCancelDraft(){ deckDraft = null; renderDeckView(); }
 function deckDeleteDraft(){
@@ -14953,8 +15012,7 @@ function renderDeckPanel(){
   _deckResMode = false;
   const editing = deckDraft && deckDraft.id;
   const tiles = decks.map(d => {
-    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
-    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    const card = deckShowcaseHtml(d);
     return `<div class="deck-tile${editing && deckDraft.id === d.id ? ' editing' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('');
   body.innerHTML = tiles + `<div class="deck-tile" id="deckNewSlot"><div class="deck-empty"><span>+</span>NOUVEAU DECK</div></div>`;
@@ -15203,7 +15261,10 @@ function renderDeckWork(){
   const work = document.getElementById('deckWork');
   const keepH = work.offsetHeight; if(keepH) work.style.minHeight = keepH + 'px';
   const stacks = deckListStacks();
-  if(!deckDraft && deckDestroyMode && deckTab === 'modules'){
+  if(!deckDraft && deckBacksMode){
+    work.innerHTML = '<div class="dk-back-grid' + (deckTab === 'modules' ? ' mod' : '') + '" id="deckList">' + deckBackListHtml() + '</div>';
+    work.querySelectorAll('.dk-back').forEach(c => { c.onclick = () => deckPickBack(c.dataset.kind, c.dataset.rar); });
+  } else if(!deckDraft && deckDestroyMode && deckTab === 'modules'){
     const tiles = modLevelSplitStacks(deckModStacks());
     work.innerHTML = '<div class="mod-grid" id="deckList">' + (tiles.map(st => `<div class="mod-item"><div class="mod-card ${rarCls(st.rar)} tool-destroy" data-name="${st.def.name}" data-rar="${st.rar}" data-level="${st.level}">${modCardFaceHtml(st.def, st.level, st.rar)}${st.count > 1 ? `<div class="cx-copy-badge">×${st.count}</div>` : ''}</div></div>`).join('') || '<div class="fab-empty" style="grid-column:1/-1;">Aucun module possédé.</div>') + '</div>';
     work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openModuleDestroyModal(MODULE_DEFS.find(m => m.name === c.dataset.name), c.dataset.rar, parseInt(c.dataset.level, 10)); });
@@ -15244,8 +15305,8 @@ function renderDeckWork(){
   } else {
     const list = stacks.map(st => ({ st, key: sqKey(st.def.name, st.rar) }))
       .map(x => Object.assign(x, { rem: deckRemaining(deckDraft.cards, x.key) })).filter(x => x.rem > 0);
-    const modMode = deckTab === 'modules';
-    const leftHtml = modMode ? deckModListHtml() : (list.slice(0, 24).map(x => `<div class="codex-card deck-drag-card ${rarCls(x.st.rar)}" data-key="${x.key}">${deckTileHtml(x.st, x.rem)}</div>`).join('')
+    const modMode = deckTab === 'modules' || deckBacksMode;
+    const leftHtml = modMode ? (deckBacksMode ? deckBackListHtml() : deckModListHtml()) : (list.slice(0, 24).map(x => `<div class="codex-card deck-drag-card ${rarCls(x.st.rar)}" data-key="${x.key}">${deckTileHtml(x.st, x.rem)}</div>`).join('')
       || `<div class="fab-empty" style="grid-column:1/-1;">${stacks.length ? 'Toutes les cartes de cette liste sont déjà dans le deck.' : 'Aucune carte dans cette catégorie.'}</div>`);
     const n = deckDraft.cards.length;
     const sorted = deckDraft.cards.map((k, i) => ({ k, i, e: sqEntry(k) })).filter(x => x.e)
@@ -15269,7 +15330,7 @@ function renderDeckWork(){
     }
     const remBy = {}; list.forEach(x => { remBy[x.key] = x.rem; });
     work.innerHTML = `<div class="deck-split">
-      <div id="deckLeft"><div class="${modMode ? 'mod-grid deck-mod-grid' : 'codex-grid'}">${leftHtml}</div></div>
+      <div id="deckLeft"><div class="${deckBacksMode ? 'dk-back-grid' + (deckTab === 'modules' ? ' mod' : '') : modMode ? 'mod-grid deck-mod-grid' : 'codex-grid'}">${leftHtml}</div></div>
       <div id="deckRight">${deckModSlotHtml()}<div class="deck-count${n === DECK_SIZE ? ' full' : ''}" id="deckCount">${n} / ${DECK_SIZE}</div>${rightHtml}</div>
     </div>`;
     work.querySelectorAll('#deckLeft .deck-drag-card').forEach(el => {
@@ -15286,6 +15347,7 @@ function renderDeckWork(){
     const lf = document.getElementById('deckLeft');
     work._dkTok = (work._dkTok || 0) + 1;
     if(!modMode && list.length > 24) dkPlaceLate(work, lf.firstElementChild, list.slice(24), dkMkLeft);
+    lf.querySelectorAll('.dk-back').forEach(c => c.addEventListener('click', () => { if(Date.now() - (lf._scrolledAt || 0) < 350) return; deckPickBack(c.dataset.kind, c.dataset.rar); }));
     lf.querySelectorAll('.mod-card').forEach(c => c.addEventListener('click', () => { if(Date.now() - (lf._scrolledAt || 0) < 350) return; deckPickModule(c.dataset.name, c.dataset.rar); }));
     document.getElementById('deckModSlot').addEventListener('click', () => { if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); } });
     const col = document.getElementById('deckRight');
@@ -15318,14 +15380,14 @@ function deckRefreshLeader(){
 }
 function setDeckDestroyMode(on){
   deckDestroyMode = !!on && !deckDraft;
-  if(deckDestroyMode){ deckCreateMode = false; hideCraftBar(); }
+  if(deckDestroyMode){ deckCreateMode = false; hideCraftBar(); deckTab = 'cards'; }
   setTimeout(updateNavBack, 0);
   renderDeckView();
 }
 document.getElementById('deckDestroyToggle').onclick = () => setDeckDestroyMode(!deckDestroyMode);
 function setDeckCreateMode(on){
   deckCreateMode = !!on && !deckDraft;
-  if(deckCreateMode) deckDestroyMode = false;
+  if(deckCreateMode){ deckDestroyMode = false; deckTab = 'cards'; }
   hideCraftBar(); setTimeout(updateNavBack, 0);
   renderDeckView();
 }
@@ -15333,16 +15395,18 @@ document.getElementById('deckCreateToggle').onclick = () => setDeckCreateMode(!d
 function deckRenderSwitch(){
   const sw = document.getElementById('deckSwitch'); if(!sw) return;
   sw.hidden = false;   // V0.04.58 : l'onglet MODULES reste accessible en mode DÉTRUIRE (la destruction des modules se fait ici)
-  sw.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === deckTab));
+  sw.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === 'backs' ? deckBacksMode : b.dataset.t === deckTab));
   document.getElementById('deckView').classList.toggle('deck-tab-mod', deckTab === 'modules' && !deckDestroyMode);
+  document.getElementById('deckView').classList.toggle('deck-tab-backs', deckBacksMode);
 }
-document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => { if(deckTab === b.dataset.t) return; deckTab = b.dataset.t; closeDeckPile(true); const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value){ si.value = ''; si.dispatchEvent(new Event('input', { bubbles:true })); } document.getElementById('deckFilterDetails').open = false; renderDeckView(); });
+document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => { if(b.dataset.t === 'backs'){ deckBacksMode = !deckBacksMode; if(deckBacksMode){ deckDestroyMode = false; deckCreateMode = false; hideCraftBar(); } closeDeckPile(true); document.getElementById('deckFilterDetails').open = false; renderDeckView(); return; }
+  if(deckTab === b.dataset.t){ if(deckBacksMode){ deckBacksMode = false; closeDeckPile(true); renderDeckView(); } return; } deckTab = b.dataset.t; if(deckTab !== 'cards'){ deckDestroyMode = false; deckCreateMode = false; hideCraftBar(); } closeDeckPile(true); const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value){ si.value = ''; si.dispatchEvent(new Event('input', { bubbles:true })); } document.getElementById('deckFilterDetails').open = false; renderDeckView(); });
 // --- Liste des modules (V0.04.54) ---
 function deckModTile(e, sel){
   const lvl = moduleLevel(e.def.name, e.rar);
   return `<div class="mod-item"><div class="mod-card ${rarCls(e.rar)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, e.rar)}${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}</div></div>`;
 }
-function deckResetSearch(){ const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value) si.value = ''; const sc = document.querySelector('#deckView .search-clear'); if(sc) sc.hidden = true; }
+function deckResetSearch(){ deckBacksMode = false; const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value) si.value = ''; const sc = document.querySelector('#deckView .search-clear'); if(sc) sc.hidden = true; }
 function deckModStacks(){
   const q = deckSearchQuery, r = e => tierOf(e.rar);
   const list = modOwnedStacks().filter(e => !q || e.def.name.toLowerCase().includes(q));
@@ -15356,6 +15420,22 @@ function deckModSlotHtml(){
   const m = deckDraft && deckDraft.module, def = m && MODULE_DEFS.find(d => d.name === m.name);
   if(!def) return '<div class="deck-mod-slot empty" id="deckModSlot"><span>MODULE</span></div>';
   return `<div class="deck-mod-slot" id="deckModSlot"><div class="mod-card ${rarCls(m.rar)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), m.rar)}</div></div>`;
+}
+function deckBackListHtml(){
+  const kind = deckTab === 'modules' ? 'mod' : 'card';
+  const cur = deckDraft ? deckBack(deckDraft, kind) : null;
+  return BACK_RARS[kind].filter(r => backOwned(kind, r)).map(r => {   // un dos non débloqué n'apparaît pas dans la liste
+    const own = true, sel = cur === r;
+    const lock = own ? '' : '<span class="bk-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
+    return `<div class="dk-back ${kind}${own ? '' : ' lock'}${sel ? ' sel' : ''}" data-kind="${kind}" data-rar="${r}"><div class="bk-img"><img src="${backSrc(kind, r)}" alt="" draggable="false" onerror="this.style.opacity='0'">${lock}${sel ? '<b class="bk-ok">✓</b>' : ''}</div><small style="color:${BACK_COLOR[r]}">${BACK_LABEL[r]}</small></div>`;
+  }).join('');
+}
+function deckPickBack(kind, rar){
+  if(!deckDraft){ showToast('OUVRE UN DECK POUR CHOISIR SON DOS'); return; }
+  if(!backOwned(kind, rar)){ showToast('DOS NON OBTENU : ' + (rar === 'holo' ? 'TROPHÉE « MAÎTRE DE L’ULTIMATE »' : 'BOOSTERS RESSOURCES')); return; }
+  if(kind === 'mod') deckDraft.backMod = rar; else deckDraft.backCard = rar;
+  renderDeckView();
+  if(navigator.vibrate) try{ navigator.vibrate(10); }catch(_){}
 }
 function deckPickModule(name, rar){
   if(!deckDraft) return;
@@ -15372,7 +15452,7 @@ function renderDeckView(){
   dd.textContent = deckDestroyMode ? 'QUITTER' : 'DÉTRUIRE';
   const cd = document.getElementById('deckCreateToggle');
   cd.classList.toggle('active', deckCreateMode); cd.textContent = deckCreateMode ? 'QUITTER' : 'FABRIQUER';
-  document.getElementById('deckActs').hidden = !!deckDraft;
+  document.getElementById('deckActs').hidden = !!deckDraft || deckTab !== 'cards' || deckBacksMode;
   closeDeckPile(true);
   deckRenderSwitch();
   renderDeckPanel();
@@ -15875,7 +15955,7 @@ function grantReward(rew){
   // "tâche/récompense journalière... un booster aléatoire parmi les 3" -- rew.booster vaut 'res'/'cards'/
   // 'modules', ou 'random' (résolu ici, au moment précis du don, pas à la définition du reward).
   if(rew.booster){
-    const bType = rew.booster === 'random' ? BOOST_TYPES[Math.floor(Math.random() * BOOST_TYPES.length)] : rew.booster;
+    const bType = rew.booster === 'random' ? BOOST_TYPES[Math.floor(Math.random() * BOOST_TYPES.length)] : (rew.booster === 'modules' ? 'cards' : rew.booster);
     const bN = rew.boosterN || 1;
     player.boosters[bType] = (player.boosters[bType] || 0) + bN;
     items.push({ t:'booster', bt:bType, n:bN });
@@ -15896,6 +15976,7 @@ function grantReward(rew){
       items.push({ t:'card', def, rar });
     }
   }
+  if(rew.back){ backGive(rew.back.kind, rew.back.rar); items.push({ t:'back', bk:rew.back.kind, r:rew.back.rar, n:1 }); }
   renderResources();
   if(document.getElementById('codexView').classList.contains('active')) ;
   
@@ -15921,6 +16002,7 @@ function rewardChips(rew, small){
   if(rew.crystal) out.push(`<span class="rw-chip"><i>${ICON_CRYSTAL}</i>${rew.crystal}</span>`);
   if(rew.mat) MAT_ORDER.forEach(r => { if(rew.mat[r]) out.push(`<span class="rw-chip"><i>${matIcon(r)}</i>${rew.mat[r]}</span>`); });
   if(rew.booster) out.push(`<span class="rw-chip"><i>${boostRewardChipIcon(rew.booster)}</i>${rew.boosterN || 1}</span>`);
+  if(rew.back) out.push(`<span class="rw-chip"><i><img src="${backSrc(rew.back.kind, rew.back.rar)}" alt="" style="width:100%;height:100%;object-fit:contain"></i>DOS ${BACK_LABEL[rew.back.rar]}</span>`);
   return out.join('');
 }
 // `opts.actionLabel`/`opts.onAction` (V0.01.89) : permet à un appelant (ex. RÉCOLTER ET RELANCER sur
@@ -15933,9 +16015,9 @@ function showRewardModal(title, items, opts){
   const res = items.filter(i => i.t !== 'card' && i.t !== 'module').map((it, k) => {
     // V0.02.93, demande d'Alex : "ajoute des booster en récompense" -- t:'booster' (cf grantReward()) a
     // sa propre icône dédiée (image réelle du booster, bt déjà résolu à ce stade) et son propre libellé.
-    const ico = it.t === 'gold' ? ICON_GOLD : it.t === 'xp' ? ICON_XP : it.t === 'crystal' ? ICON_CRYSTAL : it.t === 'booster' ? boostRewardChipIcon(it.bt) : matIcon(it.r);
-    const lab = it.t === 'gold' ? 'OR' : it.t === 'xp' ? 'EXPÉRIENCE' : it.t === 'crystal' ? 'CRISTAUX DE FABRICATION' : it.t === 'booster' ? 'BOOSTER ' + BOOST_LABEL[it.bt] : 'MATÉRIAU ' + RARITIES[it.r].label;
-    const showLab = it.t === 'mat' || it.t === 'booster';
+    const ico = it.t === 'gold' ? ICON_GOLD : it.t === 'xp' ? ICON_XP : it.t === 'crystal' ? ICON_CRYSTAL : it.t === 'booster' ? boostRewardChipIcon(it.bt) : it.t === 'back' ? `<img src="${backSrc(it.bk, it.r)}" alt="" style="width:100%;height:100%;object-fit:contain">` : matIcon(it.r);
+    const lab = it.t === 'gold' ? 'OR' : it.t === 'xp' ? 'EXPÉRIENCE' : it.t === 'crystal' ? 'CRISTAUX DE FABRICATION' : it.t === 'booster' ? 'BOOSTER ' + BOOST_LABEL[it.bt] : it.t === 'back' ? 'DOS ' + BACK_LABEL[it.r] : 'MATÉRIAU ' + RARITIES[it.r].label;
+    const showLab = it.t === 'mat' || it.t === 'booster' || it.t === 'back';
     return `<div class="rw-item" style="--k:${k}"><span class="rw-ico" data-lbl="${lab}">${ico}</span><b>+${fmtNum(it.n)}</b>${showLab ? '<small>' + lab + '</small>' : ''}</div>`;
   }).join('');
   const cardList = items.filter(i => i.t === 'card');
@@ -16548,7 +16630,6 @@ function tFavs(){ return Object.keys(favorites || {}).filter(k => favorites[k]).
 // Équivalents de maxOwnedLevel(d)/tMaxLevel()/tRarCount(r) ci-dessus, mais pour les modules (demande
 // d'Alex : trophées/tâches en rapport avec les modules) -- mêmes principes, juste modStackCount()/
 // topOwnedModLevel()/MODULE_DEFS à la place de stackCount()/cardLevel()/CHAR_DEFS.
-function tModRarCount(r){ return MODULE_DEFS.filter(d => modStackCount(d.name, r) > 0).length; }
 // Les 15 trophées « Fabrique » très simples (1 cristal chacun) ; le trophée caché ne se débloque qu'une fois tous acquis.
 const FAB_TROPHY_IDS = ['fab_b1','fab_b2','fab_b3','fab_b5','fab_b8','fab_b12','fab_b15','fab_r1','fab_r3','fab_r5','fab_a1','fab_a3','fab_c3','fab_c5','fab_c8'];
 var TROPHIES = [
@@ -16570,10 +16651,6 @@ var TROPHIES = [
   { id:'draw500',tier:4, name:'Actionnaire',       desc:'Acheter 500 cartes en Fabrique',           target:500, val:() => player.draws },
   // Upgrades
   // Modules
-  { id:'modEpi3', tier:2, name:'Arsenal amélioré', desc:'Posséder 3 modules en ÉPIQUE',              target:3,   val:() => tModRarCount('epique') },
-  { id:'modLegAll',tier:5, name:'Arsenal absolu',  desc:'Posséder tous les modules en LÉGENDAIRE',   target:() => MODULE_DEFS.length, val:() => tModRarCount('legendaire') },
-  { id:'modDes1', tier:1, name:'Démontage',        desc:'Détruire un module',                        target:1,   val:() => player.stats.modDestroyed },
-  { id:'modDes10',tier:2, name:'Casse de modules', desc:'Détruire 10 modules',                       target:10,  val:() => player.stats.modDestroyed },
   // Niveaux des cartes
   // Joueur
   { id:'plv5',  tier:1, name:'Commandant',         desc:'Atteindre le niveau joueur 5',             target:5,   val:() => player.level },
@@ -16649,15 +16726,12 @@ var TROPHIES = [
   // remplace entièrement la récompense par défaut dès qu'un rew custom est fourni).
   { id:'boost_res_1',   tier:1, name:'Ravitaillement',     desc:'Ouvrir 10 boosters ressources',                    target:10,  val:() => (player.stats.boostersByType || {}).res || 0 },
   { id:'boost_cards_1', tier:1, name:'Nouvelles recrues',  desc:'Ouvrir 10 boosters cartes mechs',                  target:10,  val:() => (player.stats.boostersByType || {}).cards || 0 },
-  { id:'boost_mod_1',   tier:1, name:'Petites pièces',     desc:'Ouvrir 10 boosters cartes modules',                target:10,  val:() => (player.stats.boostersByType || {}).modules || 0 },
   { id:'boost_all_1',   tier:2, name:'Logisticien',        desc:'Ouvrir 30 boosters, tous types confondus',         target:30,  val:() => player.stats.boostersOpened || 0 },
   { id:'boost_res_2',   tier:3, name:'Flux constant',      desc:'Ouvrir 50 boosters ressources',                    target:50,  val:() => (player.stats.boostersByType || {}).res || 0 },
   { id:'boost_cards_2', tier:3, name:'Chef d’escadrille',  desc:'Ouvrir 50 boosters cartes mechs',                  target:50,  val:() => (player.stats.boostersByType || {}).cards || 0 },
-  { id:'boost_mod_2',   tier:3, name:'Atelier bien fourni', desc:'Ouvrir 50 boosters cartes modules',               target:50,  val:() => (player.stats.boostersByType || {}).modules || 0 },
   { id:'boost_all_2',   tier:4, name:'Grand ravitailleur', desc:'Ouvrir 100 boosters, tous types confondus',        target:100, val:() => player.stats.boostersOpened || 0, rew:{ gold:350, xp:200, card:'epique', booster:'random', boosterN:2 } },
   { id:'boost_res_3',   tier:5, name:'Puits sans fond',    desc:'Ouvrir 150 boosters ressources',                   target:150, val:() => (player.stats.boostersByType || {}).res || 0, rew:{ gold:500, card:'legendaire', booster:'res', boosterN:3 } },
   { id:'boost_cards_3', tier:5, name:'Flotte légendaire',  desc:'Ouvrir 150 boosters cartes mechs',                 target:150, val:() => (player.stats.boostersByType || {}).cards || 0, rew:{ gold:500, card:'legendaire', booster:'cards', boosterN:3 } },
-  { id:'boost_mod_3',   tier:5, name:'Arsenal infini',     desc:'Ouvrir 150 boosters cartes modules',               target:150, val:() => (player.stats.boostersByType || {}).modules || 0, rew:{ gold:500, card:'legendaire', booster:'modules', boosterN:3 } }
 ];
 // V0.04.61 : missions, DEATH SQUAD et upgrade de modules supprimés -> leurs trophées sont impossibles à obtenir : retirés,
 // et remplacés par des trophées de bataille / défi / deck (récompenses = celles du palier, cf TROPHY_TIERS).
@@ -16676,7 +16750,8 @@ TROPHIES.push(
   { id:'df10',   tier:2, name:'Chasseur de défis',    desc:'Remporter 10 paliers de défi',       target:10,  val:() => player.stats.defisWon || 0 },
   { id:'df50',   tier:3, name:'Seigneur des défis',   desc:'Remporter 50 paliers de défi',       target:50,  val:() => player.stats.defisWon || 0 },
   { id:'dk1',    tier:1, name:'Premier deck',         desc:'Enregistrer un deck',                target:1,   val:() => player.stats.deckEdits || 0 },
-  { id:'dk10',   tier:2, name:'Stratège',             desc:'Enregistrer 10 decks',               target:10,  val:() => player.stats.deckEdits || 0 }
+  { id:'dk10',   tier:2, name:'Stratège',             desc:'Enregistrer 10 decks',               target:10,  val:() => player.stats.deckEdits || 0 },
+  { id:'ult5',   tier:5, name:'Maître de l\'ultimate', desc:'Terminer complètement 5 défis en mode ultimate', target:5, val:() => CHAR_DEFS.filter(d => defiCardUltimateDone(d)).length, rew:{ back:{ kind:'card', rar:'holo' } } }
 );
 function tTarget(t){ return typeof t.target === 'function' ? t.target() : t.target; }
 function tReward(t){ return t.hidden ? { card:'holo' } : (t.rew || TROPHY_TIERS[t.tier].rew); }
@@ -17337,8 +17412,7 @@ function renderBataille(){
   const list = document.getElementById('batailleList');
   if(batSelected && !decks.some(d => d.id === batSelected)) batSelected = null;
   list.innerHTML = decks.length ? decks.map(d => {
-    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
-    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    const card = deckShowcaseHtml(d);
     return `<div class="deck-tile${batSelected === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('') : '<div class="bat-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
@@ -17480,12 +17554,12 @@ function btlBuildSides(d){
   // une carte au hasard de la MÊME rareté (2 exemplaires max par carte) ; son chef est la carte la plus forte de la rareté du chef du joueur.
   const cnt = {};
   const pickDef = rar => {
-    const all = CHAR_DEFS.filter(x => x.rarity === rar), pool = all.filter(x => (cnt[x.name] || 0) < 2), src = pool.length ? pool : all;
+    const all = CHAR_DEFS.filter(x => x.name !== 'MALGAME' && x.name !== 'MALAME'), pool = all.filter(x => (cnt[x.name] || 0) < 2)   /* tirage libre parmi toutes les cartes, toutes raretés confondues */, src = pool.length ? pool : all;
     const def = src[Math.floor(Math.random() * src.length)]; cnt[def.name] = (cnt[def.name] || 0) + 1; return def;
   };
   const mkO = (def, isL) => btlMakeCard('o', def, def.rarity, 1, isL, 1);
-  const lpool = CHAR_DEFS.filter(x => x.rarity === lead.rar);
-  const strongest = lpool.reduce((b2, x) => cardPower(x, x.rarity, 1) > cardPower(b2, b2.rarity, 1) ? x : b2, lpool[0]);
+  const lpool = CHAR_DEFS.filter(x => x.name !== 'MALGAME' && x.name !== 'MALAME');
+  const strongest = lpool[Math.floor(Math.random() * lpool.length)];   // chef adverse tiré au hasard
   cnt[strongest.name] = 1;
   let O = { leader:mkO(strongest, true), pile:btlShuffle(rest.map(e => mkO(pickDef(e.rar), false))), hand:[], slots:[null, null, null] };
   if(d.defi) O = btlDefiOpp(d.defi);
@@ -17590,9 +17664,10 @@ function btlPutCard(c){
   btlPaintIn(slot, c);
 }
 function btlBigHtml(c){ return c._big || (c._big = '<div class="codex-card ' + rarCls(c.rar) + '">' + codexCardHtml(c.def, c.rar, { level:c.level }) + '</div>'); }
-function btlBackHtml(rar){
-  const src = (typeof BOOST_CARD_BACK !== 'undefined' && (BOOST_CARD_BACK[rar] || BOOST_CARD_BACK[BTL_BACK_FALLBACK])) || '';
-  return '<div class="btl-back ' + rarCls(rar) + '"><img src="' + src + '" alt="" draggable="false" onerror="this.style.display=\'none\';this.parentNode.classList.add(\'nobg\')"></div>';
+function btlBackHtml(rar, side){
+  const k = (side === 'o' || !BTL || !BTL.d) ? 'rare' : deckBack(BTL.d, 'card');   // V0.04.89 : un seul dos par camp, plus de dos selon la rareté de la carte
+  const src = (typeof BOOST_CARD_BACK !== 'undefined' && (BOOST_CARD_BACK[k] || BOOST_CARD_BACK[BTL_BACK_FALLBACK])) || '';
+  return '<div class="btl-back ' + rarCls(k) + '"><img src="' + src + '" alt="" draggable="false" onerror="this.style.display=\'none\';this.parentNode.classList.add(\'nobg\')"></div>';
 }
 function btlFan(els, dir){
   const n = els.length, step = n > 1 ? Math.min(6.5, 34 / (n - 1)) : 0;
@@ -17613,7 +17688,7 @@ function btlSyncHand(box, list, htmlFn, skipUid){
   els.forEach(e => { e.style.opacity = (skipUid != null && +e.dataset.uid === skipUid) ? '0' : ''; });
 }
 function btlRenderHand(skipUid){ btlSyncHand(btlQ('#btlHand'), BTL.S.p.hand, c => btlBigHtml(c), skipUid); btlRefreshCan(); }
-function btlRenderOHand(skipUid){ btlSyncHand(btlQ('#btlOHand'), BTL.S.o.hand, c => btlBackHtml(c.rar), skipUid); }
+function btlRenderOHand(skipUid){ btlSyncHand(btlQ('#btlOHand'), BTL.S.o.hand, c => btlBackHtml(c.rar, c.side), skipUid); }
 function btlRenderPile(side, extra){
   const S = BTL.S[side], n = S.pile.length + (extra || 0);
   const box = btlQ(side === 'p' ? '#btlMPile' : '#btlOPile');
@@ -17623,7 +17698,7 @@ function btlRenderPile(side, extra){
   let h = '';
   for(let j = 0; j < d; j++){
     const card = tops[Math.min((d - 1 - j) * 3, tops.length - 1)];
-    h += '<div class="btl-pc" style="transform:translate(' + (5 - j * 2.6) + 'px,0) rotate(90deg)">' + btlBackHtml(card.rar) + '</div>';
+    h += '<div class="btl-pc" style="transform:translate(' + (5 - j * 2.6) + 'px,0) rotate(90deg)">' + btlBackHtml(card.rar, side) + '</div>';
   }
   if(n <= 0) h += '<b class="btl-fat">-' + Math.pow(2, (BTL.fat && BTL.fat[side]) || 0) + '</b>';   // pioche vide : dégâts du prochain tour sans carte
   box.innerHTML = h;
@@ -17639,10 +17714,27 @@ function btlRotWrap(e){
   const w = document.createElement('div'); w.className = 'btl-rot'; w.innerHTML = e.innerHTML; e.innerHTML = ''; e.appendChild(w); return w;
 }
 // tiroir : la carte sort de la pile à demi cachée (moitié côté plaque) ; son dos se dévoile petit à petit pendant qu'elle glisse
-function btlPileWipe(e, side, dur, share){
-  const outward = side === 'p' ? 'bottom' : 'top';   // moitié restée dans la plaque : bas pour l'adversaire (haut de l'écran), haut pour le joueur
-  const hid = outward === 'bottom' ? 'inset(-60px -60px 50% -60px)' : 'inset(50% -60px -60px -60px)';
-  try{ btlAnim(e, [{ clipPath:hid }, { clipPath:'inset(-60px -60px -60px -60px)', offset:share || .6 }, { clipPath:'inset(-60px -60px -60px -60px)' }], { duration:dur, easing:'linear' }).catch(() => {}); }catch(x){}
+// bord de la plaque = ligne de coupe : tant que la carte (e) chevauche encore la plaque, la partie qui la recouvre est masquée ; dès qu'elle est entièrement sortie, le masque disparaît
+function btlPileEmerge(e, rot, side){
+  const fx = btlQ('#btlFx'), pl = btlRect(btlQ('#btlPlate')), vh = innerHeight;
+  const cw = document.createElement('div');
+  cw.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;';
+  cw.style.clipPath = side === 'p' ? 'inset(' + pl.bottom.toFixed(1) + 'px 0 0 0)' : 'inset(0 0 ' + (vh - pl.top).toFixed(1) + 'px 0)';
+  fx.insertBefore(cw, e); cw.appendChild(e); e._cw = cw;
+  let n = 0;
+  const tk = () => {
+    if(!cw.isConnected || !BTL || BTL.abort) return;
+    const r = rot.getBoundingClientRect(), clear = side === 'p' ? r.top >= pl.bottom - .5 : r.bottom <= pl.top + .5;
+    if(clear || ++n > 480){ cw.style.clipPath = 'none'; return; }
+    requestAnimationFrame(tk);
+  };
+  requestAnimationFrame(tk);
+}
+// position « sortie du tiroir » : la carte couchée s'éloigne de la plaque juste assez pour la dégager entièrement
+function btlPileLift(from, side){
+  const pl = btlRect(btlQ('#btlPlate')), cy = from.top + from.height / 2, half = from.width / 2;
+  const over = side === 'p' ? pl.bottom - (cy - half) : (cy + half) - pl.top, sh = Math.max(0, over) + 8;
+  return { left:from.left - from.width * .05, top:from.top + (side === 'p' ? sh : -sh) - from.height * .05, width:from.width * 1.1, height:from.height * 1.1 };
 }
 function btlRenderMana(){
   ['p', 'o'].forEach(s => {
@@ -18558,7 +18650,7 @@ async function btlCoin(first){
 }
 
 // ---------- pioche ----------
-function btlFlyBack(e, side, rar){ e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff b">' + btlBackHtml(rar) + '</div></div>'; }
+function btlFlyBack(e, side, rar){ e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff b">' + btlBackHtml(rar, side) + '</div></div>'; }
 async function btlQuickDeal(side){
   const S = BTL.S[side]; if(!S.pile.length) return;
   const c = S.pile.pop(); S.hand.push(c);
@@ -18570,16 +18662,16 @@ async function btlQuickDeal(side){
   const to = btlRect(tgtEl);
   const e = document.createElement('div'); e.className = 'btl-fly';
   btlPlaceFixed(e, from);
-  if(side === 'p') e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+  if(side === 'p') e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
   else btlFlyBack(e, 'o', c.rar);
   const rot = btlRotWrap(e); btlQ('#btlFx').appendChild(e);
   const dur = 520;
-  btlPileWipe(e, side, dur, .55);
+  btlPileEmerge(e, rot, side);
   btlAnim(rot, [{ transform:'rotate(90deg)' }, { transform:'rotate(0deg)' }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   if(side === 'p') btlAnim(rot.firstChild, [{ transform:'rotateY(0deg)' }, { transform:'rotateY(180deg)' }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   await btlAnim(e, [{ transform:'none' }, { transform:btlXf(from, to) }], { duration:dur, easing:'cubic-bezier(.4,.1,.2,1)' });
   const real = tgtEl; if(real) real.style.opacity = '';
-  e.remove();
+  e.remove(); if(e._cw) e._cw.remove();
 }
 // MAIN PLEINE : 10 cartes maximum. Une carte piochée en trop est révélée puis détruite, elle n'entre jamais dans la main.
 const BTL_HAND_MAX = 10;
@@ -18589,12 +18681,14 @@ async function btlBurnDraw(side, c){
   const vw = innerWidth, vh = innerHeight, W = Math.min(vw * 0.62, vh * 0.42 / BTL_RATIO), H = W * BTL_RATIO;
   const mid = { left:(vw - W) / 2, top:vh * 0.47 - H / 2, width:W, height:H }, col = btlRarColor(c.rar);
   const e = document.createElement('div'); e.className = 'btl-fly big'; btlPlaceFixed(e, mid);
-  e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+  e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
   const rot = btlRotWrap(e); fx.appendChild(e);
+  btlPileEmerge(e, rot, side);
+  const lift0 = btlPileLift(from, side);
   try{
-    btlAnim(rot, [{ transform:'rotate(90deg)' }, { transform:'rotate(0deg)' }], { duration:760, easing:'ease-in-out' }).catch(() => {});
+    btlAnim(rot, [{ transform:'rotate(90deg)' }, { transform:'rotate(90deg)', offset:.2 }, { transform:'rotate(0deg)' }], { duration:760, easing:'ease-in-out' }).catch(() => {});
     btlAnim(rot.firstChild, [{ transform:'rotateY(0deg)' }, { transform:'rotateY(180deg)' }], { duration:760, easing:'ease-in-out' }).catch(() => {});
-    await btlAnim(e, [{ transform:btlXf(mid, from) }, { transform:btlXf(mid, mid) }], { duration:760, easing:'cubic-bezier(.4,.1,.25,1)' });
+    await btlAnim(e, [{ transform:btlXf(mid, from), offset:0 }, { transform:btlXf(mid, lift0), offset:.2 }, { transform:btlXf(mid, mid), offset:1 }], { duration:760, easing:'cubic-bezier(.4,.1,.25,1)' });
     await btlSleep(520);
     // même destruction qu'une carte du terrain : dernier souffle (elle vacille et rougeoie), puis elle éclate en éclats qui retombent en braises
     const cx = mid.left + W / 2, cy = mid.top + H / 2;
@@ -18619,7 +18713,7 @@ async function btlBurnDraw(side, c){
     btlParticles(cx, mid.top + H * .8, { n:10, color:'#ffb27a', dist:60, dur:1300, size:4, rise:true, spread:500 });
     btlShake(btlQ('#btlPlate'), 4);
     await btlSleep(900);
-  } finally { e.remove(); }
+  } finally { e.remove(); if(e._cw) e._cw.remove(); }
   return true;
 }
 async function btlDraw(side){
@@ -18638,10 +18732,10 @@ async function btlDraw(side){
   const mid = { left:(vw - W) / 2, top:vh * 0.47 - H / 2, width:W, height:H };
   const e = document.createElement('div'); e.className = 'btl-fly big';
   btlPlaceFixed(e, mid);
-  if(side === 'p') e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+  if(side === 'p') e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
   else btlFlyBack(e, 'o', c.rar);
   const rot = btlRotWrap(e); btlQ('#btlFx').appendChild(e);
-  const lift = { left:from.left - from.width * 0.05, top:from.top - 18, width:from.width * 1.1, height:from.height * 1.1 };
+  const lift = btlPileLift(from, side);   // la carte sort d'abord du tiroir vers l'extérieur, puis monte au centre
   const kf = [
     { transform:btlXf(mid, from), offset:0 },
     { transform:btlXf(mid, lift), offset:.14 },
@@ -18652,10 +18746,10 @@ async function btlDraw(side){
   const dur = 1320;
   btlAnim(rot, [{ transform:'rotate(90deg)', offset:0 }, { transform:'rotate(90deg)', offset:.14 }, { transform:'rotate(0deg)', offset:.5 }, { transform:'rotate(0deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   if(side === 'p') btlAnim(rot.firstChild, [{ transform:'rotateY(0deg)', offset:0 }, { transform:'rotateY(0deg)', offset:.14 }, { transform:'rotateY(180deg)', offset:.5 }, { transform:'rotateY(180deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
-  btlPileWipe(e, side, dur, .26);
+  btlPileEmerge(e, rot, side);
   await btlAnim(e, kf, { duration:dur, easing:'cubic-bezier(.4,.1,.25,1)' });
   if(tgtEl) tgtEl.style.opacity = '';
-  e.remove();
+  e.remove(); if(e._cw) e._cw.remove();
   await btlOnDraw(side);   // passifs « à chaque carte piochée » (DUMADED)
   return true;
 }
@@ -18938,7 +19032,7 @@ async function btlPlay(side, c, si, fromRect, el){
   btlLights(c.rar, 1500);
   btlPlaceFixed(el, fromRect);
   if(side === 'o'){   // la carte de l'adversaire se retourne en vol : elle se dévoile exactement comme celle du joueur
-    el.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+    el.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
     el.classList.add('btl-fly'); const rw = btlRotWrap(el);
     btlAnim(rw.firstChild, [{ transform:'rotateY(0deg)', offset:0 }, { transform:'rotateY(0deg)', offset:.1 }, { transform:'rotateY(180deg)', offset:.7 }, { transform:'rotateY(180deg)', offset:1 }], { duration:560, easing:'ease-in-out' }).catch(() => {});
   }
@@ -18954,7 +19048,6 @@ async function btlPlay(side, c, si, fromRect, el){
   await btlAnim(el, [{ transform:'none' }, { transform:btlXf(fromRect, to, ' rotate(8deg)') }], { duration:560, easing:'cubic-bezier(.55,.05,.9,.45)' });
   // impact : la carte classique se transforme en petite carte, pulsation inversée de la couleur de rareté
   btlPutCard(c);
-  musSfx(c.rar);   // son de pose selon la rareté (V0.04.87)
   const u = btlUnitEl(c);
   const ghost = !!(BTL_CARD_FX[c.name] && BTL_CARD_FX[c.name].ghost);   // entrée en fantôme (SHADOW)
   let arrivePr = null;
@@ -18977,6 +19070,12 @@ async function btlPlay(side, c, si, fromRect, el){
     btlParticles(cx1, cy1, { n:18, color:col, dist:66, dur:720, size:5 });
     btlParticles(cx1, to.top + to.height * .92, { n:9, color:'#ffffff', dist:44, dur:860, size:3, rise:true, spread:240 });
   }
+  // son de pose : à l'instant où la carte se pose dans son emplacement. Arrivée animée (la petite carte est cachée jusqu'à son apparition) : on attend qu'elle apparaisse ; fantôme / écrasement : à leur impact
+  { const fxc = BTL_CARD_FX[c.name], rr = c.rar;
+    if(ghost) btlAfter(() => { if(BTL && !BTL.abort) musSfx(rr); }, 610);
+    else if(fxc && fxc.slam) setTimeout(() => { if(BTL && !BTL.abort) musSfx(rr); }, 475);
+    else if(arrivePr && u && u.style.opacity === '0'){ let nf = 0; const tk = () => { if(!BTL || BTL.abort) return; if(u.style.opacity !== '0' || ++nf > 480){ musSfx(rr); return; } requestAnimationFrame(tk); }; requestAnimationFrame(tk); }
+    else musSfx(rr); }
   btlAnim(el, [{ opacity:1 }, { opacity:0 }], { duration:140 }).then(() => el.remove(), () => el.remove());
   btlShake(btlQ('#btlPlate'), 2.5);
   c.playedTurn = BTL.turn; btlRefreshCan();
@@ -19585,11 +19684,12 @@ async function btlDoAction(c, ov){
   const ret = rhino ? Promise.resolve() : kg ? kg.back() : btlAnim(el, [{ transform:hit }, { transform:'translate(0,0) scale(.97)', offset:.62 }, { transform:'translate(0,0) scale(1)' }], { duration:480, easing:BTL_E.out }).then(() => { btlClearAnims(el); el.style.zIndex = ''; }, () => {});
   await Promise.all([tw, twc]);
   if(rh) await rh.done;
-  if(t.hp <= 0){
-    if(t.leader){ await btlFinish(c.side); return; }
-    t._killer = c; await btlDie(t);
-  } else btlPaint(t);
-  if(c.hp <= 0){ await ret; c._killer = t; await btlDie(c); } else btlPaint(c);
+  if(t.hp <= 0 && t.leader){ await btlFinish(c.side); return; }
+  if(t.hp <= 0 && c.hp <= 0){ await ret; t._killer = c; c._killer = t; await btlDieBoth(t, c); }   // attaque et riposte mortelles : les deux cartes se détruisent en même temps
+  else{
+    if(t.hp <= 0){ t._killer = c; await btlDie(t); } else btlPaint(t);
+    if(c.hp <= 0){ await ret; c._killer = t; await btlDie(c); } else btlPaint(c);
+  }
   await btlSleep(420);
 }
 // DÉFENDRE : la DEF de la carte est ajoutée au bouclier (DEF) de la cible, même si celle-ci est à 0
@@ -19618,7 +19718,16 @@ async function btlHeal(t, amount, color, numCls){
 }
 // une carte ne meurt qu'une seule fois : si un Baroud d'honneur adverse la détruit pendant qu'elle attaque, l'attaque ne rejoue pas sa mort (sinon plantage : carte déjà retirée du terrain)
 function btlDie(c){ return c._diePr || (c._diePr = btlDie0(c)); }
-async function btlDie0(c){
+// deux cartes détruites en même temps : les deux animations démarrent ensemble, puis les barouds s'enchaînent (a, puis b)
+async function btlDieBoth(a, b){
+  const da = !a._diePr, db = !b._diePr;
+  if(da) a._diePr = btlDie0(a, true);
+  if(db) b._diePr = btlDie0(b, true);
+  await Promise.all([a._diePr, b._diePr]);
+  if(da) await btlTrigger('baroud', a);
+  if(db) await btlTrigger('baroud', b);
+}
+async function btlDie0(c, defer){
   const el = btlUnitEl(c), slot = btlSlotOf(c);
   if(!el || !slot){ const Q = BTL && BTL.S[c.side]; if(Q && !c.leader && Q.slots[c.slot] === c) Q.slots[c.slot] = null; return; }   // carte sans élément à l'écran : on libère quand même son emplacement
   btlMarkOff(c, true);
@@ -19649,7 +19758,7 @@ async function btlDie0(c){
   slot.innerHTML = ''; slot.classList.remove('has');
   btlRenderArrows();
   await btlSleep(180);
-  if(early) await early; else await btlTrigger('baroud', c);
+  if(early) await early; else if(!defer) await btlTrigger('baroud', c);   // defer : le baroud est joué par l'appelant (destruction simultanée de deux cartes)
 }
 // lueur blanche qui enveloppe la carte au moment où elle se brise
 function btlBloom(r, col){
@@ -19732,7 +19841,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
   const from = fromRect ? fromRect : hEl ? btlRect(hEl) : { left:vw / 2 - W * .2, top:vh - H * .4, width:W * .4, height:H * .4 };
   if(i >= 0){ S.hand.splice(i, 1); if(side === 'p') btlRenderHand(); else btlRenderOHand(); }
   const e = document.createElement('div'); e.className = 'btl-fly big'; btlPlaceFixed(e, mid);
-  if(face) e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+  if(face) e.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
   else btlFlyBack(e, 'o', c.rar);
   const rot = btlRotWrap(e); btlQ('#btlFx').appendChild(e);
   if(fromRect){   // EXO-MKI : 1 s après l'éclatement la carte se reforme en grand (face visible), se retourne (dos), puis glisse dans la pioche adverse
@@ -19773,7 +19882,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
   // mélange : deux demi-paquets se séparent puis se rejoignent, deux fois
   const pr = btlRect(pileEl), fx = btlQ('#btlFx'), halves = [];
   [-1, 1].forEach(k => {
-    const h = document.createElement('div'); h.className = 'btl-fly'; btlPlaceFixed(h, to); h.innerHTML = '<div class="btl-fl-in"><div class="btl-ff b">' + btlBackHtml(c.rar) + '</div></div>';
+    const h = document.createElement('div'); h.className = 'btl-fly'; btlPlaceFixed(h, to); h.innerHTML = '<div class="btl-fl-in"><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
     h.style.zIndex = 30; const w = btlRotWrap(h); w.style.transform = 'rotate(90deg)'; fx.appendChild(h); halves.push(h);
     const dx = k * to.width * .34;
     btlAnim(h, [{ transform:'translate(0,0) rotate(0deg)' }, { transform:'translate(' + dx + 'px,-6px) rotate(' + k * 9 + 'deg)', offset:.25 }, { transform:'translate(0,0) rotate(0deg)', offset:.5 }, { transform:'translate(' + dx * .8 + 'px,-4px) rotate(' + k * 7 + 'deg)', offset:.75 }, { transform:'translate(0,0) rotate(0deg)' }], { duration:620, easing:'ease-in-out' }).catch(() => {});
@@ -20927,8 +21036,11 @@ async function btlConqClash(a, b){   // un vent soulève deux cartes ennemies, e
     return { tw:btlTween(b, before, b.hp / b.maxHp * 100, 380), twc:btlTween(a, beforeC, a.hp / a.maxHp * 100, 380) };
   }
   if(dmg) await Promise.all([dmg.tw, dmg.twc]);
-  if(b.hp <= 0){ b._killer = a; await btlDie(b); } else btlPaint(b);
-  if(a.hp <= 0){ a._killer = b; await btlDie(a); } else btlPaint(a);
+  if(b.hp <= 0 && a.hp <= 0){ b._killer = a; a._killer = b; await btlDieBoth(b, a); }   // duel mortel des deux côtés : destructions simultanées
+  else{
+    if(b.hp <= 0){ b._killer = a; await btlDie(b); } else btlPaint(b);
+    if(a.hp <= 0){ a._killer = b; await btlDie(a); } else btlPaint(a);
+  }
   await btlSleepR(160);
 }
 BTL_CARD_FX['CONQUEST'] = { arrive: btlConqArrive, appel: async c => {
@@ -23149,7 +23261,7 @@ async function btlMedFetch(c, n){
   const above = py < cy, e0 = above ? 'r' : 'l', e1 = above ? 'b' : 't', dist = Math.hypot(px - cx, py - cy);
   const el = document.createElement('div');
   el.style.cssText = 'position:fixed;left:0;top:0;width:' + w + 'px;height:' + h + 'px;z-index:30;pointer-events:none;transform-origin:50% 50%;opacity:0;will-change:transform';
-  el.innerHTML = btlBackHtml(n.rar); fx.appendChild(el);
+  el.innerHTML = btlBackHtml(n.rar, n.side); fx.appendChild(el);
   const anc = btlMedAnchors(to), ropes = anc.map(btlRopeNew), sparks = [], sd = px < plate.left + plate.width / 2 ? 1 : -1;
   const TS = [0, 80, 160, 240], DS = E.cl(dist * 1.55, 640, 1000), T_GRAB = TS[3] + DS, T_PULL = T_GRAB + 170, PD = E.cl(dist * 1.5, 640, 950), T_IMP = T_PULL + PD, T_REL1 = T_IMP + 460, T_END = T_REL1 + 480;
   const hit = [false, false, false, false]; let grabbed = false, flipped = false, landed = false, last = performance.now(), raf = 0;
@@ -24103,7 +24215,7 @@ async function btlAI(){
     const c = S.hand.slice().sort((a, b) => btlPwr(b) - btlPwr(a))[0];
     const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(Math.random() * free.length)];
     const hand = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), rect = hand ? btlRect(hand) : btlRect(btlQ('#btlOHand'));
-    const e = document.createElement('div'); e.className = 'btl-fly'; e.innerHTML = btlBackHtml(c.rar); btlQ('#btlFx').appendChild(e);
+    const e = document.createElement('div'); e.className = 'btl-fly'; e.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(e);
     await btlPlay('o', c, si, { left:rect.left, top:rect.top, width:rect.width, height:rect.height }, e);
     await btlSleep(280);
   }
@@ -25426,8 +25538,7 @@ function renderDefiLaunch(){
   const boss = defiTierIsBoss(tier);
   const bn = defiLaunchArt || def, bnSrc = bn.artExt || bn.art || '';
   const deckHtml = decks.length ? decks.map(d => {
-    const bk = deckBestKey(d.cards, d.leader), e = bk && sqEntry(bk);
-    const card = e ? `<div class="codex-card ${rarCls(e.rar)}">${codexCardHtml(e.def, e.rar, {})}</div>` : '<div class="deck-empty"><span>?</span></div>';
+    const card = deckShowcaseHtml(d);
     return `<div class="deck-tile${defiLaunchDeck === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('') : '<div class="fab-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
   const ready = decks.some(d => d.id === defiLaunchDeck && d.cards.length >= 2);
@@ -26195,6 +26306,7 @@ function applySave(data){
     });
   });
   migrateModulesNoEcarlate();
+  modForceAll();
   // Slot module de l'escouade (V0.02.51) : squadModule simple, pas de migration ancien format nécessaire
   squadModule = data.squadModule || null;
   if(Array.isArray(data.squad)){
@@ -26246,7 +26358,7 @@ function applySave(data){
     if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevelRaw(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; } });
   }
   if(data.favorites) favorites = Object.assign({}, data.favorites);
-  if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => { const cards = d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE); return { id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards, leader: (typeof d.leader === 'string' && cards.includes(d.leader)) ? d.leader : null, module: (d.module && typeof d.module.name === 'string' && typeof d.module.rar === 'string') ? { name:d.module.name.slice(0, 30), rar:d.module.rar.slice(0, 12) } : null }; });
+  if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => { const cards = d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE); return { id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards, leader: (typeof d.leader === 'string' && cards.includes(d.leader)) ? d.leader : null, module: (d.module && typeof d.module.name === 'string' && typeof d.module.rar === 'string') ? { name:d.module.name.slice(0, 30), rar:d.module.rar.slice(0, 12) } : null, backCard: typeof d.backCard === 'string' ? d.backCard.slice(0, 12) : 'rare', backMod: typeof d.backMod === 'string' ? d.backMod.slice(0, 12) : 'rare' }; });
   if(data.settings){ Object.assign(SETTINGS, data.settings); applySettings(); }
   if(Array.isArray(data.collOrder)){ collSlots = data.collOrder.slice(); ensureCollSlots(); }
   if(data.notif){
@@ -27006,14 +27118,13 @@ const HELP_CONTENT = {
   // ---------- FABRIQUE ----------
   fabHubView: { title:'LA FABRIQUE', text:'Tout ce qui te permet d’obtenir des cartes :<ul>' +
     '<li><b>TIRAGE</b> — des cartes de mechs contre de l’or ou des cristaux.</li>' +
-    '<li><b>LABO</b> — la même chose, mais pour les cartes module.</li>' +
     '<li><b>BOOSTERS</b> — ouvre les coffres que tu gagnes en jeu.</li>' +
     '<li><b>BOUTIQUE</b> — achète directement des ressources.</li></ul>' },
   fabDrawView: { title:'TIRAGE', text:'Dépense de l’or ou des cristaux pour obtenir une carte de mech dans l’offre affichée.<br><br>' +
     '<b>ACHETER UNITÉ</b> prend une seule carte, <b>ACHETER TOUT</b> prend toute l’offre d’un coup. L’offre se renouvelle seule au bout d’un moment, ou tout de suite avec <b>ACTUALISER</b>.' },
   labDrawView: { title:'LABO', text:'Le même principe que TIRAGE, mais pour les cartes module.<br><br>' +
     'Une carte module n’est pas un mech : tu en choisis une pour chaque deck, et en bataille tu peux l’activer une fois par tour contre du mana.' },
-  boostView: { title:'BOOSTERS', text:'Range les boosters que tu gagnes en jeu (trophées, tâches, récompense quotidienne…) : ressources, cartes mechs ou cartes modules.<br><br>' +
+  boostView: { title:'BOOSTERS', text:'Range les boosters que tu gagnes en jeu (trophées, tâches, récompense quotidienne…) : ressources ou cartes mechs.<br><br>' +
     'Glisse un booster sur le socle pour l’ouvrir et révéler 5 récompenses d’un coup.' },
   shopView: { title:'BOUTIQUE', text:'Achète directement des cristaux, des matériaux ou des boosters contre de l’or (les boosters aussi contre des cristaux), sans attendre de les gagner en jouant.' },
   // ---------- MENU ----------
@@ -27040,7 +27151,7 @@ const HELP_CONTENT = {
     '<li><b>DECK</b> — compose tes decks, fabrique ou détruis des cartes et des modules.</li>' +
     '<li><b>COLLECTION</b> — toutes tes cartes, rangées dans un classeur.</li>' +
     '</ul>' },
-  deckView: { title:'DECK', text:'Compose des decks de 20 cartes, avec un module chacun.<br><br>Touche <b>NOUVEAU DECK</b>, donne-lui un nom, puis glisse tes cartes vers la colonne de droite (2 exemplaires maximum d’une même carte, un seul pour une holographique). Une fois les 20 cartes en place, choisis le module du deck dans l’onglet MODULES, puis touche <b>VALIDER LE DECK</b>. Touche un deck pour le modifier.<br><br><b>FABRIQUER</b> crée une carte ou un module avec des matériaux ; <b>DÉTRUIRE</b> en recycle contre des matériaux.' },
+  deckView: { title:'DECK', text:'Compose des decks de 20 cartes, avec un module chacun.<br><br>Touche <b>NOUVEAU DECK</b>, donne-lui un nom, puis glisse tes cartes vers la colonne de droite (2 exemplaires maximum d’une même carte, un seul pour une holographique). Une fois les 20 cartes en place, choisis le module du deck dans l’onglet MODULES, puis touche <b>VALIDER LE DECK</b>. Touche un deck pour le modifier. <b>DOS DE CARTES</b> affiche les dos de cartes (ou de modules) : choisis-en un pour chaque deck en le modifiant.<br><br><b>FABRIQUER</b> crée une carte avec des matériaux ; <b>DÉTRUIRE</b> en recycle contre des matériaux. Tous les modules sont déjà à toi.' },
   collectionView: { title:'COLLECTION', text:'Toutes les cartes que tu as déjà obtenues, rangées comme dans un classeur.<br><br>Une case vide est une carte que tu n’as pas encore.' }
 };
 function currentHelpKey(){
@@ -27122,6 +27233,11 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
     validateSquad();              // revalide squadModule : vide le slot si un module retiré y était équipé
     saveSoon();
   }
+  // V0.04.89 : LABO fermé -- offres/compteur vidés, 1 exemplaire de chaque module, boosters modules convertis en boosters cartes mechs
+  modForceAll();
+  labOffer = [null, null, null]; labOfferRar = [null, null, null]; player.labDraws = 0; notif.lab = false;
+  if(player.boosters && player.boosters.modules){ player.boosters.cards = (player.boosters.cards || 0) + player.boosters.modules; player.boosters.modules = 0; }
+  if(typeof validateSquad === 'function') validateSquad();
   // Correctif ponctuel boosters (V0.02.94, demande d'Alex : "remet les compteurs de tout les joueurs à 0
   // sur les 3 boosters") : les nouveaux joueurs démarrent déjà à 0/0/0 depuis cette version (cf
   // player.boosters plus haut), mais une sauvegarde EXISTANTE garde le stock qu'elle avait déjà (50/50/50
