@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.83</title>
+<title>Projet MECA V0.04.84</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3610,6 +3610,7 @@
     background-image:linear-gradient(115deg, transparent 36%, rgba(255,200,120,.0) 41%, rgba(255,230,170,.32) 48%, rgba(255,255,255,.4) 50%, rgba(255,170,90,.2) 53%, transparent 60%);
   }
   .fab-card.fab-card-empty::after, .codex-card.fuse-off::after, .codex-card.fuse-maxed::after{display:none;}
+  .dk-off, .dk-off *, .dk-off *::before, .dk-off *::after{animation-play-state:paused !important;}   /* V0.04.84 : carte hors écran = animations en pause */
   @keyframes cardSheen{
     0%, 70%{background-position:130% 0;}
     88%, 100%{background-position:-30% 0;}
@@ -8265,7 +8266,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.83</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.84</b></div>
   </div>
 
     </div>
@@ -8535,9 +8536,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.83';
+var BUILD_VERSION = 'V0.04.84';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.84', items:[
+    'Deck : fabriquer une carte, chercher, filtrer et revenir à la liste ne reconstruisent plus toutes les cartes (fabrication presque instantanée).',
+    'Deck : à l\'ouverture d\'un nouveau deck ou de FABRIQUER, les premières cartes s\'affichent tout de suite, le reste arrive juste après.',
+    'Deck : les brillances des cartes hors écran sont en pause (défilement plus fluide).',
+  ] },
   { v:'V0.04.83', items:[
     'SAUVEGARDE : correction d\'un bug qui bloquait l\'envoi de ta partie en ligne pour certains comptes. Les cartes fabriquées (ou toute autre progression) pouvaient disparaître à la relance du jeu. La partie est de nouveau sauvegardée en ligne normalement.',
     'BATAILLE : le joueur qui ne commence pas démarre maintenant avec 1 mana de plus à son premier tour (2 mana au lieu de 1), pour compenser l\'avantage de celui qui joue en premier. Valable aussi pour l\'adversaire.',
@@ -14867,23 +14873,83 @@ function deckTileHtml(e, badge){
 // Coût de fabrication : matériaux de la rareté de la carte (l'écarlate se paie en légendaires, comme la destruction). Holographique : non fabricable.
 const CRAFT_COST = { rare:{ mat:'rare', n:10 }, epique:{ mat:'epique', n:20 }, legendaire:{ mat:'legendaire', n:40 }, ecarlate:{ mat:'legendaire', n:80 } };
 function craftCostOf(rar){ return CRAFT_COST[rar] || null; }
+// V0.04.84 : tuiles gardées d'un affichage à l'autre (clé type|nom|rareté) ; on ne crée que celles jamais vues, on replace les autres.
+var DK_POOL = new Map();
+var DK_IO = ('IntersectionObserver' in window) ? new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('dk-off', !e.isIntersecting)), { rootMargin:'160px 0px' }) : null;
+(function(){
+  if(!DK_IO || !window.MutationObserver) return;
+  const sel = '.codex-card, .mod-card', watch = el => { if(!el._io){ el._io = 1; DK_IO.observe(el); } };
+  new MutationObserver(rs => rs.forEach(r => r.addedNodes.forEach(n => { if(n.nodeType !== 1) return; if(n.matches(sel)) watch(n); n.querySelectorAll(sel).forEach(watch); })))
+    .observe(document.getElementById('deckWork'), { childList:true, subtree:true });
+})();
+// Les 24 premières tuiles s'affichent tout de suite, les suivantes arrivent par paquets de 16 aux images suivantes (ouvrir un écran de 100+ cartes ne bloque plus ~1 s).
+function dkReconcile(grid, list, keyOf, mk){
+  const tok = grid._dkTok = (grid._dkTok || 0) + 1;
+  const want = new Set(list.map(keyOf));
+  Array.from(grid.children).forEach(c => { if(!c._dkKey || !want.has(c._dkKey)) c.remove(); });
+  const place = i => { const el = mk(list[i]); el._dkKey = keyOf(list[i]); const cur = grid.children[i]; if(cur !== el) grid.insertBefore(el, cur || null); };
+  const first = Math.min(list.length, 24);
+  for(let i = 0; i < first; i++) place(i);
+  let i = first;
+  const step = () => { if(grid._dkTok !== tok) return; const end = Math.min(list.length, i + 12); for(; i < end; i++) place(i); if(i < list.length) requestAnimationFrame(step); };
+  if(i < list.length) requestAnimationFrame(step);
+}
+function dkPlaceLate(owner, grid, xs, mk){   // ajoute xs (déjà triés) à la fin de grid par paquets
+  const tok = owner._dkTok = (owner._dkTok || 0) + 1;
+  let i = 0;
+  const step = () => { if(owner._dkTok !== tok) return; const end = Math.min(xs.length, i + 12); for(; i < end; i++) grid.appendChild(mk(xs[i])); if(i < xs.length) requestAnimationFrame(step); };
+  if(xs.length) requestAnimationFrame(step);
+}
+function dkGrid(work, kind, cls){
+  let g = work._dkgGrid;
+  if(!g || work.firstElementChild !== g || work._dkgKind !== kind){
+    g = document.createElement('div'); g.id = 'deckList'; g.className = cls;
+    work.replaceChildren(g); work._dkgGrid = g; work._dkgKind = kind;
+  }
+  return g;
+}
+function craftTile(kind, e){
+  const key = 'c|' + kind + '|' + e.def.name + '|' + e.rar;
+  let el = DK_POOL.get(key);
+  if(!el){
+    el = document.createElement('div');
+    if(kind === 'module'){
+      el.className = 'mod-item';
+      el.innerHTML = `<div class="mod-card ${rarCls(e.rar)}" data-name="${e.def.name}" data-rar="${e.rar}">${modCardFaceHtml(e.def, 1, e.rar)}</div>`;
+      el.firstChild.onclick = () => openCraftPreview('module', e.def.name, e.rar);
+    } else {
+      el.className = 'codex-card ' + rarCls(e.rar); el.dataset.name = e.def.name; el.dataset.rar = e.rar;
+      el.innerHTML = deckTileHtml(e, 0);
+      el.onclick = () => openCraftPreview('card', e.def.name, e.rar);
+    }
+    DK_POOL.set(key, el);
+  }
+  (kind === 'module' ? el.firstChild : el).classList.toggle('craft-ghost', !e.own);
+  return el;
+}
 function renderDeckCreate(work){
-  const q = deckSearchQuery;
-  if(deckTab === 'modules'){
-    let list = [];
+  const q = deckSearchQuery, mod = deckTab === 'modules';
+  let list;
+  if(mod){
+    list = [];
     MODULE_DEFS.forEach(def => ['rare', 'epique', 'legendaire'].forEach(rar => list.push({ def, rar, own:modStackCount(def.name, rar) > 0 })));
     if(q) list = list.filter(e => e.def.name.toLowerCase().includes(q));
     const r = e => tierOf(e.rar);
     list.sort(deckModSort === 'az' ? (a, b) => a.def.name.localeCompare(b.def.name) || r(b) - r(a) : (a, b) => r(b) - r(a) || a.def.name.localeCompare(b.def.name));
-    work.innerHTML = '<div class="mod-grid" id="deckList">' + (list.map(e => `<div class="mod-item"><div class="mod-card ${rarCls(e.rar)}${e.own ? '' : ' craft-ghost'}" data-name="${e.def.name}" data-rar="${e.rar}">${modCardFaceHtml(e.def, 1, e.rar)}</div></div>`).join('') || '<div class="fab-empty" style="grid-column:1/-1;">Aucun module trouvé.</div>') + '</div>';
-    work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openCraftPreview('module', c.dataset.name, c.dataset.rar); });
-    return;
+  } else {
+    list = CHAR_DEFS.filter(d => fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
+    list.forEach(e => { e.own = stackCount(e.def.name, e.rar) > 0; });
+    const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar);
+    list.sort(deckSort === 'rarity' ? (a, b) => r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
   }
-  let list = CHAR_DEFS.filter(d => fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
-  const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar);
-  list.sort(deckSort === 'rarity' ? (a, b) => r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
-  work.innerHTML = '<div class="codex-grid" id="deckList">' + (list.map(e => `<div class="codex-card ${rarCls(e.rar)}${stackCount(e.def.name, e.rar) > 0 ? '' : ' craft-ghost'}" data-name="${e.def.name}" data-rar="${e.rar}">${deckTileHtml(e, 0)}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>') + '</div>';
-  work.querySelectorAll('.codex-card').forEach(c => { c.onclick = () => openCraftPreview('card', c.dataset.name, c.dataset.rar); });
+  const kind = mod ? 'module' : 'card';
+  const grid = dkGrid(work, 'create|' + kind, mod ? 'mod-grid' : 'codex-grid');
+  dkReconcile(grid, list, e => 'c|' + kind + '|' + e.def.name + '|' + e.rar, e => craftTile(kind, e));
+  if(!list.length){
+    const m = document.createElement('div'); m.className = 'fab-empty'; m.textContent = mod ? 'Aucun module trouvé.' : 'Aucune carte dans cette catégorie.';
+    if(mod) m.style.gridColumn = '1/-1';
+    grid.appendChild(m);
+  }
 }
 var craftTarget = null;
 function openCraftPreview(kind, name, rar){
@@ -14926,25 +14992,31 @@ function doCraft(){
 }
 // V0.04.83 : ajouter / retirer une carte ne reconstruit plus tout l'écran (4 300 éléments + redécodage de toutes les images = 0,5 à 1 s de blocage).
 // On garde les cartes déjà affichées (liste de gauche et colonne de droite), on n'ajoute / retire / met à jour que celles qui changent.
-function deckFastRender(work, list, n){
+function dkMkLeft(x){
+  const el = document.createElement('div'); el.className = 'codex-card deck-drag-card ' + rarCls(x.st.rar); el.dataset.key = x.key;
+  el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem;
+  const e = sqEntry(x.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
+  deckAttachDrag(el, 'list', x.key);
+  return el;
+}
+function deckFastRender(work, list, n, emptyMsg){
+  work._dkTok = (work._dkTok || 0) + 1;   // annule les paquets de tuiles encore en attente
   const split = work._dkSplit, lf = split.querySelector('#deckLeft'), col = split.querySelector('#deckRight');
   if(!lf || !col || !lf.firstElementChild) return false;
   const grid = lf.firstElementChild, pool = work._dkPool || (work._dkPool = new Map());
+  grid.querySelectorAll(':scope > .fab-empty').forEach(x => x.remove());
   const old = new Map();
   grid.querySelectorAll(':scope > .deck-drag-card').forEach(el => old.set(el.dataset.key, el));
   const keep = new Set();
   list.forEach((x, i) => {
     let el = old.get(x.key) || pool.get(x.key);
-    if(!el){
-      el = document.createElement('div'); el.className = 'codex-card deck-drag-card ' + rarCls(x.st.rar); el.dataset.key = x.key;
-      el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem;
-      const e = sqEntry(x.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
-      deckAttachDrag(el, 'list', x.key);
-    } else if(el._rem !== x.rem){ el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem; }
+    if(!el) el = dkMkLeft(x);
+    else if(el._rem !== x.rem){ el.innerHTML = deckTileHtml(x.st, x.rem); el._rem = x.rem; }
     pool.delete(x.key); keep.add(el);
     if(grid.children[i] !== el) grid.insertBefore(el, grid.children[i] || null);
   });
   old.forEach((el, k) => { if(!keep.has(el)){ el.remove(); pool.set(k, el); } });
+  if(!list.length){ const m = document.createElement('div'); m.className = 'fab-empty'; m.style.gridColumn = '1/-1'; m.textContent = emptyMsg; grid.appendChild(m); }
   // colonne de droite : on garde les cartes existantes (même carte = même élément), on refait le reste (module, compteur, piles)
   const sorted = deckDraft.cards.map((k, i) => ({ k, i, e: sqEntry(k) })).filter(x => x.e)
     .sort((a, b) => cardPower(b.e.def, b.e.rar) - cardPower(a.e.def, a.e.rar) || a.i - b.i);
@@ -15022,13 +15094,24 @@ function renderDeckWork(){
     work.innerHTML = '<div class="mod-grid" id="deckList">' + (deckModStacks().map(e => deckModTile(e, false)).join('') || '<div class="fab-empty" style="grid-column:1/-1;">' + (deckSearchQuery ? 'Aucun module trouvé.' : 'Aucun module possédé.') + '</div>') + '</div>';
     work.querySelectorAll('.mod-card').forEach(c => { c.onclick = () => openModuleModal(c.dataset.name, c.dataset.rar, parseInt(c.dataset.level, 10)); });
   } else if(!deckDraft){
-    work.innerHTML = `<div class="codex-grid" id="deckList">${stacks.map(st => `<div class="codex-card ${rarCls(st.rar)}" data-key="${sqKey(st.def.name, st.rar)}">${deckTileHtml(st, stackCount(st.def.name, st.rar))}</div>`).join('') || '<div class="fab-empty">Aucune carte dans cette catégorie.</div>'}</div>`;
-    work.querySelectorAll('[data-key]').forEach(el => { const e = sqEntry(el.dataset.key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts()); });
+    const grid = dkGrid(work, 'list', 'codex-grid');
+    dkReconcile(grid, stacks, st => 'l|' + sqKey(st.def.name, st.rar), st => {
+      const key = sqKey(st.def.name, st.rar), nb = stackCount(st.def.name, st.rar), pk = 'l|' + key;
+      let el = DK_POOL.get(pk);
+      if(!el){
+        el = document.createElement('div'); el.className = 'codex-card ' + rarCls(st.rar); el.dataset.key = key;
+        const e = sqEntry(key); if(e) addPreviewPress(el, e.def, e.rar, deckPeekOpts());
+        DK_POOL.set(pk, el);
+      }
+      if(el._nb !== nb){ el.innerHTML = deckTileHtml(st, nb); el._nb = nb; }
+      return el;
+    });
+    if(!stacks.length){ const m = document.createElement('div'); m.className = 'fab-empty'; m.textContent = 'Aucune carte dans cette catégorie.'; grid.appendChild(m); }
   } else {
     const list = stacks.map(st => ({ st, key: sqKey(st.def.name, st.rar) }))
       .map(x => Object.assign(x, { rem: deckRemaining(deckDraft.cards, x.key) })).filter(x => x.rem > 0);
     const modMode = deckTab === 'modules';
-    const leftHtml = modMode ? deckModListHtml() : (list.map(x => `<div class="codex-card deck-drag-card ${rarCls(x.st.rar)}" data-key="${x.key}">${deckTileHtml(x.st, x.rem)}</div>`).join('')
+    const leftHtml = modMode ? deckModListHtml() : (list.slice(0, 24).map(x => `<div class="codex-card deck-drag-card ${rarCls(x.st.rar)}" data-key="${x.key}">${deckTileHtml(x.st, x.rem)}</div>`).join('')
       || `<div class="fab-empty" style="grid-column:1/-1;">${stacks.length ? 'Toutes les cartes de cette liste sont déjà dans le deck.' : 'Aucune carte dans cette catégorie.'}</div>`);
     const n = deckDraft.cards.length;
     const sorted = deckDraft.cards.map((k, i) => ({ k, i, e: sqEntry(k) })).filter(x => x.e)
@@ -15044,7 +15127,8 @@ function renderDeckWork(){
     const rightHtml = groups.length ? groups.map(g => `<div class="deck-stack${g[1] ? ' pile' : ''}">${g[1] ? dkCard(g[1], 'deck-back') : ''}${dkCard(g[0], 'deck-front')}</div>`).join('')
       : '<div class="deck-right-empty">Glisse tes cartes ici</div>';
     const dkSig = deckTab + '|' + deckFilter + '|' + deckSort + '|' + deckSearchQuery;
-    if(!modMode && list.length && work._dkSplit && work._dkSplit === work.firstElementChild && work._dkSig === dkSig && deckFastRender(work, list, n)){
+    if(!modMode && !work._dkMod && work._dkSplit && work._dkSplit === work.firstElementChild && deckFastRender(work, list, n, stacks.length ? 'Toutes les cartes de cette liste sont déjà dans le deck.' : 'Aucune carte dans cette catégorie.')){
+      work._dkSig = dkSig;
       requestAnimationFrame(() => { work.style.minHeight = ''; });
       window.deckFitSoon();
       return;
@@ -15066,6 +15150,8 @@ function renderDeckWork(){
       deckAttachDrag(el, 'deck', +el.dataset.idx);
     });
     const lf = document.getElementById('deckLeft');
+    work._dkTok = (work._dkTok || 0) + 1;
+    if(!modMode && list.length > 24) dkPlaceLate(work, lf.firstElementChild, list.slice(24), dkMkLeft);
     lf.querySelectorAll('.mod-card').forEach(c => c.addEventListener('click', () => { if(Date.now() - (lf._scrolledAt || 0) < 350) return; deckPickModule(c.dataset.name, c.dataset.rar); }));
     document.getElementById('deckModSlot').addEventListener('click', () => { if(deckTab !== 'modules'){ deckTab = 'modules'; deckResetSearch(); renderDeckView(); } });
     const col = document.getElementById('deckRight');
@@ -15078,7 +15164,7 @@ function renderDeckWork(){
       if(pile && !stk.classList.contains('open')){ openDeckPile(stk); return; }
       if(pile && !full){ closeDeckPile(); return; }   // pile ouverte, deck incomplet : toucher la referme
     }));
-    work._dkSplit = work.firstElementChild; work._dkSig = dkSig; work._dkPool = new Map();
+    work._dkSplit = work.firstElementChild; work._dkSig = dkSig; work._dkMod = modMode; work._dkPool = new Map();
     window.deckFitSoon(); setTimeout(window.deckFitSoon, 550);   // 2e passage : l'écran finit son fondu d'ouverture
   }
   requestAnimationFrame(() => { work.style.minHeight = ''; });
