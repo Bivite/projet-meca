@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.91</title>
+<title>Projet MECA V0.04.92</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3383,8 +3383,11 @@
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut)); }
   #deckView .deck-switch button.on{color:#fff; background:linear-gradient(160deg, rgba(255,255,255,.34) 0%, transparent 42%), linear-gradient(180deg, #b08cff 0%, #7c4dff 50%, #5b2fd6 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);}
   #deckLeft .deck-mod-grid{grid-template-columns:1fr; gap:10px; padding:4px 0 10px;}
-  #deckView .deck-switch{grid-template-columns:1fr 1fr 1.3fr;}
-  #deckView .deck-switch button[data-t="backs"]{font-size:9.5px; letter-spacing:1px; padding:11px 4px;}
+  #deckView .deck-switch{grid-template-columns:1fr 1fr;}
+  #deckView .deck-switch button[data-t="backs"]{grid-column:1 / -1;}
+  .dk-back.mod .bk-img .mod-card{width:100%; pointer-events:none; filter:drop-shadow(0 3px 6px rgba(0,0,0,.55));}
+  .br-bwin .bwin-mod{width:92%;}
+  .br-bwin .bwin-mod .mod-card{width:100%; filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
   #deckView.deck-tab-backs .deck-tools{display:none;}
   .dk-back-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; padding:14px 2px 10px;}
   .dk-back-grid.mod{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -3408,7 +3411,7 @@
   #defiDeckList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #b08cff; border-radius:6px; box-shadow:0 0 16px rgba(176,140,255,.6);}
   .br-bwin{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-radius:10px; background:radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), #0c0a14 75%);}
   .br-bwin img{width:86%; height:70%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
-  .br-bwin b{font-family:var(--font-title); font-size:9px; letter-spacing:1.2px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8);}
+  .br-bwin > b{font-family:var(--font-title); font-size:9px; letter-spacing:1.2px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8);}   /* V0.04.92 : seulement le libellé (pas le gras du texte du module) */
   .deck-mod-grid .mod-card.deck-mod-sel{box-shadow:0 0 0 2px #ffd978, 0 0 16px rgba(255,200,74,.55); border-radius:6px;}
   .deck-mod-slot{flex:none; margin:6px 0 0;}
   .deck-mod-slot .mod-card{cursor:pointer;}
@@ -8322,7 +8325,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.91</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.92</b></div>
   </div>
 
     </div>
@@ -8592,9 +8595,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.91';
+var BUILD_VERSION = 'V0.04.92';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.92', items:[
+    'DECK : CARTES et MODULES redeviennent deux boutons. Juste en dessous, dans le même cadre, le bouton DOS DE CARTES (onglet CARTES) devient ENCADRÉ DE MODULES (onglet MODULES).',
+    'Modules : plus de dos de module. Chaque deck choisit l\'encadré (face avant) de son module : rare offert, épique et légendaire à gagner dans les boosters ressources (5 % de chances d\'y trouver un dos de carte ou un encadré). L\'encadré choisi habille le module dans le deck, sur l\'écran VS et en combat ; la puissance du module ne change pas.',
+  ] },
   { v:'V0.04.91', items:[
     'MENU : la grande case est ouverte et s\'appelle BATAILLE (rouge, sans icône), placée entre la rangée JOUEUR / ENTRAÎNEMENT IA et la rangée RÉCOMPENSES / DÉFI. Elle n\'a pas encore de fonction : un appui affiche « bientôt disponible ».',
     'MENU : l\'ancienne case BATAILLE s\'appelle maintenant ENTRAÎNEMENT IA (aide et tutoriel mis à jour).',
@@ -13906,11 +13913,6 @@ const BOOST_CARD_BACK = {
    pour l'instant (Alex n'a fourni que rare/epique/legendaire) : on retombe sur le dos CARTE holo
    (portrait) en attendant -- object-fit:contain sur .br-back-img absorbe la différence de ratio sans
    rogner l'image, cf CSS .br-back-img. */
-const BOOST_MODULE_BACK = {
-  rare: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/module-back-rare.webp',
-  epique: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/module-back-epique.webp',
-  legendaire: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/module-back-legendaire.webp'
-};
 // ---------- DOS DE CARTES (V0.04.89) ----------
 // Chaque deck a SON dos pour les cartes classiques (backCard) et SON dos pour le module (backMod). Rare = offert d'office ;
 // épique / légendaire / écarlate : booster RESSOURCES (5 % par booster, même poids que la rareté de la carte) ; holographique : trophée.
@@ -13919,7 +13921,7 @@ const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'holo'], m
 const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', holo:'HOLOGRAPHIQUE' };
 const BACK_DROP_CHANCE = 0.05, BACK_DROP_W = { epique:15, legendaire:5, ecarlate:4 };
 function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
-function backSrc(kind, rar){ return (kind === 'mod' ? BOOST_MODULE_BACK : BOOST_CARD_BACK)[rar] || BOOST_CARD_BACK.rare; }
+function backSrc(kind, rar){ return BOOST_CARD_BACK[rar] || BOOST_CARD_BACK.rare; }   // V0.04.92 : les modules n'ont plus de dos (kind 'mod' = ENCADRÉ, face avant)
 function deckBack(d, kind){
   const r = d && (kind === 'mod' ? d.backMod : d.backCard);
   return (r && BACK_RARS[kind].includes(r) && backOwned(kind, r)) ? r : 'rare';
@@ -13936,7 +13938,8 @@ function rollBackDrop(){
   return pool[pool.length - 1];
 }
 function backWinHtml(res){
-  return '<div class="br-bwin ' + rarCls(res.rar) + '"><img src="' + backSrc(res.bt, res.rar) + '" alt="" draggable="false" onerror="this.style.opacity=\'0\'"><b>DOS ' + (res.bt === 'mod' ? 'MODULE' : 'DE CARTE') + '</b></div>';
+  if(res.bt === 'mod') return '<div class="br-bwin ' + rarCls(res.rar) + '"><div class="bwin-mod"><div class="mod-card ' + rarCls(res.rar) + '">' + modCardFaceHtml(MODULE_DEFS[0], 1, res.rar) + '</div></div><b>ENCADRÉ DE MODULE</b></div>';
+  return '<div class="br-bwin ' + rarCls(res.rar) + '"><img src="' + backSrc(res.bt, res.rar) + '" alt="" draggable="false" onerror="this.style.opacity=\'0\'"><b>DOS DE CARTE</b></div>';
 }
 // Préchargement (V0.02.96, migration Supabase Storage) : BOOST_CARD_BACK et BOOST_MODULE_BACK ne sont
 // plus du base64 inline (disponible instantanément, intégré au HTML) mais des URLs Supabase Storage --
@@ -13947,7 +13950,7 @@ function backWinHtml(res){
 // Simple new Image() sans attente ni callback : en cas d'échec (coupure réseau), l'onerror posé sur
 // chaque <img> au moment de l'affichage réel prend le relais (cf plus bas), donc rien à gérer ici.
 function preloadBoosterBacks(){
-  [BOOST_CARD_BACK, BOOST_MODULE_BACK].forEach(set => {
+  [BOOST_CARD_BACK].forEach(set => {
     Object.values(set).forEach(url => { const img = new Image(); img.src = url; });
   });
 }
@@ -14839,7 +14842,8 @@ const DECK_SIZE = 20;
 function deckShowcaseHtml(d){
   const m = deckModuleValid(d.module), def = m && MODULE_DEFS.find(x => x.name === m.name);
   if(!def) return '<div class="deck-empty"><span>?</span></div>';
-  return `<div class="deck-mod-vit"><div class="mod-card ${rarCls(m.rar)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), m.rar)}</div></div>`;
+  const fr = deckBack(d, 'mod');   // V0.04.92 : vitrine du deck = module dans l'encadré choisi
+  return `<div class="deck-mod-vit"><div class="mod-card ${rarCls(fr)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), fr)}</div></div>`;
 }
 function deckKeyName(k){ return String(k).split('|')[0]; }
 function deckCount(cards, key){ let n = 0; cards.forEach(k => { if(k === key) n++; }); return n; }
@@ -15437,13 +15441,15 @@ function deckRenderSwitch(){
   sw.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === 'backs' ? deckBacksMode : b.dataset.t === deckTab));
   document.getElementById('deckView').classList.toggle('deck-tab-mod', deckTab === 'modules' && !deckDestroyMode);
   document.getElementById('deckView').classList.toggle('deck-tab-backs', deckBacksMode);
+  const bkb = sw.querySelector('[data-t="backs"]'); if(bkb) bkb.textContent = deckTab === 'modules' ? 'ENCADRÉ DE MODULES' : 'DOS DE CARTES';   // V0.04.92
 }
 document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => { if(b.dataset.t === 'backs'){ deckBacksMode = !deckBacksMode; if(deckBacksMode){ deckDestroyMode = false; deckCreateMode = false; hideCraftBar(); } closeDeckPile(true); document.getElementById('deckFilterDetails').open = false; renderDeckView(); return; }
   if(deckTab === b.dataset.t){ if(deckBacksMode){ deckBacksMode = false; closeDeckPile(true); renderDeckView(); } return; } deckTab = b.dataset.t; if(deckTab !== 'cards'){ deckDestroyMode = false; deckCreateMode = false; hideCraftBar(); } closeDeckPile(true); const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value){ si.value = ''; si.dispatchEvent(new Event('input', { bubbles:true })); } document.getElementById('deckFilterDetails').open = false; renderDeckView(); });
 // --- Liste des modules (V0.04.54) ---
 function deckModTile(e, sel){
   const lvl = moduleLevel(e.def.name, e.rar);
-  return `<div class="mod-item"><div class="mod-card ${rarCls(e.rar)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, e.rar)}${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}</div></div>`;
+  const fr = deckDraft ? deckBack(deckDraft, 'mod') : e.rar;   // V0.04.92 : encadré choisi dans le deck
+  return `<div class="mod-item"><div class="mod-card ${rarCls(fr)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, fr)}${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}</div></div>`;
 }
 function deckResetSearch(){ deckBacksMode = false; const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value) si.value = ''; const sc = document.querySelector('#deckView .search-clear'); if(sc) sc.hidden = true; }
 function deckModStacks(){
@@ -15458,7 +15464,8 @@ function deckModListHtml(){
 function deckModSlotHtml(){
   const m = deckDraft && deckDraft.module, def = m && MODULE_DEFS.find(d => d.name === m.name);
   if(!def) return '<div class="deck-mod-slot empty" id="deckModSlot"><span>MODULE</span></div>';
-  return `<div class="deck-mod-slot" id="deckModSlot"><div class="mod-card ${rarCls(m.rar)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), m.rar)}</div></div>`;
+  const fr = deckBack(deckDraft, 'mod');
+  return `<div class="deck-mod-slot" id="deckModSlot"><div class="mod-card ${rarCls(fr)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), fr)}</div></div>`;
 }
 // Cadrage des dos : chaque image a ses propres marges transparentes -> on mesure la zone visible (canvas) et on l'étire pour remplir la case, donc tous les dos ont la même taille.
 const _dkBbox = {};
@@ -15486,15 +15493,16 @@ function dkBackFit(img){
 function deckBackListHtml(){
   const kind = deckTab === 'modules' ? 'mod' : 'card';
   const cur = deckDraft ? deckBack(deckDraft, kind) : null;
-  return BACK_RARS[kind].filter(r => backOwned(kind, r)).map(r => {   // un dos non débloqué n'apparaît pas dans la liste
-    const own = true, sel = cur === r;
-    const lock = own ? '' : '<span class="bk-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
-    return `<div class="dk-back ${kind}${own ? '' : ' lock'}${sel ? ' sel' : ''}" data-kind="${kind}" data-rar="${r}"><div class="bk-img"><img src="${backSrc(kind, r)}" alt="" draggable="false" onload="dkBackFit(this)" onerror="this.style.opacity='0'">${lock}${sel ? '<b class="bk-ok">✓</b>' : ''}</div><small>${BACK_LABEL[r]}</small></div>`;
+  const sm = (deckDraft && deckDraft.module && MODULE_DEFS.find(x => x.name === deckDraft.module.name)) || MODULE_DEFS[0];   // module montré dans l'aperçu de chaque encadré
+  return BACK_RARS[kind].filter(r => backOwned(kind, r)).map(r => {   // un dos / encadré non débloqué n'apparaît pas dans la liste
+    const sel = cur === r;
+    const vis = kind === 'mod' ? `<div class="mod-card ${rarCls(r)}">${modCardFaceHtml(sm, 1, r)}</div>` : `<img src="${backSrc(kind, r)}" alt="" draggable="false" onload="dkBackFit(this)" onerror="this.style.opacity='0'">`;
+    return `<div class="dk-back ${kind}${sel ? ' sel' : ''}" data-kind="${kind}" data-rar="${r}"><div class="bk-img">${vis}${sel ? '<b class="bk-ok">✓</b>' : ''}</div><small>${BACK_LABEL[r]}</small></div>`;
   }).join('');
 }
 function deckPickBack(kind, rar){
-  if(!deckDraft){ showToast('OUVRE UN DECK POUR CHOISIR SON DOS'); return; }
-  if(!backOwned(kind, rar)){ showToast('DOS NON OBTENU : ' + (rar === 'holo' ? 'TROPHÉE « MAÎTRE DE L’ULTIMATE »' : 'BOOSTERS RESSOURCES')); return; }
+  if(!deckDraft){ showToast(kind === 'mod' ? 'OUVRE UN DECK POUR CHOISIR SON ENCADRÉ' : 'OUVRE UN DECK POUR CHOISIR SON DOS'); return; }
+  if(!backOwned(kind, rar)){ showToast((kind === 'mod' ? 'ENCADRÉ NON OBTENU : ' : 'DOS NON OBTENU : ') + (rar === 'holo' ? 'TROPHÉE « MAÎTRE DE L’ULTIMATE »' : 'BOOSTERS RESSOURCES')); return; }
   if(kind === 'mod') deckDraft.backMod = rar; else deckDraft.backCard = rar;
   renderDeckView();
   if(navigator.vibrate) try{ navigator.vibrate(10); }catch(_){}
@@ -18642,7 +18650,7 @@ function btlVsIntro(){
       const md = (typeof MODULE_DEFS !== 'undefined') ? MODULE_DEFS.find(x => x.name === m.name) : null; if(!md) return null;
       const el = document.createElement('div'); el.className = 'vs-mod ' + (side === 'o' ? 'o' : 'p');
       el.style.cssText = 'width:' + modW + 'px;left:' + (side === 'o' ? W * .04 : W - modW - W * .04) + 'px;top:' + ((side === 'o' ? cyO : cyP) - modH / 2) + 'px';
-      el.innerHTML = '<i class="vs-br"></i><div class="vs-mc"><div class="mod-big ' + rarCls(m.rar) + '">' + modCardFaceHtml(md, m.level || 1, m.rar, { fx:true }) + '</div><i class="vs-sh"></i></div>';
+      el.innerHTML = '<i class="vs-br"></i><div class="vs-mc"><div class="mod-big ' + rarCls(m.frame || m.rar) + '">' + modCardFaceHtml(md, m.level || 1, m.frame || m.rar, { fx:true }) + '</div><i class="vs-sh"></i></div>';
       ui.appendChild(el); return el;
     };
     const mO = mkMod('o'), mP = mkMod('p');
@@ -19798,7 +19806,7 @@ function btlModHoldDown(ev){
   if(!BTL || BTL.abort || BTL.hold || BTL.menu || BTL.tg || BTL.fz || BTL.mz) return;
   const btn = ev.currentTarget, side = btn.id === 'btlOMod' ? 'o' : 'p', m = BTL.mod && BTL.mod[side]; if(!m) return;
   const md = (typeof MODULE_DEFS !== 'undefined') ? MODULE_DEFS.find(x => x.name === m.name) : null; if(!md) return;
-  const c = { rar:m.rar, _mod:true, _el:btn, _big:'<div class="mod-big ' + rarCls(m.rar) + '">' + modCardFaceHtml(md, m.level || 1, m.rar, { fx:true }) + '</div>' };
+  const c = { rar:m.frame || m.rar, _mod:true, _el:btn, _big:'<div class="mod-big ' + rarCls(m.frame || m.rar) + '">' + modCardFaceHtml(md, m.level || 1, m.frame || m.rar, { fx:true }) + '</div>' };
   const mz = BTL.mz = { c, shown:false, sx:ev.clientX, sy:ev.clientY, t:0 };
   const stop = () => { window.removeEventListener('pointermove', mz.move); window.removeEventListener('pointerup', mz.up, true); window.removeEventListener('pointercancel', mz.up, true); clearTimeout(mz.t); };
   mz.move = e => { if(!BTL){ stop(); return; } if(!mz.shown && Math.hypot(e.clientX - mz.sx, e.clientY - mz.sy) > 14){ stop(); BTL.mz = null; } };
@@ -24768,7 +24776,7 @@ function btlModInit(d){
     if(!x || !BTL_MODULES[x.name]) return null;
     if(typeof modStackCount === 'function' && modStackCount(x.name, x.rar || 'rare') < 1) return null;   // module plus possédé : pas de module
     const lvl = x.level || (typeof moduleLevel === 'function' ? moduleLevel(x.name, x.rar) : 1) || 1;
-    return { name:x.name, rar:x.rar || 'rare', level:lvl, t:btlModT(x.rar || 'rare', lvl) };
+    return { name:x.name, rar:x.rar || 'rare', level:lvl, t:btlModT(x.rar || 'rare', lvl), frame:(typeof deckBack === 'function' && d) ? deckBack(d, 'mod') : 'rare' };   // frame = encadré (visuel seulement, la puissance reste celle de rar)
   };
   // V0.04.58 : l'adversaire a toujours un module (au hasard, de la même rareté que celui du joueur)
   const names = Object.keys(BTL_MODULES), rar = (d && d.module && d.module.rar) || 'rare';
@@ -24819,7 +24827,7 @@ function btlModMount(){
     if(!m){ if(side === 'p') return; b.hidden = false; b.classList.add('empty'); b.innerHTML = '<i class="bm-art"></i><i class="bm-gl"></i><i class="bm-fr"></i>'; return; }   // case adverse sans module (choisi dans son deck plus tard) : cadre vide
     const md = (typeof MODULE_DEFS !== 'undefined') ? MODULE_DEFS.find(x => x.name === m.name) : null;
     b.innerHTML = '<i class="bm-art">' + (md && md.art ? '<img src="' + md.art + '" alt="" draggable="false" onerror="this.style.opacity=0">' : '') + '</i><i class="bm-gl"></i><i class="bm-fr"></i>';
-    b.hidden = false; b.classList.add('rar-' + m.rar);
+    b.hidden = false; b.classList.add('rar-' + (m.frame || m.rar));
     b.addEventListener('pointerdown', btlModHoldDown);
     if(side === 'p') b.addEventListener('pointerdown', btlModDown);
   });
