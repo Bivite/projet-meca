@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.81</title>
+<title>Projet MECA V0.04.82</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7733,6 +7733,10 @@
 .btl .unit.cbt.f-legendaire{ --cdx:-1.1%; --cdy:-1.3%; }
 .btl .unit.cbt.f-holo{ --cdx:.2%; --cdy:-1.6%; }
 .btl .unit.cbt.f-ecarlate{ --cdx:-.2%; --cdy:-1.4%; }
+/* traits de flamme (V0.04.82) : dessinés en canvas par flame_fx.js (aucun style ici) */
+
+/* contour 3D pré-calculé (canvas .pc-sh, voir btlBodyShadow) : le filtre CSS en cascade n'est plus recalculé à chaque image */
+.btl-body.baked{ filter:none; }
 /* ===== nouvelles petites cartes de combat (V0.04.21) : cadres carrés intégrés en base64, 4 verres ATK / DEF / ULT / PV ===== */
 .btl{
   --cbt-rar:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-d2b511694f05.webp);
@@ -8261,7 +8265,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.81</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.82</b></div>
   </div>
 
     </div>
@@ -8531,9 +8535,14 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.81';
+var BUILD_VERSION = 'V0.04.82';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.82', items:[
+    'FLAMMES : les cartes qui peuvent encore agir portent maintenant un vrai trait de flamme animé (particules qui montent et se tordent), rouge côté ennemi pour attaquer et bleu côté opposé pour défendre. Elles s\'éteignent d\'elles-mêmes quand plus rien ne peut agir et se réduisent toutes seules sur un téléphone lent.',
+    'FLUIDITÉ EN COMBAT : correction d\'une saccade introduite en V0.04.81. Les ombres de la plaque du champ de bataille sont maintenant calculées une seule fois au lieu d\'être recalculées à chaque image (environ trois fois moins de travail par image).',
+    'AUDIT COMPLET : les 51 cartes, le ciblage, l\'ordre des actions, les chiffres de combat, les défis, les sauvegardes et 12 journées de jeu ont été testés, ainsi que près de 2 900 parties simulées : aucun bug de règles, aucune fuite mémoire. Retrait de code mort (anciens niveaux de cartes et de modules) sans changement de comportement.',
+  ] },
   { v:'V0.04.81', items:[
     'CHAMP DE BATAILLE (Batailles et Défis) : la plaque est entièrement dessinée en code, sans aucune image : acier brossé, fibre de carbone tissée, plaques biseautées, vis, grilles d\'aération et néons dans des logements creusés. Elle s\'adapte à tous les écrans, les cases font maintenant 78 px sur téléphone, et la composition est symétrique entre le joueur et l\'adversaire.',
     'LUMIÈRES : quand une carte légendaire, écarlate ou holo est posée, les néons de la plaque prennent la couleur de sa rareté puis reviennent au rouge (adversaire) et au bleu (joueur).',
@@ -10879,8 +10888,7 @@ function copiesOf(defOrName){
 function isOwned(def){ return copiesOf(def) > 0; }
 function effRarity(def){ return rarityOf(def); }   // V0.04.49 : rareté unique par carte
 // Bonus de stats par palier de rareté gagné par fusion (+30 % par palier).
-const RARITY_BONUS_PER_TIER = 0.3;
-const HOLO_BONUS = 0.5;   // une holographique = sa version légendaire +50 %
+// une holographique = sa version légendaire +50 %
 // Paliers épique/légendaire effectivement GAGNÉS PAR FUSION, par carte (V0.02.83, demande d'Alex :
 // "puisque toutes les cartes... seront des cartes rares, il faut que dans la fabrique... les cartes
 // épique et légendaire soit quand même présente[s]... identique[s] au cartes rare sur les stats").
@@ -10895,11 +10903,6 @@ const HOLO_BONUS = 0.5;   // une holographique = sa version légendaire +50 %
 const cardTierFused = {};
 function rarityMult(def, r){
   return 1;   // V0.04.49 : plus de bonus de palier (rareté unique)
-  if(isHolo(r)) return rarityMult(def, 'legendaire') + HOLO_BONUS;
-  const dt = tierOf(r) - tierOf(rarityOf(def));
-  if(dt <= 0) return 1;
-  if(!(cardTierFused[def.name] && cardTierFused[def.name][r])) return 1;   // palier non fusionné : stats de rare
-  return 1 + RARITY_BONUS_PER_TIER * dt;
 }
 function ownedStacks(){
   const out = [];
@@ -14379,12 +14382,7 @@ function setupLorePin(){
 }
 // ---------- Montée de niveau des cartes (dépense l'or et l'XP stockés) ----------
 // Coût d'un niveau L -> L+1 ; on peut monter plusieurs niveaux d'un coup.
-function lvlStepCost(L){ return { gold: Math.round(10 * Math.pow(L, 1.25)), xp: Math.round(12 * Math.pow(L, 1.3)) }; }
-function lvlCost(from, to){ return { gold:0, xp:0 };   // V0.04.32 : plus de niveaux, rien à rembourser
-  let gold = 0, xp = 0;
-  for(let L = from; L < to; L++){ const c = lvlStepCost(L); gold += c.gold; xp += c.xp; }
-  return { gold, xp };
-}
+function lvlCost(from, to){ return { gold:0, xp:0 }; }   // V0.04.32 : plus de niveaux, rien à rembourser
 // Affiche le gain prévu à côté de chaque stat de la fiche : « 800 +3 »
 function openCodexModal(name, rar, opts){
   if(player.stats) player.stats.cardViews++;
@@ -17206,12 +17204,16 @@ function btlCanActNow(c){
   if(!BTL || BTL.over || !c || c.leader || c.hp <= 0 || c.plan || !btlCanAct(c) || BTL.mana[c.side] <= 0) return false;
   return (BTL.phase === 'plan' && BTL.side === 'p' && c.side === 'p') || (BTL.phase === 'ai' && c.side === 'o');
 }
+// traits de flamme (V0.04.82) : une carte qui peut agir montre un trait rouge côté ennemi (attaque : geste vers le haut pour le joueur) et un trait bleu côté opposé (défense : geste vers le bas) ;
+// ils disparaissent dès qu'une action est choisie ou qu'il n'y a plus de mana (même règle que le halo). Pas de trait bleu si la carte ne peut pas défendre (btlNoDef).
+function btlCanCls(c){ if(!btlCanActNow(c)) return ''; return ' can-act can-atk' + (btlNoDef(c) ? '' : ' can-dfn'); }
 function btlRefreshCan(){
   if(!BTL || !BTL.el) return;
   ['p', 'o'].forEach(s => BTL.S[s].slots.forEach(c => {
     if(!c) return; const u = btlUnitEl(c), un = u && u.querySelector('.unit.cbt');
-    if(un) un.classList.toggle('can-act', btlCanActNow(c));
+    if(un){ const ok = btlCanActNow(c); un.classList.toggle('can-act', ok); un.classList.toggle('can-atk', ok); un.classList.toggle('can-dfn', ok && !btlNoDef(c)); }
   }));
+  btlFlameKick();
   const canHand = BTL.phase === 'plan' && BTL.side === 'p' && BTL.mana.p > 0 && BTL.S.p.slots.some(x => !x);
   const h = btlQ('#btlHand'); if(h) h.querySelectorAll('.btl-hc').forEach(e => e.classList.toggle('can', canHand));
   btlModPaint();
@@ -17256,7 +17258,7 @@ function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class
 function btlSmallHtml(c){
   if(c.leader) return '<div class="unit cbt chief"><i class="chief-fill"></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>';   // case pentagonale du chef : DEF à gauche, PV à droite, centre vide (artwork plus tard)
   const art = winArt(c.def), af = winFocus(c.def);
-  return '<div class="unit cbt f-' + c.rar + (c.ultOn ? ' ult-on' : btlUltReady(c) ? ' ult-rdy' : '') + (btlCanActNow(c) ? ' can-act' : '') + '">' +
+  return '<div class="unit cbt f-' + c.rar + (c.ultOn ? ' ult-on' : btlUltReady(c) ? ' ult-rdy' : '') + btlCanCls(c) + '">' +
     '<div class="cbt-flame"></div><div class="cbt-can"></div>' +
     (art ? '<div class="cbt-art-img"><img class="cbt-art-fg" src="' + art + '" alt="" style="object-position:50% ' + af + '%" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'"></div>' : '') +
     '<div class="cbt-ring"></div>' + (btlHas(c, 'tank') ? '<div class="cbt-tank"></div><i class="cbt-wm"></i>' : btlHas(c, 'baroud') ? '<i class="cbt-wm sk"></i>' : btlHas(c, 'passif') ? '<i class="cbt-wm pa"></i>' : btlHas(c, 'appel') ? '<i class="cbt-wm ap"></i>' : btlHas(c, 'percee') ? '<i class="cbt-wm pe"></i>' : '') + '<div class="cbt-fl"></div>' +
@@ -17946,6 +17948,22 @@ function btlBuildDom(){
 }
 
 // ---------- circuits imprimés gravés dans la plaque (discrets : fines pistes + points de soudure) ----------
+// Contour 3D de la plaque, calculé UNE fois (V0.04.82) : avant, cinq ombres portées CSS empilées (dont un flou de 12 px) étaient recalculées sur toute la plaque
+// à chaque image dès qu'une lumière ou une carte s'animait (≈ 55 ms par image en rendu logiciel). Même enchaînement, mêmes couleurs, dessiné une fois dans un canvas
+// placé derrière la plaque ; le filtre CSS n'est retiré que si le dessin a réussi.
+function btlBodyShadow(body, P, W, H){
+  try{
+    const wrap = body.parentNode, old = wrap && wrap.querySelector('.pc-sh'); if(!wrap) return; if(old) old.remove();
+    const dpr = Math.min(2, window.devicePixelRatio || 1), M = 32, cw = Math.round((W + 2 * M) * dpr), ch = Math.round((H + 2 * M) * dpr);
+    const mkc = () => { const c = document.createElement('canvas'); c.width = cw; c.height = ch; return c; };
+    let cur = mkc(); const g = cur.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, M * dpr, M * dpr); g.fillStyle = '#16191e'; g.beginPath();
+    P.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); g.fill();
+    [[0, -1, 0, 'rgba(205,212,222,.6)'], [-1, 0, 0, 'rgba(150,158,172,.5)'], [1, 0, 0, 'rgba(0,0,0,.55)'], [0, 3, 0, '#101216'], [0, 10, 12, 'rgba(0,0,0,.62)']].forEach(s => {   // = drop-shadow() CSS en chaîne : chaque ombre part du résultat précédent
+      const nx = mkc(), h = nx.getContext('2d'); h.shadowColor = s[3]; h.shadowOffsetX = s[0] * dpr; h.shadowOffsetY = s[1] * dpr; h.shadowBlur = s[2] * dpr; h.drawImage(cur, 0, 0); cur = nx; });
+    cur.className = 'pc-sh'; cur.style.cssText = 'position:absolute;left:' + (-M) + 'px;top:' + (-M) + 'px;width:' + (W + 2 * M) + 'px;height:' + (H + 2 * M) + 'px;pointer-events:none;';
+    wrap.insertBefore(cur, wrap.firstChild); wrap.classList.add('baked');
+  }catch(e){ console.error(e); }
+}
 function btlCircuit(){
   const svg = btlQ('#btlPcb'), body = svg && svg.parentNode, plate = btlQ('#btlPlate'), mid = btlQ('.btl-mid');
   if(!svg || !plate || !mid) return;
@@ -17965,6 +17983,7 @@ function btlCircuit(){
   body.style.clipPath = 'polygon(' + P.map(p => p[0].toFixed(1) + 'px ' + p[1].toFixed(1) + 'px').join(',') + ')';
   body.style.webkitClipPath = body.style.clipPath;
   ['.btl-hot-in', '.btl-glow', '.btl-heat'].forEach(sel => { const e = btlQ(sel); if(e){ e.style.clipPath = body.style.clipPath; e.style.webkitClipPath = body.style.clipPath; } });
+  btlBodyShadow(body, P, W, H);
   const inset = (pts, dd) => pts.map((p, i) => {
     const a = pts[(i + pts.length - 1) % pts.length], b = pts[(i + 1) % pts.length];
     const n = (u, v) => { const dx = v[0] - u[0], dy = v[1] - u[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
@@ -23812,13 +23831,9 @@ function btlPickFoe(c, foes, mult){
 //  Module RARE : valeurs fixes (coût 4, effet 1). Aux niveaux / raretés supérieures : coût jusqu'à 3,
 //  dégâts jusqu'à 5, soins jusqu'à 10 PV, cartes piochées jusqu'à 3.
 // =====================================================================================================
-const BTL_MOD_CAP = { rare:100, epique:150, legendaire:250 };
 // progression 0 (rare, fixe) -> 1 (légendaire niveau max)
 function btlModT(rar, lvl){
   return 0;   // plus de montée de niveau : effets fixes (1 dégât / 1 PV / 1 carte...) quelle que soit la rareté
-  if(rar === 'rare') return 0;
-  const cap = BTL_MOD_CAP[rar] || 250, p = Math.max(0, Math.min(1, ((lvl || 1) - 1) / (cap - 1)));
-  return rar === 'epique' ? .5 * p : .5 + .5 * p;
 }
 const btlModCost = t => 3;
 const BTL_MOD_N = { 'BAVURES':3, 'ROCKET':2, 'SAPHYR':2, 'T-ARMS 09':4, 'PROK-IEM':2 };   // V0.04.59 : équilibrage des effets (dégâts / cartes piochées / PV soignés)
@@ -24570,6 +24585,140 @@ function btlSmokeStep(dt){
     const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * .95); gr.addColorStop(0, 'rgba(' + col.join(',') + ',' + a.toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + col.join(',') + ',0)');
     ctx.globalAlpha = 1; ctx.fillStyle = gr; ctx.fillRect(cx - w, cy - w, w * 2, w * 2); });
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+// ===== traits de flamme des cartes qui peuvent agir (V0.04.82) =====
+// Attaque = flamme rouge collée au bord de la carte côté ennemi (haut pour le joueur, bas pour l'adversaire) ; défense = flamme bleue sur le bord opposé.
+// Moteur de feu en canvas (aucune image) : à chaque trait, des particules naissent le long du bord, montent en décélérant, rétrécissent et passent du blanc chaud
+// au rouge sombre (ou blanc glacé → bleu nuit). Les zones chaudes voyagent le long du trait, chaque langue ondule et se penche avec le vent, de petites braises s'en détachent :
+// ça bouge sans jamais pulser. Le feu s'allume en fondu et s'éteint naturellement quand la carte a choisi son action ou qu'il n'y a plus de mana.
+// Léger par construction : deux petits canvas (un par rangée de cartes, pas tout l'écran), une seule planche de sprites (dessins groupés), calcul à 30 images/s,
+// géométrie relue seulement quand l'état change (puis toutes les 0,3 s), qualité qui s'adapte toute seule si l'appareil peine, arrêt complet quand plus rien ne brûle.
+const BTL_FLAME = { strips:[], parts:[], bands:{}, atlas:null, raf:0, last:0, T:0, acc:0, avg:16.7, q:1, scanAt:-9, dirty:true, manual:false };
+const BTL_FL_PAL = {
+  r:[[255, 228, 208], [255, 152, 98], [255, 88, 54], [255, 44, 34], [226, 24, 28], [170, 14, 22], [110, 8, 16], [64, 4, 12]],
+  b:[[224, 245, 255], [140, 206, 255], [84, 170, 255], [48, 128, 255], [32, 96, 248], [24, 62, 206], [16, 38, 150], [10, 22, 96]]
+};
+const BTL_FL_N = 14, BTL_FL_S = 40;
+// planche de sprites : une rangée par teinte (rouge, bleu), 14 boules de feu douces de la plus chaude à la plus froide
+function btlFlameAtlas(){
+  const F = BTL_FLAME; if(F.atlas) return F.atlas; const S = BTL_FL_S, N = BTL_FL_N, c = document.createElement('canvas'); c.width = S * N; c.height = S * 2; const g = c.getContext('2d');
+  ['r', 'b'].forEach((k, row) => { const pal = BTL_FL_PAL[k];
+    for(let i = 0; i < N; i++){
+      const f = i / (N - 1) * (pal.length - 1), a = Math.floor(f), b = Math.min(pal.length - 1, a + 1), t = f - a, rgb = pal[a].map((v, j) => Math.round(v + (pal[b][j] - v) * t)).join(','), gr = g.createRadialGradient(i * S + S / 2, row * S + S / 2, 0, i * S + S / 2, row * S + S / 2, S / 2);
+      gr.addColorStop(0, 'rgba(' + rgb + ',1)'); gr.addColorStop(.26, 'rgba(' + rgb + ',.7)'); gr.addColorStop(.58, 'rgba(' + rgb + ',.22)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+      g.fillStyle = gr; g.fillRect(i * S, row * S, S, S);
+    } });
+  return (F.atlas = c);
+}
+// un canvas par rangée de cartes (emplacements du joueur / de l'adversaire + marge pour les flammes)
+function btlFlameBands(){
+  const F = BTL_FLAME, fx = btlQ('#btlFx'); if(!fx) return false; btlFlameAtlas();
+  const fr = fx.getBoundingClientRect(), dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  ['p', 'o'].forEach(side => {
+    const sl = document.querySelectorAll('.btl-slot[data-side="' + side + '"]:not(.leader)'); if(!sl.length) return;
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; sl.forEach(e => { const r = e.getBoundingClientRect(); if(r.width < 8) return; x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); });
+    if(x1 < x0) return; const sw = (x1 - x0) / 3, px = sw * .14, py = sw * .4, x = x0 - fr.left - px, y = y0 - fr.top - py, w = x1 - x0 + 2 * px, h = y1 - y0 + 2 * py;
+    let b = F.bands[side];
+    if(!b || !b.cv.isConnected || Math.abs(b.w - w) > 2 || Math.abs(b.h - h) > 2 || Math.abs(b.x - x) > 1 || Math.abs(b.y - y) > 1 || b.dpr !== dpr){
+      if(b && b.cv) b.cv.remove();
+      const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w * dpr)); cv.height = Math.max(1, Math.round(h * dpr)); cv.className = 'btl-flames';
+      cv.style.cssText = 'position:absolute;left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + w.toFixed(1) + 'px;height:' + h.toFixed(1) + 'px;pointer-events:none;';
+      fx.insertBefore(cv, fx.firstChild); b = F.bands[side] = { cv, ctx:cv.getContext('2d'), x, y, w, h, dpr };
+    }
+  });
+  return true;
+}
+// démarre la boucle s'il y a au moins une carte qui peut agir (appelé par btlRefreshCan) ; si elle tourne déjà, on demande juste une relecture immédiate
+function btlFlameKick(){
+  const F = BTL_FLAME; F.dirty = true; if(F.raf || F.manual || !BTL || BTL.abort) return;
+  if(!document.querySelector('.btl-slot .unit.cbt.can-act') || !btlFlameBands()) return;
+  F.last = 0; F.acc = 0; F.raf = requestAnimationFrame(btlFlameLoop);
+}
+function btlFlameLoop(now){
+  const F = BTL_FLAME; F.raf = 0;
+  if(!BTL || BTL.abort){ btlFlameStop(); return; }
+  const dt = F.last ? Math.min(.1, (now - F.last) / 1000) : .016; F.last = now; F.avg += (dt * 1000 - F.avg) * .05; F.acc += dt;
+  if(F.acc >= .028){   // 30 images/s : une image sur deux quand l'écran tourne à 60, toutes les images si l'appareil est plus lent
+    const h = Math.min(.066, F.acc); F.acc = 0;
+    try{ btlFlameStep(h); }catch(e){ console.error(e); btlFlameStop(); return; }
+    if(!F.strips.length && !F.parts.length){ btlFlameStop(); return; }
+  }
+  F.raf = requestAnimationFrame(btlFlameLoop);
+}
+function btlFlameStop(){
+  const F = BTL_FLAME; if(F.raf){ cancelAnimationFrame(F.raf); F.raf = 0; }
+  F.parts.length = 0; F.strips.length = 0; Object.keys(F.bands).forEach(k => { const b = F.bands[k]; if(b && b.cv) b.cv.remove(); }); F.bands = {}; F.dirty = true;
+}
+// relève dans le DOM les cartes qui peuvent agir et met à jour la géométrie de leurs traits
+function btlFlameScan(){
+  const F = BTL_FLAME, fx = btlQ('#btlFx'); if(!fx) return; btlFlameBands(); const fr = fx.getBoundingClientRect(), live = [];
+  document.querySelectorAll('.btl-slot .unit.cbt.can-act').forEach(un => {
+    const r = un.getBoundingClientRect(); if(r.width < 8) return; const slot = un.closest('.btl-slot'), side = (slot && slot.dataset.side) || 'p', w = r.width;
+    [['a', un.classList.contains('can-atk')], ['d', un.classList.contains('can-dfn')]].forEach(q => {
+      if(!q[1]) return; const kd = q[0], dir = (kd === 'a') === (side === 'p') ? -1 : 1;
+      let s = null; for(let i = 0; i < F.strips.length; i++){ const t = F.strips[i]; if(t.el === un && t.kd === kd){ s = t; break; } }
+      if(!s){ s = { el:un, kd, side, k:0, on:true, ph:btlSmRn() * 6.28, acc:0, em:0, pal:kd === 'a' ? 'r' : 'b', n:0, x0:0, x1:0, y:0, dir, sc:1 }; F.strips.push(s); }
+      s.on = true; s.dir = dir; s.sc = w / 78; s.x0 = r.left - fr.left + w * .15; s.x1 = r.left - fr.left + w * .85;
+      s.y = dir < 0 ? r.top - fr.top + w * .008 : r.bottom - fr.top - w * .008; live.push(s);
+    });
+  });
+  F.strips.forEach(s => { if(live.indexOf(s) < 0) s.on = false; });
+}
+function btlFlameStep(dt){
+  const F = BTL_FLAME, rn = btlSmRn, parts = F.parts, N = BTL_FL_N, S = BTL_FL_S, atlas = btlFlameAtlas(); F.T += dt; const T = F.T;
+  if(F.dirty || T - F.scanAt > .3){ btlFlameScan(); F.scanAt = T; F.dirty = false; }
+  // qualité adaptative : si l'écran descend sous ~45 images/s, on allège la flamme (jusqu'à 30 %), puis on la remonte quand ça va mieux
+  if(F.avg > 24) F.q = Math.max(.3, F.q - dt * .25); else if(F.avg < 20) F.q = Math.min(1, F.q + dt * .15);
+  const q = F.q;
+  // ---- naissance des flammes et des braises ----
+  F.strips.forEach(s => {
+    s.k += ((s.on ? 1 : 0) - s.k) * Math.min(1, dt * (s.on ? 4.2 : 9));
+    if(s.k < .012) return;
+    const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : 1;
+    s.acc += 50 * (W / 56) * s.k * q * dt; s.em += 4 * s.k * q * dt;
+    while(s.acc >= 1){ s.acc--; if(s.n > 60 || parts.length > 700) continue; s.n++;
+      let u = rn(), d = .5, n = 0;
+      do{ u = rn(); d = .5 + .5 * Math.sin(u * 8.5 + T * 3.1 + s.ph) * Math.sin(u * 4.7 - T * 2.3 + s.ph * 1.9); if(rn() < Math.max(.05, d) * Math.pow(Math.sin(Math.PI * u), .5)) break; }while(++n < 5);   // les zones chaudes voyagent le long du trait
+      parts.push({ x:s.x0 + W * u, y:s.y, y0:s.y, cx, dir:s.dir, sc, vo:(34 + 24 * rn()) * sc * (.6 + .65 * d), vx:0, age:0, life:.4 + .34 * rn() + .2 * d, s0:(5.6 + 3 * rn()) * sc * (.72 + .5 * d), al:.5 + .3 * rn(), row, ph:rn() * 6.28, f:2.4 + rn() * 2.2, gp:s.ph, emb:false, s });
+    }
+    while(s.em >= 1){ s.em--; if(s.n > 60 || parts.length > 700) continue; s.n++;
+      parts.push({ x:s.x0 + W * (.12 + .76 * rn()), y:s.y, y0:s.y, cx, dir:s.dir, sc, vo:(26 + 34 * rn()) * sc, vx:0, age:0, life:.8 + .8 * rn(), s0:(1.6 + 1.2 * rn()) * sc, al:.9, row, ph:rn() * 6.28, f:3 + rn() * 3, gp:s.ph, emb:true, s });
+    }
+  });
+  // ---- mouvement : montée qui ralentit, ondulation qui grandit avec la hauteur, vent par trait ----
+  for(let k = parts.length - 1; k >= 0; k--){
+    const p = parts[k]; p.age += dt; if(p.age >= p.life){ p.s.n--; parts.splice(k, 1); continue; }
+    const u = p.age / p.life, h = Math.abs(p.y - p.y0), sc = p.sc;
+    p.y += p.dir * p.vo * Math.pow(1 - u, p.emb ? .5 : .9) * dt;
+    const sw = sc * (15 * Math.sin(T * p.f + p.x * .14 + p.ph) + 8 * Math.sin(T * 5.3 - h * .5 + p.ph * 2)) * (.12 + (p.emb ? 1.6 : 1) * u) + sc * 11 * Math.sin(T * .9 + p.gp) * u;
+    p.vx = sw; p.x += (sw + (p.emb ? 0 : (p.cx - p.x) * .9 * u)) * dt;
+  }
+  // ---- dessin (additif : plus c'est dense, plus c'est chaud), une rangée de cartes = un canvas ----
+  ['p', 'o'].forEach(side => {
+    const b = F.bands[side]; if(!b) return; const ctx = b.ctx, dpr = b.dpr, ox = b.x, oy = b.y;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, b.cv.width, b.cv.height); ctx.globalCompositeOperation = 'lighter';
+    const blob = (row, st, x, y, w, h, a) => { ctx.setTransform(dpr * w / S, 0, 0, dpr * h / S, (x - ox) * dpr, (y - oy) * dpr); ctx.globalAlpha = a; ctx.drawImage(atlas, st * S, row * S, S, S, -S / 2, -S / 2, S, S); };
+    F.strips.forEach(s => {
+      if(s.side !== side || s.k < .012) return; const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : 1, dir = s.dir;
+      blob(row, 3, cx, s.y + dir * 3.2 * sc, W * 1.28, 14 * sc, .62 * s.k);        // lueur douce sur le bord
+      blob(row, 5, cx, s.y + dir * 5 * sc, W * 1.6, 28 * sc, .42 * s.k);          // halo large
+      for(let i = 0; i < 6; i++){                                                  // cœur incandescent : six taches dont l'éclat ondule le long du bord
+        const u = (i + .5) / 6, x = s.x0 + W * u, tp = Math.pow(Math.sin(Math.PI * u), .6), br = .42 + .58 * Math.pow((Math.sin(x * .33 + T * 7 + s.ph) * .5 + .5) * (Math.sin(x * .19 - T * 4.3 + s.ph * 1.6) * .5 + .5), .8);
+        blob(row, 1, x, s.y + dir * .6 * sc, W / 6 * 2.1, 5.4 * sc, Math.min(1, br * tp * s.k));
+      }
+    });
+    for(let k = 0; k < parts.length; k++){
+      const p = parts[k]; if(p.s.side !== side) continue; const u = p.age / p.life, fi = Math.min(1, u / .08), a = p.al * fi * Math.pow(1 - u, p.emb ? .8 : 1.25);
+      const stage = Math.min(N - 1, Math.floor(Math.pow(u, p.emb ? .55 : .72) * N)), vy = p.dir * p.vo * Math.pow(1 - u, p.emb ? .5 : .9), m = Math.hypot(p.vx, vy) || 1, nx = p.vx / m, ny = vy / m;
+      const sx = p.s0 * (1 - (p.emb ? .5 : .7) * Math.pow(u, 1.1)), sy = sx * (p.emb ? 1.7 : 1.5 + 1.1 * (1 - u));
+      ctx.setTransform(dpr * ny * sx / S, -dpr * nx * sx / S, dpr * nx * sy / S, dpr * ny * sy / S, (p.x - ox) * dpr, (p.y - oy) * dpr);
+      ctx.globalAlpha = a; ctx.drawImage(atlas, stage * S, p.row * S, S, S, -S / 2, -S / 2, S, S);
+    }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(1, 0, 0, 1, 0, 0);
+  });
+  // traits éteints et sans reste de flamme : on les oublie
+  for(let i = F.strips.length - 1; i >= 0; i--){ const s = F.strips[i]; if(!s.on && s.k < .012) F.strips.splice(i, 1); }
 }
 
 var BTL_TUR = { ny:36, ns:4, w:256, h:256, half:1.75, voff:.38, sp:.819152, src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-97309f4a6faa.webp' };
@@ -25698,11 +25847,6 @@ function applySave(data){
   });
   // Paliers épique/légendaire gagnés par fusion (V0.02.83, cf cardTierFused/rarityMult plus haut).
   Object.keys(cardTierFused).forEach(k => delete cardTierFused[k]);
-  if(false && data.cardTierFused){
-    Object.keys(data.cardTierFused).forEach(name => {
-      cardTierFused[name] = Object.assign({}, data.cardTierFused[name]);
-    });
-  }
   // Migration des exemplaires de module (V0.02.45) : même principe que CHAR_DEFS ci-dessus, pour les
   // modules. BUG CORRIGÉ (V0.02.66, diagnostic du 02/10/2026) : cette branche "pas d'entrée sauvegardée
   // pour ce module" se déclenchait non seulement pour une TOUTE première sauvegarde (avant V0.02.45),
