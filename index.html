@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.89</title>
+<title>Projet MECA V0.04.90</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3399,7 +3399,7 @@
   .dk-back .bk-lock svg{width:100%; height:auto; display:block;}
   .dk-back.sel .bk-img::after{content:''; position:absolute; inset:-3px; border:2px solid #ffd978; border-radius:10px; box-shadow:0 0 16px rgba(255,200,74,.55); pointer-events:none;}
   .dk-back .bk-ok{position:absolute; right:-2px; top:-4px; width:20px; height:20px; border-radius:50%; background:#ffd978; color:#3a2a00; font-size:12px; line-height:20px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.6);}
-  .dk-back small{font-family:var(--font-title); font-weight:900; font-size:9px; letter-spacing:1.2px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.7); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .dk-back small{font-family:var(--font-title); font-weight:900; font-size:9px; letter-spacing:1.2px; text-align:center; color:#000; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .deck-mod-vit, .deck-tile .deck-empty{aspect-ratio:900/506;}
   .deck-mod-vit{width:100%; display:flex; align-items:center; justify-content:center; pointer-events:none;}
   .deck-mod-vit .mod-card{width:100%;}
@@ -7818,6 +7818,32 @@
   .btl .unit.cbt .cbt-art-img{ overflow:hidden; display:flex; align-items:center; justify-content:center; }
   .btl .unit.cbt .cbt-art-img .cbt-art-bg{ position:absolute; display:block; left:-8%; top:-8%; width:116%; height:116%; object-fit:cover; display:none; pointer-events:none; }
   .btl .unit.cbt .cbt-art-img .cbt-art-fg{ position:relative; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  /* ÉCRAN VS (V0.04.90) : noir + canvas (mélange « screen » sur le champ de bataille) + calque modules / noms, au-dessus du combat (z 20), sous les fenêtres (30+) */
+  .vs-base{ position:fixed; inset:0; z-index:21; background:#000; touch-action:none; }
+  .vs-cv{ position:fixed; left:0; top:0; width:100vw; height:100vh; height:100dvh; z-index:22; mix-blend-mode:screen; pointer-events:none; }
+  .vs-ui{ position:fixed; inset:0; z-index:23; overflow:hidden; pointer-events:none; font-family:var(--font-title); }
+  .vs-mod{ position:absolute; will-change:transform,opacity; opacity:0; }
+  .vs-mod.o .vs-mc{ filter:drop-shadow(0 0 14px rgba(255,60,40,.45)) drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
+  .vs-mod.p .vs-mc{ filter:drop-shadow(0 0 14px rgba(60,160,255,.5)) drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
+  .vs-mc{ position:relative; width:100%; overflow:hidden; border-radius:10px; }
+  .vs-mc .mod-big{ width:100%; }
+  .vs-sh{ position:absolute; top:-10%; bottom:-10%; left:0; width:34%; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.34), rgba(255,255,255,0)); pointer-events:none; opacity:0; }
+  .vs-name{ position:absolute; opacity:0; font-weight:900; letter-spacing:.14em; line-height:1; white-space:nowrap; text-transform:uppercase; will-change:transform,opacity; }
+  .vs-name b{ display:block; padding:3px .14em 4px 0; font-weight:900;
+    background:linear-gradient(180deg,#f4f6fa 0%,#c9ced8 36%,#8d94a3 50%,#5b6170 53%,#9ca3b0 78%,#c4c9d3 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 2px 0 #1b1e25) drop-shadow(0 0 9px rgba(190,200,225,.28)); }
+  .vs-ul{ display:block; height:2px; margin-top:5px; transform:scaleX(0); }
+  .vs-name.o .vs-ul{ transform-origin:0 50%; background:linear-gradient(90deg,#ff5a46,rgba(255,90,70,0)); box-shadow:0 0 8px rgba(255,60,40,.6); }
+  .vs-name.p{ text-align:right; }
+  .vs-name.p .vs-ul{ transform-origin:100% 50%; background:linear-gradient(270deg,#58c8ff,rgba(88,200,255,0)); box-shadow:0 0 8px rgba(60,160,255,.6); }
+  .vs-vig{ position:fixed; inset:0; z-index:22; pointer-events:none; opacity:0;
+    background:radial-gradient(125% 92% at 50% 50%, rgba(0,0,0,0) 48%, rgba(0,0,0,.62) 100%), repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, rgba(0,0,0,0) 1px 3px); }
+  .vs-br{ position:absolute; inset:-9px; pointer-events:none; --c:#ff6a55;
+    background:linear-gradient(var(--c),var(--c)) 0 0/18px 2px no-repeat, linear-gradient(var(--c),var(--c)) 0 0/2px 18px no-repeat, linear-gradient(var(--c),var(--c)) 100% 0/18px 2px no-repeat, linear-gradient(var(--c),var(--c)) 100% 0/2px 18px no-repeat,
+      linear-gradient(var(--c),var(--c)) 0 100%/18px 2px no-repeat, linear-gradient(var(--c),var(--c)) 0 100%/2px 18px no-repeat, linear-gradient(var(--c),var(--c)) 100% 100%/18px 2px no-repeat, linear-gradient(var(--c),var(--c)) 100% 100%/2px 18px no-repeat;
+    filter:drop-shadow(0 0 4px var(--c)); }
+  .vs-mod.p .vs-br{ --c:#62ccff; }
+  .vs-cvg{ mix-blend-mode:normal; }
 </style>
 </head>
 <body>
@@ -8290,7 +8316,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.89</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.90</b></div>
   </div>
 
     </div>
@@ -8560,9 +8586,13 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.89';
+var BUILD_VERSION = 'V0.04.90';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.90', items:[
+    'Écran VS : avant chaque combat (Bataille et Défis), un écran d\'entrée présente les deux camps. Fond noir qui s\'illumine en rouge (adversaire) et bleu (toi), un VS en métal chauffé frappe l\'écran, les modules des deux decks glissent depuis leur bord avec les noms, puis le VS refroidit en acier gris, tout s\'éteint et le champ de bataille apparaît en fondu enchaîné jusqu\'au pile ou face. En Défi, l\'adversaire porte le nom de la carte du défi.',
+    'Dos de cartes : tous les dos de la liste ont maintenant la même taille, avec le nom en noir en dessous.',
+  ] },
   { v:'V0.04.89', items:[
     'Modules : le LABO est fermé. Tous les joueurs possèdent tous les modules (1 exemplaire de chacun, sans rareté) et choisissent librement celui de leur deck. Les boosters modules disparaissent (les anciens deviennent des boosters cartes).',
     'Dos de cartes : nouveau bouton DOS DE CARTES dans DECK. Chaque deck a son dos pour les cartes et son dos pour le module. Le dos choisi est celui de la pile en combat et des cartes cachées du booster (celui du premier deck). La vitrine d\'un deck est maintenant son module.',
@@ -13877,7 +13907,6 @@ const BOOST_MODULE_BACK = {
 // Un dos obtenu ne retombe plus jamais ; ils ne se détruisent ni ne se fabriquent. Pas de dos module écarlate ni holo.
 const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'holo'], mod:['rare', 'epique', 'legendaire'] };
 const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', holo:'HOLOGRAPHIQUE' };
-const BACK_COLOR = { rare:'#5aa2ff', epique:'#c07dff', legendaire:'#ffae45', ecarlate:'#ff4d6a', holo:'#8ff3ff' };
 const BACK_DROP_CHANCE = 0.05, BACK_DROP_W = { epique:15, legendaire:5, ecarlate:4 };
 function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
 function backSrc(kind, rar){ return (kind === 'mod' ? BOOST_MODULE_BACK : BOOST_CARD_BACK)[rar] || BOOST_CARD_BACK.rare; }
@@ -15421,13 +15450,36 @@ function deckModSlotHtml(){
   if(!def) return '<div class="deck-mod-slot empty" id="deckModSlot"><span>MODULE</span></div>';
   return `<div class="deck-mod-slot" id="deckModSlot"><div class="mod-card ${rarCls(m.rar)}" data-name="${def.name}" data-rar="${m.rar}">${modCardFaceHtml(def, moduleLevel(def.name, m.rar), m.rar)}</div></div>`;
 }
+// Cadrage des dos : chaque image a ses propres marges transparentes -> on mesure la zone visible (canvas) et on l'étire pour remplir la case, donc tous les dos ont la même taille.
+const _dkBbox = {};
+function dkBackFit(img){
+  const src = img.currentSrc || img.src;
+  const apply = bb => { if(!bb) return;
+    const w = bb.x1 - bb.x0, h = bb.y1 - bb.y0;
+    img.style.cssText += ';position:absolute;object-fit:fill;max-width:none;width:' + (bb.W / w * 100) + '%;height:' + (bb.H / h * 100) + '%;left:' + (-bb.x0 / w * 100) + '%;top:' + (-bb.y0 / h * 100) + '%'; };
+  if(src in _dkBbox){ apply(_dkBbox[src]); return; }
+  const im = new Image(); im.crossOrigin = 'anonymous';
+  im.onload = () => { try {
+    const W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 256 / Math.max(W, H));
+    const cw = Math.max(1, Math.round(W * k)), ch = Math.max(1, Math.round(H * k));
+    const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+    const g = c.getContext('2d'); g.drawImage(im, 0, 0, cw, ch);
+    const d = g.getImageData(0, 0, cw, ch).data; let x0 = cw, y0 = ch, x1 = 0, y1 = 0;
+    for(let y = 0; y < ch; y++) for(let x = 0; x < cw; x++) if(d[(y * cw + x) * 4 + 3] > 40){ if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y; }
+    if(x1 <= x0 || y1 <= y0) throw 0;
+    _dkBbox[src] = { W, H, x0: x0 / k, y0: y0 / k, x1: (x1 + 1) / k, y1: (y1 + 1) / k };
+  } catch(e){ _dkBbox[src] = null; }
+  apply(_dkBbox[src]); };
+  im.onerror = () => { _dkBbox[src] = null; };
+  im.src = src;
+}
 function deckBackListHtml(){
   const kind = deckTab === 'modules' ? 'mod' : 'card';
   const cur = deckDraft ? deckBack(deckDraft, kind) : null;
   return BACK_RARS[kind].filter(r => backOwned(kind, r)).map(r => {   // un dos non débloqué n'apparaît pas dans la liste
     const own = true, sel = cur === r;
     const lock = own ? '' : '<span class="bk-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
-    return `<div class="dk-back ${kind}${own ? '' : ' lock'}${sel ? ' sel' : ''}" data-kind="${kind}" data-rar="${r}"><div class="bk-img"><img src="${backSrc(kind, r)}" alt="" draggable="false" onerror="this.style.opacity='0'">${lock}${sel ? '<b class="bk-ok">✓</b>' : ''}</div><small style="color:${BACK_COLOR[r]}">${BACK_LABEL[r]}</small></div>`;
+    return `<div class="dk-back ${kind}${own ? '' : ' lock'}${sel ? ' sel' : ''}" data-kind="${kind}" data-rar="${r}"><div class="bk-img"><img src="${backSrc(kind, r)}" alt="" draggable="false" onload="dkBackFit(this)" onerror="this.style.opacity='0'">${lock}${sel ? '<b class="bk-ok">✓</b>' : ''}</div><small>${BACK_LABEL[r]}</small></div>`;
   }).join('');
 }
 function deckPickBack(kind, rar){
@@ -18472,6 +18524,386 @@ function btlWarm(){
   if(typeof BOOST_CARD_BACK !== 'undefined') Object.keys(BOOST_CARD_BACK).forEach(k => { if(BOOST_CARD_BACK[k]) urls.add(BOOST_CARD_BACK[k]); });
   urls.forEach(u => { try{ const i = new Image(); i.decoding = 'async'; i.src = u; if(i.decode) i.decode().catch(() => {}); }catch(e){} });
 }
+// ================= ÉCRAN VS (V0.04.90) =================
+// Avant le pile ou face d'un combat BATAILLE : fond noir, champs technologiques rouge (adversaire, gauche) et bleu (joueur, droite) qui se rejoignent
+// sur une couture orange-or, VS en métal frappé (choc, étincelles), les deux modules de deck glissent chacun de leur côté (adversaire vers le haut,
+// joueur vers le bas), les noms s'affichent, attente vivante de 2 s, puis tout repart (modules aux bords, VS qui refroidit et s'éteint, noir qui
+// s'efface AVANT les couleurs : le champ de bataille se devine derrière, puis les couleurs s'estompent). Tout est dessiné en canvas (une seule
+// horloge `vsT()` : même rendu à chaque image, pilotable à la main pour les tests via window.__vsManual / window.__vsStep).
+var VS_AI_NAMES = ['NÉMÉSIS', 'OMÉGA-9', 'SPECTRE', 'CERBÈRE', 'VORTEX', 'TITAN-X', 'ANUBIS', 'KRONOS', 'HYDRA', 'BASILISK', 'ÉCLIPSE', 'LÉVIATHAN'];
+var VS_T = { w0:450, w1:1700, st:2150, m0:2800, n0:3700, hold:6150, nOut:6150, mOut:6300, cool0:6400, cool1:7400, vf0:7400, vf1:7850, b0:7750, b1:8350, c0:8250, c1:9250, res:8900 };
+const vsClamp = (x, a, b) => x < a ? a : x > b ? b : x;
+const vsProg = (t, a, b) => vsClamp((t - a) / (b - a), 0, 1);
+const vsEo3 = x => 1 - Math.pow(1 - x, 3), vsEi3 = x => x * x * x, vsEio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, vsSm = x => x * x * (3 - 2 * x);
+function vsRng(seed){ let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+function vsHex(h){ const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function vsMixA(A, B, t){ return [A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t]; }
+const vsCss = A => 'rgb(' + Math.round(A[0]) + ',' + Math.round(A[1]) + ',' + Math.round(A[2]) + ')';
+const VS_HOT = [[0, '#fffbe0'], [.16, '#ffe27a'], [.34, '#ffb020'], [.5, '#ff7d00'], [.515, '#7a2c00'], [.62, '#c24a00'], [.82, '#ff9a14'], [1, '#ffd45c']].map(s => [s[0], vsHex(s[1])]);
+const VS_COLD = [[0, '#f3f6fa'], [.16, '#d3d8e0'], [.34, '#9aa1ad'], [.5, '#7b828f'], [.515, '#3b414c'], [.62, '#565c68'], [.82, '#8c93a0'], [1, '#c9ced7']].map(s => [s[0], vsHex(s[1])]);
+
+// champ technologique d'un camp, dessiné une fois (canvas plus grand que l'écran pour pouvoir dériver) : brume, lueurs, tracés biseautés néon, barres, hachures, pointillés, blocs
+function vsField(W, H, side, seed, MX, MY, dpr){
+  const cv = document.createElement('canvas'); cv.width = Math.ceil((W + MX * 2) * dpr); cv.height = Math.ceil((H + MY * 2) * dpr);
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, MX * dpr, MY * dpr);
+  const R = vsRng(seed), out = side === 'o' ? -1 : 1;
+  const P = side === 'o' ? { core:'255,92,70', hot:'255,176,150', glow:'255,30,20', dark:'120,8,12' } : { core:'92,204,255', hot:'184,238,255', glow:'20,118,255', dark:'6,40,118' };
+  const xs = y => W * (.70 - .40 * (y / H)), edge = out < 0 ? -MX : W + MX;
+  // brume sombre teintée, plus dense vers le bord
+  g.beginPath(); g.moveTo(edge, -MY); g.lineTo(xs(-MY), -MY); g.lineTo(xs(H + MY), H + MY); g.lineTo(edge, H + MY); g.closePath();
+  const hz = g.createLinearGradient(xs(H / 2), 0, edge, 0);
+  hz.addColorStop(0, 'rgba(' + P.dark + ',.10)'); hz.addColorStop(.5, 'rgba(' + P.dark + ',.34)'); hz.addColorStop(1, 'rgba(' + P.dark + ',.62)');
+  g.fillStyle = hz; g.fill();
+  // grosses lueurs diffuses
+  for(let i = 0; i < 5; i++){
+    const y = H * R(), x = xs(y) + out * (40 + R() * W * .5), r = 110 + R() * 150, rg = g.createRadialGradient(x, y, 0, x, y, r);
+    rg.addColorStop(0, 'rgba(' + P.glow + ',.20)'); rg.addColorStop(1, 'rgba(' + P.glow + ',0)'); g.fillStyle = rg; g.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  // blocs de pixels sombres (données) et petits carrés vifs
+  for(let c = 0; c < 4; c++){
+    const y0 = H * R(), x0 = xs(y0) + out * (W * (.14 + R() * .3)), n = 6 + Math.floor(R() * 6);
+    for(let i = 0; i < n; i++){ g.fillStyle = 'rgba(' + P.core + ',' + (.05 + R() * .12) + ')'; g.fillRect(x0 + out * R() * 70 - (out > 0 ? 0 : 12), y0 + (R() - .5) * 140, 4 + R() * 12, 6 + R() * 30); }
+  }
+  for(let i = 0; i < 8; i++){ const y = H * R(); g.fillStyle = 'rgba(' + P.hot + ',.8)'; g.fillRect(xs(y) + out * (W * (.18 + R() * .35)), y, 3, 3); }
+  // fils fins horizontaux partant de la couture
+  for(let i = 0; i < 7; i++){
+    const y = H * R(), x = xs(y) + out * (10 + R() * 40), l = W * (.18 + R() * .42);
+    g.fillStyle = 'rgba(' + P.core + ',' + (.14 + R() * .2) + ')'; g.fillRect(out < 0 ? x - l : x, y, l, 1);
+  }
+  // pointillés
+  for(let i = 0; i < 3; i++){
+    const y = H * R(), x = xs(y) + out * (30 + R() * 90), l = 100 + R() * 120;
+    g.setLineDash([2, 7]); g.lineWidth = 1.6; g.strokeStyle = 'rgba(' + P.hot + ',.7)'; g.beginPath(); g.moveTo(x, y); g.lineTo(x + out * l, y); g.stroke(); g.setLineDash([]);
+  }
+  // barres lumineuses inclinées (parallèles à la couture)
+  const bar = (x, y, len, h, a) => {
+    const sk = h * 1.1, shape = () => { g.beginPath(); g.moveTo(x, y); g.lineTo(x + len, y); g.lineTo(x + len - sk, y + h); g.lineTo(x - sk, y + h); g.closePath(); };
+    g.lineJoin = 'round'; shape(); g.lineWidth = 11; g.strokeStyle = 'rgba(' + P.glow + ',' + (.14 * a) + ')'; g.stroke();
+    shape(); g.lineWidth = 4; g.strokeStyle = 'rgba(' + P.glow + ',' + (.25 * a) + ')'; g.stroke();
+    shape(); g.fillStyle = 'rgba(' + P.core + ',' + (.82 * a) + ')'; g.fill();
+    g.fillStyle = 'rgba(' + P.hot + ',' + (.8 * a) + ')'; g.fillRect(x + 3, y, len - 6, 1.5);
+  };
+  for(let i = 0; i < 3; i++){ const len = 60 + R() * 120; bar(out < 0 ? -MX : W + MX - len, H * (.06 + R() * .86), len, 9 + R() * 8, 1); }
+  for(let i = 0; i < 2; i++){ const y = H * (.1 + R() * .8); bar(xs(y) + out * (40 + R() * 90) - (out < 0 ? 90 : 0), y, 90, 8 + R() * 5, .9); }
+  for(let n = 0; n < 2; n++){   // hachures « ///// »
+    const y = H * (.08 + R() * .84), x0 = out < 0 ? 10 + R() * W * .25 : W - 80 - R() * W * .25;
+    for(let i = 0; i < 5; i++) bar(x0 + i * 13, y, 6, 12, .85);
+  }
+  // tracés néon biseautés (segments horizontaux + diagonales parallèles à la couture)
+  const paths = [];
+  for(let n = 0; n < 9; n++){
+    let y = H * (.04 + R() * .92), x = xs(y) + out * (6 + R() * 60), mode = R() < .5 ? 'h' : 'd';
+    const pts = [[x, y]], segs = 3 + Math.floor(R() * 3);
+    for(let s = 0; s < segs; s++){
+      if(mode === 'h') x += out * (40 + R() * W * .32);
+      else { const dy = (R() < .78 ? -out : out) * (46 + R() * 150); y += dy; x += out * Math.abs(dy) * (.42 + R() * .2); }
+      x = vsClamp(x, -MX + 8, W + MX - 8); y = vsClamp(y, -MY + 8, H + MY - 8);
+      pts.push([x, y]); mode = mode === 'h' ? 'd' : 'h';
+    }
+    let len = 0; for(let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const br = R() < .38, w = br ? 1.9 : 1.2;
+    const stroke = (lw, col) => { g.beginPath(); pts.forEach((q, i) => i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1])); g.lineWidth = lw; g.strokeStyle = col; g.lineJoin = 'miter'; g.stroke(); };
+    stroke(w * 7, 'rgba(' + P.glow + ',.09)'); stroke(w * 3.4, 'rgba(' + P.glow + ',.22)'); stroke(w, 'rgba(' + P.core + ',' + (br ? .95 : .62) + ')');
+    const e = pts[pts.length - 1]; g.fillStyle = 'rgba(' + P.hot + ',.95)'; g.fillRect(e[0] - 2.5, e[1] - 2.5, 5, 5);
+    paths.push({ pts, len, ph:R() });
+  }
+  return { cv, paths, P, out };
+}
+
+function btlVsIntro(){
+  return new Promise(resolve => {
+    if(!BTL){ resolve(); return; }
+    const W = window.innerWidth, H = window.innerHeight, dpr = Math.min(window.devicePixelRatio || 1, W < 560 ? 2 : 1.5), T = VS_T;
+    const MX = 70, MY = 150, xs = y => W * (.70 - .40 * (y / H));
+    const seamUp = (() => { const dx = xs(0) - xs(H), dy = -H, l = Math.hypot(dx, dy); return [dx / l, dy / l]; })();
+    const fL = vsField(W, H, 'o', 7301, MX, MY, dpr), fR = vsField(W, H, 'p', 4177, MX, MY, dpr);
+    // éléments : noir, canvas (fondu en « screen » sur le champ de bataille), calque modules / noms
+    const base = document.createElement('div'); base.className = 'vs-base';
+    const cv = document.createElement('canvas'); cv.className = 'vs-cv'; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    const vig = document.createElement('div'); vig.className = 'vs-vig';
+    const cvG = document.createElement('canvas'); cvG.className = 'vs-cv vs-cvg'; cvG.width = cv.width; cvG.height = cv.height; const G = cvG.getContext('2d');
+    const ui = document.createElement('div'); ui.className = 'vs-ui';
+    const ctx = cv.getContext('2d');
+    // modules
+    const modW = Math.min(W * .68, 300), modH = modW * 506 / 900, cyO = H * .5 - H * .215, cyP = H * .5 + H * .215;
+    const mkMod = side => {
+      const m = BTL.mod && BTL.mod[side]; if(!m) return null;
+      const md = (typeof MODULE_DEFS !== 'undefined') ? MODULE_DEFS.find(x => x.name === m.name) : null; if(!md) return null;
+      const el = document.createElement('div'); el.className = 'vs-mod ' + (side === 'o' ? 'o' : 'p');
+      el.style.cssText = 'width:' + modW + 'px;left:' + (side === 'o' ? W * .04 : W - modW - W * .04) + 'px;top:' + ((side === 'o' ? cyO : cyP) - modH / 2) + 'px';
+      el.innerHTML = '<i class="vs-br"></i><div class="vs-mc"><div class="mod-big ' + rarCls(m.rar) + '">' + modCardFaceHtml(md, m.level || 1, m.rar, { fx:true }) + '</div><i class="vs-sh"></i></div>';
+      ui.appendChild(el); return el;
+    };
+    const mO = mkMod('o'), mP = mkMod('p');
+    // noms
+    const nmO = (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
+    const mkName = (side, txt) => {
+      const el = document.createElement('div'); el.className = 'vs-name ' + side;
+      const fs = Math.max(13, Math.min(27, modW / (txt.length * 1.02)));
+      el.style.cssText = 'font-size:' + fs + 'px;' + (side === 'o' ? 'left:' + (W * .04) + 'px;top:' + (cyO - modH / 2 - fs - 22) + 'px' : 'right:' + (W * .04) + 'px;top:' + (cyP + modH / 2 + 12) + 'px');
+      el.innerHTML = '<b>' + txt.replace(/</g, '&lt;') + '</b><i class="vs-ul"></i>';
+      ui.appendChild(el); return el;
+    };
+    const nO = mkName('o', nmO), nP = mkName('p', nmP);
+    document.body.appendChild(base); document.body.appendChild(cv); document.body.appendChild(cvG); document.body.appendChild(vig); document.body.appendChild(ui);
+    try{ if(document.fonts && document.fonts.load) document.fonts.load('900 24px Orbitron'); }catch(e){}
+
+    // VS en métal forgé : plaques pochoir (V, S) en acier épais. Matière précalculée une fois (cartes de profondeur par flou, croûte d'oxyde, grain, stries) puis « chauffée » à chaque image :
+    // cœur jaune-blanc, orange, bord rouge sombre ; en refroidissant la lueur se retire du bord vers le cœur, la couleur passe au rouge puis à l'acier gris.
+    const k = W * .58 / 190, pad = 70, gw = Math.ceil(190 * k + pad * 2), gh = Math.ceil(100 * k + pad * 2);
+    const mkC = () => { const c = document.createElement('canvas'); c.width = Math.ceil(gw * dpr); c.height = Math.ceil(gh * dpr); return c; };
+    const gc = mkC(), gx = gc.getContext('2d'), tc = mkC(), tcx = tc.getContext('2d');
+    const MW = gc.width, MH = gc.height;
+    const skew = y => (100 - y) * .12;
+    const mkPiece = (pts, ox) => { const p = new Path2D(), P = pts.map(q => [(q[0] + ox + skew(q[1])) * k + pad, q[1] * k + pad]); P.forEach((q, i) => i ? p.lineTo(q[0], q[1]) : p.moveTo(q[0], q[1])); p.closePath(); return { p }; };
+    const PIECES = [
+      mkPiece([[0, 0], [27, 0], [47.6, 58], [22, 58]], 0), mkPiece([[73, 0], [100, 0], [78, 58], [52.4, 58]], 0), mkPiece([[25.1, 65], [74.9, 65], [62, 100], [38, 100]], 0),
+      mkPiece([[13, 0], [80, 0], [80, 18], [23, 18], [23, 30], [0, 30], [0, 13]], 112), mkPiece([[0, 36], [68, 36], [80, 48], [80, 72], [57, 72], [57, 54], [0, 54]], 112), mkPiece([[57, 78], [80, 78], [80, 90], [70, 100], [0, 100], [0, 84], [57, 84]], 112)
+    ];
+    // --- cartes précalculées (une seule fois) ---
+    const maskC = mkC(), mx = maskC.getContext('2d'); mx.setTransform(dpr, 0, 0, dpr, 0, 0); mx.fillStyle = '#fff'; PIECES.forEach(q => mx.fill(q.p));
+    const A = new Float32Array(MW * MH); { const d = mx.getImageData(0, 0, MW, MH).data; for(let i = 0; i < A.length; i++) A[i] = d[i * 4 + 3] / 255; }
+    const boxBl = (a, w, h, r) => {
+      const t = new Float32Array(a.length), u = new Float32Array(a.length), n = 2 * r + 1;
+      for(let y = 0; y < h; y++){ let s = 0; const o = y * w; for(let x = -r; x <= r; x++) if(x >= 0 && x < w) s += a[o + x]; for(let x = 0; x < w; x++){ t[o + x] = s / n; const xa = x + r + 1, xr = x - r; if(xa < w) s += a[o + xa]; if(xr >= 0) s -= a[o + xr]; } }
+      for(let x = 0; x < w; x++){ let s = 0; for(let y = -r; y <= r; y++) if(y >= 0 && y < h) s += t[y * w + x]; for(let y = 0; y < h; y++){ u[y * w + x] = s / n; const ya = y + r + 1, yr = y - r; if(ya < h) s += t[ya * w + x]; if(yr >= 0) s -= t[yr * w + x]; } }
+      return u;
+    };
+    const blur3 = (a, r) => { let b = a; for(let i = 0; i < 3; i++) b = boxBl(b, MW, MH, Math.max(1, Math.round(r / 1.7))); return b; };
+    const toC = (fn) => { const c = mkC(), x = c.getContext('2d'), im = x.createImageData(MW, MH), d = im.data; for(let i = 0; i < A.length; i++){ if(A[i] < .02) continue; fn(i, d, i * 4); } x.putImageData(im, 0, 0); return c; };
+    const depthMap = (r, g, o) => { const b = blur3(A, r); return toC((i, d, j) => { d[j] = d[j + 1] = d[j + 2] = 255; d[j + 3] = Math.round(vsClamp(((b[i] - .5) * 2 - (o || 0)) * (g || 1.1), 0, 1) * A[i] * 255); }); };
+    const dEdge = depthMap(4.5 * dpr, 1.5, 0), dMid = depthMap(10 * dpr, 1.25, 0), dDeep = depthMap(15 * dpr, 1.7, .08);
+    // acier biseauté : normales issues d'un relief arrondi, lumière en haut à gauche
+    const bev = (() => {
+      const Hh = blur3(A, 3.2 * dpr), S = 15, Lx = -.55, Ly = -.72, Lz = .42, ll = Math.hypot(Lx, Ly, Lz), lx = Lx / ll, ly = Ly / ll, lz = Lz / ll, R = vsRng(5), hx = lx, hy = ly, hz = lz + 1, hl = Math.hypot(hx, hy, hz);
+      const steel = mkC(), hi = mkC(), sh = mkC(), sx = steel.getContext('2d'), hx2 = hi.getContext('2d'), shx = sh.getContext('2d');
+      const si = sx.createImageData(MW, MH), hid = hx2.createImageData(MW, MH), shd = shx.createImageData(MW, MH), sd = si.data, hd = hid.data, dd = shd.data;
+      const at = (x, y) => Hh[Math.min(MH - 1, Math.max(0, y)) * MW + Math.min(MW - 1, Math.max(0, x))];
+      for(let y = 0; y < MH; y++){ const streak = (R() - .5); for(let x = 0; x < MW; x++){ const i = y * MW + x, a = A[i]; if(a < .02) continue;
+        const gx = (at(x + 1, y) - at(x - 1, y)) * S, gy = (at(x, y + 1) - at(x, y - 1)) * S, nl = Math.hypot(gx, gy, 1), nx = -gx / nl, ny = -gy / nl, nz = 1 / nl;
+        const df = Math.max(0, nx * lx + ny * ly + nz * lz), sp = Math.pow(Math.max(0, (nx * hx + ny * hy + nz * hz) / hl), 22), flat = lz, edge = Math.hypot(gx, gy);
+        const j = i * 4, br = vsClamp(.30 + .55 * (df - flat) + .06 * (nz - 1) * 0 + .07 * streak + .02 * Math.sin(y * .9), 0, 1) * 255;
+        sd[j] = br * .94; sd[j + 1] = br * .98; sd[j + 2] = br * 1.06; sd[j + 3] = Math.round(a * 255);
+        const hv = vsClamp((df - flat) * 1.6 + sp * 1.2, 0, 1), sv = vsClamp((flat - df) * 1.4, 0, 1);
+        hd[j] = hd[j + 1] = hd[j + 2] = 255; hd[j + 3] = Math.round(hv * a * 255);
+        dd[j] = dd[j + 1] = dd[j + 2] = 0; dd[j + 3] = Math.round(sv * a * 255); } }
+      sx.putImageData(si, 0, 0); hx2.putImageData(hid, 0, 0); shx.putImageData(shd, 0, 0); return { steel, hi, sh }; })();
+    // marbrures de chaleur : plages plus froides (orange foncé → rouge) qui se creusent en refroidissant, jamais de noir
+    const heatNoise = (() => {
+      const R = vsRng(2024), lat = cell => { const gw2 = Math.ceil(MW / cell) + 3, gh2 = Math.ceil(MH / cell) + 3, v = new Float32Array(gw2 * gh2); for(let i = 0; i < v.length; i++) v[i] = R(); return { cell, gw2, v }; };
+      const L = [lat(46 * dpr / 2), lat(21 * dpr / 2), lat(9 * dpr / 2)], W3 = [.5, .32, .18], sm = t => t * t * (3 - 2 * t);
+      const vn = (l, px, py) => { const fx = px / l.cell, fy = py / l.cell, ix = Math.floor(fx), iy = Math.floor(fy), tx = sm(fx - ix), ty = sm(fy - iy), g = (a, b) => l.v[(iy + b) * l.gw2 + ix + a]; return (g(0, 0) * (1 - tx) + g(1, 0) * tx) * (1 - ty) + (g(0, 1) * (1 - tx) + g(1, 1) * tx) * ty; };
+      return toC((i, d, j) => { const x = i % MW, y = (i / MW) | 0, f = vn(L[0], x, y) * W3[0] + vn(L[1], x, y) * W3[1] + vn(L[2], x, y) * W3[2], v = vsClamp((f - .42) / .3, 0, 1);
+        d[j] = 255; d[j + 1] = 255; d[j + 2] = 255; d[j + 3] = Math.round(v * v * (3 - 2 * v) * A[i] * 255); }); })();
+    // fines fissures de refroidissement (arêtes de bruit), très discrètes
+    const veinC = (() => { const c = mkC(), x = c.getContext('2d'), R = vsRng(404); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.strokeStyle = '#fff'; x.lineCap = 'round';
+      for(let i = 0; i < 70; i++){ let px = R() * gw, py = R() * gh, ang = R() * 6.28; x.globalAlpha = .1 + R() * .22; x.lineWidth = .5 + R() * .7; x.beginPath(); x.moveTo(px, py); for(let n = 0; n < 6; n++){ ang += (R() - .5) * 1.5; px += Math.cos(ang) * (4 + R() * 8); py += Math.sin(ang) * (4 + R() * 8); x.lineTo(px, py); } x.stroke(); }
+      x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'destination-in'; x.drawImage(maskC, 0, 0); return c; })();
+    // chaleur → couleur : 1 = blanc-jaune, .7 = jaune-orangé, .45 = rouge sombre, 0 = acier froid
+    const KC = { edge:[[246, 96, 8], [142, 30, 6], [92, 98, 110]], mid:[[255, 146, 26], [180, 48, 8], [108, 114, 126]], core:[[255, 206, 70], [220, 70, 12], [150, 156, 168]] };
+    const ramp3 = (key, h) => { const c = KC[key]; return h >= .45 ? vsMixA(c[1], c[0], (h - .45) / .55) : vsMixA(c[2], c[1], h / .45); };
+    const tintDraw = (map, col, alpha, comp) => { if(alpha <= .003) return; tcx.setTransform(1, 0, 0, 1, 0, 0); tcx.globalCompositeOperation = 'copy'; tcx.drawImage(map, 0, 0); tcx.globalCompositeOperation = 'source-in'; tcx.fillStyle = vsCss(col); tcx.fillRect(0, 0, MW, MH); gx.globalAlpha = Math.min(1, alpha); gx.globalCompositeOperation = comp || 'source-over'; gx.drawImage(tc, 0, 0, gw, gh); gx.globalAlpha = 1; gx.globalCompositeOperation = 'source-over'; };
+    const glyph = (h, hotK, sw, t) => {
+      const o = gx; o.setTransform(dpr, 0, 0, dpr, 0, 0); o.clearRect(0, 0, gw, gh); o.globalCompositeOperation = 'source-over'; o.lineJoin = 'round'; o.lineCap = 'butt';
+      const gl = vsClamp((h - .1) / .9, 0, 1), cold = 1 - gl, shim = 1 + .05 * Math.sin(t / 230) + .025 * Math.sin(t / 91 + 1), hs = Math.min(1, h * shim);
+      // lueur extérieure (sans contour dur)
+      if(gl > .02){ o.globalCompositeOperation = 'lighter'; [[46, .022], [28, .04], [15, .07], [7, .11]].forEach(w => { o.lineWidth = w[0]; o.strokeStyle = 'rgba(255,' + Math.round(80 + 90 * gl) + ',18,' + (w[1] * Math.pow(gl, 1.5) * shim) + ')'; PIECES.forEach(q => o.stroke(q.p)); }); o.globalCompositeOperation = 'source-over'; }
+      // épaisseur de la plaque
+      o.fillStyle = vsCss(vsMixA([18, 20, 25], [64, 18, 5], h)); for(let i = 6; i >= 1; i--){ o.save(); o.translate(i * .45, i * .8); PIECES.forEach(q => o.fill(q.p)); o.restore(); }
+      // acier biseauté
+      o.setTransform(1, 0, 0, 1, 0, 0); o.drawImage(bev.steel, 0, 0, MW, MH); o.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // couches chaudes : bord rouge-orange → cœur jaune-blanc ; le froid gagne d'abord les bords
+      const hotA = Math.pow(gl, .55);
+      tintDraw(maskC, ramp3('edge', hs), hotA);
+      tintDraw(dEdge, ramp3('mid', Math.min(1, hs * 1.04)), Math.pow(gl, .85));
+      tintDraw(dMid, ramp3('core', Math.min(1, hs * 1.08)), Math.pow(gl, 1.15) * .6);
+      tintDraw(dDeep, ramp3('core', Math.min(1, hs * 1.14 + .04)), Math.pow(gl, 1.7) * .92);
+      if(hotK > .01) tintDraw(dDeep, [255, 248, 224], Math.min(1, hotK) * .95, 'lighter');
+      // marbrures de chaleur (zones plus froides) : en refroidissement elles s'étendent et virent à l'acier sombre
+      tintDraw(heatNoise, vsMixA([70, 74, 84], [150, 28, 6], Math.min(1, gl * 1.25)), (.16 + .34 * (1 - gl)) * (.5 + .5 * gl));
+      o.globalAlpha = .12 + .3 * cold; o.setTransform(1, 0, 0, 1, 0, 0); o.globalCompositeOperation = 'multiply'; o.drawImage(veinC, 0, 0, MW, MH); o.globalCompositeOperation = 'source-over'; o.setTransform(dpr, 0, 0, dpr, 0, 0); o.globalAlpha = 1;
+      // biseau : ombre, puis reflets (discrets à chaud, éclatants sur l'acier froid)
+      o.setTransform(1, 0, 0, 1, 0, 0);
+      o.globalAlpha = .38 + .3 * cold; o.drawImage(bev.sh, 0, 0, MW, MH);
+      o.globalCompositeOperation = 'lighter'; o.globalAlpha = .26 + .62 * cold; o.drawImage(bev.hi, 0, 0, MW, MH); o.globalCompositeOperation = 'source-over'; o.globalAlpha = 1;
+      o.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // reflets des deux camps sur l'acier refroidi : rouge à gauche, bleu à droite
+      if(cold > .05){ const rg = o.createLinearGradient(pad, 0, gw - pad, 0); rg.addColorStop(0, 'rgba(255,84,64,' + (.7 * cold) + ')'); rg.addColorStop(.5, 'rgba(255,255,255,0)'); rg.addColorStop(1, 'rgba(78,176,255,' + (.75 * cold) + ')');
+        o.save(); o.globalCompositeOperation = 'lighter'; o.lineWidth = 1.6; o.strokeStyle = rg; PIECES.forEach(q => { o.save(); o.clip(q.p); o.translate(-.8, -1); o.stroke(q.p); o.restore(); }); o.restore(); }
+      // arête incandescente
+      if(gl > .02){ o.globalCompositeOperation = 'lighter'; o.lineWidth = 1.2; o.strokeStyle = 'rgba(255,208,110,' + (.5 * gl * shim) + ')'; PIECES.forEach(q => o.stroke(q.p)); o.globalCompositeOperation = 'source-over'; }
+      // balayage de lumière
+      if(sw > 0 && sw < 1){ o.save(); PIECES.forEach(q => { o.save(); o.clip(q.p); const cx = -60 + (190 * k + 120) * sw, sg = o.createLinearGradient(cx - 36, pad, cx + 36, pad + 100 * k * .6);
+        sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(.5, 'rgba(255,255,255,' + (.16 + .5 * cold) + ')'); sg.addColorStop(1, 'rgba(255,255,255,0)'); o.globalCompositeOperation = 'lighter'; o.fillStyle = sg; o.fillRect(0, 0, gw, gh); o.restore(); }); o.restore(); }
+    };
+    // étincelles (déterministes : position = f(temps depuis le choc))
+    const rS = vsRng(99), sparks = []; for(let i = 0; i < 30; i++){ const a = rS() * Math.PI * 2, v = 160 + rS() * 480; sparks.push({ vx:Math.cos(a) * v, vy:Math.sin(a) * v - 80, life:.4 + rS() * .5, sz:.9 + rS() * 1.5 }); }
+    const rays = []; for(let i = 0; i < 16; i++) rays.push({ a:rS() * Math.PI * 2, l0:60 + rS() * 50, l1:160 + rS() * 280, w:.7 + rS() * .8 });
+    const rings = []; [.36, .45, .545].forEach((rr, i) => { const arcs = []; let a = rS() * 6; for(let j = 0; j < 6 + i; j++){ const sp = .22 + rS() * .6; arcs.push([a, sp, 1 + rS() * 1.4]); a += sp + .25 + rS() * .8; } rings.push({ r:rr * W, arcs, sp:(i % 2 ? -1 : 1) * (.00018 + i * .00006) }); });
+    const emb = []; const rE = vsRng(5); for(let i = 0; i < 64; i++) emb.push({ x:rE() * W, y:rE() * (H + 40), v:.012 + rE() * .035, ph:rE() * 6.28, sz:1 + rE() * 1.7 });
+
+    const CX = W / 2, CY = H / 2;
+    let st = performance.now(), off = 0, raf = 0, killed = false, resolved = false, done = false, skipped = false, gk = 0;
+    const vsT = () => window.__vsT != null ? window.__vsT : (performance.now() - st) + off;
+    const noise = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+
+    function drawSide(f, p, t, ox, oy, alpha, isL){
+      if(p <= 0) return;
+      const bound = y => isL ? xs(y) - (1 - p) * W * .85 : xs(y) + (1 - p) * W * .85;
+      ctx.save(); ctx.beginPath();
+      const eY = isL ? -MX - 40 : W + MX + 40;
+      ctx.moveTo(eY, -MY); ctx.lineTo(bound(-MY), -MY); ctx.lineTo(bound(H + MY), H + MY); ctx.lineTo(eY, H + MY); ctx.closePath(); ctx.clip();
+      const fl = p < 1 ? .55 + .45 * (noise(Math.floor(t / 55) + (isL ? 0 : 91)) > .3 ? 1 : .35) : 1 - .05 * Math.sin(t / 380 + (isL ? 0 : 2));
+      ctx.globalAlpha = alpha * fl;
+      ctx.drawImage(f.cv, -MX + ox, -MY + oy, f.cv.width / dpr, f.cv.height / dpr);
+      if(p > .85){   // impulsions de lumière qui courent le long des tracés
+        ctx.save(); ctx.translate(ox, oy); ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+        f.paths.forEach(pt => {
+          ctx.setLineDash([16, pt.len + 40]); ctx.lineDashOffset = -((t * (.16 + pt.ph * .1) + pt.ph * 900) % (pt.len + 56));
+          ctx.strokeStyle = 'rgba(' + f.P.hot + ',.95)'; ctx.beginPath(); pt.pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke();
+        });
+        ctx.restore(); ctx.setLineDash([]);
+      }
+      ctx.restore();
+      if(p < 1){   // front de l'onde : trait vif de la couleur du camp
+        ctx.save(); ctx.globalAlpha = alpha * (1 - p * p); ctx.lineCap = 'butt';
+        [[22, .12], [8, .3], [2.4, 1]].forEach(w => { ctx.lineWidth = w[0]; ctx.strokeStyle = 'rgba(' + (w[0] > 3 ? f.P.glow : f.P.hot) + ',' + w[1] + ')'; ctx.beginPath(); ctx.moveTo(bound(-MY), -MY); ctx.lineTo(bound(H + MY), H + MY); ctx.stroke(); });
+        ctx.restore();
+      }
+    }
+
+    function render(t){
+      const cf = vsProg(t, T.c0, T.c1), colA = 1 - vsEio(cf), zoom = 1 + .06 * vsEio(cf);
+      const wp = vsEio(vsProg(t, T.w0, T.w1)), strikeT = t - T.st, cool = vsEio(vsProg(t, T.cool0, T.cool1));
+      const vsFade = 1 - vsProg(t, T.vf0, T.vf1);
+      // choc : tremblement
+      const sh = strikeT > 0 && strikeT < 420 ? 7 * Math.pow(1 - strikeT / 420, 2) : 0;
+      const shx = sh ? (noise(Math.floor(t / 16)) - .5) * 2 * sh : 0, shy = sh ? (noise(Math.floor(t / 16) + 40) - .5) * 2 * sh : 0;
+      cv.style.transform = cvG.style.transform = ui.style.transform = sh ? 'translate(' + shx.toFixed(1) + 'px,' + shy.toFixed(1) + 'px)' : '';
+      base.style.opacity = 1 - vsEio(vsProg(t, T.b0, T.b1));
+      vig.style.opacity = (colA * vsSm(vsProg(t, T.w0, T.w1 + 300))).toFixed(3);
+      if(t >= T.b0) base.style.pointerEvents = 'none';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); G.setTransform(dpr, 0, 0, dpr, 0, 0); G.clearRect(0, 0, W, H); G.globalAlpha = 1; G.globalCompositeOperation = 'source-over';
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.save(); ctx.translate(CX, CY); ctx.scale(zoom, zoom); ctx.translate(-CX, -CY);
+      // dérive lente des champs le long de la couture (plus ample pendant la sortie)
+      const dr = vsEio(vsProg(t, T.hold - 300, T.c1)) * 78, amb = Math.sin(t / 1300) * 9, dU = amb + dr;
+      drawSide(fL, wp, t, seamUp[0] * dU, seamUp[1] * dU, colA, true);
+      drawSide(fR, wp, t, -seamUp[0] * dU, -seamUp[1] * dU, colA, false);
+      // braises
+      if(wp > .5){
+        for(let i = 0; i < emb.length; i++){
+          const e = emb[i], y = ((e.y - t * e.v) % (H + 40) + H + 40) % (H + 40) - 20, x = e.x + Math.sin(t / 900 + e.ph) * 10, side = x < xs(y);
+          ctx.globalAlpha = colA * wp * (.25 + .6 * Math.abs(Math.sin(t / 500 + e.ph))) * .8;
+          ctx.fillStyle = Math.abs(x - xs(y)) < 70 ? 'rgb(255,190,80)' : side ? 'rgb(255,110,90)' : 'rgb(110,200,255)'; ctx.fillRect(x, y, e.sz, e.sz);
+        }
+      }
+      // couture orange-or : naît quand les deux fronts se rejoignent
+      let S = vsSm(vsProg(wp, .78, 1)); if(strikeT > 0) S += 1.1 * Math.pow(Math.max(0, 1 - strikeT / 520), 2);
+      S *= 1 - .8 * cool; S *= colA > 0 ? 1 : 0;
+      if(S > .001){
+        const gr = vsMixA([255, 150, 20], [170, 176, 188], cool), cB = 'rgba(' + Math.round(gr[0]) + ',' + Math.round(gr[1]) + ',' + Math.round(gr[2]) + ',';
+        ctx.lineCap = 'butt';
+        [[48, .09, 60], [20, .2, 150], [7, .5, 190], [2.4, .95, 245]].forEach((w, i) => {
+          const gg = ctx.createLinearGradient(xs(H + MY), H + MY, xs(-MY), -MY), a = Math.min(1, w[1] * S);
+          const col = i === 3 ? 'rgba(255,' + Math.round(240 - 40 * cool) + ',' + Math.round(190 + 20 * cool) + ',' : cB;
+          gg.addColorStop(0, col + (a * .3) + ')'); gg.addColorStop(.28, col + (a * .8) + ')'); gg.addColorStop(.5, col + a + ')'); gg.addColorStop(.72, col + (a * .8) + ')'); gg.addColorStop(1, col + (a * .3) + ')');
+          ctx.globalAlpha = colA; ctx.lineWidth = w[0]; ctx.strokeStyle = gg; ctx.beginPath(); ctx.moveTo(xs(H + MY), H + MY); ctx.lineTo(xs(-MY), -MY); ctx.stroke();
+        });
+        // lueur centrale orange-or
+        const rr = W * .66, rg = ctx.createRadialGradient(CX, CY, 0, CX, CY, rr), ga = Math.min(1, S * .8) * colA;
+        rg.addColorStop(0, 'rgba(' + Math.round(gr[0]) + ',' + Math.round(gr[1] + 10) + ',' + Math.round(gr[2]) + ',' + (.55 * ga) + ')');
+        rg.addColorStop(.45, 'rgba(' + Math.round(gr[0]) + ',' + Math.round(gr[1] - 60) + ',' + Math.round(gr[2] * .5) + ',' + (.18 * ga) + ')'); rg.addColorStop(1, 'rgba(255,60,0,0)');
+        ctx.globalAlpha = 1; ctx.fillStyle = rg; ctx.fillRect(CX - rr, CY - rr, rr * 2, rr * 2);
+      }
+      // anneaux HUD autour du VS
+      const ra = vsSm(vsProg(strikeT, 120, 700)) * (1 - cool * .85) * vsFade * colA;
+      if(ra > .01){
+        ctx.lineCap = 'butt';
+        const rc = vsMixA([255, 150, 40], [150, 156, 168], cool);
+        rings.forEach((rg2, i) => {
+          ctx.strokeStyle = 'rgba(' + Math.round(rc[0]) + ',' + Math.round(rc[1]) + ',' + Math.round(rc[2]) + ',' + (.62 * ra) + ')';
+          rg2.arcs.forEach(a => { ctx.lineWidth = a[2]; ctx.beginPath(); ctx.arc(CX, CY, rg2.r, a[0] + t * rg2.sp, a[0] + t * rg2.sp + a[1]); ctx.stroke(); });
+          if(i === 0){ ctx.lineWidth = 1; ctx.setLineDash([2, 9]); ctx.globalAlpha = .6; ctx.beginPath(); ctx.arc(CX, CY, rg2.r + 9, 0, 6.2832); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1; }
+        });
+      }
+      // VS en métal : le V arrive de la gauche, le S de la droite, ils se percutent ; blanc-chaud au choc, puis orange-jaune qui vibre ; en fin de séquence il refroidit
+      if(strikeT > -320 && vsFade > 0){
+        const ap = vsProg(strikeT, -300, 0), e3 = vsEi3(ap), dist = W * .62 * (1 - e3), heat = 1 - cool;
+        const hotK = strikeT >= 0 ? Math.exp(-strikeT / 300) * (1 - cool) : 0;
+        const swp = strikeT > 200 && strikeT < 1100 ? (strikeT - 200) / 900 : (t > T.n0 + 500 && t < T.cool1 ? (((t - T.n0 - 500) % 2600) / 2600 < .36 ? ((t - T.n0 - 500) % 2600) / 2600 / .36 : 0) : 0);
+        glyph(heat, hotK, swp, t);
+        const sc = (strikeT < 0 ? 1.16 - .16 * e3 : 1 - .05 * Math.exp(-strikeT / 90) * Math.cos(strikeT / 30)) * (1 - .05 * (1 - vsFade));
+        const a = vsFade * vsProg(strikeT, -320, -190);
+        const splitL = 112 * k + pad - gw / 2;
+        const part = (dx, dy, alpha, left) => { G.save(); G.globalAlpha = alpha; G.translate(CX + dx, CY + dy); G.scale(sc, sc); G.beginPath(); if(left) G.rect(-gw, -gh, gw + splitL, gh * 2); else G.rect(splitL, -gh, gw * 2, gh * 2); G.clip(); G.drawImage(gc, -gw / 2, -gh / 2, gw, gh); G.restore(); };
+        const dy0 = H * .035 * (1 - e3);
+        if(strikeT < 0) for(let i = 2; i >= 1; i--){ const tr = dist * (1 + .13 * i); part(-tr, dy0 * (1 + .13 * i), a * .13 / i, true); part(tr, -dy0 * (1 + .13 * i), a * .13 / i, false); }
+        part(-dist, dy0, a, true); part(dist, -dy0, a, false);
+        // braises qui montent des lettres tant que le métal est chaud
+        if(strikeT > 0 && heat > .15){ G.globalCompositeOperation = 'lighter'; for(let i = 0; i < 26; i++){ const R1 = noise(i * 3.1), R2 = noise(i * 5.7 + 2), R3 = noise(i * 9.3 + 5), cyc = ((t / 2600 + R3) % 1), ex = CX + (R1 - .5) * 190 * k * .92 + Math.sin(t / 700 + i) * 8, ey = CY + (R2 - .35) * 100 * k * .8 - cyc * (46 + 60 * R2);
+          G.globalAlpha = (1 - cyc) * Math.pow(heat, 1.3) * vsFade * (.35 + .65 * R2) * vsProg(strikeT, 100, 400); G.fillStyle = cyc < .4 ? 'rgb(255,214,120)' : 'rgb(255,128,40)'; const sz = 1.2 + R1 * 1.6; G.fillRect(ex, ey, sz, sz); }
+          G.globalCompositeOperation = 'source-over'; G.globalAlpha = 1; }
+      }
+      // choc : éclair, traînée horizontale, onde, étincelles de métal
+      if(strikeT >= 0 && strikeT < 1100){
+        const q = strikeT / 1000;
+        [0, 120].forEach((dl, i) => { const pq = vsProg(strikeT - dl, 0, 800); if(pq <= 0 || pq >= 1) return; const rr = 30 + (i ? 340 : 480) * vsEo3(pq); ctx.globalAlpha = (1 - pq) * (i ? .22 : .5); ctx.lineWidth = 1.5; ctx.strokeStyle = i ? 'rgb(255,140,60)' : 'rgb(255,236,190)'; ctx.beginPath(); ctx.arc(CX, CY, rr, 0, 6.2832); ctx.stroke(); });
+        const fs = Math.pow(Math.max(0, 1 - strikeT / 520), 1.6);
+        if(fs > .01){
+          const fw = W * 1.15, g1 = ctx.createLinearGradient(CX - fw / 2, 0, CX + fw / 2, 0); g1.addColorStop(0, 'rgba(255,170,70,0)'); g1.addColorStop(.5, 'rgba(255,240,200,' + (.95 * fs) + ')'); g1.addColorStop(1, 'rgba(255,170,70,0)');
+          ctx.globalAlpha = 1; ctx.fillStyle = g1; ctx.fillRect(CX - fw / 2, CY - 1.5, fw, 3);
+          const g2 = ctx.createLinearGradient(CX - fw / 2, 0, CX + fw / 2, 0); g2.addColorStop(0, 'rgba(255,120,30,0)'); g2.addColorStop(.5, 'rgba(255,150,50,' + (.28 * fs) + ')'); g2.addColorStop(1, 'rgba(255,120,30,0)');
+          ctx.fillStyle = g2; ctx.fillRect(CX - fw / 2, CY - 9, fw, 18);
+        }
+        sparks.forEach(sp => { if(q >= sp.life) return; const pos = tt => [CX + sp.vx * tt, CY + sp.vy * tt + 520 * tt * tt / 2], A2 = pos(q), B2 = pos(Math.max(0, q - .04)), u = q / sp.life; ctx.globalAlpha = Math.pow(1 - u, 1.3); ctx.lineWidth = sp.sz; ctx.strokeStyle = u < .3 ? 'rgb(255,248,224)' : u < .65 ? 'rgb(255,184,70)' : 'rgb(255,96,30)'; ctx.beginPath(); ctx.moveTo(B2[0], B2[1]); ctx.lineTo(A2[0], A2[1]); ctx.stroke(); });
+        const fa = Math.pow(Math.max(0, 1 - strikeT / 190), 2) * .85;
+        if(fa > .01){ const fr = W * .6, fg = ctx.createRadialGradient(CX, CY, 0, CX, CY, fr); fg.addColorStop(0, 'rgba(255,248,226,' + fa + ')'); fg.addColorStop(.4, 'rgba(255,196,110,' + (fa * .45) + ')'); fg.addColorStop(1, 'rgba(255,120,20,0)'); ctx.globalAlpha = 1; ctx.fillStyle = fg; ctx.fillRect(0, 0, W, H); }
+      }
+      ctx.restore();
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      // modules (glissent le long de la couture : adversaire vers le haut, joueur vers le bas)
+      const modPos = (el, side, delay) => {
+        if(!el) return;
+        const pin = vsEo3(vsProg(t, T.m0 + delay, T.m0 + delay + 820)), pout = vsEi3(vsProg(t, T.mOut + delay * .5, T.mOut + delay * .5 + 520));
+        const sg = side === 'o' ? 1 : -1, pr = pin * (1 - pout) , dx = sg * -(W * .95) * (1 - pr), dy = sg * (H * .34) * (1 - pr);
+        const bob = Math.sin(t / 700 + (side === 'o' ? 0 : 2)) * 3 * pin * (1 - pout);
+        el.style.transform = 'translate3d(' + dx.toFixed(1) + 'px,' + (dy + bob).toFixed(1) + 'px,0)';
+        el.style.opacity = vsClamp(pr * 3.2, 0, 1);
+        const sh2 = el.querySelector('.vs-sh'); if(sh2){ const c2 = ((t - T.m0) % 2600) / 2600; sh2.style.transform = 'translateX(' + (-60 + 260 * c2).toFixed(1) + '%) skewX(-18deg)'; sh2.style.opacity = pin * (1 - pout) * .85; }
+      };
+      modPos(mO, 'o', 0); modPos(mP, 'p', 130);
+      // noms
+      const namePos = (el, delay) => {
+        const pin = vsEo3(vsProg(t, T.n0 + delay, T.n0 + delay + 480)), pout = vsProg(t, T.nOut + delay * .4, T.nOut + delay * .4 + 280), pv = pin * (1 - pout);
+        el.style.opacity = pv > 0 ? 1 : 0;
+        const b = el.firstChild, x = 50 * (1 - pin);
+        b.style.clipPath = el.classList.contains('o') ? 'inset(0 ' + (x * 2) + '% 0 0)' : 'inset(0 0 0 ' + (x * 2) + '%)';
+        el.style.transform = 'translateX(' + ((el.classList.contains('o') ? -1 : 1) * 26 * (1 - pin) + (el.classList.contains('o') ? -1 : 1) * 14 * pout).toFixed(1) + 'px)';
+        el.style.filter = 'brightness(' + (1 + .9 * (1 - vsProg(t, T.n0 + delay, T.n0 + delay + 600))) + ')';
+        el.style.opacity = vsClamp(pv * 1.6, 0, 1);
+        el.lastChild.style.transform = 'scaleX(' + (vsEo3(vsProg(t, T.n0 + delay + 120, T.n0 + delay + 700)) * (1 - pout)).toFixed(3) + ')';
+      };
+      namePos(nO, 0); namePos(nP, 110);
+    }
+
+    const finish = () => { if(done) return; done = true; cancelAnimationFrame(raf); base.remove(); cv.remove(); cvG.remove(); vig.remove(); ui.remove(); if(BTL && BTL.vs === ctl) BTL.vs = null; if(!resolved){ resolved = true; resolve(); } };
+    const step = t => {
+      if(killed || !BTL || BTL.abort){ finish(); return; }
+      render(t);
+      if(!resolved && t >= T.res){ resolved = true; resolve(); }
+      if(t >= T.c1 + 30) finish();
+    };
+    const ctl = { kill(){ killed = true; finish(); } };
+    BTL.vs = ctl;
+    // toucher pendant l'attente : passe directement à la sortie
+    base.addEventListener('pointerdown', () => { const t = vsT(); if(!skipped && t > T.n0 + 500 && t < T.hold){ skipped = true; off += (T.hold - t); } });
+    window.__vsStep = t => { window.__vsT = t; step(t); };
+    render(0);
+    if(!window.__vsManual){ const loop = () => { if(done) return; step(vsT()); if(!done) raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop); }
+  });
+}
+
 function btlStart(d){
   if(BTL) return;
   if(!d || !d.cards || d.cards.length < 2){ showToast('DECK INCOMPLET'); return; }
@@ -18493,6 +18925,7 @@ function btlExit(){
   if(!BTL) return;
   const dfx = !!(BTL.d && BTL.d.defi);
   if(!BTL.over && !dfx && typeof batStreakResolve === 'function') batStreakResolve(false);   // combat quitté avant la fin = défaite : la série retombe à 0 (pas pour un défi)
+  if(BTL.vs && BTL.vs.kill) BTL.vs.kill();
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
   window.removeEventListener('resize', BTL.onResize);
   BTL.el.remove(); BTL = null;
@@ -18502,6 +18935,8 @@ function btlExit(){
   else if(typeof renderBataille === 'function') renderBataille();
 }
 async function btlRun(){
+  if(typeof btlVsIntro === 'function') await btlVsIntro();   // V0.04.90 : écran VS (Bataille + Défis ; adversaire de défi = nom de la carte du défi)
+  if(!BTL || BTL.abort) return;
   await btlSleep(250);
   // pile ou face
   BTL.first = Math.random() < 0.5 ? 'p' : 'o';
