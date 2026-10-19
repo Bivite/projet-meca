@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.86</title>
+<title>Projet MECA V0.04.88</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8274,7 +8274,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.86</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.88</b></div>
   </div>
 
     </div>
@@ -8544,9 +8544,23 @@
 
 <script>
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.86';
+var BUILD_VERSION = 'V0.04.88';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.04.88', items:[
+    'Sons des cartes obtenues : le son de la rareté (épique, légendaire, écarlate, holographique) se joue quand la carte s\'affiche en grand après un achat ou un tirage de la Fabrique, et quand une carte de booster est dévoilée.',
+    'Combat : quand une carte passe en ultimate, ses flammes d\'attaque deviennent orange au lieu de rouges.',
+  ] },
+  { v:'V0.04.87', items:[
+    'Musique des combats : elle remplace la musique principale en Bataille et en Défi, avec un fondu, et repart du début à chaque combat.',
+    'Sons de pose : un son par rareté (rare, épique, légendaire, écarlate, holographique) quand une carte, la tienne ou celle de l\'adversaire, se pose sur le terrain.',
+    'Sons d\'attaque : deux sons tirés au hasard à chaque attaque, joués à l\'instant où la carte touche sa cible.',
+    'Son de bouclier quand une carte ou un chef d\'escouade reçoit de la DEF.',
+    'Sons de destruction : trois sons tirés au hasard, joués juste avant l\'éclatement de la carte.',
+    'Son d\'appui sur les boutons et les cases du jeu (pas en Bataille ni en Défi, pas pendant un glisser-déposer).',
+    'Sons de fabrication selon la rareté de la carte fabriquée.',
+    'Tous les sons suivent le réglage EFFETS SONORES des options.',
+  ] },
   { v:'V0.04.86', items:[
     'Musique de fond en boucle sur tous les écrans, coupée en combat (Bataille et Défi) avec un fondu, volume réglable dans les options.',
   ] },
@@ -10150,41 +10164,109 @@ var ECO = { idleMs: 6000, last: Date.now(), idle: false, paused: [] };
 function ecoOn(){ return !SETTINGS || SETTINGS.eco !== false; }
 function ecoIdle(){ return ecoOn() && ECO.idle; }
 function ecoInBattle(){ return document.body.classList.contains('btl-on'); }
-var MUSIC_URL = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/audio/Musique%20Principale.mp3';
-var MUS = { ctx:null, gain:null, src:null, buf:null, busy:false, failAt:0, susp:0 };
-function musWanted(){ return !document.hidden && !document.body.classList.contains('btl-on') && (SETTINGS.music || 0) > 0; }
-function musVol(){ return Math.max(0, Math.min(1, (SETTINGS.music || 0) / 100)) * 0.8; }
-function musSync(){
-  const m = MUS; if(!m.ctx || !m.gain) return;
-  const want = musWanted(), t = m.ctx.currentTime;
-  clearTimeout(m.susp);
-  m.gain.gain.cancelScheduledValues(t);
-  if(want){
-    if(m.ctx.state === 'suspended') m.ctx.resume().catch(() => {});
-    m.gain.gain.setTargetAtTime(musVol(), t, .6);
-  } else {
-    m.gain.gain.setTargetAtTime(0, t, document.hidden ? .05 : .3);
-    m.susp = setTimeout(() => { if(!musWanted() && m.ctx.state === 'running') m.ctx.suspend().catch(() => {}); }, 2500);   // plus de calcul audio quand on n'entend rien
-  }
-}
-async function musStart(){
-  const m = MUS; if(m.src || m.busy || Date.now() - m.failAt < 60000) return;
-  m.busy = true;
+var MUS_BASE = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/audio/';
+var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
+  menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
+  fight: { url:MUS_BASE + 'Musique%20Combats.mp3',    buf:null, src:null, gain:null, failAt:0, busy:false } } };
+// Sons de pose des cartes (V0.04.87) : un son par rareté, joués à l'impact de la carte sur son emplacement (joueur et adversaire), volume = EFFETS SONORES
+MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', atk1:'ATTAQUE%20ENTRE%20CARTE%201.mp3', atk2:'ATTAQUE%20ENTRE%20CARTE%202.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die1:'CARTE%20DETRUITE%201.mp3', die2:'CARTE%20DETRUITE%202.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
+async function musLoadSfx(){
+  const m = MUS, f = m.sfx; if(!m.ctx || f.busy || Date.now() - f.failAt < 60000) return;
+  const todo = Object.keys(f.files).filter(k => !f.buf[k]); if(!todo.length) return;
+  f.busy = true;
   try{
-    if(!m.ctx){
-      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
-      m.ctx = new AC(); m.gain = m.ctx.createGain(); m.gain.gain.value = 0; m.gain.connect(m.ctx.destination);
-      m.ctx.resume().catch(() => {});
-    }
-    if(!m.buf){ const r = await fetch(MUSIC_URL); if(!r.ok) throw new Error('musique ' + r.status); m.buf = await m.ctx.decodeAudioData(await r.arrayBuffer()); }
-    const so = m.ctx.createBufferSource(); so.buffer = m.buf; so.loop = true; so.connect(m.gain); so.start(0); m.src = so;
-    musSync();
-  }catch(e){ m.failAt = Date.now(); }
-  finally{ m.busy = false; }
+    if(!f.gain){ f.gain = m.ctx.createGain(); f.gain.connect(m.ctx.destination); }
+    let bad = false;
+    for(const k of todo){ try{ const r = await fetch(MUS_BASE + f.files[k]); if(!r.ok) throw new Error('son ' + r.status); f.buf[k] = await m.ctx.decodeAudioData(await r.arrayBuffer()); }catch(e){ bad = true; } }   // un son absent n'empêche pas les autres
+    if(bad) f.failAt = Date.now();
+  }catch(e){ f.failAt = Date.now(); }
+  finally{ f.busy = false; }
 }
-['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if(MUS.src){ if(MUS.ctx.state === 'suspended' && musWanted()) musSync(); } else musStart(); }, { capture:true, passive:true }));
+function musSfx(rar){
+  const m = MUS, f = m.sfx; if(!m.ctx || !f.gain || !f.buf[rar] || document.hidden || (SETTINGS.vfx || 0) <= 0) return;
+  const go = () => { f.gain.gain.value = Math.max(0, Math.min(1, SETTINGS.vfx / 100)); const so = m.ctx.createBufferSource(); so.buffer = f.buf[rar]; so.connect(f.gain); so.start(0); };
+  if(m.ctx.state === 'running') go(); else m.ctx.resume().then(go).catch(() => {});
+}
+// carte détruite : un des trois sons au hasard
+function musDie(){ musSfx('die' + (1 + Math.floor(Math.random() * 3))); }
+// attaque d'une carte sur une autre : un des deux sons au hasard à chaque coup, à l'impact
+function btlContactSound(el, t){
+  const tr = btlUnitRect(t), m = 3; let done = false, raf = 0;
+  const hit = r => r.left < tr.right + m && r.right > tr.left - m && r.top < tr.bottom + m && r.bottom > tr.top - m;
+  const fire = () => { if(done) return; done = true; cancelAnimationFrame(raf); musAtk(); };
+  if(hit(btlRect(el))) return { fire };   // déjà au contact au départ : le son part à l'impact final
+  const tick = () => { if(done) return; if(hit(btlRect(el))) fire(); else raf = requestAnimationFrame(tick); };
+  raf = requestAnimationFrame(tick);
+  return { fire };
+}
+function musAtk(){ musSfx(Math.random() < .5 ? 'atk1' : 'atk2'); }
+// 'menu' partout sauf en combat, 'fight' en combat (body.btl-on : BATAILLE et DÉFI), '' = silence (appli masquée ou volume à 0)
+function musMode(){ return document.hidden || (SETTINGS.music || 0) <= 0 ? '' : document.body.classList.contains('btl-on') ? 'fight' : 'menu'; }
+function musVol(){ return Math.max(0, Math.min(1, (SETTINGS.music || 0) / 100)) * 0.8; }
+function musPlay(k){
+  const m = MUS, tr = m.tr[k]; if(!m.ctx || !tr.buf || !tr.gain) return;
+  if(tr.src && k === 'fight' && m.last !== 'fight'){ try{ tr.src.stop(); }catch(_){} tr.src = null; }   // chaque combat repart du début de sa musique
+  if(tr.src) return;
+  const so = m.ctx.createBufferSource(); so.buffer = tr.buf; so.loop = true; so.connect(tr.gain); so.start(0); tr.src = so;
+}
+function musSync(){
+  const m = MUS; if(!m.ctx) return;
+  const mode = musMode(), t = m.ctx.currentTime;
+  clearTimeout(m.susp); clearTimeout(m.stop);
+  if(mode && m.ctx.state === 'suspended') m.ctx.resume().catch(() => {});
+  if(mode) musPlay(mode);
+  for(const k in m.tr){
+    const g = m.tr[k].gain; if(!g) continue;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setTargetAtTime(k === mode ? musVol() : 0, t, k === mode ? .6 : (document.hidden ? .05 : .4));
+  }
+  m.last = mode;
+  if(mode !== 'fight') m.stop = setTimeout(() => { const f = m.tr.fight; if(musMode() !== 'fight' && f.src){ try{ f.src.stop(); }catch(_){} f.src = null; } }, 2500);   // la musique de combat s'arrête une fois le fondu fini
+  if(!mode) m.susp = setTimeout(() => { if(!musMode() && !((SETTINGS.vfx || 0) > 0 && document.body.classList.contains('btl-on') && !document.hidden) && m.ctx.state === 'running') m.ctx.suspend().catch(() => {}); }, 2500);   // plus de calcul audio quand on n'entend rien
+}
+async function musLoad(k){
+  const m = MUS, tr = m.tr[k]; if(tr.buf || tr.busy || Date.now() - tr.failAt < 60000) return;
+  tr.busy = true;
+  try{
+    const r = await fetch(tr.url); if(!r.ok) throw new Error('musique ' + r.status);
+    tr.buf = await m.ctx.decodeAudioData(await r.arrayBuffer());
+    if(!tr.gain){ tr.gain = m.ctx.createGain(); tr.gain.gain.value = 0; tr.gain.connect(m.ctx.destination); }
+    musSync();
+  }catch(e){ tr.failAt = Date.now(); }
+  finally{ tr.busy = false; }
+}
+function musStart(){
+  const m = MUS;
+  if(!m.ctx){
+    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    m.ctx = new AC(); m.ctx.resume().catch(() => {});   // créé pendant le geste du joueur : seul moment où les navigateurs l'autorisent
+  }
+  const first = musMode() === 'fight' ? 'fight' : 'menu', other = first === 'menu' ? 'fight' : 'menu';
+  musLoadSfx(); musLoad(first).then(() => musLoad(other));
+}
+['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => { musStart(); if(MUS.ctx && MUS.ctx.state === 'suspended' && musMode()) musSync(); }, { capture:true, passive:true }));
 document.addEventListener('visibilitychange', musSync);
 new MutationObserver(musSync).observe(document.body, { attributes:true, attributeFilter:['class'] });
+// Son d'appui sur une case / un bouton (V0.04.87) : hors BATAILLE et DÉFI, et pas pendant un glisser-déposer ni un défilement (mouvement > 10 px)
+(function(){
+  let st = null;
+  const INTER = 'button,a,input,select,textarea,label,summary,[role=button],[onclick]';
+  const isInter = el => {
+    for(let e = el, n = 0; e && e !== document.body && n < 8; e = e.parentElement, n++){ if(e.matches && e.matches(INTER)) return !e.disabled; }
+    try{ return getComputedStyle(el).cursor === 'pointer'; }catch(_){ return false; }
+  };
+  document.addEventListener('pointerdown', e => { st = { id:e.pointerId, x:e.clientX, y:e.clientY, moved:false }; }, true);
+  document.addEventListener('pointermove', e => { if(st && e.pointerId === st.id && !st.moved && Math.hypot(e.clientX - st.x, e.clientY - st.y) > 10) st.moved = true; }, true);
+  document.addEventListener('pointercancel', () => { st = null; }, true);
+  document.addEventListener('pointerup', e => {
+    const s = st; st = null;
+    if(!s || s.id !== e.pointerId || s.moved) return;
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    if(document.body.classList.contains('btl-on')) return;
+    if(!isInter(e.target)) return;
+    musSfx('click');
+  }, true);
+})();
 function ecoPruneLoops(){   // V0.04.61 : ECO.paused retenait des animations (donc leurs éléments, ex. flèches de bataille supprimées) jusqu'au prochain toucher -> fuite mémoire
   if(!ECO.paused.length) return;
   ECO.paused = ECO.paused.filter(a => { try{ const t = a.effect && a.effect.target; return !!(t && t.isConnected && a.playState === 'paused'); }catch(_){ return false; } });
@@ -13429,6 +13511,7 @@ function revealLegendaryQueue(queue, idx){
   idx = idx || 0;
   if(idx >= queue.length) return;
   const item = queue[idx];
+  musSfx('get_' + item.rar);   // son de la carte obtenue, à l'ouverture de sa fiche (V0.04.88)
   const isHoloItem = item.rar === 'holo';
   const modalId = item.kind === 'module' ? 'moduleModal' : 'codexModal';
   const modalEl = document.getElementById(modalId);
@@ -14113,7 +14196,7 @@ function openBoosterFlow(type){
       content.style.width = '100%'; content.style.height = '100%';
       content.appendChild(card);
       content.onclick = () => {
-        if(!card.classList.contains('flipped')){ card.classList.add('flipped'); revealed++; checkAllRevealed(); }
+        if(!card.classList.contains('flipped')){ card.classList.add('flipped'); musSfx('get_' + res.rar); revealed++; checkAllRevealed(); }
       };
     }
     content.style.position = 'relative'; content.style.zIndex = '1'; content.style.width = '100%'; content.style.height = '100%';
@@ -15032,6 +15115,7 @@ function doCraft(){
   player.res.mat[cost.mat] = have - cost.n;
   if(t.kind === 'module') acquireModule(MODULE_DEFS.find(d => d.name === t.name), t.rar);
   else acquireCard(CHAR_DEFS.find(d => d.name === t.name), t.rar);
+  musSfx('fab_' + t.rar);   // son de fabrication selon la rareté (V0.04.87)
   if(typeof renderResources === 'function') renderResources();
   saveNow();
   showToast((t.kind === 'module' ? 'MODULE FABRIQUÉ : ' : 'CARTE FABRIQUÉE : ') + t.name);
@@ -18870,6 +18954,7 @@ async function btlPlay(side, c, si, fromRect, el){
   await btlAnim(el, [{ transform:'none' }, { transform:btlXf(fromRect, to, ' rotate(8deg)') }], { duration:560, easing:'cubic-bezier(.55,.05,.9,.45)' });
   // impact : la carte classique se transforme en petite carte, pulsation inversée de la couleur de rareté
   btlPutCard(c);
+  musSfx(c.rar);   // son de pose selon la rareté (V0.04.87)
   const u = btlUnitEl(c);
   const ghost = !!(BTL_CARD_FX[c.name] && BTL_CARD_FX[c.name].ghost);   // entrée en fantôme (SHADOW)
   let arrivePr = null;
@@ -19458,11 +19543,12 @@ async function btlDoAction(c, ov){
   const len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
   const bx = (-ux * 10).toFixed(1), by = (-uy * 10 - 12).toFixed(1);
   const hit = 'translate(' + (dx * 0.92).toFixed(1) + 'px,' + (dy * 0.92).toFixed(1) + 'px) scale(1.28)';
-  let rh = null, kg = null;
+  let rh = null, kg = null, snd = null;
   if(rhino){ rh = await btlRhinoRun(c, t); }
   else if(kr){ kg = await btlKrigerGo(c, t, el); }   // KRIGER : lancer du grappin, plantage, traction jusqu'au chef
   else {
   await btlAnim(el, [{ transform:'translateY(-12px) scale(1.2)' }, { transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }], { duration:170, easing:'ease-out' });
+  snd = btlContactSound(el, t);   // son d'attaque dès que la carte touche sa cible (V0.04.87)
   await btlAnim(el, [{ transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }, { transform:hit }], { duration:220, easing:BTL_E.in });
   }
   const tEl = btlUnitEl(t);
@@ -19479,6 +19565,7 @@ async function btlDoAction(c, ov){
   const strong = res.crit, col = ap.hpLoss > 0 ? '#ff5a5a' : '#4ea8ff';
   btlShowDmg(t, r1, tEl, ap, strong);
   btlSpark(r1, col, strong ? 1.5 : 1); btlSlash(r1, col, strong);
+  if(snd) snd.fire(); else musAtk();   // filet de sécurité : joue le son s'il n'est pas déjà parti (RHINO, KRIGER...)
   btlParticles(r1.left + r1.width / 2, r1.top + r1.height / 2, { n:9, color:col, dist:46, dur:520, size:6 });
   btlRing(r1, col, false);
   btlFlashEl(tEl, col, .95, 380); btlRecoil(tEl, ux, uy, 8);
@@ -19509,6 +19596,7 @@ async function btlDoAction(c, ov){
 async function btlShieldAdd(t, amount, fromPlan, o){
   if(amount <= 0) return;
   t.df += amount;
+  musSfx('shield');   // son de bouclier reçu (V0.04.87)
   if(fromPlan) btlPdTick(t, 0, 0, amount);   // le +X prévu sur la carte se décompte à mesure que la DEF est ajoutée
   const r = btlUnitRect(t), el = btlUnitEl(t);
   btlFloatNum(r, '+' + amount, 'shield', o && o.num); btlStatPop(el, 's-def', '#4ea8ff');
@@ -19542,6 +19630,7 @@ async function btlDie0(c){
   btlParticles(cx, cy, { n:14, color:'#ff6a4a', dist:84, dur:560, size:5, inward:true, spread:300 });
   btlFlashEl(el, '#ff3a3a', .8, 760);
   const sh = [0, -3.5, 3.5, -4.5, 4.5, -5.5, 5.5, -6.5, 6.5, 0];
+  btlAfter(() => { if(BTL && !BTL.abort) musDie(); }, 620 - 250 / BTL_TS);   // son de destruction (V0.04.87)
   await btlAnim(el, sh.map((v, i) => ({ transform:'translate(' + v + 'px,' + (i % 2 ? -1 : 1) * Math.abs(v) * .25 + 'px) scale(' + (1 + i * .007) + ')' })), { duration:620, easing:'linear' });
   // 2) rupture : éclair blanc, la carte éclate en éclats incandescents qui retombent, onde de choc, braises
   const fx0 = BTL_CARD_FX[c.name];
@@ -24818,13 +24907,14 @@ function btlSmokeStep(dt){
 const BTL_FLAME = { strips:[], parts:[], bands:{}, atlas:null, raf:0, last:0, T:0, acc:0, avg:16.7, q:1, scanAt:-9, dirty:true, manual:false };
 const BTL_FL_PAL = {
   r:[[255, 228, 208], [255, 152, 98], [255, 88, 54], [255, 44, 34], [226, 24, 28], [170, 14, 22], [110, 8, 16], [64, 4, 12]],
+  o:[[255, 246, 214], [255, 220, 130], [255, 184, 64], [255, 146, 28], [244, 112, 10], [208, 80, 6], [140, 52, 4], [78, 28, 3]],
   b:[[224, 245, 255], [140, 206, 255], [84, 170, 255], [48, 128, 255], [32, 96, 248], [24, 62, 206], [16, 38, 150], [10, 22, 96]]
 };
 const BTL_FL_N = 14, BTL_FL_S = 40;
 // planche de sprites : une rangée par teinte (rouge, bleu), 14 boules de feu douces de la plus chaude à la plus froide
 function btlFlameAtlas(){
-  const F = BTL_FLAME; if(F.atlas) return F.atlas; const S = BTL_FL_S, N = BTL_FL_N, c = document.createElement('canvas'); c.width = S * N; c.height = S * 2; const g = c.getContext('2d');
-  ['r', 'b'].forEach((k, row) => { const pal = BTL_FL_PAL[k];
+  const F = BTL_FLAME; if(F.atlas) return F.atlas; const S = BTL_FL_S, N = BTL_FL_N, c = document.createElement('canvas'); c.width = S * N; c.height = S * 3; const g = c.getContext('2d');
+  ['r', 'b', 'o'].forEach((k, row) => { const pal = BTL_FL_PAL[k];   // lignes de la planche : 0 rouge, 1 bleu, 2 orange (ultimate)
     for(let i = 0; i < N; i++){
       const f = i / (N - 1) * (pal.length - 1), a = Math.floor(f), b = Math.min(pal.length - 1, a + 1), t = f - a, rgb = pal[a].map((v, j) => Math.round(v + (pal[b][j] - v) * t)).join(','), gr = g.createRadialGradient(i * S + S / 2, row * S + S / 2, 0, i * S + S / 2, row * S + S / 2, S / 2);
       gr.addColorStop(0, 'rgba(' + rgb + ',1)'); gr.addColorStop(.26, 'rgba(' + rgb + ',.7)'); gr.addColorStop(.58, 'rgba(' + rgb + ',.22)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
@@ -24880,7 +24970,7 @@ function btlFlameScan(){
       if(!q[1]) return; const kd = q[0], dir = (kd === 'a') === (side === 'p') ? -1 : 1;
       let s = null; for(let i = 0; i < F.strips.length; i++){ const t = F.strips[i]; if(t.el === un && t.kd === kd){ s = t; break; } }
       if(!s){ s = { el:un, kd, side, k:0, on:true, ph:btlSmRn() * 6.28, acc:0, em:0, pal:kd === 'a' ? 'r' : 'b', n:0, x0:0, x1:0, y:0, dir, sc:1 }; F.strips.push(s); }
-      s.on = true; s.dir = dir; s.sc = w / 78; s.x0 = r.left - fr.left + w * .15; s.x1 = r.left - fr.left + w * .85;
+      s.on = true; s.dir = dir; s.pal = kd === 'a' ? (un.classList.contains('ult-on') ? 'o' : 'r') : 'b'; s.sc = w / 78; s.x0 = r.left - fr.left + w * .15; s.x1 = r.left - fr.left + w * .85;
       s.y = dir < 0 ? r.top - fr.top + w * .008 : r.bottom - fr.top - w * .008; live.push(s);
     });
   });
@@ -24896,7 +24986,7 @@ function btlFlameStep(dt){
   F.strips.forEach(s => {
     s.k += ((s.on ? 1 : 0) - s.k) * Math.min(1, dt * (s.on ? 4.2 : 9));
     if(s.k < .012) return;
-    const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : 1;
+    const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : s.pal === 'o' ? 2 : 1;
     s.acc += 50 * (W / 56) * s.k * q * dt; s.em += 4 * s.k * q * dt;
     while(s.acc >= 1){ s.acc--; if(s.n > 60 || parts.length > 700) continue; s.n++;
       let u = rn(), d = .5, n = 0;
@@ -24921,7 +25011,7 @@ function btlFlameStep(dt){
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, b.cv.width, b.cv.height); ctx.globalCompositeOperation = 'lighter';
     const blob = (row, st, x, y, w, h, a) => { ctx.setTransform(dpr * w / S, 0, 0, dpr * h / S, (x - ox) * dpr, (y - oy) * dpr); ctx.globalAlpha = a; ctx.drawImage(atlas, st * S, row * S, S, S, -S / 2, -S / 2, S, S); };
     F.strips.forEach(s => {
-      if(s.side !== side || s.k < .012) return; const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : 1, dir = s.dir;
+      if(s.side !== side || s.k < .012) return; const W = s.x1 - s.x0, sc = s.sc, cx = (s.x0 + s.x1) / 2, row = s.pal === 'r' ? 0 : s.pal === 'o' ? 2 : 1, dir = s.dir;
       blob(row, 3, cx, s.y + dir * 3.2 * sc, W * 1.28, 14 * sc, .62 * s.k);        // lueur douce sur le bord
       blob(row, 5, cx, s.y + dir * 5 * sc, W * 1.6, 28 * sc, .42 * s.k);          // halo large
       for(let i = 0; i < 6; i++){                                                  // cœur incandescent : six taches dont l'éclat ondule le long du bord
@@ -26970,7 +27060,7 @@ document.getElementById('helpModal').addEventListener('click', e => { if(e.targe
 document.querySelectorAll('#optTheme button').forEach(b => b.onclick = () => { SETTINGS.theme = b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optFps button').forEach(b => b.onclick = () => { SETTINGS.fps = +b.dataset.v; saveSettings(); renderOptions(); });
 document.querySelectorAll('#optEco button').forEach(b => b.onclick = () => { SETTINGS.eco = b.dataset.v === '1'; saveSettings(); renderOptions(); ecoWake(); });
-document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); if(MUS.src) musSync(); else musStart(); };
+document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); musStart(); musSync(); };
 document.getElementById('optVfx').oninput = e => { SETTINGS.vfx = +e.target.value; saveSettings(); renderOptions(); };
 document.getElementById('optExportBtn').onclick = exportSaveFile;
 document.getElementById('optImportBtn').onclick = openImportChooser;
