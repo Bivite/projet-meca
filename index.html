@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.01</title>
+<title>Projet MECA V0.05.02</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8358,7 +8358,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.01</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.02</b></div>
   </div>
 
     </div>
@@ -9168,9 +9168,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.01';
+var BUILD_VERSION = 'V0.05.02';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.02', items:[
+    'Vitesse : les images des cartes, modules, trophées et menus sont préchargées en arrière-plan dès le lancement (jamais pendant un combat) : le Deck et l\'ouverture d\'un combat n\'attendent plus le réseau image par image.',
+  ] },
   { v:'V0.05.01', items:[
     'BATAILLE (PvP) : la tuile BATAILLE te met face à un autre joueur. Écran d\'attente (annulable, retour automatique après 1 min 30), tour de 2 min 30, les deux joueurs voient en direct les cibles choisies par l\'adversaire et leurs changements. Fin de partie : VICTOIRE / DÉFAITE (chef détruit, abandon, déconnexion ou 2 tours sans action). Pas de récompense pour l\'instant : phase de test.',
     'ULTIME (tous les modes de combat) : la DEF reçue pendant l\'ultime est gardée à la fin du tour, comme l\'ATQ ; seule la DEF d\'avant l\'ultime est divisée par 2. Une carte qui défend ajoute sa DEF actuelle (après dégâts) à la carte protégée.',
@@ -14174,9 +14177,10 @@ function backWinHtml(res){
 // ait eu l'occasion d'ouvrir un booster -- pour qu'ils soient déjà en cache navigateur le moment venu.
 // Simple new Image() sans attente ni callback : en cas d'échec (coupure réseau), l'onerror posé sur
 // chaque <img> au moment de l'affichage réel prend le relais (cf plus bas), donc rien à gérer ici.
+var __IMGKEEP = [];   // images préchargées, gardées en mémoire pour toute la session
 function preloadBoosterBacks(){
   [BOOST_CARD_BACK].forEach(set => {
-    Object.values(set).forEach(url => { const img = new Image(); img.src = url; });
+    Object.values(set).forEach(url => { const img = new Image(); __IMGKEEP.push(img); img.src = url; });
   });
 }
 preloadBoosterBacks();
@@ -14199,7 +14203,7 @@ function preloadUiAssets(){
     'icon-goldbar.webp', 'icon-xpchip.webp', 'icon-crystalgem.webp',
     'icon-mat-rare.webp', 'icon-mat-epique.webp', 'icon-mat-legendaire.webp',
     'icon-power.webp', 'icon-rewardcard.webp', 'icon-rewardmodule.webp'
-  ].forEach(name => { const img = new Image(); img.src = base + name; });
+  ].forEach(name => { const img = new Image(); __IMGKEEP.push(img); img.src = base + name; });
 }
 preloadUiAssets();
 // Préchargement de l'écran d'accueil et des visuels de boosters (V0.02.96, migration Supabase Storage) :
@@ -14215,12 +14219,35 @@ function preloadMenuAssets(){
     'hero-meca.webp', 'tile-tirage.webp', 'tile-labo.webp', 'tile-boost.webp', 'tile-shop.webp',
     'tile-daily.webp',
     'tile-trophies.webp', 'tile-tasks.webp', 'tile-cardmgmt.webp', 'tile-collection.webp',
-  ].forEach(name => { const img = new Image(); img.src = menuBase + name; });
+  ].forEach(name => { const img = new Image(); __IMGKEEP.push(img); img.src = menuBase + name; });
   ['visual-res.webp', 'visual-cards.webp', 'visual-modules.webp'].forEach(name => {
-    const img = new Image(); img.src = boostBase + name;
+    const img = new Image(); __IMGKEEP.push(img); img.src = boostBase + name;
   });
 }
 preloadMenuAssets();
+function preloadGameArt(){
+  try{ if(navigator.connection && navigator.connection.saveData) return; }catch(_){}
+  const seen = {}, first = [], mid = [], last = [];
+  const add = (list, u) => { if(typeof u === 'string' && u.indexOf('/card-assets/') > 0 && !seen[u]){ seen[u] = 1; list.push(u); } };
+  try{ decks.forEach(dk => (dk.cards || []).forEach(k => { const e = sqEntry(k); if(e && e.def){ add(first, e.def.art); add(first, e.def.artExt); add(first, e.def.artBig); } })); }catch(_){}
+  try{
+    const src = document.documentElement.innerHTML;
+    const re = /https:\/\/okrdywhctnlayyfltivc\.supabase\.co\/storage\/v1\/object\/public\/card-assets\/[A-Za-z0-9_\-\/.]+\.(?:webp|png|jpe?g)/g;
+    let m; while((m = re.exec(src))){ const u = m[0]; add(/\/(fx|raid)\//.test(u) ? last : (/-art-big\./.test(u) ? last : mid), u); }
+  }catch(_){}
+  const q = first.concat(mid, last);
+  let i = 0, run = 0;
+  const next = () => {
+    if(window.BTL){ setTimeout(next, 3000); return; }          // jamais pendant un combat (réseau libre pour la partie)
+    while(run < 4 && i < q.length){
+      const img = new Image(); __IMGKEEP.push(img); run++;
+      img.onload = img.onerror = () => { run--; next(); };
+      img.src = q[i++];
+    }
+  };
+  next();
+}
+setTimeout(preloadGameArt, 2500);
 
 // Icône du COFFRE lui-même (V0.02.85, demande d'Alex : "ça doit ressembler à un coffre technologique,
 // mécanique") -- caisse carrée à rivets avec un joint d'ouverture horizontal et un verrou central,
