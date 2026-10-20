@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.04.92</title>
+<title>Projet MECA V0.05.00</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2270,6 +2270,23 @@
   }
   .controls button.primary-btn:active{box-shadow:0 1px 0 #2e1777, 0 1px 0 rgba(255,255,255,.4) inset;}
   #nameModal{z-index:50;}
+  /* V0.05.00 : fenêtre « serveur injoignable » (même verre biseauté que #actionModal) */
+  #econDownModal{z-index:95;}
+  #econDownModal .action-inner{
+    --cut:14px; border-radius:0; gap:12px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 32%),
+      radial-gradient(ellipse 80% 40% at 50% 0%, var(--rc-glow, rgba(139,92,246,.3)), transparent 70%),
+      linear-gradient(180deg, #1b1629, #0d0b15);
+    border:1px solid rgba(139,92,246,.5);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
+  }
+  #econDownModal .controls button{
+    --cut:8px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  }
   /* Style "verre" biseauté (V0.02.32) : connexion / création de compte et changer de nom, même fenêtre
      #nameModal (les deux modes de #nmAccountStep partagent le même HTML/CSS, seul le texte change en JS). */
   .name-modal-inner{
@@ -8325,7 +8342,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.04.92</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.00</b></div>
   </div>
 
     </div>
@@ -8469,14 +8486,6 @@
         <button id="optTutorialBtn">REVOIR LE TUTORIEL</button>
       </div>
     </div>
-    <div class="opt-row">
-      <span>SAUVEGARDE AVANCÉE</span>
-      <div class="acc-text small">Code à copier/coller pour transférer ta progression sans compte en ligne, ou comme secours indépendant.</div>
-      <div class="controls" style="width:100%;">
-        <button id="optExportBtn">EXPORTER</button>
-        <button id="optImportBtn">IMPORTER</button>
-      </div>
-    </div>
     <div class="opt-note" id="optNote"></div>
   </div>
 </div>
@@ -8535,8 +8544,6 @@
       <div class="controls" style="width:100%;">
         <button id="nmAccOk" class="primary-btn">CRÉER MON COMPTE</button>
       </div>
-      <!-- TEMPORAIRE (test artefact) : à retirer avant diffusion publique -->
-      <div class="nm-login" id="nmGuestRow" style="margin-top:8px;"><a href="#" id="nmGuestSkip">Jouer sans compte (test)</a></div>
     </div>
 
     <div class="nm-step" id="nmRecoverStep" style="display:none;">
@@ -8594,10 +8601,568 @@
 </div>
 
 <script>
+// ===================================================================================================
+//  V0.05.00 -- ÉCONOMIE PILOTÉE PAR LE SERVEUR (chantier 2)
+//  Ressources, cartes, boosters, récompenses, trophées, tâches, statistiques : tout vit sur le serveur
+//  (fonction `econ`). Le jeu n'en garde qu'un MIROIR (player, cardCopies, favorites, offre de la Fabrique)
+//  réécrit à CHAQUE réponse du serveur. Une valeur modifiée ici, sur l'appareil, ne sert à rien : le
+//  serveur ne la lit jamais et la prochaine réponse l'écrase.
+//  Toute action passe par econAct() : file d'attente unique, une requête à la fois, identifiant unique
+//  par action (rejouer la même requête ne l'applique jamais deux fois), temps et hasard fournis par le serveur.
+// ===================================================================================================
+var ECON = { ready:false, offset:0, version:-1, chain:Promise.resolve(), pending:0, uiBusy:false, seenTroph:null, favPending:{}, dayKey:'',
+  syncAt:0, syncTimer:null, hbTick:0, hiddenAt:0, needName:false, downOpen:false };
+
+// ---------- Heure : celle du SERVEUR (fuseau Europe/Paris), jamais celle de l'appareil ----------
+const ECON_DTF = new Intl.DateTimeFormat('en-GB', { timeZone:'Europe/Paris', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' });
+function econNow(){ return Date.now() + ECON.offset; }
+function econParts(ms){ const o = {}; ECON_DTF.formatToParts(new Date(ms)).forEach(p => { if(p.type !== 'literal') o[p.type] = +p.value; }); return o; }
+function econOffsetMs(ms){ const p = econParts(ms); return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - Math.floor(ms / 1000) * 1000; }
+function econMidnight(y, m, d){ let t = Date.UTC(y, m - 1, d); for(let i = 0; i < 3; i++) t = Date.UTC(y, m - 1, d) - econOffsetMs(t); return t; }
+
+// ---------- Identifiant de requête (UUID v4) ----------
+function econUuid(){
+  try{ if(typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID(); }catch(_){}
+  const b = new Uint8Array(16);
+  try{ crypto.getRandomValues(b); }catch(_){ for(let i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256); }
+  b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+  const h = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+  return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+}
+
+// ---------- Réseau : une tentative ----------
+async function econSend(op, params, rid){
+  let sess = null;
+  try{ sess = await ensureFreshSupaSession(); }catch(_){ sess = null; }
+  if(!sess || !sess.access_token) return { status: readSupaSession() ? 0 : 401, body:null };   // session encore là mais jeton non rafraîchi : réseau ; plus de session : déconnecté
+  const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+  const tm = ctl ? setTimeout(() => ctl.abort(), 12000) : 0;
+  try{
+    const res = await fetch(SUPA_URL + '/functions/v1/econ', {
+      method:'POST', signal: ctl ? ctl.signal : undefined,
+      headers:{ 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':'Bearer ' + sess.access_token },
+      body: JSON.stringify({ op, request_id:rid, params:params || {} })
+    });
+    let body = null; try{ body = await res.json(); }catch(_){}
+    return { status:res.status, body };
+  }catch(_){ return { status:0, body:null }; }
+  finally{ if(tm) clearTimeout(tm); }
+}
+// Messages d'erreur métier (code renvoyé par le serveur -> texte du jeu)
+const ECON_MSG = { gold:'OR INSUFFISANT', crystal:'CRISTAUX INSUFFISANTS', mat:'MATÉRIAUX INSUFFISANTS', stock:'AUCUN BOOSTER DISPONIBLE', empty:'RIEN À ACHETER',
+  already:'DÉJÀ RÉCUPÉRÉE AUJOURD\'HUI', not_claimable:'RIEN À RÉCUPÉRER', protected:'CARTE EN FAVORI : PROTÉGÉE', qty:'QUANTITÉ INVALIDE',
+  not_craftable:'CETTE CARTE NE SE FABRIQUE PAS', not_owned:'CARTE NON POSSÉDÉE', no_match:'AUCUN COMBAT EN COURS', too_fast:'COMBAT TROP COURT POUR ÊTRE VALIDÉ' };
+function econFail(code, message, opts){
+  if(!opts || !opts.quiet){
+    const t = ECON_MSG[code];
+    if(t) showToast(t);
+    else if(code === 'bad_param' && message) showToast(String(message).toUpperCase());
+    else showToast('ACTION IMPOSSIBLE');
+  }
+  // Le jeu s'est trompé sur son propre solde : on se resynchronise avec le serveur
+  if(ECON_MSG[code] && !(opts && opts.noResync)) econSyncSoon(0);
+}
+// Une action = une requête. Toutes passent par cette file : une seule en vol à la fois, dans l'ordre.
+// opts : { quiet (aucun message, peu d'essais), boot (démarrage : pas de fenêtre d'erreur), render ('full' | 'light' | 'none'), pre (appelé juste avant la prise en compte de la réponse) }
+function econAct(op, params, opts){
+  opts = Object.assign({ op }, opts || {});
+  const rid = opts.rid || econUuid();   // opts.rid : on rejoue la MÊME requête (jamais appliquée deux fois)
+  const run = () => econRun(op, params || {}, rid, opts);
+  const p = ECON.chain.then(run, run);
+  ECON.chain = p.then(() => {}, () => {});
+  return p;
+}
+async function econRun(op, params, rid, opts){
+  const waits = opts.quiet ? [0, 1500] : [0, 700, 2000, 4000];
+  let preDone = false;
+  const pre = () => { if(!preDone){ preDone = true; if(opts.pre){ try{ opts.pre(); }catch(_){} } } };
+  let st = 0, b = null, refreshed = false;
+  ECON.pending++;
+  try{
+    for(let i = 0; i < waits.length; i++){
+      if(waits[i]) await new Promise(r => setTimeout(r, waits[i]));
+      const r = await econSend(op, params, rid);
+      st = r.status; b = r.body;
+      if(st === 200 && b && b.ok === true){
+        pre();
+        econAdopt(b, opts);
+        return { ok:true, result:b.result || {}, replayed:!!b.replayed, version:b.version };
+      }
+      if(st === 422 && b && b.ok === false){
+        pre();
+        econFail(b.error, b.message, opts);
+        return { ok:false, error:b.error, message:b.message || b.error };
+      }
+      if(st === 401){                                            // jeton refusé : un seul rafraîchissement, puis on abandonne
+        if(!refreshed){
+          let s = null; try{ s = await supaRefresh(); }catch(_){}
+          if(s){ refreshed = true; i--; continue; }               // jeton renouvelé : on rejoue (une seule fois ; s'il est encore refusé, le compte est perdu)
+          if(readSupaSession()){ st = 0; b = null; continue; }              // renouvellement impossible faute de réseau (la session est conservée) : on réessaie comme une coupure
+        }
+        break;
+      }
+      if(st === 400 || st === 404 || st === 405) break;          // erreur de programmation : inutile de réessayer
+      if(st === 409 && b && b.error === 'no_economy') break;
+      // 0 (réseau), 429, 5xx, 409 « busy » : on réessaie avec le MÊME identifiant (jamais appliqué deux fois)
+    }
+  } finally { ECON.pending--; }
+  pre();
+  return econGiveUp(st, b, opts);
+}
+function econGiveUp(st, b, opts){
+  const code = st === 401 ? 'unauthorized' : st === 429 ? 'rate_limited' : (b && b.error) || (st === 0 ? 'network' : 'server');
+  if(!opts.boot){
+    if(code === 'unauthorized') econAuthLost();
+    else if(code === 'rate_limited'){ if(!opts.quiet) showToast('TROP D\'ACTIONS · PATIENTE UN INSTANT'); }
+    else if(!opts.quiet) econShowDown(code);
+  }
+  return { ok:false, error:code };
+}
+// Suivi d'événements d'interface (cartes regardées, collection ouverte...) : le serveur les compte lui-même.
+function econTrack(kind, name){
+  if(!ECON.ready) return;
+  const p = { kind }; if(name) p.name = name;
+  return econAct('track', p, { quiet:true, render:'light' });
+}
+// Resynchronisation avec le serveur (jour qui change, offre de la Fabrique échue, solde incohérent...)
+function econSyncSoon(delay){
+  if(!ECON.ready || ECON.syncTimer) return;
+  const wait = Math.max(delay || 0, 5000 - (Date.now() - ECON.syncAt));
+  ECON.syncTimer = setTimeout(() => { ECON.syncTimer = null; ECON.syncAt = Date.now(); econAct('bootstrap', {}, { quiet:true, noResync:true }); }, Math.max(0, wait));
+}
+function econDayCheck(){ if(ECON.ready && ECON.dayKey && todayKey() !== ECON.dayKey) econSyncSoon(0); }
+// Empêche deux actions d'interface de se chevaucher (un clic pendant qu'une requête est en cours est ignoré)
+function econUi(fn){
+  if(ECON.uiBusy) return;
+  ECON.uiBusy = true;
+  let p; try{ p = Promise.resolve(fn()); }catch(e){ p = Promise.reject(e); }
+  p.catch(e => { try{ console.error(e); }catch(_){} }).then(() => { ECON.uiBusy = false; });
+}
+
+// ---------- Miroir : l'état du serveur est recopié dans les variables du jeu ----------
+function econMirror(s, op){
+  const J = x => JSON.parse(JSON.stringify(x));
+  const warm = ECON.ready, oldLevel = player.level;
+  player.name = s.name; player.level = s.level; player.xp = s.xp; player.totalXp = s.totalXp; player.draws = s.draws; player.playSeconds = s.playSeconds;
+  player.res = { gold:s.res.gold, xp:0, crystal:s.res.crystal, mat:J(s.res.mat) };
+  player.boosters = { res:(s.boosters && s.boosters.res) || 0, cards:(s.boosters && s.boosters.cards) || 0, modules:0 };
+  player.stats = Object.assign(defaultStats(), J(s.stats));
+  player.totals = J(s.totals); player.troph = J(s.troph); player.daily = J(s.daily); player.login = J(s.login);
+  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.backs = J(s.backs); player.defi = J(s.defi || {});
+  CHAR_DEFS.forEach(d => {
+    const had = warm ? copiesOf(d) : -1;
+    const st = emptyStack(); st[rarityOf(d)] = (s.cards && s.cards[d.name]) || 0; cardCopies[d.name] = st;
+    if(warm && had === 0 && st[rarityOf(d)] > 0) d.seen = false;                 // nouvelle carte : pastille « nouveau »
+  });
+  const fav = {}; Object.keys(s.favorites || {}).forEach(k => { if(s.favorites[k]) fav[k] = true; });
+  Object.keys(ECON.favPending).forEach(n => {                                       // clics sur ★ pas encore confirmés : on les garde à l'écran
+    if(ECON.favPending[n] % 2 === 1){ const d = CHAR_DEFS.find(x => x.name === n); if(d){ const k = favKey(d.name, rarityOf(d)); if(fav[k]) delete fav[k]; else fav[k] = true; } }
+  });
+  favorites = fav;
+  const prevOffer = fabriqueOffer.map(d => d ? d.name : null).join('|');
+  fabriqueOffer = [0, 1, 2].map(i => { const n = s.fab && s.fab.offer && s.fab.offer[i]; return n ? (CHAR_DEFS.find(d => d.name === n) || null) : null; });
+  fabriqueOfferRar = fabriqueOffer.map(d => d ? rarityOf(d) : null);
+  fabriqueHolo = fabriqueOffer.map(d => !!d && d.rarity === 'holo');
+  fabResetAt = (s.fab && s.fab.resetAt) || 0;
+  econFabTimer();
+  if(warm){
+    if(player.level > oldLevel){ notif.player = true; }
+    const newOffer = fabriqueOffer.map(d => d ? d.name : null).join('|');
+    if(newOffer !== prevOffer && (op === 'bootstrap' || op === 'heartbeat' || op === 'track') && typeof currentView !== 'undefined' && currentView !== 'fabrique') notif.fab = true;   // l'offre s'est renouvelée toute seule
+  }
+}
+function econAdopt(b, opts){
+  if(typeof b.now === 'number') ECON.offset = b.now - Date.now();
+  if(typeof b.version === 'number' && b.version < ECON.version) return;            // réponse plus ancienne que l'état déjà reçu : ignorée
+  if(!b.state || typeof b.state !== 'object') return;
+  ECON.version = b.version;
+  econMirror(b.state, opts && opts.op);
+  ECON.ready = true; ECON.dayKey = todayKey();
+  const mode = (opts && opts.render) || 'full';
+  if(mode !== 'none') econRenderAll(mode);
+}
+// Minuteur de l'offre de la Fabrique : à l'échéance, on demande au serveur la nouvelle offre
+function econFabTimer(){
+  if(fabResetTimer) clearTimeout(fabResetTimer);
+  fabResetTimer = null;
+  if(!(fabResetAt > 0)) return;
+  const ms = Math.max(600, fabResetAt - econNow() + 400);
+  fabResetTimer = setTimeout(() => { fabResetTimer = null; econSyncSoon(0); }, Math.min(ms, 2147483000));
+}
+// Notification « nouveau trophée » : compare avec ce qui était déjà connu (le serveur est seul à décider qu'un trophée est atteint)
+function econTrophyNotify(){
+  if(!player.troph) return;
+  const r = player.troph.r || {}, seen = ECON.seenTroph;
+  ECON.seenTroph = Object.assign({}, r);
+  if(!seen) return;
+  const fresh = TROPHIES.filter(t => r[t.id] && !seen[t.id]);
+  if(!fresh.length) return;
+  const trophyIco = document.querySelector('#tileTrophies .mt-trophy-img img');
+  showToast(fresh.length === 1 ? 'TROPHÉE DÉBLOQUÉ : ' + (fresh[0].hidden ? '???' : fresh[0].name.toUpperCase()) : fresh.length + ' TROPHÉES DÉBLOQUÉS', trophyIco && trophyIco.src);
+}
+function econViewOn(id){ const e = document.getElementById(id); return !!(e && e.classList.contains('active')); }
+// Réaffiche ce qui dépend de l'économie. 'light' : seulement les compteurs et pastilles (suivi d'événements, battements).
+function econRenderAll(mode){
+  const full = mode !== 'light';
+  econTrophyNotify();
+  renderNotifs();
+  renderResources();
+  renderPlayerTile();
+  renderLoginBonus();
+  updateRewardTiles();
+  tickFabTimer();
+  if(econViewOn('playerView')) renderPlayerSheet();
+  if(!full) return;
+  validateSquad();
+  
+  
+  renderFabrique();
+  updateCollectionTile();
+  if(econViewOn('boostView')) renderBoost();
+  if(econViewOn('shopView')) renderShop();
+  if(econViewOn('dailyView')) renderDaily(true);
+  if(econViewOn('tasksView')) renderTasks(true);
+  if(econViewOn('trophyView')) renderTrophies();
+  if(econViewOn('deckView')) renderDeckView();
+  if(econViewOn('collectionView')) renderCollection();
+  if(econViewOn('batailleView')) renderBataille();
+}
+
+// ---------- Fenêtres d'erreur ----------
+function econShowDown(code, retryFn){
+  ECON.downOpen = true;
+  ECON.downRetry = retryFn || null;           // au démarrage : on relance toute la connexion ; en cours de partie : une simple resynchronisation
+  let el = document.getElementById('econDownModal');
+  if(!el){
+    el = document.createElement('div'); el.id = 'econDownModal'; el.className = 'codex-modal';
+    el.innerHTML = '<div class="codex-modal-inner action-inner">'
+      + '<div class="team-label player" style="margin:0;">SERVEUR INJOIGNABLE</div>'
+      + '<div class="action-text" id="econDownTxt"></div>'
+      + '<div class="controls" style="width:100%;"><button id="econDownBtn" class="primary-btn">RÉESSAYER</button></div></div>';
+    document.body.appendChild(el);
+    document.getElementById('econDownBtn').onclick = async () => {
+      const btn = document.getElementById('econDownBtn'); btn.disabled = true;
+      document.getElementById('econDownTxt').textContent = 'Connexion en cours…';
+      let ok = false, noAccount = false;
+      if(ECON.downRetry){
+        ok = await ECON.downRetry();
+        noAccount = !ok && cloud.status === 'unavailable';
+      } else {
+        const r = await econAct('bootstrap', {}, { quiet:true, boot:true });
+        ok = r.ok; noAccount = !ok && r.error === 'unauthorized';
+      }
+      btn.disabled = false;
+      if(ok){ econHideDown(); showToast('RECONNECTÉ'); }
+      else if(noAccount){ econHideDown(); if(ECON.downRetry) openAccountGateModal(); else econAuthLost(); }
+      else document.getElementById('econDownTxt').textContent = 'Toujours injoignable. Vérifie ta connexion puis réessaie.';
+    };
+  }
+  document.getElementById('econDownTxt').innerHTML = 'Le jeu n\'arrive pas à joindre le serveur : tes cartes et tes ressources y sont enregistrées, rien n\'est perdu.<br>Vérifie ta connexion puis réessaie.';
+  el.classList.add('show');
+}
+function econHideDown(){ ECON.downOpen = false; const el = document.getElementById('econDownModal'); if(el) el.classList.remove('show'); }
+// La session n'est plus valable (jeton refusé et impossible à renouveler) : retour à la fenêtre de connexion
+function econAuthLost(){
+  ECON.ready = false; ECON.version = -1;
+  try{ writeSupaSession(null); }catch(_){}
+  cloud.uid = null; cloud.email = null; cloud.status = 'unavailable';
+  econHideDown();
+  showToast('SESSION EXPIRÉE · RECONNECTE-TOI');
+  openAccountGateModal();
+}
+
+// ---------- Objets reçus (récompenses) : le serveur donne des noms de cartes, l'interface veut les fiches ----------
+function econItems(items){
+  return (items || []).map(it => it.t === 'card' ? { t:'card', def:CHAR_DEFS.find(d => d.name === it.name), rar:it.rar } : it).filter(it => it.t !== 'card' || it.def);
+}
+function econBoostResults(type, results){
+  if(type === 'res') return (results || []).map(r => Object.assign({}, r));
+  return (results || []).map(r => ({ def:CHAR_DEFS.find(d => d.name === r.name), rar:r.rar })).filter(r => r.def);
+}
+
+// ---------- Actions : Fabrique ----------
+async function econFabRefresh(){
+  if(Math.floor(player.res.gold || 0) < FAB_REFRESH_GOLD){ showToast('OR INSUFFISANT : ' + fmtNum(FAB_REFRESH_GOLD) + ' OR POUR ACTUALISER'); return; }
+  const r = await econAct('fab_refresh');
+  if(r.ok) showToast('OFFRE ACTUALISÉE · -' + fmtNum(FAB_REFRESH_GOLD) + ' OR');
+}
+const ECON_REVEAL_RARS = ['legendaire', 'holo', 'epique', 'ecarlate'];
+async function econFabBuyAll(){
+  if(!fabriqueOffer.some(Boolean)) return;
+  if((player.res.crystal || 0) < FAB_BUYALL_COST.crystal){ showToast('COÛT : ' + FAB_BUYALL_COST.crystal + ' CRISTAUX'); return; }
+  const r = await econAct('fab_buy_all');
+  if(!r.ok) return;
+  const reveal = (r.result.bought || []).map(n => CHAR_DEFS.find(d => d.name === n)).filter(Boolean).map(d => ({ def:d, rar:rarityOf(d) }))
+    .filter(x => ECON_REVEAL_RARS.includes(x.rar)).map(x => ({ def:x.def, rar:x.rar, kind:'card', special:x.rar !== 'epique' }));
+  if(reveal.length) revealLegendaryQueue(reveal);
+}
+async function econFabBuyOne(){
+  if(!fabriqueOffer.some(Boolean)) return;
+  if((player.res.crystal || 0) < FAB_BUYONE_COST.crystal){ showToast('COÛT : ' + FAB_BUYONE_COST.crystal + ' CRISTAL DE FABRICATION'); return; }
+  const r = await econAct('fab_buy_one');
+  if(!r.ok) return;
+  const d = CHAR_DEFS.find(x => x.name === (r.result.bought || [])[0]); if(!d) return;
+  const rar = rarityOf(d);
+  if(ECON_REVEAL_RARS.includes(rar)) revealLegendaryQueue([{ def:d, rar, kind:'card', special:rar !== 'epique' }]);
+}
+// ---------- Actions : Boutique ----------
+async function econShopCrystal(){
+  const amount = shopCrystalAmount, price = shopCrystalPrice();
+  if(Math.floor(player.res.gold || 0) < price){ showToast('OR INSUFFISANT : ' + fmtNum(price) + ' OR'); return; }
+  const r = await econAct('shop_crystal', { amount });
+  if(r.ok) showToast('+' + fmtNum(amount) + ' ' + (amount > 1 ? 'CRISTAUX' : 'CRISTAL') + ' DE FABRICATION · -' + fmtNum(r.result.price) + ' OR');
+}
+async function econShopMat(rar){
+  const amount = shopMatAmount[rar], price = shopMatPrice(rar);
+  if(Math.floor(player.res.gold || 0) < price){ showToast('OR INSUFFISANT : ' + fmtNum(price) + ' OR'); return; }
+  const r = await econAct('shop_mat', { rar, amount });
+  if(r.ok) showToast('+' + fmtNum(amount) + ' MATÉRIAU ' + RARITIES[rar].label + ' · -' + fmtNum(r.result.price) + ' OR');
+}
+async function econShopBoost(type, pay){
+  const amount = shopBoostAmount[type];
+  if(pay === 'gold'){
+    const gp = shopBoostGoldPrice(type);
+    if(Math.floor(player.res.gold || 0) < gp){ showToast('OR INSUFFISANT : ' + fmtNum(gp) + ' OR'); return; }
+    const r = await econAct('shop_booster', { type, amount, pay:'gold' });
+    if(r.ok) showToast('+' + fmtNum(amount) + ' BOOSTER ' + BOOST_LABEL[type] + ' · -' + fmtNum(r.result.price) + ' OR');
+  } else {
+    const price = shopBoostPrice(type);
+    if(Math.floor(player.res.crystal || 0) < price){ showToast('CRISTAUX INSUFFISANTS : ' + fmtNum(price) + ' CRISTAUX'); return; }
+    const r = await econAct('shop_booster', { type, amount, pay:'crystal' });
+    if(r.ok) showToast('+' + fmtNum(amount) + ' BOOSTER ' + BOOST_LABEL[type] + ' · -' + fmtNum(r.result.price) + ' ' + (r.result.price > 1 ? 'CRISTAUX' : 'CRISTAL'));
+  }
+}
+// ---------- Actions : boosters, destruction, fabrication ----------
+async function econBoosterOpen(type){
+  if((player.boosters[type] || 0) <= 0) return;
+  const r = await econAct('booster_open', { type }, { render:'none' });
+  if(!r.ok) return;
+  const results = econBoostResults(type, r.result.results);
+  econRenderAll('full');
+  openBoosterFlow(type, results);
+}
+async function econDestroy(def, rar, q, after){
+  const r = await econAct('destroy', { name:def.name, qty:q }, { render:'none' });
+  if(!r.ok) return;
+  const res = r.result, mRar = res.mat.r;
+  playDestroyFx(def, rar, () => {
+    econRenderAll('full');
+    showToast((res.qty > 1 ? res.qty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + res.mat.n + ' ' + RARITIES[mRar].label + ' · +' + fmtNum(res.gold) + ' OR');
+    
+    if(after) after();
+  });
+}
+async function econCraft(){
+  const t = craftTarget; if(!t) return;
+  if(t.kind === 'module'){ showToast('MODULE DÉJÀ POSSÉDÉ'); return; }
+  const cost = craftCostOf(t.rar); if(!cost) return;
+  const have = (player.res.mat && player.res.mat[cost.mat]) || 0;
+  if(have < cost.n){ showToast('MATÉRIAUX INSUFFISANTS : ' + cost.n + ' ' + RARITIES[cost.mat].label); return; }
+  const r = await econAct('craft', { name:t.name });
+  if(!r.ok) return;
+  musSfx('fab_' + t.rar);
+  showToast('CARTE FABRIQUÉE : ' + t.name);
+  const el = document.getElementById('codexModalInner');
+  if(el){ el.classList.remove('craft-ghost'); el.classList.remove('craft-pop'); void el.offsetWidth; el.classList.add('craft-pop'); setTimeout(() => el.classList.remove('craft-pop'), 900); }
+  renderCraftBar();
+}
+// ---------- Actions : récompenses ----------
+async function econClaimDaily(){
+  if(!dailyCanClaim()) return;
+  const r = await econAct('claim_daily');
+  if(!r.ok) return;
+  showRewardModal('SEMAINE ' + ((r.result.cycle || 0) + 1) + ' · JOUR ' + (r.result.day + 1), econItems(r.result.items));
+  renderDaily(true);
+}
+async function econClaimTrophy(id){
+  const t = TROPHIES.find(x => x.id === id);
+  if(!t || !trophyClaimable(t)) return;
+  const r = await econAct('claim_trophy', { id });
+  if(!r.ok) return;
+  showRewardModal(t.hidden ? '✦ TROPHÉE CACHÉ ✦' : 'TROPHÉE ' + TROPHY_TIERS[t.tier].label, econItems(r.result.items));
+  renderTrophies();
+}
+async function econClaimAllTrophies(){
+  if(!TROPHIES.some(trophyClaimable)) return;
+  const r = await econAct('claim_all_trophies');
+  if(!r.ok) return;
+  showRewardModal(r.result.count + ' TROPHÉES RÉCUPÉRÉS', mergeRewardItems(econItems(r.result.items)));
+  renderTrophies();
+}
+// Le temps de jeu est compté par le serveur (battements) : on lui envoie un battement juste avant de réclamer, pour que « EN SERVICE » soit à jour
+function econClaimTask(i){
+  return econAct('heartbeat', {}, { quiet:true, render:'none' }).then(() => {
+    const list = tasksOfWeek();
+    if(i === list.length ? (!tasksAllClaimed() || player.tasks.bonus) : taskState(list[i]) !== 'ready'){ econRenderAll('full'); return null; }
+    return econAct('claim_task', { index:i });
+  }).then(r => {
+    if(!r || !r.ok) return;
+    const list = tasksOfWeek();
+    showRewardModal(i === list.length ? 'TOUTES LES TÂCHES ACCOMPLIES !' : 'TÂCHE : ' + list[i].name, econItems(r.result.items));
+    renderTasks(true);
+  });
+}
+function econClaimAllTasks(){
+  return econAct('heartbeat', {}, { quiet:true, render:'none' }).then(() => econAct('claim_all_tasks')).then(r => {
+    if(!r.ok) return;
+    const n = r.result.count;
+    showRewardModal(n > 1 ? n + ' TÂCHES RÉCUPÉRÉES' : '1 TÂCHE RÉCUPÉRÉE', mergeRewardItems(econItems(r.result.items)));
+    renderTasks(true);
+  });
+}
+// ---------- Battements : temps de jeu compté par le serveur ----------
+function econHeartbeat1s(){
+  if(!ECON.ready) return;
+  if(++ECON.hbTick >= 60){ ECON.hbTick = 0; econAct('heartbeat', {}, { quiet:true, render:'light' }); }
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){ ECON.hiddenAt = Date.now(); return; }
+  if(ECON.ready && ECON.hiddenAt && Date.now() - ECON.hiddenAt > 45000) econSyncSoon(0);   // retour dans le jeu après une pause : on se remet à jour
+});
+
+// ===================================================================================================
+//  V0.05.00 -- COMBATS CONTRE L'IA ARBITRÉS PAR LE SERVEUR (« rejeu vérifié »)
+//  Le serveur choisit la graine du hasard ET l'adversaire (deck, chef, module, bonus de palier) quand le combat commence (battle_start).
+//  Pendant le combat, le jeu note UNIQUEMENT ce que fait le joueur : cartes posées, actions planifiées, module, cibles choisies, fin de tour (la « bande »).
+//  À la fin, il envoie la bande (battle_finish) : le serveur rejoue la partie avec les mêmes règles et la même IA ; le vainqueur et les récompenses sont ceux du REJEU.
+//  Ce que l'écran affiche pendant la partie n'a donc aucune valeur : seule la bande compte, et une bande illégale ou incomplète est refusée.
+// ===================================================================================================
+
+// ---------- La bande ----------
+// Jetons : P{main}{emplacement} poser · A|D{emplacement}{p|o}{0-2|L} attaquer / défendre · U{emplacement} annuler · M{cible}|M- module · E fin de tour ;
+// chaque jeton peut finir par ~ puis les choix de cible faits pendant son effet (rang dans la liste des cibles, ou r = tirage au hasard du jeu à l'expiration du temps).
+function btlRec(tok){
+  const B = BTL;
+  if(!B || !B.rec || B.over || B.abort) return null;
+  const e = { t:tok, d:[] }; B.rec.push(e); return e;
+}
+function btlRecDec(v){ const B = BTL; if(!B || !B.rec || !B.rec.length || B.over) return; B.rec[B.rec.length - 1].d.push(v); }
+function btlRecDrop(e){ const B = BTL; if(!B || !B.rec || !e) return; const i = B.rec.lastIndexOf(e); if(i >= 0) B.rec.splice(i, 1); }
+function btlRef(t){ return t.side + (t.leader ? 'L' : t.slot); }
+function btlTapeStr(){ return BTL.rec.map(e => e.t + (e.d.length ? '~' + e.d.join(',') : '')).join(';'); }
+
+// ---------- Lancement ----------
+function econTransient(code){ return code === 'network' || code === 'server' || code === 'rate_limited' || code === 'busy'; }
+// Le deck tel que le combat le jouera : même choix du chef que l'ancien btlBuildSides (la carte choisie si elle est dans le deck, sinon la plus forte)
+function econBattleDeck(d){
+  const keys = d.cards || [];
+  const ents = keys.map(k => sqEntry(k)).filter(Boolean);
+  if(ents.length < 2) return null;
+  const lk = deckBestKey(keys, d.leader);
+  let li = ents.findIndex(e => e.key === lk); if(li < 0) li = 0;
+  return { cards:ents.map(e => e.def.name), leader:ents[li].def.name, module:btlPModName(d) };
+}
+// defi : null (Entraînement IA) ou { def, tier }
+async function econBattleLaunch(d, defi){
+  if(BTL) return false;
+  const deck = econBattleDeck(d);
+  if(!deck){ showToast('DECK INCOMPLET'); return false; }
+  const late = await econBattleFlush();                    // résultat d'un combat précédent resté en attente : envoyé AVANT d'en lancer un autre
+  if(late) econBattleLate(late);
+  const params = Object.assign({ mode:defi ? 'defi' : 'train' }, deck);
+  if(defi){ params.name = defi.def.name; params.tier = defi.tier; }
+  const r = await econAct('battle_start', params, { render:'none' });
+  if(!r.ok || !r.result || !r.result.match) return false;
+  const m = r.result.match;
+  const d2 = Object.assign({}, d, { seed:m.seed, srv:{ p:m.p, o:m.o } });
+  if(defi) d2.defi = { focus:m.name, tier:m.tier, ai:(m.ai && m.ai.lv) || 0, hand:0 };
+  if(defi){ defiBtlCtx = { def:defi.def, tier:defi.tier }; closeDefiLaunch(); }
+  btlStart(d2);
+  if(!BTL){ if(defi) defiBtlCtx = null; return false; }   // lancement refusé : le combat enregistré sera abandonné au prochain départ
+  return true;
+}
+
+// ---------- Fin du combat ----------
+function econPendingRead(){ try{ const j = JSON.parse(localStorage.getItem('meca_battle_pending') || 'null'); return (j && typeof j === 'object') ? j : null; }catch(_){ return null; } }
+function econPendingWrite(o){ try{ if(o) localStorage.setItem('meca_battle_pending', JSON.stringify(o)); else localStorage.removeItem('meca_battle_pending'); }catch(_){} }
+function econBattleSend(tape, rid){ return econAct('battle_finish', { tape }, { render:'none', quiet:true, rid }); }
+// Envoie la bande. Réseau coupé : la bande est gardée sur l'appareil (renvoyée plus tard avec le MÊME identifiant) et le joueur peut réessayer tout de suite.
+function econBattleEnd(winner){
+  const B = BTL;
+  const fin = { winner, shown:false, art:B.S.p.leader.def, tape:btlTapeStr(), rid:econUuid() };
+  fin.p = (async () => {
+    let r = await econBattleSend(fin.tape, fin.rid);
+    if(!r.ok && (econTransient(r.error) || r.error === 'unauthorized')){
+      econPendingWrite({ uid:cloud.uid || null, rid:fin.rid, tape:fin.tape, at:Date.now() });
+      if(r.error !== 'unauthorized'){
+        r = await new Promise(res => econShowDown(r.error, async () => {
+          const r2 = await econBattleSend(fin.tape, fin.rid);
+          if(r2.ok || !econTransient(r2.error)){ res(r2); return true; }
+          return false;
+        }));
+      }
+    }
+    if(r.ok || (r.error && !econTransient(r.error) && r.error !== 'unauthorized')) econPendingWrite(null);   // réponse définitive : plus rien à renvoyer
+    return r;
+  })();
+  return fin;
+}
+// Bande restée en attente (réseau coupé à la fin d'un combat) : renvoyée ; renvoie le résultat si le serveur l'a pris en compte
+async function econBattleFlush(){
+  const p = econPendingRead();
+  if(!p || typeof p.tape !== 'string' || typeof p.rid !== 'string' || !ECON.ready) return null;
+  if(p.uid && cloud.uid && p.uid !== cloud.uid) return null;        // bande d'un autre compte : on n'y touche pas
+  const r = await econBattleSend(p.tape, p.rid);
+  if(r.ok || (r.error && !econTransient(r.error) && r.error !== 'unauthorized')) econPendingWrite(null);
+  return r.ok ? r.result : null;
+}
+// Combat abandonné (quitté avant la fin) : le serveur le classe en défaite (série remise à zéro pour l'Entraînement)
+function econBattleAbandon(){ return econAct('battle_abandon', {}, { quiet:true, render:'full' }); }
+
+// ---------- Résultat ----------
+function econBattleShow(fin, r){
+  if(fin.shown) return;
+  fin.shown = true;
+  econRenderAll('full');
+  const res = (r && r.ok) ? r.result : null;
+  if(!res){
+    const code = r && r.error;
+    showToast(code === 'no_match' ? 'COMBAT INTROUVABLE SUR LE SERVEUR' : code === 'too_fast' ? 'COMBAT TROP COURT POUR ÊTRE VALIDÉ' : code === 'unauthorized' ? 'SESSION EXPIRÉE · RÉSULTAT À ENVOYER AU PROCHAIN DÉPART' : 'RÉSULTAT NON ENREGISTRÉ');
+    showRewardModal('RÉSULTAT NON ENREGISTRÉ', [], { actionLabel:'CONTINUER' });
+    return;
+  }
+  if(!res.valid){
+    try{ console.error('combat refusé par le serveur :', res.reason, fin.tape); }catch(_){}
+    showToast(('COMBAT NON VALIDÉ : ' + String(res.reason || '').slice(0, 50)).toUpperCase());
+    showRewardModal('COMBAT NON VALIDÉ', [], { resultType:'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
+    return;
+  }
+  if(res.mode === 'defi'){ defiBtlShowResult(res); return; }
+  showRewardModal(res.won && res.n > 1 ? 'SÉRIE DE ' + res.n + ' VICTOIRES' : '', econItems(res.items), { resultType:res.won ? 'victory' : 'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
+}
+// Résultat d'un combat précédent, reçu après coup
+function econBattleLate(res){
+  econRenderAll('full');
+  if(!res || !res.valid) return;
+  if(res.mode === 'defi'){ defiBtlShowResult(res); return; }
+  showRewardModal(res.won ? 'COMBAT PRÉCÉDENT : VICTOIRE' : 'COMBAT PRÉCÉDENT : DÉFAITE', econItems(res.items), { actionLabel:'CONTINUER' });
+}
+
+// Fin du démarrage (compte relié et progression chargée) : lien de récupération de mot de passe, sinon choix du nom si le compte est neuf, sinon nouveautés de la version.
+function econAfterBoot(){
+  setTimeout(() => { econBattleFlush().then(res => { if(res) econBattleLate(res); }, () => {}); }, 1200);   // bande de combat restée en attente (réseau coupé à la fin du combat précédent)
+  if(typeof nmRecoveryTokens !== 'undefined' && nmRecoveryTokens){ nmOpenNewPass(); return; }
+  if(ECON.needName){
+    nameModalFirst = true; nmGateActive = true;
+    document.getElementById('nameModal').classList.add('show');
+    nmGateGoToNameStep();
+    return;
+  }
+  checkChangelogOnLogin();
+}
+
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.04.92';
+var BUILD_VERSION = 'V0.05.00';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.00', items:[
+    'SERVEUR : le jeu est maintenant arbitré par un serveur. Tes cartes, ton or, tes cristaux, ton niveau et tes trophées sont gardés et calculés côté serveur : plus personne ne peut les modifier depuis son navigateur. Un compte est obligatoire (le mode invité et l\'export / import de sauvegarde disparaissent).',
+    'COMBATS CONTRE L\'IA (ENTRAÎNEMENT IA et DÉFI) : le serveur choisit l\'adversaire et le hasard au lancement, puis REJOUE ta partie à la fin pour vérifier le vainqueur. Les récompenses, la série de victoires, les paliers de Défi et les trophées viennent de ce rejeu. Un combat quitté avant la fin compte comme une défaite (la série repart à zéro).',
+    'TÂCHES DU JOUR : les combats comptent quel que soit le mode (ENTRAÎNEMENT IA, DÉFI). AU FRONT demande 3 combats, VICTOIRE ! en demande 2 gagnés.',
+    'Niveau maximum : 100. Les gains ne dépendent plus du niveau du joueur.',
+    'Règles : GAPIX, TUNNELIER, EXO-MKVII et GOTHIKA ne peuvent plus viser le chef adverse. PRAWN ne pioche qu\'une seule carte.',
+    'Modules : ils ne se recyclent plus.',
+  ] },
   { v:'V0.04.92', items:[
     'DECK : CARTES et MODULES redeviennent deux boutons. Juste en dessous, dans le même cadre, le bouton DOS DE CARTES (onglet CARTES) devient ENCADRÉ DE MODULES (onglet MODULES).',
     'Modules : plus de dos de module. Chaque deck choisit l\'encadré (face avant) de son module : rare offert, épique et légendaire à gagner dans les boosters ressources (5 % de chances d\'y trouver un dos de carte ou un encadré). L\'encadré choisi habille le module dans le deck, sur l\'écran VS et en combat ; la puissance du module ne change pas.',
@@ -11034,25 +11599,16 @@ function rarTag(r, extraCls){
 }
 // V0.04.49 : tirage des CARTES (rareté unique) -- la rareté est tirée d'abord, puis une carte de cette rareté.
 // (rollRarity() reste utilisée telle quelle par les modules.)
+// ---------- HASARD ÉCONOMIQUE (chantier 2, étape 2.1a) ----------
+var ECO_RNG = { s:(Math.random() * 4294967296) >>> 0 };
+function ecoRand(){ let t = (ECO_RNG.s = (ECO_RNG.s + 0x6D2B79F5) | 0); t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
 const CARD_DRAW_W = { rare:75, epique:15, legendaire:5, ecarlate:4, holo:1 };   // TIRAGE + booster CARTES MECHS (somme = 100 %)
 const MOD_DRAW_W = { rare:85, epique:10, legendaire:5 };                          // LABO + booster CARTES MODULES (somme = 100 %)
-function rollCardRarity(){
-  const ks = Object.keys(CARD_DRAW_W); let t = 0; ks.forEach(k => { t += CARD_DRAW_W[k]; });
-  let r = Math.random() * t;
-  for(const k of ks){ r -= CARD_DRAW_W[k]; if(r < 0) return k; }
-  return 'rare';
-}
-function cardPoolOf(rar, usedNames){
-  let pool = CHAR_DEFS.filter(d => d.rarity === rar && !(usedNames || []).includes(d.name));
-  if(!pool.length) pool = CHAR_DEFS.filter(d => d.rarity === rar);
-  return pool.length ? pool : CHAR_DEFS.slice();
-}
 
 // Niveau courant de chaque carte (1 à 100), PAR EXEMPLAIRE DE RARETÉ -- une carte Rare et sa version
 // Épique du même personnage sont deux cartes distinctes, chacune avec son propre niveau (V0.01.82).
 // Clé = sqKey(nom, rareté) ("NOM|rareté"), la même clé que celle utilisée pour les emplacements d'escouade.
 // En mémoire pour l'instant.
-const playerLevels = {};
 
 // ---------- Expérience des cartes ----------
 // Chaque carte qui participe à un combat gagne de l'XP (moins en cas de défaite).
@@ -11060,7 +11616,6 @@ const playerLevels = {};
 const LEVEL_CAP = { rare: 100, epique: 150, legendaire: 250, ecarlate: 400, holo: 300 };
 // XP versée au butin par vague gagnée
 // cardXp suit la même clé par rareté que playerLevels (voir ci-dessus).
-const cardXp = {};
 function cardLevel(name, rar){
   // V0.04.32 : plus de niveaux -- chaque carte a les stats du niveau max de sa rareté (LEVEL_CAP)
   if(!rar){ const d = CHAR_DEFS.find(c => c.name === name); rar = d ? effRarity(d) : 'rare'; }
@@ -11110,7 +11665,6 @@ function effRarity(def){ return rarityOf(def); }   // V0.04.49 : rareté unique 
 // définitivement pour toute la pile -- y compris un exemplaire tiré directement plus tard à ce palier :
 // la carte a déjà prouvé qu'elle peut être fusionnée jusque-là, inutile de distinguer plus finement
 // quel exemplaire précis vient d'où.
-const cardTierFused = {};
 function rarityMult(def, r){
   return 1;   // V0.04.49 : plus de bonus de palier (rareté unique)
 }
@@ -11164,35 +11718,12 @@ function topOwnedLevel(name, rar){ return cardLevel(name, rar); }
 // Répartition par défaut quand aucun choix manuel n'est fait (fusion/destruction automatiques, ex.
 // bouton AUTO) : consomme les paliers les plus bas d'abord, pour toujours protéger en priorité les
 // exemplaires les plus investis.
-function defaultSelection(name, rar, need){
-  const d = levelDist(name, rar), tiers = levelTiers(name, rar);
-  const sel = {}; let left = need;
-  for(const l of tiers){
-    if(left <= 0) break;
-    const take = Math.min(d[l], left);
-    if(take > 0){ sel[l] = take; left -= take; }
-  }
-  return sel;
-}
-function selectionTotal(sel){ return Object.keys(sel || {}).reduce((a, l) => a + (sel[l] || 0), 0); }
 // Consomme `need` exemplaires de `fromRar` (selon `selection`, ou par défaut les plus bas niveaux)
 // et produit 1 exemplaire de `toRar` -- son niveau est le plus haut parmi les exemplaires effectivement
 // fusionnés, jamais un simple retour à 1 (V0.01.88, remplace inheritFusionLevel() de V0.01.82 : chaque
 // exemplaire ayant maintenant son propre niveau, les autres copies de la pile cible ne sont de toute
 // façon jamais affectées -- cardLevel()/topOwnedLevel() renvoient toujours le meilleur niveau possédé).
 // Détruit `qty` exemplaires de `name`/`rar` selon `selection` (ou par défaut les plus bas niveaux).
-function consumeForDestroy(name, rar, qty, selection){
-  const sel = (selection && selectionTotal(selection) === qty) ? selection : defaultSelection(name, rar, qty);
-  const d = levelDist(name, rar);
-  Object.keys(sel).forEach(l => {
-    const nn = sel[l]; if(nn <= 0) return;
-    const ln = Number(l);
-    d[ln] = (d[ln] || 0) - nn;
-    if(d[ln] <= 0) delete d[ln];
-  });
-  cardCopies[name][rar] -= qty;
-  playerLevels[sqKey(name, rar)] = topOwnedLevel(name, rar);
-}
 // Dé-fusionne 1 exemplaire de `rar` (celui du palier `chosenLevel`, ou le plus bas par défaut) en
 // `back` exemplaires de `lower`, qui entrent tous au niveau 1 (des exemplaires neufs, V0.01.88).
 // ---------- Profil joueur : niveau, XP et statistiques ----------
@@ -11301,15 +11832,17 @@ function renderNotifs(){
   setDot('dotCardMgmt', codexNotif);   // même signal, sur la case du hub CARTE (idem)
 }
 function xpToNext(level){ return 100 + (level - 1) * 60; }
+const LEVEL_MAX = 100;   // V0.04.93 : niveau joueur maximal
 function addXP(amount, quiet){
   player.xp += amount;
   player.totalXp += amount;
   let leveled = false;
-  while(player.xp >= xpToNext(player.level)){
+  while(player.level < LEVEL_MAX && player.xp >= xpToNext(player.level)){
     player.xp -= xpToNext(player.level);
     player.level++;
     leveled = true;
   }
+  if(player.level >= LEVEL_MAX) player.xp = 0;   // niveau maximal : plus de barre d'XP à remplir (le total gagné reste compté)
   if(leveled){ notif.player = true; renderNotifs(); }
   if(HEADLESS) return;
   renderPlayerTile();
@@ -11329,7 +11862,7 @@ function addXP(amount, quiet){
 // XP fractionnaire accumulée
 // Plus le niveau du joueur est élevé, plus les missions rapportent (or, XP, chance de matériaux) :
 // +4 % par niveau au-delà du niveau 1, sans plafond (ça récompense la progression à long terme).
-function levelRewardMult(){ return 1 + 0.04 * ((player.level || 1) - 1); }
+// V0.04.93 : plus aucun bonus de niveau sur les gains (même gain à tous les niveaux, décision d'Alex).
 // jusqu'à ×1,5 en fin de mission, + bonus de niveau joueur
 // Les récompenses s'accumulent dans la "manche" en cours et sont versées quand le joueur les collecte.
 // cardReward/moduleReward (V0.02.60, mission VESTIGE) : nom (CHAR_DEFS/MODULE_DEFS) de la carte/module
@@ -11549,7 +12082,6 @@ function modLevelDist(name, rar){
   if(n > 0) d[moduleLevel(name, rar)] = n;
   return d;
 }
-function topOwnedModLevel(name, rar){ return moduleLevel(name, rar); }
 // Niveau affiché/utilisé par AMÉLIORER pour un module à une rareté donnée (équivalent de cardLevel()).
 function moduleLevel(name, rar){
   // V0.04.32 : plus de niveaux -- un module a l'effet du niveau max de sa rareté (100 / 150 / 250)
@@ -11561,32 +12093,10 @@ function moduleLevel(name, rar){
 // doModuleLevelUp() (le bouton ▲ AMÉLIORER existant reste inchangé dans son fonctionnement pour le
 // joueur, il ne fait maintenant progresser que le meilleur exemplaire de la rareté affichée).
 // Répartition par défaut (paliers les plus bas consommés en premier) -- équivalent de defaultSelection().
-function modDefaultSelection(name, rar, need){
-  const d = modLevelDist(name, rar), tiers = modLevelTiers(name, rar);
-  const sel = {}; let left = need;
-  for(const l of tiers){
-    if(left <= 0) break;
-    const take = Math.min(d[l], left);
-    if(take > 0){ sel[l] = take; left -= take; }
-  }
-  return sel;
-}
 // Consomme `need` exemplaires de `fromRar` et produit 1 exemplaire de `toRar`, dont le niveau est le
 // plus haut parmi les exemplaires fusionnés -- équivalent de consumeForFusion() pour les cartes.
 // Détruit `qty` exemplaires de `name`/`rar` selon `selection` -- équivalent de consumeForDestroy()
 // pour les cartes (V0.02.54, demande d'Alex).
-function consumeModForDestroy(name, rar, qty, selection){
-  const sel = (selection && selectionTotal(selection) === qty) ? selection : modDefaultSelection(name, rar, qty);
-  const d = modLevelDist(name, rar);
-  Object.keys(sel).forEach(l => {
-    const nn = sel[l]; if(nn <= 0) return;
-    const ln = Number(l);
-    d[ln] = (d[ln] || 0) - nn;
-    if(d[ln] <= 0) delete d[ln];
-  });
-  moduleCopies[name][rar] -= qty;
-  modulePlayerLevels[modKey(name, rar)] = topOwnedModLevel(name, rar);
-}
 function moduleValue(def, level){ return def.baseValue + def.valueStep * (level - 1); }
 // Nombre de cibles d'AZ-5 pour une valeur de dégâts `v` donnée (demande d'Alex : 1 ennemi au Nv.1/
 // +0.2%, jusqu'à toute l'escouade adverse -- ENEMY_TPL.length, 5 -- au Nv.250/+50% légendaire). Calculé
@@ -11611,7 +12121,7 @@ function moduleLevelCap(rar){ return MODULE_LEVEL_CAP[rar] || MODULE_LEVEL_CAP.l
 // légendaire). Les éventuels modules écarlates déjà obtenus sont ramenés en légendaire au chargement
 // (cf migrateModulesNoEcarlate()).
 function modRollRarity(){
-  let r = Math.random() * 100;
+  let r = ecoRand() * 100;
   for(const k of ['rare', 'epique', 'legendaire']){ r -= MOD_DRAW_W[k]; if(r < 0) return k; }
   return 'rare';
 }
@@ -11905,17 +12415,10 @@ document.getElementById('giftClose').onclick = () => document.getElementById('gi
 // cartes : pas de vérification "mission en cours" (les modules n'ont pas encore d'emplacement en
 // escouade, cf commentaire en tête de section MODULES) et pas d'écran de sélection dans une grille :
 // un seul bouton UPGRADE direct depuis la fiche, puisqu'il n'existe qu'un seul module affiché à la fois.
-let moduleDestroyQty = 1;   // quantité choisie dans la fenêtre DÉTRUIRE de GESTION DE MODULE (V0.02.54)
+// quantité choisie dans la fenêtre DÉTRUIRE de GESTION DE MODULE (V0.02.54)
 // Équivalent de actionCardHtml()/codexCardHtml() pour un module, à l'intérieur de #actionModal
 // (réutilise directement .codex-card/.action-card pour la taille -- ces classes sont génériques --
 // mais garde .mod-card pour le positionnement interne du visage de carte module, cf modCardFaceHtml).
-function moduleActionCardHtml(def, rar, level, extra){
-  extra = extra || {};
-  return `<div class="codex-card action-card mod-action-card ${rarCls(rar)}">
-    <div class="mod-card">${modCardFaceHtml(def, level, rar)}</div>
-    ${extra.badge ? `<div class="cx-copy-badge">${extra.badge}</div>` : ''}
-  </div>`;
-}
 // ----- Sélection manuelle multi-niveaux pour l'UPGRADE de module (même principe que pour les cartes) -----
 // Upgrade d'1 groupe, avec animation (même "lancer de carte" que les cartes classiques, cf
 // playCardToss() généralisé pour cibler #moduleModal/#moduleModalInner au lieu de #codexModal).
@@ -11939,86 +12442,9 @@ function moduleActionCardHtml(def, rar, level, extra){
 // moduleUpgradeCost() plus haut) : seul le recyclage de base est repris, conformément à la demande
 // d'Alex ("un encadré recyclage avec ce que va nous rendre en modules"). Pas d'animation de destruction
 // (playDestroyFx() reste réservé aux cartes -- non demandé ici).
-function openModuleDestroyModal(def, rar, level){
-  moduleDestroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture
-  renderModuleDestroyModal(def, rar, level);
-  document.getElementById('actionModal').classList.add('show');
-}
+function openModuleDestroyModal(def, rar, level){ showToast('MODULES OFFERTS : NON RECYCLABLES'); }   // V0.05.00
 // Un sélecteur +/- n'apparaît que si le joueur possède plus de 2 exemplaires de ce palier de niveau
 // (même logique que renderDestroyModal() pour les cartes).
-function renderModuleDestroyModal(def, rar, level){
-  const n = modLevelDist(def.name, rar)[level] || 0;
-  if(n <= 0){ closeActionModal(); return; }
-  const maxQty = Math.max(1, n);
-  const showStepper = n > 2;
-  const qty = showStepper ? Math.max(1, Math.min(moduleDestroyQty, maxQty)) : 1;
-  moduleDestroyQty = qty;
-  const unit = salvageValue(def, rar, level);
-  const totMat = unit.mat * qty, totGold = unit.gold * qty;
-  document.getElementById('actionInner').innerHTML = `
-    <button class="cx-close" id="actClose">✕</button>
-    <div class="destroy-card-solo">${moduleActionCardHtml(def, rar, level, { badge: n > 1 ? '×' + n : '' })}</div>
-    ${showStepper ? `<div class="fuse-stepper" id="modDestroyStepper" style="width:100%;">
-      <button type="button" data-d="-1">−</button><span><b>${qty}</b> / ${maxQty}</span><button type="button" data-d="1">+</button>
-    </div>` : ''}
-    <div class="salvage-box">
-      <div class="salvage-title">RECYCLAGE</div>
-      <div class="salvage-row">
-        <span class="salv r-${salvageMatRar(rar)}"><i>${matIcon(salvageMatRar(rar))}</i>+${totMat} <small>${RARITIES[salvageMatRar(rar)].label}</small></span>
-        <span class="salv"><i data-lbl="OR">${ICON_GOLD}</i>+${fmtNum(totGold)}</span>
-      </div>
-    </div>
-    <div class="controls" style="width:100%;">
-      <button id="actCancel">ANNULER</button>
-      <button id="actGo" class="danger-btn">DÉTRUIRE ${qty > 1 ? 'LES MODULES' : 'LE MODULE'}</button>
-    </div>`;
-  document.getElementById('actClose').onclick = closeActionModal;
-  document.getElementById('actCancel').onclick = closeActionModal;
-  const stepper = document.getElementById('modDestroyStepper');
-  if(stepper){
-    stepper.querySelectorAll('button').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        moduleDestroyQty = Math.max(1, Math.min(maxQty, moduleDestroyQty + parseInt(btn.dataset.d)));
-        renderModuleDestroyModal(def, rar, level);
-      };
-    });
-  }
-  document.getElementById('actGo').onclick = () => {
-    const q = qty, sel = { [level]: q };
-    closeActionModal();
-    const doIt = () => {
-      const have = modLevelDist(def.name, rar)[level] || 0;
-      const realQty = Math.min(q, have);
-      if(realQty <= 0) return;
-      const gain = salvageValue(def, rar, level);
-      const gainMat = gain.mat * realQty, gainGold = gain.gold * realQty;
-      consumeModForDestroy(def.name, rar, realQty, sel);
-      player.stats.modDestroyed += realQty;
-      if(modStackCount(def.name, rar) === 0 && squadModule === modKey(def.name, rar)){
-        // Comme pour les cartes (cf renderDestroyModal()) : un module détruit qui était équipé sur
-        // DEATH SQUAD doit libérer le slot plutôt que de laisser une référence fantôme.
-        validateSquad();
-      }
-      const mRar = salvageMatRar(rar);   // V0.04.14 : écarlate -> matériaux légendaires
-      player.res.mat[mRar] = (player.res.mat[mRar] || 0) + gainMat;
-      player.res.gold += gainGold;
-      addTotals(gainGold, 0, { [mRar]: gainMat }, 0);
-      showToast((realQty > 1 ? realQty + ' MODULES RECYCLÉS' : 'MODULE RECYCLÉ') + ' : +' + gainMat + ' ' + RARITIES[rar].label + ' · +' + fmtNum(gainGold) + ' OR');
-      renderResources();
-      
-      saveNow();
-      
-      if(document.getElementById('deckView').classList.contains('active')) renderDeckView();
-      saveSoon();
-    };
-    // Même animation de dislocation que la destruction d'une carte classique (V0.02.54, demande
-    // d'Alex) -- cf playModuleDestroyFx() plus bas, pas de notion d'escouade/mission à garder ici
-    // (guardTeamChange() est un no-op, cf consumeForDestroy() pour les cartes) donc pas besoin de
-    // ce détour, contrairement à openDestroyModal().
-    playModuleDestroyFx(def, rar, level, doIt);
-  };
-}
 // Pas de bouton retour dédié dans l'en-tête (V0.02.36c, demande d'Alex : en-tête "‹ CARTE / MODULES"
 // retiré) -- la navigation retour passe par le bouton du bas (nav CARTE -> RETOUR, navBackAction()
 // plus bas gère déjà le cas modulesView) et par le swipe, comme pour les autres sous-vues.
@@ -12084,6 +12510,7 @@ function playtimeHeartbeat1s(){
   player.playSeconds++;
   const el = document.getElementById('pvPlayTime');
   if(el) el.textContent = formatPlayTime(player.playSeconds);
+  econHeartbeat1s();   // V0.05.00 : le serveur compte le temps de jeu (battement chaque minute)
 }
 
 // ---------- Fabrique ----------
@@ -12109,37 +12536,13 @@ const FAB_RESET_MS = 30 * 60 * 1000; // 30 minutes
 function shuffled(arr){
   const a = arr.slice();
   for(let i=a.length-1; i>0; i--){
-    const j = Math.floor(Math.random()*(i+1));
+    const j = Math.floor(ecoRand()*(i+1));
     [a[i],a[j]] = [a[j],a[i]];
   }
   return a;
 }
-function rollFabriqueOffer(){
-  // V0.04.49 : chaque emplacement tire d'abord une rareté (CARD_DRAW_W), puis une carte de CETTE rareté (déjà unique).
-  const picks = [], rars = [];
-  fabriqueHolo = [false, false, false];
-  for(let i=0; i<3; i++){
-    const rar = rollCardRarity();
-    const d = shuffled(cardPoolOf(rar, picks.map(x => x.name)))[0];
-    picks.push(d);
-    rars.push(d.rarity);
-    fabriqueHolo[i] = (d.rarity === 'holo');
-  }
-  fabriqueOffer = picks;
-  fabriqueOfferRar = rars;
-}
-function scheduleFabReset(delayMs){
-  if(fabResetTimer) clearTimeout(fabResetTimer);
-  const d = (typeof delayMs === 'number' && delayMs > 0) ? delayMs : FAB_RESET_MS;
-  fabResetAt = Date.now() + d;
-  fabResetTimer = setTimeout(() => {
-    rollFabriqueOffer();
-    if(currentView !== 'fabrique'){ notif.fab = true; renderNotifs(); }
-    if(typeof renderFabrique === 'function') renderFabrique();
-    scheduleFabReset();
-    if(typeof saveSoon === 'function') saveSoon();
-  }, d);
-}
+function rollFabriqueOffer(){}   // V0.05.00 : l'offre de la Fabrique est tirée par le serveur
+function scheduleFabReset(){ econFabTimer(); }
 function formatCountdown(ms){
   const total = Math.max(0, Math.ceil(ms / 1000));
   const m = Math.floor(total / 60);
@@ -12148,7 +12551,7 @@ function formatCountdown(ms){
 }
 function tickFabTimer(){
   const el = document.getElementById('fabTimerVal');
-  if(el) el.textContent = formatCountdown(fabResetAt - Date.now());
+  if(el) el.textContent = formatCountdown(fabResetAt - econNow());
 }
 // tickFabTimer() est aussi appelée depuis heartbeat1s() (voir plus bas) — même raison que ci-dessus.
 rollFabriqueOffer();
@@ -12238,24 +12641,6 @@ function sqEntry(key){
 }
 // V0.04.14 : ramène en LÉGENDAIRE les modules ÉCARLATES déjà possédés (exemplaires + niveaux, plafonnés
 // au niveau max légendaire) -- les modules n'ont pas de version écarlate.
-function migrateModulesNoEcarlate(){
-  MODULE_DEFS.forEach(d => {
-    const st = moduleCopies[d.name];
-    if(!st || !(st.ecarlate > 0)) { if(st) st.ecarlate = 0; return; }
-    const cap = MODULE_LEVEL_CAP.legendaire;
-    const fromD = modLevelDist(d.name, 'ecarlate'), toD = modLevelDist(d.name, 'legendaire');
-    Object.keys(fromD).forEach(l => {
-      const n = fromD[l]; if(!(n > 0)) return;
-      const lv = Math.min(Number(l), cap);
-      toD[lv] = (toD[lv] || 0) + n;
-    });
-    st.legendaire = (st.legendaire || 0) + st.ecarlate;
-    st.ecarlate = 0;
-    delete moduleLevelDist[modKey(d.name, 'ecarlate')];
-    delete modulePlayerLevels[modKey(d.name, 'ecarlate')];
-    modulePlayerLevels[modKey(d.name, 'legendaire')] = topOwnedModLevel(d.name, 'legendaire');
-  });
-}
 // Retire (ou remplace par une autre rareté possédée) les cartes de l'escouade qui n'existent plus
 function validateSquad(){
   // On suit les clés déjà attribuées dans un Set construit AU FUR ET À MESURE : `squad.includes(...)`
@@ -12348,7 +12733,6 @@ function statsAtLevel(def, level, rar){
 
 
 
-let playerTeam = [];
 
 // ---------- Mini-jeu de bulles (V0.03.11, demande d'Alex) ----------
 // Grille de 3 lignes x 6 colonnes au-dessus du "champ de bataille" : des bulles colorées (ATQ/VIT/DEF/
@@ -12749,11 +13133,15 @@ function favKeepAt(name, rar, level){
   if(!isFav(name, rar)) return 0;
   return level === topOwnedLevel(name, rar) ? 1 : 0;
 }
-function toggleFav(name, rar){
+function toggleFav(name, rar){   // V0.05.00 : affichage immédiat, puis le serveur confirme (et compte l'ajout aux favoris)
   const k = favKey(name, rar);
-  if(favorites[k]) delete favorites[k]; else { favorites[k] = true; player.stats.favAdds++; }
+  if(!ECON.ready) return !!favorites[k];
+  const on = !favorites[k];
+  if(on) favorites[k] = true; else delete favorites[k];
+  ECON.favPending[name] = (ECON.favPending[name] || 0) + 1;
+  econAct('track', { kind:'fav_toggle', name }, { quiet:true, render:'light', pre: () => { ECON.favPending[name]--; if(ECON.favPending[name] <= 0) delete ECON.favPending[name]; } });
   saveSoon();
-  return !!favorites[k];
+  return on;
 }
 function sortStacks(list){
   const g = st => GROUP_ORDER.indexOf(categoryOf(st.def));
@@ -13276,68 +13664,6 @@ function playDestroyFx(def, rar, done){
 // modCardFaceHtml()/.mod-card (large, ratio 900/506, cf .dfx-stage.mod-stage plus haut dans le CSS) au
 // lieu de codexCardHtml()/.codex-card (haute), et le découpage en plaques est 6×3 au lieu de 4×6 pour
 // rester proche de plaques carrées sur ce format large plutôt que haut.
-function playModuleDestroyFx(def, rar, level, done){
-  const reduce = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  if(HEADLESS || reduce){ done(); return; }
-  const ov = document.createElement('div');
-  ov.className = 'dfx-overlay';
-  const stage = document.createElement('div');
-  stage.className = 'dfx-stage mod-stage';
-  ov.appendChild(stage);
-  const COLS = 6, ROWS = 3, plates = dfxPlates(COLS, ROWS);
-  const inner = `<div class="mod-card ${rarCls(rar)}">${modCardFaceHtml(def, level, rar)}</div>`;
-  const shards = plates.map(p => {
-    const s = document.createElement('div');
-    s.className = 'dfx-shard';
-    s.style.clipPath = p.clip;
-    s.innerHTML = inner;
-    stage.appendChild(s);
-    return s;
-  });
-  // lignes de fracture
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('class', 'dfx-grid'); svg.setAttribute('viewBox', '0 0 100 100');
-  svg.setAttribute('preserveAspectRatio', 'none');
-  for(let cc = 1; cc < COLS; cc++) svg.innerHTML += `<line x1="${cc / COLS * 100}" y1="0" x2="${cc / COLS * 100}" y2="100" vector-effect="non-scaling-stroke"/>`;
-  for(let r = 1; r < ROWS; r++) svg.innerHTML += `<line x1="0" y1="${r / ROWS * 100}" x2="100" y2="${r / ROWS * 100}" vector-effect="non-scaling-stroke"/>`;
-  stage.appendChild(svg);
-  const scan = document.createElement('div'); scan.className = 'dfx-scan'; stage.appendChild(scan);
-  const flash = document.createElement('div'); flash.className = 'dfx-flash'; stage.appendChild(flash);
-  const label = document.createElement('div'); label.className = 'dfx-label'; label.textContent = 'STRUCTURE COMPROMISE'; stage.appendChild(label);
-  for(let i = 0; i < 14; i++){
-    const sp = document.createElement('div'); sp.className = 'dfx-spark';
-    sp.style.left = (20 + Math.random() * 60) + '%';
-    sp.style.top = (20 + Math.random() * 60) + '%';
-    sp.style.setProperty('--sx', (Math.random() * 260 - 130) + 'px');
-    sp.style.setProperty('--sy', (Math.random() * 260 - 60) + 'px');
-    sp.style.animationDelay = (Math.random() * .12) + 's';
-    stage.appendChild(sp);
-  }
-  document.body.appendChild(ov);
-  const T = [];
-  const at = (ms, fn) => T.push(setTimeout(fn, ms));
-  requestAnimationFrame(() => ov.classList.add('on'));
-  at(60, () => ov.classList.add('scan'));       // le scan balaye le module
-  at(560, () => ov.classList.add('cut'));       // les lignes de fracture s'allument
-  at(900, () => {                               // dislocation
-    ov.classList.add('blow');
-    ov.classList.remove('cut');
-    shards.forEach((s, i) => {
-      const p = plates[i];
-      const dx = (p.cx - .5) * (150 + Math.random() * 130);
-      const dy = (p.cy - .5) * (150 + Math.random() * 130) + 40 + Math.random() * 60;
-      const rot = (Math.random() * 70 - 35), rz = (Math.random() * 50 - 25);
-      s.style.transition = 'transform .78s cubic-bezier(.22,.7,.3,1), opacity .78s ease-in';
-      s.style.transform = `translate(${dx}px, ${dy}px) rotate(${rz}deg) rotateX(${rot}deg) scale(.82)`;
-      s.style.opacity = '0';
-    });
-  });
-  at(1560, () => {
-    ov.classList.remove('on');
-    at(260, () => { T.forEach(clearTimeout); ov.remove(); });
-    done();
-  });
-}
 
 function openDestroyModal(def, rar, level){
   if((levelDist(def.name, rar)[level] || 0) - favKeepAt(def.name, rar, level) <= 0){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
@@ -13399,40 +13725,9 @@ function renderDestroyModal(def, rar, level){
     });
   }
   document.getElementById('actGo').onclick = () => {
-    const q = qty, sel = { [level]: q };
+    const q = qty;
     closeActionModal();
-    const doIt = () => {
-      const have = levelDist(def.name, rar)[level] || 0;
-      const realQty = Math.min(q, have);
-      if(realQty <= 0) return;
-      const gain = salvageValue(def, rar, level);
-      const gainMat = gain.mat * realQty, gainGold = gain.gold * realQty;
-      // (V0.01.90) Remboursement de l'investissement de niveau perdu (voir aperçu dans renderDestroyModal).
-      const refund = level > 1 ? lvlCost(1, level) : { gold:0, xp:0 };
-      const refundGold = refund.gold * realQty, refundXp = refund.xp * realQty;
-      consumeForDestroy(def.name, rar, realQty, sel);
-      player.stats.destroyed += realQty;
-      if(rar === 'legendaire') player.stats.destroyedLeg += realQty;
-      if(stackCount(def.name, rar) === 0 && squad.includes(sqKey(def.name, rar))){
-        // validateSquad() (comme pour la défusion/fusion) permet de retomber sur une autre rareté
-        // possédée du même personnage au lieu de vider systématiquement l'emplacement d'escouade.
-        validateSquad();
-      }
-      const mRar = salvageMatRar(rar);   // V0.04.14 : écarlate -> matériaux légendaires
-      player.res.mat[mRar] = (player.res.mat[mRar] || 0) + gainMat;
-      player.res.gold += gainGold + refundGold;
-      player.res.xp = (player.res.xp || 0) + refundXp;
-      addTotals(gainGold + refundGold, refundXp, { [mRar]: gainMat }, 0);
-      showToast((realQty > 1 ? realQty + ' CARTES RECYCLÉES' : 'CARTE RECYCLÉE') + ' : +' + gainMat + ' ' + RARITIES[mRar].label + ' · +' + fmtNum(gainGold + refundGold) + ' OR' + (refundXp ? ' · +' + fmtNum(refundXp) + ' XP' : ''));
-      renderResources();
-      
-      
-      saveNow();                 // sauvegarde immédiate des ressources gagnées
-      
-      if(document.getElementById('deckView').classList.contains('active')) renderDeckView();
-      saveSoon();
-    };
-    playDestroyFx(def, rar, doIt);
+    econUi(() => econDestroy(def, rar, q));   // V0.05.00 : recyclage calculé et versé par le serveur
   };
 }
 // `level` : le palier de niveau de la tuile touchée dans GESTION DE CARTE (V0.01.88) -- exactement
@@ -13515,27 +13810,7 @@ function renderFabrique(){
   const cr = document.getElementById('refreshCost'); if(cr) cr.innerHTML = fmtNum(FAB_REFRESH_GOLD) + '<i class="fc-ico">' + ICON_GOLD + '</i>';
 }
 
-function acquireCard(def, rar){
-  const isFirstCopy = copiesOf(def) === 0;
-  rar = rarityOf(def);   // V0.04.49 : rareté unique
-  const lk = sqKey(def.name, rar);
-  const d = levelDist(def.name, rar);   // capture la répartition existante avant d'ajouter la copie
-  cardCopies[def.name][rar] = (cardCopies[def.name][rar] || 0) + 1;
-  d[1] = (d[1] || 0) + 1;   // toute nouvelle copie entre au niveau 1 (V0.01.88)
-  if(isHolo(rar)) showToast('✦ CARTE HOLOGRAPHIQUE : ' + def.name + ' ✦');
-  if(isFirstCopy){
-    def.seen = false;
-    if(!playerLevels[lk]) playerLevels[lk] = 1;
-    addXP(XP_REWARDS.newCard);
-    renderNotifs();
-  }
-}
 // Un tirage = une carte achetée en Fabrique
-function fabriqueDraw(def, rar){
-  player.draws++;
-  acquireCard(def, rar);
-  addXP(XP_REWARDS.draw);
-}
 // Un tirage LABO = un module acheté (V0.02.62) -- même principe que fabriqueDraw() ci-dessus (même XP
 // de tirage), mais acquireModule() + compteur labDraws séparé (pas player.draws : ce sont des modules,
 // pas des cartes classiques -- les trophées/tâches "cartes achetées en Fabrique" ne doivent pas compter
@@ -13550,18 +13825,7 @@ function labDraw(def, rar){
 const FAB_REFRESH_GOLD = 100;
 const FAB_BUYALL_COST = { crystal:3, gold:0, xp:0 };   // V0.04.32 : l'XP n'est plus une monnaie
 const FAB_BUYONE_COST = { crystal:1 };
-document.getElementById('fabRefreshBtn').onclick = () => {
-  if(Math.floor(player.res.gold || 0) < FAB_REFRESH_GOLD){ showToast('OR INSUFFISANT : ' + fmtNum(FAB_REFRESH_GOLD) + ' OR POUR ACTUALISER'); return; }
-  player.res.gold -= FAB_REFRESH_GOLD;
-  player.stats.fabRefreshes = (player.stats.fabRefreshes || 0) + 1;
-  rollFabriqueOffer();          // nouvelles cartes
-  scheduleFabReset();           // et le minuteur repart à zéro
-  renderResources();
-  renderFabrique();
-  tickFabTimer();
-  saveNow();
-  showToast('OFFRE ACTUALISÉE · -' + fmtNum(FAB_REFRESH_GOLD) + ' OR');
-};
+document.getElementById('fabRefreshBtn').onclick = () => econUi(econFabRefresh);
 // ---------- Révélation automatique des cartes/modules LÉGENDAIRES (+ HOLOGRAPHIQUES et ÉPIQUES, voir
 // plus bas) obtenus (V0.02.82, demande d'Alex : "rajouter un effet quand on achete une carte légendaire
 // (carte classique et carte modules), il faudrait qu'une fois acheter la carte s'affiche en
@@ -13661,54 +13925,9 @@ function armQueueAdvance(modalEl, queue, idx, closeInstead){
   pendingQueueAdvance = advance;
   document.addEventListener('click', advance, { once:true, capture:true });
 }
-document.getElementById('buyAllBtn').onclick = () => {
-  const toBuy = fabriqueOffer.map((d, i) => d ? { d, rar: fabSlotRar(i) } : null).filter(Boolean);
-  if(toBuy.length === 0) return;
-  const c = FAB_BUYALL_COST;
-  if((player.res.crystal || 0) < c.crystal || Math.floor(player.res.gold || 0) < c.gold || Math.floor(player.res.xp || 0) < c.xp){
-    showToast('COÛT : ' + c.crystal + ' CRISTAUX'); return;
-  }
-  player.res.crystal -= c.crystal; player.res.gold -= c.gold; player.res.xp -= c.xp;
-  player.stats.fabBuyAlls = (player.stats.fabBuyAlls || 0) + 1;
-  toBuy.forEach(x => fabriqueDraw(x.d, x.rar));
-  // Tous les emplacements achetés : nouvelle offre immédiate, SANS relancer le minuteur de 30 min.
-  rollFabriqueOffer();
-  renderResources();
-  saveNow();
-  renderFabrique();
-  
-  // V0.02.99, demande d'Alex : la file couvre maintenant aussi les cartes HOLOGRAPHIQUES et, en aperçu
-  // simple (`special:false`), les cartes ÉPIQUES (cf revealLegendaryQueue() ci-dessus).
-  // V0.03.75 : ÉCARLATE rejoint légendaire/holo (animation complète), puisqu'elle peut désormais sortir
-  // directement en TIRAGE (cf RARITIES.ecarlate plus haut), pas seulement par fusion.
-  const reveal = toBuy.filter(x => x.rar === 'legendaire' || x.rar === 'holo' || x.rar === 'epique' || x.rar === 'ecarlate')
-    .map(x => ({ def: x.d, rar: x.rar, kind: 'card', special: x.rar !== 'epique' }));
-  if(reveal.length) revealLegendaryQueue(reveal);
-};
+document.getElementById('buyAllBtn').onclick = () => econUi(econFabBuyAll);
 
-document.getElementById('buyOneBtn').onclick = () => {
-  const available = fabriqueOffer
-    .map((d, i) => ({ d, i }))
-    .filter(x => x.d);
-  if(available.length === 0) return;
-  const c = FAB_BUYONE_COST;
-  if((player.res.crystal || 0) < c.crystal){ showToast('COÛT : ' + c.crystal + ' CRISTAL DE FABRICATION'); return; }
-  player.res.crystal -= c.crystal;
-  const pick = available[Math.floor(Math.random() * available.length)];
-  const rar = fabSlotRar(pick.i);   // capturé avant la remise à null de l'emplacement ci-dessous
-  fabriqueDraw(pick.d, rar);
-  fabriqueOffer[pick.i] = null; // l'emplacement reste vide
-  fabriqueHolo[pick.i] = false;
-  renderResources();
-  saveNow();
-  if(fabriqueOffer.every(s => !s)){
-    // Les 3 emplacements ont été achetés : nouvelle offre immédiate, le minuteur continue.
-    rollFabriqueOffer();
-  }
-  renderFabrique();
-  
-  if(rar === 'legendaire' || rar === 'holo' || rar === 'epique' || rar === 'ecarlate') revealLegendaryQueue([{ def: pick.d, rar, kind: 'card', special: rar !== 'epique' }]);
-};
+document.getElementById('buyOneBtn').onclick = () => econUi(econFabBuyOne);
 
 renderFabrique();
 
@@ -13816,7 +14035,7 @@ document.getElementById('labBuyOneBtn').onclick = () => {
   const c = FAB_BUYONE_COST;
   if((player.res.crystal || 0) < c.crystal){ showToast('COÛT : ' + c.crystal + ' CRISTAL DE FABRICATION'); return; }
   player.res.crystal -= c.crystal;
-  const pick = available[Math.floor(Math.random() * available.length)];
+  const pick = available[Math.floor(ecoRand() * available.length)];
   const rar = labSlotRar(pick.i);   // capturé avant la remise à null de l'emplacement ci-dessous
   labDraw(pick.d, rar);
   labOffer[pick.i] = null; // l'emplacement reste vide
@@ -13875,10 +14094,7 @@ const BOOST_ECARLATE_COLOR = { rc:'#ff2d4d', glow:'rgba(255,45,77,.9)', tint:'rg
 // (75/20), et le palier légendaire/holo reste une exclusivité du tirage dédié ci-dessus.
 // Poids des 6 types de ressource d'un Booster RESSOURCES -- cristal au poids le plus bas (ressource la
 // plus rare du jeu, demande explicite d'Alex), le reste à l'appréciation de Claude.
-const BOOST_RES_WEIGHTS = { gold:35, xp:28, matRare:20, matEpique:10, matLegendaire:5, crystal:2 };
-// Montants de base (niveau joueur 1), multipliés par levelRewardMult() comme le reste des récompenses
-// du jeu (même formule que les récompenses de mission) pour suivre le niveau du joueur.
-const BOOST_RES_BASE = { gold:100, xp:50, matRare:3, matEpique:2, matLegendaire:1, crystal:1 };
+// Montants fixes : les mêmes à tous les niveaux de joueur (V0.04.93, plus de bonus de niveau).
 const BOOST_RES_ICON = { gold:ICON_GOLD, xp:ICON_XP, crystal:ICON_CRYSTAL, matRare:matIcon('rare'), matEpique:matIcon('epique'), matLegendaire:matIcon('legendaire') };
 // Halo de rareté affiché derrière une case ressource non révélée (les ressources n'ont pas de rareté à
 // elles, donc on leur en prête une pour l'effet visuel demandé par Alex -- cristal au palier légendaire
@@ -13919,23 +14135,11 @@ const BOOST_CARD_BACK = {
 // Un dos obtenu ne retombe plus jamais ; ils ne se détruisent ni ne se fabriquent. Pas de dos module écarlate ni holo.
 const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'holo'], mod:['rare', 'epique', 'legendaire'] };
 const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', holo:'HOLOGRAPHIQUE' };
-const BACK_DROP_CHANCE = 0.05, BACK_DROP_W = { epique:15, legendaire:5, ecarlate:4 };
 function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
 function backSrc(kind, rar){ return BOOST_CARD_BACK[rar] || BOOST_CARD_BACK.rare; }   // V0.04.92 : les modules n'ont plus de dos (kind 'mod' = ENCADRÉ, face avant)
 function deckBack(d, kind){
   const r = d && (kind === 'mod' ? d.backMod : d.backCard);
   return (r && BACK_RARS[kind].includes(r) && backOwned(kind, r)) ? r : 'rare';
-}
-function backGive(kind, rar){ player.backs[kind][rar] = true; }
-function rollBackDrop(){
-  if(Math.random() >= BACK_DROP_CHANCE) return null;
-  const pool = [];
-  ['card', 'mod'].forEach(k => BACK_RARS[k].forEach(r => { if(BACK_DROP_W[r] && !backOwned(k, r)) pool.push({ kind:k, rar:r }); }));
-  if(!pool.length) return null;
-  let t = 0; pool.forEach(x => { t += BACK_DROP_W[x.rar]; });
-  let r = Math.random() * t;
-  for(const x of pool){ r -= BACK_DROP_W[x.rar]; if(r < 0) return x; }
-  return pool[pool.length - 1];
 }
 function backWinHtml(res){
   if(res.bt === 'mod') return '<div class="br-bwin ' + rarCls(res.rar) + '"><div class="bwin-mod"><div class="mod-card ' + rarCls(res.rar) + '">' + modCardFaceHtml(MODULE_DEFS[0], 1, res.rar) + '</div></div><b>ENCADRÉ DE MODULE</b></div>';
@@ -14023,71 +14227,13 @@ const BOOST_MODULES_IMG = '<img src="https://okrdywhctnlayyfltivc.supabase.co/st
 // affichait l'icône "image cassée" du navigateur SOUS la croix rouge). Le repli outerHTML remplace juste
 // l'<img>, la croix rouge (.bb-cross, élément séparé superposé par-dessus) n'est pas affectée.
 const BOOST_EMPTY_IMG = '<img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/tile-boost.webp" alt="" onerror="this.onerror=null;this.outerHTML=boostChestIcon();">';
-function rollBoostResource(){
-  const total = Object.values(BOOST_RES_WEIGHTS).reduce((a,b) => a+b, 0);
-  let r = Math.random() * total;
-  for(const k of Object.keys(BOOST_RES_WEIGHTS)){
-    r -= BOOST_RES_WEIGHTS[k];
-    if(r < 0) return k;
-  }
-  return 'gold';
-}
-function boostResourceAmount(kind){
-  return Math.max(1, Math.round((BOOST_RES_BASE[kind] || 0) * levelRewardMult()));
-}
-function applyBoostResource(kind, amount){
-  if(kind === 'gold') player.res.gold = (player.res.gold || 0) + amount;
-  else if(kind === 'xp') addXP(Math.round(amount), true);
-  else if(kind === 'crystal') player.res.crystal = (player.res.crystal || 0) + amount;
-  else if(kind === 'matRare') player.res.mat.rare = (player.res.mat.rare || 0) + amount;
-  else if(kind === 'matEpique') player.res.mat.epique = (player.res.mat.epique || 0) + amount;
-  else if(kind === 'matLegendaire') player.res.mat.legendaire = (player.res.mat.legendaire || 0) + amount;
-}
 // Génère les 5 résultats d'un Booster RESSOURCES : [{ kind, amount }]
-function openBoostResources(){
-  const out = [];
-  for(let i=0; i<5; i++){
-    const kind = rollBoostResource();
-    out.push({ kind, amount: boostResourceAmount(kind) });
-  }
-  const bk = rollBackDrop();   // V0.04.89 : 5 % de chances qu'une des 5 cases soit un dos de carte
-  if(bk) out[Math.floor(Math.random() * out.length)] = { kind:'back', bt:bk.kind, rar:bk.rar, amount:1 };
-  return out;
-}
 // Génère les 5 résultats d'un Booster CARTES MECHS : [{ def, rar }] -- garantie épique+ parmi les 5
 // (seule garantie systématique, cf commentaire BOOST_LEG_CHANCE plus haut), puis chance indépendante
 // BOOST_LEG_CHANCE/BOOST_HOLO_CHANCE que le booster contienne une légendaire/holo (holo = une des 6
 // cartes hors-série, piochée à part, même pool que rollFabriqueOffer()).
-function openBoostCards(){
-  // V0.04.49 : rareté unique -- on tire la rareté (CARD_DRAW_W), puis une carte de CETTE rareté ; dernier emplacement : au moins épique.
-  const picks = [], usedNames = [];
-  let gotHighTier = false;
-  for(let i=0; i<5; i++){
-    let rar = rollCardRarity();
-    if(i === 4 && !gotHighTier && (rar === 'rare')) rar = 'epique';
-    if(rar !== 'rare') gotHighTier = true;
-    const d = shuffled(cardPoolOf(rar, usedNames))[0];
-    picks.push({ def:d, rar:d.rarity }); usedNames.push(d.name);
-  }
-  return picks;
-}
 // Équivalent pour un Booster CARTES MODULES : même principe, pool MODULE_DEFS, pas de holo (aucun
 // module n'atteint ce palier, comme pour LABO).
-function openBoostModules(){
-  // taux = ceux du LABO (MOD_DRAW_W) ; dernier emplacement : au moins épique si rien de mieux n'est sorti
-  const picks = [], usedNames = [];
-  let gotHighTier = false;
-  for(let i = 0; i < 5; i++){
-    let rar = modRollRarity();
-    if(i === 4 && !gotHighTier && rar === 'rare') rar = 'epique';
-    if(rar !== 'rare') gotHighTier = true;
-    let pool = MODULE_DEFS.filter(d => !usedNames.includes(d.name));
-    if(pool.length === 0) pool = MODULE_DEFS;
-    const d = shuffled(pool)[0];
-    picks.push({ def:d, rar }); usedNames.push(d.name);
-  }
-  return picks;
-}
 function renderBoost(){
   // Pas de panneau OR/XP/CRISTAUX sur cet écran (V0.02.85, demande d'Alex : "y en as pas besoin dans
   // cette fenêtre" -- aucun achat ici, cf en-tête de section, donc le portefeuille n'a pas sa place).
@@ -14180,9 +14326,7 @@ function endBoostDrag(ev){
   const r = socle.getBoundingClientRect();
   const over = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
   if(over && (player.boosters[d.type] || 0) > 0){
-    player.boosters[d.type]--;
-    renderBoost();
-    openBoosterFlow(d.type);
+    econUi(() => econBoosterOpen(d.type));   // V0.05.00 : le serveur retire le booster et tire son contenu
   }
 }
 document.addEventListener('pointerup', endBoostDrag);
@@ -14195,8 +14339,7 @@ function boostPentagonPos(i){
   const R = 39;
   return { x: 50 + R * Math.cos(a), y: 50 + R * Math.sin(a) };
 }
-function openBoosterFlow(type){
-  const results = type === 'res' ? openBoostResources() : type === 'cards' ? openBoostCards() : openBoostModules();
+function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) est tiré par le serveur
   // Préchargement opportuniste (V0.02.96, migration Supabase Storage) : dès que les résultats sont
   // connus -- donc avant même de construire l'écran de révélation plus bas -- on lance le téléchargement
   // des arts RÉELS des cartes/modules tirés (maintenant des URLs distantes, plus du base64 inline). Le
@@ -14212,23 +14355,7 @@ function openBoosterFlow(type){
       if(url){ const img = new Image(); img.src = url; }
     });
   }
-  // Applique tout de suite les gains (rien n'est perdu si la fenêtre est fermée en cours de route).
-  if(type === 'res'){
-    results.forEach(r => { if(r.kind === 'back') backGive(r.bt, r.rar); else applyBoostResource(r.kind, r.amount); });
-  } else if(type === 'cards'){
-    results.forEach(r => { acquireCard(r.def, r.rar); addXP(XP_REWARDS.draw); });
-  } else {
-    results.forEach(r => { acquireModule(r.def, r.rar); addXP(XP_REWARDS.draw); });
-  }
-  player.stats.boostersOpened = (player.stats.boostersOpened || 0) + 1;
-  // V0.02.93, demande d'Alex : "ajoute des trophées liées aux booster" -- compteur par type, utilisé par
-  // les nouveaux trophées boost_res_*/boost_cards_*/boost_mod_* (cf TROPHIES).
-  player.stats.boostersByType = player.stats.boostersByType || { res:0, cards:0, modules:0 };
-  player.stats.boostersByType[type] = (player.stats.boostersByType[type] || 0) + 1;
-  renderResources();
-  
-  
-  saveNow();
+  // V0.05.00 : les gains sont déjà versés par le serveur (et recopiés dans le jeu) avant l'animation.
   const overlay = document.getElementById('boostReveal');
   const pent = document.getElementById('brPentagon');
   const claimBtn = document.getElementById('boostClaimBtn');
@@ -14402,16 +14529,7 @@ function renderShop(){
 }
 document.getElementById('shopCrystalPlus').onclick = () => { shopCrystalAmount += SHOP_CRYSTAL_STEP; renderShop(); };
 document.getElementById('shopCrystalMinus').onclick = () => { shopCrystalAmount = Math.max(SHOP_CRYSTAL_STEP, shopCrystalAmount - SHOP_CRYSTAL_STEP); renderShop(); };
-document.getElementById('shopCrystalBuyBtn').onclick = () => {
-  const price = shopCrystalPrice();
-  if(Math.floor(player.res.gold || 0) < price){ showToast('OR INSUFFISANT : ' + fmtNum(price) + ' OR'); return; }
-  player.res.gold -= price;
-  player.res.crystal = (player.res.crystal || 0) + shopCrystalAmount;
-  renderResources();
-  renderShop();
-  saveNow();
-  showToast('+' + fmtNum(shopCrystalAmount) + ' ' + (shopCrystalAmount > 1 ? 'CRISTAUX' : 'CRISTAL') + ' DE FABRICATION · -' + fmtNum(price) + ' OR');
-};
+document.getElementById('shopCrystalBuyBtn').onclick = () => econUi(econShopCrystal);
 
 // 3 derniers encadrés BOUTIQUE (V0.02.93, demande d'Alex : "rajoute 3 encadrés pour chaque matériaux")
 // : un par rareté de MATÉRIAU DE FABRICATION, même mécanique que XP/CRISTAL ci-dessus mais factorisée
@@ -14439,16 +14557,7 @@ MAT_ORDER.forEach(rar => {
   const id = SHOP_MAT_ID[rar];
   document.getElementById('shop' + id + 'Plus').onclick = () => { shopMatAmount[rar] = Math.min(SHOP_MAT_MAX, shopMatAmount[rar] + SHOP_MAT_STEP); renderShopMat(rar); };
   document.getElementById('shop' + id + 'Minus').onclick = () => { shopMatAmount[rar] = Math.max(SHOP_MAT_STEP, shopMatAmount[rar] - SHOP_MAT_STEP); renderShopMat(rar); };
-  document.getElementById('shop' + id + 'BuyBtn').onclick = () => {
-    const price = shopMatPrice(rar);
-    if(Math.floor(player.res.gold || 0) < price){ showToast('OR INSUFFISANT : ' + fmtNum(price) + ' OR'); return; }
-    player.res.gold -= price;
-    player.res.mat[rar] = (player.res.mat[rar] || 0) + shopMatAmount[rar];
-    renderResources();
-    renderShopMat(rar);
-    saveNow();
-    showToast('+' + fmtNum(shopMatAmount[rar]) + ' MATÉRIAU ' + RARITIES[rar].label + ' · -' + fmtNum(price) + ' OR');
-  };
+  document.getElementById('shop' + id + 'BuyBtn').onclick = () => econUi(() => econShopMat(rar));
 });
 
 // 3 derniers encadrés BOUTIQUE (V0.02.94, demande d'Alex : "rajoute maintenant 3 encadré pour chacun des
@@ -14480,32 +14589,11 @@ function renderShopBoost(type){
 BOOST_TYPES.forEach(type => {
   const id = SHOP_BOOST_ID[type];
   const iconEl = document.getElementById('shop' + id + 'Icon');
-  // V0.02.91 : même visuel dédié que .boost-box (BOOST_RES_IMG/BOOST_CARDS_IMG/BOOST_MODULES_IMG, cf
-  // plus haut) plutôt que boostChestIcon(), ici gardé dans le médaillon rond .sh-medal (demande d'Alex,
-  // cohérence avec les autres lignes XP/cristaux/matériaux de la BOUTIQUE).
   if(iconEl) iconEl.innerHTML = type === 'res' ? BOOST_RES_IMG : type === 'cards' ? BOOST_CARDS_IMG : BOOST_MODULES_IMG;
   document.getElementById('shop' + id + 'Plus').onclick = () => { shopBoostAmount[type] = Math.min(SHOP_BOOST_MAX, shopBoostAmount[type] + 1); renderShopBoost(type); };
   document.getElementById('shop' + id + 'Minus').onclick = () => { shopBoostAmount[type] = Math.max(1, shopBoostAmount[type] - 1); renderShopBoost(type); };
-  document.getElementById('shop' + id + 'GoldBtn').onclick = () => {
-    const gp = shopBoostGoldPrice(type);
-    if(Math.floor(player.res.gold || 0) < gp){ showToast('OR INSUFFISANT : ' + fmtNum(gp) + ' OR'); return; }
-    player.res.gold -= gp;
-    player.boosters[type] = (player.boosters[type] || 0) + shopBoostAmount[type];
-    renderResources();
-    renderShopBoost(type);
-    saveNow();
-    showToast('+' + fmtNum(shopBoostAmount[type]) + ' BOOSTER ' + BOOST_LABEL[type] + ' · -' + fmtNum(gp) + ' OR');
-  };
-  document.getElementById('shop' + id + 'BuyBtn').onclick = () => {
-    const price = shopBoostPrice(type);
-    if(Math.floor(player.res.crystal || 0) < price){ showToast('CRISTAUX INSUFFISANTS : ' + fmtNum(price) + ' CRISTAUX'); return; }
-    player.res.crystal -= price;
-    player.boosters[type] = (player.boosters[type] || 0) + shopBoostAmount[type];
-    renderResources();
-    renderShopBoost(type);
-    saveNow();
-    showToast('+' + fmtNum(shopBoostAmount[type]) + ' BOOSTER ' + BOOST_LABEL[type] + ' · -' + fmtNum(price) + ' ' + (price > 1 ? 'CRISTAUX' : 'CRISTAL'));
-  };
+  document.getElementById('shop' + id + 'GoldBtn').onclick = () => econUi(() => econShopBoost(type, 'gold'));
+  document.getElementById('shop' + id + 'BuyBtn').onclick = () => econUi(() => econShopBoost(type, 'crystal'));
 });
 
 // V0.02.98, demande d'Alex : remet chaque compteur +/- de la BOUTIQUE à son palier de départ -- appelée
@@ -14631,7 +14719,7 @@ function setupLorePin(){
 function lvlCost(from, to){ return { gold:0, xp:0 }; }   // V0.04.32 : plus de niveaux, rien à rembourser
 // Affiche le gain prévu à côté de chaque stat de la fiche : « 800 +3 »
 function openCodexModal(name, rar, opts){
-  if(player.stats) player.stats.cardViews++;
+  econTrack('card_view');   // V0.05.00 : compteur tenu par le serveur
   document.getElementById('codexModal').classList.remove('lvl-open');
   const def = CHAR_DEFS.find(c => c.name === name);
   rar = rar || effRarity(def);
@@ -15007,7 +15095,7 @@ function deckValidate(){
   const saved = { id: deckDraft.id || deckNewId(), name: deckDraft.name, cards: deckDraft.cards.slice(), leader: null, module: deckModuleValid(deckDraft.module), backCard: deckBack(deckDraft, 'card'), backMod: deckBack(deckDraft, 'mod') };
   const i = decks.findIndex(x => x.id === saved.id);
   if(i >= 0) decks[i] = saved; else decks.push(saved);
-  player.stats.deckEdits = (player.stats.deckEdits || 0) + 1;
+  econTrack('deck_saved');
   deckDraft = null;
   document.getElementById('deckPanel').open = true;
   showToast('DECK « ' + saved.name + ' » ENREGISTRÉ');
@@ -15208,23 +15296,7 @@ function renderCraftBar(){
   bar.innerHTML = `<button type="button" class="craft-btn${ok ? '' : ' off'}" id="craftBtn">FABRIQUER<span class="craft-dash">–</span><span class="craft-cost r-${cost.mat}"><b>${cost.n}</b>${matIcon(cost.mat)}</span></button>`;
   document.getElementById('craftBtn').onclick = doCraft;
 }
-function doCraft(){
-  const t = craftTarget; if(!t) return;
-  const cost = craftCostOf(t.rar); if(!cost) return;
-  const have = (player.res.mat && player.res.mat[cost.mat]) || 0;
-  if(have < cost.n){ showToast('MATÉRIAUX INSUFFISANTS : ' + cost.n + ' ' + RARITIES[cost.mat].label); return; }
-  player.res.mat[cost.mat] = have - cost.n;
-  if(t.kind === 'module') acquireModule(MODULE_DEFS.find(d => d.name === t.name), t.rar);
-  else acquireCard(CHAR_DEFS.find(d => d.name === t.name), t.rar);
-  musSfx('fab_' + t.rar);   // son de fabrication selon la rareté (V0.04.87)
-  if(typeof renderResources === 'function') renderResources();
-  saveNow();
-  showToast((t.kind === 'module' ? 'MODULE FABRIQUÉ : ' : 'CARTE FABRIQUÉE : ') + t.name);
-  const el = t.kind === 'module' ? document.querySelector('#moduleModalInner .mod-big') : document.getElementById('codexModalInner');
-  if(el){ el.classList.remove('craft-ghost'); el.classList.remove('craft-pop'); void el.offsetWidth; el.classList.add('craft-pop'); setTimeout(() => el.classList.remove('craft-pop'), 900); }
-  renderDeckView();
-  renderCraftBar();
-}
+function doCraft(){ econUi(econCraft); }   // V0.05.00 : fabrication réalisée par le serveur
 // V0.04.83 : ajouter / retirer une carte ne reconstruit plus tout l'écran (4 300 éléments + redécodage de toutes les images = 0,5 à 1 s de blocage).
 // On garde les cartes déjà affichées (liste de gauche et colonne de droite), on n'ajoute / retire / met à jour que celles qui changent.
 function dkMkLeft(x){
@@ -15944,7 +16016,7 @@ function turnCollPage(dir){
   }, 260);
 }
 function enterCollectionView(){
-  player.stats.collVisits++;
+  econTrack('coll_visit');
   document.getElementById('resBar').style.display = 'none';
   document.getElementById('codexHubView').classList.remove('active');
   const v = document.getElementById('collectionView');
@@ -15985,19 +16057,7 @@ const LOGIN_BONUS = [0.04, 0.08, 0.12, 0.16, 0.20, 0.25, 0.30];   // V0.04.61 : 
 function loginBonus(){ const s = (player.login && player.login.streak) || 1; return LOGIN_BONUS[Math.max(1, Math.min(7, s)) - 1]; }
 function loginMult(){ return 1 + loginBonus(); }
 function fmtBonus(b){ return '+' + Math.round(b * 100) + ' %'; }
-function updateLogin(){
-  if(!player.login || HEADLESS) return;
-  const L = player.login, today = todayKey();
-  if(L.last === today) return;
-  const y = new Date(); y.setDate(y.getDate() - 1);
-  if(L.last === todayKey(y)){ L.streak = Math.min(7, (L.streak || 0) + 1); L.real = (L.real || 0) + 1; }
-  else { L.streak = 1; L.real = 1; }
-  L.days = (L.days || 0) + 1;
-  L.best = Math.max(L.best || 0, L.real);
-  L.last = today;
-  renderLoginBonus();
-  saveSoon();
-}
+function updateLogin(){ econDayCheck(); }   // V0.05.00 : la série de connexion est tenue par le serveur (opération bootstrap)
 function renderLoginBonus(){
   const el = document.getElementById('rbLogin');
   if(!el || !player.login) return;
@@ -16007,57 +16067,7 @@ function renderLoginBonus(){
 }
 function bonusN(n){ return Math.round((n || 0) * loginMult()); }
 // Compteur des ressources collectées depuis le début du jeu
-function addTotals(g, x, mats, cry){
-  if(!player.totals) return;
-  player.totals.gold += Math.floor(g || 0); player.totals.xp += Math.floor(x || 0); player.totals.crystal += (cry || 0);
-  if(mats) MAT_ORDER.forEach(r => { player.totals.mat[r] += (mats[r] || 0); });
-}
-function grantReward(rew){
-  const items = [];
-  const g = bonusN(rew.gold), x = bonusN(rew.xp), mats = {};
-  if(rew.mat) MAT_ORDER.forEach(r => { if(rew.mat[r]) mats[r] = bonusN(rew.mat[r]); });
-  if(g){ player.res.gold += g; items.push({ t:'gold', n:g }); }
-  if(x){ addXP(Math.round(x), true); items.push({ t:'xp', n:x }); }
-  if(rew.crystal){ player.res.crystal = (player.res.crystal || 0) + rew.crystal; items.push({ t:'crystal', n:rew.crystal }); }
-  MAT_ORDER.forEach(r => { if(mats[r]){ player.res.mat[r] = (player.res.mat[r] || 0) + mats[r]; items.push({ t:'mat', r, n:mats[r] }); } });
-  addTotals(g, x, mats, rew.crystal || 0);
-  // V0.02.93, demande d'Alex : "ajoute des booster en récompense à certains trophée difficile à avoir" +
-  // "tâche/récompense journalière... un booster aléatoire parmi les 3" -- rew.booster vaut 'res'/'cards'/
-  // 'modules', ou 'random' (résolu ici, au moment précis du don, pas à la définition du reward).
-  if(rew.booster){
-    const bType = rew.booster === 'random' ? BOOST_TYPES[Math.floor(Math.random() * BOOST_TYPES.length)] : (rew.booster === 'modules' ? 'cards' : rew.booster);
-    const bN = rew.boosterN || 1;
-    player.boosters[bType] = (player.boosters[bType] || 0) + bN;
-    items.push({ t:'booster', bt:bType, n:bN });
-  }
-  if(rew.card){
-    const rar = rew.card;
-    let pool;
-    if(rar === 'holo'){
-      pool = HOLO_DEFS.filter(d => stackCount(d.name, 'holo') === 0);   // de préférence une holo pas encore possédée
-      if(!pool.length) pool = HOLO_DEFS.slice();
-    } else {
-      pool = SERIES_DEFS.filter(d => rarityOf(d) === rar);
-      if(!pool.length) pool = SERIES_DEFS.slice();
-    }
-    for(let k = 0; k < (rew.cardN || 1); k++){
-      const def = pool[Math.floor(Math.random() * pool.length)];
-      acquireCard(def, rar);
-      items.push({ t:'card', def, rar });
-    }
-  }
-  if(rew.back){ backGive(rew.back.kind, rew.back.rar); items.push({ t:'back', bk:rew.back.kind, r:rew.back.rar, n:1 }); }
-  renderResources();
-  if(document.getElementById('codexView').classList.contains('active')) ;
-  
-  updateCollectionTile();
-  if(typeof renderBoost === 'function'){
-    const bv = document.getElementById('boostView');
-    if(bv && bv.classList.contains('active')) renderBoost();
-  }
-  saveNow();
-  return items;
-}
+// V0.05.00 : grantReward() n'existe plus -- toutes les récompenses sont versées par le serveur (cf econClaim* / econItems).
 // Icône utilisée dans une puce .rw-chip (aperçu, avant récupération) pour un reward.booster : le type
 // précis si connu, sinon BOOST_EMPTY_IMG (visuel générique) pour 'random' -- le type réel n'est tiré
 // qu'au moment du grantReward() lui-même, donc pas encore connu à l'affichage de l'aperçu.
@@ -16168,7 +16178,10 @@ function dailyReward(i){
   if(i === 6 && dailyWeek() % 8 === 7){ r.card = 'legendaire'; r.cardN = 1; delete r.crystal; }
   return r;
 }
-function todayKey(d){ d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function todayKey(d){   // V0.05.00 : jour de PARIS, d'après l'heure du serveur
+  const p = econParts(d instanceof Date ? d.getTime() : econNow());
+  return p.year + '-' + String(p.month).padStart(2, '0') + '-' + String(p.day).padStart(2, '0');
+}
 function dailyCanClaim(){ return player.daily.last !== todayKey(); }
 // Nombre de jours déjà récupérés dans la semaine affichée (le 8e jour, le compteur repart à 0)
 function dailyShownDone(){ return (player.daily.day >= 7 && dailyCanClaim()) ? 0 : player.daily.day; }
@@ -16181,37 +16194,12 @@ function dailyShownDone(){ return (player.daily.day >= 7 && dailyCanClaim()) ? 0
 // dailyMult()/dailyWeek()) ni player.daily.total (compteur cumulé à vie, utilisé par le booster
 // offert tous les 5 jours réclamés) -- exactement comme player.login.best/days ne sont jamais
 // réinitialisés par updateLogin() alors que player.login.streak/real le sont.
-function updateDailyStreak(){
-  if(!player.daily || HEADLESS) return;
-  const last = player.daily.last;
-  if(!last || last === todayKey()) return;   // jamais réclamé encore, ou déjà réclamé aujourd'hui : rien à faire
-  const y = new Date(); y.setDate(y.getDate() - 1);
-  if(last !== todayKey(y)) player.daily.day = 0;   // au moins un jour sauté : la grille repart à JOUR 1
+function updateDailyStreak(){}   // V0.05.00 : idem, côté serveur
+function claimDaily(){ econUi(econClaimDaily); }   // V0.05.00 : la récompense est décidée et versée par le serveur
+function msToMidnight(){   // V0.05.00 : minuit de Paris, heure du serveur
+  const ms = econNow(), p = econParts(ms), nx = new Date(Date.UTC(p.year, p.month - 1, p.day + 1));
+  return econMidnight(nx.getUTCFullYear(), nx.getUTCMonth() + 1, nx.getUTCDate()) - ms;
 }
-function claimDaily(){
-  updateDailyStreak();
-  if(!dailyCanClaim()) return;
-  if(player.daily.day >= 7){ player.daily.day = 0; player.daily.cycle = (player.daily.cycle || 0) + 1; }   // nouvelle semaine
-  const idx = player.daily.day;
-  const rew = dailyReward(idx);
-  // V0.02.93, demande d'Alex : "dans les récompenses journalières tous les 5 jours tu as droit à un
-  // booster aléatoire parmi les 3" -- basé sur le cumul des jours réclamés (player.daily.total, qui ne
-  // boucle jamais, contrairement à player.daily.day qui repart à 0 chaque semaine), pas sur la position
-  // dans le calendrier 7 jours affiché : le 5e jour réclamé au total, le 10e, le 15e, etc. (+1 ici car
-  // player.daily.total n'est incrémenté qu'un peu plus bas, APRÈS ce calcul).
-  if((player.daily.total + 1) % 5 === 0) rew.booster = 'random';
-  player.daily.day++;
-  player.daily.last = todayKey();
-  player.daily.total++;
-  if(player.daily.day === 7) player.stats.dailyWeeks++;
-  const items = grantReward(rew);
-  showRewardModal('SEMAINE ' + ((player.daily.cycle || 0) + 1) + ' · JOUR ' + (idx + 1), items);
-  checkTrophies(true);
-  renderDaily(true);
-  renderNotifs();
-  saveNow();
-}
-function msToMidnight(){ const n = new Date(), m = new Date(n); m.setHours(24, 0, 0, 0); return m - n; }
 function fmtHM(ms){ const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000); return h ? h + ' h ' + String(m).padStart(2, '0') : m + ' min'; }
 
 // ----- Scène 3D isométrique : la caméra avance sur le chemin quand on fait défiler -----
@@ -16829,49 +16817,14 @@ function tVal(t){ try{ return t.val() || 0; }catch(_){ return 0; } }
 function trophyClaimable(t){ return !!player.troph.r[t.id] && !player.troph.c[t.id]; }
 // Vérifie les trophées ; un trophée atteint le reste même si la valeur redescend (ex. puissance d'escouade)
 // Trophées cachés = cartes holographiques : on les ralentit pour éviter d'en obtenir plusieurs d'un coup.
-const HIDDEN_MIN_PLAY_MS = 10 * 60000;   // aucun trophée caché avant 10 min de jeu
-const HIDDEN_TROPHY_GAP_MS = 20 * 60000; // puis au moins 20 min entre deux trophées cachés
-function checkTrophies(quiet){
+// aucun trophée caché avant 10 min de jeu
+// puis au moins 20 min entre deux trophées cachés
+function checkTrophies(quiet){   // V0.05.00 : seul le serveur décide qu'un trophée est atteint ; ici on ne fait que prévenir le joueur
   if(!player.troph || HEADLESS) return;
-  // conditions des trophées cachés
-  const h = new Date().getHours();
-  if(h === 3) player.stats.night = 1;
-  const fresh = [];
-  TROPHIES.forEach(t => {
-    if(player.troph.r[t.id]) return;
-    if(t.hidden){
-      if((player.playSeconds || 0) * 1000 < HIDDEN_MIN_PLAY_MS) return;
-      if(Date.now() - (player.stats.lastHiddenAt || 0) < HIDDEN_TROPHY_GAP_MS) return;
-    }
-    if(tVal(t) >= tTarget(t)){
-      player.troph.r[t.id] = Date.now(); fresh.push(t);
-      if(t.hidden) player.stats.lastHiddenAt = Date.now();
-    }
-  });
-  if(fresh.length){
-    // Icône du trophée débloqué (V0.02.34) : réutilise la nouvelle illustration de la case TROPHÉES
-    // (RÉCOMPENSES) plutôt que l'ancien emoji 🏆 dans le texte du toast.
-    if(!quiet || fresh.length){
-      const trophyIco = document.querySelector('#tileTrophies .mt-trophy-img img');
-      showToast(fresh.length === 1 ? 'TROPHÉE DÉBLOQUÉ : ' + (fresh[0].hidden ? '???' : fresh[0].name.toUpperCase()) : fresh.length + ' TROPHÉES DÉBLOQUÉS', trophyIco && trophyIco.src);
-    }
-    saveSoon();
-    renderNotifs();
-    if(document.getElementById('trophyView').classList.contains('active')) renderTrophies();
-  }
+  econTrophyNotify();
   updateRewardTiles();
 }
-function claimTrophy(id){
-  const t = TROPHIES.find(x => x.id === id);
-  if(!t || !trophyClaimable(t)) return;
-  player.troph.c[t.id] = Date.now();
-  const items = grantReward(tReward(t));
-  showRewardModal(t.hidden ? '✦ TROPHÉE CACHÉ ✦' : 'TROPHÉE ' + TROPHY_TIERS[t.tier].label, items);
-  checkTrophies(true);
-  renderTrophies();
-  renderNotifs();
-  saveNow();
-}
+function claimTrophy(id){ econUi(() => econClaimTrophy(id)); }
 // Fusionne des items de récompense identiques (même type / même matériau) pour un affichage compact
 function mergeRewardItems(items){
   const sums = {}, order = [], cards = [];
@@ -16886,29 +16839,7 @@ function mergeRewardItems(items){
   });
   return order.map(k => sums[k]).concat(cards);
 }
-function claimAllTrophies(){
-  // Récupérer un trophée peut en débloquer un nouveau dans la foulée (ex. un trophée de cristaux
-  // totaux franchi grâce aux cristaux qu'on vient d'obtenir) : on boucle tant que de nouveaux
-  // trophées deviennent disponibles, pour que "RÉCUPÉRER TOUT" les prenne vraiment tous d'un coup,
-  // au lieu de laisser les trophées en cascade pour un clic suivant. Le nombre de trophées étant
-  // fini, la boucle se termine forcément ; la limite ci-dessous est une simple sécurité.
-  let allItems = [], claimedCount = 0, guard = TROPHIES.length + 1;
-  let list = TROPHIES.filter(trophyClaimable);
-  while(list.length && guard-- > 0){
-    list.forEach(t => {
-      player.troph.c[t.id] = Date.now();
-      allItems = allItems.concat(grantReward(tReward(t)));
-    });
-    claimedCount += list.length;
-    checkTrophies(true); // marque "atteints" les trophées tout juste débloqués par ces récompenses
-    list = TROPHIES.filter(trophyClaimable);
-  }
-  if(!claimedCount) return;
-  showRewardModal(claimedCount + ' TROPHÉES RÉCUPÉRÉS', mergeRewardItems(allItems));
-  renderTrophies();
-  renderNotifs();
-  saveNow();
-}
+function claimAllTrophies(){ econUi(econClaimAllTrophies); }
 document.getElementById('trClaimAllBtn').onclick = claimAllTrophies;
 const TROPHY_SVG = '<svg viewBox="0 0 48 48" fill="currentColor"><path d="M14 6h20v12a10 10 0 0 1-20 0z"/><path d="M14 10H7c0 7 3 10 8 10v-3c-3 0-5-2-5.4-4H14zM34 10h7c0 7-3 10-8 10v-3c3 0 5-2 5.4-4H34z"/><path d="M21 28h6v7h-6zM15 42h18l-2-7H17z"/></svg>';
 // Icône dédiée au palier OR (V0.02.21) : illustration fournie par Alex, fond vert retiré et recadrée.
@@ -17014,7 +16945,11 @@ var TASK_POOL = [
 // de la récupération (donc un type différent possible chaque jour), en plus des 5 cristaux déjà existants.
 const TASK_BONUS = { gold:60 };   // V0.04.61 : avant 5 cristaux + 1 booster par jour (≈ 2 boosters/jour, soit des dizaines d'heures de bataille)
 // Numéro de semaine calendaire (change chaque lundi)
-function calWeek(){ const d = new Date(); d.setHours(0, 0, 0, 0); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return Math.round(mon.getTime() / 604800000); }
+function calWeek(){   // V0.05.00 : semaine (lundi, heure de Paris) d'après l'heure du serveur
+  const p = econParts(econNow()), dow = new Date(Date.UTC(p.year, p.month - 1, p.day)).getUTCDay();
+  const mon = new Date(Date.UTC(p.year, p.month - 1, p.day - ((dow + 6) % 7)));
+  return Math.round(econMidnight(mon.getUTCFullYear(), mon.getUTCMonth() + 1, mon.getUTCDate()) / 604800000);
+}
 // Sélection + récompenses de la semaine (toujours les mêmes pendant 7 jours)
 var taskWeekCache = null;
 function tasksOfWeek(){
@@ -17069,49 +17004,10 @@ function tasksClaimableCount(){
   ensureTasksDay();
   return tasksOfWeek().filter(t => taskState(t) === 'ready').length + (tasksAllClaimed() && !player.tasks.bonus ? 1 : 0);
 }
-function claimTask(i){
-  const list = tasksOfWeek();
-  if(i === list.length){
-    if(!tasksAllClaimed() || player.tasks.bonus) return;
-    player.tasks.bonus = true;
-    player.stats.taskFull++;
-    showRewardModal('TOUTES LES TÂCHES ACCOMPLIES !', grantReward(TASK_BONUS));
-  } else {
-    const t = list[i];
-    if(taskState(t) !== 'ready') return;
-    player.tasks.claimed[t.id] = Date.now();
-    player.stats.tasksDone++;
-    showRewardModal('TÂCHE : ' + t.name, grantReward(t.rew));
-  }
-  renderTasks(true);
-  renderNotifs();
-  updateRewardTiles();
-  saveNow();
-}
+function claimTask(i){ econUi(() => econClaimTask(i)); }
 // Récupère d'un coup toutes les tâches prêtes (+ le bonus final si les 10 sont faites), sans avoir
 // à toucher chaque bulle une par une le long du parcours isométrique.
-function claimAllTasks(){
-  const list = tasksOfWeek();
-  const idx = list.map((t, i) => i).filter(i => taskState(list[i]) === 'ready');
-  let allItems = [], n = 0;
-  idx.forEach(i => {
-    const t = list[i];
-    player.tasks.claimed[t.id] = Date.now();
-    player.stats.tasksDone++;
-    allItems = allItems.concat(grantReward(t.rew)); n++;
-  });
-  if(tasksAllClaimed() && !player.tasks.bonus){   // évalué APRÈS les récupérations : les 10 tâches terminées donnent le bonus tout de suite
-    player.tasks.bonus = true;
-    player.stats.taskFull++;
-    allItems = allItems.concat(grantReward(TASK_BONUS)); n++;
-  }
-  if(!n) return;
-  showRewardModal(n > 1 ? n + ' TÂCHES RÉCUPÉRÉES' : '1 TÂCHE RÉCUPÉRÉE', mergeRewardItems(allItems));
-  renderTasks(true);
-  renderNotifs();
-  updateRewardTiles();
-  saveNow();
-}
+function claimAllTasks(){ econUi(econClaimAllTasks); }
 document.getElementById('tasksClaimAllBtn').onclick = claimAllTasks;
 
 // ----- Vue isométrique dans l'espace (canvas) -----
@@ -17447,16 +17343,9 @@ document.getElementById('rwBackBtn').onclick = showHub;
 var batSelected = null;
 // WINSTREAK : chaque victoire d'affilée allume un point (5 max) ; une défaite (ou un combat quitté) remet à 0.
 // Récompense : 25 or + 15 XP à la 1re victoire, puis +25 or / +15 XP de plus à chaque victoire suivante (50, 75, 100, 125 or ; la série pleine reste à 125).
-const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25, BAT_WIN_XP = 15;
+const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25;
 var batStreakShown = -1;
-function batStreakResolve(won){
-  if(!won){ player.winStreak = 0; saveSoon(); return null; }   // l'affichage est rafraîchi par renderBataille() à la sortie du combat
-  const n = Math.min(BAT_STREAK_MAX, (player.winStreak || 0) + 1);
-  player.winStreak = n;
-  player.stats.bestStreak = Math.max(player.stats.bestStreak || 0, n);
-  const items = grantReward({ gold: BAT_WIN_GOLD * n, xp: BAT_WIN_XP * n });   // 25 + 25 x (n-1) or ; XP au même rythme
-  return { n, items };
-}
+// V0.05.00 : série de victoires et gains = serveur uniquement ; le combat contre l'IA ne rapporte rien pour l'instant
 function batRenderStreak(){
   const dots = document.querySelectorAll('#batDots i'), n = player.winStreak || 0;
   const box = document.getElementById('batDots'); if(box) box.style.setProperty('--k', Math.max(0, n - 1) / (BAT_STREAK_MAX - 1));
@@ -17493,7 +17382,7 @@ document.getElementById('tileBattle').onclick = () => { batSelected = null; rend
 document.getElementById('tileRaid').onclick = () => showToast('BATAILLE : bientôt disponible');   // V0.04.91 : case ouverte, fonction à venir
 document.getElementById('batLaunchBtn').onclick = () => {
   const d = decks.find(x => x.id === batSelected); if(!d) return;
-  btlStart(d);
+  econUi(() => econBattleLaunch(d, null));   // V0.05.00 : le serveur choisit la graine et l'adversaire
 };
 // ================= BATAILLE : LE COMBAT (V0.04.20) =================
 // Combat de cartes au tour par tour (spec d'Alex) : 3 emplacements + 1 chef d'escouade par camp, main en éventail,
@@ -17536,7 +17425,14 @@ function btlAnim(el, kf, opt){
 }
 function btlAnimR(el, kf, opt){ return btlAnim(el, kf, Object.assign({}, opt, { raw:true })); }
 function btlClearAnims(el){ if(el && el.getAnimations) el.getAnimations().forEach(a => a.cancel()); }
-function btlShuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+// ---------- HASARD DES RÈGLES (chantier PvP 1.1) ----------
+// btlLrand() : générateur à graine (mulberry32) pour TOUT ce qui influe sur les règles ; la graine de chaque partie est tirée au lancement (BTL.seed) -- ou imposée par d.seed (tests, rejeu).
+// Le hasard purement visuel (particules, éclats, fumée...) reste en Math.random et ne consomme pas ce flux.
+var BTL_LRNG = { s:(Math.random() * 4294967296) >>> 0 };
+function btlSeed(n){ BTL_LRNG.s = (n >>> 0) || 1; return BTL_LRNG.s; }
+function btlLrand(){ let t = (BTL_LRNG.s = (BTL_LRNG.s + 0x6D2B79F5) | 0); t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+function btlShuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(btlLrand() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function btlShuffleV(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }   // mélange purement visuel (balayage de la flèche de l'IA)
 function btlQ(sel){ return BTL.el.querySelector(sel); }
 function btlRect(el){ return el.getBoundingClientRect(); }
 function btlOther(s){ return s === 'p' ? 'o' : 'p'; }
@@ -17606,35 +17502,18 @@ function btlMakeCard(side, def, rar, level, leader, k){
     maxHp:hp, hp, energy:0, leader:!!leader, plan:null, slot:-1,
     kw:leader ? [] : (BTL_CARD_KW[def.name] || []).slice(), playedTurn:-1, ultOn:false, base:null };
 }
-// DÉFI (V0.04.65) : deck adverse imposé { focus, deck:[noms], k, lHp, lDf, ai, hand, mod } -- le chef adverse est la carte du défi (stats de chef inchangées + bonus du palier)
-function btlDefiOpp(D){
-  const def = n => CHAR_DEFS.find(x => x.name === n);
-  const mk = (n, isL) => { const df = def(n); return btlMakeCard('o', df, df.rarity, 1, isL, D.k || 1); };
-  const L = mk(D.focus, true);
-  L.maxHp = L.hp = BTL_CHIEF_HP + (D.lHp || 0); L.df = BTL_CHIEF_DEF + (D.lDf || 0);
-  return { leader:L, pile:btlShuffle(D.deck.map(n => mk(n, false))), hand:[], slots:[null, null, null] };
+// V0.05.00 : l'adversaire { cards:[noms], leader, module, k, lHp, lDf } est IMPOSÉ par le serveur, qui rejoue ensuite le combat pour valider le résultat
+// (Défi : k = multiplicateur de stats du palier, lHp / lDf = bonus du chef adverse).
+function btlSrvSide(side, o){
+  const def = n => { const x = CHAR_DEFS.find(y => y.name === n); if(!x) throw new Error('carte inconnue ' + n); return x; };
+  const mk = (n, isL) => { const x = def(n); return btlMakeCard(side, x, rarityOf(x), 1, isL, o.k || 1); };
+  const L = mk(o.leader, true);
+  if(o.lHp != null || o.lDf != null){ L.maxHp = L.hp = BTL_CHIEF_HP + (o.lHp || 0); L.df = BTL_CHIEF_DEF + (o.lDf || 0); }
+  return { leader:L, pile:btlShuffle(o.cards.map(n => mk(n, false))), hand:[], slots:[null, null, null] };
 }
 function btlBuildSides(d){
-  const ents = d.cards.map(k => sqEntry(k)).filter(Boolean);
-  const lk = deckBestKey(d.cards, d.leader);
-  let li = ents.findIndex(e => e.key === lk); if(li < 0) li = 0;
-  const lead = ents[li], rest = ents;   // le chef n'est plus une carte du deck : les 20 cartes vont dans la pioche
-  const mkP = (e, isL) => btlMakeCard('p', e.def, e.rar, Math.max(1, cardLevel(e.def.name, e.rar)), isL);
-  const P = { leader:mkP(lead, true), pile:btlShuffle(rest.map(e => mkP(e, false))), hand:[], slots:[null, null, null] };
-  // Adversaire (V0.04.49, rareté unique) : un deck de même forme que celui du joueur -- pour chaque carte du joueur,
-  // une carte au hasard de la MÊME rareté (2 exemplaires max par carte) ; son chef est la carte la plus forte de la rareté du chef du joueur.
-  const cnt = {};
-  const pickDef = rar => {
-    const all = CHAR_DEFS.filter(x => x.name !== 'MALGAME' && x.name !== 'MALAME'), pool = all.filter(x => (cnt[x.name] || 0) < 2)   /* tirage libre parmi toutes les cartes, toutes raretés confondues */, src = pool.length ? pool : all;
-    const def = src[Math.floor(Math.random() * src.length)]; cnt[def.name] = (cnt[def.name] || 0) + 1; return def;
-  };
-  const mkO = (def, isL) => btlMakeCard('o', def, def.rarity, 1, isL, 1);
-  const lpool = CHAR_DEFS.filter(x => x.name !== 'MALGAME' && x.name !== 'MALAME');
-  const strongest = lpool[Math.floor(Math.random() * lpool.length)];   // chef adverse tiré au hasard
-  cnt[strongest.name] = 1;
-  let O = { leader:mkO(strongest, true), pile:btlShuffle(rest.map(e => mkO(pickDef(e.rar), false))), hand:[], slots:[null, null, null] };
-  if(d.defi) O = btlDefiOpp(d.defi);
-  return { p:P, o:O };
+  if(!d.srv) throw new Error('combat sans deck imposé par le serveur');
+  return { p:btlSrvSide('p', d.srv.p), o:btlSrvSide('o', d.srv.o) };   // V0.05.00 : les deux decks sont ceux que le serveur a validés (il rejouera exactement cette partie)
 }
 function btlCardByUid(uid){
   if(uid == null) return null;
@@ -18926,8 +18805,9 @@ function btlVsIntro(){
 function btlStart(d){
   if(BTL) return;
   if(!d || !d.cards || d.cards.length < 2){ showToast('DECK INCOMPLET'); return; }
+  const seed = btlSeed(d.seed != null ? d.seed : (Math.random() * 4294967296) >>> 0);   // graine des règles (rejouable)
   const S = btlBuildSides(d);
-  BTL = { d, abort:false, over:false, turn:0, side:null, first:null, phase:'intro', mana:{ p:0, o:0 }, cap:{ p:0, o:0 }, S, menu:null, tg:null, hold:null, timer:0, endRes:null, timeUp:false, el:null, deadline:0, fxBusy:0, pick:null, arAll:new Set(), arw:new Map(), arRaf:0, mod:btlModInit(d), modTurn:{ p:-1, o:-1 } };
+  BTL = { d, seed, abort:false, over:false, turn:0, side:null, first:null, phase:'intro', mana:{ p:0, o:0 }, cap:{ p:0, o:0 }, S, menu:null, tg:null, hold:null, timer:0, endRes:null, timeUp:false, el:null, deadline:0, fxBusy:0, pick:null, arAll:new Set(), arw:new Map(), arRaf:0, mod:btlModInit(d), modTurn:{ p:-1, o:-1 }, rec:[], fin:null };
   BTL.el = btlBuildDom();
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
   btlWarm();
@@ -18943,7 +18823,9 @@ function btlStart(d){
 function btlExit(){
   if(!BTL) return;
   const dfx = !!(BTL.d && BTL.d.defi);
-  if(!BTL.over && !dfx && typeof batStreakResolve === 'function') batStreakResolve(false);   // combat quitté avant la fin = défaite : la série retombe à 0 (pas pour un défi)
+  const fin0 = BTL.fin;
+  if(!BTL.over && BTL.d && BTL.d.srv) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
+  else if(fin0 && !fin0.shown) fin0.p.then(r => econBattleShow(fin0, r));   // quitté pendant l'envoi du résultat : il s'affiche quand même
   if(BTL.vs && BTL.vs.kill) BTL.vs.kill();
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
   window.removeEventListener('resize', BTL.onResize);
@@ -18958,7 +18840,7 @@ async function btlRun(){
   if(!BTL || BTL.abort) return;
   await btlSleep(250);
   // pile ou face
-  BTL.first = Math.random() < 0.5 ? 'p' : 'o';
+  BTL.first = btlLrand() < 0.5 ? 'p' : 'o';
   await btlCoin(BTL.first);
   // main de départ
   for(let i = 0; i < BTL_HAND_START; i++){
@@ -19379,6 +19261,7 @@ async function btlPlayerPhase(){
   clearInterval(BTL.timer);
   BTL.endRes = null;
   while(BTL.fxBusy > 0 && !BTL.over) await btlSleep(80);   // un effet d'Appel en cours doit se terminer avant la résolution
+  btlRec('E');   // bande du joueur : fin de tour (le joueur ou le chrono)
   btlSetHeat(0);
   btlHolo(null);
 }
@@ -19472,6 +19355,7 @@ function btlPlateTex(body, g, top){
 }
 async function btlPlay(side, c, si, fromRect, el){
   const S = BTL.S[side];
+  if(side === 'p'){ const hi = S.hand.indexOf(c); if(hi >= 0) btlRec('P' + hi + si); }   // bande du joueur
   if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
   if(c.def && c.def.name === 'RAZOPS') btlDrSprite();   // précharge le drone 3D
   if(c.def && c.def.name === 'GOTHIKA') btlGothSprite();   // précharge l'épée de l'artwork
@@ -19547,12 +19431,14 @@ async function btlPlay(side, c, si, fromRect, el){
 // ---------- plans d'action ----------
 function btlSetPlan(c, plan){
   const side = c.side;
+  if(side === 'p'){ const tg = btlCardByUid(plan.tgt); if(tg) btlRec((plan.kind === 'def' ? 'D' : 'A') + c.slot + btlRef(tg)); }   // bande du joueur (une carte déjà engagée est re-planifiée : l'ancien plan est remboursé)
   if(c.plan) BTL.mana[side]++;
   BTL.mana[side]--; plan.seq = BTL.planSeq = (BTL.planSeq || 0) + 1; c.plan = plan;   // numéro d'ordre : la résolution suit l'ordre dans lequel les actions ont été lancées
   btlRenderMana(); btlRenderArrows();
 }
 function btlClearPlan(c){
   if(!c.plan) return;
+  if(c.side === 'p') btlRec('U' + c.slot);
   c.plan = null; BTL.mana[c.side]++;
   btlRenderMana(); btlRenderArrows();
 }
@@ -20178,8 +20064,9 @@ async function btlDieBoth(a, b){
   if(da) a._diePr = btlDie0(a, true);
   if(db) b._diePr = btlDie0(b, true);
   await Promise.all([a._diePr, b._diePr]);
-  if(da) await btlTrigger('baroud', a);
-  if(db) await btlTrigger('baroud', b);
+  const earlyDone = x => { const f = BTL_CARD_FX[x.name]; return !!(f && f.early && f.baroud); };   // V0.04.93 : PRAWN a déjà joué son Baroud à l'éclatement : une seule pioche
+  if(da && !earlyDone(a)) await btlTrigger('baroud', a);
+  if(db && !earlyDone(b)) await btlTrigger('baroud', b);
 }
 async function btlDie0(c, defer){
   const el = btlUnitEl(c), slot = btlSlotOf(c);
@@ -20263,20 +20150,18 @@ async function btlLeaderDeath(c){
 }
 async function btlFinish(winner){
   if(BTL.over) return;
+  const B0 = BTL;
   BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
+  const fin = BTL.fin = econBattleEnd(winner);   // V0.05.00 : la bande part tout de suite au serveur ; c'est SON verdict (rejeu de la partie) qui compte, pas celui de l'écran
   const loser = btlOther(winner), lc = BTL.S[loser].leader;
   btlArClear();
   await btlLeaderDeath(lc);
   await btlSleep(450);
-  const my = BTL.S.p.leader.def;
+  const r = await fin.p;
   const rm = document.getElementById('rewardModal');
-  const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); btlExit(); } });
+  const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); if(BTL === B0) btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
-  const dfx = !!(BTL.d && BTL.d.defi);   // combat de DÉFI : ni série de victoires, ni récompense de Bataille (progression/récompense du palier gérées par defiBtlShowResult)
-  if(dfx && typeof defiBtlShowResult === 'function'){ defiBtlShowResult(winner === 'p'); return; }
-  player.stats.battles++; if(winner === 'p') player.stats.battlesWon++;
-  const wr = (typeof batStreakResolve === 'function') ? batStreakResolve(winner === 'p') : null;   // série de victoires : récompense (victoire) ou remise à zéro (défaite)
-  showRewardModal('', (wr && wr.items) || [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:my.artExt, artPosY:defiResultArtPosY(my.name), actionLabel:'CONTINUER' });
+  econBattleShow(fin, r);
 }
 
 // =====================================================================================================
@@ -20343,7 +20228,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
   });
   try{ await btlSleep(640); } finally { halves.forEach(h => h.remove()); }
 }
-function btlRnd(a){ return a.length ? a[Math.floor(Math.random() * a.length)] : null; }
+function btlRnd(a){ return a.length ? a[Math.floor(btlLrand() * a.length)] : null; }
 function btlGone(){ return !BTL || BTL.over || BTL.abort; }
 function btlField(side){ return BTL.S[side].slots.filter(t => t && t.hp > 0); }              // cartes en jeu (sans le chef)
 function btlLiveAll(side){ return btlAlly(side).filter(t => t.hp > 0); }                       // chef + cartes en jeu
@@ -20352,7 +20237,7 @@ function btlPickTarget(c, cands, opt){
   cands = cands.filter(t => t.hp > 0);
   if(!cands.length || btlGone()) return Promise.resolve(null);
   const ai = opt && opt.ai;   // choix de l'adversaire : même mise en scène que le joueur (cartes ciblables en surbrillance, flèche qui balaie puis se verrouille)
-  if(BTL.timeUp && !ai) return Promise.resolve(btlRnd(cands));
+  if(BTL.timeUp && !ai){ const t0 = btlRnd(cands); btlRecDec('r'); return Promise.resolve(t0); }   // temps écoulé : tirage au hasard (décision « r » de la bande)
   return new Promise(res => {
     const pk = { done:false }; if(!ai) BTL.pick = pk;
     // flèche en cloche (option) : part de la carte qui choisit et suit le doigt / la souris, s'accroche à la carte survolée
@@ -20383,8 +20268,8 @@ function btlPickTarget(c, cands, opt){
       void u.offsetWidth; u.style.transition = 'transform .42s cubic-bezier(.3,.7,.25,1)'; u.style.transform = 'none';
       btlAfter(() => { u.classList.remove('tg-lev', 'tg-lev-out'); u.style.transition = ''; u.style.transform = ''; }, 480);
     });   // option levit : les cartes ciblables flottent dans un halo bleu
-    const end = t => { if(pk.done) return; pk.done = true; off(); if(BTL){ if(BTL.xhov === t) BTL.xhov = null; BTL.xdmg = 0; btlHighlight(cands, false); cands.forEach(x => { if(!(x === t && btlLethal(x, xd))) btlXOff(x); }); lev(false); if(!ai) BTL.pick = null; } res(t); };
-    pk.auto = () => end(btlRnd(cands)); pk.off = off;
+    const end = (t, rnd) => { if(pk.done) return; pk.done = true; if(!ai) btlRecDec(rnd ? 'r' : cands.indexOf(t)); off(); if(BTL){ if(BTL.xhov === t) BTL.xhov = null; BTL.xdmg = 0; btlHighlight(cands, false); cands.forEach(x => { if(!(x === t && btlLethal(x, xd))) btlXOff(x); }); lev(false); if(!ai) BTL.pick = null; } res(t); };
+    pk.auto = () => end(btlRnd(cands), true); pk.off = off;
     btlHighlight(cands, true);
     const xd = (opt && opt.xdmg) || 0; BTL.xdmg = ai ? 0 : xd;
     if(xd && !ai && !(opt && opt.arrow)) cands.filter(x => btlLethal(x, xd)).forEach(btlXOn);   // choix au toucher : croix sur toutes les cartes qui seraient détruites
@@ -20393,7 +20278,7 @@ function btlPickTarget(c, cands, opt){
       (async () => {
         try{
           await btlSleep(300);
-          const others = btlShuffle(cands.filter(x => x !== ai)).slice(0, 2), order = others.concat([ai]);
+          const others = btlShuffleV(cands.filter(x => x !== ai)).slice(0, 2), order = others.concat([ai]);
           for(const t of order){
             if(pk.done || btlGone()) break;
             btlHighlight(cands, true, t); if(aim) aim(0, 0, t === ai, t);
@@ -20460,7 +20345,7 @@ async function btlFxAttack(c, t, force){
   await btlDoAction(c, { kind:'atk', tgt:t.uid, force:!!force });   // vraie attaque : riposte, énergie, mort...
 }
 // appel : N points de dégâts à une cible choisie parmi les ennemis (chef compris)
-function btlFxPickDmg(n, opt){ return async c => { const t = await btlChoose(c, btlLiveAll(btlOther(c.side)), 'dmg', n, opt); if(t && btlOnField(c)) await btlHit(c, t, n, opt); }; }
+function btlFxPickDmg(n, opt){ return async c => { const t = await btlChoose(c, btlLiveAll(btlOther(c.side)).filter(x => !x.leader), 'dmg', n, opt); /* V0.04.93 : le chef d'escouade n'est pas une cible possible */ if(t && btlOnField(c)) await btlHit(c, t, n, opt); }; }
 
 // PRAWN : à sa mort, un tir part de son emplacement vers la pioche ; à l'impact de la balle, la carte est tirée
 async function btlPrawnShot(c, tgtSide){
@@ -21185,7 +21070,7 @@ function btlGothArc(A, Bs, ms, opt){
   });
 }
 BTL_CARD_FX['GOTHIKA'] = { arrive: btlGothArrive, appel: async c => {   // 3 points à une cible ennemie choisie, puis 1 point à chacune de ses voisines (emplacements adjacents)
-  const t = await btlChoose(c, btlLiveAll(btlOther(c.side)), 'dmg', 3, { arrow:'def' });
+  const t = await btlChoose(c, btlLiveAll(btlOther(c.side)).filter(x => !x.leader), 'dmg', 3, { arrow:'def' });   // V0.04.93 : cartes seulement (pas le chef d'escouade)
   if(!t || !btlOnField(c) || btlGone()) return;
   const ctr = r => ({ x:r.left + r.width / 2, y:r.top + r.height / 2 });
   let nbP = [];
@@ -24664,10 +24549,10 @@ async function btlAI(){
     const onField = S.slots.filter(Boolean).length;
     const unplanned = S.slots.filter(c => c && !c.plan && btlCanAct(c)).length;
     const aiLv = (BTL.d.defi && BTL.d.defi.ai) || 0;   // DÉFI : plus le palier est haut, moins l'IA hésite à poser ses cartes
-    if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && Math.random() < 0.7 * (1 - aiLv)) break;
-    if(onField >= 2 && Math.random() < 0.25 * (1 - aiLv)) break;
+    if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && btlLrand() < 0.7 * (1 - aiLv)) break;
+    if(onField >= 2 && btlLrand() < 0.25 * (1 - aiLv)) break;
     const c = S.hand.slice().sort((a, b) => btlPwr(b) - btlPwr(a))[0];
-    const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(Math.random() * free.length)];
+    const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(btlLrand() * free.length)];
     const hand = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), rect = hand ? btlRect(hand) : btlRect(btlQ('#btlOHand'));
     const e = document.createElement('div'); e.className = 'btl-fly'; e.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(e);
     await btlPlay('o', c, si, { left:rect.left, top:rect.top, width:rect.width, height:rect.height }, e);
@@ -24675,7 +24560,7 @@ async function btlAI(){
   }
   // 1b) module de l'adversaire : une fois par tour, quand l'effet est utile
   const om = BTL.mod && BTL.mod.o;
-  if(om && !BTL.over && btlModCanUse('o') && !(om.name === 'ROCKET' && btlField('p').length <= btlField('o').length) && Math.random() < .75){
+  if(om && !BTL.over && btlModCanUse('o') && !(om.name === 'ROCKET' && btlField('p').length <= btlField('o').length) && btlLrand() < .75){
     await btlModuleUse('o'); btlModPaint(); await btlSleep(400);
   }
   // 2) agir avec les cartes du terrain
@@ -24685,7 +24570,7 @@ async function btlAI(){
     const allies = btlAlly(side).filter(t => t.hp > 0), foes = btlValidFoes('o');
     const weakAlly = allies.slice().sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
     let plan = null;
-    if(!plan && !btlNoDef(c) && weakAlly.hp / weakAlly.maxHp < 0.45 && c.df > 0 && Math.random() < 0.8) plan = { kind:'def', tgt:weakAlly.uid, heal:false };
+    if(!plan && !btlNoDef(c) && weakAlly.hp / weakAlly.maxHp < 0.45 && c.df > 0 && btlLrand() < 0.8) plan = { kind:'def', tgt:weakAlly.uid, heal:false };
     if(!plan) plan = { kind:'atk', tgt:btlPickFoe(c, foes, 1).uid, heal:false };
     btlSetPlan(c, plan);
     await btlSleep(520);
@@ -24697,7 +24582,7 @@ function btlPickFoe(c, foes, mult){
   const kill = cards.filter(t => t.hp + t.df <= btlEstDmg(c, t, mult)).sort((a, b) => btlPwr(b) - btlPwr(a))[0];
   if(kill) return kill;
   if(lead && (lead.hp + lead.df <= btlEstDmg(c, lead, mult) * 3 || !cards.length)) return lead;
-  if(cards.length && (!lead || Math.random() < 0.6)){ return cards.slice().sort((a, b) => a.hp - b.hp)[0]; }
+  if(cards.length && (!lead || btlLrand() < 0.6)){ return cards.slice().sort((a, b) => a.hp - b.hp)[0]; }
   return lead;
 }
 
@@ -24771,6 +24656,7 @@ const BTL_MODULES = {
   }
 };
 // module équipé d'un camp : { name, rar, level, t }  (null = aucun)
+function btlPModName(d){ const x = d && d.module; if(!x || !BTL_MODULES[x.name]) return null; if(typeof modStackCount === 'function' && modStackCount(x.name, x.rar || 'rare') < 1) return null; return x.name; }
 function btlModInit(d){
   const mk = x => {
     if(!x || !BTL_MODULES[x.name]) return null;
@@ -24778,10 +24664,9 @@ function btlModInit(d){
     const lvl = x.level || (typeof moduleLevel === 'function' ? moduleLevel(x.name, x.rar) : 1) || 1;
     return { name:x.name, rar:x.rar || 'rare', level:lvl, t:btlModT(x.rar || 'rare', lvl), frame:(typeof deckBack === 'function' && d) ? deckBack(d, 'mod') : 'rare' };   // frame = encadré (visuel seulement, la puissance reste celle de rar)
   };
-  // V0.04.58 : l'adversaire a toujours un module (au hasard, de la même rareté que celui du joueur)
-  const names = Object.keys(BTL_MODULES), rar = (d && d.module && d.module.rar) || 'rare';
-  const dm = d && d.defi && d.defi.mod && BTL_MODULES[d.defi.mod] ? d.defi.mod : null;   // DÉFI : module adverse imposé par le deck
-  return { p:mk(d && d.module), o:{ name:dm || names[Math.floor(Math.random() * names.length)], rar, level:1, t:btlModT(rar, 1) } };
+  // V0.05.00 : le module de l'adversaire est imposé par le serveur (même rareté d'affichage que celui du joueur)
+  const rar = (d && d.module && d.module.rar) || 'rare';
+  return { p:(d.srv.p.module && d.module && d.module.name === d.srv.p.module) ? mk(d.module) : null, o:{ name:d.srv.o.module, rar, level:1, t:btlModT(rar, 1) } };
 }
 function btlModCanUse(side){
   const m = BTL && BTL.mod && BTL.mod[side]; if(!m || btlGone()) return false;
@@ -24796,12 +24681,13 @@ async function btlModuleUse(side, pre){
   BTL.fxBusy++;
   let ks = [];
   try{
-    let t = null;
+    let t = null, rec = null;
     if(def.mode !== 'none'){
-      const cands = def.cands(side);
-      t = (pre && cands.indexOf(pre) >= 0) ? pre : await btlChoose(btlModSrc(side), cands, def.mode, btlModN(m));
-      if(!t) return false;
-    }
+      const cands = def.cands(side), usePre = !!(pre && cands.indexOf(pre) >= 0);
+      if(side === 'p') rec = btlRec(usePre ? 'M' + btlRef(pre) : 'M-');   // bande du joueur
+      t = usePre ? pre : await btlChoose(btlModSrc(side), cands, def.mode, btlModN(m));
+      if(!t){ btlRecDrop(rec); return false; }
+    } else if(side === 'p') rec = btlRec('M-');
     BTL.mana[side] -= btlModCost(m.t); BTL.modTurn[side] = BTL.turn; btlRenderMana(); btlRefreshCan();
     btlModFire(side);
     if(def.kills){ ks = def.kills(side, m); ks.forEach(btlXOn); if(ks.length) await btlSleep(420); }   // croix sur chaque carte que le module va détruire
@@ -26011,26 +25897,19 @@ function renderDefiLaunch(){
 function defiEnterCombat(){
   const d = decks.find(x => x.id === defiLaunchDeck); if(!d || !defiLaunchDef || !defiLaunchSpec) return;
   if(BTL) return;
-  defiBtlCtx = { def:defiLaunchDef, tier:defiLaunchTier };
-  closeDefiLaunch();
-  btlStart(Object.assign({}, d, { defi:defiLaunchSpec }));
-  if(!BTL) defiBtlCtx = null;   // lancement refusé (deck incomplet...)
+  const def = defiLaunchDef, tier = defiLaunchTier;
+  econUi(() => econBattleLaunch(d, { def, tier }));   // V0.05.00 : le serveur choisit la graine, le deck adverse et les bonus du palier
 }
 // Fin du combat de défi (appelée par btlFinish) : progression, récompense, écran de victoire / défaite.
-function defiBtlShowResult(won){
-  const ctx = defiBtlCtx; defiBtlCtx = null;
-  if(!ctx) return;
-  const def = ctx.def, tier = ctx.tier, prev = (player.defi && player.defi[def.name]) || 0;
-  if(won && tier > prev){ player.defi[def.name] = tier; player.stats.defisWon = (player.stats.defisWon || 0) + 1; saveSoon(); }
-  const now = player.defi[def.name] || 0, artPosY = defiResultArtPosY(def.name);
+function defiBtlShowResult(res){   // V0.05.00 : progression et récompense du palier = décision du serveur (rejeu du combat)
+  defiBtlCtx = null;
+  const def = CHAR_DEFS.find(d => d.name === res.name); if(!def) return;
+  const tier = res.tier, prev = res.prev || 0, won = !!res.won, artPosY = defiResultArtPosY(def.name);
+  const now = (player.defi && player.defi[def.name]) || 0;
   const st = sortStacks(ownedStacks()).find(x => x.def.name === def.name), certKey = st ? sqKey(st.def.name, st.rar) : null;
   const justCert = !won ? null : (prev < DEFI_CHALLENGES_PER_CARD && now >= DEFI_CHALLENGES_PER_CARD) ? 'gold' : (prev < ULTIMATE_MAX_TIER && now >= ULTIMATE_MAX_TIER) ? 'ultimate' : null;
-  if(won){
-    const items = tier > prev ? grantReward(defiTierReward(tier)) : [];
-    showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', items, { resultType:'victory', resultArt:def.artExt, artPosY, onAction: justCert && certKey ? () => openDefiCertReveal(certKey, justCert) : null });
-  } else {
-    showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, artPosY, actionLabel:'CONTINUER' });
-  }
+  if(won) showRewardModal((defiTierIsBoss(tier) ? 'BOSS · PALIER ' : 'PALIER ') + tier + ' REMPORTÉ', econItems(res.items), { resultType:'victory', resultArt:def.artExt, artPosY, onAction: justCert && certKey ? () => openDefiCertReveal(certKey, justCert) : null });
+  else showRewardModal('', [], { resultType:'defeat', resultArt:def.artExt, artPosY, actionLabel:'CONTINUER' });
 }
 // Retour sur la piste des paliers une fois le combat quitté (appelée par btlExit).
 function defiBtlReturn(){
@@ -26122,7 +26001,7 @@ document.getElementById('defiPathBackBtn').onclick = defiPathBack;
     taps = taps.filter(t => now - t < 12000); taps.push(now);
     logo.classList.remove('rev'); void logo.getBoundingClientRect(); logo.classList.add('rev');
     const wrap = logo.parentElement; wrap.classList.add('rev'); clearTimeout(wrap._t); wrap._t = setTimeout(() => wrap.classList.remove('rev'), 1200);
-    if(taps.length >= 25 && !player.stats.engine){ player.stats.engine = 1; checkTrophies(); }
+    if(!player.stats.engine) econTrack('engine_tap');   // V0.05.00 : le serveur compte les 25 appuis en 12 s
   });
 })();
 // 4 boucles à 1 s (éco, temps de jeu, minuteur Fabrique, minuteur de mission) regroupées ici en un seul
@@ -26313,8 +26192,9 @@ function renderPlayerTile(){
   const title = document.getElementById('tilePlayerTitle');
   title.textContent = player.name || 'JOUEUR';
   fitTileTitle(title, 21, 9);
-  document.getElementById('tilePlayerXp').style.width = (player.xp / need * 100) + '%';
-  document.getElementById('tilePlayerXpTxt').textContent = player.xp + ' / ' + need + ' XP';
+  const maxed = player.level >= LEVEL_MAX;
+  document.getElementById('tilePlayerXp').style.width = (maxed ? 100 : player.xp / need * 100) + '%';
+  document.getElementById('tilePlayerXpTxt').textContent = maxed ? 'NIVEAU MAX' : player.xp + ' / ' + need + ' XP';
 }
 function renderPlayerSheet(){
   const need = xpToNext(player.level);
@@ -26329,8 +26209,8 @@ function renderPlayerSheet(){
           <button class="pv-edit" id="pvEditName" title="Changer de nom">✎</button>
         </div>
         <div class="pv-level">NIVEAU <b>${player.level}</b></div>
-        <div class="xp-bar big"><div class="xp-fill" style="width:${player.xp / need * 100}%"></div></div>
-        <div class="pv-xp-txt">${player.xp} / ${need} XP</div>
+        <div class="xp-bar big"><div class="xp-fill" style="width:${player.level >= LEVEL_MAX ? 100 : player.xp / need * 100}%"></div></div>
+        <div class="pv-xp-txt">${player.level >= LEVEL_MAX ? 'NIVEAU MAX' : player.xp + ' / ' + need + ' XP'}</div>
       </div>
     </div>
 
@@ -26398,17 +26278,16 @@ function renderTotals(){
 function renderSaveStatus(){
   const el = document.getElementById('pvSaveStatus');
   if(!el) return;
-  const local = readLocalSave();
-  const time = local && local.savedAt ? new Date(local.savedAt).toLocaleTimeString('fr-FR') : null;
+  const time = cloud.lastSave ? cloud.lastSave.toLocaleTimeString('fr-FR') : null;
   el.innerHTML = `
     <div class="team-label player">SAUVEGARDE</div>
-    <div class="acc-status"><span class="acc-dot on"></span>SAUVEGARDÉ SUR CET APPAREIL</div>
-    <div class="acc-text">${time ? 'Dernière sauvegarde : ' + time : 'Ta progression est sauvegardée automatiquement sur cet appareil.'}</div>
+    <div class="acc-status"><span class="acc-dot on"></span>PROGRESSION SUR LE SERVEUR</div>
+    <div class="acc-text">Tes cartes, tes ressources et tes récompenses sont enregistrées par le serveur à chaque action. ${time ? 'Équipes et réglages sauvegardés à ' + time + '.' : 'Tes équipes et tes réglages sont sauvegardés automatiquement.'}</div>
     <div class="controls" style="width:100%;">
       <button id="pvSaveBtn" class="primary-btn">SAUVEGARDER</button>
     </div>`;
   const b = document.getElementById('pvSaveBtn');
-  if(b) b.onclick = async () => { await saveNow(); renderSaveStatus(); showToast('PARTIE SAUVEGARDÉE'); };
+  if(b) b.onclick = async () => { await saveNow(); renderSaveStatus(); showToast('ÉQUIPES ET RÉGLAGES SAUVEGARDÉS'); };
 }
 // Statut du compte en ligne (Supabase) : login/inscription si déconnecté, sinon état + déconnexion.
 // N'affecte jamais la sauvegarde locale ci-dessus, qui reste la source de vérité principale.
@@ -26420,12 +26299,12 @@ function renderAccountStatus(){
     el.innerHTML = `
       <div class="team-label player">COMPTE EN LIGNE</div>
       <div class="acc-status"><span class="acc-dot on"></span>CONNECTÉ</div>
-      <div class="acc-text">${escapeHtml(cloud.email || '')}<br>${time ? 'Dernière synchro : ' + time : 'Ta progression est aussi sauvegardée en ligne.'}</div>
+      <div class="acc-text">${escapeHtml(cloud.email || '')}<br>${time ? 'Dernière synchro : ' + time : 'Ta progression est enregistrée sur le serveur.'}</div>
       <div class="controls" style="width:100%;">
         <button id="accLogoutBtn">SE DÉCONNECTER</button>
       </div>`;
     const lo = document.getElementById('accLogoutBtn');
-    if(lo) lo.onclick = () => { supaSignOut(); showToast('DÉCONNECTÉ'); };
+    if(lo) lo.onclick = async () => { await saveNow(); supaSignOut(); location.reload(); };   // V0.05.00 : on repart d'une page neuve (aucune donnée du compte précédent en mémoire)
     return;
   }
   if(cloud.status === 'checking'){
@@ -26437,11 +26316,11 @@ function renderAccountStatus(){
   }
   // unavailable (pas de compte) / offline / error : formulaire de connexion ou d'inscription
   const errTxt = cloud.status === 'error'
-    ? '<div class="acc-text" style="color:var(--ember);">Connexion au compte impossible pour le moment — ta progression reste sauvegardée sur cet appareil.</div>'
+    ? '<div class="acc-text" style="color:var(--ember);">Connexion au compte impossible pour le moment — réessaie dans un instant.</div>'
     : '';
   el.innerHTML = `
     <div class="team-label player">COMPTE EN LIGNE</div>
-    <div class="acc-text">Crée un compte (ou connecte-toi) pour retrouver ta progression sur un autre appareil, en plus de la sauvegarde locale.</div>
+    <div class="acc-text">Connecte-toi (ou crée un compte) pour jouer : ta progression est enregistrée sur le serveur.</div>
     ${errTxt}
     <input id="accEmail" class="acc-input" type="email" autocomplete="email" placeholder="Adresse e-mail" spellcheck="false">
     <input id="accPass" class="acc-input" type="password" autocomplete="current-password" placeholder="Mot de passe (6 caractères min.)">
@@ -26491,7 +26370,7 @@ function renderAfterSheet(){
   if(e) e.onclick = () => openNameModal();
 }
 function enterPlayerView(){
-  player.stats.sheetVisits++;
+  econTrack('sheet_visit');
   if(notif.player){ notif.player = false; renderNotifs(); saveSoon(); }
   document.getElementById('modeHub').classList.remove('active');
   document.getElementById('playerView').classList.add('active');
@@ -26578,7 +26457,11 @@ async function supaRefresh(){
     const data = await supaFetch('/auth/v1/token?grant_type=refresh_token', { method:'POST', noAuth:true, body: JSON.stringify({ refresh_token: sess.refresh_token }) });
     writeSupaSession(data);
     return data;
-  }catch(_){ writeSupaSession(null); return null; }
+  }catch(e){
+    // V0.05.00 : seul un refus du serveur d'authentification déconnecte ; une simple coupure réseau garde la session
+    if(e && (e.status === 400 || e.status === 401 || e.status === 403)) writeSupaSession(null);
+    return null;
+  }
 }
 function supaSignOut(){
   writeSupaSession(null);
@@ -26614,27 +26497,17 @@ function escapeHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;',
 // Date du record : toujours renvoyer une Date valide, même si la sauvegarde en ligne
 // contient une chaîne ou une date vide (sinon toute la sauvegarde échouait en silence).
 function serializeSave(){
+  // V0.05.00 : la sauvegarde ne contient plus que l'interface (équipe, decks, rangement, réglages, pastilles) -- jamais une ressource ni une carte.
   return {
-    v: 1,
+    v: 2,
+    uid: cloud.uid || null,
     savedAt: Date.now(),
-    player: Object.assign({}, player),
-    cardCopies: JSON.parse(JSON.stringify(cardCopies)),
-    cardTierFused: JSON.parse(JSON.stringify(cardTierFused)),   // paliers épique/légendaire gagnés par fusion (V0.02.83)
-    playerLevels: Object.assign({}, playerLevels),
-    cardXp: Object.assign({}, cardXp),
-    cardLevelDist: JSON.parse(JSON.stringify(cardLevelDist)),   // répartition par niveau (V0.01.88)
-    moduleCopies: JSON.parse(JSON.stringify(moduleCopies)),             // exemplaires modules (V0.02.45)
-    modulePlayerLevels: Object.assign({}, modulePlayerLevels),
-    moduleLevelDist: JSON.parse(JSON.stringify(moduleLevelDist)),
+    player: { lastSeenVersion: player.lastSeenVersion },
     unseen: CHAR_DEFS.filter(d => !d.seen).map(d => d.name),
     notif: JSON.parse(JSON.stringify(notif)),
     squad: squad.slice(),
-    squadModule: squadModule,   // slot module de l'escouade (V0.02.51)
-    fab: { offer: fabriqueOffer.map(d => d ? d.name : null), holo: fabriqueHolo.slice(), rar: fabriqueOfferRar.slice(), resetAt: fabResetAt },
-    lab: { offer: labOffer.map(d => d ? d.name : null), rar: labOfferRar.slice(), resetAt: labResetAt },   // LABO (V0.02.62)
-    m58: true,
-    favorites,
-    decks,   // V0.04.15 : DECK
+    squadModule: squadModule,
+    decks,
     settings: SETTINGS,
     collOrder: collSlots.slice()
   };
@@ -26657,185 +26530,32 @@ function migRemapCardKeys(data){
   ['missions', 'squad', 'battle', 'decks', 'favorites'].forEach(f => { if(data[f] !== undefined) data[f] = walk(data[f]); });
 }
 function applySave(data){
-  if(!data || data.v !== 1) return false;
-  // Copie profonde : les documents lus depuis la sauvegarde en ligne sont GELÉS (lecture seule).
-  // Sans cette copie, l'or, les matériaux ou les PV en combat ne pouvaient plus être modifiés.
+  // V0.05.00 : ne lit que l'interface (équipe, decks, rangement, réglages) ; accepte aussi les anciennes sauvegardes (v1), dont l'économie est IGNORÉE.
+  if(!data || (data.v !== 1 && data.v !== 2)) return false;
   data = JSON.parse(JSON.stringify(data));
-  migRemapCardKeys(data);   // V0.04.49
+  migRemapCardKeys(data);
   restoring = true;
   const p = data.player || {};
-  Object.keys(player).forEach(k => { if(p[k] !== undefined) player[k] = p[k]; });
-  if(!player.res || typeof player.res !== 'object') player.res = { gold:0, mat:{} };
-  player.res.gold = player.res.gold || 0;
-  player.res.xp = player.res.xp || 0;
-  if(player.res.xp > 0){   // V0.04.32 : l'XP stockée devient de l'XP de joueur
-    const sx = Math.round(player.res.xp); player.res.xp = 0;
-    player.xp = (player.xp || 0) + sx; player.totalXp = (player.totalXp || 0) + sx;
-    if(!player.level) player.level = 1;
-    while(player.xp >= xpToNext(player.level)){ player.xp -= xpToNext(player.level); player.level++; }
-  }
-  player.res.crystal = player.res.crystal || 0;
-  player.res.mat = Object.assign({ rare:0, epique:0, legendaire:0 }, player.res.mat || {});
-  delete player.res.mat.holo;
-  normalizePlayerExtras();
-  if(!p.tasks) player.tasks = null;   // tâches recalculées à partir des compteurs chargés
-  CHAR_DEFS.forEach(d => {
-    const saved = data.cardCopies && data.cardCopies[d.name];
-    const st = emptyStack();
-    if(typeof saved === 'number') st[rarityOf(d)] = saved;          // ancienne sauvegarde (avant les raretés par exemplaire)
-    else if(saved) RARITY_ORDER.forEach(r => { st[r] = saved[r] || 0; });
-    // Sécurité : le holo est réservé aux 6 cartes hors-série (holoOnly) -- ce ne sont pas des upgrades
-    // de légendaire, mais des exemplaires uniques à part. Une carte de série ne doit jamais détenir de
-    // copie holo (impossible par le jeu actuel, mais une sauvegarde issue d'une ancienne version buggée
-    // pouvait en contenir une) : on la retire silencieusement au chargement.
-    // V0.04.49 : rareté unique -- tous les exemplaires possédés (toutes raretés confondues) passent à la rareté définitive de la carte.
-    { let tot = 0; RARITY_ORDER.forEach(r => { tot += st[r] || 0; st[r] = 0; }); st[d.rarity] = tot; }
-    cardCopies[d.name] = st;
-    // Niveau/XP PAR RARETÉ (V0.01.82) : clé sqKey(nom, rareté). Migration depuis l'ancien format (un seul
-    // niveau partagé par personnage, clé = juste le nom) -- chaque rareté déjà possédée reprend ce niveau
-    // au chargement (rien n'est perdu), puis elles évoluent ensuite chacune de leur côté.
-    const legacyLvl = data.playerLevels && data.playerLevels[d.name];
-    const legacyXp = data.cardXp && data.cardXp[d.name];
-    RARITY_ORDER.forEach(r => {
-      const key = sqKey(d.name, r);
-      const lvl = data.playerLevels && data.playerLevels[key];
-      if(lvl) playerLevels[key] = lvl;
-      else if(legacyLvl && st[r] > 0) playerLevels[key] = legacyLvl;
-      const xp = data.cardXp && data.cardXp[key];
-      if(xp) cardXp[key] = xp;
-      else if(legacyXp && st[r] > 0) cardXp[key] = legacyXp;
-      // Répartition par niveau (V0.01.88) : si la sauvegarde la contient déjà, on la reprend telle
-      // quelle ; sinon (sauvegarde d'avant cette version), tous les exemplaires déjà possédés sont
-      // regroupés au niveau qu'ils partageaient jusqu'ici -- rien ne change avant la 1re opération qui
-      // distingue vraiment les exemplaires (montée de niveau, fusion, destruction, dé-fusion).
-      const savedDist = data.cardLevelDist && data.cardLevelDist[key];
-      if(savedDist && typeof savedDist === 'object'){
-        const dd = {};
-        Object.keys(savedDist).forEach(l => { const nn = savedDist[l]; if(nn > 0) dd[l] = nn; });
-        cardLevelDist[key] = dd;
-      } else if(st[r] > 0){
-        cardLevelDist[key] = { [playerLevels[key] || 1]: st[r] };
-      } else {
-        delete cardLevelDist[key];
-      }
-    });
-    d.seen = !(data.unseen || []).includes(d.name);
-  });
-  // Paliers épique/légendaire gagnés par fusion (V0.02.83, cf cardTierFused/rarityMult plus haut).
-  Object.keys(cardTierFused).forEach(k => delete cardTierFused[k]);
-  // Migration des exemplaires de module (V0.02.45) : même principe que CHAR_DEFS ci-dessus, pour les
-  // modules. BUG CORRIGÉ (V0.02.66, diagnostic du 02/10/2026) : cette branche "pas d'entrée sauvegardée
-  // pour ce module" se déclenchait non seulement pour une TOUTE première sauvegarde (avant V0.02.45),
-  // mais aussi -- en silence -- à chaque fois qu'un module présent dans MODULE_DEFS était absent de
-  // data.moduleCopies (sauvegarde plus ancienne que l'ajout de ce module en particulier). Elle donnait
-  // alors 20 exemplaires (V0.02.47, demande d'Alex) à la rareté de BASE du module -- un ancien comportement
-  // volontaire, mais jamais retiré d'ici quand V0.02.62 a remplacé le don par défaut par le cadeau
-  // "1x PROK-IEM" (cf plus bas, cardCopies/player.prokIemGift) : résultat, un joueur dont la sauvegarde
-  // datait d'avant un module pouvait se retrouver avec 20 exemplaires de CE module à chaque chargement,
-  // qui finissaient par être sauvegardés tels quels (donc persistants). Un joueur AFFECTÉ est remis à 0
-  // partout puis recrédité d'1x PROK-IEM par la correction ponctuelle ci-dessous (player.modCopiesFix,
-  // cf bootSave()) -- ici, on se contente de ne plus JAMAIS redonner 20 exemplaires par défaut.
-  MODULE_DEFS.forEach(d => {
-    const savedCopies = data.moduleCopies && data.moduleCopies[d.name];
-    const legacy = p.modules && p.modules[d.name];
-    const st = emptyStack();
-    if(savedCopies) RARITY_ORDER.forEach(r => { st[r] = savedCopies[r] || 0; });
-    // plus aucun don par défaut ici (st reste à 0 partout) -- voir le cadeau PROK-IEM dans bootSave()
-    moduleCopies[d.name] = st;
-    RARITY_ORDER.forEach(r => {
-      const key = modKey(d.name, r);
-      const lvl = data.modulePlayerLevels && data.modulePlayerLevels[key];
-      if(lvl) modulePlayerLevels[key] = lvl;
-      else if(legacy && legacy.level && st[r] > 0) modulePlayerLevels[key] = legacy.level;
-      const savedDist = data.moduleLevelDist && data.moduleLevelDist[key];
-      if(savedDist && typeof savedDist === 'object'){
-        const dd = {};
-        Object.keys(savedDist).forEach(l => { const nn = savedDist[l]; if(nn > 0) dd[l] = nn; });
-        moduleLevelDist[key] = dd;
-      } else if(st[r] > 0){
-        moduleLevelDist[key] = { [modulePlayerLevels[key] || 1]: st[r] };
-      } else {
-        delete moduleLevelDist[key];
-      }
-    });
-  });
-  migrateModulesNoEcarlate();
-  modForceAll();
-  // Slot module de l'escouade (V0.02.51) : squadModule simple, pas de migration ancien format nécessaire
+  if(p.lastSeenVersion !== undefined) player.lastSeenVersion = p.lastSeenVersion;
+  const un = data.unseen || [];
+  CHAR_DEFS.forEach(d => { d.seen = !un.includes(d.name); });
   squadModule = data.squadModule || null;
   if(Array.isArray(data.squad)){
-    // anciennes sauvegardes : simple nom -> meilleure rareté possédée
     squad = [0,1,2,3,4].map(i => { const e = sqEntry(data.squad[i]); return e ? e.key : null; });
     squad = squad.map((k, i) => squad.indexOf(k) === i ? k : null);   // pas de doublon identique
   }
-  validateSquad();   // toujours appelée, même sans data.squad -- valide aussi squadModule (V0.02.51)
-  if(data.fab && data.fab.resetAt > Date.now()){
-    fabriqueOffer = [0,1,2].map(i => {
-      const n = data.fab.offer && data.fab.offer[i];
-      return n ? (CHAR_DEFS.find(d => d.name === n) || null) : null;
-    });
-    fabriqueHolo = [0,1,2].map(i => !!(data.fab.holo && data.fab.holo[i] && fabriqueOffer[i]));
-    fabriqueOfferRar = [0,1,2].map(i => {
-      if(data.fab.rar && data.fab.rar[i]) return data.fab.rar[i];
-      // Ancienne sauvegarde (avant V0.02.83, pas de rareté tirée séparée) : repli sur la rareté
-      // imprimée de la carte, comme fabSlotRar() le faisait systématiquement jusqu'ici.
-      return fabriqueOffer[i] ? rarityOf(fabriqueOffer[i]) : null;
-    });
-    scheduleFabReset(data.fab.resetAt - Date.now());
-  } else {
-    rollFabriqueOffer();
-    scheduleFabReset();
-    notif.fab = true;          // la Fabrique s'est renouvelée pendant l'absence du joueur
-  }
-  // LABO (V0.02.62) : même principe que data.fab ci-dessus.
-  if(data.lab && data.lab.rar) data.lab.rar = data.lab.rar.map(r => r === 'ecarlate' ? 'legendaire' : r);   // V0.04.14 : plus de module écarlate
-  if(data.lab && data.lab.resetAt > Date.now()){
-    labOffer = [0,1,2].map(i => {
-      const n = data.lab.offer && data.lab.offer[i];
-      return n ? (MODULE_DEFS.find(d => d.name === n) || null) : null;
-    });
-    labOfferRar = [0,1,2].map(i => (data.lab.rar && data.lab.rar[i]) || null);
-    scheduleLabReset(data.lab.resetAt - Date.now());
-  } else {
-    rollLabOffer();
-    scheduleLabReset();
-    notif.lab = true;
-  }
-  if(!data.m58){
-    // Remise à zéro demandée : toutes les cartes repartent au niveau 1 (une seule fois)
-    CHAR_DEFS.forEach(d => { RARITY_ORDER.forEach(r => {
-      const key = sqKey(d.name, r);
-      playerLevels[key] = 1; cardXp[key] = 0;
-      const cnt = stackCount(d.name, r);
-      if(cnt > 0) cardLevelDist[key] = { 1: cnt }; else delete cardLevelDist[key];
-    }); });
-    if(Array.isArray(playerTeam)) playerTeam.forEach(u => { const d = CHAR_DEFS.find(x => x.name === u.name); if(d){ const st = statsAtLevelRaw(d, 1); const r = u.hp / (u.maxHp || 1); u.level = 1; u.maxHp = st.hp; u.hp = Math.round(st.hp * r); u.atk = st.atk; u.def = st.def; } });
-  }
-  if(data.favorites) favorites = Object.assign({}, data.favorites);
+  validateSquad();
   if(Array.isArray(data.decks)) decks = data.decks.filter(d => d && typeof d.name === 'string' && Array.isArray(d.cards)).map(d => { const cards = d.cards.filter(k => sqEntry(k)).slice(0, DECK_SIZE); return { id: String(d.id || deckNewId()), name: d.name.slice(0, 18), cards, leader: (typeof d.leader === 'string' && cards.includes(d.leader)) ? d.leader : null, module: (d.module && typeof d.module.name === 'string' && typeof d.module.rar === 'string') ? { name:d.module.name.slice(0, 30), rar:d.module.rar.slice(0, 12) } : null, backCard: typeof d.backCard === 'string' ? d.backCard.slice(0, 12) : 'rare', backMod: typeof d.backMod === 'string' ? d.backMod.slice(0, 12) : 'rare' }; });
   if(data.settings){ Object.assign(SETTINGS, data.settings); applySettings(); }
   if(Array.isArray(data.collOrder)){ collSlots = data.collOrder.slice(); ensureCollSlots(); }
   if(data.notif){
     notif.fab = notif.fab || !!data.notif.fab;
-    notif.lab = notif.lab || !!data.notif.lab;
     notif.player = !!data.notif.player;
     notif.inf = !!data.notif.inf;
     notif.cards = Object.assign({}, data.notif.cards || {});
   }
-  renderNotifs();
-  
-  renderFabrique();
-  renderLab();
-  renderResources();
-  renderPlayerTile();
-  
-  tickFabTimer();
-  tickLabTimer();
-  if(document.getElementById('playerView').classList.contains('active')) renderPlayerSheet();
   restoring = false;
-  updateLogin();
-  updateDailyStreak();
-  renderLoginBonus();
+  econRenderAll('full');
   return true;
 }
 // ----- Export / import manuel de la sauvegarde (fichier .json, indépendant de l'appareil) -----
@@ -26855,124 +26575,15 @@ function applySave(data){
 // Le code est le JSON encodé en base64 (pas de guillemets, pas de retours à la ligne) : un texte
 // brut avec des guillemets se fait souvent corrompre par les guillemets "intelligents" quand on
 // colle dans les Notes, Messages, WhatsApp… — le base64 n'a pas ce problème et voyage intact.
-function encodeSaveCode(json){
-  return btoa(unescape(encodeURIComponent(json)));
-}
 // Accepte le code base64 (format courant) et, par compatibilité, un JSON brut collé tel quel
 // (anciennes versions V0.01.51 à V0.01.54 de cette fonctionnalité).
-function parseImportedSave(raw){
-  try{
-    const data = JSON.parse(decodeURIComponent(escape(atob(raw))));
-    if(data && data.v === 1 && data.player) return data;
-  }catch(_){}
-  try{
-    const data = JSON.parse(raw);
-    if(data && data.v === 1 && data.player) return data;
-  }catch(_){}
-  return null;
-}
-function exportSaveFile(){
-  const data = serializeSave();
-  const code = encodeSaveCode(JSON.stringify(data));
-  showExportTextModal(code);
-}
-function showExportTextModal(code){
-  document.getElementById('actionInner').innerHTML = `
-    <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">CODE DE SAUVEGARDE</div>
-    <div class="action-text">Copie tout le code ci-dessous et garde-le quelque part (Notes, message à toi-même…). Colle-le avec IMPORTER pour récupérer ta progression, sur cet appareil ou un autre.</div>
-    <textarea class="backup-txt" id="backupTxt" readonly></textarea>
-    <div class="controls" style="width:100%;">
-      <button id="actCopy" class="primary-btn">COPIER LE CODE</button>
-    </div>`;
-  document.getElementById('actClose').onclick = closeActionModal;
-  const ta = document.getElementById('backupTxt');
-  ta.value = code;
-  document.getElementById('actCopy').onclick = async () => {
-    let ok = false;
-    try{ await navigator.clipboard.writeText(code); ok = true; }catch(_){}
-    if(!ok){ try{ ta.focus(); ta.select(); ok = document.execCommand('copy'); }catch(_){} }
-    if(ok) showToast('CODE COPIÉ');
-    else { ta.focus(); ta.select(); showToast('SÉLECTIONNE ET COPIE (CTRL/CMD+C)'); }
-  };
-  document.getElementById('actionModal').classList.add('show');
-  setTimeout(() => { ta.focus(); ta.select(); }, 50);
-}
-function openImportChooser(){
-  document.getElementById('actionInner').innerHTML = `
-    <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">IMPORTER UNE SAUVEGARDE</div>
-    <div class="action-text">Colle ici le code de ta sauvegarde (celui obtenu avec EXPORTER).</div>
-    <textarea class="backup-txt" id="importTxt" placeholder="Colle ici ton code de sauvegarde…"></textarea>
-    <div class="controls" style="width:100%;">
-      <button id="actPaste">COLLER LE PRESSE-PAPIER</button>
-      <button id="actImportTxt" class="primary-btn">IMPORTER CE CODE</button>
-    </div>`;
-  document.getElementById('actClose').onclick = closeActionModal;
-  document.getElementById('actPaste').onclick = async () => {
-    try{ document.getElementById('importTxt').value = await navigator.clipboard.readText(); }
-    catch(_){ showToast('COLLE MANUELLEMENT (CTRL/CMD+V)'); document.getElementById('importTxt').focus(); }
-  };
-  document.getElementById('actImportTxt').onclick = () => {
-    const raw = document.getElementById('importTxt').value.trim();
-    if(!raw){ showToast('AUCUN CODE À IMPORTER'); return; }
-    const data = parseImportedSave(raw);
-    if(!data){ showToast('CODE INVALIDE'); return; }
-    confirmImportSave(data);
-  };
-  document.getElementById('actionModal').classList.add('show');
-}
-function confirmImportSave(data){
-  document.getElementById('actionInner').innerHTML = `
-    <button class="cx-close" id="actClose">✕</button>
-    <div class="team-label player" style="margin:0;">IMPORTER UNE SAUVEGARDE</div>
-    <div class="action-text">Cette action va remplacer ta progression actuelle par celle de la sauvegarde choisie.<br>Cette action est irréversible.</div>
-    <div class="controls" style="width:100%;">
-      <button id="actCancel">ANNULER</button>
-      <button id="actGo" class="danger-btn">IMPORTER</button>
-    </div>`;
-  document.getElementById('actClose').onclick = closeActionModal;
-  document.getElementById('actCancel').onclick = closeActionModal;
-  document.getElementById('actGo').onclick = async () => {
-    closeActionModal();
-    applySave(data);
-    // Un import est un choix explicite et volontaire : il doit remplacer DÉFINITIVEMENT toute trace
-    // de progression précédente sur cet appareil. Sans ça, la copie de secours "meilleure partie"
-    // (BEST_KEY) ou une sauvegarde distante plus avancée referaient silencieusement disparaître
-    // l'import au prochain lancement ou à la prochaine connexion au cloud.
-    try{ localStorage.setItem(BEST_KEY, JSON.stringify(serializeSave())); }catch(_){}
-    cloud.remoteProgress = 0;
-    await saveNow();
-    showToast('SAUVEGARDE IMPORTÉE');
-  };
-  document.getElementById('actionModal').classList.add('show');
-}
 function readLocalSave(){
   try{ const raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; }catch(_){ return null; }
 }
 // ----- Protection de la progression -----
 // Score de progression : uniquement des valeurs qui ne font que monter (niveau, totaux gagnés, statistiques).
 // Entre deux sauvegardes, on garde TOUJOURS la plus avancée : une partie neuve ne peut plus écraser une vraie progression.
-function saveProgress(sv){
-  if(!sv || !sv.player) return -1;
-  const p = sv.player, t = p.totals || {}, st = p.stats || {};
-  // lastHiddenAt est un horodatage (Date.now()), pas une statistique de progression :
-  // il ne doit jamais entrer dans le score (sinon un timestamp récent écrase un vrai niveau élevé).
-  const SKIP_ST = { lastHiddenAt:1, kills:1, missions:1, collects:1, mono:1 };   // horodatage + anciens compteurs supprimés au chargement (normalizePlayerExtras)
-  const stats = Object.keys(st).reduce((a, k) => SKIP_ST[k] ? a : a + (+st[k] || 0), 0);
-  const cards = Object.values(sv.cardCopies || {}).reduce((a, c) => a + Object.values(c || {}).reduce((x, y) => x + (+y || 0), 0), 0);
-  return (p.level || 1) * 1e9 + (t.gold || 0) + (t.xp || 0) + stats * 10 + cards;
-}
-var BEST_KEY = 'projetMeta.save.best';
-function readBestSave(){ try{ const r = localStorage.getItem(BEST_KEY); return r ? JSON.parse(r) : null; }catch(_){ return null; } }
-function writeLocalSave(data){
-  try{
-    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-    // copie de secours de la meilleure partie jamais vue sur cet appareil
-    const best = readBestSave();
-    if(!best || saveProgress(data) >= saveProgress(best)) localStorage.setItem(BEST_KEY, JSON.stringify(data));
-  }catch(_){}
-}
+function writeLocalSave(data){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(data)); }catch(_){} }   // V0.05.00 : une seule copie locale (l'interface)
 // Sauvegarde économe : pendant le jeu (combat, vagues…), au plus une écriture locale toutes les 5 s
 // et un envoi en ligne toutes les 30 s (le réseau mobile est très gourmand en batterie).
 // Les actions importantes (collecte, achat…) et la mise en arrière-plan du jeu sauvegardent tout de suite.
@@ -26983,27 +26594,20 @@ function saveSoon(){
 }
 async function saveNow(routine){
   clearTimeout(saveTimer); saveTimer = null;
-  if(nameModalFirst) return;       // partie neuve pas encore commencée (nom pas choisi) : on n'enregistre rien
+  if(nameModalFirst || !cloud.uid) return;       // V0.05.00 : rien à enregistrer tant que le compte n'est pas chargé (sinon on écraserait l'équipe enregistrée par un état vide)
   const data = serializeSave();
   writeLocalSave(data);
   if(document.getElementById('playerView').classList.contains('active')){ renderTotals(); renderSaveStatus(); }
-  if(!cloud.uid) { return; }
   if(routine === true && !document.hidden){
     const wait = CLOUD_MIN_MS - (Date.now() - (cloud.pushAt || 0));
     if(wait > 0){ if(!cloud.deferT) cloud.deferT = setTimeout(() => { cloud.deferT = null; saveNow(); }, wait); return; }
   }
   clearTimeout(cloud.deferT); cloud.deferT = null;
-  // garde-fou : jamais d'envoi en ligne d'une partie moins avancée que celle du compte
-  const prog = saveProgress(data);
-  if(prog < (cloud.remoteProgress || 0)){ cloud.status = 'online'; return; }
   if(cloud.writing){ cloud.again = true; return; }   // une écriture à la fois
   cloud.writing = true;
   cloud.pushAt = Date.now();
   try{
     await cloudSet(cloud.uid, 'save', data);
-    cloud.remoteProgress = prog;
-    // copie de secours en ligne, au plus toutes les 20 min
-    if(Date.now() - (cloud.bakAt || 0) > 20 * 60000){ cloud.bakAt = Date.now(); cloudSet(cloud.uid, 'save_bak', data).catch(() => {}); }
     cloud.lastSave = new Date();
     cloud.status = 'online';
   }catch(e){
@@ -27011,12 +26615,10 @@ async function saveNow(routine){
       // jeton expiré en cours de partie : on tente un rafraîchissement puis un seul nouvel essai
       const sess = await supaRefresh();
       if(sess){
-        try{ await cloudSet(cloud.uid, 'save', data); cloud.remoteProgress = prog; cloud.lastSave = new Date(); cloud.status = 'online'; }
+        try{ await cloudSet(cloud.uid, 'save', data); cloud.lastSave = new Date(); cloud.status = 'online'; }
         catch(_){ cloud.status = 'error'; }
-      } else {
-        // session irrécupérable : on repasse en "déconnecté" sans jamais toucher à la sauvegarde locale
-        cloud.uid = null; cloud.email = null; cloud.status = 'unavailable';
-      }
+      } else if(!readSupaSession()){ cloud.writing = false; econAuthLost(); return; }
+      else cloud.status = 'offline';
     } else {
       cloud.status = (e && e.status === 0) ? 'offline' : 'error';
     }
@@ -27032,41 +26634,24 @@ async function connectCloud(){
   // d'exception, sinon bootSave() planterait avant d'avoir posé les timers d'autosauvegarde.
   try{
     const sess = await ensureFreshSupaSession();
-    if(!sess || !sess.access_token || !sess.user){ cloud.status = 'unavailable'; return false; }
+    if(!sess || !sess.access_token || !sess.user){ cloud.status = readSupaSession() ? 'error' : 'unavailable'; return false; }
     const uid = sess.user.id, email = sess.user.email;
-    // Candidats : partie en ligne, copie de secours en ligne, partie locale, meilleure partie locale. On garde la plus avancée.
+    // V0.05.00 : la progression vient du SERVEUR (cartes, ressources, boosters, récompenses...). Aucune copie locale ne la remplace.
+    const r = await econAct('bootstrap', {}, { boot:true, quiet:true, render:'none' });
+    if(!r.ok){ cloud.status = (r.error === 'unauthorized') ? 'unavailable' : 'error'; return false; }
+    // Réglages et équipes : la copie la plus récente entre celle du compte (en ligne) et celle de cet appareil (seulement si elle est bien celle de CE compte)
     let remote = null; try{ remote = await cloudGet(uid, 'save'); }catch(_){}
-    let bak = null; try{ bak = await cloudGet(uid, 'save_bak'); }catch(_){}
-    // On sérialise l'état LIVE (pas une relecture du disque) : si le joueur a démarré une mission
-    // pendant le temps de connexion au cloud, cette mutation doit compter dans la comparaison,
-    // sinon une sauvegarde distante plus ancienne peut écraser la mission tout juste lancée.
-    const local = nameModalFirst ? null : (() => { try{ const d = serializeSave(); writeLocalSave(d); return d; }catch(_){ return readLocalSave(); } })();
-    const cands = [remote, bak, local, readBestSave()].filter(Boolean);
+    const local = readLocalSave();
     let best = null;
-    cands.forEach(c => {
-      if(!best) { best = c; return; }
-      const pc = saveProgress(c), pb = saveProgress(best);
-      if(pc > pb || (pc === pb && (c.savedAt || 0) > (best.savedAt || 0))) best = c;
-    });
-    if(cloud.preferRemote && remote && saveProgress(remote) >= saveProgress(best)) best = remote;
-    // la partie en ligne va être remplacée par une plus avancée : on la met de côté avant
-    if(remote && best !== remote && saveProgress(remote) > 0 && saveProgress(remote) < saveProgress(best)){
-      try{ await cloudSet(uid, 'save_old', remote); }catch(_){}
-    }
-    cloud.remoteProgress = remote ? Math.min(saveProgress(remote), saveProgress(best)) : 0;
-    // cloud.uid n'est branché qu'une fois remoteProgress connu : tant que ce n'est pas fait,
-    // un saveNow() concurrent (routine, pagehide…) voit cloud.uid vide et n'envoie rien en ligne,
-    // donc ne peut jamais écraser une sauvegarde distante plus avancée avec une comparaison à 0.
-    cloud.uid = uid; cloud.email = email;
-    if(best && best !== local){
-      applySave(best);
-      writeLocalSave(best);
-      try{ cloud.remoteProgress = Math.min(cloud.remoteProgress, saveProgress(serializeSave())); }catch(_){}   // V0.04.83 : le chargement peut normaliser des données ; on ne se bloque jamais sur un score que l'état chargé ne peut pas atteindre
-    }
-    // Si la fenêtre obligatoire (compte -> nom) est en cours, c'est elle qui pilote les étapes :
-    // on ne referme/débloque pas la fenêtre depuis ici pour ne pas sauter l'étape du nom.
-    if(best && !nmGateActive){ nameModalFirst = false; closeNameModal(true); }
+    [remote, (local && local.uid === uid) ? local : null].filter(Boolean).forEach(c => { if(!best || (c.savedAt || 0) > (best.savedAt || 0)) best = c; });
+    if(best) applySave(best);
+    if(!squad.some(Boolean)){ squad = CHAR_DEFS.filter(c => isOwned(c)).map(c => sqKey(c.name, effRarity(c))).slice(0, 5); while(squad.length < 5) squad.push(null); }
+    ECON.needName = (player.name === 'COMMANDANT');   // nom encore par défaut : on le demande
+    nmGateIsNewPlayer = ECON.needName;
+    cloud.uid = uid; cloud.email = email;             // branché en dernier : tant que l'interface n'est pas chargée, saveNow() n'écrit rien
     cloud.status = 'online';
+    econRenderAll('full');
+    if(!nmGateActive && !ECON.needName){ nameModalFirst = false; closeNameModal(true); }
     saveNow();
     return true;
   }catch(e){
@@ -27127,25 +26712,33 @@ function closeNameModal(force){
 function submitName(){
   const raw = document.getElementById('nmInput').value.replace(/\s+/g, ' ').trim();
   if(raw.length < 2){ document.getElementById('nmErr').textContent = 'Au moins 2 caractères.'; return; }
+  if(raw.length > 16){ document.getElementById('nmErr').textContent = '16 caractères au maximum.'; return; }
   if(!/^[A-Za-z0-9À-ÖØ-öø-ÿ ]+$/.test(raw)){ document.getElementById('nmErr').textContent = 'Lettres et chiffres uniquement.'; return; }
-  player.name = raw;
-  const wasFirst = nameModalFirst;
-  nameModalFirst = false;
-  nmGateActive = false;
-  if(wasFirst && nmGateIsNewPlayer) player.lastSeenVersion = BUILD_VERSION; // vraiment nouveau : pas de changelog à rattraper
-  closeNameModal(true);
-  renderPlayerTile();
-  if(document.getElementById('playerView').classList.contains('active')) renderPlayerSheet();
-  saveNow();
-  if(wasFirst) checkChangelogOnLogin();
-  if(wasFirst && nmGateIsNewPlayer) openTutorial(); // tout premier compte créé : on montre le tutoriel d'accueil
-  if(wasFirst) maybeOpenPendingGift();   // cf pendingGift (V0.02.63) : rien d'autre à attendre si ni changelog ni tutoriel n'ont ouvert de fenêtre juste au-dessus
+  const ok = document.getElementById('nmOk');
+  if(ok.disabled) return;
+  ok.disabled = true;
+  econAct('set_name', { name: raw }, { quiet:true, render:'light' }).then(r => {   // V0.05.00 : le nom est enregistré (et vérifié) par le serveur
+    ok.disabled = false;
+    if(!r.ok){ document.getElementById('nmErr').textContent = (r.error === 'bad_param' && r.message) ? r.message : 'Impossible d\'enregistrer le nom pour le moment. Réessaie.'; return; }
+    ECON.needName = false;
+    const wasFirst = nameModalFirst;
+    nameModalFirst = false;
+    nmGateActive = false;
+    if(wasFirst && nmGateIsNewPlayer) player.lastSeenVersion = BUILD_VERSION; // vraiment nouveau : pas de changelog à rattraper
+    closeNameModal(true);
+    renderPlayerTile();
+    if(document.getElementById('playerView').classList.contains('active')) renderPlayerSheet();
+    saveNow();
+    if(wasFirst) checkChangelogOnLogin();
+    if(wasFirst && nmGateIsNewPlayer) openTutorial(); // tout premier compte créé : on montre le tutoriel d'accueil
+    if(wasFirst) maybeOpenPendingGift();
+  });
 }
 document.getElementById('nmOk').onclick = submitName;
 document.getElementById('nmCancel').onclick = () => closeNameModal(true);
 // TEMPORAIRE (test artefact, à retirer avant diffusion) : saute la création de compte,
 // va direct à l'étape du nom — sauvegarde locale uniquement, comme prévu pour un joueur sans compte.
-document.getElementById('nmGuestSkip').onclick = e => { e.preventDefault(); nmGateGoToNameStep(); };
+// V0.05.00 : plus de mode « sans compte » -- toute la progression est sur le serveur, il faut un compte.
 document.getElementById('nmInput').addEventListener('keydown', e => { if(e.key === 'Enter') submitName(); });
 
 // ----- Fenêtre obligatoire au premier lancement (ou tant qu'aucun compte n'est relié sur cet appareil) :
@@ -27286,6 +26879,7 @@ function nmGateGoToNameStep(){
         await connectCloud();
         if(cloud.status !== 'online'){ setMsg('Connexion au compte impossible pour le moment. Réessaie.', true); busy(false); return; }
         // Connexion réussie sur un compte existant : le joueur retrouve directement sa partie, pas d'étape en plus.
+        if(ECON.needName){ nameModalFirst = true; nmGateActive = true; nmGateGoToNameStep(); busy(false); return; }   // V0.05.00 : nom encore par défaut -> on le demande
         nameModalFirst = false; nmGateActive = false;
         closeNameModal(true);
         renderPlayerTile();
@@ -27628,90 +27222,30 @@ document.querySelectorAll('#optFps button').forEach(b => b.onclick = () => { SET
 document.querySelectorAll('#optEco button').forEach(b => b.onclick = () => { SETTINGS.eco = b.dataset.v === '1'; saveSettings(); renderOptions(); ecoWake(); });
 document.getElementById('optMusic').oninput = e => { SETTINGS.music = +e.target.value; saveSettings(); renderOptions(); musStart(); musSync(); };
 document.getElementById('optVfx').oninput = e => { SETTINGS.vfx = +e.target.value; saveSettings(); renderOptions(); };
-document.getElementById('optExportBtn').onclick = exportSaveFile;
-document.getElementById('optImportBtn').onclick = openImportChooser;
+// V0.05.00 : export / import de sauvegarde retirés (la progression est sur le serveur et ne peut plus être importée).
+
 document.getElementById('optTutorialBtn').onclick = () => { document.getElementById('optModal').classList.remove('show'); openTutorial(); };
 
 // ----- Démarrage : restaure la copie locale, puis tente une reconnexion silencieuse au compte -----
 (async function bootSave(){
-  // Chargement de la sauvegarde locale : INCONDITIONNEL, pour tout le monde, sur tout appareil —
-  // qu'un compte soit relié ou non, cette copie reste toujours le filet de sécurité de la partie.
-  let local = readLocalSave();
-  const bestLocal = readBestSave();       // copie de secours locale plus avancée ? on la reprend
-  if(bestLocal && saveProgress(bestLocal) > saveProgress(local)) local = bestLocal;
-  // applySave() peut renvoyer false (sauvegarde corrompue/format inconnu) : dans ce cas on traite
-  // la partie comme un vrai nouveau joueur (pas de changelog à rattraper une fois inscrit).
-  nmGateIsNewPlayer = !(local && applySave(local));
-  updateLogin(); updateDailyStreak(); renderLoginBonus();
-  renderNotifs();
+  // V0.05.00 : plus de partie locale « maître » : on se connecte, le serveur donne la progression, puis on recharge l'équipe et les réglages.
+  nmGateIsNewPlayer = false;
   // Lien « mot de passe oublié » reçu par e-mail : le jeton de l'adresse devient la session (le joueur est reconnecté),
   // puis on lui demande son nouveau mot de passe.
   supaParseRecoveryHash();
   await supaRecoveryAdopt();
-  // Tente de retrouver une session de compte déjà enregistrée sur cet appareil, en silence.
   const connected = await connectCloud();
   if(!connected){
-    // Aucun compte relié sur cet appareil : fenêtre obligatoire (compte -> nom) avant de pouvoir jouer.
-    openAccountGateModal();
-    if(nmRecoveryError) nmGateGoRecover(nmRecoveryError, true);   // lien périmé : on propose d'en demander un autre
-  } else if(nmRecoveryTokens){
-    nmOpenNewPass();
-  } else {
-    checkChangelogOnLogin();
-  }
-  // Cadeau de bienvenue PROK-IEM (V0.02.62, demande d'Alex : "à la prochaine connexion après la maj,
-  // ils recevront en cadeau un exemplaire de la carte PROK-IEM") -- 1 SEUL exemplaire (pas 20), offert
-  // une seule fois à TOUT joueur qui se connecte après cette mise à jour, nouveau ou déjà existant
-  // (cf player.prokIemGift, false par défaut pour les deux cas -- voir son commentaire sur le player).
-  // Volontairement placé ICI, APRÈS connectCloud() : connectCloud() peut ré-appliquer une sauvegarde
-  // distante plus avancée via son propre applySave() (cf plus haut dans ce fichier), ce qui écraserait
-  // un cadeau déjà attribué plus tôt dans cette fonction -- en attribuant après coup, sur l'état
-  // définitivement réconcilié, le cadeau ne peut ni se perdre ni être donné deux fois.
-  // V0.04.62 (demande d'Alex) : le cadeau de bienvenue PROK-IEM est supprimé -- plus aucun module offert à la première connexion.
-  if(!player.prokIemGift){ player.prokIemGift = true; saveSoon(); }
-  // Correctif ponctuel modules (V0.02.66, demande d'Alex suite au signalement "toutes les cartes
-  // modules en x20 sur le compte de mon ami") : un bug de applySave() (corrigé juste au-dessus dans ce
-  // fichier, cf MODULE_DEFS.forEach) pouvait donner 20 exemplaires d'un module à chaque chargement
-  // d'une sauvegarde antérieure à son ajout -- et ces 20 exemplaires finissaient sauvegardés tels
-  // quels, donc persistants. On remet ici tout le monde à l'état propre voulu par Alex : 0 exemplaire
-  // de chaque module, puis exactement 1x PROK-IEM (le seul don légitime, cf juste au-dessus) -- une
-  // seule fois par joueur (cf player.modCopiesFix), que le bug se soit ou non manifesté sur ce compte
-  // précis, pour ne rien avoir à diagnostiquer compte par compte. Placé ici (même emplacement/raison
-  // que le cadeau PROK-IEM juste au-dessus : après connectCloud(), sur l'état définitivement réconcilié).
-  if(!player.modCopiesFix){
-    MODULE_DEFS.forEach(d => {
-      moduleCopies[d.name] = emptyStack();
-      RARITY_ORDER.forEach(r => { delete moduleLevelDist[modKey(d.name, r)]; delete modulePlayerLevels[modKey(d.name, r)]; });
-    });
-    player.prokIemGift = true;    // plus aucun cadeau de bienvenue (V0.04.62)
-    player.modCopiesFix = true;
-    validateSquad();              // revalide squadModule : vide le slot si un module retiré y était équipé
-    saveSoon();
-  }
-  // V0.04.89 : LABO fermé -- offres/compteur vidés, 1 exemplaire de chaque module, boosters modules convertis en boosters cartes mechs
-  modForceAll();
-  labOffer = [null, null, null]; labOfferRar = [null, null, null]; player.labDraws = 0; notif.lab = false;
-  if(player.boosters && player.boosters.modules){ player.boosters.cards = (player.boosters.cards || 0) + player.boosters.modules; player.boosters.modules = 0; }
-  if(typeof validateSquad === 'function') validateSquad();
-  // Correctif ponctuel boosters (V0.02.94, demande d'Alex : "remet les compteurs de tout les joueurs à 0
-  // sur les 3 boosters") : les nouveaux joueurs démarrent déjà à 0/0/0 depuis cette version (cf
-  // player.boosters plus haut), mais une sauvegarde EXISTANTE garde le stock qu'elle avait déjà (50/50/50
-  // de la phase de test, ou plus après avoir joué) -- Alex veut repartir sur une base propre pour tout le
-  // monde : à la prochaine connexion après la maj, TOUT joueur (nouveau ou non) est remis à 0/0/0, une
-  // seule fois (cf player.boostersResetV94). Même emplacement que le correctif modules ci-dessus (après
-  // connectCloud(), sur l'état définitivement réconcilié) pour la même raison : ne pas se faire écraser
-  // par une sauvegarde distante plus avancée récupérée entre-temps.
-  if(!player.boostersResetV94){
-    player.boosters = { res: 0, cards: 0, modules: 0 };
-    player.boostersResetV94 = true;
-    if(typeof renderBoost === 'function'){
-      const bv = document.getElementById('boostView');
-      if(bv && bv.classList.contains('active')) renderBoost();
+    if(cloud.status === 'error'){
+      // Compte relié mais serveur injoignable : on ne laisse pas jouer avec des données périmées
+      econShowDown('boot', async () => { const ok = await connectCloud(); if(ok) econAfterBoot(); return ok; });
+    } else {
+      // Aucun compte relié sur cet appareil : fenêtre obligatoire (compte -> nom) avant de pouvoir jouer.
+      openAccountGateModal();
+      if(nmRecoveryError) nmGateGoRecover(nmRecoveryError, true);   // lien périmé : on propose d'en demander un autre
     }
-    saveSoon();
-  }
-  // Le temps de jeu est sauvegardé régulièrement et quand on quitte l'app
-  // (le pagehide est déjà écouté plus haut dans le fichier - inutile de le brancher deux fois)
+  } else econAfterBoot();
+  // Le temps de jeu est compté par le serveur ; les équipes et réglages sont sauvegardés régulièrement et quand on quitte l'app
   setInterval(() => saveNow(), 60000);
   document.addEventListener('visibilitychange', () => { if(document.hidden) saveNow(); });
 })();
