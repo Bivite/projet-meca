@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.00</title>
+<title>Projet MECA V0.05.01</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7674,6 +7674,22 @@
   .btl-ret .g{ stroke-width:9; opacity:.3; } .btl-ret .c{ stroke-width:3; }
 
   /* pendant le combat, l'application en arrière-plan ne dessine ni n'anime plus rien */
+  /* PvP : file d'attente (écran noir, logo, texte, ANNULER) */
+  #pvpQ{position:fixed; inset:0; z-index:58; background:#000; display:flex; align-items:center; justify-content:center; text-align:center;}
+  #pvpQ[hidden]{display:none !important;}
+  #pvpQ .pvq-in{display:flex; flex-direction:column; align-items:center; gap:22px; padding:24px;}
+  #pvpQ .pvq-ring{position:relative; width:min(62vw,260px); aspect-ratio:1; display:flex; align-items:center; justify-content:center;}
+  #pvpQ .pvq-ring::before{content:''; position:absolute; inset:0; border-radius:50%; border:2px solid rgba(139,92,246,.18); border-top-color:rgba(160,120,255,.95); border-right-color:rgba(77,148,255,.7); animation:pvqSpin 1.3s linear infinite;}
+  #pvpQ .pvq-logo{width:78%; height:auto; object-fit:contain; animation:pvqPulse 2.2s ease-in-out infinite; filter:drop-shadow(0 0 18px rgba(139,92,246,.55));}
+  #pvpQ .pvq-txt{font-family:var(--font-title); font-size:12px; font-weight:900; letter-spacing:3px; color:#e8e1ff;}
+  #pvpQ .pvq-sub{font-family:var(--font-title); font-size:10px; letter-spacing:2px; color:rgba(200,190,235,.6); min-height:14px;}
+  #pvpQ .pvq-cancel{margin-top:6px; min-width:180px; --cut:10px; border-radius:0; cursor:pointer; color:#fff; font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:2px; padding:13px 18px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%), linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel)); border:1px solid rgba(255,79,106,.7);}
+  #pvpQ .pvq-cancel:active{transform:translateY(2px);}
+  @keyframes pvqSpin{to{transform:rotate(360deg);}}
+  @keyframes pvqPulse{0%,100%{opacity:.72; transform:scale(.97);}50%{opacity:1; transform:scale(1.02);}}
+  @media (prefers-reduced-motion:reduce){ #pvpQ .pvq-ring::before, #pvpQ .pvq-logo{animation:none;} }
   body.btl-on #app{ visibility:hidden; }
   body.btl-on #app *, body.btl-on #app *::before, body.btl-on #app *::after{ animation-play-state:paused !important; }
   /* cartes de la main : brillance figée (elle reste animée sur la grande carte tenue au doigt) */
@@ -8342,7 +8358,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.00</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.01</b></div>
   </div>
 
     </div>
@@ -9152,9 +9168,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.00';
+var BUILD_VERSION = 'V0.05.01';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.01', items:[
+    'BATAILLE (PvP) : la tuile BATAILLE te met face à un autre joueur. Écran d\'attente (annulable, retour automatique après 1 min 30), tour de 2 min 30, les deux joueurs voient en direct les cibles choisies par l\'adversaire et leurs changements. Fin de partie : VICTOIRE / DÉFAITE (chef détruit, abandon, déconnexion ou 2 tours sans action). Pas de récompense pour l\'instant : phase de test.',
+    'ULTIME (tous les modes de combat) : la DEF reçue pendant l\'ultime est gardée à la fin du tour, comme l\'ATQ ; seule la DEF d\'avant l\'ultime est divisée par 2. Une carte qui défend ajoute sa DEF actuelle (après dégâts) à la carte protégée.',
+    'Connexion : plusieurs requêtes simultanées ne peuvent plus te déconnecter au moment où ta session se renouvelle.',
+  ] },
   { v:'V0.05.00', items:[
     'SERVEUR : le jeu est maintenant arbitré par un serveur. Tes cartes, ton or, tes cristaux, ton niveau et tes trophées sont gardés et calculés côté serveur : plus personne ne peut les modifier depuis son navigateur. Un compte est obligatoire (le mode invité et l\'export / import de sauvegarde disparaissent).',
     'COMBATS CONTRE L\'IA (ENTRAÎNEMENT IA et DÉFI) : le serveur choisit l\'adversaire et le hasard au lancement, puis REJOUE ta partie à la fin pour vérifier le vainqueur. Les récompenses, la série de victoires, les paliers de Défi et les trophées viennent de ce rejeu. Un combat quitté avant la fin compte comme une défaite (la série repart à zéro).',
@@ -17340,7 +17361,7 @@ function openSub(id){
 document.getElementById('tileRewards').onclick = () => { checkTrophies(true); updateRewardTiles(); openSub('rewardsView'); };
 document.getElementById('rwBackBtn').onclick = showHub;
 // ---------- BATAILLE (V0.04.18) : choix du deck avant le combat ----------
-var batSelected = null;
+var batSelected = null, batMode = 'ai';   // batMode : 'ai' (ENTRAÎNEMENT IA) ou 'pvp' (BATAILLE)
 // WINSTREAK : chaque victoire d'affilée allume un point (5 max) ; une défaite (ou un combat quitté) remet à 0.
 // Récompense : 25 or + 15 XP à la 1re victoire, puis +25 or / +15 XP de plus à chaque victoire suivante (50, 75, 100, 125 or ; la série pleine reste à 125).
 const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25;
@@ -17376,14 +17397,540 @@ function renderBataille(){
   }).join('') : '<div class="bat-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
   batRenderStreak();
+  const pv = batMode === 'pvp', st = document.getElementById('batStreak'), lb = document.querySelector('#batPanel .team-label'), bt = document.getElementById('batLaunchBtn');
+  if(st) st.style.display = pv ? 'none' : '';
+  if(lb) lb.textContent = pv ? 'CHOIX DU DECK · BATAILLE' : 'CHOIX DU DECK';
+  if(bt) bt.textContent = pv ? 'RECHERCHER UN ADVERSAIRE' : 'LANCER LE COMBAT';
   batSyncLaunch();
 }
-document.getElementById('tileBattle').onclick = () => { batSelected = null; renderBataille(); openSub('batailleView'); };
-document.getElementById('tileRaid').onclick = () => showToast('BATAILLE : bientôt disponible');   // V0.04.91 : case ouverte, fonction à venir
+document.getElementById('tileBattle').onclick = () => { batSelected = null; batMode = 'ai'; renderBataille(); openSub('batailleView'); };
+document.getElementById('tileRaid').onclick = () => { batSelected = null; batMode = 'pvp'; renderBataille(); openSub('batailleView'); };   // BATAILLE = combat contre un autre joueur
 document.getElementById('batLaunchBtn').onclick = () => {
   const d = decks.find(x => x.id === batSelected); if(!d) return;
-  econUi(() => econBattleLaunch(d, null));   // V0.05.00 : le serveur choisit la graine et l'adversaire
+  if(batMode === 'pvp') econUi(() => pvpQueueOpen(d));
+  else econUi(() => econBattleLaunch(d, null));   // V0.05.00 : le serveur choisit la graine et l'adversaire
 };
+// ===================================================================================================
+//  PVP -- COMBAT CONTRE UN AUTRE JOUEUR, ARBITRÉ PAR LE SERVEUR (fonction `pvp`)
+//  Le serveur détient la partie. Chaque action (la tienne comme celle de l'adversaire) passe d'abord par lui ; il renvoie à chaque joueur un « événement » :
+//  photos de la partie vues par ce joueur (main et pioche de l'adversaire masquées) + la bande des tirages au sort / choix de cible.
+//  Le jeu REJOUE alors l'événement avec ses propres animations (le moteur de combat local ne sert qu'à animer) puis se recale sur la photo du serveur.
+//  Rien de ce que le jeu calcule n'a de valeur : seul l'état du serveur compte.
+// ===================================================================================================
+var PVPC = null;            // match en cours { mid, seq, q, names, dl, offset, ... }
+var PVPQ = null;            // attente dans la file
+var PVPD = [];              // journal des écarts entre le jeu et le serveur (diagnostic)
+var PVP_WAIT = 20;              // attente longue (s) des réponses ; 0 = interrogation courte (bancs de test en temps virtuel)
+const PVP_QUEUE_MS = 90000; // retour automatique au choix du deck après 1 min 30 sans adversaire
+const pvpOn = () => !!(BTL && BTL.d && BTL.d.pvp);
+// ordre des camps du NOYAU (celui du serveur : 'p' puis 'o' dans SON repère). Pour le joueur qui est le camp 'o' du serveur, mon camp 'p' est son 'o' : les listes mixtes (GRIEVER, DUMADED, ROCKET, passifs de pioche) doivent suivre le même ordre pour que la bande (indices de tirage / de choix) retombe sur la même carte
+const pvpSides = () => (pvpOn() && PVPC && PVPC.start && PVPC.start.abs === 'o') ? ['o', 'p'] : ['p', 'o'];
+const pvpRefOf = c => c.side + ':' + (c.leader ? 'L' : c.slot);
+function pvpCardByRef(r){ if(!r || !BTL) return null; const S = BTL.S[r[0]]; if(!S) return null; const z = r.slice(2); return z === 'L' ? S.leader : (S.slots[+z] || null); }
+function pvpDefOf(n){ const x = CHAR_DEFS.find(y => y.name === n) || BTL_TOKEN_DEFS.find(y => y.name === n); if(!x) throw new Error('carte inconnue ' + n); return x; }
+function pvpReal(side, n, isL){ const x = pvpDefOf(n); return btlMakeCard(side, x, rarityOf(x), 1, !!isL, 1); }
+const PVP_HIDDEN_DEF = { name:'?', art:'', hidden:true };   // carte de l'adversaire dont on ne connaît pas l'identité
+function pvpHidden(side){   // carte face cachée : seul son dos est affiché
+  return { uid:++btlUid, side, def:PVP_HIDDEN_DEF, rar:'rare', level:1, name:'?', hidden:true, atk:0, df:0, maxHp:1, hp:1, energy:0, leader:false, plan:null, slot:-1, kw:[], playedTurn:-1, ultOn:false, base:null };
+}
+const pvpSleep = ms => new Promise(r => setTimeout(r, ms));
+const pvpLast = ev => ev.snaps[ev.snaps.length - 1];
+function pvpWarn(msg){ PVPD.push(msg); try{ console.warn('[PVP] ' + msg); }catch(_){} }
+
+// ---------- réseau ----------
+var PVP_TMO = 1;   // multiplicateur des délais de requête (1 en vrai ; les tests à horloge simulée le grossissent)
+var PVPERR = [];   // diagnostic : dernières requêtes en échec
+function pvpDbgErr(op, status, why){ PVPERR.push(op + ' ' + status + ' ' + String(why || '').slice(0, 120)); if(PVPERR.length > 12) PVPERR.shift(); }
+async function pvpSend(op, params, opt){
+  opt = opt || {};
+  let sess = null;
+  try{ sess = await ensureFreshSupaSession(); }catch(_){ sess = null; }
+  if(!sess || !sess.access_token){ pvpDbgErr(op, readSupaSession() ? 0 : 401, 'sans jeton'); return { status: readSupaSession() ? 0 : 401, body:null }; }
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), (opt.timeout || 15000) * PVP_TMO);
+  if(opt.signal){ if(opt.signal.aborted) ctl.abort(); else opt.signal.addEventListener('abort', () => ctl.abort()); }
+  try{
+    const res = await fetch(SUPA_URL + '/functions/v1/pvp', {
+      method:'POST', signal:ctl.signal,
+      headers:{ 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':'Bearer ' + sess.access_token },
+      body: JSON.stringify({ op, request_id:econUuid(), params:params || {} })
+    });
+    let body = null; try{ body = await res.json(); }catch(_){}
+    if(res.status !== 200) pvpDbgErr(op, res.status, body && (body.error || body.message));
+    return { status:res.status, body };
+  }catch(e){ if(!ctl.signal.aborted) pvpDbgErr(op, 0, String(e && e.message || e)); return { status:0, body:null, aborted:ctl.signal.aborted }; }
+  finally{ clearTimeout(tm); }
+}
+
+// ---------- file d'attente ----------
+function pvpQueueEl(){
+  let el = document.getElementById('pvpQ');
+  if(el) return el;
+  el = document.createElement('div'); el.id = 'pvpQ'; el.hidden = true;
+  const logo = document.querySelector('.mt-meca');
+  el.innerHTML = '<div class="pvq-in"><div class="pvq-ring"><img class="pvq-logo" alt="" src="' + (logo ? logo.src : '') + '"></div>' +
+    '<div class="pvq-txt">EN ATTENTE D\'UN ADVERSAIRE</div><div class="pvq-sub" id="pvqSub"></div>' +
+    '<button type="button" class="deck-btn pvq-cancel" id="pvqCancel">ANNULER</button></div>';
+  document.body.appendChild(el);
+  document.getElementById('pvqCancel').onclick = () => pvpQueueCancel();
+  return el;
+}
+function pvpQueueShow(on){ const el = pvpQueueEl(); el.hidden = !on; document.body.classList.toggle('pvq-on', !!on); }
+async function pvpQueueOpen(d){
+  if(BTL || PVPQ || PVPC) return false;
+  const deck = econBattleDeck(d);
+  if(!deck){ showToast('DECK INCOMPLET'); return false; }
+  const Q = PVPQ = { d, deck, cancelled:false, ctl:new AbortController(), t0:Date.now() };
+  pvpQueueShow(true);
+  Q.joinP = pvpSend('queue_join', { deck });         // non interrompable : le serveur le traite de toute façon, l'annulation attend sa fin avant de quitter la file
+  let r = await Q.joinP;
+  if(Q.cancelled) return false;
+  if(r.status !== 200 || !r.body || !r.body.ok){
+    const msg = r.body && r.body.message;
+    showToast(r.status === 0 ? 'RÉSEAU INDISPONIBLE' : (r.body && r.body.error === 'bad_param' && msg) ? String(msg).toUpperCase() : 'FILE D\'ATTENTE INDISPONIBLE');
+    pvpDbgErr('queue_join', r.status, 'refusé ' + (r.body && r.body.error)); PVPQ = null; pvpQueueShow(false); return false;
+  }
+  let errs = 0;
+  while(!Q.cancelled){
+    const st = r.body && r.body.status;
+    if(st === 'matched'){ PVPQ = null; pvpQueueShow(false); return await pvpStartMatch(r.body.match_id, Q.d, Q.deck); }
+    if(st === 'expired' || st === 'none' || Date.now() - Q.t0 >= PVP_QUEUE_MS){
+      pvpDbgErr('queue', 0, 'fin d\'attente st=' + st + ' age=' + (Date.now() - Q.t0)); PVPQ = null; await pvpSend('queue_leave', {});
+      pvpQueueShow(false); showToast('AUCUN ADVERSAIRE TROUVÉ'); return false;
+    }
+    const left = Math.max(1, Math.min(20, Math.floor((PVP_QUEUE_MS - (Date.now() - Q.t0)) / 1000))), w = PVP_WAIT ? left : 0;
+    if(!w) await pvpSleep(400);
+    r = await pvpSend('queue_poll', { wait:w }, { timeout:(w + 12) * 1000, signal:Q.ctl.signal });
+    if(Q.cancelled) return false;
+    if(r.status !== 200 || !r.body || !r.body.ok){
+      if(++errs > 6){ PVPQ = null; pvpQueueShow(false); showToast('CONNEXION PERDUE'); await pvpSend('queue_leave', {}); return false; }
+      await pvpSleep(1200); r = { status:200, body:{ ok:true, status:'waiting' } };
+    } else errs = 0;
+  }
+  return false;
+}
+async function pvpQueueCancel(){
+  const Q = PVPQ; if(!Q || Q.cancelled) return;
+  Q.cancelled = true; try{ Q.ctl.abort(); }catch(_){}
+  try{ if(Q.joinP) await Q.joinP; }catch(_){}
+  const lv = await pvpSend('queue_leave', {});
+  PVPQ = null; pvpQueueShow(false);
+  if(lv.body && lv.body.status === 'matched'){ await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); }   // un adversaire a été trouvé juste avant l'annulation : le match existe déjà
+}
+
+// ---------- démarrage du match ----------
+async function pvpStartMatch(mid, d, deck){
+  let evs = [], more = true;
+  while(more){
+    const r = await pvpSend('match_sync', { match_id:mid, after:evs.length ? evs[evs.length - 1].seq : 0 });
+    if(r.status !== 200 || !r.body || !r.body.ok) break;
+    evs = evs.concat(r.body.events || []); more = !!r.body.more && (r.body.events || []).length > 0;
+  }
+  if(!evs.length || evs[0].seq !== 1){ pvpDbgErr('start', 0, 'MATCH INTROUVABLE evs=' + evs.length + ' seq0=' + (evs[0] && evs[0].seq)); showToast('MATCH INTROUVABLE'); return false; }
+  const st = evs[0].payload;
+  const P = PVPC = { mid, seq:0, q:[], waiter:null, offset:0, dl:0, names:st.names, start:st, first:pvpLast(st).first, cur:null, tape:[], sending:false, replayBusy:false,
+    pendingPlay:null, replaying:false, stop:false, ctl:new AbortController(), over:false, fails:0, d, deck };
+  pvpIngest(evs); P.q.shift();                              // l'événement de départ est consommé par pvpBuildSides ; les suivants (reprise d'un match en cours) seront rejoués
+  P.cur = st;
+  const sn = pvpLast(st);
+  const d2 = Object.assign({}, d, { pvp:P, srv:{ p:{ module:sn.mod[0] }, o:{ module:sn.mod[1] } } });
+  btlStart(d2);
+  if(!BTL){ pvpDbgErr('start', 0, 'btlStart sans combat : abandon'); PVPC = null; pvpSend('match_resign', { match_id:mid }); return false; }
+  pvpPoll();
+  return true;
+}
+function pvpIngest(events){
+  const P = PVPC; if(!P || !events) return;
+  for(const e of events){
+    if(!e || e.seq <= P.seq) continue;
+    if(e.seq !== P.seq + 1){ pvpWarn('trou dans les événements : attendu ' + (P.seq + 1) + ', reçu ' + e.seq); P.gap = true; return; }
+    P.seq = e.seq; P.q.push(e.payload);
+    if(e.payload.now) P.offset = e.payload.now - Date.now();
+    if(e.payload.dl) P.dl = e.payload.dl - P.offset;
+  }
+  if(P.waiter && P.q.length){ const w = P.waiter; P.waiter = null; w(P.q.shift()); }
+}
+function pvpNext(){
+  const P = PVPC; if(!P) return Promise.resolve(null);
+  if(P.q.length) return Promise.resolve(P.q.shift());
+  return new Promise(res => { P.waiter = res; });
+}
+// attente longue permanente : la réponse part dès qu'un événement arrive ; sert aussi de signe de vie (le serveur déclare absent un joueur muet depuis 60 s)
+async function pvpPoll(){
+  const P = PVPC;
+  const dg = P.dbgPoll = { n:0, st:'', err:'' };
+  while(P && !P.stop){
+    try{
+    dg.st = 'sleep'; if(!PVP_WAIT) await pvpSleep(300);
+    dg.st = 'send'; dg.n++;
+    const r = await pvpSend('match_sync', { match_id:P.mid, after:P.seq, wait:PVP_WAIT }, { timeout:(PVP_WAIT + 15) * 1000, signal:P.ctl.signal });
+    dg.st = 'got ' + r.status;
+    if(P.stop) return;
+    if(r.status === 200 && r.body && r.body.ok){
+      P.fails = 0; pvpIngest(r.body.events);
+      if(r.body.status === 'finished' && !P.q.length && !r.body.events.length && !P.over && !P.waitingFinal){
+        P.waitingFinal = true;                                     // le serveur dit « terminé » sans nouvel événement : la fin est déjà passée, on la lit
+        pvpFinish(r.body.win, r.body.why || 'leader');
+      }
+    } else if(r.status === 404){ pvpWarn('match introuvable'); P.stop = true; return; }
+    else { P.fails++; await pvpSleep(Math.min(3000, 400 * P.fails)); }
+    }catch(e){ dg.err = String(e && e.stack || e).slice(0, 400); console.warn('[PVP] erreur dans la réception', e); await pvpSleep(500); }
+  }
+  dg.st = 'sorti';
+}
+function pvpStop(){
+  const P = PVPC; if(!P) return;
+  P.stop = true; try{ P.ctl.abort(); }catch(_){}
+  if(P.waiter){ const w = P.waiter; P.waiter = null; w(null); }
+  clearInterval(P.timer);
+}
+
+// ---------- plateau de départ ----------
+function pvpBuildSides(d){
+  const P = d.pvp, snaps = P.start.snaps, s0 = snaps[0], s1 = pvpLast(P.start), S = {};
+  for(const sd of ['p', 'o']){
+    const N = s0[sd].pile, pile = [];
+    for(let i = 0; i < N; i++) pile.push(pvpHidden(sd));
+    if(sd === 'p'){ const h = s1.p.hand; for(let i = 0; i < h.length; i++) pile[N - 1 - i] = pvpReal('p', h[i].n, false); }   // le sommet de la pioche (fin du tableau) donne la 1re carte de la main
+    S[sd] = { leader:pvpReal(sd, s1[sd].L.n, true), pile, hand:[], slots:[null, null, null] };
+  }
+  return S;
+}
+// la vraie identité des cartes que JE vais piocher pendant cet événement est placée au sommet de ma pioche locale
+function pvpPrimePile(ev){
+  if(!BTL) return;
+  const h = pvpLast(ev).p.hand; if(!Array.isArray(h)) return;
+  const S = BTL.S.p, have = {};
+  S.hand.forEach(c => { have[c.name] = (have[c.name] || 0) + 1; });
+  const fresh = [];
+  h.forEach(x => { if(have[x.n] > 0) have[x.n]--; else fresh.push(x.n); });
+  fresh.slice(0, S.pile.length).forEach((n, i) => { S.pile[S.pile.length - 1 - i] = pvpReal('p', n, false); });
+}
+
+// ---------- recalage sur la photo du serveur ----------
+function pvpReconcile(snap){
+  if(!BTL || !snap) return;
+  const diffs = [];
+  const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const fixCard = (c, s, where) => {
+    if(!c || !s) return;
+    const kw = (c.kw || []).slice().sort(), skw = (s.k || []).slice().sort();
+    const chk = (k, mine, theirs) => { if(mine !== theirs){ diffs.push(where + ' ' + k + ' ' + mine + '→' + theirs); return true; } return false; };
+    let ch = false;
+    ch = chk('ATQ', c.atk, s.a) | ch; if(c.atk !== s.a) c.atk = s.a;
+    ch = chk('DEF', c.df, s.d) | ch; if(c.df !== s.d) c.df = s.d;
+    ch = chk('PV', c.hp, s.h) | ch; if(c.hp !== s.h) c.hp = s.h;
+    ch = chk('PVmax', c.maxHp, s.m) | ch; if(c.maxHp !== s.m) c.maxHp = s.m;
+    ch = chk('énergie', c.energy, s.e) | ch; if(c.energy !== s.e) c.energy = s.e;
+    if(!eq(kw, skw)){ diffs.push(where + ' mots-clés ' + kw + '→' + skw); c.kw = (s.k || []).slice(); ch = true; }
+    if(!c.leader && c.playedTurn !== s.pt){ diffs.push(where + ' tour de pose ' + c.playedTurn + '→' + s.pt); c.playedTurn = s.pt; }
+    if(!!c.ultOn !== !!s.u){ diffs.push(where + ' ultime ' + !!c.ultOn + '→' + !!s.u); c.ultOn = !!s.u; ch = true; }
+    const lp = c.plan ? { k:c.plan.kind, t:(btlCardByUid(c.plan.tgt) ? pvpRefOf(btlCardByUid(c.plan.tgt)) : null) } : null, sp = s.p ? { k:s.p.k, t:s.p.t } : null;
+    if(!eq(lp, sp)){
+      diffs.push(where + ' plan ' + JSON.stringify(lp) + '→' + JSON.stringify(sp));
+      if(sp){ const t = pvpCardByRef(sp.t); c.plan = t ? { kind:sp.k, tgt:t.uid, heal:false, seq:s.p.q } : null; } else c.plan = null;
+      ch = true; BTL.arDirty = true;
+    }
+    if(ch){ try{ btlPaint(c); }catch(_){} }
+  };
+  for(const sd of ['p', 'o']){
+    const S = BTL.S[sd], sn = snap[sd];
+    fixCard(S.leader, sn.L, sd + ':chef');
+    for(let i = 0; i < 3; i++){
+      const lc = S.slots[i], sc = sn.slots[i];
+      if(lc && sc && lc.name === sc.n) fixCard(lc, sc, sd + ':' + i + ' ' + lc.name);
+      else if(!lc && !sc) continue;
+      else if(lc && lc.hp <= 0 && !sc) continue;                          // carte détruite : le jeu la retire lui-même à la fin de son animation
+      else {
+        diffs.push('STRUCTURE ' + sd + ':' + i + ' ' + (lc ? lc.name + '/' + lc.hp : 'vide') + '→' + (sc ? sc.n : 'vide'));
+        const slotEl = btlSlotEl(sd, i);
+        if(lc){ S.slots[i] = null; if(slotEl) slotEl.innerHTML = ''; }
+        if(sc){ const nc = pvpReal(sd, sc.n, false); nc.slot = i; S.slots[i] = nc; fixCard(nc, sc, sd + ':' + i); try{ btlPutCard(nc); }catch(_){} }
+      }
+    }
+    // main et pioche
+    if(sd === 'p' && Array.isArray(sn.hand)){
+      const mine = S.hand.map(c => c.name);
+      if(!eq(mine, sn.hand.map(c => c.n))){
+        diffs.push('main ' + mine + '→' + sn.hand.map(c => c.n));
+        const pool = S.hand.slice();
+        S.hand = sn.hand.map(x => { const k = pool.findIndex(c => c.name === x.n); return k >= 0 ? pool.splice(k, 1)[0] : pvpReal('p', x.n, false); });
+        try{ btlRenderHand(); }catch(_){}
+      }
+    } else if(sd === 'o' && typeof sn.hand === 'number' && S.hand.length !== sn.hand){
+      diffs.push('main adverse ' + S.hand.length + '→' + sn.hand);
+      while(S.hand.length > sn.hand) S.hand.pop();
+      while(S.hand.length < sn.hand) S.hand.push(pvpHidden('o'));
+      try{ btlRenderOHand(); }catch(_){}
+    }
+    if(typeof sn.pile === 'number' && S.pile.length !== sn.pile){
+      diffs.push('pioche ' + sd + ' ' + S.pile.length + '→' + sn.pile);
+      while(S.pile.length > sn.pile) S.pile.shift();
+      while(S.pile.length < sn.pile) S.pile.unshift(pvpHidden(sd));
+      try{ btlRenderPile(sd, 0); }catch(_){}
+    }
+  }
+  if(BTL.mana.p !== snap.mana[0] || BTL.mana.o !== snap.mana[1]){ diffs.push('mana ' + BTL.mana.p + '/' + BTL.mana.o + '→' + snap.mana); BTL.mana.p = snap.mana[0]; BTL.mana.o = snap.mana[1]; try{ btlRenderMana(); }catch(_){} }
+  if(BTL.cap.p !== snap.cap[0] || BTL.cap.o !== snap.cap[1]){ diffs.push('mana max ' + BTL.cap.p + '/' + BTL.cap.o + '→' + snap.cap); BTL.cap.p = snap.cap[0]; BTL.cap.o = snap.cap[1]; }
+  if(BTL.modTurn.p !== snap.modT[0] || BTL.modTurn.o !== snap.modT[1]){ diffs.push('module ' + BTL.modTurn.p + '/' + BTL.modTurn.o + '→' + snap.modT); BTL.modTurn.p = snap.modT[0]; BTL.modTurn.o = snap.modT[1]; try{ btlModPaint(); }catch(_){} }
+  if(BTL.turn !== snap.turn){ diffs.push('tour ' + BTL.turn + '→' + snap.turn); BTL.turn = snap.turn; }
+  if(diffs.length){ pvpWarn('écart au tour ' + snap.turn + ' (' + snap.tag + ') : ' + diffs.join(' ; ') + ' | ' + JSON.stringify((PVPC.cur && PVPC.cur.a) || null) + ' bande ' + JSON.stringify((PVPC.cur && PVPC.cur.tape) || null)); try{ btlRenderArrows(); }catch(_){} }
+  return diffs;
+}
+
+// ---------- boucle de partie ----------
+async function pvpRun(){
+  try{ await pvpRun0(); }catch(e){ if(!BTL || BTL.abort || !PVPC) return; throw e; }     // combat quitté pendant une animation : fin silencieuse
+}
+async function pvpRun0(){
+  const P = PVPC;
+  BTL.rec = null;                                              // pas de bande : le serveur n'a besoin de rien d'autre que des actions
+  if(typeof btlVsIntro === 'function') await btlVsIntro();
+  if(!BTL || BTL.abort) return;
+  await btlSleep(250);
+  BTL.first = P.first;
+  await btlCoin(BTL.first);
+  for(let i = 0; i < BTL_HAND_START; i++){ await Promise.all([btlQuickDeal('p'), btlQuickDeal('o')]); await btlSleep(70); }
+  await btlSleep(250);
+  let side = BTL.first;
+  while(!BTL.over && !BTL.abort){
+    await pvpTurn(side);
+    if(BTL.over || BTL.abort) break;
+    side = btlOther(side);
+  }
+}
+async function pvpTurn(side){
+  const P = PVPC;
+  BTL.turn++; BTL.side = side; BTL.phase = 'banner';
+  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1), bonus = BTL.turn === 2 ? 1 : 0;
+  BTL.cap[side] = BTL.mana[side] = cap + bonus;
+  btlRenderMana();
+  await btlTurnFx(side);
+  if(side === 'p') pvpPrimePile(P.cur);
+  if(!await btlDraw(side)){ await btlFatigue(side); if(BTL.over || BTL.abort) return; }
+  await btlUltStart(side);
+  await btlPassifs(side, 'debut');
+  if(BTL.over || BTL.abort) return;
+  await pvpPlanPhase(side);
+  if(BTL.over || BTL.abort) return;
+  BTL.phase = 'resolve'; btlCancelInteractions(); btlSetEnd(false); btlRefreshCan();
+  await btlResolve(side);
+  if(!BTL.over){ await btlPassifs(side, 'fin'); await btlUltEnd(side); }
+  if(!BTL.over){ BTL.mana[side] = 0; btlRenderMana(); }
+  if(!BTL.over && !BTL.abort && P.cur && P.cur.over) await pvpFinish(P.cur.win, P.cur.why || 'leader');     // le serveur a conclu pendant cette résolution
+}
+const pvpIsEnd = ev => ev.k === 'timeout' || (ev.a && ev.a.t === 'end');
+async function pvpPlanPhase(side){
+  const P = PVPC;
+  if(P.cur){ pvpReconcile(pvpLast(P.cur)); if(P.cur.over && !BTL.over){ await pvpFinish(P.cur.win, P.cur.why || 'leader'); return; } }
+  if(P.tape.length){ pvpWarn(P.tape.length + ' tirage(s) du serveur non consommé(s)'); P.tape = []; }
+  BTL.phase = 'plan'; BTL.timeUp = false; BTL.deadline = P.dl || (Date.now() + BTL_TURN_MS);
+  const mine = side === 'p';
+  btlSetEnd(mine); btlRefreshCan();
+  BTL.endRes = mine ? () => { pvpEndIntent(); } : null;
+  clearInterval(P.timer);
+  P.timer = setInterval(() => {
+    if(!BTL || BTL.abort || BTL.over){ clearInterval(P.timer); return; }
+    if(BTL.side !== 'p' || BTL.phase === 'resolve') return;
+    const left = BTL.deadline - Date.now();
+    btlSetHeat(left <= BTL_HEAT_MS ? 1 - Math.max(0, left) / BTL_HEAT_MS : 0);
+    btlHolo(left);
+  }, 250);
+  if(mine) btlHolo(Math.max(0, BTL.deadline - Date.now()));
+  try{
+    for(;;){
+      const ev = await pvpNext();
+      if(!ev || !BTL || BTL.abort || BTL.over) return;
+      P.cur = ev; P.tape = (ev.tape || []).slice();
+      if(ev.k === 'resign' || ev.k === 'disconnect'){ await pvpFinish(ev.win, ev.why); return; }
+      if(pvpIsEnd(ev)){
+        if(ev.k === 'timeout' && mine){ btlCancelInteractions(); }
+        if(ev.over && ev.why === 'idle'){ await pvpFinish(ev.win, 'idle'); return; }
+        pvpPrimePile(ev);
+        return;
+      }
+      pvpPrimePile(ev);
+      BTL.phase = 'plan'; btlSetEnd(mine);
+      P.replayBusy = true; P.replaying = true;
+      try{ await pvpReplayAction(ev); }
+      finally{ P.replaying = false; P.replayBusy = false; }
+      if(BTL.over || BTL.abort) return;
+      pvpReconcile(pvpLast(ev));
+      if(ev.over && !BTL.over){ await pvpFinish(ev.win, ev.why || 'leader'); return; }
+      if(P.tape.length){ pvpWarn(P.tape.length + ' tirage(s) du serveur non consommé(s) après ' + (ev.a && ev.a.t)); P.tape = []; }
+      btlRefreshCan(); btlRenderArrows();
+    }
+  } finally {
+    clearInterval(P.timer); if(BTL && !BTL.over){ btlSetHeat(0); btlHolo(null); }
+    if(BTL) BTL.endRes = null;
+  }
+}
+
+// ---------- rejeu d'une action ----------
+async function pvpReplayAction(ev){
+  const a = ev.a, side = a.s, S = BTL.S[side], P = PVPC, sn = pvpLast(ev);
+  if(a.t === 'play'){
+    const sc = sn[side].slots[a.slot]; if(!sc){ pvpWarn('pose sans carte sur ' + side + ':' + a.slot); return; }
+    let c, rect, el;
+    if(side === 'p'){
+      c = S.hand[a.hi]; if(!c || c.name !== sc.n) c = S.hand.find(x => x.name === sc.n) || pvpReal('p', sc.n, false);
+      const pp = P.pendingPlay; P.pendingPlay = null;
+      if(pp && pp.c === c){ rect = pp.rect; el = pp.g; }
+      else {
+        const he = btlQ('#btlHand [data-uid="' + c.uid + '"]'); rect = he ? btlRect(he) : btlRect(btlQ('#btlHand'));
+        el = document.createElement('div'); el.className = 'btl-ghost'; el.style.width = rect.width + 'px'; el.style.height = rect.height + 'px'; el.innerHTML = btlBigHtml(c); btlQ('#btlFx').appendChild(el);
+      }
+      if(S.hand.indexOf(c) < 0) S.hand.push(c);
+    } else {
+      const ph = S.hand.pop() || pvpHidden('o');
+      c = pvpReal('o', sc.n, false); c.uid = ph.uid; S.hand.push(c);
+      const he = btlQ('#btlOHand [data-uid="' + c.uid + '"]'); const r0 = he ? btlRect(he) : btlRect(btlQ('#btlOHand'));
+      rect = { left:r0.left, top:r0.top, width:r0.width, height:r0.height };
+      el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
+    }
+    await btlPlay(side, c, a.slot, rect, el);
+    await btlSleep(280);
+  } else if(a.t === 'plan'){
+    const c = S.slots[a.slot], t = pvpCardByRef(a.tgt);
+    if(!c || !t){ pvpWarn('plan impossible ' + side + ':' + a.slot + '→' + a.tgt); return; }
+    btlSetPlan(c, { kind:a.kind, tgt:t.uid, heal:false });
+    await btlSleep(side === 'o' && !P.q.length ? 520 : 120);   // flèche de l'adversaire : visible tout de suite ; la pause n'est gardée que si rien d'autre n'attend (plans enchaînés : pas de retard accumulé)
+  } else if(a.t === 'unplan'){
+    const c = S.slots[a.slot]; if(!c){ pvpWarn('annulation sans carte'); return; }
+    btlClearPlan(c);
+  } else if(a.t === 'mod'){
+    const t = a.tgt ? pvpCardByRef(a.tgt) : null;
+    await btlModuleUse(side, t || undefined); btlModPaint(); await btlSleep(400);
+  }
+}
+
+// ---------- tirages au sort et choix : joués d'après la bande du serveur ----------
+function pvpTapeNext(kinds){
+  const P = PVPC; if(!P || !P.tape.length) return null;
+  const e = P.tape[0];
+  if(kinds.indexOf(e.k) < 0){ pvpWarn('bande : attendu ' + kinds + ', trouvé ' + e.k); return null; }
+  return P.tape.shift();
+}
+function pvpRnd(a){
+  if(!a.length) return null;
+  if(PVPC && PVPC.asking) return a[Math.floor(Math.random() * a.length)];      // temps écoulé pendant MON choix de cible : tirage local, le serveur tranchera
+  const e = pvpTapeNext(['r']); if(!e){ pvpWarn('tirage sans bande'); return a[0]; }
+  return a[Math.min(e.i, a.length - 1)];
+}
+async function pvpChoose(c, cands, mode, dmg, opt){
+  cands = cands.filter(t => t.hp > 0); if(!cands.length || btlGone()) return null;
+  const e = pvpTapeNext(['c', 'r']); let pick = null;
+  if(e) pick = cands[Math.min(e.i, cands.length - 1)];
+  if(!pick){ pvpWarn('choix sans bande'); pick = cands[0]; }
+  if(mode === 'dmg') opt = Object.assign({ xdmg:dmg }, opt);
+  return await btlPickTarget(c, cands, Object.assign({}, opt, { ai:pick }));      // même mise en scène pour tout le monde : la flèche balaie les cibles puis se verrouille
+}
+
+// ---------- mes actions : envoyées au serveur, jouées à leur retour ----------
+async function pvpAsk(need){      // demande de cible du serveur : sélection avant l'envoi (le jeu rejoue ensuite l'effet avec ce choix)
+  const cands = need.cands.map(pvpCardByRef).filter(Boolean);
+  if(!cands.length) return 0;
+  const src = pvpCardByRef(need.src) || BTL.S.p.leader;
+  PVPC.asking = true;
+  try{
+    const t = await btlPickTarget(src, cands, { levit:true, xdmg:need.mode === 'dmg' ? (need.dmg || 0) : 0 });
+    btlHighlight(cands, false);
+    return t ? cands.indexOf(t) : -1;
+  } finally { if(PVPC) PVPC.asking = false; }
+}
+function pvpLock(on){
+  if(!BTL) return;
+  if(on){ PVPC.prevPhase = BTL.phase; BTL.phase = 'wait'; btlSetEnd(false); }
+  else { if(BTL.phase === 'wait') BTL.phase = PVPC.prevPhase === 'wait' ? 'plan' : (PVPC.prevPhase || 'plan'); if(BTL.side === 'p' && BTL.phase === 'plan' && !BTL.over) btlSetEnd(true); }
+}
+async function pvpAct(action){
+  const P = PVPC; if(!P || P.sending || P.replayBusy || P.q.length || BTL.over || BTL.phase !== 'plan' || BTL.side !== 'p') return false;
+  P.sending = true; pvpLock(true);
+  let ok = false;
+  try{
+    let dec = [];
+    for(let k = 0; k < 8; k++){
+      const r = await pvpSend('match_action', { match_id:P.mid, base:P.seq, action, decisions:dec });
+      if(!BTL || BTL.abort) return false;
+      if(r.status === 200 && r.body && r.body.need){
+        const i = await pvpAsk(r.body.need);
+        if(i < 0) return false;
+        dec = dec.concat(i); continue;
+      }
+      if(r.status === 200 && r.body && r.body.ok){ pvpIngest(r.body.events); ok = true; return true; }
+      const code = r.body && r.body.error;
+      if(code === 'stale'){ console.warn('[PVP] action refusée (état périmé) : un nouvel événement arrive'); return false; }
+      if(code === 'match_finished'){ return false; }
+      if(r.status === 0){ showToast('RÉSEAU INDISPONIBLE'); return false; }
+      if(code === 'illegal' || code === 'not_your_turn') pvpWarn('action refusée par le serveur : ' + code + ' ' + ((r.body && r.body.message) || ''));
+      showToast('ACTION REFUSÉE');
+      return false;
+    }
+    return false;
+  } finally {
+    P.sending = false;
+    if(!ok) pvpLock(false);
+  }
+}
+async function pvpPlayIntent(c, si, rect, g){
+  const P = PVPC, hi = BTL.S.p.hand.indexOf(c);
+  P.pendingPlay = { c, si, rect, g };
+  const ok = hi >= 0 && await pvpAct({ t:'play', hi, slot:si });
+  if(!ok){
+    P.pendingPlay = null;
+    const hc = btlQ('#btlHand [data-uid="' + c.uid + '"]'), to = hc ? btlRect(hc) : rect;
+    try{ await btlAnim(g, [{ transform:'none' }, { transform:btlXf(rect, to) }], { duration:260, easing:'cubic-bezier(.3,.8,.3,1)' }); }catch(_){}
+    g.remove(); if(hc) hc.style.opacity = '';
+  }
+}
+function pvpPlanIntent(c, plan){
+  const t = btlCardByUid(plan.tgt); if(!t) return;
+  return pvpAct({ t:'plan', slot:c.slot, kind:plan.kind, tgt:pvpRefOf(t) });
+}
+function pvpUnplanIntent(c){ return pvpAct({ t:'unplan', slot:c.slot }); }
+function pvpModIntent(pre){ return pvpAct({ t:'mod', tgt:pre ? pvpRefOf(pre) : null }); }
+async function pvpEndIntent(){
+  const ok = await pvpAct({ t:'end' });
+  if(!ok && BTL && !BTL.over && BTL.side === 'p' && BTL.phase === 'plan'){ BTL.endRes = () => { pvpEndIntent(); }; btlSetEnd(true); }
+}
+
+// ---------- fin du match ----------
+const PVP_WHY = {
+  leader:{ win:'CHEF ADVERSE DÉTRUIT', lose:'TON CHEF A ÉTÉ DÉTRUIT' },
+  resign:{ win:'L\'ADVERSAIRE A ABANDONNÉ', lose:'TU AS ABANDONNÉ' },
+  disconnect:{ win:'ADVERSAIRE DÉCONNECTÉ', lose:'TU AS ÉTÉ DÉCONNECTÉ' },
+  idle:{ win:'ADVERSAIRE INACTIF', lose:'INACTIVITÉ : DEUX TOURS SANS ACTION' }
+};
+async function pvpFinish(winner, why){
+  const P = PVPC; if(!BTL || BTL.over) return;
+  const B0 = BTL;
+  BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
+  if(P){ P.over = true; pvpStop(); }
+  const won = winner === 'p', loser = btlOther(winner || 'o');
+  btlArClear();
+  try{ await btlLeaderDeath(BTL.S[loser].leader); }catch(_){}
+  await btlSleep(450);
+  const w = why === 'leader' ? '' : (PVP_WHY[why] || PVP_WHY.leader)[won ? 'win' : 'lose'];   // chef détruit : même fenêtre que l'Entraînement IA (VICTOIRE / DÉFAITE sur l'artwork) ; autres fins : le motif est ajouté en titre
+  const rm = document.getElementById('rewardModal');
+  const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); if(BTL === B0) btlExit(); } });
+  mo.observe(rm, { attributes:true, attributeFilter:['class'] });
+  const art = B0.S.p.leader.def;
+  showRewardModal(w, [], { resultType:won ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
+}
+// le moteur local annonce un chef détruit : on ne conclut que si le serveur l'a conclu dans l'événement en cours de rejeu
+function pvpLocalEnd(winner){
+  const P = PVPC;
+  if(P && P.cur && P.cur.over) return pvpFinish(P.cur.win, P.cur.why || 'leader');
+  pvpWarn('le jeu annonce une fin de partie (' + winner + ') que le serveur ne confirme pas : on attend le recalage');
+  return Promise.resolve();
+}
+// départ volontaire (bouton ABANDONNER) : le serveur donne la victoire à l'adversaire
+function pvpLeave(){
+  const P = PVPC; if(!P) return;
+  const mid = P.mid, over = P.over;
+  pvpStop(); PVPC = null;
+  if(!over) pvpSend('match_resign', { match_id:mid });
+}
+
 // ================= BATAILLE : LE COMBAT (V0.04.20) =================
 // Combat de cartes au tour par tour (spec d'Alex) : 3 emplacements + 1 chef d'escouade par camp, main en éventail,
 // mana 1 -> 5, 2 min 30 par tour, actions planifiées (flèche rouge / rayon bleu) puis résolues de gauche à droite.
@@ -17512,6 +18059,7 @@ function btlSrvSide(side, o){
   return { leader:L, pile:btlShuffle(o.cards.map(n => mk(n, false))), hand:[], slots:[null, null, null] };
 }
 function btlBuildSides(d){
+  if(d.pvp) return pvpBuildSides(d);   // PvP : plateau déduit des photos du serveur (cartes de l'adversaire cachées)
   if(!d.srv) throw new Error('combat sans deck imposé par le serveur');
   return { p:btlSrvSide('p', d.srv.p), o:btlSrvSide('o', d.srv.o) };   // V0.05.00 : les deux decks sont ceux que le serveur a validés (il rejouera exactement cette partie)
 }
@@ -17613,7 +18161,7 @@ function btlPutCard(c){
   slot.classList.add('has');
   btlPaintIn(slot, c);
 }
-function btlBigHtml(c){ return c._big || (c._big = '<div class="codex-card ' + rarCls(c.rar) + '">' + codexCardHtml(c.def, c.rar, { level:c.level }) + '</div>'); }
+function btlBigHtml(c){ if(c.def && c.def.hidden) return btlBackHtml(c.rar, c.side); return c._big || (c._big = '<div class="codex-card ' + rarCls(c.rar) + '">' + codexCardHtml(c.def, c.rar, { level:c.level }) + '</div>'); }
 function btlBackHtml(rar, side){
   const k = (side === 'o' || !BTL || !BTL.d) ? 'rare' : deckBack(BTL.d, 'card');   // V0.04.89 : un seul dos par camp, plus de dos selon la rareté de la carte
   const src = (typeof BOOST_CARD_BACK !== 'undefined' && (BOOST_CARD_BACK[k] || BOOST_CARD_BACK[BTL_BACK_FALLBACK])) || '';
@@ -18534,7 +19082,7 @@ function btlVsIntro(){
     };
     const mO = mkMod('o'), mP = mkMod('p');
     // noms
-    const nmO = (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
+    const nmO = (BTL.d && BTL.d.pvp && BTL.d.pvp.names) ? String(BTL.d.pvp.names.o || 'ADVERSAIRE').toUpperCase() : (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
     const mkName = (side, txt) => {
       const el = document.createElement('div'); el.className = 'vs-name ' + side;
       const fs = Math.max(13, Math.min(27, modW / (txt.length * 1.02)));
@@ -18824,7 +19372,8 @@ function btlExit(){
   if(!BTL) return;
   const dfx = !!(BTL.d && BTL.d.defi);
   const fin0 = BTL.fin;
-  if(!BTL.over && BTL.d && BTL.d.srv) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
+  if(pvpOn()) pvpLeave();   // PvP : quitter avant la fin = abandon (victoire de l'adversaire)
+  else if(!BTL.over && BTL.d && BTL.d.srv) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
   else if(fin0 && !fin0.shown) fin0.p.then(r => econBattleShow(fin0, r));   // quitté pendant l'envoi du résultat : il s'affiche quand même
   if(BTL.vs && BTL.vs.kill) BTL.vs.kill();
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
@@ -18836,6 +19385,7 @@ function btlExit(){
   else if(typeof renderBataille === 'function') renderBataille();
 }
 async function btlRun(){
+  if(pvpOn()) return pvpRun();   // PvP : le serveur mène la partie
   if(typeof btlVsIntro === 'function') await btlVsIntro();   // V0.04.90 : écran VS (Bataille + Défis ; adversaire de défi = nom de la carte du défi)
   if(!BTL || BTL.abort) return;
   await btlSleep(250);
@@ -19054,6 +19604,7 @@ async function btlBurnDraw(side, c){
 }
 async function btlDraw(side){
   const S = BTL.S[side]; if(!S.pile.length) return false;
+  if(pvpOn() && side === 'p') pvpPrimePile(PVPC.cur);   // PvP : la carte que je pioche vraiment (photo du serveur) est remise au sommet de ma pioche juste avant
   btlSmokeMaybe(side);   // 1 pioche sur 2 : fumée par les bouches d'aération du côté qui pioche
   if(S.hand.length >= BTL_HAND_MAX){ const x = S.pile.pop(); const rb = await btlBurnDraw(side, x); await btlOnDraw(side); return rb; }
   const c = S.pile.pop(); S.hand.push(c);
@@ -19537,7 +20088,7 @@ function btlEndTarget(ok, target){
   btlHighlight(tg.list, false);
   tg.fl.remove(); tg.unit.style.visibility = '';
   BTL.tg = null;
-  if(ok && target) btlSetPlan(tg.c, { kind:tg.kind, tgt:target.uid, heal:false });
+  if(ok && target){ if(pvpOn()) pvpPlanIntent(tg.c, { kind:tg.kind, tgt:target.uid, heal:false }); else btlSetPlan(tg.c, { kind:tg.kind, tgt:target.uid, heal:false }); }
   else btlRenderArrows();
 }
 
@@ -19616,7 +20167,7 @@ function btlHandDown(ev){
     btlZoomHide();
     if(si >= 0 && !BTL.S.p.slots[si] && BTL.mana.p >= 1 && canPlay()){
       g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px'; g.style.position = 'fixed';
-      try{ await btlPlay('p', c, si, rect, g); }catch(err){ if(err !== 'abort') console.error(err); }
+      try{ if(pvpOn()) await pvpPlayIntent(c, si, rect, g); else await btlPlay('p', c, si, rect, g); }catch(err){ if(err !== 'abort') console.error(err); }
     } else {
       // retour dans la main
       const hc = btlQ('#btlHand [data-uid="' + c.uid + '"]');
@@ -19905,7 +20456,7 @@ function btlWire(){
     if(BTL.noClick){ BTL.noClick = false; return; }
     const slot = e.target.closest('.btl-slot'); if(!slot || slot.dataset.i === 'L') return;
     const c = BTL.S.p.slots[+slot.dataset.i];
-    if(c && c.plan && BTL.phase === 'plan' && BTL.side === 'p' && !BTL.tg) btlClearPlan(c);   // simple appui sur une carte engagée : on la désengage
+    if(c && c.plan && BTL.phase === 'plan' && BTL.side === 'p' && !BTL.tg){ if(pvpOn()) pvpUnplanIntent(c); else btlClearPlan(c); }   // simple appui sur une carte engagée : on la désengage
   });
   // tap hors du menu : la carte retourne à sa place
   btlQ('#btlBlur').addEventListener('pointerdown', e => { if(BTL.menu){ e.preventDefault(); btlCloseMenu(); } });
@@ -20035,7 +20586,7 @@ async function btlDoAction(c, ov){
 // DÉFENDRE : la DEF de la carte est ajoutée au bouclier (DEF) de la cible, même si celle-ci est à 0
 async function btlShieldAdd(t, amount, fromPlan, o){
   if(amount <= 0) return;
-  t.df += amount;
+  t.df += amount; if(t.ultOn && t.base) t.base.df += amount;   // DEF reçue pendant l'ultime : gardée (seule la DEF d'avant l'ultime est divisée par 2)
   musSfx('shield');   // son de bouclier reçu (V0.04.87)
   if(fromPlan) btlPdTick(t, 0, 0, amount);   // le +X prévu sur la carte se décompte à mesure que la DEF est ajoutée
   const r = btlUnitRect(t), el = btlUnitEl(t);
@@ -20150,6 +20701,7 @@ async function btlLeaderDeath(c){
 }
 async function btlFinish(winner){
   if(BTL.over) return;
+  if(pvpOn()) return pvpLocalEnd(winner);   // PvP : seule la fin annoncée par le serveur compte
   const B0 = BTL;
   BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
   const fin = BTL.fin = econBattleEnd(winner);   // V0.05.00 : la bande part tout de suite au serveur ; c'est SON verdict (rejeu de la partie) qui compte, pas celui de l'écran
@@ -20217,7 +20769,8 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
     ], { duration:dur, easing:'cubic-bezier(.4,.1,.25,1)' });
   } finally { e.remove(); }
   }
-  S.pile.push(c); btlShuffle(S.pile); btlRenderPile(side, 0);
+  if(pvpOn()) S.pile.unshift(c); else { S.pile.push(c); btlShuffle(S.pile); }   // PvP : le serveur mélange, la prochaine carte est celle de la photo
+  btlRenderPile(side, 0);
   // mélange : deux demi-paquets se séparent puis se rejoignent, deux fois
   const pr = btlRect(pileEl), fx = btlQ('#btlFx'), halves = [];
   [-1, 1].forEach(k => {
@@ -20228,7 +20781,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
   });
   try{ await btlSleep(640); } finally { halves.forEach(h => h.remove()); }
 }
-function btlRnd(a){ return a.length ? a[Math.floor(btlLrand() * a.length)] : null; }
+function btlRnd(a){ if(pvpOn()) return pvpRnd(a); return a.length ? a[Math.floor(btlLrand() * a.length)] : null; }
 function btlGone(){ return !BTL || BTL.over || BTL.abort; }
 function btlField(side){ return BTL.S[side].slots.filter(t => t && t.hp > 0); }              // cartes en jeu (sans le chef)
 function btlLiveAll(side){ return btlAlly(side).filter(t => t.hp > 0); }                       // chef + cartes en jeu
@@ -20305,6 +20858,7 @@ function btlAIChoose(cands, mode, dmg){
 }
 async function btlChoose(c, cands, mode, dmg, opt){
   cands = cands.filter(t => t.hp > 0); if(!cands.length || btlGone()) return null;
+  if(pvpOn()) return await pvpChoose(c, cands, mode, dmg, opt);   // PvP : choix rejoué d'après la bande du serveur (le mien a été demandé avant l'envoi)
   if(mode === 'dmg') opt = Object.assign({ xdmg:dmg }, opt);
   if(c.side === 'p') return await btlPickTarget(c, cands, opt);
   const pick = btlAIChoose(cands, mode, dmg); if(!pick) return null;
@@ -22995,7 +23549,7 @@ function btlDumStrike(c, t){
 }
 async function btlDumadedPassive(c){
   if(btlGone() || !btlOnField(c)) return;
-  const cands = ['p', 'o'].flatMap(sd => BTL.S[sd].slots.filter(x => x && x !== c && x.hp > 0));
+  const cands = pvpSides().flatMap(sd => BTL.S[sd].slots.filter(x => x && x !== c && x.hp > 0));
   const t = btlRnd(cands); if(!t) return;
   if(btlLethal(t, 1)) btlXOn(t);
   btlFlashEl(btlUnitEl(c), '#ff5468', .8, 420);
@@ -23008,7 +23562,7 @@ async function btlDumadedPassive(c){
 // déclenche les passifs « à chaque carte piochée » de toutes les cartes en jeu
 async function btlOnDraw(side){
   if(btlGone()) return;
-  const list = ['p', 'o'].flatMap(sd => BTL.S[sd].slots.filter(x => x && x.hp > 0));
+  const list = pvpSides().flatMap(sd => BTL.S[sd].slots.filter(x => x && x.hp > 0));
   for(const c of list){
     if(btlGone()) return;
     const fx = BTL_CARD_FX[c.name], p = fx && fx.passif;
@@ -23580,7 +24134,8 @@ BTL_CARD_FX['MED-POD'] = { arrive: btlMedArrive, baroud: async c => {
   const oppS = btlOther(c.side), O = BTL.S[oppS];
   let pool = O.pile.concat(O.hand).filter(x => x.name !== 'MED-POD');
   if(!pool.length) pool = btlField(oppS).filter(x => x.name !== 'MED-POD');
-  const src = btlRnd(pool); if(!src) return;
+  let src = btlRnd(pool); if(!src) return;
+  if(pvpOn()){ const sc = pvpLast(PVPC.cur)[c.side].slots[c.slot], dd = sc && (CHAR_DEFS.find(x => x.name === sc.n) || BTL_TOKEN_DEFS.find(x => x.name === sc.n)); if(dd) src = { def:dd, rar:rarityOf(dd) }; else if(src.def && src.def.hidden) return; }   // PvP : l'identité de la carte copiée vient de la photo du serveur (la pioche adverse est secrète)
   const S = BTL.S[c.side], slot = c.slot;
   if(S.slots[slot] && S.slots[slot] !== c) return;
   const n = btlMakeCard(c.side, src.def, src.rar, c.level, false, 1);   // apparence de la carte ennemie, niveau du MED-POD
@@ -23675,10 +24230,11 @@ BTL_CARD_FX['DOZEUR'] = { appel: async c => {   // une carte au hasard de la mai
 } };
 BTL_CARD_FX['GRIEVER'] = { slam:true, appel: async c => {   // arrivée en écrasement ; puis missile tiré en cloche : l'impact déclenche le Baroud d'honneur de la carte ciblée
   const cands = [];
-  ['p', 'o'].forEach(s => btlField(s).forEach(t => { if(t !== c && btlHas(t, 'baroud') && BTL_CARD_FX[t.name] && BTL_CARD_FX[t.name].baroud) cands.push(t); }));
+  pvpSides().forEach(s => btlField(s).forEach(t => { if(t !== c && btlHas(t, 'baroud') && BTL_CARD_FX[t.name] && BTL_CARD_FX[t.name].baroud) cands.push(t); }));
   if(!cands.length) return;
   let t;
-  if(c.side === 'p') t = await btlPickTarget(c, cands, { levit:true });
+  if(pvpOn()) t = await pvpChoose(c, cands, 'baroud', 0, { levit:true });
+  else if(c.side === 'p') t = await btlPickTarget(c, cands, { levit:true });
   else { const own = cands.filter(x => x.side === c.side && x.name !== 'HARKO' && x.name !== 'MED-POD'); t = await btlPickTarget(c, cands, { levit:true, ai:btlRnd(own.length ? own : cands) }); }
   if(!t || btlGone() || !btlOnField(c)) return;
   await btlMissileDrop(c, t, { arc:true, from:c });
@@ -24639,11 +25195,11 @@ const BTL_MODULES = {
     }
   },
   'ROCKET': {   // N dégâts à toutes les cartes du champ de bataille (les deux camps, chefs exclus)
-    cands: s => btlField('p').concat(btlField('o')), mode:'none',
+    cands: s => pvpSides().flatMap(x => btlField(x)), mode:'none',
     kills: (s, m) => btlField('p').concat(btlField('o')).filter(t => btlLethal(t, btlModN(m))),
     run: async (s, _t, m) => {
       const n = btlModN(m), src = btlModSrc(s);
-      for(const t of btlField('p').concat(btlField('o'))){ if(btlGone()) return; await btlHit(src, t, n, { fast:true }); }
+      for(const t of pvpSides().flatMap(x => btlField(x))){ if(btlGone()) return; await btlHit(src, t, n, { fast:true }); }
     }
   },
   'SAPHYR': {   // pioche N cartes
@@ -24675,6 +25231,7 @@ function btlModCanUse(side){
   return BTL.mana[side] >= btlModCost(m.t) && BTL_MODULES[m.name].cands(side).length > 0;
 }
 async function btlModuleUse(side, pre){
+  if(pvpOn() && side === 'p' && !PVPC.replaying) return await pvpModIntent(pre);   // PvP : demandé au serveur, joué à son retour
   if(!btlModCanUse(side)) return false;
   const m = BTL.mod[side], def = BTL_MODULES[m.name], wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }
@@ -26450,7 +27007,13 @@ async function supaSignIn(email, password){
   writeSupaSession(data);
   return data;
 }
+var _supaRefreshP = null;   // renouvellement en cours : les appels simultanés l'attendent (sinon le 2e utilise un jeton déjà consommé, est refusé et déconnecte le joueur)
 async function supaRefresh(){
+  if(_supaRefreshP) return _supaRefreshP;
+  _supaRefreshP = supaRefresh0().finally(() => { _supaRefreshP = null; });
+  return _supaRefreshP;
+}
+async function supaRefresh0(){
   const sess = readSupaSession();
   if(!sess || !sess.refresh_token) return null;
   try{
