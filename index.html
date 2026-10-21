@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.03</title>
+<title>Projet MECA V0.05.04</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -4573,6 +4573,12 @@
   .rw-cards.n20{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; max-height:46vh; overflow-y:auto; padding:2px; overscroll-behavior:contain; touch-action:pan-y; }
   .rw-cards.n20 .rw-card-reveal{ width:auto; }
   #rewardInner:has(.rw-cards.n20) .rw-art-frame{ aspect-ratio:3/1; }
+  /* ===== V0.05.04 ===== */
+  #btlHand .tuto-off, .btl-unit.tuto-off{ filter:brightness(.5) saturate(.55); transition:filter .25s; }
+  /* carrousel : l'exemple de carte de combat réutilise la classe .btl (fond d'arène en ::before) -- on le neutralise pour qu'il ne déborde pas sur le titre */
+  .tut-cbt-mock.btl::before, .tut-cbt-mock.btl::after{ content:none !important; display:none !important; }
+  .tut-badge.red{ border-color:rgba(255,190,180,.7); box-shadow:0 10px 24px rgba(0,0,0,.5), 0 0 20px -4px rgba(255,90,70,.7), 0 1px 0 rgba(255,255,255,.35) inset;
+    background:linear-gradient(160deg, rgba(255,255,255,.3) 0%, transparent 45%), linear-gradient(180deg, #ff8f82 0%, #b02820 100%); }
 
   /* Relief + lumières de la scène journalière */
   .d3-hint{transition:opacity .4s;}
@@ -8399,7 +8405,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.03</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.04</b></div>
   </div>
 
     </div>
@@ -9209,9 +9215,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.03';
+var BUILD_VERSION = 'V0.05.04';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.04', items:[
+    'TUTORIEL (suite) : tout est maintenant verrouillé sur le geste demandé (les autres cartes sont assombries et ne répondent pas), un écran VERSUS s\'affiche avant le combat guidé, ton adversaire s\'appelle RickGod Soldier, et le combat t\'apprend les MODULES : tu utilises BAVURES (module ciblé) et l\'adversaire active SAPHYR (module « bouton »). Le bouton final du carrousel devient LANCER LE COMBAT.',
+    'TUTORIEL (carrousel) : l\'image de la page CAPACITÉS ULTIMES ne déborde plus sur le titre, nouvelles pages BATAILLE, COLLECTION et RÉCOMPENSES, textes mis à jour (WINSTREAK, modules, défi) et précisions entre parenthèses dans les bulles.',
+    'COMBAT : en tirant une carte de ta main vers le haut en diagonale, tu posais parfois la carte voisine ; tu poses maintenant toujours la carte que tu as touchée (faire glisser le doigt de côté sur la main change toujours la carte affichée).',
+  ] },
   { v:'V0.05.03', items:[
     'TUTORIEL DE COMBAT : à ta toute première connexion, après la création du compte et le tutoriel, un combat guidé t\'apprend tout pas à pas (pièce, mana, Tank, Percée, Appel, Baroud d\'honneur, Passif, DEF, ultime, attaque et défense) avec des bulles et des flèches. À la fin, tu es lâché seul pour finir le combat en 2 coups, puis tu reçois 20 cartes rares. Tu peux le refaire à tout moment depuis REVOIR LE TUTORIEL dans les Options (les cartes ne sont données qu\'une seule fois).',
   ] },
@@ -10733,20 +10744,24 @@ var TUT_STEPS = [
     mock:'<div class="tut-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3z"/></svg></div>' },
   { title:'TA FICHE JOUEUR', text:'En haut de l\'écran, ton avatar affiche ton nom et ton niveau de commandant. C\'est ta carte de visite.',
     mock: () => tutIconFrom('#tilePlayer .mt-avatar', 'cyan') },
-  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner.',
+  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner. Chaque victoire d\'affilée allume un point de ta WINSTREAK (5 au maximum) et rapporte de plus en plus d\'or et d\'XP ; une défaite remet la série à zéro.',
     mock: () => tutIconFrom('#tileBattle .mt-battle-ico', 'green') },
+  { title:'LA BATAILLE', text:'La grande case rouge BATAILLE te met face à un autre joueur, en direct : choisis ton deck, patiente le temps qu\'un adversaire arrive, puis le meilleur commandant l\'emporte. Pour l\'instant, c\'est une phase de test, sans récompense.',
+    mock:'<div class="tut-badge red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4l7 7M19 4l-7 7M12 11l-6 8M12 11l6 8M4 17l3 3M20 17l-3 3"/></svg></div>' },
   { title:'CAPACITÉS ULTIMES', text:'Les dégâts infligés ou reçus par une carte remplissent sa jauge d\'ultime. Quand elle est pleine, l\'ultime se déclenche tout seul au début du tour suivant : ATQ, DEF et PV sont doublés jusqu\'à la fin du tour.',
     mock: tutUltimateMock },
   // V0.03.65, demande d'Alex : "rajoute dans le tuto l'explication des défis" -- placée juste après
   // CAPACITÉS ULTIMES (fin du groupe consacré au combat) et avant LA FABRIQUE (début du groupe
   // collection), puisque le DÉFI est une autre façon de combattre plutôt qu'un système de carte.
-  { title:'LE DÉFI', text:'Dans l\'onglet DÉFI, chaque carte possède son propre parcours de 10 paliers à vaincre un par un, en combat Bataille : plus tu avances, plus les récompenses sont généreuses, avec un boss aux paliers 5 et 10. Une fois le parcours terminé, le mode ULTIMATE ajoute 3 paliers encore plus difficiles.',
+  { title:'LE DÉFI', text:'Dans l\'onglet DÉFI, chaque carte possède son propre parcours de 10 paliers à vaincre un par un : plus tu avances, plus les récompenses sont généreuses, avec un boss aux paliers 5 et 10. Une fois le parcours terminé, le mode ULTIMATE ajoute 3 paliers encore plus difficiles.',
     mock: () => tutIconFrom('#tileDefi .mt-defi-ico', 'violet') },
   { title:'LA FABRIQUE', text:'Dépense de l\'or ou des cristaux à la Fabrique pour obtenir de nouvelles cartes de mechs à ajouter à ta collection.',
     mock: () => tutIconFrom('#tileFabTirage .mt-tirage-ico', 'green') },
   { title:'DECK', text:'Dans l\'onglet CARTE, la case DECK te permet de composer tes decks de 20 cartes avec leur module, de fabriquer des cartes avec des matériaux et de détruire celles dont tu n\'as plus besoin.',
     mock: () => tutIconFrom('#tileDeck .mt-deck-ico', 'green') },
-  { title:'LES MODULES', text:'Une carte module n\'est pas un mech : c\'est une capacité de ton deck, que tu déclenches une fois par tour contre du mana (soin, dégâts, pioche…). Tous les modules sont à toi : choisis-en un par deck, dans l\'onglet MODULES du DECK.',
+  { title:'LA COLLECTION', text:'Toujours dans l\'onglet CARTE, la case COLLECTION range toutes les cartes que tu possèdes, comme un classeur : balaie l\'écran pour tourner les pages et retrouver tes cartes.',
+    mock: () => tutIconFrom('#tileCollection .mt-book-ico', 'blue') },
+  { title:'LES MODULES', text:'Une carte module n\'est pas un mech : c\'est une capacité de ton deck, que tu déclenches une fois par tour contre 3 mana (soin, dégâts, pioche…). Un module ciblé se glisse sur sa cible ; un module sans cible se lance d\'un simple appui. Tous les modules sont à toi : choisis-en un par deck, dans l\'onglet MODULES du DECK.',
     mock: tutModuleMock },
   // V0.02.93, demande d'Alex : "rajoute le principe des booster dans le tutoriel" -- juste après LA LABO,
   // fin du groupe d'étapes consacré à la Fabrique, comme les autres cases de ce hub ci-dessus.
@@ -10754,6 +10769,8 @@ var TUT_STEPS = [
     mock: () => tutIconFrom('#tileFabBoost .mt-boost-ico', 'amber') },
   { title:'LES RARETÉS', text:'Rare, épique, légendaire… Qui sait, il existe peut-être quelque part des cartes encore plus rares que légendaire.',
     mock: tutRaretesMock },
+  { title:'LES RÉCOMPENSES', text:'La case RÉCOMPENSES du menu réunit tout ce que tu peux récupérer : ta récompense quotidienne, tes trophées et tes tâches. Un point de couleur t\'avertit quand quelque chose t\'attend.',
+    mock: () => tutIconFrom('#tileRewards .mt-gift-ico', 'amber') },
   { title:'RÉCOMPENSE QUOTIDIENNE', text:'Reviens chaque jour pour récupérer ta récompense quotidienne : elle grandit plus tu es fidèle au poste.',
     mock: () => tutIconFrom('#tileDaily .mt-cal-ico', 'amber') },
   { title:'LES TROPHÉES', text:'Accomplis des exploits pour débloquer des trophées, chacun offrant de l\'or, des cristaux ou des cartes bonus.',
@@ -10762,8 +10779,8 @@ var TUT_STEPS = [
     mock: () => tutIconFrom('#tileTasks .mt-list-ico', 'green') },
   { title:'LES OPTIONS', text:'Tu y régleras le thème, le son et la sauvegarde. Tu peux aussi y revoir ce tutoriel à tout moment grâce au bouton « Tutoriel ».',
     mock: () => tutIconFrom('#optBtn') },
-  { title:'À TOI DE JOUER', text:'Tu connais l\'essentiel : compose ton deck, lance une bataille, et fais grandir ta collection. Bonne chance, Commandant.',
-    mock:'<div class="tut-badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>' }
+  { title:'À TOI DE JOUER', text:'Tu connais l\'essentiel. Appuie sur LANCER LE COMBAT : ton premier combat t\'attend, et je te guide pas à pas. Bonne chance, Commandant.',
+    mock:'<div class="tut-badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>' },
 ];
 function tutSlideHtml(step, i){
   const title = typeof step.title === 'function' ? step.title() : step.title;
@@ -10802,7 +10819,7 @@ function tutSetIdx(i){
   const prev = document.getElementById('tutPrevBtn');
   const next = document.getElementById('tutNextBtn');
   if(prev) prev.style.visibility = i === 0 ? 'hidden' : 'visible';
-  if(next) next.textContent = i === TUT_STEPS.length - 1 ? 'TERMINER' : 'SUIVANT ›';
+  if(next) next.textContent = i === TUT_STEPS.length - 1 ? 'LANCER LE COMBAT' : 'SUIVANT ›';
 }
 function tutGoTo(i){
   const track = document.getElementById('tutTrack');
@@ -19153,7 +19170,7 @@ function btlVsIntro(){
     };
     const mO = mkMod('o'), mP = mkMod('p');
     // noms
-    const nmO = (BTL.d && BTL.d.pvp && BTL.d.pvp.names) ? String(BTL.d.pvp.names.o || 'ADVERSAIRE').toUpperCase() : (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
+    const nmO = (BTL.d && BTL.d.tuto) ? TUTO_NAME_O.toUpperCase() : (BTL.d && BTL.d.pvp && BTL.d.pvp.names) ? String(BTL.d.pvp.names.o || 'ADVERSAIRE').toUpperCase() : (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
     const mkName = (side, txt) => {
       const el = document.createElement('div'); el.className = 'vs-name ' + side;
       const fs = Math.max(13, Math.min(27, modW / (txt.length * 1.02)));
@@ -19456,10 +19473,10 @@ function btlExit(){
   else if(typeof renderBataille === 'function') renderBataille();
 }
 // =====================================================================================================
-//  V0.05.03 — TUTORIEL DE COMBAT GUIDÉ
+//  V0.05.03 — TUTORIEL DE COMBAT GUIDÉ (V0.05.04 : écran VS, modules, gestes verrouillés)
 //  Un combat scripté (decks, pioche, IA et résultat fixés) : le joueur est guidé pas à pas par des bulles ; l'écran se fige sur chaque
-//  explication (toucher pour continuer), les gestes demandés sont fléchés et contrôlés. Au tour 7 le guidage s'arrête : le joueur gagne
-//  seul en 2 coups. À la victoire : fenêtre de victoire + 20 cartes rares (les plus faibles, toujours les mêmes) — une seule fois par compte
+//  explication (toucher pour continuer), les gestes demandés sont fléchés et VERROUILLÉS (tout autre geste est refusé). Au tour 7 le joueur
+//  utilise son module BAVURES (ciblé) puis achève le chef ennemi ; l'adversaire (RickGod Soldier) a un module « bouton » (SAPHYR) au tour 6. À la victoire : fenêtre de victoire + 20 cartes rares (les plus faibles, toujours les mêmes) — une seule fois par compte
 //  (opération serveur `tutorial_complete`) ; refaire le tutoriel ne redonne rien. Aucune carte écarlate ni holo.
 // =====================================================================================================
 const TUTO = { gate:null, wait:null, pend:null, cur:null, raf:0, afterCarousel:false, launching:false, keep:0, shownAt:0, nudgeAt:0 };
@@ -19467,6 +19484,8 @@ const TUTO_LEAD = { p:'GOTHIKA', o:'CATER-PILLARD' };
 // ordre de pioche (la 1re carte de la liste est la 1re piochée) ; 4 cartes de départ puis 1 par tour
 const TUTO_DECK_P = ['LACRIUM', 'DILUS', 'SCOPT', 'BRI-KB-ROCK', 'HYPPER', 'TECHNOSORUS', 'ELYSIUM', 'ARKHAUL', 'TORTUGA', 'KRIGER', 'RAZOPS', 'FENCY'];
 const TUTO_DECK_O = ['BUZZY', 'BRI-KB-ROCK', 'ELYSIUM', 'EXO-MKI', 'HYPPER', 'JIPASIS', 'HARKO', 'RAZOPS', 'BUZZY', 'BRI-KB-ROCK', 'JIPASIS', 'HARKO'];
+const TUTO_NAME_O = 'RickGod Soldier';   // nom du commandant adverse (écran VS + bulles)
+const TUTO_MOD = { p:'BAVURES', o:'SAPHYR' };   // module ciblé pour le joueur, module « bouton » (sans cible) pour l'adversaire
 const TUTO_CHIEF_O = { hp:4, df:2 };   // chef ennemi déjà affaibli : 4 PV + 2 DEF = 6 à encaisser -> LACRIUM (4) + DILUS (2) le détruisent en 2 coups
 function tutoOn(){ return !!(typeof BTL !== 'undefined' && BTL && BTL.d && BTL.d.tuto); }
 function tutoWrap(name, fn){
@@ -19498,6 +19517,7 @@ const TUTO_AT = {
   handCard:name => () => { const c = BTL.S.p.hand.find(x => x.name === name); return c ? btlQ('#btlHand [data-uid="' + c.uid + '"]') : null; },
   pile:side => () => btlQ(side === 'p' ? '#btlMPile' : '#btlOPile'),
   mana:() => btlQ('#btlMMana'),
+  mod:side => () => btlQ(side === 'p' ? '#btlMod' : '#btlOMod'),
   end:() => btlQ('#btlEnd'),
   slot:(side, i) => () => btlSlotEl(side, i),
   unit:(side, name) => () => { const c = btlField(side).find(x => x.name === name); return c ? (btlUnitEl(c) || btlSlotOf(c)) : null; },
@@ -19527,9 +19547,21 @@ function tutoShow(o){
   if(!TUTO.raf) TUTO.raf = requestAnimationFrame(tutoFrame);
 }
 function tutoHide(){
-  TUTO.cur = null;
+  TUTO.cur = null; tutoDimOthers(true);
   const L = BTL && BTL.el && BTL.el.querySelector('#tutoLayer');
   if(L){ L.style.display = 'none'; L.classList.remove('tap', 'act', 'hole', 'nohole'); }
+}
+// les cartes qui ne servent pas à l'étape en cours sont assombries (et inutilisables : voir les verrous plus bas)
+function tutoDimOthers(clear){
+  if(!BTL || !BTL.el) return;
+  const g = TUTO.gate, want = new Set();
+  if(!clear && g){
+    const hand = () => BTL.S.p.hand.forEach(c => { if(g.kind !== 'play' || c.uid !== g.uid) want.add(btlQ('#btlHand [data-uid="' + c.uid + '"]')); });
+    const field = () => btlField('p').forEach(c => { if(g.kind !== 'plan' || c.uid !== g.uid){ const u = btlUnitEl(c); if(u) want.add(u); } });
+    if(g.kind === 'play'){ hand(); } else if(g.kind === 'plan'){ field(); hand(); } else if(g.kind === 'mod'){ field(); hand(); }
+  }
+  BTL.el.querySelectorAll('.tuto-off').forEach(e => { if(!want.has(e)) e.classList.remove('tuto-off'); });
+  want.forEach(e => { if(e) e.classList.add('tuto-off'); });
 }
 function tutoStop(){
   tutoHide(); TUTO.gate = null; TUTO.wait = null; clearInterval(TUTO.keep); TUTO.keep = 0; clearInterval(TUTO.unstick); TUTO.unstick = 0;
@@ -19543,6 +19575,7 @@ function tutoTap(){
 }
 function tutoNudge(){
   const L = BTL && BTL.el && BTL.el.querySelector('#tutoLayer'); if(!L || !TUTO.cur) return;
+  if(Date.now() - TUTO.nudgeAt < 700) return;   // une seule secousse à la fois
   const b = L.querySelector('.tuto-bub'); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
   TUTO.nudgeAt = Date.now();
 }
@@ -19574,6 +19607,7 @@ function tutoFrame(now){
   TUTO.raf = 0;
   const o = TUTO.cur; if(!o || !BTL || BTL.abort) return;
   const L = BTL.el.querySelector('#tutoLayer'); if(!L) return;
+  tutoDimOthers();
   const W = innerWidth, H = innerHeight;
   const A = o.at ? tutoRect(o.at) : null, F = o.from ? tutoRect(o.from) : null, T = o.to ? tutoRect(o.to) : null;
   const bub = L.querySelector('.tuto-bub'), svg = L.querySelector('.tuto-svg');
@@ -19636,7 +19670,7 @@ function tutoHead(hd, x0, y0, x1, y1){
 // ---------- contrôle des gestes : seul le geste demandé passe ----------
 const TUTO_HANDLERS = () => {
   tutoWrap('btlBuildSides', (o, a) => (a[0] && a[0].tuto) ? tutoSides() : o.apply(null, a));
-  tutoWrap('btlModInit', (o, a) => (a[0] && a[0].tuto) ? { p:null, o:null } : o.apply(null, a));
+  tutoWrap('btlModInit', (o, a) => (a[0] && a[0].tuto) ? { p:{ name:TUTO_MOD.p, rar:'rare', level:1, t:btlModT('rare', 1), frame:'rare' }, o:{ name:TUTO_MOD.o, rar:'rare', level:1, t:btlModT('rare', 1), frame:'rare' } } : o.apply(null, a));
   tutoWrap('btlFinish', (o, a) => tutoOn() ? tutoFinish(a[0]) : o.apply(null, a));
   tutoWrap('btlPlayerPhase', (o, a) => tutoOn() ? tutoPlayerPhase(o) : o.apply(null, a));
   tutoWrap('btlAI', (o, a) => (tutoOn() && TUTO_EN[BTL.turn]) ? tutoEnemy(TUTO_EN[BTL.turn]) : o.apply(null, a));
@@ -19649,16 +19683,30 @@ const TUTO_HANDLERS = () => {
   });
   tutoWrap('btlSetPlan', (o, a) => { const r = o.apply(null, a); if(tutoOn() && a[0] && a[0].side === 'p') tutoEmit('planned', { c:a[0], plan:a[1] }); return r; });
   tutoWrap('btlSlotAtPoint', (o, a) => { const si = o.apply(null, a), g = TUTO.gate; if(tutoOn() && g && si >= 0 && !(g.kind === 'play' && g.slot === si)){ tutoNudge(); return -1; } return si; });
+  tutoWrap('btlHandDown', (o, a) => { const r = o.apply(null, a); TUTO.downUid = (tutoOn() && BTL && BTL.hold && BTL.hold.c) ? BTL.hold.c.uid : null; return r; });
   tutoWrap('btlDragStart', (o, a) => {
     const g = TUTO.gate;
     if(tutoOn() && g){
       if(g.kind !== 'play' || !BTL.hold){ tutoNudge(); return; }
-      if(!BTL.hold.c || BTL.hold.c.uid !== g.uid){   // le doigt a glissé sur une autre carte de l'éventail : on prend quand même celle qui est demandée
-        const c = BTL.S.p.hand.find(x => x.uid === g.uid); if(!c){ tutoNudge(); return; }
+      if(!BTL.hold.c || BTL.hold.c.uid !== g.uid){
+        // le doigt n'a pas commencé sur la carte demandée : on ne fait rien (les autres cartes sont verrouillées).
+        // S'il a commencé dessus mais a dérivé sur sa voisine dans l'éventail, on garde la bonne carte.
+        const c = TUTO.downUid === g.uid ? BTL.S.p.hand.find(x => x.uid === g.uid) : null;
+        if(!c){ tutoNudge(); return; }
         BTL.hold.c = c; BTL.hold.idx = BTL.S.p.hand.indexOf(c);
       }
     }
     return o.apply(null, a);
+  });
+  tutoWrap('btlModDown', (o, a) => { if(tutoOn() && TUTO.gate && TUTO.gate.kind !== 'mod'){ tutoNudge(); return; } return o.apply(null, a); });
+  tutoWrap('btlModuleUse', async (o, a) => {
+    if(!(tutoOn() && a[0] === 'p')) return o.apply(null, a);
+    const g = TUTO.gate;
+    if(g && (g.kind !== 'mod' || !a[1] || a[1].uid !== g.tgt)){ tutoNudge(); return false; }   // seule la cible demandée est acceptée
+    const cur = TUTO.cur; if(g) tutoHide();
+    const r = await o.apply(null, a);
+    if(r) tutoEmit('moduled', {}); else if(g && cur && TUTO.gate === g && BTL && !BTL.over) tutoShow(cur);
+    return r;
   });
   tutoWrap('btlAimDown', (o, a) => {
     const g = TUTO.gate;
@@ -19715,8 +19763,8 @@ async function tutoIntro(){
   tutoKeepTimer();
   await btlSleep(500);
   await tutoSay({ title:'BIENVENUE, COMMANDANT', at:TUTO_AT.plate, pos:'bottom', text:'Voici le <b>champ de bataille</b>. Pour ce premier combat, je vous guide pas à pas : <b>touchez l\'écran</b> pour passer d\'une explication à la suivante.' });
-  await tutoSay({ title:'VOTRE CHEF', at:TUTO_AT.chief('p'), text:'Voici votre <b>chef d\'escouade</b>. Il ne combat pas, mais s\'il tombe à <b>0 PV</b>, la partie est perdue. Il a des <b>PV</b> et une <b>DEF</b> (son bouclier).' });
-  await tutoSay({ title:'LE CHEF ENNEMI', at:TUTO_AT.chief('o'), text:'Voici le chef ennemi, déjà <b>affaibli</b> : 4 PV et 2 DEF. Votre but : le <b>détruire</b> pour gagner le combat.' });
+  await tutoSay({ title:'VOTRE CHEF', at:TUTO_AT.chief('p'), text:'Voici votre <b>chef d\'escouade</b>. Il ne combat pas, mais s\'il tombe à <b>0 PV</b> (points de vie), la partie est perdue. Il a des <b>PV</b> et une <b>DEF</b> (défense : un bouclier qui absorbe les dégâts avant les PV).' });
+  await tutoSay({ title:'LE CHEF ENNEMI', at:TUTO_AT.chief('o'), text:'Voici le chef d\'escouade de votre adversaire, <b>' + TUTO_NAME_O + '</b>, déjà <b>affaibli</b> : 4 PV et 2 DEF. Votre but : le <b>détruire</b> pour gagner le combat.' });
 }
 async function tutoCoinHold(P, S0, first){
   const r = { left:P.x - S0 * .65, top:P.y - S0 * .65, width:S0 * 1.3, height:S0 * 1.3 };
@@ -19725,41 +19773,50 @@ async function tutoCoinHold(P, S0, first){
     : 'Voici la <b>pièce du choix du premier joueur</b> : c\'est l\'adversaire qui commence.' });
 }
 async function tutoAfterDeal(){
-  await tutoSay({ title:'VOTRE MAIN', at:TUTO_AT.hand, text:'Voici votre <b>main</b> : 4 cartes de départ. Maintenez le doigt sur une carte pour la voir en grand. Poser une carte coûte <b>1 mana</b>.' });
-  await tutoSay({ title:'VOTRE PIOCHE', at:TUTO_AT.pile('p'), text:'Voici votre <b>pioche</b> : au début de chacun de vos tours, vous piochez <b>une carte</b>. Quand elle est vide, votre chef subit des dégâts.' });
+  await tutoSay({ title:'VOTRE MAIN', at:TUTO_AT.hand, text:'Voici votre <b>main</b> : 4 cartes de départ (vous en piocherez une de plus à chaque tour). Maintenez le doigt sur une carte pour la voir en grand. Poser une carte coûte <b>1 mana</b>.' });
+  await tutoSay({ title:'VOTRE PIOCHE', at:TUTO_AT.pile('p'), text:'Voici votre <b>pioche</b> (le tas de cartes de votre deck) : au début de chacun de vos tours, vous piochez <b>une carte</b>. Quand elle est vide, votre chef subit des dégâts.' });
+  await tutoSay({ title:'VOTRE MODULE', at:TUTO_AT.mod('p'), text:'Cette case est votre <b>module</b> : <b>' + TUTO_MOD.p + '</b>. C\'est une capacité de votre deck (celle que vous choisissez dans l\'onglet DECK), utilisable <b>une seule fois par tour</b> contre <b>3 mana</b>. C\'est un module <b>ciblé</b> : il faut lui désigner une cible. Vous allez bientôt vous en servir.' });
+  await tutoSay({ title:'LE MODULE ADVERSE', at:TUTO_AT.mod('o'), text:'L\'adversaire a lui aussi un module : <b>' + TUTO_MOD.o + '</b>. C\'est un module « <b>bouton</b> » (sans cible) : il se déclenche d\'un seul appui et son effet s\'applique tout seul. Un module ciblé, lui, se <b>glisse sur sa cible</b>.' });
 }
 // directeurs des tours du joueur : p = promesse de fin de phase (le joueur a terminé son tour)
 const TUTO_DIR = {
   1: async p => {
-    await tutoSay({ title:'UN TANK !', at:TUTO_AT.handCard('HYPPER'), text:'Vous venez de piocher <b>HYPPER</b>, une carte <b>TANK</b>. Tant qu\'un Tank est en jeu, l\'adversaire doit <b>l\'attaquer en premier</b> : il protège votre chef et le reste de l\'escouade.' });
-    await tutoSay({ title:'LE MANA', at:TUTO_AT.mana, text:'Ces cristaux sont votre <b>mana</b> : 1 cristal ce tour-ci (il en vient un de plus tous les deux tours). Poser une carte en coûte 1. Le mana inutilisé est perdu à la fin du tour.' });
+    await tutoSay({ title:'UN TANK !', at:TUTO_AT.handCard('HYPPER'), text:'Vous venez de piocher <b>HYPPER</b>, une carte <b>TANK</b> (un défenseur). Tant qu\'un Tank est en jeu, l\'adversaire doit <b>l\'attaquer en premier</b> : il protège votre chef et le reste de l\'escouade.' });
+    await tutoSay({ title:'LE MANA', at:TUTO_AT.mana, text:'Ces cristaux sont votre <b>mana</b> (l\'énergie qui paie vos actions) : 1 cristal ce tour-ci (il en vient un de plus tous les deux tours). Poser une carte en coûte 1. Le mana inutilisé est perdu à la fin du tour.' });
     const hy = BTL.S.p.hand.find(c => c.name === 'HYPPER');
     await tutoAct({ title:'POSEZ-LE', from:TUTO_AT.handCard('HYPPER'), to:TUTO_AT.slot('p', 1), text:'Faites glisser <b>HYPPER</b> depuis votre main jusqu\'à un <b>emplacement libre</b> (celui du milieu).' }, { kind:'play', uid:hy.uid, slot:1 }, 'played');
     await tutoSay({ title:'BIEN JOUÉ', at:TUTO_AT.unit('p', 'HYPPER'), text:'HYPPER est en jeu. Une carte posée <b>ne peut pas agir tout de suite</b> (sauf les cartes Percée, vous allez voir). Plus de mana : terminons le tour.' });
     await tutoEnd(p, 'Appuyez sur <b>FIN</b> : un premier appui arme le bouton (il devient vert), le <b>second termine</b> le tour.');
   },
   3: async p => {
-    await tutoSay({ title:'PERCÉE', at:TUTO_AT.handCard('LACRIUM'), text:'<b>LACRIUM</b> a <b>PERCÉE</b> : elle peut <b>attaquer dès le tour où vous la posez</b>. En contrepartie, elle ne peut pas défendre ce tour-là. Vous avez 2 mana : un pour la poser, un pour attaquer.' });
+    await tutoSay({ title:'PERCÉE', at:TUTO_AT.handCard('LACRIUM'), text:'<b>LACRIUM</b> a <b>PERCÉE</b> (attaque immédiate) : elle peut <b>attaquer dès le tour où vous la posez</b>. En contrepartie, elle ne peut pas défendre ce tour-là. Vous avez 2 mana : un pour la poser, un pour attaquer.' });
     const lc = BTL.S.p.hand.find(c => c.name === 'LACRIUM');
     await tutoAct({ title:'POSEZ-LA', from:TUTO_AT.handCard('LACRIUM'), to:TUTO_AT.slot('p', 0), text:'Faites glisser <b>LACRIUM</b> jusqu\'à l\'emplacement de gauche.' }, { kind:'play', uid:lc.uid, slot:0 }, 'played');
     const tk = btlField('o').find(c => c.name === 'HYPPER'), lu = BTL.S.p.slots[0];
-    await tutoAct({ title:'ATTAQUEZ', from:TUTO_AT.unit('p', 'LACRIUM'), to:TUTO_AT.unit('o', 'HYPPER'), dir:'up', text:'Faites glisser <b>LACRIUM vers le HAUT</b> jusqu\'au <b>Tank ennemi</b> : on doit viser le Tank en premier. (Vers le bas, on défend.)' }, { kind:'plan', uid:lu.uid, plan:'atk', tgt:tk.uid }, 'planned');
+    await tutoAct({ title:'ATTAQUEZ', from:TUTO_AT.unit('p', 'LACRIUM'), to:TUTO_AT.unit('o', 'HYPPER'), dir:'up', text:'Faites glisser <b>LACRIUM vers le HAUT</b> jusqu\'au <b>Tank ennemi</b> (on doit viser le Tank en premier) : elle lui infligera son <b>ATQ</b> (attaque), soit 4 dégâts. Vers le bas, on défend.' }, { kind:'plan', uid:lu.uid, plan:'atk', tgt:tk.uid }, 'planned');
     await tutoSay({ title:'ATTAQUE PRÉPARÉE', at:TUTO_AT.unit('p', 'LACRIUM'), text:'L\'attaque est <b>prévue</b> (la flèche) mais ne part qu\'en <b>fin de tour</b>, dans l\'ordre où vous les avez lancées. Un simple appui sur la carte annulerait son action.' });
     await tutoEnd(p, 'Plus de mana. Appuyez deux fois sur <b>FIN</b> pour lancer la résolution.');
   },
   5: async p => {
-    await tutoSay({ title:'BAROUD D\'HONNEUR', at:TUTO_AT.handCard('ELYSIUM'), text:'<b>ELYSIUM</b> a un <b>BAROUD D\'HONNEUR</b> : quand elle est détruite, elle <b>inflige 2 dégâts</b> à la carte qui l\'a détruite. Un dernier coup avant de tomber.' });
-    await tutoSay({ title:'APPEL', at:TUTO_AT.handCard('DILUS'), text:'<b>DILUS</b> a un <b>APPEL</b> : son effet se déclenche <b>dès qu\'elle est posée</b>. Ici, vous <b>piochez une carte</b>. Vous avez 3 mana ce tour-ci.' });
+    await tutoSay({ title:'BAROUD D\'HONNEUR', at:TUTO_AT.handCard('ELYSIUM'), text:'<b>ELYSIUM</b> a un <b>BAROUD D\'HONNEUR</b> (un dernier effet à sa mort) : quand elle est détruite, elle <b>inflige 2 dégâts</b> à la carte qui l\'a détruite. Un dernier coup avant de tomber.' });
+    await tutoSay({ title:'APPEL', at:TUTO_AT.handCard('DILUS'), text:'<b>DILUS</b> a un <b>APPEL</b> (un effet à la pose) : il se déclenche <b>dès qu\'elle est posée</b>. Ici, vous <b>piochez une carte</b>. Vous avez 3 mana ce tour-ci.' });
     const dc = BTL.S.p.hand.find(c => c.name === 'DILUS');
     await tutoAct({ title:'POSEZ-LA', from:TUTO_AT.handCard('DILUS'), to:TUTO_AT.slot('p', 2), text:'Faites glisser <b>DILUS</b> jusqu\'à l\'emplacement de droite.' }, { kind:'play', uid:dc.uid, slot:2 }, 'played');
     const tk = btlField('o').find(c => c.name === 'HYPPER'), lu = btlField('p').find(c => c.name === 'LACRIUM');
     await tutoAct({ title:'ACHEVEZ LE TANK', from:TUTO_AT.unit('p', 'LACRIUM'), to:TUTO_AT.unit('o', 'HYPPER'), dir:'up', text:'Le Tank ennemi est affaibli : <b>LACRIUM</b> peut l\'<b>achever</b>. Glissez-la vers le haut sur lui.' }, { kind:'plan', uid:lu.uid, plan:'atk', tgt:tk.uid }, 'planned');
     const hy = btlField('p').find(c => c.name === 'HYPPER'), ch = BTL.S.p.leader;
-    await tutoAct({ title:'DÉFENDRE', from:TUTO_AT.unit('p', 'HYPPER'), to:TUTO_AT.chief('p'), dir:'down', text:'Dernier mana : <b>HYPPER</b> peut <b>défendre</b>. Glissez-le vers le <b>BAS</b>, puis jusqu\'à votre chef : la <b>DEF d\'HYPPER s\'ajoute</b> à celle du chef. Vers le haut on attaque, vers le bas on défend.' }, { kind:'plan', uid:hy.uid, plan:'def', tgt:ch.uid }, 'planned');
+    await tutoAct({ title:'DÉFENDRE', from:TUTO_AT.unit('p', 'HYPPER'), to:TUTO_AT.chief('p'), dir:'down', text:'Dernier mana : <b>HYPPER</b> peut <b>défendre</b>. Glissez-le vers le <b>BAS</b>, puis jusqu\'à votre chef : la <b>DEF d\'HYPPER s\'ajoute</b> à celle du chef (son bouclier grossit). Vers le haut on attaque, vers le bas on défend.' }, { kind:'plan', uid:hy.uid, plan:'def', tgt:ch.uid }, 'planned');
     await tutoEnd(p, 'Tout est prêt. Terminez le tour avec <b>FIN</b>.');
   },
   7: async p => {
-    await tutoSay({ title:'À VOUS DE JOUER !', at:TUTO_AT.chief('o'), text:'Plus de Tank : le <b>chef ennemi</b> est à découvert (4 PV + 2 DEF). <b>LACRIUM</b> (4 d\'ATQ) et <b>DILUS</b> (2) suffisent à le détruire en <b>2 attaques</b>. Vous savez tout : <b>glissez-les vers le haut</b> sur le chef, puis terminez le tour. Bonne chance !' });
+    const lo = BTL.S.o.leader;
+    await tutoSay({ title:'À VOUS DE JOUER !', at:TUTO_AT.chief('o'), text:'Plus de Tank : le <b>chef ennemi</b> est à découvert (4 PV + 2 DEF). Vous avez <b>4 mana</b> : de quoi utiliser votre <b>module</b> (3 mana) puis lancer une dernière attaque (1 mana).' });
+    await tutoSay({ title:'VOTRE MODULE : ' + TUTO_MOD.p, at:TUTO_AT.mod('p'), text:'<b>' + TUTO_MOD.p + '</b> inflige <b>3 dégâts</b> à la carte que vous choisissez, <b>chef compris</b> et même derrière un Tank. Il agit <b>tout de suite</b> (pas en fin de tour) et une seule fois par tour.' });
+    await tutoAct({ title:'UTILISEZ LE MODULE', from:TUTO_AT.mod('p'), to:TUTO_AT.chief('o'), dir:'up', text:'Faites glisser <b>le module vers le chef ennemi</b> : sa DEF encaisse d\'abord, le reste touche ses PV.' }, { kind:'mod', tgt:lo.uid }, 'moduled');
+    await tutoSay({ title:'BIEN VISÉ', at:TUTO_AT.chief('o'), text:'Le module a fait mouche : il reste au chef ennemi <b>' + Math.max(0, Math.round(lo.hp)) + ' PV</b> et ' + Math.max(0, Math.round(lo.df)) + ' DEF. Le module est grisé jusqu\'au prochain tour.' });
+    const lu = btlField('p').find(c => c.name === 'LACRIUM');
+    await tutoAct({ title:'ACHEVEZ-LE', from:TUTO_AT.unit('p', 'LACRIUM'), to:TUTO_AT.chief('o'), dir:'up', text:'Dernier mana : glissez <b>LACRIUM</b> vers le haut sur le <b>chef ennemi</b>. Ses 4 d\'ATQ suffiront à le détruire.' }, { kind:'plan', uid:lu.uid, plan:'atk', tgt:lo.uid }, 'planned');
+    await tutoEnd(p, 'Terminez le tour avec <b>FIN</b> : l\'attaque part et le combat est gagné.');
     BTL.deadline = Date.now() + BTL_TURN_MS;
   },
   hint: async p => {
@@ -19780,20 +19837,18 @@ async function tutoPlayerPhase(orig){
   if(dir){ try{ await dir(done); }catch(e){ if(e !== 'abort') console.error(e); } }
   return done;
 }
-// scripts de l'adversaire : poser une carte (play), agir (plan), commenter (say)
+// scripts de l'adversaire : poser une carte (play), agir (plan), utiliser son module (mod), commenter (say)
 const TUTO_EN = {
   2: [
     { play:'HYPPER', slot:1, say:{ title:'UN TANK ENNEMI', text:'L\'adversaire pose à son tour un <b>TANK</b>. Vos attaques devront le viser <b>en premier</b>, avant le chef ou les autres cartes.' } },
-    { play:'BUZZY', slot:0, say:{ title:'PASSIF', text:'<b>BUZZY</b> a un <b>PASSIF</b> : un effet <b>automatique</b>, sans rien à activer. Le sien se déclenche <b>à la fin de son tour</b> : il soigne un allié blessé.' } }
+    { play:'BUZZY', slot:0, say:{ title:'PASSIF', text:'<b>BUZZY</b> a un <b>PASSIF</b> (un effet automatique, sans rien à activer). Le sien se déclenche <b>à la fin de son tour</b> : il soigne un allié blessé.' } }
   ],
   4: [
     { plan:'HYPPER', kind:'atk', tgt:'HYPPER' },
     { plan:'BUZZY', kind:'atk', tgt:'HYPPER' }
   ],
   6: [
-    { play:'BRI-KB-ROCK', slot:1 },
-    { play:'ELYSIUM', slot:2 },
-    { plan:'BUZZY', kind:'atk', tgt:'HYPPER' }
+    { mod:true, say:{ title:'MODULE « BOUTON »', text:'L\'adversaire active son module <b>' + TUTO_MOD.o + '</b> (3 mana) : un module « <b>bouton</b> », sans cible, déclenché d\'un seul appui. Il <b>pioche 2 cartes</b>. Comme vous, il ne peut s\'en servir qu\'une fois par tour.' } }
   ]
 };
 async function tutoEnemy(sc){
@@ -19814,6 +19869,11 @@ async function tutoEnemy(sc){
       const tg = btlAlly('p').find(x => x.name === st.tgt && x.hp > 0) || btlValidFoes('o')[0];
       btlSetPlan(c, { kind:st.kind, tgt:tg.uid, heal:false });
       await btlSleep(520);
+    } else if(st.mod){
+      const ok = await btlModuleUse('o');
+      if(!ok) console.error('tuto : module adverse non lancé');
+      await btlSleep(350);
+      if(st.say) await tutoSay(Object.assign({ at:TUTO_AT.mod('o') }, st.say));
     }
   }
   await btlSleep(500);
@@ -19823,7 +19883,7 @@ async function tutoAfterResolve(side){
   const T = BTL.turn;
   if(T === 3){
     await tutoSay({ title:'LA DEF, UN BOUCLIER', at:TUTO_AT.unit('o', 'HYPPER'), text:'Les <b>4 dégâts</b> de LACRIUM ont été absorbés par la <b>DEF du Tank</b> (son bouclier) : il n\'a perdu aucun PV. La DEF s\'use d\'abord, puis ce sont les <b>PV</b> qui sont touchés.' });
-    await tutoSay({ title:'JAUGE D\'ULTIME', at:TUTO_AT.ult('p', 'LACRIUM'), text:'Chaque dégât <b>infligé ou reçu</b> remplit la <b>jauge d\'ultime</b> de la carte. À 100, elle <b>double ses stats</b> à votre prochain tour.' });
+    await tutoSay({ title:'JAUGE D\'ULTIME', at:TUTO_AT.ult('p', 'LACRIUM'), text:'Chaque dégât <b>infligé ou reçu</b> remplit la <b>jauge d\'ultime</b> de la carte. À 100, elle <b>double ses stats</b> (ATQ, DEF et PV) à votre prochain tour.' });
   } else if(T === 4){
     await tutoSay({ title:'VOTRE TANK ENCAISSE', at:TUTO_AT.unit('p', 'HYPPER'), text:'Les attaques ennemies ont dû viser <b>votre Tank</b> : sa DEF a fondu, mais votre chef et le reste de l\'escouade sont intacts. Il a même <b>riposté</b> à chaque attaque.' });
   } else if(T === 5){
@@ -19854,7 +19914,7 @@ async function tutoFinish(winner){
 }
 async function btlRun(){
   if(pvpOn()) return pvpRun();   // PvP : le serveur mène la partie
-  if(tutoOn()) await tutoIntro(); else if(typeof btlVsIntro === 'function') await btlVsIntro();   // V0.04.90 : écran VS (Bataille + Défis ; adversaire de défi = nom de la carte du défi)
+  if(tutoOn()){ if(typeof btlVsIntro === 'function') await btlVsIntro(); await tutoIntro(); } else if(typeof btlVsIntro === 'function') await btlVsIntro();   // V0.04.90 : écran VS (Bataille + Défis ; adversaire de défi = nom de la carte du défi)
   if(!BTL || BTL.abort) return;
   await btlSleep(250);
   // pile ou face
@@ -20607,7 +20667,7 @@ function btlHandDown(ev){
   if(!BTL || BTL.hold || BTL.menu || BTL.tg || BTL.abort) return;
   const idx = btlHandIdxAt(ev.clientX); if(idx < 0) return;
   ev.preventDefault();
-  const h = BTL.hold = { idx:-1, c:BTL.S.p.hand[idx], mode:'zoom', fl:null, ghost:null };
+  const h = BTL.hold = { idx:-1, c:BTL.S.p.hand[idx], mode:'zoom', fl:null, ghost:null, x0:ev.clientX, y0:ev.clientY };
   btlZoomShow(idx);
   const canPlay = () => BTL.phase === 'plan' && BTL.side === 'p';
   h.move = e => {
@@ -20621,7 +20681,7 @@ function btlHandDown(ev){
         return;
       }
       const i = btlHandIdxAt(e.clientX);
-      if(i !== h.idx && i >= 0){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }
+      if(i !== h.idx && i >= 0 && Math.abs(e.clientX - h.x0) > Math.abs(e.clientY - h.y0)){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }   // V0.05.04 : un glissé vers le haut (même en diagonale) garde la carte touchée
     } else if(h.mode === 'drag'){
       h.fl.move(e.clientX, e.clientY - 40);
       const si = btlSlotAtPoint(e.clientX, e.clientY - 20);
