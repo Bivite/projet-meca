@@ -8700,6 +8700,7 @@ async function econSend(op, params, rid){
   if(!sess || !sess.access_token) return { status: readSupaSession() ? 0 : 401, body:null };   // session encore là mais jeton non rafraîchi : réseau ; plus de session : déconnecté
   const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
   const tm = ctl ? setTimeout(() => ctl.abort(), 12000) : 0;
+  ECON.lastNet = Date.now();
   try{
     const res = await fetch(SUPA_URL + '/functions/v1/econ', {
       method:'POST', signal: ctl ? ctl.signal : undefined,
@@ -9054,7 +9055,9 @@ async function econClaimAllTrophies(){
 }
 // Le temps de jeu est compté par le serveur (battements) : on lui envoie un battement juste avant de réclamer, pour que « EN SERVICE » soit à jour
 function econClaimTask(i){
-  return econAct('heartbeat', {}, { quiet:true, render:'none' }).then(() => {
+  const list0 = tasksOfWeek();
+  const skipHb = i === list0.length || taskState(list0[i]) === 'ready';   // V0.05.04 : déjà prête (ou bonus) -> inutile de mettre le temps de jeu à jour d'abord (une requête de moins)
+  return (skipHb ? Promise.resolve() : econAct('heartbeat', {}, { quiet:true, render:'none' })).then(() => {
     const list = tasksOfWeek();
     if(i === list.length ? (!tasksAllClaimed() || player.tasks.bonus) : taskState(list[i]) !== 'ready'){ econRenderAll('full'); return null; }
     return econAct('claim_task', { index:i });
@@ -9066,7 +9069,8 @@ function econClaimTask(i){
   });
 }
 function econClaimAllTasks(){
-  return econAct('heartbeat', {}, { quiet:true, render:'none' }).then(() => econAct('claim_all_tasks')).then(r => {
+  const waitHb = tasksOfWeek().some(t => taskState(t) === 'locked');   // V0.05.04 : battement seulement si une tâche peut encore devenir prête avec le temps de jeu
+  return (waitHb ? econAct('heartbeat', {}, { quiet:true, render:'none' }) : Promise.resolve()).then(() => econAct('claim_all_tasks')).then(r => {
     if(!r.ok) return;
     const n = r.result.count;
     showRewardModal(n > 1 ? n + ' TÂCHES RÉCUPÉRÉES' : '1 TÂCHE RÉCUPÉRÉE', mergeRewardItems(econItems(r.result.items)));
@@ -9074,6 +9078,12 @@ function econClaimAllTasks(){
   });
 }
 // ---------- Battements : temps de jeu compté par le serveur ----------
+document.addEventListener('pointerdown', () => {
+  if(!ECON.ready || document.hidden || ECON.pending || window.BTL) return;
+  if(Date.now() - (ECON.lastNet || 0) < 25000) return;
+  ECON.lastNet = Date.now();
+  econAct('heartbeat', {}, { quiet:true, render:'none' });   // V0.05.04 : réveille le serveur avant le prochain clic (premier clic plus rapide)
+}, { capture:true, passive:true });
 function econHeartbeat1s(){
   if(!ECON.ready) return;
   if(++ECON.hbTick >= 60){ ECON.hbTick = 0; econAct('heartbeat', {}, { quiet:true, render:'light' }); }
@@ -9222,6 +9232,7 @@ var CHANGELOG = [
     'TUTORIEL (suite) : tout est maintenant verrouillé sur le geste demandé (les autres cartes sont assombries et ne répondent pas), un écran VERSUS s\'affiche avant le combat guidé, ton adversaire s\'appelle RickGod Soldier, et le combat t\'apprend les MODULES : tu utilises BAVURES (module ciblé) et l\'adversaire active SAPHYR (module « bouton »). Le bouton final du carrousel devient LANCER LE COMBAT.',
     'TUTORIEL (carrousel) : l\'image de la page CAPACITÉS ULTIMES ne déborde plus sur le titre, nouvelles pages BATAILLE, COLLECTION et RÉCOMPENSES, textes mis à jour (WINSTREAK, modules, défi) et précisions entre parenthèses dans les bulles.',
     'COMBAT : en tirant une carte de ta main vers le haut en diagonale, tu posais parfois la carte voisine ; tu poses maintenant toujours la carte que tu as touchée (faire glisser le doigt de côté sur la main change toujours la carte affichée).',
+    'RÉACTIVITÉ : récupérer une tâche ne fait plus qu\'une demande au serveur au lieu de deux quand elle est déjà prête (environ deux fois plus rapide) ; le serveur est « réveillé » dès que tu touches l\'écran après une pause, pour que le premier clic sur une récompense, une tâche ou un booster ne tombe plus sur un serveur endormi.',
   ] },
   { v:'V0.05.03', items:[
     'TUTORIEL DE COMBAT : à ta toute première connexion, après la création du compte et le tutoriel, un combat guidé t\'apprend tout pas à pas (pièce, mana, Tank, Percée, Appel, Baroud d\'honneur, Passif, DEF, ultime, attaque et défense) avec des bulles et des flèches. À la fin, tu es lâché seul pour finir le combat en 2 coups, puis tu reçois 20 cartes rares. Tu peux le refaire à tout moment depuis REVOIR LE TUTORIEL dans les Options (les cartes ne sont données qu\'une seule fois).',
