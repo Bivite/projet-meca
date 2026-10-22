@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.07</title>
+<title>Projet MECA V0.05.08</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -3159,7 +3159,10 @@
   /* V0.04.41 : filtres par type d'effet (Appel / Tank / Passif / Percée) + TOUTES LES CARTES pleine largeur dessous */
   .fx-opts{padding-top:6px;}
   .fx-opts .filter-opt{display:flex; align-items:center; justify-content:center; gap:3px; flex:1 1 0; min-width:0; padding:10px 1px; letter-spacing:.4px; font-size:9px; white-space:nowrap;}
-  .fx-opts .filter-opt.fx-all{flex:1 1 100%; letter-spacing:1.5px;}
+  .fx-opts .filter-opt.fx-all{flex:1 1 56%; letter-spacing:1.5px;}
+  .fx-opts .filter-opt.fx-tech{flex:1 1 34%; letter-spacing:1.5px;}
+  .fx-opts .fx-br{flex:0 0 100%; height:0; margin:0; padding:0; border:0;}
+  .fxi.k-tech{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7h10v10H7z M9.5 9.5v5h5v-5z M9 2h2v3H9z M13 2h2v3h-2z M9 19h2v3H9z M13 19h2v3h-2z M2 9h3v2H2z M2 13h3v2H2z M19 9h3v2h-3z M19 13h3v2h-3z' fill-rule='evenodd'/%3E%3C/svg%3E"); aspect-ratio:1/1;}
   .fxi{flex:none; display:block; height:13px; background:currentColor; -webkit-mask:var(--ic) center/contain no-repeat; mask:var(--ic) center/contain no-repeat;}
   .fxi.k-tank{--ic:var(--tank-ico); aspect-ratio:200/249;}
   .fxi.k-passif{--ic:var(--passif-ico); aspect-ratio:220/184;}
@@ -6827,6 +6830,24 @@
     background:var(--lg-img) center / 100% 100% no-repeat;
   }
   .lg-art-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; pointer-events:none;}
+  /* V0.05.08 : carte TECH. Le cadre (image à fond transparent) est posé PAR-DESSUS l'illustration ; le hublot rond, le bandeau du nom et le grand cadre de l'effet sont repérés sur l'image fournie. */
+  .lg-layer.f-tech{--c1:#eaffee; --c2:#8dffa0; --c3:#22d65a; --cglow:rgba(50,255,110,.85); --cdk:rgba(0,70,20,.6); --gemc:rgba(0,24,8,.9); --gemhl:rgba(200,255,210,.75); --nc2:#c9ffd2;
+    background:none; border-radius:3.6% / 2.6%;}
+  .lg-layer.f-tech.noframe{background:linear-gradient(160deg,#1c2622,#08100c); box-shadow:inset 0 0 0 .8cqw #2fe060, inset 0 0 6cqw rgba(40,255,100,.25);}
+  .lg-layer.f-tech::after{display:none;}
+  .tech-art{position:absolute; left:17%; top:9.2%; width:65.4%; height:43%; border-radius:50%; overflow:hidden; z-index:0; background:radial-gradient(circle at 50% 40%, #0f3a1c, #03100a); pointer-events:none;}
+  .tech-art-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .tech-art-none{position:absolute; inset:22%; display:block; opacity:.55; background:#3dff6a; -webkit-mask:var(--ic-chip) center/contain no-repeat; mask:var(--ic-chip) center/contain no-repeat;
+    --ic-chip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7h10v10H7z M9.5 9.5v5h5v-5z M9 2h2v3H9z M13 2h2v3h-2z M9 19h2v3H9z M13 19h2v3h-2z M2 9h3v2H2z M2 13h3v2H2z M19 9h3v2h-3z M19 13h3v2h-3z' fill-rule='evenodd'/%3E%3C/svg%3E");}
+  .tech-frame{position:absolute; inset:0; width:100%; height:100%; z-index:1; display:block; pointer-events:none; user-select:none;}
+  .tech-name{position:absolute; left:19%; width:62%; top:52.3%; height:8.6%; z-index:2; display:flex; align-items:center; justify-content:center; white-space:nowrap; overflow:hidden;
+    font-family:var(--font-title); font-weight:900; letter-spacing:.06em; text-transform:uppercase; color:var(--nc2); text-shadow:0 0 1.4cqw rgba(50,255,110,.9), 0 .3cqw .2cqw rgba(0,0,0,.9);}
+  .tech-text{position:absolute; left:19.6%; width:60.6%; top:64.2%; height:19.4%; z-index:2; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
+  .tech-text-in{font-family:'Rajdhani','Segoe UI',sans-serif; font-weight:700; line-height:1.28; color:#e4ffe9; text-shadow:0 .25cqw .3cqw rgba(0,0,0,.95); overflow-wrap:anywhere;}
+  .tech-cost{position:absolute; left:6.6%; top:4.2%; width:12.4%; aspect-ratio:1/1.12; z-index:3; display:flex; align-items:center; justify-content:center; pointer-events:none; filter:drop-shadow(0 0 1.2cqw rgba(76,194,255,.95)) drop-shadow(0 .4cqw .4cqw rgba(0,0,0,.8));}
+  .tech-cost::before{content:""; position:absolute; inset:0; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background:conic-gradient(#d6f6ff 0 25%, #79d2ff 25% 50%, #2f7fe6 50% 75%, #5cc0ff 75%);}
+  .tech-cost::after{content:""; position:absolute; inset:7%; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background:radial-gradient(circle at 50% 40%, #12335f, #061428);}
+  .tech-cost b{position:relative; z-index:1; font-family:var(--font-title); font-weight:900; font-size:6.4cqw; line-height:1; color:#bfeaff; text-shadow:0 0 1.2cqw rgba(76,194,255,.95);}
   /* Découpe de l'artwork à la forme RÉELLE du hublot de chaque cadre (mesurée par détection de
      contour sur chaque image de cadre : le hublot n'a pas exactement la même forme selon la rareté,
      un seul tracé partagé laissait des liserés sombres visibles sur certaines raretés — V0.01.68).
@@ -7758,6 +7779,9 @@
   .btl .unit.cbt .cbt-can{ display:none; position:absolute; inset:2.5%; border-radius:10%; z-index:-1; pointer-events:none;
     box-shadow:0 0 6px 1px rgba(120,200,255,.95), 0 0 16px 4px rgba(50,145,255,.6); animation:btlHaloO 1.8s ease-in-out infinite; }
   .btl .unit.cbt.can-act .cbt-can{ display:block; }
+  .btl-hand .btl-hc.tech.can::before{ box-shadow:0 0 7px 2px rgba(120,255,160,.9), 0 0 18px 4px rgba(50,255,110,.4); }
+  .btl.tech-drag .btl-plate{ transition:outline-color .15s; outline:2px solid rgba(60,255,110,.0); outline-offset:-3px; }
+  .btl.tech-armed .btl-plate{ outline-color:rgba(60,255,110,.85); }
   .btl-hand .btl-hc.can::before{ content:""; position:absolute; inset:1.5%; border-radius:6%; z-index:-1; pointer-events:none;
     box-shadow:0 0 7px 2px rgba(255,255,255,.8), 0 0 18px 4px rgba(255,255,255,.3); animation:btlHaloO 2.2s ease-in-out infinite !important; }
 
@@ -8407,7 +8431,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.07</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.08</b></div>
   </div>
 
     </div>
@@ -9227,9 +9251,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.07';
+var BUILD_VERSION = 'V0.05.08';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.08', items:[
+    'NOUVEAU TYPE DE CARTE : TECH. Une Tech ne se pose pas sur le champ de bataille : tu la joues depuis ta main pendant ton tour, en la glissant vers le haut (sur une cible si elle en demande une) ; son effet est immédiat, comme un module, et elle peut coûter du mana.',
+    'Dans un deck, tu peux mettre autant de Tech que tu veux, mais chacune prend la place d\'une carte MECH (2 exemplaires au plus du même nom, et ton chef doit être un MECH). Les Tech se trouvent dans les boosters de cartes, apparaissent dans la collection, et ont leur propre filtre.'
+  ] },
   { v:'V0.05.07', items:[
     'NOUVEAU DOS DE CARTE : TECH (métal et vert néon). Tu peux le trouver dans les boosters RESSOURCES, avec les autres dos, puis le choisir dans l\'écran de ton deck.'
   ] },
@@ -11616,6 +11644,22 @@ const BTL_TOKEN_DEFS = [
     artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/kotama-art-ext.webp' }
 ];
 
+// ---------- V0.05.08 : cartes TECH ----------
+// Une Tech n'est PAS posée sur le champ de bataille : c'est une carte à IMPACT DIRECT, jouée depuis la main pendant le tour du joueur (effet immédiat, comme un module),
+// qui coûte du mana (ou non) selon la carte. Pas de rareté (une seule sorte), pas de Défi, tirées dans les boosters de cartes existants.
+// Dans un deck : autant de Tech qu'on veut (elles prennent la place d'une carte MECH), 2 exemplaires au plus du même nom ; au moins une MECH (le chef).
+// Chaque Tech de TECH_DEFS : { n:NOM, cost:mana, text:effet (texte de la carte), art:URL de l'image (cercle du haut) }.
+// L'EFFET lui-même est écrit à trois endroits qui doivent rester identiques : BTL_TECH_FX (ici), TECHS dans meca_core.mjs de econ ET de pvp (règles rejouées par le serveur).
+const TECH_FRAME_URL = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/card-frame-tech.webp';
+const TECH_DEFS = [];
+const TECH_DRAW_CHANCE = 0.1;   // part d'une carte de booster de cartes qui devient une Tech (lue par le serveur : extract_econ_data.py) -- À CONFIRMER avec Alex ; sans aucune Tech définie, rien ne change
+function techDefMake(t){
+  return { name:t.n, tech:true, rarity:'tech', cost:t.cost | 0, text:t.text || '', color:'#3dff6a', shape:'TECH', role:'Tech', ultName:'', ultMult:1, ultDesc:'',
+    base:{ atk:0, def:0, hp:0 }, max:{ atk:0, def:0, hp:0 }, owned:false, seen:false, art:t.art || '', artExt:t.art || '' };
+}
+TECH_DEFS.forEach(t => CHAR_DEFS.push(techDefMake(t)));
+function isTechDef(d){ return !!(d && d.tech); }
+function isTechName(n){ return CHAR_DEFS.some(d => d.tech && d.name === n); }
 // Classification automatique : chaque carte est rangée dans la catégorie
 // de sa statistique dominante (celle où elle se démarque le plus des autres cartes).
 const STAT_KEYS = ['atk', 'def', 'hp'];
@@ -11624,17 +11668,20 @@ const STAT_LABELS = { atk:'ATQ', def:'DEF', hp:'PV' };
 const FX_FILTERS = [['appel','APPEL'],['tank','TANK'],['passif','PASSIF'],['percee','PERCÉE'],['baroud','BAROUD']];
 function fxMatch(def, k){
   if(!k || k === 'all') return true;
+  if(k === 'tech') return !!def.tech;   // V0.05.08 : filtre TECH
   let e; try{ e = CARD_FX_TXT[def.name]; }catch(_){ e = null; }
   return !!e && e.some(x => x[0] === k);
 }
 function fxFilterBtns(attr, cur){
   return FX_FILTERS.map(([k, l]) => `<button type="button" class="filter-opt ${cur === k ? 'active' : ''}" ${attr}="${k}"><i class="fxi k-${k}"></i><span>${l}</span></button>`).join('')
+    + `<i class="fx-br"></i>`
+    + `<button type="button" class="filter-opt fx-tech ${cur === 'tech' ? 'active' : ''}" ${attr}="tech"><i class="fxi k-tech"></i><span>TECH</span></button>`
     + `<button type="button" class="filter-opt fx-all ${cur === 'all' ? 'active' : ''}" ${attr}="all"><span>TOUTES LES CARTES</span></button>`;
 }
 function computeStatBounds(){
   const bounds = {};
   STAT_KEYS.forEach(k => {
-    const vals = CHAR_DEFS.map(d => d.base[k]);
+    const vals = CHAR_DEFS.filter(d => !d.tech).map(d => d.base[k]);
     bounds[k] = { min: Math.min(...vals), max: Math.max(...vals) };
   });
   return bounds;
@@ -11786,7 +11833,8 @@ function emptyStack(){ return { rare:0, epique:0, legendaire:0, ecarlate:0, holo
 CHAR_DEFS.forEach(c => { cardCopies[c.name] = emptyStack(); if(c.owned) cardCopies[c.name][rarityOf(c)] = 1; });
 CHAR_DEFS.forEach(c => { if(c.owned) cardLevelDist[sqKey(c.name, rarityOf(c))] = { 1: 1 }; });
 // Cartes de série (rare/épique/légendaire) vs les 6 holographiques uniques
-const SERIES_DEFS = CHAR_DEFS.filter(d => !d.holoOnly);
+const SERIES_DEFS = CHAR_DEFS.filter(d => !d.holoOnly && !d.tech);   // V0.05.08 : les Tech ne sont ni des cartes de série ni des Défis
+const TECH_LIST = CHAR_DEFS.filter(d => d.tech);
 const HOLO_DEFS   = CHAR_DEFS.filter(d => d.holoOnly);
 const DEFI_DEFS   = SERIES_DEFS.concat(HOLO_DEFS);   // V0.04.71 : les défis couvrent aussi les cartes holographiques (placées en fin de grille)
 function tierOf(r){ return RARITY_ORDER.indexOf(r); }
@@ -13495,7 +13543,24 @@ function lgFxHtml(def, rar){
   if(!e || !e.length) return '';
   return '<div class="lg-fx' + (e.length > 1 ? ' multi' : '') + (rar === 'holo' && ['CHEIF 117','MED-POD','TOA2','GRIEVER','MOTOKO'].indexOf(def.name) >= 0 ? ' up' : '') + '">' + e.map(x => '<p><i class="k-' + x[0] + '"></i><span><b>' + CARD_FX_LBL[x[0]] + '</b> : ' + x[1] + '</span></p>').join('') + '</div>';
 }
+function techFit(len, w, h, fMax, fMin){   // plus grande taille de police (en cqw) qui fait tenir `len` signes dans un cadre w x h (cqw)
+  for(let f = fMax; f > fMin; f -= .2){ const cpl = Math.max(1, Math.floor(w / (f * .56))), lines = Math.ceil(len * 1.1 / cpl); if(lines * f * 1.28 <= h) return f; }
+  return fMin;
+}
+function techEsc(x){ return String(x).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
+function techLayerHtml(def){
+  const n = def.name, fsN = Math.min(6.2, 66 / Math.max(1, n.length)).toFixed(2), fsT = techFit((def.text || '').length, 59, 24, 5.2, 2.6).toFixed(2);
+  const art = def.art ? '<img class="tech-art-img" src="' + def.art + '" alt="" draggable="false" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'">' : '<i class="tech-art-none"></i>';
+  return '<div class="lg-layer f-tech">' +
+    '<div class="tech-art">' + art + '</div>' +
+    '<img class="tech-frame" src="' + TECH_FRAME_URL + '" alt="" draggable="false" onerror="this.style.display=\'none\';this.parentNode.classList.add(\'noframe\')">' +
+    '<div class="tech-name" style="font-size:' + fsN + 'cqw">' + techEsc(n) + '</div>' +
+    '<div class="tech-cost" title="Coût en mana"><b>' + (def.cost | 0) + '</b></div>' +
+    '<div class="tech-text"><div class="tech-text-in" style="font-size:' + fsT + 'cqw">' + techEsc(def.text || '') + '</div></div>' +
+  '</div>';
+}
 function lgLayerHtml(def, rar, ids, level, showTrophy){
+  if(def && def.tech) return techLayerHtml(def);
   level = level != null ? level : cardLevel(def.name, rar);
   const s = statsAtLevel(def, level, rar), k = categoryOf(def);
   const id = x => ids ? ` id="${x}"` : '';
@@ -13812,6 +13877,7 @@ function playDestroyFx(def, rar, done){
 // rester proche de plaques carrées sur ce format large plutôt que haut.
 
 function openDestroyModal(def, rar, level){
+  if(def.tech){ showToast('LES CARTES TECH NE PEUVENT PAS ÊTRE DÉTRUITES'); return; }
   if((levelDist(def.name, rar)[level] || 0) - favKeepAt(def.name, rar, level) <= 0){ showToast('CARTE EN FAVORI : PROTÉGÉE'); return; }
   destroyQty = 1;   // repart toujours de 1 exemplaire à l'ouverture, quelle que soit la carte précédente
   renderDestroyModal(def, rar, level);
@@ -15126,9 +15192,9 @@ function deckAddCheck(cards, key){
 // La carte la plus forte du deck (affichée sur sa tuile)
 function deckBestKey(cards, leader){
   // V0.04.16 : le chef d'escouade choisi (s'il est dans le deck) est la carte « top deck » ; sinon la plus forte
-  if(leader && cards.includes(leader) && sqEntry(leader)) return leader;
+  if(leader && cards.includes(leader) && sqEntry(leader) && !sqEntry(leader).def.tech) return leader;
   let best = null, bp = -1;
-  cards.forEach(k => { const e = sqEntry(k); if(!e) return; const p = cardPower(e.def, e.rar); if(p > bp){ bp = p; best = e.key; } });
+  cards.forEach(k => { const e = sqEntry(k); if(!e || e.def.tech) return; const p = cardPower(e.def, e.rar); if(p > bp){ bp = p; best = e.key; } });
   return best;
 }
 function deckListStacks(){
@@ -15140,7 +15206,7 @@ function deckListStacks(){
     rarity: (a, b) => r(b) - r(a) || g(a) - g(b) || l(b) - l(a) || a.def.name.localeCompare(b.def.name),
     level:  (a, b) => l(b) - l(a) || r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name)
   }[deckSort] || (() => 0);
-  return list.sort(cmp);
+  return list.sort((a, b) => (!!a.def.tech - !!b.def.tech) || cmp(a, b));   // V0.05.08 : les Tech après les MECH
 }
 function deckNewId(){ return 'dk' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36); }
 function updateDeckTile(){
@@ -15257,6 +15323,7 @@ function deckRemoveCard(idx){
 }
 function deckValidate(){
   if(!deckDraft || deckDraft.cards.length !== DECK_SIZE) return;
+  if(!deckDraft.cards.some(k => { const e = sqEntry(k); return e && !e.def.tech; })){ showToast('IL FAUT AU MOINS UNE CARTE MECH DANS LE DECK'); return; }   // V0.05.08 : le chef est une MECH
   // V0.04.56 : un module est désormais obligatoire pour valider un deck
   if(!deckModuleValid(deckDraft.module)){
     deckDraft.module = null;
@@ -15431,7 +15498,7 @@ function renderDeckCreate(work){
     const r = e => tierOf(e.rar);
     list.sort(deckModSort === 'az' ? (a, b) => a.def.name.localeCompare(b.def.name) || r(b) - r(a) : (a, b) => r(b) - r(a) || a.def.name.localeCompare(b.def.name));
   } else {
-    list = CHAR_DEFS.filter(d => fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
+    list = CHAR_DEFS.filter(d => !d.tech && fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
     list.forEach(e => { e.own = stackCount(e.def.name, e.rar) > 0; });
     const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar);
     list.sort(deckSort === 'rarity' ? (a, b) => r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
@@ -15562,7 +15629,7 @@ function renderDeckWork(){
     if(!shown.length) grid.innerHTML = '<div class="fab-empty">Aucune carte dans cette catégorie.</div>';
     shown.forEach(st => {
       const card = document.createElement('div');
-      card.className = 'codex-card ' + rarCls(st.rar) + (((isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0)) ? ' tool-protected' : ' tool-destroy');
+      card.className = 'codex-card ' + rarCls(st.rar) + (((st.def.tech || (isFav(st.def.name, st.rar) && st.count - favKeepAt(st.def.name, st.rar, st.level) <= 0))) ? ' tool-protected' : ' tool-destroy');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(st.rar));
       card.innerHTML = codexCardHtml(st.def, st.rar, { badge: st.count > 1 ? '×' + st.count : '', level: st.level });
@@ -16094,7 +16161,8 @@ const HOLO_NUMBERS = {}; HOLO_DEFS.forEach((d, i) => { HOLO_NUMBERS[d.name] = i 
 function cardNo(defOrName){ const n = CARD_NUMBERS[typeof defOrName === 'string' ? defOrName : defOrName.name] || 0; return String(n).padStart(3, '0'); }
 // Cartes holographiques = HORS SÉRIE : numérotées X1, X2, X3…
 function holoNo(defOrName){ const nm = typeof defOrName === 'string' ? defOrName : defOrName.name; return 'X' + (HOLO_NUMBERS[nm] || CARD_NUMBERS[nm] || 0); }
-function cardNoLabel(def, rar){ return isHolo(rar) ? 'HORS SÉRIE · ' + holoNo(def) : 'N° ' + cardNo(def); }
+function techNo(def){ return 'TECH ' + String(TECH_LIST.indexOf(def) + 1).padStart(2, '0'); }
+function cardNoLabel(def, rar){ return def.tech ? techNo(def) : isHolo(rar) ? 'HORS SÉRIE · ' + holoNo(def) : 'N° ' + cardNo(def); }
 // Possède une version "de série" (rare / épique / légendaire / écarlate) — les holographiques sont à
 // part (V0.03.80 : SERIES_RARITY_ORDER, pas MAT_ORDER -- voir le commentaire sur SERIES_RARITY_ORDER).
 function ownsSeries(def){ return SERIES_RARITY_ORDER.some(r => stackCount(def.name, r) > 0); }
@@ -16110,7 +16178,7 @@ function ensureCollSlots(){
   // éléments du classeur : chaque personnage (série) par numéro croissant,
   // puis ses holographiques possédées (hors série, « NOM|holo ») par numéro croissant
   const byNum = collDefsByNumber();
-  const names = SERIES_DEFS.slice().sort((a, b) => CARD_NUMBERS[a.name] - CARD_NUMBERS[b.name]).map(d => d.name).concat(byNum.filter(d => stackCount(d.name, 'holo') > 0).map(d => d.name + '|holo'));
+  const names = SERIES_DEFS.slice().sort((a, b) => CARD_NUMBERS[a.name] - CARD_NUMBERS[b.name]).map(d => d.name).concat(TECH_LIST.map(d => d.name)).concat(byNum.filter(d => !d.tech && stackCount(d.name, 'holo') > 0).map(d => d.name + '|holo'));
   const len = Math.max(1, Math.ceil(names.length / COLL_PER_PAGE)) * COLL_PER_PAGE;
   const slots = names.slice();
   while(slots.length < len) slots.push(null);
@@ -16145,7 +16213,7 @@ function renderBinderPage(){
       const rar = holoSlot ? 'holo' : bestSeriesRarity(def);
       sl.classList.add('filled');
       if(holoSlot) sl.classList.add('hs');
-      sl.innerHTML = `<div class="sleeve-no">${holoSlot ? '<span class="holo-text">' + holoNo(def) + '</span>' : 'N° ' + cardNo(def)}</div>
+      sl.innerHTML = `<div class="sleeve-no">${holoSlot ? '<span class="holo-text">' + holoNo(def) + '</span>' : def.tech ? techNo(def) : 'N° ' + cardNo(def)}</div>
         <div class="codex-card ${rarCls(rar)}">${codexCardHtml(def, rar, {})}</div>`;
       const card = sl.querySelector('.codex-card');
       card.style.setProperty('--sh-delay', shineDelay());
@@ -16153,7 +16221,7 @@ function renderBinderPage(){
       card.onclick = () => { openCodexModal(def.name, rar); };
     } else {
       sl.classList.add('locked');
-      sl.innerHTML = `<div class="sleeve-lock-no">${cardNo(def)}</div>`;
+      sl.innerHTML = `<div class="sleeve-lock-no">${def.tech ? techNo(def).replace('TECH ', 'T') : cardNo(def)}</div>`;
     }
     page.appendChild(sl);
   }
@@ -16854,8 +16922,8 @@ const TROPHY_TIERS = {
   5: { label:'DIAMANT', rew:{ gold:500, card:'legendaire' } }
 };
 // Niveau max d'un personnage : la plus haute des raretés qu'il possède réellement (chaque rareté a son propre niveau).
-function tRarCount(r){ return CHAR_DEFS.filter(d => stackCount(d.name, r) > 0).length; }
-function tSeriesCopies(){ return CHAR_DEFS.reduce((a, d) => a + MAT_ORDER.reduce((b, r) => b + stackCount(d.name, r), 0), 0); }
+function tRarCount(r){ return CHAR_DEFS.filter(d => !d.tech && stackCount(d.name, r) > 0).length; }
+function tSeriesCopies(){ return CHAR_DEFS.filter(d => !d.tech).reduce((a, d) => a + MAT_ORDER.reduce((b, r) => b + stackCount(d.name, r), 0), 0); }
 function tFavs(){ return Object.keys(favorites || {}).filter(k => favorites[k]).length; }
 // Équivalents de maxOwnedLevel(d)/tMaxLevel()/tRarCount(r) ci-dessus, mais pour les modules (demande
 // d'Alex : trophées/tâches en rapport avec les modules) -- mêmes principes, juste modStackCount()/
@@ -17951,6 +18019,28 @@ async function pvpReplayAction(ev){
   } else if(a.t === 'mod'){
     const t = a.tgt ? pvpCardByRef(a.tgt) : null;
     await btlModuleUse(side, t || undefined); btlModPaint(); await btlSleep(400);
+  } else if(a.t === 'tech'){   // V0.05.08 : le nom de la Tech jouée est donné par le serveur (a.n) : l'adversaire la dévoile
+    let c, rect, el;
+    if(side === 'p'){
+      c = S.hand[a.hi]; if(!c || c.name !== a.n) c = S.hand.find(x => x.name === a.n) || pvpReal('p', a.n, false);
+      const pp = P.pendingTech; P.pendingTech = null;
+      if(pp && pp.c === c){ rect = pp.rect; el = pp.g; }
+      else {
+        const he = btlQ('#btlHand [data-uid="' + c.uid + '"]'); rect = he ? btlRect(he) : btlRect(btlQ('#btlHand'));
+        el = document.createElement('div'); el.className = 'btl-ghost'; el.style.width = rect.width + 'px'; el.style.height = rect.height + 'px'; el.innerHTML = btlBigHtml(c); btlQ('#btlFx').appendChild(el);
+      }
+      if(S.hand.indexOf(c) < 0) S.hand.push(c);
+    } else {
+      const ph = S.hand.pop() || pvpHidden('o');
+      c = pvpReal('o', a.n, false); c.uid = ph.uid; S.hand.push(c);
+      const he = btlQ('#btlOHand [data-uid="' + c.uid + '"]'); const r0 = he ? btlRect(he) : btlRect(btlQ('#btlOHand'));
+      rect = { left:r0.left, top:r0.top, width:r0.width, height:r0.height };
+      el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
+    }
+    const t = a.tgt ? pvpCardByRef(a.tgt) : null;
+    const ok = await btlTechUse(side, c, t || undefined, rect, el);
+    if(!ok){ pvpWarn('Tech non jouée ' + a.n); if(el && el.parentNode) el.remove(); }
+    await btlSleep(280);
   }
 }
 
@@ -18039,6 +18129,13 @@ function pvpPlanIntent(c, plan){
 }
 function pvpUnplanIntent(c){ return pvpAct({ t:'unplan', slot:c.slot }); }
 function pvpModIntent(pre){ return pvpAct({ t:'mod', tgt:pre ? pvpRefOf(pre) : null }); }
+async function pvpTechIntent(c, pre, rect, g){   // V0.05.08 : Tech jouée en PvP -> action { t:'tech', hi, tgt }
+  const P = PVPC, hi = BTL.S.p.hand.indexOf(c);
+  P.pendingTech = { c, rect, g };
+  const ok = hi >= 0 && await pvpAct({ t:'tech', hi, tgt:pre ? pvpRefOf(pre) : null });
+  if(!ok) P.pendingTech = null;
+  return ok;
+}
 async function pvpEndIntent(){
   const ok = await pvpAct({ t:'end' });
   if(!ok && BTL && !BTL.over && BTL.side === 'p' && BTL.phase === 'plan'){ BTL.endRes = () => { pvpEndIntent(); }; btlSetEnd(true); }
@@ -18191,6 +18288,7 @@ const BTL_RATIO = 966 / 692;   // hauteur / largeur d'une grande carte
 
 // ---------- cartes ----------
 function btlMakeCard(side, def, rar, level, leader, k){
+  if(def.tech && !leader) return { uid:++btlUid, side, def, rar, level:1, name:def.name, atk:0, df:0, maxHp:0, hp:0, energy:0, leader:false, plan:null, slot:-1, kw:[], playedTurn:-1, ultOn:false, base:null, tech:true, cost:def.cost | 0 };   // V0.05.08 : Tech (jamais posée)
   const s = statsAtLevel(def, level, rar); k = k || 1;
   let hp = Math.max(1, Math.round(s.hp * k)), df0 = Math.round(s.def * k);
   if(leader){
@@ -18242,7 +18340,7 @@ function btlRefreshCan(){
   }));
   btlFlameKick();
   const canHand = BTL.phase === 'plan' && BTL.side === 'p' && BTL.mana.p > 0 && BTL.S.p.slots.some(x => !x);
-  const h = btlQ('#btlHand'); if(h) h.querySelectorAll('.btl-hc').forEach(e => e.classList.toggle('can', canHand));
+  const h = btlQ('#btlHand'); if(h) h.querySelectorAll('.btl-hc').forEach(e => { const hc = e.classList.contains('tech') ? BTL.S.p.hand.find(x => x.uid === +e.dataset.uid) : null; e.classList.toggle('can', hc ? btlTechCanUse('p', hc) : canHand); });   // V0.05.08 : une Tech est jouable selon son coût et ses cibles
   btlModPaint();
 }
 function btlUltReady(c){ return !c.leader && !c.ultOn && c.energy >= 100; }
@@ -18329,7 +18427,7 @@ function btlSyncHand(box, list, htmlFn, skipUid){
   have.forEach((e, uid) => { if(!keep.has(uid)) e.remove(); });
   const els = list.map(c => {
     let e = have.get(c.uid);
-    if(!e){ e = document.createElement('div'); e.className = 'btl-hc'; e.dataset.uid = c.uid; e.innerHTML = htmlFn(c); }
+    if(!e){ e = document.createElement('div'); e.className = 'btl-hc' + (c.tech ? ' tech' : ''); e.dataset.uid = c.uid; e.innerHTML = htmlFn(c); }
     return e;
   });
   els.forEach((e, i) => { if(box.children[i] !== e) box.insertBefore(e, box.children[i] || null); });
@@ -20716,6 +20814,7 @@ function btlHoldCancel(){
   window.removeEventListener('pointermove', h.move); window.removeEventListener('pointerup', h.up); window.removeEventListener('pointercancel', h.up);
   if(h.fl){ h.fl.stop(); }
   if(h.ghost) h.ghost.remove();
+  if(h.tech) btlTechDragOff(h);
   BTL.el.querySelectorAll('.btl-slot.drop').forEach(s => s.classList.remove('drop', 'drop-cur'));
   btlZoomHide();
   const hc = btlQ('#btlHand [data-uid="' + (h.c && h.c.uid) + '"]'); if(hc) hc.style.opacity = '';
@@ -20740,6 +20839,7 @@ function btlHandDown(ev){
     if(h.mode === 'zoom'){
       const hr = btlRect(btlQ('#btlHand'));
       if(canPlay() && e.clientY < hr.top - 6){
+        if(h.c && h.c.tech){ if(!btlTechCanUse('p', h.c)){ if(!h.warned){ h.warned = true; btlTechDeny(h.c); } } else btlDragStart(e); return; }   // V0.05.08
         if(BTL.mana.p < 1){ if(!h.warned){ h.warned = true; btlDeny('mana'); } }
         else if(BTL.S.p.slots.every(Boolean)){ if(!h.warned){ h.warned = true; btlDeny('full'); } }
         else btlDragStart(e);
@@ -20749,6 +20849,7 @@ function btlHandDown(ev){
       if(i !== h.idx && i >= 0 && Math.abs(e.clientX - h.x0) > Math.abs(e.clientY - h.y0)){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }   // V0.05.04 : un glissé vers le haut (même en diagonale) garde la carte touchée
     } else if(h.mode === 'drag'){
       h.fl.move(e.clientX, e.clientY - 40);
+      if(h.c.tech){ btlTechDragMove(h, e); return; }   // V0.05.08
       const si = btlSlotAtPoint(e.clientX, e.clientY - 20);
       BTL.el.querySelectorAll('.btl-slot.drop').forEach(s => s.classList.toggle('drop-cur', +s.dataset.i === si));
       h.si = si;
@@ -20763,6 +20864,7 @@ function btlHandDown(ev){
     const rect = btlRect(g);
     BTL.hold = null;
     btlZoomHide();
+    if(c.tech){ await btlTechRelease(h, c, g, rect, e); return; }   // V0.05.08
     if(si >= 0 && !BTL.S.p.slots[si] && BTL.mana.p >= 1 && canPlay()){
       g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px'; g.style.position = 'fixed';
       try{ if(pvpOn()) await pvpPlayIntent(c, si, rect, g); else await btlPlay('p', c, si, rect, g); }catch(err){ if(err !== 'abort') console.error(err); }
@@ -20790,6 +20892,7 @@ function btlDragStart(e){
   const hc = btlQ('#btlHand [data-uid="' + h.c.uid + '"]'); if(hc) hc.style.opacity = '.25';
   const z = btlQ('#btlZoom'); z.classList.remove('show');
   btlQ('#btlBlur').classList.remove('on');
+  if(h.c.tech){ btlTechDragOn(h.c); return; }   // V0.05.08 : une Tech ne vise pas un emplacement
   BTL.S.p.slots.forEach((c, i) => { if(!c) btlSlotEl('p', i).classList.add('drop'); });
 }
 // ----- maintien sur une petite carte du terrain : grande carte tant que le doigt reste appuyé -----
@@ -25881,13 +25984,13 @@ async function btlAI(){
   const side = 'o', S = BTL.S.o, E = BTL.S.p;
   await btlSleep(700);
   // 1) poser des cartes
-  while(!BTL.over && BTL.mana.o > 0 && S.hand.length && S.slots.some(x => !x)){
+  while(!BTL.over && BTL.mana.o > 0 && S.hand.some(x => !x.tech) && S.slots.some(x => !x)){
     const onField = S.slots.filter(Boolean).length;
     const unplanned = S.slots.filter(c => c && !c.plan && btlCanAct(c)).length;
     const aiLv = (BTL.d.defi && BTL.d.defi.ai) || 0;   // DÉFI : plus le palier est haut, moins l'IA hésite à poser ses cartes
     if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && btlLrand() < 0.7 * (1 - aiLv)) break;
     if(onField >= 2 && btlLrand() < 0.25 * (1 - aiLv)) break;
-    const c = S.hand.slice().sort((a, b) => btlPwr(b) - btlPwr(a))[0];
+    const c = S.hand.filter(x => !x.tech).sort((a, b) => btlPwr(b) - btlPwr(a))[0];
     const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(btlLrand() * free.length)];
     const hand = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), rect = hand ? btlRect(hand) : btlRect(btlQ('#btlOHand'));
     const e = document.createElement('div'); e.className = 'btl-fly'; e.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(e);
@@ -26029,6 +26132,113 @@ async function btlModuleUse(side, pre){
     btlModFire(side);
     if(def.kills){ ks = def.kills(side, m); ks.forEach(btlXOn); if(ks.length) await btlSleep(420); }   // croix sur chaque carte que le module va détruire
     await def.run(side, t, m);
+    return true;
+  } finally {
+    ks.forEach(x => btlXOff(x));
+    if(BTL){
+      BTL.fxBusy--;
+      if(wasPlan && BTL.phase === 'fx' && !BTL.over){ BTL.phase = 'plan'; if(!BTL.timeUp) btlSetEnd(true); btlRefreshCan(); }
+    }
+  }
+}
+
+// =====================================================================================================
+//  CARTES TECH (V0.05.08) -- carte de la main à IMPACT DIRECT : jouée pendant le tour du joueur, effet immédiat comme un module, coût en mana propre à la carte.
+//  BTL_TECH_FX[nom] = { mode:'none'|'dmg'|'ally'|'heal'|'shield', n:(valeur pour 'dmg'), cands:side => [cartes visables], kills?:(side, carte) => [cartes détruites], run:async (side, cible, carte) => effet }
+//  MÊMES RÈGLES que TECHS dans meca_core.mjs (econ et pvp) : toute Tech s'écrit à ces trois endroits.
+// =====================================================================================================
+const BTL_TECH_FX = {};
+function btlTechSrc(side){ return BTL.S[side].leader; }
+function btlTechCanUse(side, c){
+  const def = c && c.tech && BTL_TECH_FX[c.name];
+  if(!BTL || !def || btlGone() || BTL.side !== side) return false;
+  if(side === 'p' && BTL.phase !== 'plan') return false;
+  return BTL.mana[side] >= c.cost && def.cands(side).length > 0;
+}
+function btlTechDeny(c){
+  if(BTL.mana.p < c.cost) btlDeny('mana');
+  else showToast('AUCUNE CIBLE POUR CETTE TECH');
+}
+// geste : la carte suit le doigt ; au-dessus de la main elle est « armée » ; une Tech qui vise doit être relâchée SUR une carte visable
+function btlTechDragOn(c){
+  const h = BTL.hold, def = BTL_TECH_FX[c.name];
+  h.tech = { def, cands:(def && def.mode !== 'none') ? def.cands('p').filter(t => t.hp > 0) : [], over:null, armed:false };
+  BTL.el.classList.add('tech-drag');
+  BTL.xdmg = (def && def.mode === 'dmg') ? (def.n || 0) : 0;
+  if(h.tech.cands.length) btlHighlight(h.tech.cands, true);
+}
+function btlTechDragMove(h, e){
+  const T = h.tech; if(!T) return;
+  const hr = btlRect(btlQ('#btlHand'));
+  T.armed = e.clientY < hr.top - 6; BTL.el.classList.toggle('tech-armed', T.armed);
+  if(T.cands.length){ const o = btlCardAt(T.cands, e.clientX, e.clientY - 20, T.over); if(o !== T.over){ T.over = o; btlHighlight(T.cands, true, o); } }
+}
+function btlTechDragOff(h){
+  if(!BTL || !BTL.el) return;
+  BTL.el.classList.remove('tech-drag', 'tech-armed');
+  const T = h && h.tech;
+  if(T && T.cands.length) btlHighlight(T.cands, false);
+  BTL.xdmg = 0;
+}
+async function btlTechRelease(h, c, g, rect, e){
+  const T = h.tech || { cands:[], def:BTL_TECH_FX[c.name] };
+  btlTechDragOff(h);
+  const hr = btlRect(btlQ('#btlHand')), above = e.clientY < hr.top - 6;
+  let ok = above && btlTechCanUse('p', c), pre = null;
+  if(ok && T.def && T.def.mode !== 'none'){ pre = btlCardAt(T.cands, e.clientX, e.clientY - 20, null); if(!pre) ok = false; }
+  let played = false;
+  if(ok){
+    g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px'; g.style.position = 'fixed';
+    try{ played = await btlTechUse('p', c, pre, rect, g); }catch(err){ if(err !== 'abort') console.error(err); played = true; }
+  }
+  if(!played){   // relâchée trop bas / à côté d'une cible : retour dans la main
+    const hc = btlQ('#btlHand [data-uid="' + c.uid + '"]'), to = hc ? btlRect(hc) : rect;
+    g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px';
+    try{ await btlAnim(g, [{ transform:'none' }, { transform:btlXf(rect, to) }], { duration:260, easing:'cubic-bezier(.3,.8,.3,1)' }); }catch(err){}
+    g.remove(); if(hc) hc.style.opacity = '';
+  }
+}
+// mise en scène : la carte vole au centre du plateau, s'illumine puis se dissout en étincelles vertes (celle de l'adversaire se retourne en vol)
+async function btlTechShow(side, c, from, el){
+  const pl = btlRect(btlQ('#btlPlate')), w = Math.min(pl.width * .5, from.width * 1.6), h = w * BTL_RATIO, col = '#3dff6a';
+  const to = { left:pl.left + pl.width / 2 - w / 2, top:pl.top + pl.height / 2 - h / 2, width:w, height:h };
+  btlPlaceFixed(el, from);
+  if(side === 'o'){
+    el.innerHTML = '<div class="btl-fl-in"><div class="btl-ff a">' + btlBigHtml(c) + '</div><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
+    el.classList.add('btl-fly'); const rw = btlRotWrap(el);
+    btlAnim(rw.firstChild, [{ transform:'rotateY(0deg)', offset:0 }, { transform:'rotateY(0deg)', offset:.1 }, { transform:'rotateY(180deg)', offset:.7 }, { transform:'rotateY(180deg)', offset:1 }], { duration:560, easing:'ease-in-out' }).catch(() => {});
+  }
+  if(!el.parentNode) btlQ('#btlFx').appendChild(el);
+  el.style.filter = 'drop-shadow(0 0 12px ' + col + ')';
+  await btlAnim(el, [{ transform:'none' }, { transform:btlXf(from, to) }], { duration:420, easing:'cubic-bezier(.2,.8,.3,1)' });
+  btlRing(to, col, false); musSfx('rare');
+  await btlSleep(380);
+  btlParticles(to.left + to.width / 2, to.top + to.height / 2, { n:22, color:col, dist:90, dur:620, size:6 });
+  await btlAnim(el, [{ transform:btlXf(from, to), opacity:1 }, { transform:btlXf(from, to) + ' scale(1.12)', opacity:0 }], { duration:300, easing:'ease-in' });
+  el.remove();
+}
+async function btlTechUse(side, c, pre, fromRect, el){
+  if(pvpOn() && side === 'p' && !PVPC.replaying) return await pvpTechIntent(c, pre, fromRect, el);   // PvP : demandé au serveur, joué à son retour
+  if(!btlTechCanUse(side, c)) return false;
+  const S = BTL.S[side], def = BTL_TECH_FX[c.name], hi = S.hand.indexOf(c); if(hi < 0) return false;
+  const wasPlan = side === 'p' && BTL.phase === 'plan';
+  if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }
+  BTL.fxBusy++;
+  let ks = [];
+  try{
+    let t = null, rec = null;
+    if(def.mode !== 'none'){
+      const cands = def.cands(side), usePre = !!(pre && cands.indexOf(pre) >= 0);
+      if(side === 'p') rec = btlRec('T' + hi + (usePre ? btlRef(pre) : '-'));   // bande du joueur
+      t = usePre ? pre : await btlChoose(btlTechSrc(side), cands, def.mode, def.n || 0);
+      if(!t){ btlRecDrop(rec); return false; }
+    } else if(side === 'p') rec = btlRec('T' + hi + '-');
+    S.hand = S.hand.filter(x => x !== c); BTL.mana[side] -= c.cost;
+    if(side === 'p') btlRenderHand(); else btlRenderOHand();
+    btlRenderMana(); btlRefreshCan();
+    await btlTechShow(side, c, fromRect, el);
+    if(def.kills){ ks = def.kills(side, c); ks.forEach(btlXOn); if(ks.length) await btlSleep(420); }
+    await def.run(side, t, c);
     return true;
   } finally {
     ks.forEach(x => btlXOff(x));
@@ -27191,7 +27401,7 @@ function defiDeckNames(focus, tier){
   return out.length >= 20 ? out : null;
 }
 function defiFallbackDeck(focus){   // carte sans deck dédié : le pivot + 19 cartes au hasard (2 exemplaires max)
-  const pool = CHAR_DEFS.map(d => d.name), cnt = {}, deck = [focus, focus]; cnt[focus] = 2;
+  const pool = CHAR_DEFS.filter(d => !d.tech).map(d => d.name), cnt = {}, deck = [focus, focus]; cnt[focus] = 2;
   while(deck.length < 20){ const n = pool[Math.floor(Math.random() * pool.length)]; if((cnt[n] || 0) >= 2) continue; cnt[n] = (cnt[n] || 0) + 1; deck.push(n); }
   return deck;
 }
@@ -27542,7 +27752,7 @@ function renderPlayerTile(){
 function renderPlayerSheet(){
   const need = xpToNext(player.level);
   const unique = collOwnedCount();
-  const copies = CHAR_DEFS.reduce((a, d) => a + copiesOf(d), 0);
+  const copies = CHAR_DEFS.filter(d => !d.tech).reduce((a, d) => a + copiesOf(d), 0);
   document.getElementById('playerSheet').innerHTML = `
     <div class="pv-card pv-profile">
       <div class="pv-avatar">${document.querySelector('#tilePlayer .mt-avatar').innerHTML}</div>
