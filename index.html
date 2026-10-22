@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.09</title>
+<title>Projet MECA V0.05.10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1336,6 +1336,7 @@
   .r-ecarlate{--rc:#ff2d4d; --rc-glow:rgba(255,45,77,.6); --rc-tint:rgba(255,45,77,.18); --rc-halo:rgba(255,45,77,.65);}
   /* V0.05.07 : halo du dos TECH (vert néon de l'illustration) -- pas une rareté de carte, uniquement le halo des dos */
   .r-tech{--rc:#2dff5a; --rc-glow:rgba(45,255,90,.6); --rc-tint:rgba(45,255,90,.16); --rc-halo:rgba(45,255,90,.65);}
+  .rar:has(.lg-layer.f-tech){--rc:#2dff5a; --rc-glow:rgba(45,255,90,.6); --rc-tint:rgba(45,255,90,.16); --rc-halo:rgba(45,255,90,.65);}
   /* Halo de rareté porté par la CARTE (cadre + lueur extérieure + teinte du fond) */
   .codex-card.rar, .fab-card.rar, .team-slot.rar, .unit.rar{
     border:1.5px solid var(--rc);
@@ -6835,19 +6836,17 @@
     background:none; border-radius:3.6% / 2.6%;}
   .lg-layer.f-tech.noframe{background:linear-gradient(160deg,#1c2622,#08100c); box-shadow:inset 0 0 0 .8cqw #2fe060, inset 0 0 6cqw rgba(40,255,100,.25);}
   .lg-layer.f-tech::after{display:none;}
-  .tech-art{position:absolute; left:17%; top:9.2%; width:65.4%; height:43%; border-radius:50%; overflow:hidden; z-index:0; background:radial-gradient(circle at 50% 40%, #0f3a1c, #03100a); pointer-events:none;}
-  .tech-art-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-  .tech-art-none{position:absolute; inset:22%; display:block; opacity:.55; background:#3dff6a; -webkit-mask:var(--ic-chip) center/contain no-repeat; mask:var(--ic-chip) center/contain no-repeat;
+  .tech-art{position:absolute; inset:0; z-index:0; clip-path:polygon(48.80% 10.17%, 40.50% 11.32%, 36.80% 12.46%, 33.80% 13.68%, 31.60% 14.83%, 29.70% 15.97%, 27.90% 17.19%, 26.40% 18.34%, 25.10% 19.48%, 23.90% 20.70%, 22.80% 21.85%, 21.90% 22.99%, 21.10% 24.21%, 20.40% 25.36%, 19.80% 26.50%, 19.30% 27.72%, 18.90% 28.87%, 18.50% 30.01%, 18.30% 31.23%, 18.10% 32.38%, 18.00% 33.52%, 18.00% 34.74%, 18.00% 35.89%, 18.10% 37.03%, 18.30% 38.25%, 18.60% 39.40%, 18.90% 40.54%, 19.40% 41.76%, 19.90% 42.91%, 20.50% 44.05%, 21.30% 45.27%, 22.10% 46.42%, 23.10% 47.56%, 24.30% 48.78%, 27.40% 49.93%, 29.20% 51.15%, 70.40% 51.15%, 72.00% 49.93%, 75.30% 48.78%, 76.40% 47.56%, 77.40% 46.42%, 78.20% 45.27%, 78.90% 44.05%, 79.50% 42.91%, 80.00% 41.76%, 80.50% 40.54%, 80.80% 39.40%, 81.10% 38.25%, 81.30% 37.03%, 81.40% 35.89%, 81.40% 34.74%, 81.40% 33.52%, 81.30% 32.38%, 81.10% 31.23%, 80.80% 30.01%, 80.50% 28.87%, 80.10% 27.72%, 79.60% 26.50%, 79.00% 25.36%, 78.40% 24.21%, 77.50% 22.99%, 76.70% 21.85%, 75.70% 20.70%, 74.50% 19.48%, 73.20% 18.34%, 71.70% 17.19%, 70.00% 15.97%, 68.10% 14.83%, 65.90% 13.68%, 63.10% 12.46%, 59.40% 11.32%, 51.10% 10.17%); background:radial-gradient(ellipse 34% 22% at 49.7% 30.7%, #0f3a1c, #03100a); pointer-events:none;}
+  .tech-art-img{position:absolute; left:16.7%; top:9.17%; width:66%; height:43%; object-fit:cover; display:block;}
+  .tech-art-none{position:absolute; left:34%; top:17.5%; width:31.4%; height:26.4%; display:block; opacity:.55; background:#3dff6a; -webkit-mask:var(--ic-chip) center/contain no-repeat; mask:var(--ic-chip) center/contain no-repeat;
     --ic-chip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7h10v10H7z M9.5 9.5v5h5v-5z M9 2h2v3H9z M13 2h2v3h-2z M9 19h2v3H9z M13 19h2v3h-2z M2 9h3v2H2z M2 13h3v2H2z M19 9h3v2h-3z M19 13h3v2h-3z' fill-rule='evenodd'/%3E%3C/svg%3E");}
   .tech-frame{position:absolute; inset:0; width:100%; height:100%; z-index:1; display:block; pointer-events:none; user-select:none;}
   .tech-name{position:absolute; left:19%; width:62%; top:52.3%; height:8.6%; z-index:2; display:flex; align-items:center; justify-content:center; white-space:nowrap; overflow:hidden;
     font-family:var(--font-title); font-weight:900; letter-spacing:.06em; text-transform:uppercase; color:var(--nc2); text-shadow:0 0 1.4cqw rgba(50,255,110,.9), 0 .3cqw .2cqw rgba(0,0,0,.9);}
   .tech-text{position:absolute; left:19.6%; width:60.6%; top:64.2%; height:19.4%; z-index:2; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
   .tech-text-in{font-family:'Rajdhani','Segoe UI',sans-serif; font-weight:700; line-height:1.28; color:#e4ffe9; text-shadow:0 .25cqw .3cqw rgba(0,0,0,.95); overflow-wrap:anywhere;}
-  .tech-cost{position:absolute; left:6.6%; top:4.2%; width:12.4%; aspect-ratio:1/1.12; z-index:3; display:flex; align-items:center; justify-content:center; pointer-events:none; filter:drop-shadow(0 0 1.2cqw rgba(76,194,255,.95)) drop-shadow(0 .4cqw .4cqw rgba(0,0,0,.8));}
-  .tech-cost::before{content:""; position:absolute; inset:0; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background:conic-gradient(#d6f6ff 0 25%, #79d2ff 25% 50%, #2f7fe6 50% 75%, #5cc0ff 75%);}
-  .tech-cost::after{content:""; position:absolute; inset:7%; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background:radial-gradient(circle at 50% 40%, #12335f, #061428);}
-  .tech-cost b{position:relative; z-index:1; font-family:var(--font-title); font-weight:900; font-size:6.4cqw; line-height:1; color:#bfeaff; text-shadow:0 0 1.2cqw rgba(76,194,255,.95);}
+  .tech-text-in .tc-n{font-family:var(--font-title); font-weight:900; font-size:1.2em; color:#bfeaff; text-shadow:0 0 1cqw rgba(76,194,255,.95), 0 .25cqw .3cqw rgba(0,0,0,.95);}
+  .tech-text-in .mana-pt{width:.7em; height:.9em; margin:0 .06em 0 .06em; vertical-align:-.12em; white-space:nowrap;}
   /* Découpe de l'artwork à la forme RÉELLE du hublot de chaque cadre (mesurée par détection de
      contour sur chaque image de cadre : le hublot n'a pas exactement la même forme selon la rareté,
      un seul tracé partagé laissait des liserés sombres visibles sur certaines raretés — V0.01.68).
@@ -8431,7 +8430,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.09</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.10</b></div>
   </div>
 
     </div>
@@ -9045,12 +9044,12 @@ async function econDestroy(def, rar, q, after){
 async function econCraft(){
   const t = craftTarget; if(!t) return;
   if(t.kind === 'module'){ showToast('MODULE DÉJÀ POSSÉDÉ'); return; }
-  const cost = craftCostOf(t.rar); if(!cost) return;
+  const cost = craftCostOf(t.rar, CHAR_DEFS.find(d => d.name === t.name)); if(!cost) return;
   const have = (player.res.mat && player.res.mat[cost.mat]) || 0;
   if(have < cost.n){ showToast('MATÉRIAUX INSUFFISANTS : ' + cost.n + ' ' + RARITIES[cost.mat].label); return; }
   const r = await econAct('craft', { name:t.name });
   if(!r.ok) return;
-  musSfx('fab_' + t.rar);
+  musSfx('fab_' + ((CHAR_DEFS.find(d => d.name === t.name) || {}).tech ? 'epique' : t.rar));
   showToast('CARTE FABRIQUÉE : ' + t.name);
   const el = document.getElementById('codexModalInner');
   if(el){ el.classList.remove('craft-ghost'); el.classList.remove('craft-pop'); void el.offsetWidth; el.classList.add('craft-pop'); setTimeout(() => el.classList.remove('craft-pop'), 900); }
@@ -9251,9 +9250,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.09';
+var BUILD_VERSION = 'V0.05.10';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.10', items:[
+    'FABRICATION DES CARTES TECH : l\'écran DECK > CRÉER propose maintenant les Tech (après les MECH). Une Tech se fabrique pour 30 matériaux épiques (un peu plus qu\'une MECH épique, 20).',
+    'COLLECTION : le classeur est rangé par rareté -- rares en premier, puis épiques, légendaires, écarlates, holographiques, et les cartes TECH tout à la fin.',
+    'CARTES TECH : le halo est maintenant vert dans les boosters et le TIRAGE ; l\'illustration épouse exactement la forme du hublot (plus de décalage) ; le coût en mana n\'est plus dans un losange en haut à gauche mais écrit au début de l\'encadré d\'effet : un logo de mana par point de coût (3 mana = 3 logos).',
+  ] },
   { v:'V0.05.09', items:[
     'PREMIÈRE CARTE TECH : BARRAGES (2 mana). Elle inflige 3 dégâts à TOUTES les cartes ennemies, sauf le chef d\'escouade. Animation : une salve de tirs de mortier en cloche s\'abat pendant 2 à 3 secondes sur tout le côté adverse -- obus 3D en relief lancés de façon échelonnée, traînées de fumée pendant leur vol, explosions avec éclats et débris, cratères qui s\'effacent peu après.',
     'BOOSTERS DE CARTES : une carte TECH peut sortir à la place d\'une carte, avec la même probabilité qu\'une légendaire (5 % par carte tirée). Max 2 exemplaires du même nom dans un deck, comme prévu.',
@@ -11793,7 +11797,7 @@ const MAT_ORDER = ['rare', 'epique', 'legendaire'];
 function isHolo(r){ return r === 'holo'; }
 function rarityOf(def){ return RARITIES[def.rarity] ? def.rarity : 'rare'; }
 // Rareté "effective" d'un personnage = la plus haute rareté possédée (après fusion).
-function rarCls(r){ return 'rar r-' + r; }
+function rarCls(r, def){ return 'rar r-' + (def && def.tech ? 'tech' : r); }   // V0.05.10 : une Tech a toujours le halo vert, même si sa pile est rangée en 'rare'
 function rarTag(r, extraCls){
   return `<div class="rar-tag${extraCls ? ' ' + extraCls : ''}">${RARITIES[r].label}</div>`;
 }
@@ -13556,14 +13560,13 @@ function techFit(len, w, h, fMax, fMin){   // plus grande taille de police (en c
 }
 function techEsc(x){ return String(x).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
 function techLayerHtml(def){
-  const n = def.name, fsN = Math.min(6.2, 66 / Math.max(1, n.length)).toFixed(2), fsT = techFit((def.text || '').length, 59, 24, 5.2, 2.6).toFixed(2);
+  const n = def.name, fsN = Math.min(6.2, 66 / Math.max(1, n.length)).toFixed(2), fsT = techFit((def.text || '').length + 4, 59, 24, 5.2, 2.6).toFixed(2), tx = def.text || '', txl = /^[A-ZÀ-Ý][a-zà-ÿ]/.test(tx) ? tx.charAt(0).toLowerCase() + tx.slice(1) : tx;   // coût = autant de logos de mana que de mana (3 mana : ◆◆◆), puis l'effet
   const art = def.art ? '<img class="tech-art-img" src="' + def.art + '" alt="" draggable="false" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'">' : '<i class="tech-art-none"></i>';
   return '<div class="lg-layer f-tech">' +
     '<div class="tech-art">' + art + '</div>' +
     '<img class="tech-frame" src="' + TECH_FRAME_URL + '" alt="" draggable="false" onerror="this.style.display=\'none\';this.parentNode.classList.add(\'noframe\')">' +
     '<div class="tech-name" style="font-size:' + fsN + 'cqw">' + techEsc(n) + '</div>' +
-    '<div class="tech-cost" title="Coût en mana"><b>' + (def.cost | 0) + '</b></div>' +
-    '<div class="tech-text"><div class="tech-text-in" style="font-size:' + fsT + 'cqw">' + techEsc(def.text || '') + '</div></div>' +
+    '<div class="tech-text"><div class="tech-text-in" style="font-size:' + fsT + 'cqw">' + (def.cost > 0 ? '<i class="mana-pt"></i>'.repeat(Math.min(9, def.cost | 0)) : '<b class="tc-n">0</b><i class="mana-pt"></i>') + ', ' + techEsc(txl) + '</div></div>' +
   '</div>';
 }
 function lgLayerHtml(def, rar, ids, level, showTrophy){
@@ -13987,7 +13990,7 @@ function renderFabrique(){
     const card = document.createElement('div');
     if(def){
       const rar = fabSlotRar(i);
-      card.className = 'fab-card ' + rarCls(rar);
+      card.className = 'fab-card ' + rarCls(rar, def);
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(rar));
       // V0.03.10, demande d'Alex : les 3 cartes proposées en TIRAGE doivent toujours s'afficher au
@@ -14635,7 +14638,7 @@ function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) es
     const slot = document.createElement('div');
     slot.className = 'br-slot';
     const halo = type === 'res' ? (res.kind === 'back' ? res.rar : BOOST_RES_HALO_RAR[res.kind]) : res.rar;
-    slot.innerHTML = `<div class="br-slot-glow ${rarCls(halo)}"></div>`;
+    slot.innerHTML = `<div class="br-slot-glow ${rarCls(halo, res.def)}"></div>`;
     const content = document.createElement('div');
     if(type === 'res' && res.kind !== 'back'){
       content.className = 'br-res-case unrevealed ' + rarCls(halo);
@@ -14659,7 +14662,7 @@ function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) es
       // en cache, mais onerror masque proprement l'image si le réseau venait à manquer (repli visuel
       // discret sur le conteneur neutre .br-back, cf son commentaire CSS, plutôt que l'icône "image
       // cassée" du navigateur).
-      backFace.innerHTML = `<div class="br-back ${rarCls(res.rar)}"><img class="br-back-img" src="${backImg}" alt="" onerror="this.style.opacity='0'"></div>`;
+      backFace.innerHTML = `<div class="br-back ${rarCls(res.rar, res.def)}"><img class="br-back-img" src="${backImg}" alt="" onerror="this.style.opacity='0'"></div>`;
       const frontFace = document.createElement('div');
       frontFace.className = 'br-face front';
       frontFace.innerHTML = res.kind === 'back' ? backWinHtml(res) : type === 'cards'
@@ -15439,8 +15442,9 @@ function deckTileHtml(e, badge){
 }
 // ---------- CRÉER (V0.04.56) : toutes les cartes / tous les modules, fantômes si non possédés ----------
 // Coût de fabrication : matériaux de la rareté de la carte (l'écarlate se paie en légendaires, comme la destruction). Holographique : non fabricable.
-const CRAFT_COST = { rare:{ mat:'rare', n:10 }, epique:{ mat:'epique', n:20 }, legendaire:{ mat:'legendaire', n:40 }, ecarlate:{ mat:'legendaire', n:80 } };
-function craftCostOf(rar){ return CRAFT_COST[rar] || null; }
+const CRAFT_COST = { rare:{ mat:'rare', n:10 }, epique:{ mat:'epique', n:20 }, legendaire:{ mat:'legendaire', n:40 }, ecarlate:{ mat:'legendaire', n:80 }, tech:{ mat:'epique', n:30 } };
+// V0.05.10 : une Tech se fabrique comme une légendaire (même rareté de tirage en booster) ; le serveur applique le même coût (econ_data.craft.tech)
+function craftCostOf(rar, def){ return (def && def.tech) ? CRAFT_COST.tech : (CRAFT_COST[rar] || null); }
 // V0.04.84 : tuiles gardées d'un affichage à l'autre (clé type|nom|rareté) ; on ne crée que celles jamais vues, on replace les autres.
 var DK_POOL = new Map();
 var DK_IO = ('IntersectionObserver' in window) ? new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('dk-off', !e.isIntersecting)), { rootMargin:'160px 0px' }) : null;
@@ -15505,10 +15509,11 @@ function renderDeckCreate(work){
     const r = e => tierOf(e.rar);
     list.sort(deckModSort === 'az' ? (a, b) => a.def.name.localeCompare(b.def.name) || r(b) - r(a) : (a, b) => r(b) - r(a) || a.def.name.localeCompare(b.def.name));
   } else {
-    list = CHAR_DEFS.filter(d => !d.tech && fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar));
+    list = CHAR_DEFS.filter(d => fxMatch(d, deckFilter) && (!q || d.name.toLowerCase().includes(q))).map(d => ({ def:d, rar:rarityOf(d) })).filter(e => craftCostOf(e.rar, e.def));   // V0.05.10 : les Tech aussi
     list.forEach(e => { e.own = stackCount(e.def.name, e.rar) > 0; });
     const g = e => GROUP_ORDER.indexOf(categoryOf(e.def)), r = e => tierOf(e.rar);
-    list.sort(deckSort === 'rarity' ? (a, b) => r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
+    const tc = e => e.def.tech ? 1 : 0;   // V0.05.10 : les Tech après les MECH
+    list.sort(deckSort === 'rarity' ? (a, b) => tc(a) - tc(b) || r(b) - r(a) || g(a) - g(b) || a.def.name.localeCompare(b.def.name) : (a, b) => tc(a) - tc(b) || g(a) - g(b) || r(b) - r(a) || a.def.name.localeCompare(b.def.name));
   }
   const kind = mod ? 'module' : 'card';
   const grid = dkGrid(work, 'create|' + kind, mod ? 'mod-grid' : 'codex-grid');
@@ -15536,7 +15541,7 @@ function openCraftPreview(kind, name, rar){
 function hideCraftBar(){ craftTarget = null; const b = document.getElementById('craftBar'); if(b) b.classList.remove('show'); }
 function renderCraftBar(){
   const bar = document.getElementById('craftBar'), t = craftTarget; if(!bar || !t) return;
-  const cost = craftCostOf(t.rar);
+  const cost = craftCostOf(t.rar, CHAR_DEFS.find(d => d.name === t.name));
   if(!cost){ bar.innerHTML = '<button type="button" class="craft-btn off" disabled>NON FABRICABLE</button>'; return; }
   const ok = ((player.res.mat && player.res.mat[cost.mat]) || 0) >= cost.n;
   bar.innerHTML = `<button type="button" class="craft-btn${ok ? '' : ' off'}" id="craftBtn">FABRIQUER<span class="craft-dash">–</span><span class="craft-cost r-${cost.mat}"><b>${cost.n}</b>${matIcon(cost.mat)}</span></button>`;
@@ -16178,14 +16183,14 @@ const COLL_PER_PAGE = 9;
 let collPage = 0, collFlipping = false;
 function collDefsByNumber(){ return CHAR_DEFS.slice().sort((a, b) => CARD_NUMBERS[a.name] - CARD_NUMBERS[b.name]); }
 // Rangement du classeur : un emplacement = un nom de personnage ou null (pochette vide).
-// Ordre TOUJOURS strict des numéros, pour que le numéro affiché sur une carte corresponde
-// toujours à son emplacement dans le classeur (1, puis 2, puis 3…).
+// V0.05.10 : ordre par rareté (rare en premier), puis par numéro dans chaque rareté ; les holographiques puis les Tech à la fin.
 var collSlots = [];
 function ensureCollSlots(){
   // éléments du classeur : chaque personnage (série) par numéro croissant,
   // puis ses holographiques possédées (hors série, « NOM|holo ») par numéro croissant
   const byNum = collDefsByNumber();
-  const names = SERIES_DEFS.slice().sort((a, b) => CARD_NUMBERS[a.name] - CARD_NUMBERS[b.name]).map(d => d.name).concat(TECH_LIST.map(d => d.name)).concat(byNum.filter(d => !d.tech && stackCount(d.name, 'holo') > 0).map(d => d.name + '|holo'));
+  // V0.05.10 : rangement par rareté (rare, épique, légendaire, écarlate), numéros croissants dans chaque rareté ; puis les holographiques possédées ; puis les Tech
+  const names = SERIES_DEFS.slice().sort((a, b) => tierOf(rarityOf(a)) - tierOf(rarityOf(b)) || CARD_NUMBERS[a.name] - CARD_NUMBERS[b.name]).map(d => d.name).concat(byNum.filter(d => !d.tech && stackCount(d.name, 'holo') > 0).map(d => d.name + '|holo')).concat(TECH_LIST.map(d => d.name));
   const len = Math.max(1, Math.ceil(names.length / COLL_PER_PAGE)) * COLL_PER_PAGE;
   const slots = names.slice();
   while(slots.length < len) slots.push(null);
