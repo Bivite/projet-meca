@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.10</title>
+<title>Projet MECA V0.05.11</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7651,9 +7651,9 @@
     background:linear-gradient(180deg, rgba(3,10,18,.97), rgba(6,20,32,.94)); box-shadow:inset 0 0 12px rgba(var(--hc),.3); }
   .btl-holo-in::before{ content:""; position:absolute; left:8%; right:8%; bottom:0; height:55%; pointer-events:none;
     background:radial-gradient(ellipse at 50% 100%, rgba(var(--hc),.5), transparent 70%); }
-  .btl-holo-in::after{ content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
+  .btl-holo-in::after{ content:""; position:absolute; inset:-6px 0 0 0; pointer-events:none; mix-blend-mode:screen; will-change:transform;
     background:repeating-linear-gradient(0deg, rgba(var(--hc),.2) 0 1px, transparent 1px 3px); animation:btlScan 1.6s linear infinite; }
-  @keyframes btlScan{ from{ background-position:0 0; } to{ background-position:0 6px; } }
+  @keyframes btlScan{ from{ transform:translateY(0); } to{ transform:translateY(6px); } }
   .btl-holo-n{ position:relative; z-index:1; font-family:var(--font-title); font-size:19px; font-weight:900; letter-spacing:2px; line-height:1; color:rgb(var(--hc));
     text-shadow:0 0 5px rgba(var(--hc),.9), 0 0 11px rgba(var(--hc),.55);
     transform:perspective(120px) rotateX(14deg); animation:btlFlick 3.2s steps(1) infinite; font-variant-numeric:tabular-nums; }
@@ -7699,7 +7699,7 @@
   .btl .unit.cbt .s-def{ --c:52,128,224; --t:214,232,255; }
   .btl .unit.cbt .s-ult{ --c:240,180,36; --t:255,242,206; }
   .btl .unit.cbt .s-hp{ --c:204,58,58; --t:255,222,220; }
-  .btl .unit.cbt .s-ult.btl-ready::before{ animation:btlUltGlass 1.1s ease-in-out infinite; }
+  .btl .unit.cbt .s-ult.btl-ready::before{ animation:btlUltGlass 1.1s steps(5) infinite; }
   @keyframes btlUltGlass{ 0%,100%{ box-shadow:inset 0 0 0 .3cqw rgba(240,180,36,.8), inset 0 -1cqw 1.6cqw rgba(240,180,36,.3), 0 0 0 rgba(255,210,80,0); } 50%{ box-shadow:inset 0 0 0 .4cqw rgba(255,226,120,1), inset 0 0 2.4cqw rgba(255,214,90,.8), 0 0 3.5cqw rgba(255,206,70,.9); } }
 
   /* TANK : halo gris clair autour de la petite carte, à l'intérieur de son emplacement (ne dépasse pas) */
@@ -7770,19 +7770,19 @@
   .btl .unit.cbt.ult-rdy .cbt-flame, .btl .unit.cbt.ult-on .cbt-flame{ display:block; }
   .btl .unit.cbt .cbt-flame::before{ content:""; position:absolute; inset:2.5%; border-radius:10%;
     box-shadow:0 0 6px 1px rgba(255,176,70,.9), 0 0 16px 4px rgba(255,112,18,.55), 0 0 28px 8px rgba(214,64,0,.26);
-    animation:btlHaloO 2.6s ease-in-out infinite; }
+    animation:btlHaloO 2.6s steps(6) infinite; }
   .btl .unit.cbt.ult-on .cbt-flame::before{ box-shadow:0 0 7px 2px rgba(255,194,86,1), 0 0 20px 6px rgba(255,120,20,.7), 0 0 34px 10px rgba(214,64,0,.38); }
   .btl .unit.cbt.ult-on .cbt-st b{ color:#ffe7b8; }
   @keyframes btlHaloO{ 0%,100%{ opacity:.8; } 50%{ opacity:1; } }
   /* carte jouable ce tour-ci : halo bleu qui pulse ; il disparaît dès que le joueur a choisi l'action de la carte */
   .btl .unit.cbt .cbt-can{ display:none; position:absolute; inset:2.5%; border-radius:10%; z-index:-1; pointer-events:none;
-    box-shadow:0 0 6px 1px rgba(120,200,255,.95), 0 0 16px 4px rgba(50,145,255,.6); animation:btlHaloO 1.8s ease-in-out infinite; }
+    box-shadow:0 0 6px 1px rgba(120,200,255,.95), 0 0 16px 4px rgba(50,145,255,.6); animation:btlHaloO 1.8s steps(6) infinite; }
   .btl .unit.cbt.can-act .cbt-can{ display:block; }
   .btl-hand .btl-hc.tech.can::before{ box-shadow:0 0 7px 2px rgba(120,255,160,.9), 0 0 18px 4px rgba(50,255,110,.4); }
   .btl.tech-drag .btl-plate{ transition:outline-color .15s; outline:2px solid rgba(60,255,110,.0); outline-offset:-3px; }
   .btl.tech-armed .btl-plate{ outline-color:rgba(60,255,110,.85); }
   .btl-hand .btl-hc.can::before{ content:""; position:absolute; inset:1.5%; border-radius:6%; z-index:-1; pointer-events:none;
-    box-shadow:0 0 7px 2px rgba(255,255,255,.8), 0 0 18px 4px rgba(255,255,255,.3); animation:btlHaloO 2.2s ease-in-out infinite !important; }
+    box-shadow:0 0 7px 2px rgba(255,255,255,.8), 0 0 18px 4px rgba(255,255,255,.3); animation:btlHaloO 2.2s steps(6) infinite !important; }
 
   /* case ULT du chef d'escouade : grisée (carte passive, pas d'ultimate) */
   .btl .unit.cbt .s-ult.off{ --c:84,90,100; --t:150,156,166; }
@@ -7802,7 +7802,7 @@
   .btl-mod .bm-gl{ inset:10.5%; border-radius:7%; background:linear-gradient(155deg, rgba(255,255,255,.26) 0, rgba(255,255,255,.04) 34%, transparent 52%), linear-gradient(0deg, rgba(0,0,0,.38), transparent 40%);
     box-shadow:inset 0 0 8px rgba(0,0,0,.65); }
   .btl-mod .bm-fr{ inset:-3%; background:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-c23fe97f8bfb.webp) center/100% 100% no-repeat; }
-  .btl-mod.ready{ animation:btlModReady 2.4s ease-in-out infinite; }
+  .btl-mod.ready{ animation:btlModReady 2.4s steps(6) infinite; }
   @keyframes btlModReady{ 0%,100%{ filter:drop-shadow(0 3px 3px rgba(0,0,0,.7)) drop-shadow(0 0 3px var(--g)); } 50%{ filter:drop-shadow(0 3px 3px rgba(0,0,0,.7)) drop-shadow(0 0 9px var(--g)) drop-shadow(0 0 18px color-mix(in srgb, var(--g) 55%, transparent)); } }
   .btl-mod.off{ filter:drop-shadow(0 3px 3px rgba(0,0,0,.7)) brightness(.62) saturate(.55); }
   .btl-mod.used{ filter:drop-shadow(0 3px 3px rgba(0,0,0,.7)) grayscale(1) brightness(.55); cursor:default; }
@@ -7851,12 +7851,12 @@
 .btl-plate{ --lt:#ff2f3f; --lb:#2f8cff; }
 .btl-pcb .pc-lg.lt{ fill:var(--lt); color:var(--lt); filter:drop-shadow(0 0 2px var(--lt)) drop-shadow(0 0 6px var(--lt)); transition:fill .9s ease-out, filter .9s ease-out; }
 .btl-pcb .pc-lg.lb{ fill:var(--lb); color:var(--lb); filter:drop-shadow(0 0 2px var(--lb)) drop-shadow(0 0 6px var(--lb)); transition:fill .9s ease-out, filter .9s ease-out; }
-.btl-pcb .pc-lg .lg{ animation:btlLgB 3.4s ease-in-out infinite; }
+.btl-pcb .pc-lg .lg{ animation:btlLgB 3.4s steps(6) infinite; }
 @keyframes btlLgB{ 0%,100%{ opacity:.62; } 45%{ opacity:1; } }
 .btl-plate.lit .pc-lg{ transition:fill .22s ease-out, filter .22s ease-out; }
 .btl-plate.lit .pc-lg.lt{ filter:drop-shadow(0 0 3px var(--lt)) drop-shadow(0 0 10px var(--lt)) drop-shadow(0 0 18px var(--lt)); }
 .btl-plate.lit .pc-lg.lb{ filter:drop-shadow(0 0 3px var(--lb)) drop-shadow(0 0 10px var(--lb)) drop-shadow(0 0 18px var(--lb)); }
-.btl-plate.lit .pc-lg .lg{ animation:btlLgL .9s ease-in-out infinite; }
+.btl-plate.lit .pc-lg .lg{ animation:btlLgL .9s steps(4) infinite; }
 @keyframes btlLgL{ 0%,100%{ opacity:.8; } 50%{ opacity:1; } }
 .btl-mid-ln{ background:linear-gradient(180deg, var(--lt) 0 1.2px, #07090c 1.2px 3.8px, var(--lb) 3.8px 5px); transition:background .9s; }
 .btl-slot{ background:linear-gradient(165deg, #0a1220, #111c30); }
@@ -7864,11 +7864,11 @@
 
 /* ----- texture du champ de bataille (V0.04.81) ----- */
 .btl-body-in .pc-tx, .btl-body-in .pc-lc{ position:absolute; left:0; width:100%; pointer-events:none; }
-.btl-body-in .pc-lc{ animation:pcBreath 3.6s ease-in-out infinite;
+.btl-body-in .pc-lc{ animation:pcBreath 3.6s steps(6) infinite;
   -webkit-mask-image:linear-gradient(90deg, rgba(0,0,0,.82) 0, rgba(0,0,0,.82) 38%, #000 50%, rgba(0,0,0,.82) 62%, rgba(0,0,0,.82) 100%); mask-image:linear-gradient(90deg, rgba(0,0,0,.82) 0, rgba(0,0,0,.82) 38%, #000 50%, rgba(0,0,0,.82) 62%, rgba(0,0,0,.82) 100%);
   -webkit-mask-size:260% 100%; mask-size:260% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
-.btl-body-in .pc-lc.t{ animation:pcBreath 3.6s ease-in-out infinite, pcSweepT 5.2s linear infinite; }
-.btl-body-in .pc-lc.b{ animation:pcBreath 3.6s ease-in-out -1.8s infinite, pcSweepB 5.2s linear -2.6s infinite; }
+.btl-body-in .pc-lc.t{ animation:pcBreath 3.6s steps(6) infinite, pcSweepT 5.2s steps(52) infinite; }   /* V0.05.11 : batterie, 10 i/s au lieu de 60 */
+.btl-body-in .pc-lc.b{ animation:pcBreath 3.6s steps(6) -1.8s infinite, pcSweepB 5.2s steps(52) -2.6s infinite; }
 @keyframes pcBreath{ 0%,100%{ opacity:.88; } 50%{ opacity:1; } }
 @keyframes pcSweepT{ from{ -webkit-mask-position:100% 0; mask-position:100% 0; } to{ -webkit-mask-position:0% 0; mask-position:0% 0; } }
 @keyframes pcSweepB{ from{ -webkit-mask-position:0% 0; mask-position:0% 0; } to{ -webkit-mask-position:100% 0; mask-position:100% 0; } }
@@ -8430,7 +8430,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.10</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.11</b></div>
   </div>
 
     </div>
@@ -9250,9 +9250,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.10';
+var BUILD_VERSION = 'V0.05.11';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.11', items:[
+    'BATTERIE : le combat consommait énormément (le téléphone redessinait tout l\'écran à chaque image, même à l\'arrêt). Les trois animations de lumière les plus coûteuses (balayage lumineux des circuits du plateau, lignes de scan du chrono holographique, pulsations des voyants et des halos) sont réécrites : même aspect, beaucoup moins de travail pour le processeur. Le mode éco agit aussi en combat : après 15 secondes sans toucher l\'écran, les lumières décoratives se figent et reprennent au premier toucher (réglage ÉCO dans les options).',
+  ] },
   { v:'V0.05.10', items:[
     'FABRICATION DES CARTES TECH : l\'écran DECK > CRÉER propose maintenant les Tech (après les MECH). Une Tech se fabrique pour 30 matériaux épiques (un peu plus qu\'une MECH épique, 20).',
     'COLLECTION : le classeur est rangé par rareté -- rares en premier, puis épiques, légendaires, écarlates, holographiques, et les cartes TECH tout à la fin.',
@@ -11051,8 +11054,9 @@ function ecoPruneLoops(){   // V0.04.61 : ECO.paused retenait des animations (do
   if(!ECO.paused.length) return;
   ECO.paused = ECO.paused.filter(a => { try{ const t = a.effect && a.effect.target; return !!(t && t.isConnected && a.playState === 'paused'); }catch(_){ return false; } });
 }
-function ecoPauseLoops(){
-  if(ecoInBattle()) return;   // en bataille, les effets de lumière doivent rester fluides
+var ECO_BTL_IDLE_MS = 15000;   // V0.05.11 : batterie -- en combat, le mode éco se déclenche après 15 s sans toucher (6 s dans les menus)
+function ecoPauseLoops(force){
+  if(ecoInBattle() && !force) return;   // en bataille : seulement après ECO_BTL_IDLE_MS sans toucher (voir ecoHeartbeat1s)
   ecoPruneLoops();
   let list = [];
   try{ list = document.getAnimations(); }catch(_){ return; }
@@ -11073,6 +11077,7 @@ function ecoWake(){
     ECO.paused = [];
   }
   if(typeof wakeScenes === 'function') wakeScenes();
+  try{ if(window.BTL && typeof btlFlameKick === 'function') btlFlameKick(); }catch(_){}   // flammes des cartes jouables : reprise au toucher
   if(ecoOn()) setTimeout(ecoLowFps, 120);   // les animations des écrans qui viennent de s'ouvrir passent vite en mode léger
 }
 ['pointerdown', 'wheel', 'keydown'].forEach(ev => window.addEventListener(ev, ecoWake, { capture:true, passive:true }));
@@ -11106,7 +11111,7 @@ function ecoLowFps(){
 // de fonction et de vérifications document.hidden que nécessaire pour un gain nul (diagnostic du 27/09/2026).
 function ecoHeartbeat1s(){
   if(!ecoOn()) return;
-  if(ecoInBattle()){ ECO.last = Date.now(); ecoPruneLoops(); return; }   // bataille : ni pause ni 12 i/s
+  if(ecoInBattle()){ ecoPruneLoops(); if(Date.now() - ECO.last > ECO_BTL_IDLE_MS){ ECO.idle = true; ecoPauseLoops(true); } return; }   // bataille : pas de 12 i/s, mais pause des boucles décoratives après 15 s sans toucher
   ecoLowFps();
   if(Date.now() - ECO.last > ECO.idleMs){ ECO.idle = true; ecoPauseLoops(); }   // repasse aussi sur les animations apparues entre-temps
 }
@@ -27217,12 +27222,14 @@ function btlFlameBands(){
 // démarre la boucle s'il y a au moins une carte qui peut agir (appelé par btlRefreshCan) ; si elle tourne déjà, on demande juste une relecture immédiate
 function btlFlameKick(){
   const F = BTL_FLAME; F.dirty = true; if(F.raf || F.manual || !BTL || BTL.abort) return;
+  if(ecoIdle()) return;   // V0.05.11 : mode éco (15 s sans toucher) : les flammes restent figées jusqu'au prochain toucher
   if(!document.querySelector('.btl-slot .unit.cbt.can-act') || !btlFlameBands()) return;
   F.last = 0; F.acc = 0; F.raf = requestAnimationFrame(btlFlameLoop);
 }
 function btlFlameLoop(now){
   const F = BTL_FLAME; F.raf = 0;
   if(!BTL || BTL.abort){ btlFlameStop(); return; }
+  if(ecoIdle()) return;   // V0.05.11 : mode éco : on cesse de redessiner (dernière image conservée) ; btlFlameKick relance au toucher
   const dt = F.last ? Math.min(.1, (now - F.last) / 1000) : .016; F.last = now; F.avg += (dt * 1000 - F.avg) * .05; F.acc += dt;
   if(F.acc >= .028){   // 30 images/s : une image sur deux quand l'écran tourne à 60, toutes les images si l'appareil est plus lent
     const h = Math.min(.066, F.acc); F.acc = 0;
