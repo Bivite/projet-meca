@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.06</title>
+<title>Projet MECA V0.05.07</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1334,6 +1334,8 @@
   /* V0.03.75 : rareté ÉCARLATE (demande d'Alex), au-dessus de légendaire -- même traitement de halo/teinte
      générique que rare/épique/légendaire (pas d'effet spécial façon holo, cf .r-holo plus bas). */
   .r-ecarlate{--rc:#ff2d4d; --rc-glow:rgba(255,45,77,.6); --rc-tint:rgba(255,45,77,.18); --rc-halo:rgba(255,45,77,.65);}
+  /* V0.05.07 : halo du dos TECH (vert néon de l'illustration) -- pas une rareté de carte, uniquement le halo des dos */
+  .r-tech{--rc:#2dff5a; --rc-glow:rgba(45,255,90,.6); --rc-tint:rgba(45,255,90,.16); --rc-halo:rgba(45,255,90,.65);}
   /* Halo de rareté porté par la CARTE (cadre + lueur extérieure + teinte du fond) */
   .codex-card.rar, .fab-card.rar, .team-slot.rar, .unit.rar{
     border:1.5px solid var(--rc);
@@ -8405,7 +8407,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.06</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.07</b></div>
   </div>
 
     </div>
@@ -9225,9 +9227,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.06';
+var BUILD_VERSION = 'V0.05.07';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.07', items:[
+    'NOUVEAU DOS DE CARTE : TECH (métal et vert néon). Tu peux le trouver dans les boosters RESSOURCES, avec les autres dos, puis le choisir dans l\'écran de ton deck.'
+  ] },
   { v:'V0.05.06', items:[
     'COMBAT : une carte ne peut plus se défendre elle-même (elle défend ses alliés ou le chef d\'escouade). Les adversaires IA ne le font plus non plus.',
     'COMBAT : sur les grands écrans, attaquer le chef adverse en tirant en diagonale très inclinée depuis la carte la plus à droite (ou à gauche) n\'est plus ignoré sans rien dire.',
@@ -14258,7 +14263,9 @@ const BOOST_CARD_BACK = {
   legendaire: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/card-back-legendaire.webp',
   holo: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/card-back-holo.webp',
   // V0.03.75 : dos ÉCARLATE fourni par Alex, intégré en base64 (cf commentaire card-frame-ecarlate plus haut).
-  ecarlate: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/card-back-ecarlate.webp'
+  ecarlate: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/card-back-ecarlate.webp',
+  // V0.05.07 : dos TECH (fourni par Alex) -- dos cosmétique nommé, tiré dans les boosters RESSOURCES comme épique/légendaire/écarlate
+  tech: 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/card-back-tech.webp'
 };
 
 /* Dos de carte dédiés aux MODULES (V0.02.89, demande d'Alex : "voici les dos des cartes modules")
@@ -14274,8 +14281,8 @@ const BOOST_CARD_BACK = {
 // Chaque deck a SON dos pour les cartes classiques (backCard) et SON dos pour le module (backMod). Rare = offert d'office ;
 // épique / légendaire / écarlate : booster RESSOURCES (5 % par booster, même poids que la rareté de la carte) ; holographique : trophée.
 // Un dos obtenu ne retombe plus jamais ; ils ne se détruisent ni ne se fabriquent. Pas de dos module écarlate ni holo.
-const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'holo'], mod:['rare', 'epique', 'legendaire'] };
-const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', holo:'HOLOGRAPHIQUE' };
+const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'tech', 'holo'], mod:['rare', 'epique', 'legendaire'] };
+const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', tech:'TECH', holo:'HOLOGRAPHIQUE' };
 function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
 function backSrc(kind, rar){ return BOOST_CARD_BACK[rar] || BOOST_CARD_BACK.rare; }   // V0.04.92 : les modules n'ont plus de dos (kind 'mod' = ENCADRÉ, face avant)
 function deckBack(d, kind){
