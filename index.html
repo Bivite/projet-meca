@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.05</title>
+<title>Projet MECA V0.05.06</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8405,7 +8405,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.05</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.06</b></div>
   </div>
 
     </div>
@@ -9225,9 +9225,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.05';
+var BUILD_VERSION = 'V0.05.06';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.06', items:[
+    'COMBAT : une carte ne peut plus se défendre elle-même (elle défend ses alliés ou le chef d\'escouade). Les adversaires IA ne le font plus non plus.',
+    'COMBAT : sur les grands écrans, attaquer le chef adverse en tirant en diagonale très inclinée depuis la carte la plus à droite (ou à gauche) n\'est plus ignoré sans rien dire.',
+    'DÉFIS SAPHYR (DOZEUR, DILUS, CHEIF 117, SHADOW, SYLVERLAKE, SOSFOR) : l\'adversaire garde SAPHYR aux paliers 1 et 4, puis change de module à chaque palier, ce qui les rend moins faciles.'
+  ] },
   { v:'V0.05.05', items:[
     'NOUVELLES CARTES RARES : SCOOT, POUNDER, PITTY BELL, SOSFOR et GAST rejoignent le jeu. Elles n\'ont pas d\'effet particulier et chacune a son ultime ; tu les trouves dans les boosters.',
     'ANIMATION PITTY BELL : à son arrivée, le drone de l\'artwork, en relief 3D, survole le champ de bataille, vire puis s\'envole ; la carte s\'écrase ensuite dans sa case comme une météorite.'
@@ -20599,7 +20604,7 @@ function btlCloseMenu(keepFloat){
 
 // ----- ciblage (flèche qui suit le doigt) -----
 function btlTargetsFor(c, kind){
-  if(kind === 'def') return btlAlly(c.side).filter(t => t.hp > 0);
+  if(kind === 'def') return btlAlly(c.side).filter(t => t.hp > 0 && t !== c);   // V0.05.06 : pas de défense sur soi-même
   return btlValidFoesFor(c);
 }
 // V0.04.64 : un Tank déjà condamné par une action planifiée AVANT celle-ci ne bloque plus les autres cartes
@@ -20883,7 +20888,7 @@ function btlAimDown(ev){
     if(Math.hypot(dx, dy) < 14) return;
     off();
     BTL.noClick = true; setTimeout(() => { if(BTL) BTL.noClick = false; }, 400);
-    if(Math.abs(dy) < Math.abs(dx) * .6) return;                 // geste surtout horizontal : ignoré
+    if(Math.abs(dy) < Math.abs(dx) * .4) return;                 // geste surtout horizontal : ignoré (V0.05.06 : seuil 0,6 -> 0,4, une diagonale franche vers le chef adverse n'est plus ignorée sur grand écran)
     if(!BTL || BTL.phase !== 'plan' || BTL.side !== 'p' || BTL.tg || !btlOnField(c)) return;
     const kind = dy < 0 ? 'atk' : 'def';
     if(!btlCanAct(c)){ btlDeny('slots'); return; }
@@ -25892,7 +25897,7 @@ async function btlAI(){
     if(BTL.over) return;
     if(!c || c.hp <= 0 || BTL.mana.o <= 0 || !btlCanAct(c)) continue;
     const allies = btlAlly(side).filter(t => t.hp > 0), foes = btlValidFoes('o');
-    const weakAlly = allies.slice().sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+    const weakAlly = allies.filter(x => x !== c).sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];   // V0.05.06 : l'IA ne se défend pas elle-même
     let plan = null;
     if(!plan && !btlNoDef(c) && weakAlly.hp / weakAlly.maxHp < 0.45 && c.df > 0 && btlLrand() < 0.8) plan = { kind:'def', tgt:weakAlly.uid, heal:false };
     if(!plan) plan = { kind:'atk', tgt:btlPickFoe(c, foes, 1).uid, heal:false };
@@ -27171,6 +27176,7 @@ const DEFI_DECKS = {
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
 const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD_T = {"DOZEUR": ["SAPHYR", "BAVURES", "PROTO-SHIELD", "SAPHYR", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5"], "DILUS": ["SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "SAPHYR", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET"], "CHEIF 117": ["SAPHYR", "T-ARMS 09", "PROK-IEM", "SAPHYR", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES"], "SHADOW": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"], "SYLVERLAKE": ["SAPHYR", "AZ-5", "ROCKET", "SAPHYR", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09"], "SOSFOR": ["SAPHYR", "ROCKET", "BAVURES", "SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM"]};   // V0.05.06 : module adverse PAR PALIER pour les Défis SAPHYR (le reste suit DEFI_MOD)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
   if(!str) return null;
@@ -27184,7 +27190,7 @@ function defiFallbackDeck(focus){   // carte sans deck dédié : le pivot + 19 c
 }
 function defiOppSpec(def, tier){
   const kn = DEFI_TIER_KNOBS[Math.max(1, Math.min(ULTIMATE_MAX_TIER, tier)) - 1];
-  return Object.assign({ focus:def.name, tier, deck:defiDeckNames(def.name, tier) || defiFallbackDeck(def.name), mod:DEFI_MOD[def.name] || null }, kn);
+  return Object.assign({ focus:def.name, tier, deck:defiDeckNames(def.name, tier) || defiFallbackDeck(def.name), mod:((DEFI_MOD_T[def.name] && DEFI_MOD_T[def.name][tier - 1]) || DEFI_MOD[def.name] || null) }, kn);
 }
 
 // ---------- DÉFI : fenêtre de lancement d'un palier -- deck adverse + choix de TON deck (V0.04.65) ----------
