@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.21</title>
+<title>Projet MECA V0.05.22</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8438,7 +8438,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.21</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.22</b></div>
   </div>
 
     </div>
@@ -9258,10 +9258,10 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.21';
+var BUILD_VERSION = 'V0.05.22';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
-  { v:'V0.05.21', items:[
+  { v:'V0.05.22', items:[
     'NOUVELLE CARTE LÉGENDAIRE : HAKILX (TANK + PASSIF). Tant qu\'elle est sur le terrain, l\'adversaire ne peut pas jouer de cartes Tech. Arrivée : deux bobines Tesla sortent de chaque côté de la case, des éclairs parcourent le champ de bataille, un éclair géant frappe la case et la lumière aveugle le terrain.',
   ] },
   { v:'V0.05.20', items:[
@@ -11684,7 +11684,7 @@ const CHAR_DEFS = [
     base:{atk:27, def:8, hp:225}, max:{atk:180, def:60, hp:830}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gast-art.webp',
     artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gast-art-ext.webp' },
-  // ---- Nouvelle carte LÉGENDAIRE (V0.05.21) : HAKILX, mécha-générateur EMP, TANK + PASSIF (bloque les cartes Tech adverses) ----
+  // ---- Nouvelle carte LÉGENDAIRE (V0.05.22) : HAKILX, mécha-générateur EMP, TANK + PASSIF (bloque les cartes Tech adverses) ----
   { name:"HAKILX", rarity:"legendaire", color:"#3aa8ff", shape:"block", role:"Tank — générateur EMP à bobines Tesla",
     ultName:"SURCHARGE 20 GW", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:36, def:48, hp:525}, max:{atk:240, def:360, hp:1940}, owned:false, seen:false,
@@ -20755,7 +20755,7 @@ async function btlPlay(side, c, si, fromRect, el){
   btlPlaceFixed(el, fromRect);
   { const fxPre = BTL_CARD_FX[c.name] && BTL_CARD_FX[c.name].pre; if(fxPre){ el.style.visibility = 'hidden'; try{ await fxPre(c, fromRect, to); } finally { el.style.visibility = ''; } } }   // V0.05.05 : animation AVANT l'envol de la carte (PITTY BELL)
   { const fxDrop = BTL_CARD_FX[c.name] && BTL_CARD_FX[c.name].drop;
-    if(fxDrop){   // V0.05.21 : arrivée sans envol (HAKILX) : la carte est déjà posée quand la lumière retombe
+    if(fxDrop){   // V0.05.22 : arrivée sans envol (HAKILX) : la carte est déjà posée quand la lumière retombe
       el.style.visibility = 'hidden';
       try{ await fxDrop(c, to, col); } finally { el.remove(); }
       c.playedTurn = BTL.turn; btlRefreshCan();
@@ -26322,7 +26322,7 @@ async function btlModuleUse(side, pre){
 // =====================================================================================================
 const BTL_TECH_FX = {};
 function btlTechSrc(side){ return BTL.S[side].leader; }
-function btlTechLockedBy(side){ return BTL && BTL.S[btlOther(side)].slots.find(t => t && t.hp > 0 && t.name === 'HAKILX') || null; }   // V0.05.21 : HAKILX adverse = pas de Tech
+function btlTechLockedBy(side){ return BTL && BTL.S[btlOther(side)].slots.find(t => t && t.hp > 0 && t.name === 'HAKILX') || null; }   // V0.05.22 : HAKILX adverse = pas de Tech
 function btlTechCanUse(side, c){
   const def = c && c.tech && BTL_TECH_FX[c.name];
   if(!BTL || !def || btlGone() || BTL.side !== side) return false;
@@ -26332,7 +26332,7 @@ function btlTechCanUse(side, c){
 }
 function btlTechDeny(c){
   const lk = btlTechLockedBy('p');
-  if(lk){ const e = btlUnitEl(lk); btlFlashEl(e, '#4ab8ff', .95, 520); btlShake(e, 5); btlRing(btlUnitRect(lk), '#4ab8ff', false); return; }   // V0.05.21 : la HAKILX adverse tremble et s'éclaire
+  if(lk){ const e = btlUnitEl(lk); btlFlashEl(e, '#4ab8ff', .95, 520); btlShake(e, 5); btlRing(btlUnitRect(lk), '#4ab8ff', false); return; }   // V0.05.22 : la HAKILX adverse tremble et s'éclaire
   if(BTL.mana.p < c.cost) btlDeny('mana');
   else btlDeny('target');   // V0.05.12 : plus de texte en combat (règle de la bataille) : les cases tremblent
 }
@@ -26815,9 +26815,9 @@ BTL_TECH_FX['PRÉPARATION'] = { mode:'ally',
     btlRefreshCan();
     await btlSleep(520);
   } };
-// ---- HAKILX (V0.05.21) : arrivée. Deux bobines Tesla (ressorts) sortent de chaque côté de la case choisie, elles se mettent en marche : des éclairs courent sur tout le champ de bataille
+// ---- HAKILX (V0.05.22) : arrivée. Deux bobines Tesla (ressorts) sortent de chaque côté de la case choisie, elles se mettent en marche : des éclairs courent sur tout le champ de bataille
 // jusqu'à ce qu'un énorme éclair frappe la case ; la lumière aveugle le terrain et la carte est déjà dans son emplacement quand elle retombe.
-function btlTeslaSvg(){
+function btlHkTeslaSvg(){
   let back = '', front = '';
   for(let i = 0; i < 9; i++){ const y = 34 + i * 12.5;
     back += '<path d="M9 ' + y + ' Q30 ' + (y - 10) + ' 51 ' + y + '" fill="none" stroke="#1c6fd0" stroke-width="3.4" opacity=".55"/>';
@@ -26830,7 +26830,7 @@ function btlTeslaSvg(){
     '<rect x="5" y="148" width="50" height="16" fill="url(#hkM)"/><rect x="3" y="164" width="54" height="30" rx="3" fill="url(#hkM)" stroke="#07080a" stroke-width="1.5"/>' +
     '<rect x="6" y="170" width="48" height="8" fill="url(#hkH)" opacity=".92"/><circle cx="30" cy="186" r="4" fill="#5cc8ff"/></svg>';
 }
-function btlBoltPts(x0, y0, x1, y1, dev, depth){
+function btlHkBolt(x0, y0, x1, y1, dev, depth){
   let pts = [[x0, y0], [x1, y1]];
   for(let d = 0; d < depth; d++){
     const np = [pts[0]];
@@ -26842,14 +26842,14 @@ function btlBoltPts(x0, y0, x1, y1, dev, depth){
   }
   return pts;
 }
-function btlBoltDraw(ctx, pts, w, a){
+function btlHkBoltDraw(ctx, pts, w, a){
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   [[w * 3.4, 'rgba(40,140,255,' + a * .3 + ')'], [w * 1.7, 'rgba(120,205,255,' + a * .65 + ')'], [w * .6, 'rgba(255,255,255,' + a + ')']].forEach(([lw, col]) => {
     ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath();
     pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke();
   });
 }
-function btlLoop(ms, fn){   // boucle image par image sur l'horloge ralentie (ms = durée de base, multipliée par BTL_TS comme les autres animations)
+function btlHkLoop(ms, fn){   // boucle image par image sur l'horloge ralentie (ms = durée de base, multipliée par BTL_TS comme les autres animations)
   return new Promise((res, rej) => {
     const t0 = btlClk();
     const tick = () => {
@@ -26865,7 +26865,7 @@ BTL_CARD_FX['HAKILX'] = { drop: async (c, to, col) => {
   const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), VW = innerWidth, VH = innerHeight;
   const cw = Math.max(34, to.width * .5), ch = to.height * 1.32, by = to.top + to.height + 8, top = by - ch;
   const lx = to.left - cw * .9, rx = to.left + to.width - cw * .1;
-  const mkCoil = x => { const e = document.createElement('div'); e.style.cssText = 'position:fixed;pointer-events:none;z-index:31;opacity:0;will-change:transform,opacity;left:' + x + 'px;top:' + top + 'px;width:' + cw + 'px;height:' + ch + 'px;filter:drop-shadow(0 0 7px #2f98ff) drop-shadow(0 0 16px rgba(60,160,255,.55))'; e.innerHTML = btlTeslaSvg(); fx.appendChild(e); return e; };
+  const mkCoil = x => { const e = document.createElement('div'); e.style.cssText = 'position:fixed;pointer-events:none;z-index:31;opacity:0;will-change:transform,opacity;left:' + x + 'px;top:' + top + 'px;width:' + cw + 'px;height:' + ch + 'px;filter:drop-shadow(0 0 7px #2f98ff) drop-shadow(0 0 16px rgba(60,160,255,.55))'; e.innerHTML = btlHkTeslaSvg(); fx.appendChild(e); return e; };
   const coilL = mkCoil(lx), coilR = mkCoil(rx);
   const cv = document.createElement('canvas'); cv.width = VW; cv.height = VH;
   cv.style.cssText = 'position:fixed;left:0;top:0;width:' + VW + 'px;height:' + VH + 'px;pointer-events:none;z-index:33';
@@ -26883,13 +26883,13 @@ BTL_CARD_FX['HAKILX'] = { drop: async (c, to, col) => {
     await btlSleep(620);
     // 2) mise en marche : arcs qui courent sur tout le champ de bataille, de plus en plus nombreux
     let bolts = [], last = -1e9, arc = null;
-    await btlLoop(1500, (k, t) => {
+    await btlHkLoop(1500, (k, t) => {
       if(t - last > 85){
-        last = t; bolts = []; arc = btlBoltPts(tipL[0], tipL[1], tipR[0], tipR[1], 26 + 18 * k, 5);
+        last = t; bolts = []; arc = btlHkBolt(tipL[0], tipL[1], tipR[0], tipR[1], 26 + 18 * k, 5);
         const n = 2 + Math.round(k * 4);
         for(let i = 0; i < n; i++){
           const src = i % 2 ? tipR : tipL, tx = plate.left + Math.random() * plate.width, ty = plate.top + Math.random() * plate.height * (.4 + .6 * k);
-          bolts.push({ pts:btlBoltPts(src[0], src[1], tx, ty, 90, 5), w:1.6 + Math.random() * 1.6 });
+          bolts.push({ pts:btlHkBolt(src[0], src[1], tx, ty, 90, 5), w:1.6 + Math.random() * 1.6 });
         }
         wash.style.opacity = Math.random() < .5 ? String(.1 + .3 * k) : '0';
         coilL.style.filter = coilR.style.filter = 'drop-shadow(0 0 ' + (7 + 10 * k) + 'px #2f98ff) drop-shadow(0 0 ' + (16 + 22 * k) + 'px rgba(80,175,255,' + (.55 + .35 * k) + '))';
@@ -26897,15 +26897,15 @@ BTL_CARD_FX['HAKILX'] = { drop: async (c, to, col) => {
         if(Math.random() < .5) btlParticles(cx, to.top + to.height * .9, { n:3, color:'#aee0ff', dist:34, dur:300, size:3, spread:20 });
       }
       ctx.clearRect(0, 0, VW, VH); ctx.globalCompositeOperation = 'lighter';
-      bolts.forEach(b => btlBoltDraw(ctx, b.pts, b.w, .55 + .45 * Math.random()));
-      if(arc) btlBoltDraw(ctx, arc, 2.4 + 2 * k, .8 + .2 * Math.random());
+      bolts.forEach(b => btlHkBoltDraw(ctx, b.pts, b.w, .55 + .45 * Math.random()));
+      if(arc) btlHkBoltDraw(ctx, arc, 2.4 + 2 * k, .8 + .2 * Math.random());
       ctx.globalCompositeOperation = 'source-over';
     });
     // 3) la charge se concentre sur la case choisie
     wash.style.opacity = '0';
-    await btlLoop(380, (k) => {
+    await btlHkLoop(380, (k) => {
       ctx.clearRect(0, 0, VW, VH); ctx.globalCompositeOperation = 'lighter';
-      if(arc) btlBoltDraw(ctx, btlBoltPts(tipL[0], tipL[1], tipR[0], tipR[1], 22, 5), 4.4, .9);
+      if(arc) btlHkBoltDraw(ctx, btlHkBolt(tipL[0], tipL[1], tipR[0], tipR[1], 22, 5), 4.4, .9);
       const r = to.width * (.2 + .9 * k), g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
       g.addColorStop(0, 'rgba(255,255,255,' + (.35 + .5 * k) + ')'); g.addColorStop(.5, 'rgba(110,190,255,' + (.25 + .3 * k) + ')'); g.addColorStop(1, 'rgba(60,140,255,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill();
@@ -26913,10 +26913,10 @@ BTL_CARD_FX['HAKILX'] = { drop: async (c, to, col) => {
     });
     // 4) le gros éclair : du haut de l'écran jusqu'à la case ; flash aveuglant ; la carte est déjà en place
     musAtk();
-    const main = btlBoltPts(cx + (Math.random() - .5) * 60, -10, cx, cy, 120, 7), branches = [];
-    for(let i = 0; i < 6; i++){ const p = main[Math.floor(main.length * (.12 + .75 * Math.random()))]; branches.push(btlBoltPts(p[0], p[1], p[0] + (Math.random() - .5) * 280, p[1] + 60 + Math.random() * 140, 70, 4)); }
+    const main = btlHkBolt(cx + (Math.random() - .5) * 60, -10, cx, cy, 120, 7), branches = [];
+    for(let i = 0; i < 6; i++){ const p = main[Math.floor(main.length * (.12 + .75 * Math.random()))]; branches.push(btlHkBolt(p[0], p[1], p[0] + (Math.random() - .5) * 280, p[1] + 60 + Math.random() * 140, 70, 4)); }
     ctx.clearRect(0, 0, VW, VH); ctx.globalCompositeOperation = 'lighter';
-    btlBoltDraw(ctx, main, 9, 1); branches.forEach(b => btlBoltDraw(ctx, b, 3.2, .9));
+    btlHkBoltDraw(ctx, main, 9, 1); branches.forEach(b => btlHkBoltDraw(ctx, b, 3.2, .9));
     ctx.globalCompositeOperation = 'source-over';
     btlRing(to, '#ffffff', false);
     await btlAnim(flash, [{ opacity:0 }, { opacity:1 }], { duration:120, easing:'ease-in' });
