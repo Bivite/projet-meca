@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.16</title>
+<title>Projet MECA V0.05.17</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7347,6 +7347,7 @@
   .btl-half.me .btl-slot.leader{ align-self:flex-start; }
   /* bande centrale : rainure gravée, liseré rouge côté adverse / bleu côté joueur */
   .btl-mid{ position:relative; z-index:2; flex:0 0 72px; }
+  .btl-half:has(.btl-unit[style*="z-index: 70"]){ z-index:4; }   /* V0.05.17 : la carte qui ATTAQUE est devant tout, y compris une carte levée de l'autre camp */
   .btl-half:has(.btl-unit[style*="z-index: 60"]){ z-index:3; }   /* V0.05.16 : une carte levée / en attaque passe devant le bouton FIN et les compteurs de mana (bande centrale z-index:2) */
   /* graduations gravées au-dessus et au-dessous du rail */
   .btl-mid::before{ content:""; position:absolute; left:3px; right:3px; top:50%; height:18px; margin-top:-9px; pointer-events:none;
@@ -8437,7 +8438,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.16</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.17</b></div>
   </div>
 
     </div>
@@ -9257,9 +9258,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.16';
+var BUILD_VERSION = 'V0.05.17';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.17', items:[
+    'COMBAT : quand une carte part vers sa cible, la flèche disparaît en même temps que la carte avance.',
+    'COMBAT : la carte qui attaque vient frapper le milieu de la carte ciblée.',
+    'COMBAT : la carte qui attaque reste toujours au premier plan, au-dessus de la carte ciblée.',
+  ] },
   { v:'V0.05.16', items:[
     'COMBAT : la carte qui frappe passe maintenant au-dessus du bouton FIN et des compteurs de mana pendant son attaque.',
     'COMBAT : les flammes d\'attaque et de défense ne restent plus affichées sur les cases où la carte a été détruite.',
@@ -19062,7 +19068,7 @@ function btlLock(c, t, kind, carry){
   if(!ar) ar = btlArrowNew(kind, { introMs:360, rate:30 });
   ar.go(n.x0, n.y0, n.x1, n.y1, { lock:true, rate:30, mk:n.mk, dir:n.dir });
   const ret = btlReticle(t, kind);
-  return { off(){ ar.die(260); ret.off(); } };
+  return { off(){ ar.die(260); ret.off(); }, arrowOff(ms){ ar.die(ms); } };   // V0.05.17 : arrowOff = la flèche s'efface pendant l'élan de la carte
 }function btlParticles(cx, cy, opt){
   const fx = btlQ('#btlFx'), n = opt.n || 12, out = [];
   for(let i = 0; i < n; i++){
@@ -21321,7 +21327,7 @@ async function btlResolve(side){
   BTL.resolving = false; BTL.ord = null; btlMarksClear(); btlHealUnits();
   setTimeout(btlHealUnits, 600); setTimeout(btlHealUnits, 1600);
 }
-function btlLift(el){ el.style.zIndex = 60; return btlAnim(el, [{ transform:'none' }, { transform:'translateY(-12px) scale(1.2)' }], { duration:260, easing:BTL_E.out }); }
+function btlLift(el, z){ el.style.zIndex = z || 60; return btlAnim(el, [{ transform:'none' }, { transform:'translateY(-12px) scale(1.2)' }], { duration:260, easing:BTL_E.out }); }
 async function btlSettle(el){
   const cur = getComputedStyle(el).transform;
   await btlAnim(el, [{ transform:cur === 'none' ? 'none' : cur }, { transform:'translate(0,0) scale(.97)', offset:.6 }, { transform:'translate(0,0) scale(1)' }], { duration:420, easing:BTL_E.out });
@@ -21351,22 +21357,24 @@ async function btlDoAction(c, ov){
   const okFoes = btlValidFoes(c.side);
   if(!t || t.hp <= 0 || (!p.force && okFoes.indexOf(t) < 0)) t = okFoes.find(x => !x.leader) || BTL.S[foe].leader;
   const rhino = !!p.rhino, kr = !!p.kriger;
-  if(!rhino && !kr) await btlLift(el);
-  const lock = kr ? { off(){} } : btlLock(c, t, 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
+  if(!rhino && !kr) await btlLift(el, 70);   // V0.05.17 : l'attaquant est devant la carte ciblée
+  const lock = kr ? { off(){}, arrowOff(){} } : btlLock(c, t, 'atk', carry);   // qui attaque qui : flèche + coins de visée, avant le coup
   await btlSleep(rhino ? 300 : kr ? 0 : 420);
   if(!btlOnField(c)){ lock.off(); return; }   // V0.05.14 : attaquant détruit pendant l'élan
   if(!btlOnField(t)) t = btlValidFoes(c.side).find(x => !x.leader) || BTL.S[foe].leader;   // cible disparue pendant l'élan : on en reprend une
   const r0 = btlRect(el), r1 = btlUnitRect(t);
-  const dx = (r1.left + r1.width / 2) - (r0.left + r0.width / 2), dy = (r1.top + r1.height / 2) - (r0.top + r0.height / 2);
+  const tr0 = getComputedStyle(el).transform, m0 = new DOMMatrix(tr0 === 'none' ? undefined : tr0);   // V0.05.17 : position naturelle de la carte (sans le décalage de levée de -12 px) : centre sur centre exact
+  const dx = (r1.left + r1.width / 2) - (r0.left + r0.width / 2 - m0.e), dy = (r1.top + r1.height / 2) - (r0.top + r0.height / 2 - m0.f);
   const len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
   const bx = (-ux * 10).toFixed(1), by = (-uy * 10 - 12).toFixed(1);
-  const hit = 'translate(' + (dx * 0.92).toFixed(1) + 'px,' + (dy * 0.92).toFixed(1) + 'px) scale(1.28)';
+  const hit = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(1.28)';   // V0.05.17 : centre sur centre (avant : 92 % du trajet)
   let rh = null, kg = null, snd = null;
   if(rhino){ rh = await btlRhinoRun(c, t); }
   else if(kr){ kg = await btlKrigerGo(c, t, el); }   // KRIGER : lancer du grappin, plantage, traction jusqu'au chef
   else {
   await btlAnim(el, [{ transform:'translateY(-12px) scale(1.2)' }, { transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }], { duration:170, easing:'ease-out' });
   snd = btlContactSound(el, t);   // son d'attaque dès que la carte touche sa cible (V0.04.87)
+  lock.arrowOff(220 * BTL_TS);   // V0.05.17 : la flèche disparaît en même temps que la carte avance
   await btlAnim(el, [{ transform:'translate(' + bx + 'px,' + by + 'px) scale(1.14)' }, { transform:hit }], { duration:220, easing:BTL_E.in });
   }
   const tEl = btlUnitEl(t);
@@ -22677,7 +22685,7 @@ async function btlConqClash(a, b){   // un vent soulève deux cartes ennemies, e
   const T = { LIFT0:160, LIFT1:800, WIND0:800, WIND1:1020, C1:1020, C1E:1140, REC1:1140, REC1E:1340, C2:1340, C2E:1450, RET:1450, RETE:2230 };
   const stars = []; let dmg = null, dmgDone = false, hit1 = false, hit2 = false, windA = 1, flashA = 0;
   const res = btlCalcDmg(a, b, 1), counter = btlCalcDmg(b, a, 1, true), before = b.hp / b.maxHp * 100, beforeC = a.hp / a.maxHp * 100;
-  ea.style.zIndex = 60; eb.style.zIndex = 60; btlClearAnims(ea); btlClearAnims(eb);
+  ea.style.zIndex = 70; eb.style.zIndex = 60; btlClearAnims(ea); btlClearAnims(eb);   // V0.05.17 : l'attaquant (ea) devant
   [ra, rb].forEach(r => btlDust(r.left + r.width / 2, r.bottom - 4, r.width * 1.2, 2, false));
   // mouvement horizontal le long de l'axe u (même rangée) : on compose x/y simplement par interpolation de positions-clés
   const key = (tt, s) => {
@@ -23881,7 +23889,7 @@ async function btlKrigerGo(c, t, el){
   let phase = 'go', B0 = 0, raf = 0, last = 0, goRes, goRej, backRes, goSettled = false, tipLast = null;
   const t0 = performance.now();
   const nowT = () => window.__krT != null ? window.__krT : performance.now() - t0;
-  el.style.zIndex = 60;
+  el.style.zIndex = 70;   // V0.05.17 : l'attaquant devant
   const pose = T => {   // position / échelle de la carte (décalage par rapport à sa case)
     if(phase === 'back'){
       const q = (T - B0) / BACK, p = cl(q / .8), e = 1 - Math.pow(1 - p, 3);
