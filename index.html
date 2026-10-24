@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.15</title>
+<title>Projet MECA V0.05.16</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7347,6 +7347,7 @@
   .btl-half.me .btl-slot.leader{ align-self:flex-start; }
   /* bande centrale : rainure gravée, liseré rouge côté adverse / bleu côté joueur */
   .btl-mid{ position:relative; z-index:2; flex:0 0 72px; }
+  .btl-half:has(.btl-unit[style*="z-index: 60"]){ z-index:3; }   /* V0.05.16 : une carte levée / en attaque passe devant le bouton FIN et les compteurs de mana (bande centrale z-index:2) */
   /* graduations gravées au-dessus et au-dessous du rail */
   .btl-mid::before{ content:""; position:absolute; left:3px; right:3px; top:50%; height:18px; margin-top:-9px; pointer-events:none;
     background:repeating-linear-gradient(90deg, rgba(165,190,215,.22) 0 1px, transparent 1px 16px);
@@ -8436,7 +8437,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.15</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.16</b></div>
   </div>
 
     </div>
@@ -9256,9 +9257,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.15';
+var BUILD_VERSION = 'V0.05.16';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.16', items:[
+    'COMBAT : la carte qui frappe passe maintenant au-dessus du bouton FIN et des compteurs de mana pendant son attaque.',
+    'COMBAT : les flammes d\'attaque et de défense ne restent plus affichées sur les cases où la carte a été détruite.',
+  ] },
   { v:'V0.05.15', items:[
     'COMBAT : une carte qui restait décalée après son attaque (impossible à viser) est remise en place automatiquement. Une carte détruite en pleine attaque ne bloque plus le tour.',
     'DECK : les aperçus de cartes ne restent plus affichés sur les autres écrans quand un glisser-déposer est interrompu.',
@@ -21446,6 +21451,7 @@ async function btlDie0(c, defer){
   const el = btlUnitEl(c), slot = btlSlotOf(c);
   if(!el || !slot){ const Q = BTL && BTL.S[c.side]; if(Q && !c.leader && Q.slots[c.slot] === c) Q.slots[c.slot] = null; return; }   // carte sans élément à l'écran : on libère quand même son emplacement
   btlMarkOff(c, true);
+  { const un = el.querySelector('.unit.cbt'); if(un) un.classList.remove('can-act', 'can-atk', 'can-dfn'); btlFlameKick(); }   // V0.05.16 : les flammes d'une carte qui meurt s'éteignent tout de suite
   const r = btlRect(el), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   const col = btlRarColor(c.rar), plate = btlQ('#btlPlate');
   // 1) dernier souffle : la carte vacille et rougeoie, l'énergie est aspirée vers elle (le temps de lire « 0 PV »)
@@ -21471,7 +21477,7 @@ async function btlDie0(c, defer){
   await btlSleep(620);
   const S = BTL.S[c.side]; S.slots[c.slot] = null;
   slot.innerHTML = ''; slot.classList.remove('has');
-  btlRenderArrows();
+  btlRenderArrows(); btlFlameKick();
   await btlSleep(180);
   if(early) await early; else if(!defer) await btlTrigger('baroud', c);   // defer : le baroud est joué par l'appelant (destruction simultanée de deux cartes)
 }
@@ -27334,16 +27340,23 @@ function btlFlameBands(){
   return true;
 }
 // démarre la boucle s'il y a au moins une carte qui peut agir (appelé par btlRefreshCan) ; si elle tourne déjà, on demande juste une relecture immédiate
+// V0.05.16 : un trait dont la carte a disparu (ou ne peut plus agir) doit s'éteindre même en mode éco ; sinon l'image figée restait affichée sur la case vide
+function btlFlameStale(){
+  const F = BTL_FLAME;
+  for(let i = 0; i < F.strips.length; i++){ const s = F.strips[i]; if(!s.on) return true; const e = s.el; if(!e || !e.isConnected || !e.classList.contains('can-act') || !e.classList.contains(s.kd === 'a' ? 'can-atk' : 'can-dfn')) return true; }
+  return false;
+}
 function btlFlameKick(){
   const F = BTL_FLAME; F.dirty = true; if(F.raf || F.manual || !BTL || BTL.abort) return;
-  if(ecoIdle()) return;   // V0.05.11 : mode éco (15 s sans toucher) : les flammes restent figées jusqu'au prochain toucher
-  if(!document.querySelector('.btl-slot .unit.cbt.can-act') || !btlFlameBands()) return;
+  if(ecoIdle() && !btlFlameStale()) return;   // V0.05.11 : mode éco (6 s sans toucher) : les flammes restent figées jusqu'au prochain toucher (sauf si une carte a disparu : V0.05.16)
+  if(!document.querySelector('.btl-slot .unit.cbt.can-act')){ if(!F.strips.length && !F.parts.length) return; if(!btlFlameBands()) return; }   // V0.05.16 : plus aucune carte ne peut agir : on laisse s'éteindre les traits restants
+  else if(!btlFlameBands()) return;
   F.last = 0; F.acc = 0; F.raf = requestAnimationFrame(btlFlameLoop);
 }
 function btlFlameLoop(now){
   const F = BTL_FLAME; F.raf = 0;
   if(!BTL || BTL.abort){ btlFlameStop(); return; }
-  if(ecoIdle()) return;   // V0.05.11 : mode éco : on cesse de redessiner (dernière image conservée) ; btlFlameKick relance au toucher
+  if(ecoIdle() && !btlFlameStale()) return;   // V0.05.11 : mode éco : on cesse de redessiner (dernière image conservée) ; btlFlameKick relance au toucher
   const dt = F.last ? Math.min(.1, (now - F.last) / 1000) : .016; F.last = now; F.avg += (dt * 1000 - F.avg) * .05; F.acc += dt;
   if(F.acc >= .028){   // 30 images/s : une image sur deux quand l'écran tourne à 60, toutes les images si l'appareil est plus lent
     const h = Math.min(.066, F.acc); F.acc = 0;
