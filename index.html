@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.32</title>
+<title>Projet MECA V0.05.33</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5135,7 +5135,7 @@
   .pv-fc-copy[hidden]{display:none;}
   .pv-fc-hint{margin-top:6px; font-size:10px; line-height:1.4; color:var(--text-dim); text-align:center;}
   /* écran des amis */
-  #friendsView .inf-tag{display:none;}
+  #friendsView .inf-header{display:none;}
   #frBody{display:flex; flex-direction:column; gap:12px; padding:6px 0 28px;}
   .fr-add-btn{
     width:100%; padding:14px 8px; cursor:pointer; --cut:14px; border-radius:0;
@@ -8660,7 +8660,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.32</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.33</b></div>
   </div>
 
     </div>
@@ -9480,9 +9480,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.32';
+var BUILD_VERSION = 'V0.05.33';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.33', items:[
+    'PVP AMIS : l’en-tête (bouton MENU et titre) est retiré ; on revient en arrière avec RETOUR ou en balayant.',
+  ] },
   { v:'V0.05.32', items:[
     'PVP AMIS : chaque joueur a un code ami (sur sa fiche joueur). Tape le code d’un joueur pour lui envoyer une demande d’ami (elle expire au bout de 24 h) ; s’il l’accepte, vous êtes amis (10 amis maximum). Défie ensuite un ami : il reçoit une invitation au bout de 10 secondes (ACCEPTER ou REFUSER) et le combat se lance, chacun avec le deck qu’il a choisi.',
   ] },
