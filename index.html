@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.30</title>
+<title>Projet MECA V0.05.31</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5113,6 +5113,34 @@
   #playerHubView .ph-closed .mt-title{margin:0; align-self:flex-start; text-align:left; font-size:15px; letter-spacing:2px; color:rgba(255,255,255,.78);}
   #playerHubView .ph-closed .mt-soon{margin:0; align-self:flex-start; text-align:left; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,.45);}
 
+
+  /* =================== CLASSEMENT PVP : vitrine (V0.05.31) ===================
+     Pas un bouton : on ne peut pas toucher la case, elle affiche seulement les scores (top 10 par ratio victoires / défaites). */
+  #tileRanking{pointer-events:none; cursor:default; user-select:none; -webkit-user-select:none;
+    background:linear-gradient(160deg, #ffe9a8, #c8962a 45%, #3a2a08); filter:drop-shadow(0 0 12px rgba(224,172,60,.35));}
+  #tileRanking .mt-inner{
+    justify-content:flex-start; align-items:stretch; text-align:left; gap:0; padding:16px 12px 16px 20px;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.5) 0%, transparent 26%),
+      linear-gradient(135deg, rgba(58,40,8,.95) 0%, rgba(32,22,6,.92) 60%, rgba(18,12,4,.9) 100%);
+  }
+  .rk-head{display:flex; flex-direction:column; gap:3px; padding-bottom:6px; margin-bottom:4px; border-bottom:1px solid rgba(255,214,120,.28);}
+  .rk-title{font-family:var(--font-title); font-size:13px; font-weight:900; letter-spacing:2.5px; color:#ffe9a8; text-shadow:0 2px 4px rgba(0,0,0,.6);}
+  .rk-sub{font-family:var(--font-title); font-size:6.5px; letter-spacing:1.2px; color:rgba(255,233,168,.55);}
+  .rk-list{display:flex; flex-direction:column;}
+  .rk-row{display:flex; align-items:center; gap:7px; height:24px; padding:0 5px 0 0; border-radius:5px;}
+  .rk-n{width:15px; flex:none; text-align:center; font-family:var(--font-title); font-size:11px; font-weight:900; color:rgba(255,255,255,.55);}
+  .rk-row.r1 .rk-n{color:#ffd65c; text-shadow:0 0 8px rgba(255,214,92,.7);}
+  .rk-row.r2 .rk-n{color:#d6dbe4;}
+  .rk-row.r3 .rk-n{color:#d9945a;}
+  .rk-who{flex:1; min-width:0; display:flex; flex-direction:column; gap:1px;}
+  .rk-name{font-size:10.5px; font-weight:700; color:#fff; line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .rk-vd{font-size:7.5px; letter-spacing:.8px; color:rgba(255,255,255,.5); line-height:1.1; white-space:nowrap;}
+  .rk-ratio{flex:none; font-family:var(--font-title); font-size:12px; font-weight:900; color:#ffe9a8;}
+  .rk-row.me{background:rgba(255,214,92,.16); box-shadow:inset 0 0 0 1px rgba(255,214,92,.45);}
+  .rk-gap{height:9px; line-height:9px; text-align:center; font-size:9px; letter-spacing:3px; color:rgba(255,255,255,.35);}
+  .rk-empty{margin:auto 0; padding:0 6px; text-align:center; font-family:var(--font-title); font-size:8.5px; letter-spacing:1.5px; line-height:1.6; color:rgba(255,233,168,.6);}
+
   /* Plus de boutons « retour » : on balaie l'écran de gauche à droite */
   #squadBackBtn, #backToHubBtn, #playerBackBtn, #playerHubBackBtn, #collBackBtn, #rwBackBtn, #dailyBackBtn, #trophyBackBtn, #tasksBackBtn, #defiBackBtn, #defiPathBackBtn{visibility:hidden; pointer-events:none;}
   .sub-view.back-in{animation:backIn .35s ease both !important;}
@@ -8343,11 +8371,10 @@
       <div class="inf-tag" style="visibility:hidden;">·</div>
     </header>
     <div class="mode-grid ph-grid">
-      <div class="mode-tile soon ph-left ph-closed" id="tileRanking">
+      <div class="mode-tile ph-left ph-board" id="tileRanking" aria-label="Classement PVP">
         <div class="mt-inner">
-          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-          <div class="mt-title">CLASSEMENT</div>
-          <div class="mt-soon">PROCHAINEMENT</div>
+          <div class="rk-head"><span class="rk-title">CLASSEMENT</span><span class="rk-sub">PVP · RATIO VICTOIRES / DÉFAITES</span></div>
+          <div class="rk-list" id="rkList"></div>
         </div>
       </div>
       <div class="mode-tile player ph-tr" id="tilePlayerInfo">
@@ -8513,7 +8540,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.30</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.31</b></div>
   </div>
 
     </div>
@@ -9333,9 +9360,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.30';
+var BUILD_VERSION = 'V0.05.31';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.31', items:[
+    'Menu JOUEUR : CLASSEMENT devient une vitrine en direct des 10 meilleurs joueurs en PVP, classés par ratio victoires / défaites (ta place s’affiche en dessous si tu n’es pas dans le top 10).',
+  ] },
   { v:'V0.05.30', items:[
     'Menu : la case JOUEUR ouvre maintenant un sous-menu en cases : ta fiche joueur (comme avant), plus CLASSEMENT et PVP AMIS (fermés pour le moment, bientôt disponibles).',
   ] },
@@ -29256,9 +29286,62 @@ function enterPlayerView(){
   renderPlayerSheet();
   scrollViewTop();
 }
+// ---------- CLASSEMENT PVP (V0.05.31) : vitrine en direct ----------
+// Lecture seule : la fonction SQL public.pvp_leaderboard (SECURITY DEFINER) agrège les matchs terminés (pvp_matches) ; elle ne renvoie que des noms et des scores.
+// Ratio = victoires / défaites (0 défaite -> divisé par 1) ; départage : plus de victoires, puis moins de défaites. Rafraîchi toutes les 10 s tant que le sous-menu est ouvert.
+var rkData = null, rkTimer = null, rkBusy = false, rkErr = false;
+function rkFmt(r){ return Number(r || 0).toFixed(2).replace(/0$/, ''); }
+function rkRow(r, extra){
+  const row = document.createElement('div');
+  row.className = 'rk-row' + (r.rank <= 3 ? ' r' + r.rank : '') + (r.me ? ' me' : '') + (extra ? ' ' + extra : '');
+  const n = document.createElement('b'); n.className = 'rk-n'; n.textContent = r.rank;
+  const who = document.createElement('div'); who.className = 'rk-who';
+  const nm = document.createElement('span'); nm.className = 'rk-name'; nm.textContent = r.name || 'COMMANDANT';
+  const vd = document.createElement('span'); vd.className = 'rk-vd'; vd.textContent = r.wins + ' V · ' + r.losses + ' D';
+  who.appendChild(nm); who.appendChild(vd);
+  const ra = document.createElement('b'); ra.className = 'rk-ratio'; ra.textContent = rkFmt(r.ratio);
+  row.appendChild(n); row.appendChild(who); row.appendChild(ra);
+  return row;
+}
+function renderRanking(){
+  const box = document.getElementById('rkList');
+  if(!box) return;
+  box.textContent = '';
+  const empty = txt => { const d = document.createElement('div'); d.className = 'rk-empty'; d.innerHTML = txt; box.appendChild(d); };
+  if(!rkData){ empty(rkErr ? 'CLASSEMENT<br>INDISPONIBLE' : 'CHARGEMENT…'); return; }
+  const top = rkData.top || [];
+  if(!top.length){ empty('AUCUN MATCH PVP<br>JOUÉ POUR<br>LE MOMENT'); return; }
+  top.forEach(r => box.appendChild(rkRow(r)));
+  if(rkData.me && !top.some(r => r.me)){
+    const gap = document.createElement('div'); gap.className = 'rk-gap'; gap.textContent = '···'; box.appendChild(gap);
+    box.appendChild(rkRow(Object.assign({}, rkData.me, { me:true })));
+  }
+}
+async function rkFetch(){
+  if(rkBusy) return;
+  rkBusy = true;
+  try{
+    try{ await ensureFreshSupaSession(); }catch(_){}
+    const d = await supaFetch('/rest/v1/rpc/pvp_leaderboard', { method:'POST', body: JSON.stringify({ p_limit:10 }) });
+    if(d && Array.isArray(d.top)){ rkData = d; rkErr = false; } else rkErr = true;
+  }catch(_){ rkErr = true; }
+  rkBusy = false;
+  renderRanking();
+}
+function rkTick(){
+  const hub = document.getElementById('playerHubView');
+  if(!hub || !hub.classList.contains('active')){ clearInterval(rkTimer); rkTimer = null; return; }
+  if(!document.hidden) rkFetch();
+}
+function rkStart(){
+  renderRanking();
+  rkFetch();
+  if(!rkTimer) rkTimer = setInterval(rkTick, 10000);
+}
 // V0.05.30 : la case JOUEUR du MENU ouvre le sous-menu (#playerHubView) ; c'est la case JOUEUR de ce sous-menu qui ouvre la fiche.
 function enterPlayerHub(){
   openSub('playerHubView');
+  rkStart();
   const t = document.getElementById('tilePlayerInfoTitle');   // ajusté une fois visible (la largeur est 0 tant que le sous-menu est caché)
   if(t && t.clientWidth) fitTileTitle(t, 21, 9);
 }
@@ -30087,7 +30170,7 @@ const HELP_CONTENT = {
   defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat Bataille contre un deck bâti autour de cette carte, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour voir le deck adverse, choisir ton deck, puis lance le combat.' },
   playerHubView: { title:'JOUEUR', text:'Tout ce qui te concerne :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant : nom, niveau et statistiques.</li>' +
-    '<li><b>CLASSEMENT</b> — bientôt disponible.</li>' +
+    '<li><b>CLASSEMENT</b> — la vitrine en direct des meilleurs joueurs en PVP, classés par ratio victoires / défaites (on ne peut pas la toucher).</li>' +
     '<li><b>PVP AMIS</b> — bientôt disponible.</li></ul>' },
   playerView: { title:'FICHE JOUEUR', text:'Ta carte de visite : nom, niveau et statistiques cumulées depuis le début de la partie.' },
   // ---------- CARTE ----------
