@@ -8225,6 +8225,15 @@
   .mode-tile.ph-friends{--ac:#28c4de;}
   .mode-tile.ph-board{--ac:#d0a148;}
   .mode-tile.soon{--ac:#7384a8;}
+
+  /* ---- icônes des cases : toutes au même niveau que DÉFI (85 %) au lieu de 17-40 % ---- */
+  .mode-tile .mt-avatar, .mode-tile .mt-target, .mode-tile .mt-battle-ico, .mode-tile .mt-gift-ico,
+  .mode-tile .mt-deck-ico, .mode-tile .mt-book-ico, .mode-tile .mt-cal-ico, .mode-tile .mt-cup-ico,
+  .mode-tile .mt-list-ico, .mode-tile .mt-omega-ico, .mode-tile .mt-tirage-ico, .mode-tile .mt-labo-ico,
+  .mode-tile .mt-boost-ico, .mode-tile .mt-shop-ico, .mode-tile .mt-defi-ico{opacity:.85 !important;}
+
+  /* ---- ouverture de booster : couche de flammes (canvas dessiné par brFireStart) derrière toutes les cartes ---- */
+  .br-fxlayer{position:absolute; inset:0; z-index:0; pointer-events:none;}
 </style>
 </head>
 <body>
@@ -12223,6 +12232,119 @@ const MAT_ORDER = ['rare', 'epique', 'legendaire'];
 function isHolo(r){ return r === 'holo'; }
 function rarityOf(def){ return RARITIES[def.rarity] ? def.rarity : 'rare'; }
 // Rareté "effective" d'un personnage = la plus haute rareté possédée (après fusion).
+// ===== V0.05.34 : flammes de rareté derrière les cartes de l'ouverture de booster =====
+// Même moteur que les traits de flamme du champ de bataille (btlFlameStep) : particules qui naissent le long du bord, montent en ralentissant, rétrécissent et passent
+// du blanc chaud à la couleur de la rareté, zones chaudes qui voyagent, braises. Ici le trait court sur les 4 bords de chaque carte, vers l'extérieur.
+// Un seul canvas pour tout le pentagone, derrière les cartes ; adaptatif (qualité réduite si l'appareil peine) ; s'arrête quand l'écran de révélation se ferme.
+const BR_FIRE_PAL = {
+  r:[[255, 228, 208], [255, 152, 98], [255, 88, 54], [255, 44, 34], [226, 24, 28], [170, 14, 22], [110, 8, 16], [64, 4, 12]],        // écarlate
+  o:[[255, 246, 214], [255, 220, 130], [255, 184, 64], [255, 146, 28], [244, 112, 10], [208, 80, 6], [140, 52, 4], [78, 28, 3]],    // légendaire
+  b:[[224, 245, 255], [140, 206, 255], [84, 170, 255], [48, 128, 255], [32, 96, 248], [24, 62, 206], [16, 38, 150], [10, 22, 96]],  // rare
+  p:[[246, 232, 255], [214, 170, 255], [176, 110, 255], [140, 70, 240], [106, 40, 214], [74, 24, 164], [48, 14, 112], [28, 8, 70]], // épique
+  g:[[232, 255, 238], [150, 255, 176], [90, 240, 130], [45, 220, 95], [28, 180, 70], [18, 130, 52], [10, 84, 36], [6, 50, 22]],     // tech
+  w:[[255, 255, 255], [236, 230, 255], [210, 200, 255], [190, 180, 250], [160, 150, 230], [120, 110, 190], [80, 72, 140], [44, 40, 90]]  // holo
+};
+const BR_FIRE_ROWS = ['b', 'p', 'o', 'r', 'g', 'w'];
+function brFirePal(rar, def){ return (def && def.tech) ? 'g' : ({ rare:'b', epique:'p', legendaire:'o', ecarlate:'r', holo:'w' })[rar] || 'b'; }
+let _brFireAtlas = null;
+function brFireAtlas(){
+  if(_brFireAtlas) return _brFireAtlas;
+  const S = BTL_FL_S, N = BTL_FL_N, c = document.createElement('canvas'); c.width = S * N; c.height = S * BR_FIRE_ROWS.length; const g = c.getContext('2d');
+  BR_FIRE_ROWS.forEach((k, row) => { const pal = BR_FIRE_PAL[k];
+    for(let i = 0; i < N; i++){
+      const f = i / (N - 1) * (pal.length - 1), a = Math.floor(f), b = Math.min(pal.length - 1, a + 1), t = f - a, rgb = pal[a].map((v, j) => Math.round(v + (pal[b][j] - v) * t)).join(','),
+            gr = g.createRadialGradient(i * S + S / 2, row * S + S / 2, 0, i * S + S / 2, row * S + S / 2, S / 2);
+      gr.addColorStop(0, 'rgba(' + rgb + ',1)'); gr.addColorStop(.26, 'rgba(' + rgb + ',.7)'); gr.addColorStop(.58, 'rgba(' + rgb + ',.22)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+      g.fillStyle = gr; g.fillRect(i * S, row * S, S, S);
+    } });
+  return (_brFireAtlas = c);
+}
+function brFireStart(layer, pent, slots){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const dpr = Math.min(1.5, window.devicePixelRatio || 1), cv = document.createElement('canvas'), pr0 = pent.getBoundingClientRect(), M = .38;
+  cv.className = 'br-fire'; cv.style.cssText = 'position:absolute;left:' + (-M * 100) + '%;top:' + (-M * 100) + '%;width:' + (100 + 2 * M * 100) + '%;height:' + (100 + 2 * M * 100) + '%;pointer-events:none;';
+  cv.width = Math.max(1, Math.round(pr0.width * (1 + 2 * M) * dpr)); cv.height = Math.max(1, Math.round(pr0.height * (1 + 2 * M) * dpr)); layer.appendChild(cv);
+  const ctx = cv.getContext('2d'), atlas = brFireAtlas(), S = BTL_FL_S, N = BTL_FL_N, rn = btlSmRn, parts = [], strips = [], HP = Math.PI / 2;
+  slots.forEach(sl => strips.push({ sl, k:0, ph:rn() * 6.28, acc:0, em:0, n:0, row:BR_FIRE_ROWS.indexOf(sl.pal), on:false, L:0, T:0, R:0, B:0, w:0, h:0, rr:0, a:0, b:0, c:0, P:0, sc:1 }));
+  // contour de la carte (rectangle à coins arrondis) : t de 0 à 1 = tour complet depuis le coin haut-gauche, dans le sens horaire ; renvoie point, normale sortante et tangente
+  function ct(s, t){
+    let d = ((t % 1) + 1) % 1 * s.P; const a = s.a, b = s.b, c = s.c, rr = s.rr;
+    const arc = (cx, cy, th0, f) => { const th = th0 + HP * f; return [cx + rr * Math.cos(th), cy + rr * Math.sin(th), Math.cos(th), Math.sin(th), -Math.sin(th), Math.cos(th)]; };
+    if(d < a) return [s.L + rr + d, s.T, 0, -1, 1, 0]; d -= a;
+    if(d < c) return arc(s.R - rr, s.T + rr, -HP, d / c); d -= c;
+    if(d < b) return [s.R, s.T + rr + d, 1, 0, 0, 1]; d -= b;
+    if(d < c) return arc(s.R - rr, s.B - rr, 0, d / c); d -= c;
+    if(d < a) return [s.R - rr - d, s.B, 0, 1, -1, 0]; d -= a;
+    if(d < c) return arc(s.L + rr, s.B - rr, HP, d / c); d -= c;
+    if(d < b) return [s.L, s.B - rr - d, -1, 0, 0, -1]; d -= b;
+    return arc(s.L + rr, s.T + rr, 2 * HP, Math.min(1, d / c));
+  }
+  const dens = (ux, uy) => .3 + .7 * Math.max(0, -uy) + .5 * Math.abs(ux);          // les flammes montent : plus de feu en haut, un peu sur les côtés, peu en bas
+  const fsc = (ux, uy) => .7 + .9 * Math.max(0, -uy) + .35 * Math.abs(ux);          // taille de la flamme selon l'orientation du bord
+  let raf = 0, last = 0, acc = 0, avg = 16.7, q = 1, T = 0;
+  function loop(now){
+    raf = 0; if(!cv.isConnected || !cv.offsetParent) return;   // l'écran de révélation est fermé : on s'arrête
+    const dt0 = last ? Math.min(.1, (now - last) / 1000) : .016; last = now; avg += (dt0 * 1000 - avg) * .05; acc += dt0;
+    if(acc >= .028){ const dt = Math.min(.066, acc); acc = 0; step(dt); }
+    raf = requestAnimationFrame(loop);
+  }
+  function step(dt){
+    T += dt; if(avg > 24) q = Math.max(.3, q - dt * .25); else if(avg < 20) q = Math.min(1, q + dt * .15);
+    const fr = cv.getBoundingClientRect(); if(fr.width < 4) return; const ox = fr.left, oy = fr.top, kx = cv.width / fr.width, ky = cv.height / fr.height;
+    strips.forEach(s => {   // géométrie : le contour exact de chaque carte, suivi image par image (les cartes bougent et grossissent à l'arrivée)
+      const r = s.sl.el.getBoundingClientRect(); s.on = s.sl.el.classList.contains('show') && r.width > 8; if(!s.on) return;
+      s.w = r.width; s.h = r.height; s.L = r.left - ox; s.R = r.right - ox; s.T = r.top - oy; s.B = r.bottom - oy;
+      s.rr = Math.min(s.w, s.h) * .1; s.a = s.w - 2 * s.rr; s.b = s.h - 2 * s.rr; s.c = HP * s.rr; s.P = 2 * s.a + 2 * s.b + 4 * s.c; s.sc = Math.max(.4, s.w / 78);
+    });
+    strips.forEach(s => {   // naissance le long du contour : zones chaudes qui voyagent, densité selon l'orientation du bord
+      s.k += ((s.on ? 1 : 0) - s.k) * Math.min(1, dt * (s.on ? 4.2 : 9)); if(s.k < .012) return;
+      const sc = s.sc; s.acc += 30 * (s.P * .5 / 56) * s.k * q * dt; s.em += 4 * s.k * q * dt;
+      while(s.acc >= 1){ s.acc--; if(s.n > 130 || parts.length > 1000) continue;
+        let t = 0, g, d = .5, n = 0;
+        do{ t = rn(); g = ct(s, t); d = .5 + .5 * Math.sin(t * 38 + T * 3.1 + s.ph) * Math.sin(t * 21 - T * 2.3 + s.ph * 1.9); if(rn() < Math.max(.05, d) * dens(g[2], g[3])) break; }while(++n < 6);
+        const f = fsc(g[2], g[3]); s.n++;
+        parts.push({ x:g[0], y:g[1], x0:g[0], y0:g[1], ux:g[2], uy:g[3], tx:g[4], ty:g[5], sc:sc * f, vo:(34 + 24 * rn()) * sc * f * (.6 + .65 * d), vs:0, ovr:0, age:0, life:.4 + .34 * rn() + .2 * d, s0:(5.6 + 3 * rn()) * sc * f * (.72 + .5 * d), al:.5 + .3 * rn(), row:s.row, ph:rn() * 6.28, f:2.4 + rn() * 2.2, gp:s.ph, off:0, emb:false, s });
+      }
+      while(s.em >= 1){ s.em--; if(s.n > 130 || parts.length > 1000) continue; const g = ct(s, rn()), f = fsc(g[2], g[3]); s.n++;
+        parts.push({ x:g[0], y:g[1], x0:g[0], y0:g[1], ux:g[2], uy:g[3], tx:g[4], ty:g[5], sc:sc * f, vo:(26 + 34 * rn()) * sc * f, vs:0, ovr:0, age:0, life:.8 + .8 * rn(), s0:(1.6 + 1.2 * rn()) * sc * f, al:.9, row:s.row, ph:rn() * 6.28, f:3 + rn() * 3, gp:s.ph, off:0, emb:true, s });
+      }
+    });
+    // mouvement : montée qui ralentit le long de la normale du bord, ondulation qui grandit avec la distance
+    for(let k = parts.length - 1; k >= 0; k--){
+      const p = parts[k]; p.age += dt; if(p.age >= p.life){ p.s.n--; parts.splice(k, 1); continue; }
+      const u = p.age / p.life, sc = p.sc, ov = p.vo * Math.pow(1 - u, p.emb ? .5 : .9); p.off += ov * dt;
+      const sw = sc * (15 * Math.sin(T * p.f + p.x0 * .14 + p.y0 * .14 + p.ph) + 8 * Math.sin(T * 5.3 - p.off * .5 + p.ph * 2)) * (.12 + (p.emb ? 1.6 : 1) * u) + sc * 11 * Math.sin(T * .9 + p.gp) * u;
+      const along = (p.x - p.x0) * p.tx + (p.y - p.y0) * p.ty, tv = sw + (p.emb ? 0 : -along * 1.6 * u); p.vs = sw; p.ovr = ov;
+      p.x += (p.ux * ov + p.tx * tv) * dt; p.y += (p.uy * ov + p.ty * tv) * dt;
+    }
+    // dessin additif
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.globalCompositeOperation = 'lighter';
+    const blob = (row, st, x, y, w, h, a, rot) => { const c = Math.cos(rot), sn = Math.sin(rot); ctx.setTransform(kx * w / S * c, ky * w / S * sn, -kx * h / S * sn, ky * h / S * c, x * kx, y * ky); ctx.globalAlpha = a; ctx.drawImage(atlas, st * S, row * S, S, S, -S / 2, -S / 2, S, S); };
+    strips.forEach(s => {
+      if(s.k < .012) return; const sc = s.sc, K = 18, seg = s.P / K;
+      blob(s.row, 6, (s.L + s.R) / 2, (s.T + s.B) / 2, s.w * 1.9, s.h * 1.75, (.42 + .1 * Math.sin(T * 2 + s.row)) * s.k, 0);   // halo ambiant large
+      for(let j = 0; j < K; j++){   // lueur qui épouse le contour : une tache par tronçon, orientée selon le bord
+        const g = ct(s, (j + .5) / K), f = fsc(g[2], g[3]), dn = dens(g[2], g[3]), rot = Math.atan2(g[5], g[4]);
+        blob(s.row, 3, g[0] + g[2] * 3.2 * sc * f, g[1] + g[3] * 3.2 * sc * f, seg * 1.5, 14 * sc * f, .62 * s.k * Math.min(1, dn + .25), rot);
+        blob(s.row, 5, g[0] + g[2] * 5 * sc * f, g[1] + g[3] * 5 * sc * f, seg * 1.9, 28 * sc * f, .42 * s.k * Math.min(1, dn + .1), rot);
+      }
+      for(let j = 0; j < 30; j++){   // coeur incandescent : taches dont l'éclat ondule le long du contour
+        const t = (j + .5) / 30, g = ct(s, t), f = fsc(g[2], g[3]), dn = dens(g[2], g[3]), rot = Math.atan2(g[5], g[4]);
+        const br = .42 + .58 * Math.pow((Math.sin(t * 190 + T * 7 + s.ph) * .5 + .5) * (Math.sin(t * 110 - T * 4.3 + s.ph * 1.6) * .5 + .5), .8);
+        blob(s.row, 1, g[0] + g[2] * .6 * sc, g[1] + g[3] * .6 * sc, s.P / 30 * 2.1, 5.4 * sc * f, Math.min(1, br * Math.min(1, dn + .1) * s.k), rot);
+      }
+    });
+    for(let k = 0; k < parts.length; k++){
+      const p = parts[k], u = p.age / p.life, fi = Math.min(1, u / .08), a = p.al * fi * Math.pow(1 - u, p.emb ? .8 : 1.25);
+      const stage = Math.min(N - 1, Math.floor(Math.pow(u, p.emb ? .55 : .72) * N)), vx = p.ux * p.ovr + p.tx * p.vs, vy = p.uy * p.ovr + p.ty * p.vs, m = Math.hypot(vx, vy) || 1, nx = vx / m, ny = vy / m;
+      const sx = p.s0 * (1 - (p.emb ? .5 : .7) * Math.pow(u, 1.1)), sy = sx * (p.emb ? 1.7 : 1.5 + 1.1 * (1 - u));
+      ctx.setTransform(kx * ny * sx / S, -ky * nx * sx / S, kx * nx * sy / S, ky * ny * sy / S, p.x * kx, p.y * ky);
+      ctx.globalAlpha = a; ctx.drawImage(atlas, stage * S, p.row * S, S, S, -S / 2, -S / 2, S, S);
+    }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  raf = requestAnimationFrame(loop);
+}
 function rarCls(r, def){ return 'rar r-' + (def && def.tech ? 'tech' : r); }   // V0.05.10 : une Tech a toujours le halo vert, même si sa pile est rangée en 'rare'
 function rarTag(r, extraCls){
   return `<div class="rar-tag${extraCls ? ' ' + extraCls : ''}">${RARITIES[r].label}</div>`;
@@ -15069,11 +15191,14 @@ function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) es
   pent.appendChild(burst);
   setTimeout(() => burst.remove(), (hasLegendary || hasEcarlate) ? 920 : 720);
   let revealed = 0;
+  const fxLayer = document.createElement('div'); fxLayer.className = 'br-fxlayer'; pent.appendChild(fxLayer);   // V0.05.34 : couche des flammes, derrière toutes les cartes
+  const fireSlots = [];
   results.forEach((res, i) => {
     const slot = document.createElement('div');
     slot.className = 'br-slot';
     const halo = type === 'res' ? (res.kind === 'back' ? res.rar : BOOST_RES_HALO_RAR[res.kind]) : res.rar;
     slot.innerHTML = `<div class="br-slot-glow ${rarCls(halo, res.def)}"></div>`;
+    fireSlots.push({ el:slot, pal:brFirePal(halo, res.def) });
     const content = document.createElement('div');
     if(type === 'res' && res.kind !== 'back'){
       content.className = 'br-res-case unrevealed ' + rarCls(halo);
@@ -15134,6 +15259,7 @@ function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) es
       slot.style.top = p.y + '%';
       slot.classList.add('show');
     });
+    brFireStart(fxLayer, pent, fireSlots);
   }));
 }
 document.getElementById('boostClaimBtn').onclick = () => {
