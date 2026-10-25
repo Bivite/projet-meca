@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.24</title>
+<title>Projet MECA V0.05.25</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8443,7 +8443,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.24</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.25</b></div>
   </div>
 
     </div>
@@ -9263,9 +9263,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.24';
+var BUILD_VERSION = 'V0.05.25';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.25', items:[
+    'FLUIDITÉ : l\'écran VS du début de combat ne recalcule plus ses images de métal à chaque fois (moins d\'à-coup au lancement des combats suivants). Rien ne change à l\'écran.',
+  ] },
   { v:'V0.05.24', items:[
     'NOUVELLE CARTE TECH : POSITRON (2 mana). Donne Baroud d\'honneur à une carte du terrain, la tienne ou celle de l\'adversaire. Quand cette carte est détruite, POSITRON s\'affiche en grand (la MECH à gauche, la Tech à droite), puis une pulsation traverse tout le champ de bataille et inflige 2 dégâts à toutes les cartes et aux deux chefs d\'escouade.',
     'BAROUD D\'HONNEUR : toutes les petites cartes qui ont un Baroud d\'honneur ont maintenant un halo lumineux bleu (comme le halo blanc du TANK).',
@@ -19448,13 +19451,17 @@ function vsField(W, H, side, seed, MX, MY, dpr){
   return { cv, paths, P, out };
 }
 
+let VS_MAT = null, VS_FLD = null;   // V0.05.25 : calques du VS gardés d'un combat à l'autre (même taille d'écran) ; libérés en arrière-plan
+try{ document.addEventListener('visibilitychange', () => { if(document.hidden){ VS_MAT = null; VS_FLD = null; } }); }catch(e){}
 function btlVsIntro(){
   return new Promise(resolve => {
     if(!BTL){ resolve(); return; }
     const W = window.innerWidth, H = window.innerHeight, dpr = Math.min(window.devicePixelRatio || 1, W < 560 ? 2 : 1.5), T = VS_T;
     const MX = 70, MY = 150, xs = y => W * (.70 - .40 * (y / H));
     const seamUp = (() => { const dx = xs(0) - xs(H), dy = -H, l = Math.hypot(dx, dy); return [dx / l, dy / l]; })();
-    const fL = vsField(W, H, 'o', 7301, MX, MY, dpr), fR = vsField(W, H, 'p', 4177, MX, MY, dpr);
+    const fK = W + 'x' + H + 'x' + dpr, fOk = !!VS_FLD && VS_FLD.key === fK;
+    const fL = fOk ? VS_FLD.fL : vsField(W, H, 'o', 7301, MX, MY, dpr), fR = fOk ? VS_FLD.fR : vsField(W, H, 'p', 4177, MX, MY, dpr);
+    if(!fOk) VS_FLD = { key:fK, fL, fR };
     // éléments : noir, canvas (fondu en « screen » sur le champ de bataille), calque modules / noms
     const base = document.createElement('div'); base.className = 'vs-base';
     const cv = document.createElement('canvas'); cv.className = 'vs-cv'; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
@@ -19498,8 +19505,10 @@ function btlVsIntro(){
       mkPiece([[0, 0], [27, 0], [47.6, 58], [22, 58]], 0), mkPiece([[73, 0], [100, 0], [78, 58], [52.4, 58]], 0), mkPiece([[25.1, 65], [74.9, 65], [62, 100], [38, 100]], 0),
       mkPiece([[13, 0], [80, 0], [80, 18], [23, 18], [23, 30], [0, 30], [0, 13]], 112), mkPiece([[0, 36], [68, 36], [80, 48], [80, 72], [57, 72], [57, 54], [0, 54]], 112), mkPiece([[57, 78], [80, 78], [80, 90], [70, 100], [0, 100], [0, 84], [57, 84]], 112)
     ];
-    // --- cartes précalculées (une seule fois) ---
-    const maskC = mkC(), mx = maskC.getContext('2d'); mx.setTransform(dpr, 0, 0, dpr, 0, 0); mx.fillStyle = '#fff'; PIECES.forEach(q => mx.fill(q.p));
+    // --- cartes précalculées (V0.05.25 : gardées en mémoire d'un VS à l'autre) ---
+    const vsKey = W + 'x' + H + 'x' + dpr; let maskC, dEdge, dMid, dDeep, bev, heatNoise, veinC;
+    if(VS_MAT && VS_MAT.key === vsKey){ ({ maskC, dEdge, dMid, dDeep, bev, heatNoise, veinC } = VS_MAT); } else {
+    maskC = mkC(); const mx = maskC.getContext('2d'); mx.setTransform(dpr, 0, 0, dpr, 0, 0); mx.fillStyle = '#fff'; PIECES.forEach(q => mx.fill(q.p));
     const A = new Float32Array(MW * MH); { const d = mx.getImageData(0, 0, MW, MH).data; for(let i = 0; i < A.length; i++) A[i] = d[i * 4 + 3] / 255; }
     const boxBl = (a, w, h, r) => {
       const t = new Float32Array(a.length), u = new Float32Array(a.length), n = 2 * r + 1;
@@ -19510,9 +19519,9 @@ function btlVsIntro(){
     const blur3 = (a, r) => { let b = a; for(let i = 0; i < 3; i++) b = boxBl(b, MW, MH, Math.max(1, Math.round(r / 1.7))); return b; };
     const toC = (fn) => { const c = mkC(), x = c.getContext('2d'), im = x.createImageData(MW, MH), d = im.data; for(let i = 0; i < A.length; i++){ if(A[i] < .02) continue; fn(i, d, i * 4); } x.putImageData(im, 0, 0); return c; };
     const depthMap = (r, g, o) => { const b = blur3(A, r); return toC((i, d, j) => { d[j] = d[j + 1] = d[j + 2] = 255; d[j + 3] = Math.round(vsClamp(((b[i] - .5) * 2 - (o || 0)) * (g || 1.1), 0, 1) * A[i] * 255); }); };
-    const dEdge = depthMap(4.5 * dpr, 1.5, 0), dMid = depthMap(10 * dpr, 1.25, 0), dDeep = depthMap(15 * dpr, 1.7, .08);
+    dEdge = depthMap(4.5 * dpr, 1.5, 0); dMid = depthMap(10 * dpr, 1.25, 0); dDeep = depthMap(15 * dpr, 1.7, .08);
     // acier biseauté : normales issues d'un relief arrondi, lumière en haut à gauche
-    const bev = (() => {
+    bev = (() => {
       const Hh = blur3(A, 3.2 * dpr), S = 15, Lx = -.55, Ly = -.72, Lz = .42, ll = Math.hypot(Lx, Ly, Lz), lx = Lx / ll, ly = Ly / ll, lz = Lz / ll, R = vsRng(5), hx = lx, hy = ly, hz = lz + 1, hl = Math.hypot(hx, hy, hz);
       const steel = mkC(), hi = mkC(), sh = mkC(), sx = steel.getContext('2d'), hx2 = hi.getContext('2d'), shx = sh.getContext('2d');
       const si = sx.createImageData(MW, MH), hid = hx2.createImageData(MW, MH), shd = shx.createImageData(MW, MH), sd = si.data, hd = hid.data, dd = shd.data;
@@ -19527,16 +19536,17 @@ function btlVsIntro(){
         dd[j] = dd[j + 1] = dd[j + 2] = 0; dd[j + 3] = Math.round(sv * a * 255); } }
       sx.putImageData(si, 0, 0); hx2.putImageData(hid, 0, 0); shx.putImageData(shd, 0, 0); return { steel, hi, sh }; })();
     // marbrures de chaleur : plages plus froides (orange foncé → rouge) qui se creusent en refroidissant, jamais de noir
-    const heatNoise = (() => {
+    heatNoise = (() => {
       const R = vsRng(2024), lat = cell => { const gw2 = Math.ceil(MW / cell) + 3, gh2 = Math.ceil(MH / cell) + 3, v = new Float32Array(gw2 * gh2); for(let i = 0; i < v.length; i++) v[i] = R(); return { cell, gw2, v }; };
       const L = [lat(46 * dpr / 2), lat(21 * dpr / 2), lat(9 * dpr / 2)], W3 = [.5, .32, .18], sm = t => t * t * (3 - 2 * t);
       const vn = (l, px, py) => { const fx = px / l.cell, fy = py / l.cell, ix = Math.floor(fx), iy = Math.floor(fy), tx = sm(fx - ix), ty = sm(fy - iy), g = (a, b) => l.v[(iy + b) * l.gw2 + ix + a]; return (g(0, 0) * (1 - tx) + g(1, 0) * tx) * (1 - ty) + (g(0, 1) * (1 - tx) + g(1, 1) * tx) * ty; };
       return toC((i, d, j) => { const x = i % MW, y = (i / MW) | 0, f = vn(L[0], x, y) * W3[0] + vn(L[1], x, y) * W3[1] + vn(L[2], x, y) * W3[2], v = vsClamp((f - .42) / .3, 0, 1);
         d[j] = 255; d[j + 1] = 255; d[j + 2] = 255; d[j + 3] = Math.round(v * v * (3 - 2 * v) * A[i] * 255); }); })();
     // fines fissures de refroidissement (arêtes de bruit), très discrètes
-    const veinC = (() => { const c = mkC(), x = c.getContext('2d'), R = vsRng(404); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.strokeStyle = '#fff'; x.lineCap = 'round';
+    veinC = (() => { const c = mkC(), x = c.getContext('2d'), R = vsRng(404); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.strokeStyle = '#fff'; x.lineCap = 'round';
       for(let i = 0; i < 70; i++){ let px = R() * gw, py = R() * gh, ang = R() * 6.28; x.globalAlpha = .1 + R() * .22; x.lineWidth = .5 + R() * .7; x.beginPath(); x.moveTo(px, py); for(let n = 0; n < 6; n++){ ang += (R() - .5) * 1.5; px += Math.cos(ang) * (4 + R() * 8); py += Math.sin(ang) * (4 + R() * 8); x.lineTo(px, py); } x.stroke(); }
       x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'destination-in'; x.drawImage(maskC, 0, 0); return c; })();
+    VS_MAT = { key:vsKey, maskC, dEdge, dMid, dDeep, bev, heatNoise, veinC }; }
     // chaleur → couleur : 1 = blanc-jaune, .7 = jaune-orangé, .45 = rouge sombre, 0 = acier froid
     const KC = { edge:[[246, 96, 8], [142, 30, 6], [92, 98, 110]], mid:[[255, 146, 26], [180, 48, 8], [108, 114, 126]], core:[[255, 206, 70], [220, 70, 12], [150, 156, 168]] };
     const ramp3 = (key, h) => { const c = KC[key]; return h >= .45 ? vsMixA(c[1], c[0], (h - .45) / .55) : vsMixA(c[2], c[1], h / .45); };
