@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.31</title>
+<title>Projet MECA V0.05.32</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5114,6 +5114,97 @@
   #playerHubView .ph-closed .mt-soon{margin:0; align-self:flex-start; text-align:left; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,.45);}
 
 
+  /* =================== PVP AMIS (V0.05.32) =================== */
+  #friendsView [hidden]{display:none !important;}
+  #tileFriends{grid-row:2; background:linear-gradient(160deg, #b4f7da, #1c9a6c 45%, #04241a); filter:drop-shadow(0 0 12px rgba(40,200,140,.35));}
+  #tileFriends .mt-inner{
+    align-items:flex-start; justify-content:flex-end; gap:3px; padding:14px 16px;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
+      linear-gradient(135deg, rgba(10,84,58,.95) 0%, rgba(10,84,58,.55) 40%, rgba(10,84,58,.18) 70%, transparent 100%);
+  }
+  #tileFriends .fr-ico{position:absolute; left:50%; top:43%; transform:translate(-50%,-50%); width:48px; height:48px; color:#fff; filter:drop-shadow(0 0 9px rgba(120,255,200,.75));}
+  #tileFriends .mt-title{margin:0; align-self:flex-start; text-align:left; font-size:15px; letter-spacing:2px;}
+  #tileFriends .mt-soon{display:block; margin:0; align-self:flex-start; text-align:left; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,.62); background:none; border:0; padding:0;}
+  /* fiche joueur : code ami */
+  .pv-fc-row{display:flex; align-items:center; justify-content:center; gap:12px;}
+  .pv-fc-code{font-family:var(--font-title); font-size:23px; font-weight:900; letter-spacing:4px; color:#9dffc6; text-shadow:0 0 12px rgba(93,255,160,.45);}
+  .pv-fc-copy{padding:8px 12px; cursor:pointer; font-family:var(--font-title); font-size:9.5px; font-weight:700; letter-spacing:1.5px; color:#fff; border-radius:8px;
+    background:linear-gradient(180deg, #2a2340, #19142a); border:1px solid rgba(157,255,198,.5);}
+  .pv-fc-copy:active{transform:translateY(2px);}
+  .pv-fc-copy[hidden]{display:none;}
+  .pv-fc-hint{margin-top:6px; font-size:10px; line-height:1.4; color:var(--text-dim); text-align:center;}
+  /* écran des amis */
+  #friendsView .inf-tag{display:none;}
+  #frBody{display:flex; flex-direction:column; gap:12px; padding:6px 0 28px;}
+  .fr-add-btn{
+    width:100%; padding:14px 8px; cursor:pointer; --cut:14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:13px; font-weight:900; letter-spacing:3px; color:#fff;
+    border:1px solid rgba(190,255,215,.7);
+    background:linear-gradient(160deg, rgba(255,255,255,.25) 0%, transparent 40%), linear-gradient(180deg, #2fbf86, #16845a 55%, #0b4a33);
+    text-shadow:0 1px 2px rgba(0,0,0,.6);
+  }
+  .fr-add-btn:active{transform:translateY(2px);}
+  .fr-add-btn.open{background:linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 40%), linear-gradient(180deg, #2a2340, #19142a); border-color:rgba(157,255,198,.45);}
+  .fr-addbox{display:flex; flex-direction:column; gap:8px; align-items:stretch;}
+  .fr-lbl{font-family:var(--font-title); font-size:10px; letter-spacing:3px; font-weight:700; color:var(--text-dim); text-align:center;}
+  .fr-addbox .nm-input{text-transform:uppercase;}
+  .fr-list{display:flex; flex-direction:column; gap:10px;}
+  .fr-card{display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; column-gap:10px; row-gap:6px; align-items:end; text-align:left; padding:12px 14px;}
+  .fr-card .fr-name{grid-column:1 / -1; font-family:var(--font-title); font-size:15px; font-weight:900; letter-spacing:2px; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .fr-card .fr-lvl{grid-column:1; grid-row:2; font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:2px; color:#9dffc6; align-self:center;}
+  .fr-card .fr-fight, .fr-card .fr-btns{grid-column:2; grid-row:2; justify-self:end;}
+  .fr-btns{display:flex; gap:8px;}
+  .fr-fight, .fr-btn{
+    --cut:8px; border-radius:0; cursor:pointer; padding:10px 14px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:10.5px; font-weight:900; letter-spacing:2px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6);
+    border:1px solid rgba(190,255,215,.7);
+    background:linear-gradient(160deg, rgba(255,255,255,.25) 0%, transparent 45%), linear-gradient(180deg, #2fbf86, #16845a 55%, #0b4a33);
+  }
+  .fr-btn.no{border-color:rgba(255,79,106,.65); background:linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%), linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));}
+  .fr-fight:active, .fr-btn:active{transform:translateY(2px);}
+  .fr-found{border-color:rgba(93,255,160,.55);}
+  .fr-empty{padding:26px 10px; text-align:center; font-family:var(--font-title); font-size:11px; letter-spacing:1.5px; line-height:1.7; color:var(--text-dim);}
+  .fr-card .fr-note{grid-column:1 / -1; grid-row:2; font-size:10px; color:var(--text-dim);}
+  .fr-found .fr-lvl{grid-row:2;}
+  .fr-found .fr-note{grid-row:3;}
+  .fr-found .fr-btns{grid-row:4;}
+  .fr-reqbox{display:flex; flex-direction:column; gap:8px;}
+  .fr-card.fr-req .fr-btns{grid-column:2; grid-row:2;}
+  /* fenêtres : choix du deck et invitation */
+  #frDeckModal, #frInvModal{z-index:62;}
+  #frDeckModal .name-modal-inner{max-width:380px;}
+  #frDeckList{width:100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 8px; max-height:42vh; overflow-y:auto; padding:4px 2px; touch-action:pan-y;}
+  #frDeckList .deck-tile{transition:transform .15s;}
+  #frDeckList .deck-tile:active{transform:scale(.97);}
+  #frDeckList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #5dffa0; border-radius:6px; box-shadow:0 0 16px rgba(93,255,160,.55);}
+  #frDeckList .deck-tile.selected .deck-name{color:#9dffc6;}
+  #frDeckList .deck-tile.bad{opacity:.4; filter:grayscale(.7);}
+  #frDeckModal .controls, #frInvModal .controls{width:100%;}
+  #frDeckModal .controls button, #frInvModal .controls button{
+    --cut:8px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  }
+  #frInvName{font-family:var(--font-title); font-size:20px; font-weight:900; letter-spacing:2px; color:#fff; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-shadow:0 2px 6px rgba(0,0,0,.8);}
+  #frInvLvl{font-family:var(--font-title); font-size:12px; font-weight:700; letter-spacing:2.5px; color:#9dffc6;}
+  #frInvLeft{font-family:var(--font-title); font-size:10px; letter-spacing:2px; color:var(--text-dim); min-height:13px;}
+  #frWait .pvq-txt{max-width:88vw; overflow-wrap:anywhere;}
+  #frWait{position:fixed; inset:0; z-index:58; background:#000; display:flex; align-items:center; justify-content:center; text-align:center;}
+  #frWait[hidden]{display:none !important;}
+  #frWait .pvq-in{display:flex; flex-direction:column; align-items:center; gap:22px; padding:24px;}
+  #frWait .pvq-ring{position:relative; width:min(62vw,260px); aspect-ratio:1; display:flex; align-items:center; justify-content:center;}
+  #frWait .pvq-ring::before{content:''; position:absolute; inset:0; border-radius:50%; border:2px solid rgba(139,92,246,.18); border-top-color:rgba(160,120,255,.95); border-right-color:rgba(77,148,255,.7); animation:pvqSpin 1.3s linear infinite;}
+  #frWait .pvq-logo{width:78%; height:auto; object-fit:contain; animation:pvqPulse 2.2s ease-in-out infinite; filter:drop-shadow(0 0 18px rgba(139,92,246,.55));}
+  #frWait .pvq-txt{font-family:var(--font-title); font-size:12px; font-weight:900; letter-spacing:3px; color:#e8e1ff;}
+  #frWait .pvq-sub{font-family:var(--font-title); font-size:10px; letter-spacing:2px; color:rgba(200,190,235,.6); min-height:14px;}
+  #frWait .pvq-cancel{margin-top:6px; min-width:180px; --cut:10px; border-radius:0; cursor:pointer; color:#fff; font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:2px; padding:13px 18px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%), linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel)); border:1px solid rgba(255,79,106,.7);}
+  #frWait .pvq-cancel:active{transform:translateY(2px);}
+  @media (prefers-reduced-motion:reduce){ #frWait .pvq-ring::before, #frWait .pvq-logo{animation:none;} }
+
   /* =================== CLASSEMENT PVP : vitrine (V0.05.31) ===================
      Pas un bouton : on ne peut pas toucher la case, elle affiche seulement les scores (top 10 par ratio victoires / défaites). */
   #tileRanking{pointer-events:none; cursor:default; user-select:none; -webkit-user-select:none;
@@ -8385,13 +8476,42 @@
           <div class="mt-lvl" id="tilePlayerInfoLvl">NIV. 1</div>
         </div>
       </div>
-      <div class="mode-tile soon ph-tr ph-closed" id="tileFriends">
+      <div class="mode-tile ph-tr ph-friends" id="tileFriends" aria-label="PVP amis">
         <div class="mt-inner">
-          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <span class="notif-dot tile-dot" id="dotFriends"></span>
+          <svg class="fr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17.3 14.2c2.5.3 4.2 2.3 4.2 4.8"/></svg>
           <div class="mt-title">PVP AMIS</div>
-          <div class="mt-soon">PROCHAINEMENT</div>
+          <div class="mt-soon">DÉFIE TES AMIS</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- PVP AMIS (V0.05.32) : amis, code ami, invitations de combat -->
+  <div id="friendsView" class="sub-view">
+    <header class="inf-header">
+      <button class="back-btn" id="friendsBackBtn">‹ MENU</button>
+      <div class="wave">PVP AMIS</div>
+      <div class="inf-tag" style="visibility:hidden;">·</div>
+    </header>
+    <div id="frBody">
+      <button type="button" class="fr-add-btn" id="frAddBtn">+ AJOUTER</button>
+      <div class="fr-addbox" id="frAddBox" hidden>
+        <div class="fr-lbl">CODE DE TON AMI</div>
+        <input id="frCodeIn" class="nm-input" type="text" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX">
+        <div class="acc-msg" id="frAddMsg"></div>
+        <div class="pv-card fr-card fr-found" id="frFound" hidden>
+          <b class="fr-name" id="frFoundName"></b>
+          <span class="fr-lvl" id="frFoundLvl"></span>
+          <div class="fr-note" id="frFoundNote">La demande expire au bout de 24 h.</div><div class="fr-btns"><button type="button" class="fr-btn ok" id="frFoundOk">AJOUTER</button><button type="button" class="fr-btn no" id="frFoundNo">ANNULER</button></div>
+        </div>
+      </div>
+      <div class="fr-reqbox" id="frReqBox" hidden>
+        <div class="team-label player">DEMANDES D’AMIS</div>
+        <div class="fr-list" id="frReqList"></div>
+      </div>
+      <div class="team-label player" id="frCount" hidden>AMIS</div>
+      <div class="fr-list" id="frList"></div>
     </div>
   </div>
 
@@ -8540,7 +8660,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.31</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.32</b></div>
   </div>
 
     </div>
@@ -9360,9 +9480,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.31';
+var BUILD_VERSION = 'V0.05.32';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.32', items:[
+    'PVP AMIS : chaque joueur a un code ami (sur sa fiche joueur). Tape le code d’un joueur pour lui envoyer une demande d’ami (elle expire au bout de 24 h) ; s’il l’accepte, vous êtes amis (10 amis maximum). Défie ensuite un ami : il reçoit une invitation au bout de 10 secondes (ACCEPTER ou REFUSER) et le combat se lance, chacun avec le deck qu’il a choisi.',
+  ] },
   { v:'V0.05.31', items:[
     'Menu JOUEUR : CLASSEMENT devient une vitrine en direct des 10 meilleurs joueurs en PVP, classés par ratio victoires / défaites (ta place s’affiche en dessous si tu n’es pas dans le top 10).',
   ] },
@@ -12230,7 +12353,7 @@ function renderNotifs(){
   notif.lab = false;
   setDot('dotFab', notif.fab);
   setDot('dotFabTirage', notif.fab);   // même signal, sur la case du hub FABRIQUE (depuis V0.01.69, l'onglet s'ouvre d'abord sur ce hub)
-  setDot('dotPlayer', notif.player);
+  setDot('dotPlayer', notif.player || (typeof FR !== 'undefined' && FR && FR.reqs > 0));
   setDot('dotPlayerInfo', notif.player);
   
   if(typeof renderRewardDots === 'function') renderRewardDots();
@@ -16389,7 +16512,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -17821,7 +17944,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'playerView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView', 'playerView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -29121,6 +29244,12 @@ function renderPlayerSheet(){
       </div>
     </div>
 
+    <div class="pv-card pv-friendcode">
+      <div class="team-label player">TON CODE AMI</div>
+      <div class="pv-fc-row"><div class="pv-fc-code" id="pvFriendCode">········</div><button type="button" class="pv-fc-copy" id="pvFcCopy" hidden>COPIER</button></div>
+      <div class="pv-fc-hint">Donne ce code à un ami : il pourra t’ajouter dans PVP AMIS.</div>
+    </div>
+
     <div class="pv-card">
       <div class="team-label player">BATAILLES</div>
       <div class="pv-best-meta">${(player.stats.battlesWon || 0)} victoire${(player.stats.battlesWon || 0) > 1 ? 's' : ''} sur ${(player.stats.battles || 0)} bataille${(player.stats.battles || 0) > 1 ? 's' : ''}${player.stats.battles ? ' · ' + Math.round(100 * (player.stats.battlesWon || 0) / player.stats.battles) + ' %' : ''}</div>
@@ -29275,6 +29404,7 @@ function renderAfterSheet(){
   if(n) n.textContent = player.name;
   const e = document.getElementById('pvEditName');
   if(e) e.onclick = () => openNameModal();
+  if(typeof frFillCode === 'function') frFillCode();   // V0.05.32 : code ami
 }
 function enterPlayerView(){
   econTrack('sheet_visit');
@@ -29350,6 +29480,397 @@ document.getElementById('tilePlayerInfo').onclick = enterPlayerView;
 document.getElementById('playerHubBackBtn').onclick = showHub;
 document.getElementById('playerBackBtn').onclick = () => { enterPlayerHub(); };
 renderPlayerTile();
+
+// =========================================================
+// PVP AMIS (V0.05.32)
+// Tout est porté par le serveur (fonctions SQL friend_* + opération `invite_accept` de la fonction pvp) : le jeu ne fait qu'afficher et appeler.
+//  - code ami : friend_code() ; recherche : friend_lookup(code) ; ajout : friend_add(code) ; liste : friend_list()
+//  - invitation : friend_invite(code, deck) -> friend_invite_status(id) toutes les 1,5 s -> accepted => pvpStartMatch ; friend_invite_cancel(id)
+//  - côté ami : friend_inbox() toutes les 4 s (l'invitation n'est visible qu'après 10 s, valable 100 s, tant que l'inviteur est là) ;
+//    ACCEPTER -> choix du deck -> pvpSend('invite_accept') ; REFUSER -> friend_invite_decline(id)
+// =========================================================
+const FR_MAX = 10;
+var FR = { reqs:0, reqList:null, uid:'', code:null, codeAt:0, codeBusy:false, friends:null, err:false, loadBusy:false, lk:0, pick:null, W:null, inv:null, seen:{}, inboxBusy:false, inboxTimer:null, invTimer:null, lastDeck:null };
+const frEl = id => document.getElementById(id);
+const frReady = () => !!(ECON && ECON.ready && readSupaSession());
+const frBusy = () => !!(BTL || PVPC || PVPQ || FR.W);
+const frNorm = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+const frFmt = c => c.length > 4 ? c.slice(0, 4) + '-' + c.slice(4) : c;
+const frName = n => String(n || 'COMMANDANT').toUpperCase();
+function frSyncUser(){
+  const u = (typeof cloud !== 'undefined' && cloud && cloud.uid) || '';
+  if(FR.uid !== u){ FR.uid = u; FR.code = null; FR.codeAt = 0; FR.friends = null; FR.reqList = null; FR.reqs = 0; FR.err = false; FR.seen = {}; }
+}
+async function frRpc(fn, args){
+  try{ await ensureFreshSupaSession(); }catch(_){}
+  return await supaFetch('/rest/v1/rpc/' + fn, { method:'POST', body: JSON.stringify(args || {}) });
+}
+
+// ---------- code ami (fiche joueur) ----------
+function frPaintCode(){
+  const el = frEl('pvFriendCode'); if(!el) return;
+  const cp = frEl('pvFcCopy');
+  el.textContent = FR.code ? frFmt(FR.code) : (frReady() ? '········' : '—');
+  if(cp){ cp.hidden = !FR.code; cp.onclick = frCopy; }
+}
+async function frCodeFetch(){
+  frSyncUser();
+  if(FR.code || FR.codeBusy || !frReady() || Date.now() - FR.codeAt < 8000) return;
+  FR.codeBusy = true; FR.codeAt = Date.now();
+  try{ const c = await frRpc('friend_code'); if(typeof c === 'string' && /^[A-Z0-9]{8}$/.test(c)) FR.code = c; }catch(_){}
+  FR.codeBusy = false; frPaintCode();
+}
+function frFillCode(){ frSyncUser(); frPaintCode(); frCodeFetch(); }
+function frCopy(){
+  if(!FR.code) return;
+  const t = frFmt(FR.code);
+  try{ navigator.clipboard.writeText(t).then(() => showToast('CODE COPIÉ'), () => showToast('COPIE IMPOSSIBLE : RECOPIE LE CODE')); }
+  catch(_){ showToast('COPIE IMPOSSIBLE : RECOPIE LE CODE'); }
+}
+
+// ---------- écran des amis ----------
+function frAddClose(){
+  const b = frEl('frAddBox'); if(b) b.hidden = true;
+  const btn = frEl('frAddBtn'); if(btn){ btn.textContent = '+ AJOUTER'; btn.classList.remove('open'); }
+  const i = frEl('frCodeIn'); if(i) i.value = '';
+  const f = frEl('frFound'); if(f) f.hidden = true;
+  const m = frEl('frAddMsg'); if(m) m.textContent = '';
+  FR.lk++;
+}
+function frAddToggle(){
+  const b = frEl('frAddBox');
+  if(!b.hidden){ frAddClose(); return; }
+  frAddClose();
+  b.hidden = false;
+  const btn = frEl('frAddBtn'); btn.textContent = 'FERMER'; btn.classList.add('open');
+  if(FR.friends && FR.friends.length >= FR_MAX) frEl('frAddMsg').textContent = 'LISTE D’AMIS PLEINE (' + FR_MAX + ' MAXIMUM)';
+  try{ frEl('frCodeIn').focus(); }catch(_){}
+}
+function frFoundReset(){ frEl('frFound').hidden = true; }
+async function frLookup(){
+  const code = frNorm(frEl('frCodeIn').value), msg = frEl('frAddMsg'), found = frEl('frFound');
+  found.hidden = true;
+  if(code.length !== 8){ msg.textContent = ''; return; }
+  const tk = ++FR.lk;
+  msg.textContent = 'RECHERCHE…';
+  let r = null;
+  try{ r = await frRpc('friend_lookup', { p_code:code }); }catch(_){ if(tk === FR.lk) msg.textContent = 'RÉSEAU INDISPONIBLE'; return; }
+  if(tk !== FR.lk) return;
+  if(!r || !r.found){ msg.textContent = 'CODE INCONNU'; return; }
+  if(r.self){ msg.textContent = 'C’EST TON PROPRE CODE'; return; }
+  if(r.already){ msg.textContent = 'DÉJÀ DANS TES AMIS'; return; }
+  if(r.sent){ msg.textContent = 'DEMANDE DÉJÀ ENVOYÉE : ELLE EST EN ATTENTE'; return; }
+  if(r.incoming){ msg.textContent = 'CE JOUEUR T’A DÉJÀ ENVOYÉ UNE DEMANDE : ACCEPTE-LA CI-DESSOUS'; return; }
+  if(FR.friends && FR.friends.length >= FR_MAX){ msg.textContent = 'LISTE D’AMIS PLEINE (' + FR_MAX + ' MAXIMUM)'; return; }
+  msg.textContent = '';
+  frEl('frFoundName').textContent = frName(r.name);
+  frEl('frFoundLvl').textContent = 'NIV. ' + (r.level || 1);
+  found.dataset.code = code; found.hidden = false;
+}
+async function frAddConfirm(){
+  const found = frEl('frFound'), code = found.dataset.code, msg = frEl('frAddMsg');
+  if(!code || FR.adding) return;
+  FR.adding = true;
+  let r = null;
+  try{ r = await frRpc('friend_add', { p_code:code }); }catch(_){ r = null; }
+  FR.adding = false;
+  if(!r){ showToast('RÉSEAU INDISPONIBLE'); return; }
+  if(r.ok){ showToast('DEMANDE D’AMI ENVOYÉE'); frAddClose(); frLoad(); return; }
+  found.hidden = true;
+  const E = { already:'DÉJÀ DANS TES AMIS', self:'C’EST TON PROPRE CODE', full:'LISTE D’AMIS PLEINE (' + FR_MAX + ' MAXIMUM)', their_full:'SA LISTE D’AMIS EST PLEINE',
+    sent:'DEMANDE DÉJÀ ENVOYÉE : ELLE EST EN ATTENTE', incoming:'CE JOUEUR T’A DÉJÀ ENVOYÉ UNE DEMANDE : ACCEPTE-LA CI-DESSOUS', too_many:'TROP DE DEMANDES EN ATTENTE, PATIENTE' };
+  msg.textContent = E[r.error] || 'CODE INCONNU';
+  if(r.error === 'incoming') frLoad();
+}
+function frRenderReqs(){
+  const box = frEl('frReqList'), wrap = frEl('frReqBox'); if(!box) return;
+  box.textContent = '';
+  const L = FR.reqList || [];
+  wrap.hidden = !L.length;
+  L.forEach(q => {
+    const card = document.createElement('div'); card.className = 'pv-card fr-card fr-req';
+    const nm = document.createElement('b'); nm.className = 'fr-name'; nm.textContent = frName(q.name);
+    const lv = document.createElement('span'); lv.className = 'fr-lvl'; lv.textContent = 'NIV. ' + (q.level || 1);
+    const bt = document.createElement('div'); bt.className = 'fr-btns';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'fr-btn ok'; ok.textContent = 'ACCEPTER';
+    const no = document.createElement('button'); no.type = 'button'; no.className = 'fr-btn no'; no.textContent = 'REFUSER';
+    ok.onclick = () => frAnswer(q, true); no.onclick = () => frAnswer(q, false);
+    bt.appendChild(ok); bt.appendChild(no);
+    card.appendChild(nm); card.appendChild(lv); card.appendChild(bt);
+    box.appendChild(card);
+  });
+}
+async function frAnswer(q, yes){
+  if(FR.answering) return;
+  FR.answering = true;
+  let r = null;
+  try{ r = await frRpc('friend_request_answer', { p_id:q.id, p_accept:yes }); }catch(_){ r = null; }
+  FR.answering = false;
+  if(!r){ showToast('RÉSEAU INDISPONIBLE'); return; }
+  if(r.ok){ showToast(yes ? frName(q.name) + ' EST MAINTENANT TON AMI' : 'DEMANDE REFUSÉE'); }
+  else showToast(r.error === 'expired' ? 'DEMANDE EXPIRÉE' : r.error === 'full' ? 'TA LISTE D’AMIS EST PLEINE (' + FR_MAX + ' MAXIMUM)' : r.error === 'their_full' ? 'SA LISTE D’AMIS EST PLEINE' : 'DEMANDE INTROUVABLE');
+  frLoad();
+}
+function frPaintDots(){
+  const on = FR.reqs > 0;
+  setDot('dotFriends', on); setDot('dotPlayer', on || (typeof notif !== 'undefined' && notif.player));
+}
+function frRenderList(){
+  const box = frEl('frList'); if(!box) return;
+  box.textContent = '';
+  frRenderReqs();
+  const cnt = frEl('frCount'); cnt.hidden = !(FR.friends && FR.friends.length); if(!cnt.hidden) cnt.textContent = 'AMIS ' + FR.friends.length + ' / ' + FR_MAX;
+  const empty = t => { const d = document.createElement('div'); d.className = 'fr-empty'; d.innerHTML = t; box.appendChild(d); };
+  if(!frReady()){ empty('CONNEXION REQUISE<br>CONNECTE-TOI POUR AVOIR DES AMIS'); return; }
+  if(FR.friends === null){ empty(FR.err ? 'AMIS INDISPONIBLES<br>RÉESSAIE PLUS TARD' : 'CHARGEMENT…'); return; }
+  if(!FR.friends.length){ empty('AUCUN AMI POUR LE MOMENT<br>TOUCHE AJOUTER ET TAPE LE CODE DE TON AMI'); return; }
+  FR.friends.forEach(f => {
+    const card = document.createElement('div'); card.className = 'pv-card fr-card';
+    const nm = document.createElement('b'); nm.className = 'fr-name'; nm.textContent = frName(f.name);
+    const lv = document.createElement('span'); lv.className = 'fr-lvl'; lv.textContent = 'NIV. ' + (f.level || 1);
+    const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'fr-fight'; bt.textContent = 'COMBAT';
+    bt.onclick = () => frFight(f);
+    card.appendChild(nm); card.appendChild(lv); card.appendChild(bt);
+    box.appendChild(card);
+  });
+}
+async function frLoad(){
+  frSyncUser();
+  frRenderList();
+  if(!frReady() || FR.loadBusy) return;
+  FR.loadBusy = true;
+  try{
+    const [r, q] = await Promise.all([frRpc('friend_list'), frRpc('friend_requests').catch(() => null)]);
+    if(Array.isArray(r)){ FR.friends = r; FR.err = false; } else FR.err = true;
+    if(Array.isArray(q)){ FR.reqList = q; FR.reqs = q.length; frPaintDots(); }
+  }catch(_){ FR.err = true; }
+  FR.loadBusy = false;
+  frRenderList();
+}
+function enterFriends(){
+  openSub('friendsView');
+  frAddClose();
+  frLoad();
+}
+
+// ---------- choix du deck (inviteur et invité) ----------
+function frDeckEl(){
+  let m = frEl('frDeckModal'); if(m) return m;
+  m = document.createElement('div'); m.className = 'codex-modal'; m.id = 'frDeckModal';
+  m.innerHTML = '<div class="codex-modal-inner name-modal-inner"><div class="nm-title" id="frDeckTitle"></div><div class="nm-sub" id="frDeckSub"></div>' +
+    '<div id="frDeckList"></div><div class="controls"><button type="button" id="frDeckNo"></button><button type="button" class="primary-btn" id="frDeckOk"></button></div></div>';
+  document.body.appendChild(m);
+  frEl('frDeckOk').onclick = () => {
+    const P = FR.pick; if(!P || P.done || !P.sel) return;
+    const d = decks.find(x => x.id === P.sel); if(!d) return;
+    P.done = true; FR.lastDeck = d.id; const o = P.o; frDeckHide(); o.onOk(d);
+  };
+  frEl('frDeckNo').onclick = () => {
+    const P = FR.pick; if(!P || P.done) return;
+    P.done = true; const o = P.o; frDeckHide(); if(o.onNo) o.onNo();
+  };
+  return m;
+}
+function frDeckRender(){
+  const P = FR.pick; if(!P) return;
+  const list = frEl('frDeckList');
+  list.innerHTML = decks.length ? decks.map(d => {
+    const ok = !!econBattleDeck(d);
+    return `<div class="deck-tile${P.sel === d.id ? ' selected' : ''}${ok ? '' : ' bad'}" data-deck="${d.id}">${deckShowcaseHtml(d)}<div class="deck-name">${escDeckHtml(d.name)}<small>${ok ? d.cards.length + '/' + DECK_SIZE + ' cartes' : 'INCOMPLET'}</small></div></div>`;
+  }).join('') : '<div class="bat-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
+  list.querySelectorAll('[data-deck]').forEach(t => {
+    t.onclick = () => {
+      const d = decks.find(x => x.id === t.dataset.deck); if(!d || !FR.pick) return;
+      if(!econBattleDeck(d)){ showToast('DECK INCOMPLET'); return; }
+      FR.pick.sel = d.id; frDeckRender();
+    };
+  });
+  frEl('frDeckOk').disabled = !P.sel;
+}
+function frDeckPick(o){
+  const m = frDeckEl();
+  const last = decks.find(d => d.id === FR.lastDeck && econBattleDeck(d));
+  FR.pick = { o, sel:last ? last.id : null, done:false };
+  frEl('frDeckTitle').textContent = o.title; frEl('frDeckSub').textContent = o.sub;
+  frEl('frDeckOk').textContent = o.ok; frEl('frDeckNo').textContent = o.no || 'ANNULER';
+  frDeckRender();
+  m.classList.add('show');
+}
+function frDeckHide(){ const m = frEl('frDeckModal'); if(m) m.classList.remove('show'); FR.pick = null; }
+
+// ---------- fenêtre d'attente (même décor que la file PVP) ----------
+function frWaitEl(){
+  let el = frEl('frWait'); if(el) return el;
+  el = document.createElement('div'); el.id = 'frWait'; el.hidden = true;
+  const logo = document.querySelector('.mt-meca');
+  el.innerHTML = '<div class="pvq-in"><div class="pvq-ring"><img class="pvq-logo" alt="" src="' + (logo ? logo.src : '') + '"></div>' +
+    '<div class="pvq-txt" id="frWaitTxt"></div><div class="pvq-sub" id="frWaitSub"></div>' +
+    '<button type="button" class="deck-btn pvq-cancel" id="frWaitCancel">ANNULER</button></div>';
+  document.body.appendChild(el);
+  frEl('frWaitCancel').onclick = () => frInviteCancel();
+  return el;
+}
+function frWaitShow(on, txt, sub, canCancel){
+  const el = frWaitEl(); el.hidden = !on;
+  if(!on) return;
+  frEl('frWaitTxt').textContent = txt || ''; frEl('frWaitSub').textContent = sub || '';
+  frEl('frWaitCancel').style.display = canCancel === false ? 'none' : '';
+}
+function frWaitEnd(){ FR.W = null; frWaitShow(false); }
+
+// ---------- inviteur : COMBAT ----------
+function frFight(f){
+  if(frBusy()) return;
+  frDeckPick({ title:'CHOISIS TON DECK', sub:'COMBAT CONTRE ' + frName(f.name), ok:'INVITER', no:'ANNULER', onOk: d => frInvite(f, d) });
+}
+async function frInvite(f, d){
+  if(frBusy()) return;
+  const deck = econBattleDeck(d);
+  if(!deck){ showToast('DECK INCOMPLET'); return; }
+  const nm = frName(f.name);
+  const W = FR.W = { f, d, deck, id:null, cancelled:false, t0:Date.now() };
+  frWaitShow(true, 'EN ATTENTE DE ' + nm, 'ENVOI DE L’INVITATION…', true);
+  W.sendP = frRpc('friend_invite', { p_code:f.code, p_deck:deck }).then(r => r, () => null);
+  const r = await W.sendP;
+  if(W.cancelled) return;                              // frInviteCancel termine le travail
+  if(!r || !r.ok || !r.id){
+    const e = r && r.error;
+    showToast(!r ? 'RÉSEAU INDISPONIBLE' : e === 'busy' ? 'INVITATION DÉJÀ EN COURS, PATIENTE UN PEU' : e === 'in_match' ? 'TU ES DÉJÀ EN COMBAT' : (e === 'not_friend' || e === 'unknown') ? 'AMI INTROUVABLE' : e === 'bad_deck' ? 'DECK REFUSÉ' : 'INVITATION IMPOSSIBLE');
+    frWaitEnd(); return;
+  }
+  W.id = r.id;
+  let errs = 0;
+  while(!W.cancelled){
+    const secs = Math.floor((Date.now() - W.t0) / 1000);
+    frEl('frWaitSub').textContent = secs < 10 ? 'INVITATION ENVOYÉE…' : 'ATTENTE DE LA RÉPONSE · ' + secs + ' S';
+    await pvpSleep(1500);
+    if(W.cancelled) return;
+    let s = null;
+    try{ s = await frRpc('friend_invite_status', { p_id:W.id }); errs = 0; }
+    catch(_){
+      if(++errs > 6){ frWaitEnd(); showToast('CONNEXION PERDUE'); frRpc('friend_invite_cancel', { p_id:W.id }).catch(() => {}); return; }
+      continue;
+    }
+    if(W.cancelled) return;
+    const st = s && s.state;
+    if(st === 'accepted' && s.match_id){ frWaitEnd(); await pvpStartMatch(s.match_id, d, deck); return; }
+    if(st === 'pending' || st === 'claiming'){
+      if(Date.now() - W.t0 > 115000){ frWaitEnd(); showToast(nm + ' N’A PAS RÉPONDU'); frRpc('friend_invite_cancel', { p_id:W.id }).catch(() => {}); return; }
+      continue;
+    }
+    frWaitEnd();
+    showToast(st === 'declined' ? nm + ' A REFUSÉ LE COMBAT' : st === 'failed' ? 'COMBAT IMPOSSIBLE, RÉESSAIE' : nm + ' N’A PAS RÉPONDU');
+    return;
+  }
+}
+async function frInviteCancel(){
+  const W = FR.W; if(!W || W.cancelled || W.acc) return;
+  W.cancelled = true;
+  frEl('frWaitSub').textContent = 'ANNULATION…';
+  try{ await W.sendP; }catch(_){}
+  let s = null;
+  if(W.id){ try{ s = await frRpc('friend_invite_cancel', { p_id:W.id }); }catch(_){} }
+  frWaitEnd();
+  if(s && s.state === 'accepted' && s.match_id) await pvpStartMatch(s.match_id, W.d, W.deck);   // l'ami a accepté juste avant l'annulation : le combat existe déjà
+}
+
+// ---------- ami invité : notification ----------
+function frInvEl(){
+  let m = frEl('frInvModal'); if(m) return m;
+  m = document.createElement('div'); m.className = 'codex-modal'; m.id = 'frInvModal';
+  m.innerHTML = '<div class="codex-modal-inner name-modal-inner"><div class="nm-title">INVITATION PVP</div>' +
+    '<div id="frInvName"></div><div id="frInvLvl"></div><div class="nm-sub">T’INVITE À UN COMBAT AMICAL</div><div id="frInvLeft"></div>' +
+    '<div class="controls"><button type="button" id="frInvNo">REFUSER</button><button type="button" class="primary-btn" id="frInvOk">ACCEPTER</button></div></div>';
+  document.body.appendChild(m);
+  frEl('frInvOk').onclick = frInvAccept;
+  frEl('frInvNo').onclick = frInvRefuse;
+  return m;
+}
+function frInvLeftTxt(){
+  const I = FR.inv, el = frEl('frInvLeft'); if(!I || !el) return;
+  el.textContent = 'EXPIRE DANS ' + Math.max(0, Math.ceil((I.until - Date.now()) / 1000)) + ' S';
+}
+function frInvShow(){
+  const I = FR.inv; if(!I) return;
+  const m = frInvEl();
+  frEl('frInvName').textContent = I.name; frEl('frInvLvl').textContent = 'NIV. ' + I.level;
+  frInvLeftTxt(); clearInterval(FR.invTimer); FR.invTimer = setInterval(frInvLeftTxt, 1000);
+  m.classList.add('show');
+}
+function frInvHide(){ const m = frEl('frInvModal'); if(m) m.classList.remove('show'); clearInterval(FR.invTimer); FR.invTimer = null; }
+async function frInvRefuse(){
+  const I = FR.inv; if(!I || I.step === 'busy') return;
+  FR.seen[I.id] = true; FR.inv = null; frInvHide(); frDeckHide();
+  try{ await frRpc('friend_invite_decline', { p_id:I.id }); }catch(_){}
+}
+function frInvAccept(){
+  const I = FR.inv; if(!I || I.step !== 'ask') return;
+  if(frBusy()){ showToast('TERMINE D’ABORD TON COMBAT'); return; }
+  I.step = 'deck'; frInvHide();
+  frDeckPick({ title:'CHOISIS TON DECK', sub:'COMBAT CONTRE ' + I.name, ok:'ACCEPTER LE COMBAT', no:'REFUSER', onOk: d => frAccept(d), onNo: () => frInvRefuse() });
+}
+async function frAccept(d){
+  const I = FR.inv; if(!I) return;
+  const deck = econBattleDeck(d);
+  if(!deck){ showToast('DECK INCOMPLET'); I.step = 'ask'; frInvShow(); return; }
+  I.step = 'busy'; FR.W = { acc:true, cancelled:false };
+  frWaitShow(true, 'CONNEXION AU COMBAT…', '', false);
+  let r = null;
+  try{ r = await pvpSend('invite_accept', { invite_id:I.id, deck }); }catch(_){ r = null; }
+  frWaitEnd();
+  const b = r && r.body, st = b && b.status;
+  FR.inv = null;
+  if(r && r.status === 200 && b && b.ok && st === 'matched' && b.match_id){ FR.seen[I.id] = true; await pvpStartMatch(b.match_id, d, deck); return; }
+  if(!r || r.status === 0){ showToast('RÉSEAU INDISPONIBLE'); return; }     // l'invitation reste valable : elle sera proposée de nouveau
+  FR.seen[I.id] = true;
+  showToast(st === 'expired' ? 'INVITATION EXPIRÉE' : st === 'cancelled' ? 'INVITATION ANNULÉE' : st === 'declined' ? 'INVITATION REFUSÉE' : st === 'busy' ? 'OCCUPÉ, RÉESSAIE' : st === 'failed' ? 'COMBAT IMPOSSIBLE' : 'INVITATION INTROUVABLE');
+}
+function frInboxApply(inv){
+  const I = FR.inv;
+  if(inv && inv.id && !FR.seen[inv.id]){
+    const until = Date.now() + (inv.left_s || 0) * 1000;
+    if(I && I.id === inv.id){ I.until = until; return; }
+    if(I && I.step === 'busy') return;
+    if(I){ frInvHide(); frDeckHide(); }
+    FR.inv = { id:inv.id, name:frName(inv.name), level:inv.level || 1, until, step:'ask' };
+    frInvShow();
+  }else if(I && I.step !== 'busy' && (!inv || inv.id !== I.id)){
+    FR.inv = null; frInvHide(); frDeckHide(); showToast('INVITATION ANNULÉE');
+  }
+}
+async function frInboxTick(){
+  if(document.hidden || FR.inboxBusy || !frReady()) return;
+  if(typeof nameModalFirst !== 'undefined' && nameModalFirst) return;
+  if(frBusy()){ if(FR.inv && FR.inv.step === 'ask'){ FR.inv = null; frInvHide(); } return; }   // un combat commence : on n'interrompt pas
+  FR.inboxBusy = true;
+  try{
+    const r = await frRpc('friend_inbox');
+    const nr = (r && r.reqs) | 0;
+    if(nr !== FR.reqs){
+      FR.reqs = nr; frPaintDots();
+      if(document.getElementById('friendsView').classList.contains('active')) frLoad();
+    }
+    if(!frBusy()) frInboxApply(r && r.invite ? r.invite : null);
+  }catch(_){}
+  FR.inboxBusy = false;
+}
+function frInboxStart(){
+  if(FR.inboxTimer) return;
+  FR.inboxTimer = setInterval(frInboxTick, 4000);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) frInboxTick(); });
+}
+
+document.getElementById('tileFriends').onclick = enterFriends;
+document.getElementById('friendsBackBtn').onclick = () => { enterPlayerHub(); };
+document.getElementById('frAddBtn').onclick = frAddToggle;
+document.getElementById('frFoundNo').onclick = () => { frEl('frCodeIn').value = ''; frEl('frAddMsg').textContent = ''; frFoundReset(); FR.lk++; };
+document.getElementById('frFoundOk').onclick = frAddConfirm;
+document.getElementById('frCodeIn').addEventListener('input', e => {
+  const v = frFmt(frNorm(e.target.value)); if(e.target.value !== v) e.target.value = v;
+  frLookup();
+});
+frInboxStart();
+setInterval(() => { if(!document.hidden && document.getElementById('friendsView').classList.contains('active')) frLoad(); }, 10000);
 
 // =========================================================
 // SAUVEGARDE & CONNEXION
@@ -30014,7 +30535,7 @@ renderResources();
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'playerHub', playerHubView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
+const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'playerHub', friendsView:'playerHub', playerHubView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
@@ -30171,7 +30692,11 @@ const HELP_CONTENT = {
   playerHubView: { title:'JOUEUR', text:'Tout ce qui te concerne :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant : nom, niveau et statistiques.</li>' +
     '<li><b>CLASSEMENT</b> — la vitrine en direct des meilleurs joueurs en PVP, classés par ratio victoires / défaites (on ne peut pas la toucher).</li>' +
-    '<li><b>PVP AMIS</b> — bientôt disponible.</li></ul>' },
+    '<li><b>PVP AMIS</b> — envoie des demandes d’ami avec leur code et lance des combats contre tes amis.</li></ul>' },
+  friendsView: { title:'PVP AMIS', text:'Chaque joueur a un <b>code ami</b>, visible sur sa fiche joueur.<ul>' +
+    '<li><b>AJOUTER</b> — tape le code d’un joueur : s’il existe, son nom et son niveau s’affichent et tu peux lui envoyer une demande d’ami. Il doit l’accepter (la demande expire au bout de 24 h). 10 amis maximum.</li>' +
+    '<li><b>DEMANDES D’AMIS</b> — celles que tu reçois : ACCEPTER ou REFUSER.</li>' +
+    '<li><b>COMBAT</b> — choisis ton deck : ton ami reçoit une invitation au bout de 10 secondes. S’il accepte (en choisissant son deck), le combat se lance ; s’il refuse, tu reviens ici.</li></ul>' },
   playerView: { title:'FICHE JOUEUR', text:'Ta carte de visite : nom, niveau et statistiques cumulées depuis le début de la partie.' },
   // ---------- CARTE ----------
   codexHubView: { title:'CARTE', text:'Tout ce qui concerne ta collection :<ul>' +
