@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.34</title>
+<title>Projet MECA V0.05.35</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8234,6 +8234,14 @@
 
   /* ---- ouverture de booster : couche de flammes (canvas dessiné par brFireStart) derrière toutes les cartes ---- */
   .br-fxlayer{position:absolute; inset:0; z-index:0; pointer-events:none;}
+
+  /* V0.05.35 : COLLECTION sans défilement haut/bas */
+  #codexView:has(#collectionView.active){overflow-y:hidden !important; overscroll-behavior:none;}
+  #collectionView.active{touch-action:pan-x;}
+  /* V0.05.35 : points rouges « nouvelle carte » dans le classeur */
+  .sleeve .sl-new{position:absolute; top:3px; right:3px; width:13px; height:13px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #ff8a80, #ff2d2d 60%, #c40000); border:2px solid #0b0911; box-shadow:0 0 8px rgba(255,45,45,.9); z-index:6; pointer-events:none; animation:dotPulse 1.6s ease-in-out infinite;}
+  .binder-nav .back-btn{position:relative;}
+  .binder-nav .back-btn.has-new::after{content:""; position:absolute; top:2px; right:2px; width:10px; height:10px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #ff8a80, #ff2d2d 60%, #c40000); border:2px solid #0b0911; box-shadow:0 0 8px rgba(255,45,45,.9); animation:dotPulse 1.6s ease-in-out infinite;}
 </style>
 </head>
 <body>
@@ -8764,7 +8772,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.34</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.35</b></div>
   </div>
 
     </div>
@@ -9584,9 +9592,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.34';
+var BUILD_VERSION = 'V0.05.35';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.35', items:[
+    'Mana : le joueur qui ne commence pas garde son cristal d’avance à chaque tour (2, 3, 4, 5…) et non plus seulement au premier ; le maximum reste 5. Même règle côté serveur PVP.',
+    'COLLECTION : le classeur ne défile plus de haut en bas (on tourne les pages en balayant ou avec les flèches).',
+    'Pastille CARTE : les cartes « nouvelles » ont maintenant un point rouge dans le classeur, et les flèches de page s’allument quand il y en a sur une autre page — plus de pastille impossible à éteindre.',
+  ] },
   { v:'V0.05.34', items:[
     'Toutes les cases des menus passent en verre en relief (arête lumineuse, reflet, ombre portée).',
     'Couleurs des cases plus sobres : verre fumé avec une touche de couleur pour reconnaître chaque case.',
@@ -16797,6 +16810,20 @@ function updateCollectionTile(){
   const t = document.getElementById('collTileCount');
   if(t) t.textContent = collOwnedAll() + ' / ' + collTotalAll();
 }
+function collNewArrows(){   // V0.05.35 : les flèches de page s'allument s'il reste des cartes « nouvelles » sur une autre page
+  let before = false, after = false;
+  collSlots.forEach((sv, i) => {
+    if(!sv) return;
+    const d = CHAR_DEFS.find(x => x.name === sv.split('|')[0]);
+    if(!d || !isOwned(d) || !cardHasNotif(d)) return;
+    if(!(sv.endsWith('|holo') || ownsSeries(d))) return;
+    const pg = Math.floor(i / COLL_PER_PAGE);
+    if(pg < collPage) before = true; else if(pg > collPage) after = true;
+  });
+  const a = document.getElementById('collPrev'), b = document.getElementById('collNext');
+  if(a) a.classList.toggle('has-new', before);
+  if(b) b.classList.toggle('has-new', after);
+}
 function renderBinderPage(){
   const page = document.getElementById('binderPage');
   ensureCollSlots();
@@ -16822,7 +16849,8 @@ function renderBinderPage(){
       const card = sl.querySelector('.codex-card');
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(rar));
-      card.onclick = () => { openCodexModal(def.name, rar); };
+      if(isOwned(def) && cardHasNotif(def)){ const nd = document.createElement('span'); nd.className = 'sl-new'; sl.appendChild(nd); }
+      card.onclick = () => { openCodexModal(def.name, rar); const nd = sl.querySelector('.sl-new'); if(nd && !cardHasNotif(def)) nd.remove(); collNewArrows(); };
     } else {
       sl.classList.add('locked');
       sl.innerHTML = `<div class="sleeve-lock-no">${def.tech ? techNo(def).replace('TECH ', 'T') : cardNo(def)}</div>`;
@@ -16832,6 +16860,7 @@ function renderBinderPage(){
   document.getElementById('binderPageNo').textContent = 'PAGE ' + (collPage + 1) + ' / ' + collPages();
   document.getElementById('collPrev').classList.toggle('off', collPage === 0);
   document.getElementById('collNext').classList.toggle('off', collPage >= collPages() - 1);
+  collNewArrows();
 }
 function renderCollection(){
   const own = collOwnedAll(), tot = collTotalAll();  // V0.05.15 : séries + Tech (les hors-série ne comptent pas)
@@ -18525,7 +18554,7 @@ async function pvpRun0(){
 async function pvpTurn(side){
   const P = PVPC;
   BTL.turn++; BTL.side = side; BTL.phase = 'banner';
-  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1), bonus = BTL.turn === 2 ? 1 : 0;
+  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1 + (side !== BTL.first ? 1 : 0)), bonus = 0;   // V0.05.35 : même règle que le serveur
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE (mana « verts »)
   BTL.cap[side] = BTL.mana[side] = cap + bonus + pile;
   btlRenderMana();
@@ -21105,8 +21134,8 @@ function btlEndTap(){
 }
 async function btlTurn(side){
   BTL.turn++; BTL.side = side; BTL.phase = 'banner';
-  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1);   // V0.04.61 : 1 mana chacun au départ (J1 puis J2), puis +1 tous les 2 tours (même rythme pour les deux camps)
-  const bonus = BTL.turn === 2 ? 1 : 0;   // V0.04.83 : le joueur qui ne commence pas a 1 mana de plus à son premier tour (compense l'avantage du 1er joueur)
+  const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1 + (side !== BTL.first ? 1 : 0));   // V0.04.61 : 1 mana au départ, puis +1 tous les 2 tours ; V0.05.35 : le joueur qui ne commence pas a 1 mana de plus À CHAQUE TOUR (2, 3, 4, 5), toujours plafonné à 5
+  const bonus = 0;
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE jouée au tour précédent (mana « verts »)
   BTL.cap[side] = BTL.mana[side] = cap + bonus + pile;
   btlRenderMana();
