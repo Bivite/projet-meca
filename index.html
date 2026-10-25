@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.33</title>
+<title>Projet MECA V0.05.34</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8130,6 +8130,101 @@
     filter:drop-shadow(0 0 4px var(--c)); }
   .vs-mod.p .vs-br{ --c:#62ccff; }
   .vs-cvg{ mix-blend-mode:normal; }
+
+  /* =================== CASES EN VERRE (V0.05.34) ===================
+     Toutes les cases des menus (.mode-tile) : verre épais en relief.
+     1) arête lumineuse en dégradé (la lumière vient du haut gauche, un liseré de rebond en bas à droite) ;
+     2) corps translucide teinté : voile de lumière en haut, assombri en bas pour la lisibilité du texte ;
+     3) relief intérieur : bord haut éclairé, épaisseur du verre, ombre intérieure en bas ;
+     4) reflet diagonal net (le « coup de lumière » du verre) + éclat à l'angle ;
+     5) ombre portée suivant la forme biseautée, posée sur la grille (le verre « flotte » au-dessus du fond). */
+  .mode-grid{filter:drop-shadow(0 2px 1.5px rgba(2,6,24,.55)) drop-shadow(0 9px 8px rgba(2,8,34,.38)) drop-shadow(0 18px 18px rgba(2,8,34,.22));}
+  .mode-tile{isolation:isolate;}
+  .mode-tile::before{
+    content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.55) 14%, rgba(255,255,255,.10) 38%, rgba(255,255,255,.04) 62%, rgba(255,255,255,.38) 86%, rgba(255,255,255,.7) 100%);
+  }
+  .mode-tile .mt-inner{
+    inset:2px;
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+    background:
+      radial-gradient(120% 64% at 16% -14%, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 44%, transparent 68%),
+      linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.02) 30%, rgba(0,0,0,0) 48%, rgba(2,4,16,.66) 100%) !important;
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.75),
+      inset 0 0 0 1px rgba(255,255,255,.10),
+      inset 0 -1px 0 rgba(255,255,255,.30),
+      inset 0 0 0 3px rgba(0,0,0,.10),
+      inset 0 24px 30px -22px rgba(255,255,255,.42),
+      inset 0 -30px 36px -20px rgba(0,0,10,.60),
+      inset 16px 0 22px -18px rgba(255,255,255,.18),
+      inset -16px 0 22px -18px rgba(0,0,12,.38);
+  }
+  .mode-tile::after{
+    content:''; position:absolute; inset:2px; z-index:3; pointer-events:none; clip-path:var(--clip);
+    background:
+      linear-gradient(113deg, rgba(255,255,255,.00) 0%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.08) 33.6%, rgba(255,255,255,0) 33.7%),
+      linear-gradient(113deg, transparent 33.7%, rgba(255,255,255,.55) 34.2%, rgba(255,255,255,0) 35.6%),
+      linear-gradient(113deg, transparent 38%, rgba(255,255,255,.14) 38.4%, rgba(255,255,255,0) 41%),
+      radial-gradient(34px 34px at 0 0, rgba(255,255,255,.65), transparent 70%);
+    mix-blend-mode:screen;
+  }
+  .mode-tile:active::after{opacity:.65;}
+  /* la vitrine CLASSEMENT garde un fond sombre (liste de scores) : verre fumé ambré */
+  #tileRanking .mt-inner{
+    background:
+      radial-gradient(120% 50% at 16% -10%, rgba(255,226,150,.30) 0%, transparent 66%),
+      linear-gradient(180deg, rgba(60,42,8,.82) 0%, rgba(30,20,4,.90) 100%) !important;
+  }
+
+  /* ---- couleurs : verre teinté, couleur franche mais pas criarde (--ac = teinte de la case) ---- */
+  .mode-tile{--ac:#8fa0c0; filter:none !important;
+    background:linear-gradient(160deg, color-mix(in srgb, var(--ac) 55%, #14203c) 0%, color-mix(in srgb, var(--ac) 32%, #0e1730) 55%, #091024 100%) !important;}
+  .mode-tile::before{
+    background:
+      radial-gradient(75% 60% at 0% 100%, color-mix(in srgb, var(--ac) 95%, #fff) 0%, transparent 72%),
+      linear-gradient(135deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.45) 14%, rgba(255,255,255,.08) 38%, rgba(255,255,255,.03) 62%, rgba(255,255,255,.26) 86%, rgba(255,255,255,.55) 100%);
+  }
+  .mode-tile .mt-inner{
+    background:
+      radial-gradient(120% 64% at 16% -14%, rgba(255,255,255,.24) 0%, rgba(255,255,255,.05) 44%, transparent 68%),
+      radial-gradient(95% 75% at 0% 108%, color-mix(in srgb, var(--ac) 78%, transparent) 0%, transparent 74%),
+      linear-gradient(160deg, color-mix(in srgb, var(--ac) 52%, transparent) 0%, color-mix(in srgb, var(--ac) 22%, transparent) 60%, color-mix(in srgb, var(--ac) 10%, transparent) 100%),
+      linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.01) 30%, rgba(0,0,0,0) 52%, rgba(2,4,16,.50) 100%) !important;
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.70),
+      inset 0 0 0 1px rgba(255,255,255,.09),
+      inset 0 -2.5px 0 var(--ac),
+      inset 0 0 0 3px rgba(0,0,0,.08),
+      inset 0 24px 30px -22px rgba(255,255,255,.30),
+      inset 0 -30px 36px -20px rgba(0,0,10,.48),
+      inset 16px 0 22px -18px rgba(255,255,255,.14),
+      inset -16px 0 22px -18px rgba(0,0,12,.30);
+  }
+  .mode-tile.player{--ac:#8aa4cc;}
+  .mode-tile.live{--ac:#7f9ad0;}
+  .mode-tile.battle-big{--ac:#3fb54f;}
+  .mode-tile.raid-big{--ac:#d94a4a;}
+  .mode-tile.rewards{--ac:#e58a2a;}
+  .mode-tile.defi{--ac:#8466e8;}
+  .mode-tile.daily{--ac:#e3c22e;}
+  .mode-tile.trophy{--ac:#3fa0e8;}
+  .mode-tile.tasks{--ac:#ee6aa0;}
+  .mode-tile.forge{--ac:#b9623a;}
+  .mode-tile.boost{--ac:#b24fd6;}
+  .mode-tile.shop{--ac:#1fb58a;}
+  .mode-tile.deck{--ac:#17a9a0;}
+  .mode-tile.collection{--ac:#98c13a;}
+  .mode-tile.cardmgmt{--ac:#5560e0;}
+  .mode-tile.labo{--ac:#2f5fd0;}
+  .mode-tile.modules{--ac:#cf4fc9;}
+  .mode-tile.omega{--ac:#7fd0e8;}
+  .mode-tile.vestige{--ac:#8a9a6a;}
+  .mode-tile.squad{--ac:#6a7ff0;}
+  .mode-tile.ph-friends{--ac:#28c4de;}
+  .mode-tile.ph-board{--ac:#d0a148;}
+  .mode-tile.soon{--ac:#7384a8;}
 </style>
 </head>
 <body>
@@ -8660,7 +8755,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.33</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.34</b></div>
   </div>
 
     </div>
@@ -9480,9 +9575,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.33';
+var BUILD_VERSION = 'V0.05.34';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.34', items:[
+    'Toutes les cases des menus passent en verre en relief (arête lumineuse, reflet, ombre portée).',
+    'Couleurs des cases plus sobres : verre fumé avec une touche de couleur pour reconnaître chaque case.',
+  ] },
   { v:'V0.05.33', items:[
     'PVP AMIS : l’en-tête (bouton MENU et titre) est retiré ; on revient en arrière avec RETOUR ou en balayant.',
   ] },
