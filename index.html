@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.29</title>
+<title>Projet MECA V0.05.30</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5076,8 +5076,45 @@
   #spBoxes .sp-bill.pinned .task-box.bonus .tb-crys svg{width:20px; height:20px;}
   @keyframes pinPulse{50%{box-shadow:0 5px 0 #6b4000, 0 0 30px rgba(255,214,92,1);}}
 
+
+  /* =================== JOUEUR : sous-menu à 3 cases (V0.05.30) ===================
+     Clic sur la case JOUEUR du MENU -> #playerHubView : CLASSEMENT (haute, à gauche, fermée), JOUEUR (en haut à droite,
+     même contenu que la case du MENU, ouvre la fiche) et PVP AMIS (sous JOUEUR, fermée). Même vocabulaire visuel que les
+     autres hubs (découpes à angles coupés, cases fermées grises avec cadenas) ; en-tête et retour comme RÉCOMPENSES. */
+  #playerHubView .wave{display:none;}
+  #playerHubView .inf-tag{display:none;}
+  #playerHubView .ph-grid{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:168px 168px; gap:9px;}
+  #playerHubView .ph-grid .mode-tile{height:auto; margin:0;}
+  #playerHubView .ph-left{grid-column:1; grid-row:1 / 3; --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px);}
+  #playerHubView .ph-tr{grid-column:2; --clip:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px));}
+  #tilePlayerInfo{grid-row:1;}
+  #tileFriends{grid-row:2;}
+  #tilePlayerInfo .mt-inner{padding-left:14px;}
+  /* la case est plus étroite que dans le MENU : le niveau passe AU-DESSUS du nom (au lieu de côte à côte) pour que le nom garde toute la largeur */
+  #tilePlayerInfo .mt-title{
+    position:absolute; left:14px; bottom:14px; right:14px;
+    margin:0; align-self:auto; text-align:left;
+    font-size:21px;
+  }
+  #tilePlayerInfo .mt-lvl{
+    display:block; position:absolute; left:14px; bottom:42px;
+    margin:0; align-self:auto; text-align:left;
+    font-size:13px; letter-spacing:1.5px; padding:0;
+  }
+  /* cases fermées : même gris que la grande case BATAILLE fermée d'origine */
+  #playerHubView .ph-closed{background:linear-gradient(160deg, #a3a7b0, #4c505a 45%, #14161c); cursor:default;}
+  #playerHubView .ph-closed .mt-inner{
+    align-items:flex-start; justify-content:flex-end; gap:3px; padding:14px 16px;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
+      linear-gradient(135deg, rgba(40,44,54,.62) 0%, rgba(40,44,54,.34) 40%, rgba(40,44,54,.12) 70%, transparent 100%);
+  }
+  #playerHubView .ph-closed .mt-lock{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); margin:0; width:32px; height:32px; color:rgba(255,255,255,.4);}
+  #playerHubView .ph-closed .mt-title{margin:0; align-self:flex-start; text-align:left; font-size:15px; letter-spacing:2px; color:rgba(255,255,255,.78);}
+  #playerHubView .ph-closed .mt-soon{margin:0; align-self:flex-start; text-align:left; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,.45);}
+
   /* Plus de boutons « retour » : on balaie l'écran de gauche à droite */
-  #squadBackBtn, #backToHubBtn, #playerBackBtn, #collBackBtn, #rwBackBtn, #dailyBackBtn, #trophyBackBtn, #tasksBackBtn, #defiBackBtn, #defiPathBackBtn{visibility:hidden; pointer-events:none;}
+  #squadBackBtn, #backToHubBtn, #playerBackBtn, #playerHubBackBtn, #collBackBtn, #rwBackBtn, #dailyBackBtn, #trophyBackBtn, #tasksBackBtn, #defiBackBtn, #defiPathBackBtn{visibility:hidden; pointer-events:none;}
   .sub-view.back-in{animation:backIn .35s ease both !important;}
   @keyframes backIn{from{opacity:0; transform:translateX(-18px);} to{opacity:1; transform:none;}}
   .swipe-edge{display:none; position:fixed; left:0; top:50%; width:5px; height:64px; margin-top:-32px; border-radius:0 6px 6px 0; z-index:50; pointer-events:none;
@@ -8298,6 +8335,39 @@
     </div>
   </div>
 
+  <!-- JOUEUR (V0.05.30) : sous-menu ouvert par la case JOUEUR du MENU. CLASSEMENT et PVP AMIS sont fermés pour le moment. -->
+  <div id="playerHubView" class="sub-view">
+    <header class="inf-header">
+      <button class="back-btn" id="playerHubBackBtn">‹ MENU</button>
+      <div class="wave">JOUEUR</div>
+      <div class="inf-tag" style="visibility:hidden;">·</div>
+    </header>
+    <div class="mode-grid ph-grid">
+      <div class="mode-tile soon ph-left ph-closed" id="tileRanking">
+        <div class="mt-inner">
+          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <div class="mt-title">CLASSEMENT</div>
+          <div class="mt-soon">PROCHAINEMENT</div>
+        </div>
+      </div>
+      <div class="mode-tile player ph-tr" id="tilePlayerInfo">
+        <div class="mt-inner">
+          <span class="notif-dot tile-dot" id="dotPlayerInfo"></span>
+          <div class="mt-avatar"><i class="ico-gearbadge"></i></div>
+          <div class="mt-title mt-ptitle" id="tilePlayerInfoTitle">JOUEUR</div>
+          <div class="mt-lvl" id="tilePlayerInfoLvl">NIV. 1</div>
+        </div>
+      </div>
+      <div class="mode-tile soon ph-tr ph-closed" id="tileFriends">
+        <div class="mt-inner">
+          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <div class="mt-title">PVP AMIS</div>
+          <div class="mt-soon">PROCHAINEMENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="rewardsView" class="sub-view">
     <header class="inf-header">
       <button class="back-btn" id="rwBackBtn">‹ MENU</button>
@@ -8443,7 +8513,7 @@
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.29</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.30</b></div>
   </div>
 
     </div>
@@ -9263,9 +9333,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.29';
+var BUILD_VERSION = 'V0.05.30';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.30', items:[
+    'Menu : la case JOUEUR ouvre maintenant un sous-menu en cases : ta fiche joueur (comme avant), plus CLASSEMENT et PVP AMIS (fermés pour le moment, bientôt disponibles).',
+  ] },
   { v:'V0.05.29', items:[
     'Bataille : nouveaux sons de destruction de carte (2 des 3 sons sont remplacés, le tirage au hasard parmi les 3 est conservé).',
   ] },
@@ -12128,6 +12201,7 @@ function renderNotifs(){
   setDot('dotFab', notif.fab);
   setDot('dotFabTirage', notif.fab);   // même signal, sur la case du hub FABRIQUE (depuis V0.01.69, l'onglet s'ouvre d'abord sur ce hub)
   setDot('dotPlayer', notif.player);
+  setDot('dotPlayerInfo', notif.player);
   
   if(typeof renderRewardDots === 'function') renderRewardDots();
   const codexNotif = CHAR_DEFS.some(d => isOwned(d) && cardHasNotif(d));
@@ -16285,7 +16359,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -17717,7 +17791,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'playerView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -28991,6 +29065,13 @@ function renderPlayerTile(){
   const maxed = player.level >= LEVEL_MAX;
   document.getElementById('tilePlayerXp').style.width = (maxed ? 100 : player.xp / need * 100) + '%';
   document.getElementById('tilePlayerXpTxt').textContent = maxed ? 'NIVEAU MAX' : player.xp + ' / ' + need + ' XP';
+  // même contenu sur la case JOUEUR du sous-menu (V0.05.30)
+  const lvl2 = document.getElementById('tilePlayerInfoLvl'), t2 = document.getElementById('tilePlayerInfoTitle');
+  if(lvl2 && t2){
+    lvl2.textContent = 'NIV. ' + player.level;
+    t2.textContent = player.name || 'JOUEUR';
+    if(t2.clientWidth) fitTileTitle(t2, 21, 9);
+  }
 }
 function renderPlayerSheet(){
   const need = xpToNext(player.level);
@@ -29169,15 +29250,22 @@ function enterPlayerView(){
   econTrack('sheet_visit');
   if(notif.player){ notif.player = false; renderNotifs(); saveSoon(); }
   document.getElementById('modeHub').classList.remove('active');
+  document.getElementById('playerHubView').classList.remove('active');
   document.getElementById('playerView').classList.add('active');
+  document.getElementById('resBar').style.display = '';
   renderPlayerSheet();
   scrollViewTop();
 }
-document.getElementById('tilePlayer').onclick = enterPlayerView;
-document.getElementById('playerBackBtn').onclick = () => {
-  document.getElementById('playerView').classList.remove('active');
-  document.getElementById('modeHub').classList.add('active');
-};
+// V0.05.30 : la case JOUEUR du MENU ouvre le sous-menu (#playerHubView) ; c'est la case JOUEUR de ce sous-menu qui ouvre la fiche.
+function enterPlayerHub(){
+  openSub('playerHubView');
+  const t = document.getElementById('tilePlayerInfoTitle');   // ajusté une fois visible (la largeur est 0 tant que le sous-menu est caché)
+  if(t && t.clientWidth) fitTileTitle(t, 21, 9);
+}
+document.getElementById('tilePlayer').onclick = enterPlayerHub;
+document.getElementById('tilePlayerInfo').onclick = enterPlayerView;
+document.getElementById('playerHubBackBtn').onclick = showHub;
+document.getElementById('playerBackBtn').onclick = () => { enterPlayerHub(); };
 renderPlayerTile();
 
 // =========================================================
@@ -29843,7 +29931,7 @@ renderResources();
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
+const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'playerHub', playerHubView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
@@ -29854,8 +29942,9 @@ function goBack(id){
   // DÉFI (V0.03.47) : la piste des paliers (defiPathView) revient à la grille des cartes (defiView),
   // pas directement au hub -- même principe de nidification que rewards/tasksView ci-dessus.
   else if(BACK_OF[id] === 'defi') renderDefi(), openSub('defiView');
+  else if(BACK_OF[id] === 'playerHub') enterPlayerHub();
   else { if(id === 'collectionView') saveNow(); showHub(); }
-  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'defi' ? document.getElementById('defiView') : document.getElementById('modeHub');
+  const to = BACK_OF[id] === 'rewards' ? document.getElementById('rewardsView') : BACK_OF[id] === 'defi' ? document.getElementById('defiView') : BACK_OF[id] === 'playerHub' ? document.getElementById('playerHubView') : document.getElementById('modeHub');
   to.classList.remove('back-in'); void to.offsetWidth; to.classList.add('back-in');
   setTimeout(() => to.classList.remove('back-in'), 400);
 }
@@ -29979,7 +30068,7 @@ const HELP_CONTENT = {
   shopView: { title:'BOUTIQUE', text:'Achète directement des cristaux, des matériaux ou des boosters contre de l’or (les boosters aussi contre des cristaux), sans attendre de les gagner en jouant.' },
   // ---------- MENU ----------
   modeHub: { title:'MENU', text:'Le menu principal :<ul>' +
-    '<li><b>JOUEUR</b> — ta fiche de commandant.</li>' +
+    '<li><b>JOUEUR</b> — ta fiche de commandant, le classement et tes amis.</li>' +
     '<li><b>ENTRAÎNEMENT IA</b> — affronte un adversaire contrôlé par l’IA avec l’un de tes decks.</li>' +
     '<li><b>BATAILLE</b> — bientôt disponible.</li>' +
     '<li><b>RÉCOMPENSES</b> — récompense quotidienne, trophées et tâches à réclamer.</li>' +
@@ -29996,6 +30085,10 @@ const HELP_CONTENT = {
   tasksView: { title:'TÂCHES', text:'Des objectifs qui se renouvellent régulièrement : les accomplir fait progresser ta collection plus vite.<br><br><b>RÉCUPÉRER TOUT</b> apparaît dès que 2 tâches ou plus sont prêtes.' },
   defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de 10 paliers à vaincre un par un, en combat Bataille : plus tu avances, plus le deck adverse est redoutable et plus les récompenses sont généreuses.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> : 3 paliers de plus, encore plus difficiles.' },
   defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat Bataille contre un deck bâti autour de cette carte, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour voir le deck adverse, choisir ton deck, puis lance le combat.' },
+  playerHubView: { title:'JOUEUR', text:'Tout ce qui te concerne :<ul>' +
+    '<li><b>JOUEUR</b> — ta fiche de commandant : nom, niveau et statistiques.</li>' +
+    '<li><b>CLASSEMENT</b> — bientôt disponible.</li>' +
+    '<li><b>PVP AMIS</b> — bientôt disponible.</li></ul>' },
   playerView: { title:'FICHE JOUEUR', text:'Ta carte de visite : nom, niveau et statistiques cumulées depuis le début de la partie.' },
   // ---------- CARTE ----------
   codexHubView: { title:'CARTE', text:'Tout ce qui concerne ta collection :<ul>' +
