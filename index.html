@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.50</title>
+<title>Projet MECA V0.05.52</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7473,9 +7473,11 @@
     box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(139,92,246,.55), 0 10px 24px rgba(0,0,0,.5);
   }
   #batPanel .team-label{margin:0;}
-  /* Encadré WINSTREAK : même verre biseauté que CHOIX DU DECK, teinte or ; 5 points (vides -> jaunes à chaque victoire d'affilée) */
+  /* Encadré WINSTREAK (V0.05.51) : même verre biseauté que CHOIX DU DECK, teinte or.
+     En-tête (titre + compteur), cinq crans en parallélogramme (numéro, récompense en or dessous), pied « prochaine victoire ». */
   #batStreak{
-    --cut:14px; border-radius:0; padding:12px 12px 14px; gap:12px; margin-bottom:12px;
+    --cut:14px; --par:polygon(9px 0,100% 0,calc(100% - 9px) 100%,0 100%);
+    border-radius:0; padding:12px 14px 12px; gap:11px; margin-bottom:12px;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
     border:1px solid rgba(255,196,64,.42);
     background:
@@ -7485,43 +7487,48 @@
     backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 0 24px -8px rgba(255,184,48,.45), 0 10px 24px rgba(0,0,0,.5);
   }
-  #batStreak .team-label{margin:0;}
-  .bat-dots{position:relative; display:flex; justify-content:center; gap:16px; width:fit-content; margin:0 auto; padding:2px 0; --k:0;}
-  /* rail : fond sombre biseauté, remplissage or jusqu'au dernier point allumé */
-  .bat-dots::before, .bat-dots::after{content:''; position:absolute; left:22px; top:50%; height:4px; margin-top:-2px; z-index:0; border-radius:2px;}
-  .bat-dots::before{right:22px; background:linear-gradient(180deg,#050403,#1c160c); box-shadow:0 1px 0 rgba(255,220,140,.18), 0 -1px 0 rgba(0,0,0,.6) inset;}
-  .bat-dots::after{width:calc((100% - 44px) * var(--k)); background:linear-gradient(180deg,#fff0b0,#f0a820 55%,#a8650a); box-shadow:0 0 8px rgba(255,190,50,.8); transition:width .7s cubic-bezier(.3,.8,.3,1);}
-  /* chaque point : alvéole hexagonale à cadre métal doré, gemme taillée qui s'allume */
-  .bat-dots i{
-    --hx:polygon(25% 2%,75% 2%,100% 50%,75% 98%,25% 98%,0 50%);
-    position:relative; z-index:1; display:block; width:44px; height:48px; container-type:size;
-    filter:drop-shadow(0 3px 3px rgba(0,0,0,.75));
-    transition:filter .45s;
-  }
-  .bat-dots i::before{content:''; position:absolute; inset:0; clip-path:var(--hx);
-    background:linear-gradient(155deg,#f6e4ae 0%,#a88a45 22%,#4a3a1b 50%,#2a210f 68%,#c9aa5e 100%);}
-  .bat-dots i::after{content:''; position:absolute; inset:3.5px; clip-path:var(--hx);
-    background:radial-gradient(ellipse 70% 60% at 50% 70%, #1f1a12 0%, #0b0907 100%);
-    box-shadow:0 5px 8px rgba(0,0,0,.95) inset;}
-  .bat-dots i b{position:absolute; inset:3.5px; z-index:1; clip-path:var(--hx); opacity:0; transform:scale(.6); transition:opacity .4s, transform .5s cubic-bezier(.3,1.4,.4,1);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,.12) 38%, transparent 50%),
-      conic-gradient(from 0deg at 50% 54%, rgba(255,255,255,.34) 0 7%, transparent 7% 24%, rgba(110,50,0,.3) 24% 34%, transparent 34% 57%, rgba(255,255,255,.26) 57% 65%, transparent 65% 82%, rgba(110,50,0,.34) 82% 92%, transparent 92%),
-      radial-gradient(circle at 50% 42%, #ffe784 0%, #ffbe28 52%, #c97500 100%);}
-  .bat-dots i b::after{content:''; position:absolute; top:-20%; bottom:-20%; width:34%; left:-60%; transform:skewX(-22deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent); animation:batGemShine 4.2s ease-in-out infinite; animation-delay:var(--d,0s);}
-  .bat-dots i:nth-child(2){--d:.5s;} .bat-dots i:nth-child(3){--d:1s;} .bat-dots i:nth-child(4){--d:1.5s;} .bat-dots i:nth-child(5){--d:2s;}
-  /* montant d'or gagné à cette victoire, gravé dans la gemme (n'apparaît que sur les points allumés) */
-  .bat-dots i b{display:flex; align-items:center; justify-content:center;}
-  .bat-dots i b::before{content:attr(data-g); position:relative; z-index:1; padding-top:1px;
-    font-family:'Rajdhani','Segoe UI',system-ui,sans-serif; font-weight:700; font-style:normal; font-size:31cqw; letter-spacing:.2px; white-space:nowrap; line-height:1;
-    background:linear-gradient(180deg,#4a2000 0%,#7d3f00 48%,#a85f0a 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
-    filter:drop-shadow(0 -1px 0 rgba(48,18,0,.8)) drop-shadow(0 1.2px 0 rgba(255,246,196,.95)) drop-shadow(0 0 1.5px rgba(255,220,120,.5));}
-  .bat-dots i:nth-child(n+4) b::before{font-size:25cqw; letter-spacing:0;}
-  .bat-dots i.on{filter:drop-shadow(0 0 8px rgba(255,186,40,.9)) drop-shadow(0 3px 3px rgba(0,0,0,.6));}
-  .bat-dots i.on b{opacity:1; transform:none;}
-  .bat-dots i.pop{animation:batDotPop .85s cubic-bezier(.2,.9,.3,1.1);}
-  @keyframes batGemShine{0%,62%{left:-60%;}100%{left:130%;}}
-  @keyframes batDotPop{0%{transform:scale(.7); filter:brightness(2.4) drop-shadow(0 0 0 rgba(255,210,80,0));}40%{transform:scale(1.3); filter:brightness(1.7) drop-shadow(0 0 26px rgba(255,210,80,1));}100%{transform:scale(1); filter:brightness(1) drop-shadow(0 0 8px rgba(255,186,40,.9));}}
+  .bs-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:0 2px;}
+  .bs-title{display:flex; align-items:center; gap:8px; font-family:var(--font-title); font-size:11px; font-weight:900; letter-spacing:3px; color:#ffe9b0; text-shadow:0 0 10px rgba(255,184,48,.45);}
+  .bs-title svg{width:15px; height:15px; color:#ffbf36; filter:drop-shadow(0 0 5px rgba(255,160,20,.85));}
+  .bs-count{display:flex; align-items:baseline; gap:2px; font-family:var(--font-ui); font-weight:700; font-variant-numeric:tabular-nums;}
+  .bs-count b{font-size:23px; line-height:1; color:#fff3c8; text-shadow:0 0 10px rgba(255,190,50,.65);}
+  .bs-count i{font-style:normal; font-size:13px; color:rgba(255,214,120,.5);}
+  .bs-track{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; padding:1px 0 0;}
+  .bs-cell{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0;}
+  .bs-w{width:100%; transition:filter .45s;}
+  .bs-seg{position:relative; height:38px; clip-path:var(--par); background:linear-gradient(180deg,#5a4620,#241b0d); display:flex; align-items:center; justify-content:center;}
+  .bs-seg::before{content:''; position:absolute; inset:1.5px; clip-path:var(--par); background:linear-gradient(180deg,#0d0a06,#19130a); box-shadow:inset 0 4px 7px rgba(0,0,0,.85);}
+  .bs-seg::after{content:''; position:absolute; inset:1.5px; clip-path:var(--par); opacity:0; transform:scaleX(.35); transform-origin:0 50%; transition:opacity .35s, transform .55s cubic-bezier(.3,1.1,.4,1);
+    background:linear-gradient(180deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.1) 46%, transparent 50%), linear-gradient(180deg,#ffe98a 0%,#ffc531 52%,#d68a0b 100%);}
+  .bs-seg b{position:relative; z-index:2; font-family:var(--font-ui); font-weight:700; font-size:20px; line-height:1; color:rgba(255,222,150,.34); transition:color .35s; text-shadow:0 1px 0 rgba(0,0,0,.6);}
+  /* récompenses sous chaque cran : or puis XP, icônes du jeu, centrées sous la case */
+  .bs-r{display:flex; flex-direction:column; align-items:center; gap:4px; width:100%;}
+  .bs-r > span, .bs-rew > span{display:flex; align-items:center; justify-content:center; gap:4px; font-family:var(--font-ui); font-weight:700; line-height:1; font-variant-numeric:tabular-nums;}
+  .bs-r > span{font-size:13px; width:100%;}
+  .bs-r i{width:17px; height:17px; flex:none; filter:grayscale(.65) brightness(.7); opacity:.8; transition:filter .35s, opacity .35s;}
+  .bs-r .bs-g{color:rgba(255,214,120,.5);}
+  .bs-r .bs-x{color:rgba(190,228,255,.5);}
+  .bs-r b{font-weight:700; transition:color .35s;}
+  .bs-cell.on .bs-w{filter:drop-shadow(0 0 7px rgba(255,186,40,.7));}
+  .bs-cell.on .bs-seg{background:linear-gradient(180deg,#fff2b0,#c78a10);}
+  .bs-cell.on .bs-seg::after{opacity:1; transform:none;}
+  .bs-cell.on .bs-seg b{color:#4a2400; text-shadow:0 1px 0 rgba(255,246,196,.85);}
+  .bs-cell.on .bs-r i{filter:none; opacity:1;}
+  .bs-cell.on .bs-g{color:#ffe49a;}
+  .bs-cell.on .bs-x{color:#d8f1ff;}
+  .bs-cell.nx .bs-seg::before{animation:bsNext 2s ease-in-out infinite;}
+  .bs-cell.nx .bs-seg b{color:#ffd877;}
+  .bs-cell.nx .bs-r i{filter:grayscale(.2) brightness(.9); opacity:.95;}
+  .bs-cell.nx .bs-g{color:rgba(255,224,150,.8);}
+  .bs-cell.nx .bs-x{color:rgba(205,236,255,.8);}
+  .bs-cell.pop .bs-w{animation:bsPop .85s cubic-bezier(.2,.9,.3,1.1);}
+  .bs-foot{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 2px 0; border-top:1px solid transparent; border-image:linear-gradient(90deg, transparent, rgba(255,205,100,.38) 20%, rgba(255,205,100,.38) 80%, transparent) 1;}
+  .bs-next{font-family:var(--font-ui); font-weight:600; font-size:12px; letter-spacing:1.8px; color:rgba(255,226,165,.62);}
+  .bs-rew{display:flex; align-items:center; gap:14px; font-size:16px;}
+  .bs-rew i{width:21px; height:21px; flex:none;}
+  .bs-rew .bs-g{color:#ffe49a;} .bs-rew .bs-x{color:#d8f1ff;}
+  @keyframes bsNext{0%,100%{box-shadow:inset 0 4px 7px rgba(0,0,0,.85), inset 0 0 0 rgba(255,190,50,0);}50%{box-shadow:inset 0 4px 7px rgba(0,0,0,.85), inset 0 0 13px rgba(255,190,50,.5);}}
+  @keyframes bsPop{0%{transform:scale(.7); filter:brightness(2.3) drop-shadow(0 0 0 rgba(255,210,80,0));}40%{transform:scale(1.18); filter:brightness(1.6) drop-shadow(0 0 22px rgba(255,210,80,1));}100%{transform:scale(1); filter:brightness(1) drop-shadow(0 0 7px rgba(255,186,40,.7));}}
   #batailleList{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 8px; padding:4px 0 2px;}
   #batailleList .deck-tile{transition:transform .15s;}
   #batailleList .deck-tile:active{transform:scale(.97);}
@@ -8736,8 +8743,21 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
 
   <div id="batailleView" class="sub-view">
     <div class="res-panel" id="batStreak">
-      <div class="team-label player">WINSTREAK</div>
-      <div class="bat-dots" id="batDots" aria-label="Série de victoires"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+      <div class="bs-head">
+        <div class="bs-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.6 2.2c.5 3.2 3.9 5 4.7 8.4.9 3.8-1.4 7.6-5.3 8.4-3.5.7-6.5-1.7-6.7-5.2-.1-2 .8-3.6 2-4.8.1 1.7.8 2.8 1.9 3.2-.5-3.3.2-7.2 3.4-10z" fill="currentColor"/></svg><span>WINSTREAK</span></div>
+        <div class="bs-count" aria-live="off"><b id="bsN">0</b><i>/5</i></div>
+      </div>
+      <div class="bs-track" id="batDots" role="img" aria-label="Série de victoires">
+        <div class="bs-cell"><div class="bs-w"><div class="bs-seg"><b>1</b></div></div><div class="bs-r"><span class="bs-g"><i class="ico-goldbar"></i><b></b></span><span class="bs-x"><i class="ico-xpchip"></i><b></b></span></div></div>
+        <div class="bs-cell"><div class="bs-w"><div class="bs-seg"><b>2</b></div></div><div class="bs-r"><span class="bs-g"><i class="ico-goldbar"></i><b></b></span><span class="bs-x"><i class="ico-xpchip"></i><b></b></span></div></div>
+        <div class="bs-cell"><div class="bs-w"><div class="bs-seg"><b>3</b></div></div><div class="bs-r"><span class="bs-g"><i class="ico-goldbar"></i><b></b></span><span class="bs-x"><i class="ico-xpchip"></i><b></b></span></div></div>
+        <div class="bs-cell"><div class="bs-w"><div class="bs-seg"><b>4</b></div></div><div class="bs-r"><span class="bs-g"><i class="ico-goldbar"></i><b></b></span><span class="bs-x"><i class="ico-xpchip"></i><b></b></span></div></div>
+        <div class="bs-cell"><div class="bs-w"><div class="bs-seg"><b>5</b></div></div><div class="bs-r"><span class="bs-g"><i class="ico-goldbar"></i><b></b></span><span class="bs-x"><i class="ico-xpchip"></i><b></b></span></div></div>
+      </div>
+      <div class="bs-foot">
+        <span class="bs-next" id="bsNext">PROCHAINE VICTOIRE</span>
+        <span class="bs-rew"><span class="bs-g"><i class="ico-goldbar"></i><b id="bsG">+25</b></span><span class="bs-x"><i class="ico-xpchip"></i><b id="bsX">+15</b></span></span>
+      </div>
     </div>
     <div class="res-panel" id="batPanel">
       <div class="team-label player">CHOIX DU DECK</div>
@@ -8957,7 +8977,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.50</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.52</b></div>
   </div>
 
     </div>
@@ -9376,7 +9396,7 @@ function econMirror(s, op){
   player.boosters = { res:(s.boosters && s.boosters.res) || 0, cards:(s.boosters && s.boosters.cards) || 0, modules:0 };
   player.stats = Object.assign(defaultStats(), J(s.stats));
   player.totals = J(s.totals); player.troph = J(s.troph); player.daily = J(s.daily); player.login = J(s.login);
-  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.backs = J(s.backs); player.defi = J(s.defi || {});
+  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.backs = J(s.backs); player.defi = J(s.defi || {});
   CHAR_DEFS.forEach(d => {
     const had = warm ? copiesOf(d) : -1;
     const st = emptyStack(); st[rarityOf(d)] = (s.cards && s.cards[d.name]) || 0; cardCopies[d.name] = st;
@@ -9808,9 +9828,16 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.50';
+var BUILD_VERSION = 'V0.05.52';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.52', items:[
+    'WINSTREAK : les vraies icônes d\'or et d\'XP du jeu, et sous chaque cran la récompense en or et en XP, bien alignées.',
+  ] },
+  { v:'V0.05.51', items:[
+    'BATAILLE : la WINSTREAK arrive en combat contre un autre joueur. Chaque victoire d\'affilée allume un cran (5 au maximum) et rapporte de plus en plus d\'or et d\'XP ; une défaite, un abandon ou une déconnexion remet la série à zéro. Cette série est séparée de celle de l\'ENTRAÎNEMENT IA. Une victoire n\'est payée que si le chef adverse est tombé ou si la partie a atteint le 3e tour ; les matchs entre amis ne comptent pas.',
+    'Nouvel encadré WINSTREAK : cinq crans avec leur numéro et la récompense en or sous chacun, compteur de série, et rappel de ce que rapportera la prochaine victoire.',
+  ] },
   { v:'V0.05.50', items:[
     'Récompenses journalières : la scène ne se fige plus dès que tu lâches l\'écran. Elle reste fluide et animée (selon ton réglage d\'images par seconde) ; le mode éco ne s\'active qu\'après 30 s sans toucher, puis la scène repart dès que tu touches.',
   ] },
@@ -12843,7 +12870,8 @@ function normalizePlayerExtras(){
   ['kills', 'missions', 'collects', 'mono'].forEach(k => { delete player.stats[k]; });   // compteurs des anciennes missions
   player.troph = { r: Object.assign({}, (player.troph && player.troph.r) || {}), c: Object.assign({}, (player.troph && player.troph.c) || {}) };
   player.daily = Object.assign({ day:0, last:'', total:0, cycle:0 }, player.daily || {});
-  player.winStreak = Math.max(0, Math.min(5, Math.floor(player.winStreak || 0)));   // série de victoires BATAILLE
+  player.winStreak = Math.max(0, Math.min(5, Math.floor(player.winStreak || 0)));   // série de victoires ENTRAÎNEMENT IA
+  player.pvpStreak = Math.max(0, Math.min(5, Math.floor(player.pvpStreak || 0)));   // V0.05.51 : série de victoires BATAILLE (PvP)
   // Boosters (V0.02.84) : inventaire par type -- Object.assign comble les champs manquants sur une
   // sauvegarde antérieure à cette version (0 chacun depuis V0.02.94, cf player.boosters plus haut --
   // une sauvegarde qui a DÉJÀ un champ boosters garde son propre compte, rien n'est réinitialisé ici :
@@ -20287,22 +20315,29 @@ function openSub(id){
 document.getElementById('tileRewards').onclick = () => { checkTrophies(true); updateRewardTiles(); openSub('rewardsView'); };
 document.getElementById('rwBackBtn').onclick = showHub;
 // ---------- BATAILLE (V0.04.18) : choix du deck avant le combat ----------
+var PVP_DIRTY = false;   // V0.05.51 : un match PvP vient de se terminer sans que l'état économique ait été relu (abandon, réseau) : relu à l'ouverture de BATAILLE
 var batSelected = null, batMode = 'ai';   // batMode : 'ai' (ENTRAÎNEMENT IA) ou 'pvp' (BATAILLE)
 // WINSTREAK : chaque victoire d'affilée allume un point (5 max) ; une défaite (ou un combat quitté) remet à 0.
 // Récompense : 25 or + 15 XP à la 1re victoire, puis +25 or / +15 XP de plus à chaque victoire suivante (50, 75, 100, 125 or ; la série pleine reste à 125).
-const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25;
-var batStreakShown = -1;
-// V0.05.00 : série de victoires et gains = serveur uniquement ; le combat contre l'IA ne rapporte rien pour l'instant
+const BAT_STREAK_MAX = 5, BAT_WIN_GOLD = 25, BAT_WIN_XP = 15;
+var batStreakShown = { ai:-1, pvp:-1 };
+// V0.05.00 : série de victoires et gains = serveur uniquement. V0.05.51 : deux séries séparées -- ENTRAÎNEMENT IA (player.winStreak) et BATAILLE (player.pvpStreak)
 function batRenderStreak(){
-  const dots = document.querySelectorAll('#batDots i'), n = player.winStreak || 0;
-  const box = document.getElementById('batDots'); if(box) box.style.setProperty('--k', Math.max(0, n - 1) / (BAT_STREAK_MAX - 1));
-  dots.forEach((d, i) => {
-    d.classList.toggle('on', i < n);
-    if(d.firstChild) d.firstChild.dataset.g = '+' + BAT_WIN_GOLD * (i + 1);
-    d.classList.remove('pop');
-    if(batStreakShown >= 0 && n > batStreakShown && i === n - 1){ void d.offsetWidth; d.classList.add('pop'); }
+  const pv = batMode === 'pvp', mk = pv ? 'pvp' : 'ai';
+  const n = Math.max(0, Math.min(BAT_STREAK_MAX, (pv ? player.pvpStreak : player.winStreak) || 0));
+  document.querySelectorAll('#batDots .bs-cell').forEach((c, i) => {
+    c.classList.toggle('on', i < n);
+    c.classList.toggle('nx', n < BAT_STREAK_MAX && i === n);
+    const g = c.querySelector('.bs-g b'), x = c.querySelector('.bs-x b'); if(g) g.textContent = '+' + BAT_WIN_GOLD * (i + 1); if(x) x.textContent = '+' + BAT_WIN_XP * (i + 1);
+    c.classList.remove('pop');
+    if(batStreakShown[mk] >= 0 && n > batStreakShown[mk] && i === n - 1){ void c.offsetWidth; c.classList.add('pop'); }
   });
-  batStreakShown = n;
+  batStreakShown[mk] = n;
+  const k = Math.min(BAT_STREAK_MAX, n + 1), q = id => document.getElementById(id);
+  if(q('bsN')) q('bsN').textContent = n;
+  if(q('bsNext')) q('bsNext').textContent = n >= BAT_STREAK_MAX ? 'SÉRIE MAXIMALE' : (n === 0 ? 'PREMIÈRE VICTOIRE' : 'PROCHAINE VICTOIRE');
+  if(q('bsG')) q('bsG').textContent = '+' + BAT_WIN_GOLD * k;
+  if(q('bsX')) q('bsX').textContent = '+' + BAT_WIN_XP * k;
 }
 // Le bouton est dans <body> (pas dans la vue) : un ancêtre transformé de la vue casserait son position:fixed.
 (function(){
@@ -20324,13 +20359,13 @@ function renderBataille(){
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
   batRenderStreak();
   const pv = batMode === 'pvp', st = document.getElementById('batStreak'), lb = document.querySelector('#batPanel .team-label'), bt = document.getElementById('batLaunchBtn');
-  if(st) st.style.display = pv ? 'none' : '';
+  if(st) st.style.display = '';   // V0.05.51 : la WINSTREAK existe aussi en BATAILLE (série PvP)
   if(lb) lb.textContent = pv ? 'CHOIX DU DECK · BATAILLE' : 'CHOIX DU DECK';
   if(bt) bt.textContent = pv ? 'RECHERCHER UN ADVERSAIRE' : 'LANCER LE COMBAT';
   batSyncLaunch();
 }
 document.getElementById('tileBattle').onclick = () => { batSelected = null; batMode = 'ai'; renderBataille(); openSub('batailleView'); };
-document.getElementById('tileRaid').onclick = () => { batSelected = null; batMode = 'pvp'; renderBataille(); openSub('batailleView'); };   // BATAILLE = combat contre un autre joueur
+document.getElementById('tileRaid').onclick = () => { batSelected = null; batMode = 'pvp'; if(PVP_DIRTY){ PVP_DIRTY = false; econSyncSoon(0); } renderBataille(); openSub('batailleView'); };   // BATAILLE = combat contre un autre joueur
 document.getElementById('batLaunchBtn').onclick = () => {
   const d = decks.find(x => x.id === batSelected); if(!d) return;
   if(batMode === 'pvp') econUi(() => pvpQueueOpen(d));
@@ -20856,21 +20891,41 @@ const PVP_WHY = {
   disconnect:{ win:'ADVERSAIRE DÉCONNECTÉ', lose:'TU AS ÉTÉ DÉCONNECTÉ' },
   idle:{ win:'ADVERSAIRE INACTIF', lose:'INACTIVITÉ : DEUX TOURS SANS ACTION' }
 };
+// V0.05.51 : résultat économique du match (série de victoires PvP, or, XP) : le serveur l'a déjà versé à la fin du match, on le relit (idempotent)
+async function pvpFetchReward(mid){
+  for(let i = 0; i < 3; i++){
+    try{
+      const r = await pvpSend('match_reward', { match_id:mid }, { timeout:8 });
+      if(r.status === 200 && r.body && r.body.ok){
+        if(r.body.skipped) return null;
+        if(r.body.state) econAdopt(r.body, { render:'none', op:'pvp_result' });
+        return r.body;
+      }
+      if(r.status === 404 || r.status === 409 && r.body && r.body.error === 'not_finished') break;
+    }catch(_){}
+    await new Promise(res => setTimeout(res, 900 * (i + 1)));
+  }
+  PVP_DIRTY = true; econSyncSoon(1500);
+  return null;
+}
 async function pvpFinish(winner, why){
   const P = PVPC; if(!BTL || BTL.over) return;
-  const B0 = BTL;
+  const B0 = BTL, rewP = (P && P.mid) ? pvpFetchReward(P.mid) : Promise.resolve(null);
   BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
   if(P){ P.over = true; pvpStop(); }
   const won = winner === 'p', loser = btlOther(winner || 'o');
   btlArClear();
   try{ await btlLeaderDeath(BTL.S[loser].leader); }catch(_){}
   await btlSleep(450);
+  const rr = await Promise.race([rewP, new Promise(res => setTimeout(() => res(null), 5000))]);   // V0.05.51
+  if(rr) econRenderAll('full');
   const w = why === 'leader' ? '' : (PVP_WHY[why] || PVP_WHY.leader)[won ? 'win' : 'lose'];   // chef détruit : même fenêtre que l'Entraînement IA (VICTOIRE / DÉFAITE sur l'artwork) ; autres fins : le motif est ajouté en titre
   const rm = document.getElementById('rewardModal');
   const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); if(BTL === B0) btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
   const art = B0.S.p.leader.def;
-  showRewardModal(w, [], { resultType:won ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
+  const title = w || (won && rr && rr.paid && rr.n > 1 ? 'SÉRIE DE ' + rr.n + ' VICTOIRES' : '');
+  showRewardModal(title, rr && rr.items ? econItems(rr.items) : [], { resultType:won ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
 }
 // le moteur local annonce un chef détruit : on ne conclut que si le serveur l'a conclu dans l'événement en cours de rejeu
 function pvpLocalEnd(winner){
@@ -20884,7 +20939,7 @@ function pvpLeave(){
   const P = PVPC; if(!P) return;
   const mid = P.mid, over = P.over;
   pvpStop(); PVPC = null;
-  if(!over) pvpSend('match_resign', { match_id:mid });
+  if(!over){ pvpSend('match_resign', { match_id:mid }); PVP_DIRTY = true; }   // V0.05.51 : l'abandon remet la série à zéro côté serveur ; relu à la prochaine ouverture de BATAILLE
 }
 
 // ================= BATAILLE : LE COMBAT (V0.04.20) =================
