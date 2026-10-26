@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.41</title>
+<title>Projet MECA V0.05.43</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8104,6 +8104,7 @@
   .lg-art-img .lg-art-fg{ flex:none; max-width:none; max-height:none; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
   /* V0.05.41 : l'artwork passe SOUS le cadre. Avant, il était découpé par un tracé de 41 points posé entièrement à l'intérieur du hublot (anneau transparent d'environ 1,7 px visible entre l'artwork et le bord rond). Maintenant : pas de découpe, la boîte dépasse un peu du hublot (cf --ax/--ay/--aw/--ah) et le cadre, redessiné par-dessus (.lg-frame-glass, limité à la zone de l'artwork pour ne pas doubler le reste), cache le débord ; le cadre est opaque autour du hublot (mesuré). */
   .lg-layer:not(.f-tech) .lg-art-img{ z-index:-1; clip-path:none !important; }
+  .lg-layer:not(.f-tech) .lg-art-img .lg-art-box{ overflow:hidden; }   /* V0.05.42 : artwork zoomé / décalé (WIN_BIG avec x) rogné à sa boîte, sinon il débordait du cadre */
   .lg-layer:not(.f-tech) .lg-frame-glass{ background:var(--lg-img) center / 100% 100% no-repeat;
     clip-path:inset(calc(var(--ay) - 2%) calc(100% - var(--ax) - var(--aw) - 2%) calc(100% - var(--ay) - var(--ah) - 2%) calc(var(--ax) - 2%)); }
   /* petites cartes de combat : même principe dans la fenêtre du cadre */
@@ -8836,7 +8837,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.41</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.43</b></div>
   </div>
 
     </div>
@@ -9687,9 +9688,15 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.41';
+var BUILD_VERSION = 'V0.05.43';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.43', items:[
+    'Batterie : l’écran BOOSTERS redessinait ses cubes 3D 60 à 120 fois par seconde sans jamais s’arrêter, ce qui chauffait le téléphone. Dans la rangée ils sont maintenant limités à 30 images par seconde, et ils se figent (dernière image conservée) après quelques secondes sans toucher l’écran, comme le reste du jeu. Ils repartent au toucher.',
+  ] },
+  { v:'V0.05.42', items:[
+    'Cartes : correction d’un bug de la V0.05.41 où l’illustration de Star-Hunter, Prawn et Arkhaul débordait du cadre.',
+  ] },
   { v:'V0.05.41', items:[
     'Cartes : l’illustration remplit maintenant tout le hublot rond du cadre, sans liseré vide entre l’artwork et le bord intérieur (toutes les raretés).',
   ] },
@@ -16055,7 +16062,8 @@ function drawScreen(t,hot,k){
 }
 
 /* ---------------------------------------------------------------- cartes : les vraies cases de l'écran de révélation volent du cube vers le pentagone */
-let cardOrigin={x:0,y:0}, deckReady=false, fxDirty=false, rv=null, running=false, rafId=0, lastT=0, slowN=0, padTick=0, lastO=null, padTf='';
+let cardOrigin={x:0,y:0}, deckReady=false, fxDirty=false, rv=null, running=false, rafId=0, lastT=0, slowN=0, padTick=0, lastO=null, padTf='', parked=false, parkObs=null;   // V0.05.43 : parked = cubes figés (mode éco)
+const ROW_MS=28;   // V0.05.43 : dans la rangée, une image au plus toutes les 28 ms (30 i/s sur un écran 60 ou 120 Hz)
 function cardPos(i,u){
   const ti=clamp((u-te[i])/FLY), e=eBack(clamp(ti)), g=tgt[i];
   return {x:lerp(cardOrigin.x,g.x,e),y:lerp(cardOrigin.y,g.y,e),ti};
@@ -16157,15 +16165,25 @@ function fpsWatch(dt){ // qualité adaptative : si trop lent pendant ~1 s, on al
   if(slowN>45){LQ=true;sizeCanvases();}
 }
 function viewActive(){ return !!(viewEl&&viewEl.classList.contains('active')); }
-function startLoop(){ if(running||!A.ready||A.broken) return; running=true;lastT=performance.now();rafId=requestAnimationFrame(loop); }
+function unparkObs(){ if(parkObs){ parkObs.forEach(o=>{try{o.disconnect();}catch(_){}}); parkObs=null; } }
+function startLoop(){ if(running||!A.ready||A.broken) return; parked=false;unparkObs(); running=true;lastT=performance.now();rafId=requestAnimationFrame(loop); }
+function wakePark(){ if(parked) startLoop(); }   // V0.05.43 : le moindre toucher / changement d'écran relance la boucle (elle se refige d'elle-même si le mode éco est toujours actif)
+function park(){   // V0.05.43 : mode éco : la dernière image reste affichée, plus aucun calcul ni dessin tant que rien ne bouge
+  if(parked) return; parked=true; stopLoop(false);
+  try{ const o1=new MutationObserver(wakePark), o2=new MutationObserver(wakePark); o1.observe(viewEl,{childList:true,subtree:true}); o2.observe(viewEl,{attributes:true,attributeFilter:['class']}); parkObs=[o1,o2]; }catch(_){}
+}
+['pointerdown','touchstart','wheel','keydown','resize','orientationchange'].forEach(ev=>addEventListener(ev,wakePark,{capture:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) wakePark(); });
 function stopLoop(hide){ running=false; if(rafId){cancelAnimationFrame(rafId);rafId=0;} if(hide&&layer) layer.style.display='none'; }
 function loop(now){
   rafId=0; if(!running) return;
   rafId=requestAnimationFrame(loop);
   try{
+    if(st.mode==='row'&&viewActive()&&now-lastT<ROW_MS) return;   // V0.05.43 : 30 i/s max dans la rangée
     const dt=Math.min(.05,(now-lastT)/1000);lastT=now;frameDt=dt;
     if(st.mode==='row'&&!viewActive()){ stopLoop(true); return; }
     step(dt);
+    if(st.mode==='row'&&typeof ecoIdle==='function'&&ecoIdle()) park();   // V0.05.43 : mode éco (6 s sans toucher) : cubes figés
   }catch(e){ fail(e); }
 }
 function rowItems(time,ex){   // cubes qui attendent dans la rangée (hors celui qui est actif)
@@ -16192,7 +16210,7 @@ function step(dt){
   const sm=st.mode;
   const vis=(sm==='row'||viewActive())?'visible':'hidden'; if(layer.style.visibility!==vis) layer.style.visibility=vis;
   if(time-lastScr>.14&&!LQ){lastScr=time;const hA=Math.max(st.hov,(sm==='open')?clamp(st.openT/1.4):0);KINDS.forEach(k=>drawScreen(time,(sm!=='row'&&k===st.kind)?hA:0,k));}
-  fpsWatch(dt);
+  fpsWatch(sm==='row'?dt-.0167:dt);   // V0.05.43 : dans la rangée on vise 30 i/s : seuil de lenteur recalé
   if(sm==='open'){
     if(!deckReady){ if(st.openT<U_CH){st.openT=Math.min(U_CH,st.openT+dt*st.slow);}else{st.hold+=dt;} }   // le serveur n'a pas encore répondu : le cube reste chargé, prêt à s'ouvrir
     else st.openT+=dt*st.slow;
