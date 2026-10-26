@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.52</title>
+<title>Projet MECA V0.05.53</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8977,7 +8977,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.52</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.53</b></div>
   </div>
 
     </div>
@@ -9828,9 +9828,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.52';
+var BUILD_VERSION = 'V0.05.53';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.53', items:[
+    'TIRAGE et LABO : l\'offre se renouvelle maintenant toutes les heures (au lieu de 30 minutes).',
+    'TIRAGE : les cartes Tech peuvent maintenant apparaître dans l\'offre (5 % par emplacement, comme dans les boosters de cartes).',
+  ] },
   { v:'V0.05.52', items:[
     'WINSTREAK : les vraies icônes d\'or et d\'XP du jeu, et sous chaque cran la récompense en or et en XP, bien alignées.',
   ] },
@@ -13615,7 +13619,8 @@ let fabriqueOfferRar = [null, null, null];
 function fabSlotRar(i){ const d = fabriqueOffer[i]; return d ? rarityOf(d) : null; }   // V0.04.49 : rareté unique
 let fabResetTimer = null;
 let fabResetAt = 0;
-const FAB_RESET_MS = 30 * 60 * 1000; // 30 minutes
+const FAB_RESET_MS = 60 * 60 * 1000; // V0.05.53 : 1 heure (TIRAGE ; lu par le serveur)
+const LAB_RESET_MS = 60 * 60 * 1000; // LABO : 1 heure aussi (V0.05.53)
 
 function shuffled(arr){
   const a = arr.slice();
@@ -13691,7 +13696,7 @@ function rollLabOffer(){
 }
 function scheduleLabReset(delayMs){
   if(labResetTimer) clearTimeout(labResetTimer);
-  const d = (typeof delayMs === 'number' && delayMs > 0) ? delayMs : FAB_RESET_MS;
+  const d = (typeof delayMs === 'number' && delayMs > 0) ? delayMs : LAB_RESET_MS;
   labResetAt = Date.now() + d;
   labResetTimer = setTimeout(() => {
     rollLabOffer();
