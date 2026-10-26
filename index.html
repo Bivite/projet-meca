@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.49</title>
+<title>Projet MECA V0.05.50</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8957,7 +8957,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.49</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.50</b></div>
   </div>
 
     </div>
@@ -9808,9 +9808,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.49';
+var BUILD_VERSION = 'V0.05.50';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.50', items:[
+    'Récompenses journalières : la scène ne se fige plus dès que tu lâches l\'écran. Elle reste fluide et animée (selon ton réglage d\'images par seconde) ; le mode éco ne s\'active qu\'après 30 s sans toucher, puis la scène repart dès que tu touches.',
+  ] },
   { v:'V0.05.49', items:[
     'Journalière : route et sol entièrement refaits. Route à deux voies avec trottoirs, bordures, lignes de rive, plots lumineux, virages arrondis, chevrons lumineux qui montrent le sens du parcours et véhicules qui circulent.',
     'Journalière : sol en dalles teintées avec joints néon, dalles lumineuses, ventilateurs, pistes, panneaux solaires, circuits imprimés ; socles sous les bâtiments, lampadaires le long de la route.',
@@ -11642,6 +11645,8 @@ var ECO = { idleMs: 6000, last: Date.now(), idle: false, paused: [] };
 function ecoOn(){ return !SETTINGS || SETTINGS.eco !== false; }
 function ecoIdle(){ return ecoOn() && ECO.idle; }
 function ecoInBattle(){ return document.body.classList.contains('btl-on'); }
+var ECO_DAILY_IDLE_MS = 30000;   // V0.05.50 : Journalière -- éco après 30 s sans toucher (6 s ailleurs)
+function ecoInDaily(){ const e = document.getElementById('dailyView'); return !!(e && e.classList.contains('active')); }
 var MUS_BASE = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/audio/';
 var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
   menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
@@ -11786,7 +11791,8 @@ window.addEventListener('scroll', () => { ECO.last = Date.now(); }, { capture:tr
 // Un halo qui pulse ou une icône qui tourne reste vivant, mais l'écran ne se redessine plus en continu.
 var ECO_FPS = 12;
 function ecoLowFps(){
-  if(ecoInBattle()) return;   // idem : pas de passage à 12 i/s pendant la bataille
+  if(ecoInBattle()) return;
+  if(ecoInDaily() && !ECO.idle) return;   // V0.05.50 : Journalière fluide jusqu'à l'éco (30 s)   // idem : pas de passage à 12 i/s pendant la bataille
   let list = [];
   try{ list = document.getAnimations(); }catch(_){ return; }
   for(const a of list){
@@ -11812,6 +11818,7 @@ function ecoLowFps(){
 function ecoHeartbeat1s(){
   if(!ecoOn()) return;
   if(ecoInBattle()){ ecoPruneLoops(); if(Date.now() - ECO.last > ECO_BTL_IDLE_MS){ ECO.idle = true; ecoPauseLoops(true); } return; }   // bataille : pas de 12 i/s, mais pause des boucles décoratives après 15 s sans toucher
+  if(ecoInDaily()){ if(Date.now() - ECO.last > ECO_DAILY_IDLE_MS){ ECO.idle = true; ecoPauseLoops(); } return; }   // V0.05.50
   ecoLowFps();
   if(Date.now() - ECO.last > ECO.idleMs){ ECO.idle = true; ecoPauseLoops(); }   // repasse aussi sur les animations apparues entre-temps
 }
@@ -18669,7 +18676,7 @@ function sceneStep(cam, P, now){
   cam.x += (p.x - cam.x) * .22; cam.y += (p.y - cam.y) * .22;          // arrondit les virages
   cam.moving = cam.drag || Math.abs(cam.v) > .05 || Math.abs(cam.s - cam.cur) > .3 || Math.abs(p.x - cam.x) > .3 || Math.abs(p.y - cam.y) > .3;
   // en mouvement : fluidité maximale ; à l'arrêt : seules les lumières bougent, 15 i/s suffisent
-  const fps = cam.moving ? ((SETTINGS && SETTINGS.fps) || 60) : (ecoOn() ? (cam.stillFps || 15) : 30);
+  const fps = (cam.moving || cam.fluidRest) ? ((SETTINGS && SETTINGS.fps) || 60) : (ecoOn() ? (cam.stillFps || 15) : 30);
   if(cam.lastDraw && now - cam.lastDraw < 1000 / fps - 2) return false;
   cam.lastDraw = now;
   return true;
@@ -19496,6 +19503,7 @@ function d3Start(){
   if(d3Raf) return;
   const loop = now => {
     if(!document.getElementById('dailyView').classList.contains('active')){ d3Raf = null; return; }
+    d3Cam.fluidRest = !ecoIdle();   // V0.05.50
     if(sceneStep(d3Cam, d3PathInfo(), now)){ if(d3Cam.moving) sceneFrameCheck(now, d3Fit); else SCENE_Q.lastT = 0; d3Draw(); }
     if(!d3Cam.moving && (ecoIdle() || document.hidden)){ d3Raf = null; return; }   // au repos : la scène s'arrête (reprend au toucher)
     d3Raf = requestAnimationFrame(loop);
