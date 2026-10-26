@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.40</title>
+<title>Projet MECA V0.05.41</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8093,15 +8093,19 @@
 .btl .unit.cbt.f-holo .cbt-st.s2{ left:33.25%; top:75.80%; width:15.17%; height:14.55%; }
 .btl .unit.cbt.f-holo .cbt-st.s3{ left:51.75%; top:75.80%; width:15.08%; height:14.55%; }
 .btl .unit.cbt.f-holo .cbt-st.s4{ left:71.00%; top:73.51%; width:14.50%; height:13.90%; }
-  .lg-layer.f-rare{ --ax:16.32%; --ay:7.59%; --aw:69.79%; --ah:45.02%; }
-  .lg-layer.f-epique{ --ax:18.75%; --ay:8.83%; --aw:64.06%; --ah:40.30%; }
-  .lg-layer.f-legendaire{ --ax:20.14%; --ay:8.33%; --aw:63.37%; --ah:40.92%; }
-  .lg-layer.f-ecarlate{ --ax:18.58%; --ay:9.83%; --aw:62.84%; --ah:38.55%; }
-  .lg-layer.f-holo{ --ax:17.71%; --ay:8.96%; --aw:67.88%; --ah:41.16%; }
+  .lg-layer.f-rare{ --ax:15.15%; --ay:6.79%; --aw:72.13%; --ah:46.87%; }
+  .lg-layer.f-epique{ --ax:17.58%; --ay:7.91%; --aw:66.41%; --ah:42.27%; }
+  .lg-layer.f-legendaire{ --ax:19.14%; --ay:7.53%; --aw:65.54%; --ah:42.77%; }
+  .lg-layer.f-ecarlate{ --ax:17.40%; --ay:8.90%; --aw:65.20%; --ah:40.53%; }
+  .lg-layer.f-holo{ --ax:16.53%; --ay:8.03%; --aw:70.41%; --ah:43.14%; }
   /* artwork reculé au maximum : toute l'image d'origine est visible (robot entier), bords adoucis. Le fond est la même image, floutée. */
   .lg-art-img .lg-art-bg{ position:absolute; display:block; pointer-events:none; left:calc(var(--ax) - 6%); top:calc(var(--ay) - 5%); width:calc(var(--aw) + 12%); height:calc(var(--ah) + 10%); object-fit:cover; display:none; }
   .lg-art-img .lg-art-box{ position:absolute; left:var(--ax); top:var(--ay); width:var(--aw); height:var(--ah); display:flex; align-items:center; justify-content:center; pointer-events:none; }
   .lg-art-img .lg-art-fg{ flex:none; max-width:none; max-height:none; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  /* V0.05.41 : l'artwork passe SOUS le cadre. Avant, il était découpé par un tracé de 41 points posé entièrement à l'intérieur du hublot (anneau transparent d'environ 1,7 px visible entre l'artwork et le bord rond). Maintenant : pas de découpe, la boîte dépasse un peu du hublot (cf --ax/--ay/--aw/--ah) et le cadre, redessiné par-dessus (.lg-frame-glass, limité à la zone de l'artwork pour ne pas doubler le reste), cache le débord ; le cadre est opaque autour du hublot (mesuré). */
+  .lg-layer:not(.f-tech) .lg-art-img{ z-index:-1; clip-path:none !important; }
+  .lg-layer:not(.f-tech) .lg-frame-glass{ background:var(--lg-img) center / 100% 100% no-repeat;
+    clip-path:inset(calc(var(--ay) - 2%) calc(100% - var(--ax) - var(--aw) - 2%) calc(100% - var(--ay) - var(--ah) - 2%) calc(var(--ax) - 2%)); }
   /* petites cartes de combat : même principe dans la fenêtre du cadre */
   .btl .unit.cbt .cbt-art-img{ overflow:hidden; display:flex; align-items:center; justify-content:center; }
   .btl .unit.cbt .cbt-art-img .cbt-art-bg{ position:absolute; display:block; left:-8%; top:-8%; width:116%; height:116%; object-fit:cover; display:none; pointer-events:none; }
@@ -8832,7 +8836,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.40</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.41</b></div>
   </div>
 
     </div>
@@ -9683,9 +9687,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.40';
+var BUILD_VERSION = 'V0.05.41';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.41', items:[
+    'Cartes : l’illustration remplit maintenant tout le hublot rond du cadre, sans liseré vide entre l’artwork et le bord intérieur (toutes les raretés).',
+  ] },
   { v:'V0.05.40', items:[
     'Boosters : le booster RESSOURCES est maintenant un cube 3D en acier argenté à l’œil vert, comme celui des cartes : on le glisse sur le socle, il se charge pendant que le serveur tire le contenu, puis s’ouvre et envoie les cases vers le pentagone avec des traînées aux couleurs des raretés.',
     'Boosters : les deux cubes sont côte à côte dans la rangée ; si le cube ressources ne peut pas s’afficher sur l’appareil, l’ancien visuel est conservé.',
