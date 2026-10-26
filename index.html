@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.43</title>
+<title>Projet MECA V0.05.45</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5078,6 +5078,67 @@
   #spBoxes .sp-bill.pinned .task-box.bonus .tb-crys svg{width:20px; height:20px;}
   @keyframes pinPulse{50%{box-shadow:0 5px 0 #6b4000, 0 0 30px rgba(255,214,92,1);}}
 
+  /* ===== V0.05.44 : écran TÂCHES -- cadre, compteur et cases en verre biseauté (même recette que les cases du menu et les puces de trophées) ===== */
+  #spStage .sp-frame{flex:1; min-height:0; display:flex; padding:2px; --cut:20px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(155deg, #fff 0%, #a9c0f5 16%, #5f7fc4 52%, #b69cff 100%);}
+  #spStage .sp-frame .d3-view{flex:1; border:0; border-radius:0; box-shadow:none; background:#070f26 !important;
+    clip-path:polygon(calc(var(--cut) - 2px) 0,100% 0,100% calc(100% - var(--cut) + 2px),calc(100% - var(--cut) + 2px) 100%,0 100%,0 calc(var(--cut) - 2px));}
+  #spView .d3-hint{z-index:4 !important; padding:4px 12px; border-radius:3px; color:rgba(220,232,255,.8); background:rgba(8,16,40,.6);}   /* pas de clip-path : l'élément est animé (hintBob), ce serait coûteux */
+  .sp-hud{position:absolute; left:12px; top:12px; z-index:5000; pointer-events:none; --cut:9px; padding:7px 14px 8px 12px; text-align:left;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.2) 0%, transparent 42%), rgba(10,20,50,.96); box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 0 0 1px rgba(160,190,255,.25) inset;}
+  .sp-hud-main{display:flex; align-items:baseline; gap:5px; font-family:var(--font-title);}
+  .sp-hud-lbl{font-size:8px; font-weight:900; letter-spacing:2px; color:#b9ccf5; margin-right:4px;}
+  .sp-hud-main b{font-size:19px; font-weight:900; color:#fff; line-height:1;}
+  .sp-hud-main small{font-size:9px; font-weight:700; color:#8fa6d6;}
+  .sp-ticks{display:flex; gap:3px; margin-top:6px;}
+  .sp-ticks i{width:11px; height:5px; background:rgba(255,255,255,.14); clip-path:polygon(2px 0,100% 0,calc(100% - 2px) 100%,0 100%);}
+  .sp-ticks i.d{background:#46d6a0;} .sp-ticks i.r{background:#ffd65c;}
+  .sp-hud-sub{margin-top:5px; font-size:9px; font-weight:700; letter-spacing:.4px; color:#9fb4e0;}
+  #spBoxes .task-box{--cut:9px; --tc:#9fb8ee; --tc2:#3c5aa0; --fill:#7fa0e8; width:156px; padding:1.5px; gap:0; border:0; border-radius:0; display:block; text-align:left;
+    animation:none; box-shadow:none; transform:translate(-50%, -50%); transform-origin:50% 50%; transition:transform .18s ease;
+    background:linear-gradient(160deg, #fff 0%, var(--tc) 30%, var(--tc2) 100%);
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));}
+  #spBoxes .task-box.bonus{--tc:#9be8ff; --tc2:#3a8fb8; --fill:#5fd0f0; width:156px; border-color:transparent;}
+  #spBoxes .task-box.ready, #spBoxes .task-box.bonus.ready{--tc:#ffeaa0; --tc2:#e0a01c; --fill:#ffd65c;}
+  #spBoxes .task-box.done, #spBoxes .task-box.bonus.done{--tc:#9af5d2; --tc2:#1f9c78; --fill:#46d6a0; opacity:.92; filter:none;}
+  #spBoxes .task-box.expanded{transform:translate(-50%, -50%) scale(1.3); transform-origin:50% 50%; box-shadow:none; z-index:5;}
+  #spBoxes .tb-in{position:relative; display:flex; flex-direction:column; gap:4px; padding:6px 8px 8px;
+    clip-path:polygon(calc(var(--cut) - 1px) 0,100% 0,100% calc(100% - var(--cut) + 1px),calc(100% - var(--cut) + 1px) 100%,0 100%,0 calc(var(--cut) - 1px));
+    background:linear-gradient(160deg, rgba(255,255,255,.2) 0%, transparent 38%), linear-gradient(180deg, rgba(28,48,96,.96), rgba(8,15,36,.97));}
+  #spBoxes .tb-in::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--tc);}
+  #spBoxes .task-box.ready .tb-in::before{content:""; position:absolute; inset:0; pointer-events:none;   /* lueur dorée fixe (pas d'animation : un fondu sous clip-path coûte cher en batterie) ; la pulsation est dessinée sur la plateforme */
+    background:radial-gradient(ellipse 80% 90% at 50% 115%, rgba(255,214,92,.5), transparent 70%);}
+  #spBoxes .tb-top{display:flex; align-items:center; gap:6px; min-width:0;}
+  #spBoxes .tb-num{flex:none; min-width:21px; height:16px; line-height:16px; text-align:center; font-family:var(--font-title); font-size:8.5px; font-weight:900; color:#0b1530;
+    background:linear-gradient(180deg, #fff, var(--tc)); clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px);}
+  #spBoxes .tb-name{flex:1; min-width:0; font-family:var(--font-title); font-size:8px; font-weight:900; letter-spacing:.9px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #spBoxes .task-box.ready .tb-name{color:#ffe38a;}
+  #spBoxes .task-box.bonus .tb-name{color:#9be8ff;} #spBoxes .task-box.bonus.ready .tb-name{color:#ffe38a;} #spBoxes .task-box.done .tb-name{color:#9af5d2;}
+  #spBoxes .tb-desc{font-size:10px; line-height:1.15; color:#b9c9ee; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  #spBoxes .task-box.expanded .tb-desc{-webkit-line-clamp:4;}
+  #spBoxes .tb-bar{position:relative; height:13px; background:rgba(0,0,0,.5); border:0; border-radius:0; overflow:hidden; box-shadow:0 0 0 1px rgba(255,255,255,.14) inset;
+    clip-path:polygon(3px 0,100% 0,100% calc(100% - 3px),calc(100% - 3px) 100%,0 100%,0 3px);}
+  #spBoxes .tb-bar i{background:linear-gradient(90deg, var(--tc2), var(--fill));}
+  #spBoxes .tb-bar span{font-size:8.5px; line-height:13px; text-align:center;}
+  #spBoxes .tb-rew{justify-content:flex-start; gap:4px;}
+  #spBoxes .tb-rew .rw-chip{--cut:4px; border-radius:0; font-size:9.5px; padding:1px 6px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 40%), rgba(0,0,0,.5); border:0; box-shadow:0 0 0 1px rgba(255,255,255,.16) inset;}
+  #spBoxes .tb-pin{display:none; text-align:center; font-family:var(--font-title); font-size:6.5px; font-weight:900; letter-spacing:.8px; color:#ffd65c;}
+  #spBoxes .sp-bill.pinned .task-box{width:136px; animation:none; transform:translate(-50%, -50%);}
+  #spBoxes .sp-bill.pinned .task-box::before{content:none; display:none;}
+  #spBoxes .sp-bill.pinned .tb-desc, #spBoxes .sp-bill.pinned .tb-bar, #spBoxes .sp-bill.pinned .tb-rew, #spBoxes .sp-bill.pinned .tb-num{display:none;}
+  #spBoxes .sp-bill.pinned .tb-pin{display:block;}
+  #spBoxes .sp-bill.pinned .tb-in{padding:6px 8px 7px;}
+  /* V0.05.45 : case repliée (tâche à venir) : juste numéro + nom + flèche, dépliée par un appui */
+  #spBoxes .task-box.closed:not(.expanded){width:122px; --tc:#7f95c8; --tc2:#2c4272;}
+  #spBoxes .task-box.closed:not(.expanded) .tb-desc, #spBoxes .task-box.closed:not(.expanded) .tb-bar, #spBoxes .task-box.closed:not(.expanded) .tb-rew{display:none;}
+  #spBoxes .task-box.closed:not(.expanded) .tb-in{padding:5px 8px 6px;}
+  #spBoxes .task-box.closed:not(.expanded) .tb-name{color:#b9c9ee;}
+  #spBoxes .task-box.closed:not(.expanded) .tb-top::after{content:"▾"; flex:none; font-size:9px; color:#8fa6d6;}
+
 
   /* =================== JOUEUR : sous-menu à 3 cases (V0.05.30) ===================
      Clic sur la case JOUEUR du MENU -> #playerHubView : CLASSEMENT (haute, à gauche, fermée), JOUEUR (en haut à droite,
@@ -8799,11 +8860,14 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
         <div class="inf-tag" id="tasksTag">0 / 10</div>
       </header>
       <div class="daily-info" id="tasksInfo"></div>
+      <div class="sp-frame">
       <div class="d3-view" id="spView">
         <canvas id="spCanvas"></canvas>
         <div id="spBoxes"></div>
+        <div class="sp-hud" id="spHud"><div class="sp-hud-main"><span class="sp-hud-lbl">TÂCHES</span><b id="spHudN">0</b><small>/ 10</small></div><div class="sp-ticks" id="spTicks"></div><div class="sp-hud-sub" id="spHudSub"></div></div>
         <div class="d3-rail"><i id="spProg"></i></div>
         <div class="d3-hint">▼ GLISSE POUR AVANCER ▲</div>
+      </div>
       </div>
     </div>
   </div>
@@ -8837,7 +8901,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.43</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.45</b></div>
   </div>
 
     </div>
@@ -9688,9 +9752,17 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.43';
+var BUILD_VERSION = 'V0.05.45';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.45', items:[
+    'Tâches : les cases des tâches à venir restent repliées (numéro + nom). Touche une case pour voir le détail. Les tâches passées, prêtes, en cours et celle du jour restent ouvertes.',
+  ] },
+  { v:'V0.05.44', items:[
+    'Tâches : écran entièrement repensé dans le style du jeu. Cadre en verre biseauté, parcours qui monte tout droit, plateformes hexagonales numérotées (grise = à faire, dorée = prête à récupérer, verte = récupérée).',
+    'Tâches : les cases sont en verre biseauté, placées de part et d’autre de leur plateforme avec un trait de liaison. Elles ne se chevauchent plus et ne sont plus coupées par le bord de l’écran. Un appui sur une case l’agrandit.',
+    'Tâches : compteur « X / 10 » et minuterie avant les nouvelles tâches en haut à gauche. Le bonus final affiche maintenant sa vraie récompense (60 pièces d’or) au lieu d’un ancien texte sur les cristaux.',
+  ] },
   { v:'V0.05.43', items:[
     'Batterie : l’écran BOOSTERS redessinait ses cubes 3D 60 à 120 fois par seconde sans jamais s’arrêter, ce qui chauffait le téléphone. Dans la rangée ils sont maintenant limités à 30 images par seconde, et ils se figent (dernière image conservée) après quelques secondes sans toucher l’écran, comme le reste du jeu. Ils repartent au toucher.',
   ] },
@@ -18482,7 +18554,7 @@ function sceneStep(cam, P, now){
   cam.x += (p.x - cam.x) * .22; cam.y += (p.y - cam.y) * .22;          // arrondit les virages
   cam.moving = cam.drag || Math.abs(cam.v) > .05 || Math.abs(cam.s - cam.cur) > .3 || Math.abs(p.x - cam.x) > .3 || Math.abs(p.y - cam.y) > .3;
   // en mouvement : fluidité maximale ; à l'arrêt : seules les lumières bougent, 15 i/s suffisent
-  const fps = cam.moving ? ((SETTINGS && SETTINGS.fps) || 60) : (ecoOn() ? 15 : 30);
+  const fps = cam.moving ? ((SETTINGS && SETTINGS.fps) || 60) : (ecoOn() ? (cam.stillFps || 15) : 30);
   if(cam.lastDraw && now - cam.lastDraw < 1000 / fps - 2) return false;
   cam.lastDraw = now;
   return true;
@@ -19174,7 +19246,7 @@ document.getElementById('tasksClaimAllBtn').onclick = claimAllTasks;
 
 // ----- Vue isométrique dans l'espace (canvas) -----
 const SPV = { W:0, H:0, dpr:1, ctx:null, t0:performance.now() };
-let spCam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false, dragDist:0 }, spRaf = null, spWorld = null;
+let spCam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false, dragDist:0, stillFps:10 }, spRaf = null, spWorld = null;
 // V0.03.09, optimisation fluidité : même principe que D3_BOX_CACHE ci-dessus pour la scène des tâches --
 // cache reconstruit une seule fois par renderTasks() au lieu d'un querySelectorAll() à chaque frame.
 let SP_BOX_CACHE = [];
@@ -19190,18 +19262,19 @@ function spP(x, y, z){
 function spBuild(w){
   const rnd = d3Rng(w * 9973 + 7);
   const h = [258, 205, 290, 175, 330, 225, 15][((w % 7) + 7) % 7] + Math.floor(rnd() * 16);
+  // V0.05.44 : le tracé avance selon (-1,-1) dans le monde = tout droit vers le haut de l'écran ; les plateformes alternent à gauche / à droite
+  const FW = [-Math.SQRT1_2, -Math.SQRT1_2], RT = [Math.SQRT1_2, -Math.SQRT1_2];
+  const wp = (lat, along) => ({ x: FW[0] * along + RT[0] * lat, y: FW[1] * along + RT[1] * lat });
   const nodes = [];
-  let x = 0;
   for(let i = 0; i <= 10; i++){
-    if(i > 0){ let nx; do{ nx = Math.round((rnd() * 2 - 1) * 7) * 10; } while(Math.abs(nx - x) < 30); x = nx; }
-    nodes.push({ x, y: -i * SP_STEP, z: i === 10 ? 40 : 10 + rnd() * 70, r: i === 10 ? 62 : 42 });
+    const lat = i === 10 ? 0 : (i % 2 ? 1 : -1) * (70 + rnd() * 60), p = wp(lat, i * SP_STEP);
+    nodes.push({ x: p.x, y: p.y, z: i === 10 ? 40 : 14 + rnd() * 40, r: i === 10 ? 62 : 44 });
   }
   const rocks = [];
-  for(let y = 300; y >= -4400; y -= 70){
-    if(rnd() < .8){
-      const side = rnd() < .5 ? -1 : 1;
-      const rx = side * (170 + rnd() * 330), rz = -80 + rnd() * 260;
-      if(Math.min(...nodes.map(n => Math.hypot(n.x - rx, n.y - y))) > 110) rocks.push({ x: rx, y: y + rnd() * 50, z: rz, r: 8 + rnd() * 26, ph: rnd() * 6, spin: rnd() < .5 });
+  for(let a = -300; a <= 4400; a += 100){   // V0.05.44 : moins de rochers (coût de dessin)
+    if(rnd() < .75){
+      const side = rnd() < .5 ? -1 : 1, lat = side * (170 + rnd() * 280), rz = -80 + rnd() * 260, p = wp(lat, a + rnd() * 50);
+      if(Math.min(...nodes.map(n => Math.hypot(n.x - p.x, n.y - p.y))) > 110) rocks.push({ x: p.x, y: p.y, z: rz, r: 8 + rnd() * 26, ph: rnd() * 6, spin: rnd() < .5 });
     }
   }
   const stars = Array.from({ length: 150 }, () => ({ x: rnd(), y: rnd(), s: .4 + rnd() * 1.6, f: .03 + rnd() * .2, ph: rnd() * 6 }));
@@ -19235,28 +19308,98 @@ function spRock(ctx, x, y, z, r, topCol, sideCol, hexTop, spin, t){
   }
 }
 // Couches fixes de l'espace (ciel, nébuleuses, planète, vignette) : une seule fois par taille / semaine
+// V0.05.44 : ciel bleu nuit (les couleurs du jeu) + trame d'hexagones comme le fond du jeu ; la couleur de la semaine reste sur nébuleuses, planète et lueurs
 function spLayers(){
   const S = spWorld, key = SPV.W + 'x' + SPV.H + '@' + SPV.dpr + '#' + S.w;
   if(SPV.layers && SPV.layers.key === key) return SPV.layers;
-  const W = SPV.W, H = SPV.H, c = S.c;
+  const W = SPV.W, H = SPV.H;
   const mk = () => { const cv = document.createElement('canvas'); cv.width = Math.round(W * SPV.dpr); cv.height = Math.round(H * SPV.dpr); const x = cv.getContext('2d'); x.scale(SPV.dpr, SPV.dpr); return [cv, x]; };
   const [bg, b] = mk();
-  let g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, c(55, 9)); g.addColorStop(1, `hsl(${(S.h + 30) % 360},45%,2%)`); b.fillStyle = g; b.fillRect(0, 0, W, H);
+  let g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d1d44'); g.addColorStop(.55, '#08122c'); g.addColorStop(1, '#040916'); b.fillStyle = g; b.fillRect(0, 0, W, H);
   S.nebs.forEach(n => {
     const nx = n.x * W, ny = n.y * H, r = n.r * W;
-    const gg = b.createRadialGradient(nx, ny, 0, nx, ny, r); gg.addColorStop(0, `hsla(${n.h},80%,55%,.13)`); gg.addColorStop(1, `hsla(${n.h},80%,55%,0)`);
+    const gg = b.createRadialGradient(nx, ny, 0, nx, ny, r); gg.addColorStop(0, `hsla(${n.h},75%,55%,.16)`); gg.addColorStop(1, `hsla(${n.h},75%,55%,0)`);
     b.fillStyle = gg; b.fillRect(0, 0, W, H);
   });
+  // trame d'hexagones (comme le fond du jeu), qui s'estompe vers le haut
+  const R = 42, hh = Math.sqrt(3) * R;
+  b.save(); b.lineWidth = 1; b.strokeStyle = 'rgba(120,165,255,.13)'; b.beginPath();
+  for(let col = -1, cx = -R; cx < W + 2 * R; col++, cx += R * 1.5){
+    for(let cy = (col % 2 ? hh / 2 : 0) - hh; cy < H + hh; cy += hh){
+      for(let k = 0; k < 6; k++){ const a = k / 6 * Math.PI * 2, px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R; k ? b.lineTo(px, py) : b.moveTo(px, py); }
+      b.closePath();
+    }
+  }
+  b.stroke(); b.restore();
+  g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(13,29,68,.95)'); g.addColorStop(.35, 'rgba(13,29,68,0)'); g.addColorStop(1, 'rgba(4,9,22,.5)'); b.fillStyle = g; b.fillRect(0, 0, W, H);
   const py = H * .2, px = S.planetX * W, pr = W * .16;
   g = b.createRadialGradient(px - pr * .4, py - pr * .4, pr * .1, px, py, pr);
-  g.addColorStop(0, `hsl(${S.planetH},70%,70%)`); g.addColorStop(.6, `hsl(${S.planetH},55%,35%)`); g.addColorStop(1, `hsl(${S.planetH},50%,10%)`);
+  g.addColorStop(0, `hsl(${S.planetH},70%,68%)`); g.addColorStop(.6, `hsl(${S.planetH},55%,34%)`); g.addColorStop(1, `hsl(${S.planetH},50%,10%)`);
   b.fillStyle = g; b.beginPath(); b.arc(px, py, pr, 0, Math.PI * 2); b.fill();
-  if(S.ringed){ b.strokeStyle = `hsla(${S.planetH},70%,80%,.55)`; b.lineWidth = 3; b.beginPath(); b.ellipse(px, py, pr * 1.7, pr * .42, -.35, 0, Math.PI * 2); b.stroke(); }
+  if(S.ringed){ b.strokeStyle = `hsla(${S.planetH},70%,80%,.5)`; b.lineWidth = 3; b.beginPath(); b.ellipse(px, py, pr * 1.7, pr * .42, -.35, 0, Math.PI * 2); b.stroke(); }
   const [vig, v] = mk();
-  g = v.createRadialGradient(W / 2, H / 2, H * .3, W / 2, H / 2, H * .8); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.6)');
+  g = v.createRadialGradient(W / 2, H / 2, H * .32, W / 2, H / 2, H * .82); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(2,5,14,.62)');
   v.fillStyle = g; v.fillRect(0, 0, W, H);
   SPV.layers = { key, bg, vig };
   return SPV.layers;
+}
+// Plateforme hexagonale avec de l'épaisseur : dessus en verre, numéro « posé au sol », 3 états (locked / ready / done)
+const SP_ST = {
+  locked: { hue:218, sat:36, l:[30, 21], edge:'#8fb0ee', num:'rgba(200,220,255,.85)', glow:null },
+  ready:  { hue:262, sat:55, l:[46, 33], edge:'#ffd65c', num:'#fff', glow:'rgba(255,214,92,.75)' },
+  done:   { hue:160, sat:42, l:[30, 21], edge:'#46d6a0', num:'#9af5d2', glow:'rgba(70,214,160,.45)' }
+};
+function spSlab(ctx, n, z, st, t, label){
+  const C = SP_ST[st], r = n.r, th = n.r > 50 ? 26 : 18;
+  const ring = [], rot = Math.PI / 6;
+  for(let a = 0; a < 6; a++){ const g = a / 6 * Math.PI * 2 + rot; ring.push([n.x + Math.cos(g) * r, n.y + Math.sin(g) * r, g]); }
+  const top = ring.map(p => spP(p[0], p[1], z)), bot = ring.map(p => spP(p[0], p[1], z - th));
+  const ctr = spP(n.x, n.y, z);
+  // lueur du réacteur sous la plateforme
+  const E = spP(n.x, n.y, z - th - 8), eg = ctx.createRadialGradient(E.x, E.y, 0, E.x, E.y, 46 * E.k);
+  eg.addColorStop(0, C.glow || `hsla(${C.hue},80%,62%,.5)`); eg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = eg; ctx.fillRect(E.x - 56, E.y - 56, 112, 112);
+  // flancs visibles (du plus loin au plus proche)
+  const faces = [];
+  for(let i = 0; i < 6; i++){
+    const j = (i + 1) % 6, gm = (ring[i][2] + ring[j][2]) / 2 + (j === 0 ? Math.PI : 0);
+    const f = (Math.cos(gm) + Math.sin(gm)) * Math.SQRT1_2;      // > 0 : tourné vers la caméra
+    if(f > .02) faces.push({ i, j, f, lr:(Math.cos(gm) - Math.sin(gm)) * Math.SQRT1_2 });
+  }
+  faces.sort((a, b) => a.f - b.f).forEach(fc => {
+    const A = top[fc.i], B = top[fc.j], C2 = bot[fc.j], D = bot[fc.i];
+    const L = C.l[1] - 6 + fc.lr * 5;
+    d3Poly(ctx, [A, B, C2, D], `hsl(${C.hue},${C.sat}%,${Math.max(5, L)}%)`);   // aplat (pas de dégradé par flanc : moins coûteux)
+    d3Poly(ctx, [A, B, { x: B.x + (C2.x - B.x) * .35, y: B.y + (C2.y - B.y) * .35 }, { x: A.x + (D.x - A.x) * .35, y: A.y + (D.y - A.y) * .35 }], `hsla(${C.hue},${C.sat}%,${Math.min(70, L + 14)}%,.35)`);   // reflet en haut du flanc
+  });
+  // dessus
+  const rr = Math.max(...top.map(p => Math.hypot(p.x - ctr.x, p.y - ctr.y)));
+  const tg = ctx.createRadialGradient(ctr.x - rr * .25, ctr.y - rr * .3, rr * .1, ctr.x, ctr.y, rr * 1.05);
+  tg.addColorStop(0, `hsl(${C.hue},${C.sat}%,${C.l[0] + 10}%)`); tg.addColorStop(1, `hsl(${C.hue},${C.sat}%,${C.l[1]}%)`);
+  d3Poly(ctx, top, tg);
+  // panneau intérieur
+  const inn = ring.map(p => spP(n.x + (p[0] - n.x) * .68, n.y + (p[1] - n.y) * .68, z));
+  d3Poly(ctx, inn, 'rgba(2,8,24,.34)');
+  ctx.beginPath(); inn.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+  ctx.strokeStyle = C.edge; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; ctx.stroke(); ctx.globalAlpha = 1;
+  // liseré du bord (lumineux quand la tâche est prête)
+  ctx.beginPath(); top.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+  if(C.glow){ ctx.save(); ctx.globalAlpha = st === 'ready' ? .22 + .12 * Math.sin(t * 5) : .16; ctx.strokeStyle = C.edge; ctx.lineWidth = 7; ctx.stroke(); ctx.restore(); }   // halo : trait large translucide (pas de shadowBlur, trop coûteux)
+  ctx.strokeStyle = C.edge; ctx.lineWidth = 2; ctx.stroke();
+  // numéro / coche posé au sol (matrice isométrique locale)
+  if(label !== null){
+    const o = spP(n.x, n.y, z), u = spP(n.x + 7.07, n.y - 7.07, z), v = spP(n.x + 7.07, n.y + 7.07, z);
+    ctx.save(); ctx.transform((u.x - o.x) / 10, (u.y - o.y) / 10, (v.x - o.x) / 10, (v.y - o.y) / 10, o.x, o.y);
+    if(st === 'done'){
+      ctx.strokeStyle = C.num; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(-13, 1); ctx.lineTo(-4, 10); ctx.lineTo(14, -11); ctx.stroke();
+    } else {
+      ctx.font = '900 30px Orbitron, Rajdhani, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = C.num; ctx.fillText(String(label), 0, 2);
+    }
+    ctx.restore();
+  }
+  return top;
 }
 function spDraw(){
   const ctx = SPV.ctx; if(!ctx || !SPV.W || !spWorld) return;
@@ -19269,7 +19412,7 @@ function spDraw(){
   ctx.fillStyle = '#fff';
   S.stars.forEach(st => {
     const sy = ((st.y * H - spCam.y * st.f) % H + H) % H;
-    ctx.globalAlpha = .45 + .55 * Math.abs(Math.sin(t * 1.3 + st.ph));
+    ctx.globalAlpha = .4 + .5 * Math.abs(Math.sin(t * 1.3 + st.ph));
     ctx.fillRect(st.x * W, sy, st.s, st.s);
   });
   ctx.globalAlpha = 1;
@@ -19280,32 +19423,36 @@ function spDraw(){
     const a = N[i - 1], b = N[i], A = spP(a.x, a.y, a.z + 2), B = spP(b.x, b.y, b.z + 2);
     const done = stOf(i - 1) === 'done' && stOf(i) === 'done';
     ctx.save();
-    ctx.strokeStyle = done ? 'rgba(255,214,92,.35)' : c(90, 70, .22); ctx.lineWidth = 12 * A.k * D3_SC;
+    ctx.strokeStyle = done ? 'rgba(70,214,160,.28)' : 'rgba(120,165,255,.18)'; ctx.lineWidth = 12 * A.k * D3_SC;
     ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-    ctx.strokeStyle = done ? '#ffd65c' : c(90, 80, .9); ctx.lineWidth = 2; ctx.setLineDash([6, 9]); ctx.lineDashOffset = -t * 30;
+    ctx.strokeStyle = done ? '#46d6a0' : 'rgba(160,190,255,.85)'; ctx.lineWidth = 2; ctx.setLineDash([6, 9]); ctx.lineDashOffset = -t * 30;
     ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
     ctx.restore();
   }
-  // plateformes + astéroïdes, du fond vers l'avant
+  // plateformes + astéroïdes, du fond vers l'avant (V0.05.44 : sélection par position à l'écran, le tracé n'est plus aligné sur l'axe y du monde)
+  const onScreen = (x, y, z) => { const p = spP(x, y, z); return p.y > -120 && p.y < H + 160 && p.x > -70 && p.x < W + 70; };
   const items = N.map((n, i) => ({ n, i, d: n.x + n.y })).concat(S.rocks.map(r => ({ r, d: r.x + r.y })))
-    .filter(o => { const y = o.n ? o.n.y : o.r.y; return y > spCam.y - 1300 && y < spCam.y + 900; })
+    .filter(o => o.n ? onScreen(o.n.x, o.n.y, o.n.z) : onScreen(o.r.x, o.r.y, o.r.z))
     .sort((a, b) => a.d - b.d);
   items.forEach(o => {
     if(o.r){
       const r = o.r, z = r.z + Math.sin(t * .8 + r.ph) * 8;
-      spRock(ctx, r.x, r.y, z, r.r, c(12, 30), k => `hsl(${S.h},14%,${16 - k * 8}%)`, false, r.spin, t);
+      spRock(ctx, r.x, r.y, z, r.r, `hsl(${S.h},16%,36%)`, k => `hsl(${S.h},22%,${17 - k * 9}%)`, false, r.spin, t);
       return;
     }
     const n = o.n, st = stOf(o.i), z = n.z + Math.sin(t * .9 + o.i) * 4;
-    // réacteur sous la plateforme
-    const E = spP(n.x, n.y, z - n.r * 1.3);
-    const eg = ctx.createRadialGradient(E.x, E.y, 0, E.x, E.y, 40 * E.k);
-    eg.addColorStop(0, st === 'done' ? 'rgba(255,214,92,.7)' : c(90, 70, .6)); eg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = eg; ctx.fillRect(E.x - 50, E.y - 50, 100, 100);
-    const topCol = st === 'done' ? '#6b4d10' : st === 'ready' ? c(55, 45) : c(25, 24);
-    const T = spRock(ctx, n.x, n.y, z, n.r, topCol, k => `hsl(${S.h},18%,${20 - k * 10}%)`, true, false, t);
-    ctx.strokeStyle = st === 'done' ? '#ffd65c' : st === 'ready' ? '#fff' : c(60, 55); ctx.lineWidth = 2;
-    ctx.beginPath(); T.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.stroke();
+    if(st === 'ready'){   // anneau qui s'élargit + colonne de lumière : « viens me chercher »
+      const ph = (t % 1.7) / 1.7, rr = n.r * (1.1 + .75 * ph), ring = [];
+      for(let a = 0; a < 28; a++){ const g2 = a / 28 * Math.PI * 2; ring.push(spP(n.x + Math.cos(g2) * rr, n.y + Math.sin(g2) * rr, z)); }
+      ctx.save(); ctx.globalAlpha = .7 * (1 - ph); ctx.strokeStyle = '#ffd65c'; ctx.lineWidth = 2;
+      ctx.beginPath(); ring.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.stroke(); ctx.restore();
+    }
+    spSlab(ctx, n, z, st, t, o.i === 10 ? null : o.i + 1);
+    if(st === 'ready' && o.i !== 10){
+      const A = spP(n.x, n.y, z), B = spP(n.x, n.y, z + 80), gr = ctx.createLinearGradient(0, A.y, 0, B.y);
+      gr.addColorStop(0, 'rgba(255,214,92,.38)'); gr.addColorStop(1, 'rgba(255,214,92,0)');
+      ctx.fillStyle = gr; ctx.fillRect(A.x - 9 * A.k, B.y, 18 * A.k, A.y - B.y);
+    }
     if(o.i === 10){
       // cristal de fabrication qui tourne au-dessus de la station
       const cz = z + 55 + Math.sin(t * 2) * 6, rr = 20;
@@ -19314,42 +19461,48 @@ function spDraw(){
       const faces = [];
       eq.forEach((e, j) => { const f = eq[(j + 1) % 4]; faces.push({ pts:[top, e.p, f.p], d:e.d + f.d, up:1 }, { pts:[bot, e.p, f.p], d:e.d + f.d, up:0 }); });
       ctx.save();
-      const cg = spP(n.x, n.y, cz); const halo = ctx.createRadialGradient(cg.x, cg.y, 0, cg.x, cg.y, 46 * cg.k); halo.addColorStop(0, 'rgba(127,243,255,.45)'); halo.addColorStop(1, 'rgba(127,243,255,0)'); ctx.fillStyle = halo; ctx.fillRect(cg.x - 60, cg.y - 60, 120, 120);
-      faces.sort((a, b) => a.d - b.d).forEach(f => d3Poly(ctx, f.pts, `hsla(${185 + f.d * 8},90%,${f.up ? 72 : 52}%,.9)`));
+      const cg = spP(n.x, n.y, cz); const halo = ctx.createRadialGradient(cg.x, cg.y, 0, cg.x, cg.y, 46 * cg.k); halo.addColorStop(0, st === 'done' ? 'rgba(70,214,160,.45)' : st === 'ready' ? 'rgba(255,214,92,.55)' : 'rgba(127,243,255,.45)'); halo.addColorStop(1, 'rgba(127,243,255,0)'); ctx.fillStyle = halo; ctx.fillRect(cg.x - 60, cg.y - 60, 120, 120);
+      faces.sort((a, b) => a.d - b.d).forEach(f => d3Poly(ctx, f.pts, st === 'ready' ? `hsla(${45 + f.d * 6},95%,${f.up ? 70 : 52}%,.92)` : `hsla(${185 + f.d * 8},90%,${f.up ? 72 : 52}%,.9)`));
       ctx.restore();
-    } else if(st !== 'locked'){
-      const ctr = []; for(let a = 0; a < 16; a++){ const g2 = a / 16 * Math.PI * 2; ctr.push(spP(n.x + Math.cos(g2) * 14, n.y + Math.sin(g2) * 14, z)); }
-      ctx.save(); ctx.globalAlpha = st === 'ready' ? .6 + .4 * Math.sin(t * 6) : 1;
-      d3Poly(ctx, ctr, st === 'ready' ? '#fff' : '#ffd65c'); ctx.restore();
     }
   });
   // vignette
   ctx.drawImage(L.vig, 0, 0, W, H);
-  // cases des tâches
+  // cases des tâches : placées à droite ou à gauche de leur plateforme (du côté du centre), reliées par un trait ; jamais coupées par le bord
   // (SP_BOX_CACHE : liste déjà résolue par renderTasks(), cf déclaration plus haut)
-  const pinCount = { top:0, bot:0 };
+  const pinCount = { top:0, bot:0 }, BW = 156;
   SP_BOX_CACHE.forEach(el => {
-    const n = N[+el.dataset.i], a = spP(n.x, n.y, n.z + (+el.dataset.i === 10 ? 175 : 64));
-    const vis = a.y > H * .14 && a.y < H + 170;
-    const near = a.y > H * .24 && a.y < H + 60;
-    // Tâche prête mais loin de la vue : épinglée au premier plan, en gardant son côté (gauche / droite)
+    const idx = +el.dataset.i, isB = idx === 10, n = N[idx];
+    const P0 = spP(n.x, n.y, n.z), s = Math.min(1.15, P0.k), open = !!el.querySelector('.expanded');
+    const cl = !open && el.firstElementChild && el.firstElementChild.classList.contains('closed'), halfW = (cl ? 122 : BW) / 2 * s * (open ? 1.3 : 1), side = P0.x < W * .5 ? 1 : -1;
+    const bx = Math.max(halfW + 6, Math.min(W - halfW - 6, isB ? P0.x : P0.x + side * (halfW + 34 * s)));
+    const by = isB ? P0.y - 120 * s : P0.y - 22 * s;
+    const vis = by > H * .08 && by < H * .97;
+    const near = by > H * .2 && by < H * .86;
     const ready = el.firstElementChild && el.firstElementChild.classList.contains('ready');
     if(ready && !near){
-      const ahead = a.y <= H * .24, key = ahead ? 'top' : 'bot', k = pinCount[key]++;
-      const left = a.x < W / 2;
+      // Tâche prête mais loin de la vue : épinglée au bord, en gardant son côté (gauche / droite)
+      const ahead = by <= H * .5, key = ahead ? 'top' : 'bot', k = pinCount[key]++;
+      const left = P0.x < W / 2;
       el.classList.add('pinned'); el.classList.toggle('left', left);
       el.style.visibility = ''; el.style.opacity = '1';
-      el.style.transform = `translate(${left ? 72 : W - 72}px, ${ahead ? 64 + k * 44 : H - 14 - k * 44}px)`;
+      el.style.transform = `translate(${left ? 84 : W - 84}px, ${ahead ? 64 + k * 46 : H - 20 - k * 46}px)`;
       el.style.zIndex = 100000;
       return;
     }
     el.classList.remove('pinned');
     el.style.visibility = vis ? '' : 'hidden';
     if(vis){
-      const bx = Math.max(62, Math.min(W - 66, a.x));
-      el.style.opacity = Math.max(0, Math.min(1, (a.y - H * .14) / (H * .16))).toFixed(2);
-      el.style.transform = `translate(${bx.toFixed(1)}px, ${a.y.toFixed(1)}px) scale(${Math.min(1.2, a.k).toFixed(3)})`;
-      el.style.zIndex = Math.round(a.y);
+      const op = Math.max(0, Math.min(1, (by - H * .08) / (H * .11), (H * .97 - by) / (H * .1)));
+      el.style.opacity = op.toFixed(2);
+      el.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px) scale(${s.toFixed(3)})`;
+      el.style.zIndex = Math.round(by);
+      if(!isB){   // trait de liaison plateforme -> case
+        const stt = stOf(idx), col = stt === 'ready' ? '#ffd65c' : stt === 'done' ? '#46d6a0' : '#8fb0ee';
+        ctx.save(); ctx.globalAlpha = op * .9; ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(P0.x, P0.y - 6 * s); ctx.lineTo(bx, by); ctx.stroke();
+        ctx.beginPath(); ctx.arc(P0.x, P0.y - 6 * s, 3, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      }
     }
   });
   const bar = document.getElementById('spProg'); if(bar) bar.style.height = (spCam.cur / spPathInfo().L * 100) + '%';
@@ -19357,9 +19510,10 @@ function spDraw(){
 }
 function taskBoxHtml(t, i, st){
   const p = taskProgress(t);
-  return `<div class="tb-name">${t.name}</div><div class="tb-desc">${t.desc}</div>
+  return `<div class="tb-in"><div class="tb-top"><span class="tb-num">${st === 'done' ? '✓' : String(i + 1).padStart(2, '0')}</span><span class="tb-name">${t.name}</span></div>
+    <div class="tb-desc">${t.desc}</div>
     <div class="tb-bar"><i style="width:${(p / t.target * 100).toFixed(0)}%"></i><span>${st === 'done' ? '✓ RÉCUPÉRÉ' : fmtNum(p) + ' / ' + fmtNum(t.target) + (t.unit || '')}</span></div>
-    <div class="tb-rew">${rewardChips(t.rew)}</div>`;
+    <div class="tb-rew">${rewardChips(t.rew)}</div><div class="tb-pin">★ PRÊTE · TOUCHE POUR RÉCUPÉRER</div></div>`;
 }
 function renderTasks(keepPos){
   ensureTasksDay();
@@ -19368,6 +19522,12 @@ function renderTasks(keepPos){
   const list = tasksOfWeek();
   const nDone = list.filter(t => player.tasks.claimed[t.id]).length;
   document.getElementById('tasksTag').textContent = nDone + ' / 10';
+  { // V0.05.44 : compteur dans la scène (cases : récupérée = vert, prête = or)
+    const hn = document.getElementById('spHudN'), tk = document.getElementById('spTicks'), sb = document.getElementById('spHudSub');
+    if(hn) hn.textContent = nDone;
+    if(tk) tk.innerHTML = list.map(t => '<i class="' + (taskState(t) === 'done' ? 'd' : taskState(t) === 'ready' ? 'r' : '') + '"></i>').join('');
+    if(sb) sb.textContent = (player.tasks.bonus ? 'Tout est fait · nouvelles tâches dans ' : 'Nouvelles tâches dans ') + fmtHM(msToMidnight());
+  }
   // N'apparaît qu'à partir de 2 récompenses disponibles d'un coup (inutile pour une seule).
   const tAllBtn = document.getElementById('tasksClaimAllBtn');
   if(tAllBtn) tAllBtn.classList.toggle('show', document.getElementById('tasksView').classList.contains('active') && tasksClaimableCount() > 1);
@@ -19378,15 +19538,17 @@ function renderTasks(keepPos){
     : 'Termine les 10 tâches pour gagner <b>' + TASK_BONUS.crystal + ' cristaux de fabrication et un booster aléatoire</b>')
     + `<div class="daily-bonus">NOUVELLES TÂCHES DANS ${fmtHM(msToMidnight())} · LES RÉCOMPENSES CHANGENT CHAQUE SEMAINE</div>`;
   const box = document.getElementById('spBoxes');
+  const frontI = list.findIndex(t => taskState(t) !== 'done');   // tâche « du jour » : la première non récupérée
   box.innerHTML = list.map((t, i) => {
-    const st = taskState(t);
-    return `<div class="sp-bill" data-i="${i}"><button class="task-box ${st}" data-i="${i}">${taskBoxHtml(t, i, st)}</button></div>`;
+    const st = taskState(t), closed = st === 'locked' && i !== frontI && taskProgress(t) <= 0;
+    return `<div class="sp-bill" data-i="${i}"><button class="task-box ${st}${closed ? ' closed' : ''}" data-i="${i}">${taskBoxHtml(t, i, st)}</button></div>`;
   }).join('') + (() => {
     const st = player.tasks.bonus ? 'done' : tasksAllClaimed() ? 'ready' : 'locked';
-    return `<div class="sp-bill" data-i="10"><button class="task-box bonus ${st}" data-i="10">
-      <div class="tb-name">BONUS FINAL</div>
-      <div class="tb-crys">${ICON_CRYSTAL}<b>×2</b></div>
-      <div class="tb-desc">${st === 'done' ? '✓ RÉCUPÉRÉ' : 'Cristaux + booster aléatoire · ' + nDone + ' / 10 tâches'}</div></button></div>`;
+    return `<div class="sp-bill" data-i="10"><button class="task-box bonus ${st}${st === 'locked' ? ' closed' : ''}" data-i="10"><div class="tb-in">
+      <div class="tb-top"><span class="tb-num">${st === 'done' ? '✓' : '★'}</span><span class="tb-name">BONUS FINAL</span></div>
+      <div class="tb-desc">${st === 'done' ? 'Bonus récupéré' : 'Termine les 10 tâches'}</div>
+      <div class="tb-bar"><i style="width:${nDone * 10}%"></i><span>${st === 'done' ? '✓ RÉCUPÉRÉ' : nDone + ' / 10'}</span></div>
+      <div class="tb-rew">${rewardChips(TASK_BONUS)}</div><div class="tb-pin">★ BONUS PRÊT · TOUCHE POUR RÉCUPÉRER</div></div></button></div>`;
   })();
   box.querySelectorAll('.task-box').forEach(b => b.onclick = () => {
     if(spCam.dragDist > 8) return;
