@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.45</title>
+<title>Projet MECA V0.05.49</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5078,6 +5078,59 @@
   #spBoxes .sp-bill.pinned .task-box.bonus .tb-crys svg{width:20px; height:20px;}
   @keyframes pinPulse{50%{box-shadow:0 5px 0 #6b4000, 0 0 30px rgba(255,214,92,1);}}
 
+
+  /* ===== V0.05.46 : écran JOURNALIÈRE -- cadre, compteur et bulles en verre biseauté (même recette que les Tâches) ===== */
+  #d3Stage .sp-frame{flex:1; min-height:0; display:flex; padding:2px; --cut:20px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(155deg, #fff 0%, var(--wk, #a9c0f5) 38%, var(--wk, #5f7fc4) 66%, #b69cff 100%);}
+  #d3Stage .sp-frame .d3-view{flex:1; border:0; border-radius:0; box-shadow:none;
+    clip-path:polygon(calc(var(--cut) - 2px) 0,100% 0,100% calc(100% - var(--cut) + 2px),calc(100% - var(--cut) + 2px) 100%,0 100%,0 calc(var(--cut) - 2px));}
+  #dailyView .d3-hint{z-index:4 !important; padding:4px 12px; border-radius:3px; color:rgba(220,232,255,.8); background:rgba(8,16,40,.6);}
+  .sp-hud-wk{margin-top:3px; font-family:var(--font-title); font-size:7.5px; font-weight:900; letter-spacing:1.4px; color:var(--wk, #b9ccf5);}
+  #dqTicks i.d{background:#46d6a0;} #dqTicks i.r{background:#ffd65c;}
+  #d3Boxes .d3-bill:has(.expanded){z-index:99999 !important;}
+  #d3Boxes .dq-box{--cut:9px; --tc:#9fb8ee; --tc2:#3c5aa0; --fill:#7fa0e8; width:156px; padding:1.5px; gap:0; border:0; border-radius:0; display:block; text-align:left;
+    animation:none; box-shadow:none; transform:translate(-50%, -50%); transform-origin:50% 50%; transition:transform .18s ease;
+    background:linear-gradient(160deg, #fff 0%, var(--tc) 30%, var(--tc2) 100%);
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));}
+  #d3Boxes .dq-box.bonus{--tc:#9be8ff; --tc2:#3a8fb8; --fill:#5fd0f0; width:156px; border-color:transparent;}
+  #d3Boxes .dq-box.ready, #d3Boxes .dq-box.bonus.ready{--tc:#ffeaa0; --tc2:#e0a01c; --fill:#ffd65c;}
+  #d3Boxes .dq-box.done, #d3Boxes .dq-box.bonus.done{--tc:#9af5d2; --tc2:#1f9c78; --fill:#46d6a0; opacity:.92; filter:none;}
+  #d3Boxes .dq-box.expanded{transform:translate(-50%, -50%) scale(1.3); transform-origin:50% 50%; box-shadow:none; z-index:5;}
+  #d3Boxes .tb-in{position:relative; display:flex; flex-direction:column; gap:4px; padding:6px 8px 8px;
+    clip-path:polygon(calc(var(--cut) - 1px) 0,100% 0,100% calc(100% - var(--cut) + 1px),calc(100% - var(--cut) + 1px) 100%,0 100%,0 calc(var(--cut) - 1px));
+    background:linear-gradient(160deg, rgba(255,255,255,.2) 0%, transparent 38%), linear-gradient(180deg, rgba(28,48,96,.96), rgba(8,15,36,.97));}
+  #d3Boxes .tb-in::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--tc);}
+  #d3Boxes .dq-box.ready .tb-in::before{content:""; position:absolute; inset:0; pointer-events:none;   /* lueur dorée fixe (pas d'animation : un fondu sous clip-path coûte cher en batterie) ; la pulsation est dessinée sur la plateforme */
+    background:radial-gradient(ellipse 80% 90% at 50% 115%, rgba(255,214,92,.5), transparent 70%);}
+  #d3Boxes .tb-top{display:flex; align-items:center; gap:6px; min-width:0;}
+  #d3Boxes .tb-num{flex:none; min-width:21px; height:16px; line-height:16px; text-align:center; font-family:var(--font-title); font-size:8.5px; font-weight:900; color:#0b1530;
+    background:linear-gradient(180deg, #fff, var(--tc)); clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px);}
+  #d3Boxes .tb-name{flex:1; min-width:0; font-family:var(--font-title); font-size:8px; font-weight:900; letter-spacing:.9px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #d3Boxes .dq-box.ready .tb-name{color:#ffe38a;}
+  #d3Boxes .dq-box.bonus .tb-name{color:#9be8ff;} #d3Boxes .dq-box.bonus.ready .tb-name{color:#ffe38a;} #d3Boxes .dq-box.done .tb-name{color:#9af5d2;}
+  #d3Boxes .tb-desc{font-size:10px; line-height:1.15; color:#b9c9ee; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  #d3Boxes .dq-box.expanded .tb-desc{-webkit-line-clamp:4;}
+  #d3Boxes .tb-bar{position:relative; height:13px; background:rgba(0,0,0,.5); border:0; border-radius:0; overflow:hidden; box-shadow:0 0 0 1px rgba(255,255,255,.14) inset;
+    clip-path:polygon(3px 0,100% 0,100% calc(100% - 3px),calc(100% - 3px) 100%,0 100%,0 3px);}
+  #d3Boxes .tb-bar i{background:linear-gradient(90deg, var(--tc2), var(--fill));}
+  #d3Boxes .tb-bar span{font-size:8.5px; line-height:13px; text-align:center;}
+  #d3Boxes .tb-rew{justify-content:flex-start; gap:4px;}
+  #d3Boxes .tb-rew .rw-chip{--cut:4px; border-radius:0; font-size:9.5px; padding:1px 6px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.16) 0%, transparent 40%), rgba(0,0,0,.5); border:0; box-shadow:0 0 0 1px rgba(255,255,255,.16) inset;}
+  #d3Boxes .tb-pin{display:none; text-align:center; font-family:var(--font-title); font-size:6.5px; font-weight:900; letter-spacing:.8px; color:#ffd65c;}
+  /* V0.05.45 : case repliée (tâche à venir) : juste numéro + nom + flèche, dépliée par un appui */
+  #d3Boxes .dq-box.closed:not(.expanded){width:122px; --tc:#7f95c8; --tc2:#2c4272;}
+  #d3Boxes .dq-box.closed:not(.expanded) .tb-desc, #d3Boxes .dq-box.closed:not(.expanded) .tb-bar, #d3Boxes .dq-box.closed:not(.expanded) .tb-rew{display:none;}
+  #d3Boxes .dq-box.closed:not(.expanded) .tb-in{padding:5px 8px 6px;}
+  #d3Boxes .dq-box.closed:not(.expanded) .tb-name{color:#b9c9ee;}
+  #d3Boxes .dq-box.closed:not(.expanded) .tb-top::after{content:"▾"; flex:none; font-size:9px; color:#8fa6d6;}
+  #d3Boxes .dq-box{position:absolute; left:0; top:0; width:140px; pointer-events:auto; cursor:pointer; font-family:var(--font-ui); color:#fff; -webkit-appearance:none; appearance:none;}
+  #d3Boxes .dq-box .tb-desc{font-size:9.5px; color:#8fa6d6;}
+  #d3Boxes .dq-box.ready .tb-desc{color:#ffe38a; font-weight:700;}
+  #d3Boxes .dq-box.done .tb-desc{color:#9af5d2;}
+  #d3Boxes .dq-box .tb-rew{flex-wrap:wrap;}
   /* ===== V0.05.44 : écran TÂCHES -- cadre, compteur et cases en verre biseauté (même recette que les cases du menu et les puces de trophées) ===== */
   #spStage .sp-frame{flex:1; min-height:0; display:flex; padding:2px; --cut:20px;
     clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
@@ -8842,11 +8895,14 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
           <div class="inf-tag" id="dailyTag">J 0 / 7</div>
         </header>
         <div class="daily-info" id="dailyInfo"></div>
+        <div class="sp-frame">
         <div class="d3-view">
           <canvas id="d3Canvas"></canvas>
           <div id="d3Boxes"></div>
+          <div class="sp-hud" id="dqHud"><div class="sp-hud-main"><span class="sp-hud-lbl">JOUR</span><b id="dqHudN">0</b><small>/ 7</small></div><div class="sp-ticks" id="dqTicks"></div><div class="sp-hud-sub" id="dqHudSub"></div><div class="sp-hud-wk" id="dqWk"></div></div>
           <div class="d3-rail"><i id="d3Prog"></i></div>
           <div class="d3-hint">▼ GLISSE POUR AVANCER ▲</div>
+        </div>
         </div>
       </div>
     </div>
@@ -8901,7 +8957,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.45</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.49</b></div>
   </div>
 
     </div>
@@ -9752,9 +9808,25 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.45';
+var BUILD_VERSION = 'V0.05.49';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.49', items:[
+    'Journalière : route et sol entièrement refaits. Route à deux voies avec trottoirs, bordures, lignes de rive, plots lumineux, virages arrondis, chevrons lumineux qui montrent le sens du parcours et véhicules qui circulent.',
+    'Journalière : sol en dalles teintées avec joints néon, dalles lumineuses, ventilateurs, pistes, panneaux solaires, circuits imprimés ; socles sous les bâtiments, lampadaires le long de la route.',
+  ] },
+  { v:'V0.05.48', items:[
+    'Journalière : décor entièrement refait dans un style cyberpunk futuriste. Tours vitrées aux fenêtres éclairées, néons, panneaux lumineux, antennes, route bordée de néons, sol en dalles, impulsions lumineuses sur la route et véhicules volants. Les couleurs changent chaque semaine.',
+    'Journalière : affichage beaucoup plus léger (bâtiments pré-dessinés, éléments hors écran ignorés) : plus fluide, moins de chauffe, moins de mémoire.',
+  ] },
+  { v:'V0.05.47', items:[
+    'Tâches et Journalière : le trait qui relie une bulle à sa plateforme part maintenant du bord de la plateforme et arrive sur le bord de la bulle, au lieu de viser le centre.',
+  ] },
+  { v:'V0.05.46', items:[
+    'Journalière : écran repensé dans le style des Tâches. Cadre en verre biseauté aux couleurs de la semaine, compteur « JOUR X / 7 » et minuteur en haut à gauche, plateformes hexagonales numérotées (grise = à venir, dorée = à récupérer, verte = récupérée).',
+    'Journalière : les bulles de récompense sont en verre biseauté, placées de part et d’autre de la plateforme avec un trait de liaison. Elles ne se chevauchent plus et ne sont plus coupées.',
+    'Journalière : seuls les jours passés et celui du jour restent ouverts. Les jours à venir sont repliés (numéro + nom) et s’ouvrent quand on appuie dessus pour voir la récompense.',
+  ] },
   { v:'V0.05.45', items:[
     'Tâches : les cases des tâches à venir restent repliées (numéro + nom). Touche une case pour voir le détail. Les tâches passées, prêtes, en cours et celle du jour restent ouvertes.',
   ] },
@@ -18439,8 +18511,20 @@ function fmtHM(ms){ const h = Math.floor(ms / 3600000), m = Math.floor((ms % 360
 // ----- Scène 3D isométrique : la caméra avance sur le chemin quand on fait défiler -----
 // Coordonnées du plateau (px). Vers le haut de l'écran = y négatif. [x, y, jour]
 // La route, le décor et les couleurs changent CHAQUE SEMAINE (générés à partir du numéro de semaine).
+let DQ = { spr:{}, q:1, drones:[], blk:{}, lit:{}, cg:[], cglow:[], cars:[], turn:null, sv:null, vv:null, vp:null, rcv:null, vents:[], litQ:[], bb:[0, 1, 0, 1], g:0, sDone:-1, sc:null, lastKey:'', gen:0 }, D3_PADS = [], D3_DRAW = [], D3_PL = { cum:[0], L:1 };
 let D3_PATH = [[0,0,1]], D3_DECOR = [], D3_ITEMS = [], D3_END = -1800, D3T = null, d3BuiltWeek = -1;
 function d3Rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function d3GenPath2(rnd){   // V0.05.49 : 2 virages par jour, segments longs (route à deux voies lisible)
+  const pts = [[0, 0, 1]];
+  let x = 0, y = 0;
+  const pickX = from => { let nx; do{ nx = Math.round((rnd() * 2 - 1) * 15) * 10; } while(Math.abs(nx - from) < 110); return nx; };
+  for(let d = 2; d <= 7; d++){
+    const ty = -(d - 1) * 300, y1 = Math.round(y - (96 + rnd() * 70)), nx = pickX(x);
+    pts.push([x, y1, 0], [nx, y1, 0], [nx, ty, d]);
+    x = nx; y = ty;
+  }
+  return pts;
+}
 function d3GenPath(rnd){
   const pts = [[0, 0, 1]];
   let x = 0, y = 0;
@@ -18507,6 +18591,8 @@ function d3Theme(w){
     sky:[c(40, 11), c(30, 3)], skyGlow:[c(85, 65, .35), c(85, 65, 0)],
     ground:c(35, 6), grid:c(80, 82, .09), sweep:c(80, 82, .05),
     roadEdge:c(30, 2), road:c(30, 21), dash:c(80, 82, .45),
+    seam:c(36, 3.4), plate:[c(32, 7.6), c(32, 9.4), c(32, 6.3)], plinth:c(30, 11),
+    asph:c(26, 5.2), pave:c(26, 18.5), paveLine:c(30, 10, .9), curb:c(45, 40), laneLn:c(70, 82, .5), plaza:c(28, 17), plazaIn:c(30, 10.5),
     tS:[c(32, 21), c(30, 9)], tE:[c(35, 14), c(30, 4)], tT:c(33, 37),
     bS:[c(33, 22), c(30, 10)], bE:[c(35, 15), c(30, 6)], bT:c(35, 33),
     win:c(80, 82, .30), winE:c(50, 57, .16), rim:c(90, 88, .45),
@@ -18519,12 +18605,41 @@ function d3Theme(w){
 }
 function d3Build(w){
   const rnd = d3Rng(w * 7919 + 13);
-  D3_PATH = d3GenPath(rnd);
+  d3GenPath(rnd);
+  D3_PATH = d3GenPath2(d3Rng(w * 104729 + 7));
   D3_END = D3_PATH[D3_PATH.length - 1][1];
   D3_DECOR = d3GenDecor(rnd);
   D3T = d3Theme(w);
   D3_ITEMS = D3_DECOR.filter(d => d3DistToPath(d[0], d[1]) > 36 + d[2] * .75)
-    .map((d, i) => ({ x:d[0], y:d[1], s:d[2], h:d[3], k:d[4], neon: d[4] === 't' && i % 3 === 0, lc: D3T.lamps[i % D3T.lamps.length] }));
+    .map((d, i) => ({ x:d[0], y:d[1], s:d[2], h:d[3], k:d[4], neon: d[4] === 't' && i % 3 === 0, lc: D3T.lamps[i % D3T.lamps.length],
+      v: d[4] === 't' ? (i % 5 === 1 ? 'stepped' : 'tower') : d[4] === 'b' ? 'block' : 'lamp', bb: d[4] === 't' && d[3] > 190 && i % 4 === 2 }));
+  DQ.spr = {};
+  D3_PL = { cum:[0], L:1 };
+  for(let i = 1; i < D3_PATH.length; i++) D3_PL.cum.push(D3_PL.cum[i - 1] + Math.hypot(D3_PATH[i][0] - D3_PATH[i - 1][0], D3_PATH[i][1] - D3_PATH[i - 1][1]));
+  D3_PL.L = Math.max(1, D3_PL.cum[D3_PL.cum.length - 1]);
+  DQ.blk = {}; DQ.lit = {}; DQ.cg = []; DQ.cglow = []; DQ.gen++; DQ.sc = null;
+  dqBuildRC();
+  // on écarte les décors trop proches de la route, puis on aligne des lampadaires le long du trottoir (un côté, puis l'autre)
+  D3_ITEMS = D3_ITEMS.filter(it => d3DistToPath(it.x, it.y) > (it.k === 'l' ? 46 : 54 + it.s * .55));
+  { const rc = D3_RC, pads = D3_PATH.filter(p => p[2]); let side = 1, m = 0;
+    for(let sx = 60; sx < rc.L - 30; sx += 118){
+      const i = Math.min(rc.N - 1, Math.round(sx / rc.ds)), x = rc.X[i] - rc.TY[i] * 46 * side, y = rc.Y[i] + rc.TX[i] * 46 * side;
+      side = -side;
+      if(pads.some(p => Math.abs(p[0] - x) < 64 && Math.abs(p[1] - y) < 64)) continue;
+      D3_ITEMS.push({ x, y, s:14, h:40, k:'l', neon:false, lc: D3T.lamps[m++ % D3T.lamps.length], v:'lamp', bb:false });
+    } }
+  DQ.turn = new Uint8Array(D3_PATH.length);
+  for(let j = 0; j < D3_PATH.length; j++){
+    if(j === 0 || j === D3_PATH.length - 1){ DQ.turn[j] = 1; continue; }
+    const a = D3_PATH[j - 1], b = D3_PATH[j], c = D3_PATH[j + 1]; DQ.turn[j] = (Math.sign(b[0] - a[0]) !== Math.sign(c[0] - b[0]) || Math.sign(b[1] - a[1]) !== Math.sign(c[1] - b[1])) ? 1 : 0;
+  }
+  DQ.sv = new Uint8Array(D3_PATH.length); DQ.vv = new Uint8Array(D3_PATH.length); DQ.vp = new Array(D3_PATH.length); DQ.rcv = new Uint8Array((D3_RC.N >> 3) + 2);
+  dqMakeCars(w);
+  { const dr = d3Rng(w * 31 + 7); DQ.drones = [];       // véhicules volants : voies fixes, aller simple en boucle
+    for(let n = 0; n < 16; n++){
+      const ax = dr() < .5 ? 0 : 1, sp = (50 + dr() * 70) * (dr() < .5 ? -1 : 1);
+      DQ.drones.push({ ax, lane: ax ? D3_END + dr() * (300 - D3_END) : -520 + dr() * 1040, z: 120 + dr() * 170, sp, ph: dr() * 4000, col: D3T.lamps[n % D3T.lamps.length] });
+    } }
   d3BuiltWeek = w;
 }
 
@@ -18622,7 +18737,7 @@ function sceneFrameCheck(now, refit){
   }
   SCENE_Q.lastT = now;
 }
-let d3Cam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false }, d3Raf = null, d3State = { done:0, claimIdx:-1 };
+let d3Cam = { s:0, cur:0, v:0, x:0, y:0, drag:false, moved:false, stillFps:10 }, d3Raf = null, d3State = { done:0, claimIdx:-1 };
 // V0.03.09, optimisation fluidité : cache des cases de récompense + de leur point de tracé, reconstruit
 // une seule fois par renderDaily() (le nombre de cases ne change qu'une fois par semaine) au lieu de
 // refaire un document.querySelectorAll() + un Array.find() à CHAQUE frame dans d3Draw() (jusqu'à 60/s).
@@ -18656,185 +18771,655 @@ function d3GlowSprite(color){
 function d3Glow(ctx, x, y, r, color, alpha){
   const p = d3P(x, y, 0);
   const rx = r * D3_SC * p.k;
-  if(rx < 1) return;
+  if(rx < 1 || p.y < -rx || p.y > D3V.H + rx || p.x < -rx || p.x > D3V.W + rx) return;
   // halo pré-dessiné une fois par couleur (drawImage est bien moins coûteux qu'un dégradé recalculé)
   const spr = d3GlowSprite(color);
   ctx.globalAlpha = alpha;
   ctx.drawImage(spr, p.x - rx, p.y - rx * D3_CS, rx * 2, rx * 2 * D3_CS);
   ctx.globalAlpha = 1;
 }
-function d3Cube(ctx, it, t){
-  const { x, y, s, h } = it, x0 = x - s / 2, x1 = x + s / 2, y0 = y - s / 2, y1 = y + s / 2;
-  const S = [d3P(x0, y1, 0), d3P(x1, y1, 0), d3P(x1, y1, h), d3P(x0, y1, h)];   // face avant (sud)
-  const E = [d3P(x1, y0, 0), d3P(x1, y1, 0), d3P(x1, y1, h), d3P(x1, y0, h)];   // face droite (est)
-  const T = d3Rect(x0, y0, x1, y1, h);                                           // dessus
-  if(S[2].y > D3V.H + 40 && T[0].y > D3V.H + 40) return;
-  if(Math.max(S[1].y, E[1].y) < -40) return;
-  let cS, cE, cT;
-  if(it.k === 'pad'){
-    cS = it.st === 'done' ? ['#8a6414', '#2a1d05'] : it.st === 'ready' ? D3T.readyS : D3T.padS;
-    cE = it.st === 'done' ? ['#5e440d', '#1a1203'] : it.st === 'ready' ? D3T.readyE : D3T.padE;
-    cT = it.st === 'done' ? '#6b4d10' : it.st === 'ready' ? D3T.readyT : D3T.padT;
-  } else if(it.k === 'l'){
-    cS = D3T.bS; cE = D3T.bE; cT = it.lc;
-  } else if(it.neon){
-    cS = D3T.nS; cE = D3T.nE; cT = D3T.nT;
-  } else {
-    cS = it.k === 't' ? D3T.tS : D3T.bS;
-    cE = it.k === 't' ? D3T.tE : D3T.bE;
-    cT = it.k === 't' ? D3T.tT : D3T.bT;
+function dqLink(P0, rx, bx, by, halfW, hh){
+  const sg = bx >= P0.x ? 1 : -1;
+  let x0 = P0.x + sg * rx, y0 = P0.y, x1 = bx - sg * halfW, y1 = by;
+  if((x1 - x0) * sg < 6){   // bulle au-dessus (ou chevauchant) la plateforme : du haut de la plateforme vers le bas de la bulle
+    x0 = P0.x; y0 = P0.y - rx * .5; x1 = Math.max(bx - halfW, Math.min(bx + halfW, P0.x)); y1 = by + (P0.y > by ? hh : -hh);
   }
-  d3Poly(ctx, S, it.k === 't' ? d3VGrad(ctx, S[3], S[0], cS[0], cS[1]) : cS[0]);
-  d3Poly(ctx, E, cE[0]);
-  // étages lumineux des tours
-  if(it.k === 't'){
-    ctx.lineWidth = Math.max(1, 1.4 * S[0].k * D3_SC);
-    for(let z = 18; z < h - 8; z += 18){
-      const a = d3P(x0 + 4, y1, z), b = d3P(x1 - 4, y1, z), c = d3P(x1, y1 - 4, z), d = d3P(x1, y0 + 4, z);
-      ctx.strokeStyle = it.neon ? D3T.nWin : D3T.win;
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-      ctx.strokeStyle = it.neon ? D3T.nWinE : D3T.winE;
-      ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.stroke();
-    }
-    if(it.neon){
-      const a = d3P(x, y1, 4), b = d3P(x, y1, h - 4);
-      ctx.save(); ctx.strokeStyle = D3T.neon; ctx.globalAlpha = .25; ctx.lineWidth = 9 * a.k * D3_SC;
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-      ctx.globalAlpha = 1; ctx.lineWidth = 3 * a.k * D3_SC; ctx.stroke(); ctx.restore();
-    }
+  return [x0, y0, x1, y1];
+}
+function dqSt(st){
+  const h = D3T.h;
+  return st === 'ready' ? { hue:h, sat:55, l:[46, 33], edge:'#ffd65c', num:'#fff', glow:'rgba(255,214,92,.75)' }
+       : st === 'done'  ? { hue:160, sat:42, l:[30, 21], edge:'#46d6a0', num:'#9af5d2', glow:'rgba(70,214,160,.45)' }
+       :                  { hue:h, sat:30, l:[30, 21], edge:D3T.c(65, 72), num:'rgba(230,236,255,.85)', glow:null };
+}
+function d3Slab(ctx, n, z, st, t, label){
+  const C = dqSt(st), r = n.r, th = n.r > 50 ? 26 : 18;
+  const ring = [], rot = Math.PI / 6;
+  for(let a = 0; a < 6; a++){ const g = a / 6 * Math.PI * 2 + rot; ring.push([n.x + Math.cos(g) * r, n.y + Math.sin(g) * r, g]); }
+  const top = ring.map(p => d3P(p[0], p[1], z)), bot = ring.map(p => d3P(p[0], p[1], z - th));
+  const ctr = d3P(n.x, n.y, z);
+  // lueur du réacteur sous la plateforme
+  const E = d3P(n.x, n.y, z - th - 8), eg = ctx.createRadialGradient(E.x, E.y, 0, E.x, E.y, 46 * E.k);
+  eg.addColorStop(0, C.glow || `hsla(${C.hue},80%,62%,.5)`); eg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = eg; ctx.fillRect(E.x - 56, E.y - 56, 112, 112);
+  // flancs visibles (du plus loin au plus proche)
+  const faces = [];
+  for(let i = 0; i < 6; i++){
+    const j = (i + 1) % 6, gm = (ring[i][2] + ring[j][2]) / 2 + (j === 0 ? Math.PI : 0);
+    const f = (Math.cos(gm) + Math.sin(gm)) * Math.SQRT1_2;      // > 0 : tourné vers la caméra
+    if(f > .02) faces.push({ i, j, f, lr:(Math.cos(gm) - Math.sin(gm)) * Math.SQRT1_2 });
   }
+  faces.sort((a, b) => a.f - b.f).forEach(fc => {
+    const A = top[fc.i], B = top[fc.j], C2 = bot[fc.j], D = bot[fc.i];
+    const L = C.l[1] - 6 + fc.lr * 5;
+    d3Poly(ctx, [A, B, C2, D], `hsl(${C.hue},${C.sat}%,${Math.max(5, L)}%)`);   // aplat (pas de dégradé par flanc : moins coûteux)
+    d3Poly(ctx, [A, B, { x: B.x + (C2.x - B.x) * .35, y: B.y + (C2.y - B.y) * .35 }, { x: A.x + (D.x - A.x) * .35, y: A.y + (D.y - A.y) * .35 }], `hsla(${C.hue},${C.sat}%,${Math.min(70, L + 14)}%,.35)`);   // reflet en haut du flanc
+  });
   // dessus
-  if(it.k === 'l'){
-    d3Poly(ctx, T, it.lc);
-  } else {
-    d3Poly(ctx, T, cT);
-    ctx.strokeStyle = it.k === 'pad' ? (it.st === 'done' ? '#ffd65c' : it.st === 'ready' ? '#ffffff' : D3T.padRim) : it.neon ? D3T.neon : D3T.rim;
-    ctx.lineWidth = it.k === 'pad' ? 2 : 1.2;
-    ctx.beginPath(); ctx.moveTo(T[0].x, T[0].y); T.forEach(p => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.stroke();
+  const rr = Math.max(...top.map(p => Math.hypot(p.x - ctr.x, p.y - ctr.y)));
+  const tg = ctx.createRadialGradient(ctr.x - rr * .25, ctr.y - rr * .3, rr * .1, ctr.x, ctr.y, rr * 1.05);
+  tg.addColorStop(0, `hsl(${C.hue},${C.sat}%,${C.l[0] + 10}%)`); tg.addColorStop(1, `hsl(${C.hue},${C.sat}%,${C.l[1]}%)`);
+  d3Poly(ctx, top, tg);
+  // panneau intérieur
+  const inn = ring.map(p => d3P(n.x + (p[0] - n.x) * .68, n.y + (p[1] - n.y) * .68, z));
+  d3Poly(ctx, inn, 'rgba(2,8,24,.34)');
+  ctx.beginPath(); inn.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+  ctx.strokeStyle = C.edge; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; ctx.stroke(); ctx.globalAlpha = 1;
+  // liseré du bord (lumineux quand la tâche est prête)
+  ctx.beginPath(); top.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+  if(C.glow){ ctx.save(); ctx.globalAlpha = st === 'ready' ? .22 + .12 * Math.sin(t * 5) : .16; ctx.strokeStyle = C.edge; ctx.lineWidth = 7; ctx.stroke(); ctx.restore(); }   // halo : trait large translucide (pas de shadowBlur, trop coûteux)
+  ctx.strokeStyle = C.edge; ctx.lineWidth = 2; ctx.stroke();
+  // numéro / coche posé au sol (matrice isométrique locale)
+  if(label !== null){
+    const o = d3P(n.x, n.y, z), u = d3P(n.x + 7.07, n.y - 7.07, z), v = d3P(n.x + 7.07, n.y + 7.07, z);
+    ctx.save(); ctx.transform((u.x - o.x) / 10, (u.y - o.y) / 10, (v.x - o.x) / 10, (v.y - o.y) / 10, o.x, o.y);
+    if(st === 'done'){
+      ctx.strokeStyle = C.num; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(-13, 1); ctx.lineTo(-4, 10); ctx.lineTo(14, -11); ctx.stroke();
+    } else {
+      ctx.font = '900 30px Orbitron, Rajdhani, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = C.num; ctx.fillText(String(label), 0, 2);
+    }
+    ctx.restore();
   }
-  // plateforme : disque central
-  if(it.k === 'pad' && it.st !== 'locked'){
-    const pts = [];
-    for(let a = 0; a < 16; a++){ const ang = a / 16 * Math.PI * 2; pts.push(d3P(x + Math.cos(ang) * 16, y + Math.sin(ang) * 16, h)); }
-    const pulse = it.st === 'ready' ? .6 + .4 * Math.sin(t * 6) : 1;
-    ctx.save(); ctx.globalAlpha = pulse;
-    d3Poly(ctx, pts, it.st === 'ready' ? '#ffffff' : '#ffd65c'); ctx.restore();
+  return top;
+}
+// ===== V0.05.48 : ville cyberpunk. Les bâtiments sont dessinés une fois en sprites ; à chaque image : un drawImage par bâtiment visible =====
+function dqP1(x, y, z){ return [(x - y) * D3_C45 * D3_SC, (x + y) * D3_C45 * D3_SC * D3_CS - z * D3_SC * D3_SN]; }   // projection sans perspective (k = 1)
+function dqRng(str){ let h = 2166136261; for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return d3Rng(h >>> 0); }
+// fenêtres : repère local de la façade (u le long de la façade, v vers le haut)
+function dqWindows(c, org, dir, W, Hh, o, face){
+  c.save(); c.transform(dir * D3_C45 * D3_SC, D3_C45 * D3_SC * D3_CS, 0, -D3_SC * D3_SN, org[0], org[1]);
+  const cw = 7, ch = 9, rnd = o.rnd, cols = Math.max(1, Math.floor((W - 4) / cw)), rows = Math.floor((Hh - 8) / ch), lit = o.lit * (face === 'S' ? 1 : .72);
+  const ox = 2 + (W - 4 - cols * cw) / 2 + 1.5;
+  for(let r = 0; r < rows; r++){
+    const rowOn = rnd() < .8 ? 1 : .18;
+    for(let k = 0; k < cols; k++){
+      if(rnd() < lit * rowOn){ c.fillStyle = o.wcols[Math.floor(rnd() * o.wcols.length)]; c.globalAlpha = .5 + rnd() * .5; }
+      else { c.fillStyle = o.dark; c.globalAlpha = 1; }
+      c.fillRect(ox + k * cw, 6 + r * ch, 4, 5);
+    }
+  }
+  c.restore();
+}
+function dqPrism(c, ox, oy, x0, y0, x1, y1, z0, z1, o){
+  const P = (x, y, z) => { const p = dqP1(x, y, z); return [ox + p[0], oy + p[1]]; };
+  const poly = (pts, fill) => { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fillStyle = fill; c.fill(); };
+  const S = [P(x0, y1, z0), P(x1, y1, z0), P(x1, y1, z1), P(x0, y1, z1)], E = [P(x1, y0, z0), P(x1, y1, z0), P(x1, y1, z1), P(x1, y0, z1)], T = [P(x0, y0, z1), P(x1, y0, z1), P(x1, y1, z1), P(x0, y1, z1)];
+  const pal = o.pal;
+  let g = c.createLinearGradient(0, S[3][1], 0, S[0][1]); g.addColorStop(0, pal.sT); g.addColorStop(1, pal.sB); poly(S, g);
+  g = c.createLinearGradient(0, E[3][1], 0, E[0][1]); g.addColorStop(0, pal.eT); g.addColorStop(1, pal.eB); poly(E, g);
+  if(!o.plain){ dqWindows(c, P(x0, y1, z0), 1, x1 - x0, z1 - z0, o, 'S'); dqWindows(c, P(x1, y0, z0), -1, y1 - y0, z1 - z0, o, 'E'); }
+  poly(T, pal.top);
+  c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = o.rim; c.globalAlpha = .75;
+  c.beginPath(); T.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.stroke();
+  c.beginPath(); c.moveTo(S[1][0], S[1][1]); c.lineTo(S[2][0], S[2][1]); c.globalAlpha = .55; c.stroke(); c.globalAlpha = 1;   // arête avant lumineuse
+  return { P, S, E, T };
+}
+function dqSprite(it){
+  const lamp = it.k === 'l';
+  const sq = lamp ? 14 : Math.max(30, Math.round(it.s / 10) * 10), hq = lamp ? 40 : Math.max(24, Math.round(it.h / 20) * 20);
+  const key = it.v + sq + 'x' + hq + (it.neon ? 'n' : '') + (it.bb ? 'b' : '') + (lamp ? it.lc : '');
+  let sp = DQ.spr[key]; if(sp) return sp;
+  const q = DQ.q, rnd = dqRng(key + '|' + d3BuiltWeek), half = sq / 2, ant = (!lamp && hq > 150) ? 46 : 0;
+  // emprise du sprite (px, k = 1)
+  let mnx = 1e9, mny = 1e9, mxx = -1e9, mxy = -1e9;
+  [[-half, -half], [half, -half], [half, half], [-half, half]].forEach(([x, y]) => [0, hq + ant].forEach(z => { const p = dqP1(x, y, z); mnx = Math.min(mnx, p[0]); mxx = Math.max(mxx, p[0]); mny = Math.min(mny, p[1]); mxy = Math.max(mxy, p[1]); }));
+  const pad = 9, w = mxx - mnx + pad * 2, h = mxy - mny + pad * 2, ox = -mnx + pad, oy = -mny + pad;
+  const cv = document.createElement('canvas'); cv.width = Math.ceil(w * q); cv.height = Math.ceil(h * q);
+  const c = cv.getContext('2d'); c.scale(q, q);
+  const neon = it.neon, T = D3T;
+  const pal = lamp ? { sT:'#3a3f55', sB:'#14172a', eT:'#262a40', eB:'#0c0e1c', top:it.lc }
+            : neon ? { sT:T.cn(45, 27), sB:T.cn(40, 8), eT:T.cn(45, 17), eB:T.cn(40, 5), top:T.cn(45, 38) }
+            : it.v === 'block' ? { sT:T.c(34, 24), sB:T.c(30, 9), eT:T.c(36, 15), eB:T.c(30, 5), top:T.c(34, 33) }
+            : { sT:T.c(40, 28), sB:T.c(32, 8), eT:T.c(38, 17), eB:T.c(32, 5), top:T.c(40, 36) };
+  const o = { pal, rnd, rim: neon ? T.neon : T.rim, dark: T.c(35, 5), lit: neon ? .6 : it.v === 'block' ? .38 : .5, plain: lamp,
+    wcols: [T.cn(100, 74), T.cn(100, 74), T.c(85, 82), 'hsl(42,100%,72%)', T.lamps[1], T.lamps[2]] };
+  const cx = 0, cy = 0, P = (x, y, z) => { const p = dqP1(x, y, z); return [ox + p[0], oy + p[1]]; };
+  if(it.v === 'stepped'){
+    const h1 = Math.round(hq * .6), ins = Math.round(sq * .2);
+    dqPrism(c, ox, oy, -half, -half, half, half, 0, h1, o);
+    dqPrism(c, ox, oy, -half + ins, -half + ins, half - ins, half - ins, h1, hq, o);
+  } else if(lamp){
+    dqPrism(c, ox, oy, -1.5, -1.5, 1.5, 1.5, 0, hq - 6, o);
+    dqPrism(c, ox, oy, -4, -4, 4, 4, hq - 6, hq, { pal:{ sT:it.lc, sB:it.lc, eT:it.lc, eB:it.lc, top:'#fff' }, rim:'#fff', plain:true });
+  } else dqPrism(c, ox, oy, -half, -half, half, half, 0, hq, o);
+  if(!lamp){
+    const topZ = hq;
+    // bandeau néon vertical sur l'arête avant
+    if(neon || it.v === 'tower' && hq > 120){
+      const a = P(half, half, 4), b = P(half, half, topZ - 3);
+      c.save(); c.lineCap = 'round'; c.strokeStyle = T.neon; c.globalAlpha = .22; c.lineWidth = 8; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      c.globalAlpha = .95; c.lineWidth = 2.2; c.stroke(); c.restore();
+    }
+    // panneau lumineux
+    if(it.bb){
+      c.save(); c.transform(D3_C45 * D3_SC, D3_C45 * D3_SC * D3_CS, 0, -D3_SC * D3_SN, P(-half, half, 0)[0], P(-half, half, 0)[1]);
+      const bw = sq - 16, bh = Math.max(18, sq * .38), by0 = Math.round(hq * .5);
+      c.globalAlpha = .28; c.fillStyle = T.neon; c.fillRect(6, by0 - 3, bw + 4, bh + 6);
+      const gg = c.createLinearGradient(0, by0, 0, by0 + bh); gg.addColorStop(0, T.cn(100, 62)); gg.addColorStop(1, T.c(100, 58));
+      c.globalAlpha = 1; c.fillStyle = gg; c.fillRect(8, by0, bw, bh);
+      c.fillStyle = 'rgba(255,255,255,.85)'; c.fillRect(12, by0 + bh * .24, bw * .55, 2.2); c.fillRect(12, by0 + bh * .52, bw * .8, 2.2); c.fillRect(12, by0 + bh * .78, bw * .35, 2.2);
+      c.restore();
+    }
+    // toit : blocs techniques + antenne à balise
+    const nv = it.v === 'block' ? 2 : 1;
+    for(let n = 0; n < nv; n++){ const px = (rnd() - .5) * half * .9, py = (rnd() - .5) * half * .9, r = 3 + rnd() * 3;
+      dqPrism(c, ox, oy, px - r, py - r, px + r, py + r, topZ, topZ + 3 + rnd() * 5, { pal:{ sT:T.c(30, 18), sB:T.c(30, 10), eT:T.c(30, 12), eB:T.c(30, 7), top:T.cn(100, 62) }, rim:T.cn(100, 70), plain:true }); }
+    if(ant){
+      const a = P(0, 0, topZ), b = P(0, 0, topZ + ant);
+      c.strokeStyle = T.c(20, 60); c.lineWidth = 1.1; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      const hg = c.createRadialGradient(b[0], b[1], 0, b[0], b[1], 7); hg.addColorStop(0, 'rgba(255,70,110,.95)'); hg.addColorStop(1, 'rgba(255,70,110,0)');
+      c.fillStyle = hg; c.fillRect(b[0] - 7, b[1] - 7, 14, 14); c.fillStyle = '#ffd0dc'; c.beginPath(); c.arc(b[0], b[1], 1.3, 0, 7); c.fill();
+    }
+  }
+  sp = DQ.spr[key] = { c:cv, ax:ox, ay:oy, w, h };
+  return sp;
+}
+// trace un segment découpé à l'écran (Liang-Barsky) : on ne rastérise que la partie visible des longues lignes de la grille
+function dqLine(ctx, a, b, W, H){
+  let t0 = 0, t1 = 1; const dx = b.x - a.x, dy = b.y - a.y, m = 6;
+  const P = [-dx, dx, -dy, dy], Q = [a.x + m, W + m - a.x, a.y + m, H + m - a.y];
+  for(let i = 0; i < 4; i++){
+    if(P[i] === 0){ if(Q[i] < 0) return; }
+    else { const r = Q[i] / P[i]; if(P[i] < 0){ if(r > t1) return; if(r > t0) t0 = r; } else { if(r < t0) return; if(r < t1) t1 = r; } }
+  }
+  ctx.moveTo(a.x + t0 * dx, a.y + t0 * dy); ctx.lineTo(a.x + t1 * dx, a.y + t1 * dy);
+}
+// ===== V0.05.49 : sol en dalles + blocs décorés, route à deux voies (trottoirs, bordures, chevrons, véhicules) =====
+// Tout est calculé en coordonnées monde puis projeté ; on ne remplit que des polygones (peu coûteux) et on ignore tout ce qui est hors écran.
+const DQ_S = 120, DQ_B = 240;
+const DQ_COS = [], DQ_SIN = [];
+for(let a = 0; a < 10; a++){ DQ_COS.push(Math.cos(a / 10 * Math.PI * 2)); DQ_SIN.push(Math.sin(a / 10 * Math.PI * 2)); }
+let DQ_LX = new Float32Array(2048), DQ_LY = new Float32Array(2048);
+let DQ_PL = [new Int32Array(2048), new Int32Array(2048), new Int32Array(2048)], DQ_LIT = new Int32Array(2048);
+let D3_RC = { N:0, L:1, ds:6, X:null, Y:null, TX:null, TY:null, vs:[0] };
+function dqH(a, b, s){ let h = Math.imul(a | 0, 374761393) ^ Math.imul(b | 0, 668265263) ^ Math.imul((s | 0) + 7, 2147483647); h = Math.imul(h ^ (h >>> 13), 1274126177); return (h ^ (h >>> 16)) >>> 0; }
+// écran -> sol (inverse exact de d3P pour z = 0)
+function dqInv(sx, sy){
+  const ox = D3V.W * .5, oy = D3V.H * .3, ax = D3V.W * .40, ay = D3V.H * .68;
+  const Y0 = (sy - ay) / (D3_CS + (sy - oy) * D3_SN / D3_D);
+  const X = (sx - ox) * (1 - Y0 * D3_SN / D3_D) + ox - ax;
+  const u = X / (D3_C45 * D3_SC), v = Y0 / (D3_C45 * D3_SC);
+  return [d3Cam.x + (u + v) / 2, d3Cam.y + (v - u) / 2];
+}
+// axe de la route arrondi dans les virages, rééchantillonné tous les 6 px (positions, tangentes, longueur cumulée)
+function dqBuildRC(){
+  const pts = D3_PATH, n = pts.length, raw = [[pts[0][0], pts[0][1]]], marks = [0];
+  for(let i = 1; i < n - 1; i++){
+    const a = pts[i - 1], b = pts[i], c = pts[i + 1];
+    const l1 = Math.hypot(b[0] - a[0], b[1] - a[1]), l2 = Math.hypot(c[0] - b[0], c[1] - b[1]);
+    const d1x = Math.sign(b[0] - a[0]), d1y = Math.sign(b[1] - a[1]), d2x = Math.sign(c[0] - b[0]), d2y = Math.sign(c[1] - b[1]);
+    if(d1x === d2x && d1y === d2y){ raw.push([b[0], b[1]]); marks.push(raw.length - 1); continue; }
+    const r = Math.max(2, Math.min(24, l1 * .5 - 1, l2 * .5 - 1));
+    const cx = b[0] - d1x * r + d2x * r, cy = b[1] - d1y * r + d2y * r;
+    let mid = 0;
+    for(let k = 0; k <= 8; k++){
+      const ph = k / 8 * Math.PI / 2, co = Math.cos(ph), si = Math.sin(ph);
+      raw.push([cx + r * (-d2x * co + d1x * si), cy + r * (-d2y * co + d1y * si)]);
+      if(k === 4) mid = raw.length - 1;
+    }
+    marks.push(mid);
+  }
+  raw.push([pts[n - 1][0], pts[n - 1][1]]); marks.push(raw.length - 1);
+  const cum = [0];
+  for(let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
+  const L = Math.max(1, cum[cum.length - 1]), ds = 6, N = Math.floor(L / ds) + 1;
+  const X = new Float32Array(N), Y = new Float32Array(N), TX = new Float32Array(N), TY = new Float32Array(N);
+  let j = 1;
+  for(let i = 0; i < N; i++){
+    const s = Math.min(L, i * ds);
+    while(j < raw.length - 1 && cum[j] < s) j++;
+    const a = raw[j - 1], b = raw[j], d = cum[j] - cum[j - 1] || 1, f = Math.max(0, Math.min(1, (s - cum[j - 1]) / d));
+    X[i] = a[0] + (b[0] - a[0]) * f; Y[i] = a[1] + (b[1] - a[1]) * f;
+    TX[i] = (b[0] - a[0]) / d; TY[i] = (b[1] - a[1]) / d;
+  }
+  D3_RC = { N, L, ds, X, Y, TX, TY, vs: marks.map(m => cum[m]) };
+}
+function dqMakeCars(w){
+  const cr = d3Rng(w * 53 + 11); DQ.cars = [];
+  for(let i = 0; i < 14; i++) DQ.cars.push({ s0: cr() * D3_RC.L, v: 34 + cr() * 40, dir: i % 2 ? 1 : -1, lane: 11 + cr() * 3.4, len: 12 + cr() * 7, col: D3T.lamps[i % D3T.lamps.length], hue: (D3T.h + (cr() - .5) * 60 + 360) % 360 });
+}
+// distance d'un point à un bâtiment (empreinte) : on évite de poser des décors dans les bâtiments
+function dqUnderItem(x, y, m){
+  for(let i = 0; i < D3_ITEMS.length; i++){ const it = D3_ITEMS[i]; if(it.k !== 'l' && Math.abs(it.x - x) < it.s / 2 + m && Math.abs(it.y - y) < it.s / 2 + m) return true; }
+  return false;
+}
+function dqLit(ix, iy){
+  const key = (ix + 128) * 512 + (iy + 256);
+  let v = DQ.lit[key]; if(v !== undefined) return v;
+  const x = (ix + .5) * DQ_S, y = (iy + .5) * DQ_S;
+  return (DQ.lit[key] = (d3DistToPath(x, y) > 78 && !dqUnderItem(x, y, 46)) ? 1 : 0);
+}
+// décor d'un bloc de 240 : circuit, ventilateur, piste d'atterrissage, panneaux solaires, nid d'abeille, repères
+function dqBlock(bx, by){
+  const key = (bx + 64) * 256 + (by + 128);
+  let o = DQ.blk[key]; if(o) return o;
+  const h = dqH(bx, by, d3BuiltWeek + 99), r = h % 1000 / 10, cx = bx * DQ_B + DQ_B / 2, cy = by * DQ_B + DQ_B / 2, rnd = d3Rng(h);
+  let typ = 0;
+  if(d3DistToPath(cx, cy) > 138 && !dqUnderItem(cx, cy, 70)){
+    typ = r < 22 ? 0 : r < 38 ? 1 : r < 50 ? 2 : r < 62 ? 3 : r < 76 ? 4 : r < 88 ? 5 : 6;
+  }
+  o = { typ, cx, cy, tr: [], nodes: [] };
+  if(typ === 1){
+    for(let n = 0; n < 4; n++){
+      const sd = rnd() < .5 ? -1 : 1, y0 = cy + (rnd() * 170 - 85), x0 = cx + sd * 116, x1 = x0 - sd * (45 + rnd() * 55), y1 = y0 + (rnd() < .5 ? -1 : 1) * (28 + rnd() * 50), x2 = x1 - sd * (22 + rnd() * 38);
+      o.tr.push([[x0, y0], [x1, y0], [x1, y1], [x2, y1]]); o.nodes.push([x2, y1]);
+    }
+    o.chip = [cx + (rnd() - .5) * 60, cy + (rnd() - .5) * 60];
+  }
+  return (DQ.blk[key] = o);
+}
+function dqFeature(ctx, o, t, W, H){
+  const T = D3T, c = d3P(o.cx, o.cy, 0), k = c.k;
+  if(c.y < H * .17 || c.y > H + 140 * k || c.x < -140 * k || c.x > W + 140 * k) return;
+  const P = (x, y) => d3P(x, y, 0);
+  const poly = (pts, close) => { pts.forEach((q, i) => { const p = P(q[0], q[1]); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); if(close) ctx.closePath(); };
+  const circ = (r, n) => { const a = []; for(let i = 0; i < n; i++){ const g = i / n * Math.PI * 2; a.push([o.cx + Math.cos(g) * r, o.cy + Math.sin(g) * r]); } return a; };
+  const sq = (x, y, h) => [[x - h, y - h], [x + h, y - h], [x + h, y + h], [x - h, y + h]];
+  ctx.save(); ctx.lineJoin = 'round';
+  if(o.typ === 1){            // circuit imprimé
+    ctx.strokeStyle = T.cn(100, 62, .44); ctx.lineWidth = 1.3; ctx.beginPath(); o.tr.forEach(pl => poly(pl, false)); ctx.stroke();
+    ctx.fillStyle = T.cn(100, 72, .9); ctx.beginPath(); o.nodes.forEach(nd => poly(sq(nd[0], nd[1], 3.2), true)); ctx.fill();
+    ctx.beginPath(); poly(sq(o.chip[0], o.chip[1], 12), true); ctx.fillStyle = T.c(30, 7, .92); ctx.fill(); ctx.strokeStyle = T.cn(100, 66, .6); ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.beginPath(); poly(sq(o.chip[0], o.chip[1], 5), true); ctx.fillStyle = T.cn(100, 66, .35); ctx.fill();
+  } else if(o.typ === 2){     // bouche de ventilation (pales en rotation)
+    ctx.beginPath(); poly(circ(58, 14), true); ctx.fillStyle = T.c(35, 3.2, .9); ctx.fill(); ctx.strokeStyle = T.cn(100, 62, .42); ctx.lineWidth = 1.8; ctx.stroke();
+    ctx.beginPath(); poly(circ(42, 12), true); ctx.fillStyle = T.c(40, 2, .9); ctx.fill();
+    DQ.vents.push(o);        // les pales tournent : dessinées à chaque image par dqDyn
+  } else if(o.typ === 3){     // piste d'atterrissage : anneaux + repères
+    ctx.strokeStyle = T.cn(100, 62, .34); ctx.lineWidth = 1.8; ctx.beginPath(); poly(circ(68, 22), true); ctx.stroke();
+    ctx.strokeStyle = T.cn(100, 62, .22); ctx.lineWidth = 1.2; ctx.beginPath(); poly(circ(52, 20), true); ctx.stroke();
+    ctx.strokeStyle = T.cn(100, 70, .5); ctx.lineWidth = 2; ctx.beginPath();
+    for(let a = 0; a < 8; a++){ const g = a * Math.PI / 4 + Math.PI / 8, p0 = P(o.cx + Math.cos(g) * 52, o.cy + Math.sin(g) * 52), p1 = P(o.cx + Math.cos(g) * 68, o.cy + Math.sin(g) * 68); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); }
+    ctx.stroke();
+    ctx.beginPath(); poly(circ(10, 6), true); ctx.fillStyle = T.cn(100, 70, .5); ctx.fill();
+  } else if(o.typ === 4){     // panneaux solaires 2 × 2
+    for(let a = 0; a < 2; a++) for(let b = 0; b < 2; b++){
+      const x = o.cx + (a - .5) * 96, y = o.cy + (b - .5) * 96;
+      ctx.beginPath(); poly(sq(x, y, 42), true); ctx.fillStyle = T.c(60, 12, .95); ctx.fill(); ctx.strokeStyle = T.cn(70, 55, .4); ctx.lineWidth = 1.1; ctx.stroke();
+      ctx.beginPath(); poly(sq(x, y, 30), true); ctx.strokeStyle = T.cn(70, 62, .2); ctx.lineWidth = 1; ctx.stroke();
+    }
+  } else if(o.typ === 5){     // nid d'abeille
+    ctx.strokeStyle = T.c(80, 60, .26); ctx.lineWidth = 1.2; ctx.beginPath();
+    const hexr = 28, cs = [[0, 0]]; for(let a = 0; a < 6; a++) cs.push([Math.cos(a * Math.PI / 3 + Math.PI / 6) * hexr * 1.73, Math.sin(a * Math.PI / 3 + Math.PI / 6) * hexr * 1.73]);
+    cs.forEach(cc => { for(let a = 0; a <= 6; a++){ const g = a * Math.PI / 3, p = P(o.cx + cc[0] + Math.cos(g) * hexr, o.cy + cc[1] + Math.sin(g) * hexr); a ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } });
+    ctx.stroke();
+    ctx.beginPath(); for(let a = 0; a <= 6; a++){ const g = a * Math.PI / 3, p = P(o.cx + Math.cos(g) * hexr * .6, o.cy + Math.sin(g) * hexr * .6); a ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }
+    ctx.fillStyle = T.cn(100, 66, .3); ctx.fill();
+  } else if(o.typ === 6){     // repères au sol : équerres + croix
+    ctx.strokeStyle = T.cn(100, 70, .46); ctx.lineWidth = 2; ctx.beginPath();
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => { const x = o.cx + sx * 84, y = o.cy + sy * 84; poly([[x - sx * 30, y], [x, y], [x, y - sy * 30]], false); });
+    poly([[o.cx - 12, o.cy], [o.cx + 12, o.cy]], false); poly([[o.cx, o.cy - 12], [o.cx, o.cy + 12]], false);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+// sol (partie fixe) : dalles de 120 (3 teintes), joints néon tous les 240, blocs décorés, socles des bâtiments, ombres
+function dqGroundS(ctx, W, H){
+  DQ.vents.length = 0; DQ.litQ.length = 0;
+  const T = D3T, S = DQ_S, B = DQ_B, ox = W * .5, oy = H * .3, axx = W * .4, ayy = H * .68, A = D3_C45 * D3_SC, camx = d3Cam.x, camy = d3Cam.y, topY = H * .09, m = 50;
+  const c0 = dqInv(-m, topY), c1 = dqInv(W + m, topY), c2 = dqInv(-m, H + m), c3 = dqInv(W + m, H + m);
+  const minX = Math.min(c0[0], c1[0], c2[0], c3[0]), maxX = Math.max(c0[0], c1[0], c2[0], c3[0]), minY = Math.min(c0[1], c1[1], c2[1], c3[1]), maxY = Math.max(c0[1], c1[1], c2[1], c3[1]);
+  ctx.fillStyle = T.seam; ctx.fillRect(0, 0, W, H);
+  const ix0 = Math.floor(minX / S), ix1 = Math.ceil(maxX / S), iy0 = Math.floor(minY / S), iy1 = Math.ceil(maxY / S), nx = ix1 - ix0 + 1, ny = iy1 - iy0 + 1, need = nx * ny;
+  if(DQ_LX.length < need){ DQ_LX = new Float32Array(need + 256); DQ_LY = new Float32Array(need + 256); DQ_PL = [0, 1, 2].map(() => new Int32Array(need + 256)); DQ_LIT = new Int32Array(need + 256); }
+  for(let j = 0; j < ny; j++){
+    const wy = (iy0 + j) * S - camy;
+    for(let i = 0; i < nx; i++){
+      const wx = (ix0 + i) * S - camx, yy = (wx + wy) * A, k = D3_D / Math.max(60, D3_D - yy * D3_SN), q = j * nx + i;
+      DQ_LX[q] = ox + (axx + (wx - wy) * A - ox) * k; DQ_LY[q] = oy + (ayy + yy * D3_CS - oy) * k;
+    }
+  }
+  const cnt = [0, 0, 0]; let nl = 0; const seed = d3BuiltWeek;
+  for(let j = 0; j < ny - 1; j++) for(let i = 0; i < nx - 1; i++){
+    const a = j * nx + i, b = a + 1, c = a + nx, d = c + 1, ya = DQ_LY[a], yb = DQ_LY[b], yc = DQ_LY[c], yd = DQ_LY[d], xa = DQ_LX[a], xb = DQ_LX[b], xc = DQ_LX[c], xd = DQ_LX[d];
+    if(Math.max(ya, yb, yc, yd) < topY || Math.min(ya, yb, yc, yd) > H + 4 || Math.max(xa, xb, xc, xd) < -4 || Math.min(xa, xb, xc, xd) > W + 4) continue;
+    const h = dqH(ix0 + i, iy0 + j, seed), tn = h % 3;
+    DQ_PL[tn][cnt[tn]++] = a;
+    if((h >>> 9) % 9 === 0 && dqLit(ix0 + i, iy0 + j)) DQ_LIT[nl++] = a;
+  }
+  const f = .972;
+  for(let tn = 0; tn < 3; tn++){
+    ctx.fillStyle = T.plate[tn]; ctx.beginPath();
+    const L = DQ_PL[tn];
+    for(let n = 0; n < cnt[tn]; n++){
+      const a = L[n], b = a + 1, c = a + nx, d = c + 1, cx = (DQ_LX[a] + DQ_LX[b] + DQ_LX[c] + DQ_LX[d]) * .25, cy = (DQ_LY[a] + DQ_LY[b] + DQ_LY[c] + DQ_LY[d]) * .25;
+      ctx.moveTo(cx + (DQ_LX[a] - cx) * f, cy + (DQ_LY[a] - cy) * f); ctx.lineTo(cx + (DQ_LX[b] - cx) * f, cy + (DQ_LY[b] - cy) * f);
+      ctx.lineTo(cx + (DQ_LX[d] - cx) * f, cy + (DQ_LY[d] - cy) * f); ctx.lineTo(cx + (DQ_LX[c] - cx) * f, cy + (DQ_LY[c] - cy) * f); ctx.closePath();
+    }
+    ctx.fill();
+  }
+  for(let n = 0; n < nl; n++){      // dalles lumineuses : on retient leur forme, dqDyn les fait pulser
+    const a = DQ_LIT[n], b = a + 1, c = a + nx, d = c + 1, j = (a / nx) | 0, i = a - j * nx, h = dqH(ix0 + i, iy0 + j, seed);
+    const cx = (DQ_LX[a] + DQ_LX[b] + DQ_LX[c] + DQ_LX[d]) * .25, cy = (DQ_LY[a] + DQ_LY[b] + DQ_LY[c] + DQ_LY[d]) * .25, g = .9;
+    DQ.litQ.push([cx + (DQ_LX[a] - cx) * g, cy + (DQ_LY[a] - cy) * g, cx + (DQ_LX[b] - cx) * g, cy + (DQ_LY[b] - cy) * g, cx + (DQ_LX[d] - cx) * g, cy + (DQ_LY[d] - cy) * g, cx + (DQ_LX[c] - cx) * g, cy + (DQ_LY[c] - cy) * g, (h & 1) ? T.neon : T.lamps[(h >> 3) % T.lamps.length], (h % 628) / 100]);
+  }
+  // joints néon des blocs (tous les 240)
+  ctx.strokeStyle = T.cn(100, 62, .17); ctx.lineWidth = 1.3; ctx.beginPath();
+  for(let x = Math.ceil(minX / B) * B; x <= maxX; x += B) dqLine(ctx, d3P(x, minY, 0), d3P(x, maxY, 0), W, H);
+  for(let y = Math.ceil(minY / B) * B; y <= maxY; y += B) dqLine(ctx, d3P(minX, y, 0), d3P(maxX, y, 0), W, H);
+  ctx.stroke();
+  // décor des blocs
+  for(let by = Math.floor(minY / B); by <= Math.floor(maxY / B); by++) for(let bx = Math.floor(minX / B); bx <= Math.floor(maxX / B); bx++){ const o = dqBlock(bx, by); if(o.typ) dqFeature(ctx, o, 0, W, H); }
+  DQ.bb = [minX, maxX, minY, maxY];
+  // socles (plateformes d'implantation) des bâtiments + ombres en une seule passe
+  const vis = [];
+  D3_ITEMS.forEach(it => { if(it.k === 'l') return; const p = d3P(it.x, it.y, 0), r = (it.s + it.h * .7) * D3_SC * p.k; if(p.y < topY - r || p.y > H + r * .5 || p.x < -r || p.x > W + r) return; vis.push(it); });
+  ctx.beginPath();
+  vis.forEach(it => {
+    const hx = it.s / 2 + 11, c = 9, x0 = it.x - hx, x1 = it.x + hx, y0 = it.y - hx, y1 = it.y + hx;
+    [[x0 + c, y0], [x1 - c, y0], [x1, y0 + c], [x1, y1 - c], [x1 - c, y1], [x0 + c, y1], [x0, y1 - c], [x0, y0 + c]].forEach((q, i) => { const p = d3P(q[0], q[1], 0); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); });
+    ctx.closePath();
+  });
+  ctx.fillStyle = T.plinth; ctx.fill(); ctx.strokeStyle = T.cn(100, 62, .34); ctx.lineWidth = 1.1; ctx.stroke();
+  ctx.beginPath();
+  vis.forEach(it => {
+    const kx = it.h * .5, r = d3Rect(it.x - it.s / 2 - kx, it.y - it.s / 2 - kx, it.x + it.s / 2, it.y + it.s / 2, 0);
+    ctx.moveTo(r[0].x, r[0].y); for(let i = 1; i < 4; i++) ctx.lineTo(r[i].x, r[i].y); ctx.closePath();
+  });
+  ctx.fillStyle = 'rgba(0,0,0,.36)'; ctx.fill();
+}
+// ----- route -----
+function dqRoadPath(ctx, w, s0, s1, v0, v1){
+  ctx.beginPath();
+  const sv = DQ.sv, vv = DQ.vv;
+  for(let i = s0; i <= s1; i++){
+    if(!sv[i]) continue;
+    const a = D3_PATH[i - 1], b = D3_PATH[i];
+    const r = a[0] === b[0] ? d3Rect(a[0] - w, Math.min(a[1], b[1]), a[0] + w, Math.max(a[1], b[1]), 0) : d3Rect(Math.min(a[0], b[0]), a[1] - w, Math.max(a[0], b[0]), a[1] + w, 0);
+    ctx.moveTo(r[0].x, r[0].y); for(let k = 1; k < 4; k++) ctx.lineTo(r[k].x, r[k].y); ctx.closePath();
+  }
+  for(let j = v0; j <= v1; j++){
+    if(!vv[j] || !DQ.turn[j]) continue;
+    const p = D3_PATH[j];
+    for(let a = 0; a < 10; a++){ const q = d3P(p[0] + DQ_COS[a] * w, p[1] + DQ_SIN[a] * w, 0); a ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }
+    ctx.closePath();
   }
 }
-// Couches fixes (ciel, brume) dessinées une seule fois par taille d'écran / semaine
+function dqRcLine(ctx, off){
+  const rc = D3_RC, vis = DQ.rcv; let pen = false;
+  for(let i = 0; i < rc.N; i++){
+    if(!vis[i >> 3]){ pen = false; continue; }
+    if((i & 7) && i > 0 && i < rc.N - 1 && rc.TX[i] === rc.TX[i - 1] && rc.TX[i] === rc.TX[i + 1] && rc.TY[i] === rc.TY[i - 1] && rc.TY[i] === rc.TY[i + 1]) continue;
+    const p = d3P(rc.X[i] - rc.TY[i] * off, rc.Y[i] + rc.TX[i] * off, 0);
+    pen ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); pen = true;
+  }
+}
+function dqCars(ctx, t, W, H){
+  const rc = D3_RC, L = rc.L; DQ.cg.length = 0;
+  DQ.cars.forEach(c => {
+    const s = (((c.s0 + c.dir * c.v * t) % L) + L) % L, fi = s / rc.ds, i0 = Math.min(rc.N - 2, fi | 0), f = fi - i0;
+    const x = rc.X[i0] + (rc.X[i0 + 1] - rc.X[i0]) * f, y = rc.Y[i0] + (rc.Y[i0 + 1] - rc.Y[i0]) * f, tx = rc.TX[i0], ty = rc.TY[i0];
+    const lane = c.dir > 0 ? c.lane : -c.lane, cx = x - ty * lane, cy = y + tx * lane;
+    const P0 = d3P(cx, cy, 3); if(P0.x < -30 || P0.x > W + 30 || P0.y < H * .05 || P0.y > H + 30) return;
+    const al = Math.min(1, s / 70, (L - s) / 70), fx = c.dir * tx, fy = c.dir * ty, sx = -fy, sy = fx, hl = c.len / 2, hw = 3.1;
+    const q = [[cx + fx * hl + sx * hw, cy + fy * hl + sy * hw], [cx + fx * hl - sx * hw, cy + fy * hl - sy * hw], [cx - fx * hl - sx * hw, cy - fy * hl - sy * hw], [cx - fx * hl + sx * hw, cy - fy * hl + sy * hw]].map(p => d3P(p[0], p[1], 3));
+    ctx.globalAlpha = al; d3Poly(ctx, q, `hsl(${c.hue},45%,18%)`);
+    const r = [[cx + fx * hl * .5 + sx * hw * .6, cy + fy * hl * .5 + sy * hw * .6], [cx + fx * hl * .5 - sx * hw * .6, cy + fy * hl * .5 - sy * hw * .6], [cx - fx * hl * .6 - sx * hw * .6, cy - fy * hl * .6 - sy * hw * .6], [cx - fx * hl * .6 + sx * hw * .6, cy - fy * hl * .6 + sy * hw * .6]].map(p => d3P(p[0], p[1], 5));
+    d3Poly(ctx, r, `hsl(${c.hue},70%,38%)`); ctx.globalAlpha = 1;
+    DQ.cg.push([cx + fx * hl, cy + fy * hl, '#d8f4ff', .85 * al, 13], [cx - fx * hl, cy - fy * hl, '#ff3a5c', .8 * al, 11], [cx, cy, c.col, .3 * al, 20]);
+  });
+}
+function dqVis(W, H){
+  const n = D3_PATH.length, sv = DQ.sv, vv = DQ.vv, vp = DQ.vp, topY = H * .05, rc = D3_RC;
+  for(let j = 0; j < n; j++){ const p = vp[j] = d3P(D3_PATH[j][0], D3_PATH[j][1], 0); vv[j] = (p.x > -90 * p.k && p.x < W + 90 * p.k && p.y > topY - 90 * p.k && p.y < H + 110 * p.k) ? 1 : 0; }
+  for(let i = 1; i < n; i++){ const a = vp[i - 1], b = vp[i], mm = 75 * Math.max(a.k, b.k); sv[i] = (Math.max(a.x, b.x) > -mm && Math.min(a.x, b.x) < W + mm && Math.max(a.y, b.y) > topY - mm && Math.min(a.y, b.y) < H + mm) ? 1 : 0; }
+  const nb = (rc.N >> 3) + 1;
+  for(let b = 0; b < nb; b++){ const i = Math.min(rc.N - 1, b * 8 + 4), p = d3P(rc.X[i], rc.Y[i], 0), mm = 90 * p.k; DQ.rcv[b] = (p.x > -mm && p.x < W + mm && p.y > topY - mm && p.y < H + mm) ? 1 : 0; }
+  DQ.g = d3State.done > 0 ? Math.max(0, D3_PATH.findIndex(p => p[2] === d3State.done)) : 0; DQ.sDone = DQ.g > 0 ? rc.vs[DQ.g] : -1;
+}
+function dqRoadS(ctx, W, H){
+  const T = D3T, n = D3_PATH.length, sv = DQ.sv, rc = D3_RC, topY = H * .05, g = DQ.g;
+  // halo + liseré néon (vert sur la partie parcourue)
+  const grp = (s0, s1, v0, v1, halo, rim) => {
+    if(s1 < s0 && v1 < v0) return;
+    ctx.fillStyle = halo; dqRoadPath(ctx, 46, s0, s1, v0, v1); ctx.fill();
+    ctx.fillStyle = rim; dqRoadPath(ctx, 38.8, s0, s1, v0, v1); ctx.fill();
+  };
+  if(g > 0) grp(1, g, 0, g, 'rgba(70,214,160,.13)', '#46d6a0');
+  grp(g + 1, n - 1, g > 0 ? g + 1 : 0, n - 1, T.cn(100, 62, .11), T.cn(100, 66, .9));
+  const all = (w, col) => { ctx.fillStyle = col; dqRoadPath(ctx, w, 1, n - 1, 0, n - 1); ctx.fill(); };
+  all(36.8, T.roadEdge);
+  all(35, T.pave);
+  // joints du trottoir
+  ctx.beginPath();
+  for(let i = 1; i < n; i++){
+    if(!sv[i]) continue;
+    const a = D3_PATH[i - 1], b = D3_PATH[i], hz = a[1] === b[1], len = Math.abs(hz ? b[0] - a[0] : b[1] - a[1]), sg = Math.sign(hz ? b[0] - a[0] : b[1] - a[1]);
+    for(let s = 54; s < len - 54; s += 12){
+      const px = hz ? a[0] + sg * s : a[0], py = hz ? a[1] : a[1] + sg * s, c0 = d3P(px, py, 0);
+      if(c0.x < -20 || c0.x > W + 20 || c0.y < topY - 20 || c0.y > H + 20) continue;
+      for(let sd = -1; sd <= 1; sd += 2){
+        const o0 = 29.4 * sd, o1 = 34.6 * sd, e = 0.7;
+        const p = hz ? [[px - e, py + o0], [px + e, py + o0], [px + e, py + o1], [px - e, py + o1]] : [[px + o0, py - e], [px + o1, py - e], [px + o1, py + e], [px + o0, py + e]];
+        p.forEach((q, k) => { const z = d3P(q[0], q[1], 0); k ? ctx.lineTo(z.x, z.y) : ctx.moveTo(z.x, z.y); }); ctx.closePath();
+      }
+    }
+  }
+  ctx.fillStyle = T.paveLine; ctx.fill();
+  all(29, T.curb);
+  all(26.6, T.asph);
+  // lignes de rive (rouge sombre -> néon doux) + plots lumineux
+  ctx.beginPath(); dqRcLine(ctx, 19.5); dqRcLine(ctx, -19.5);
+  ctx.strokeStyle = T.laneLn; ctx.lineWidth = 1.2; ctx.lineJoin = 'round'; ctx.stroke();
+  ctx.beginPath();
+  for(let i = 3; i < rc.N; i += 7){
+    if(!DQ.rcv[i >> 3]) continue;
+    for(let sd = -1; sd <= 1; sd += 2){ const p = d3P(rc.X[i] - rc.TY[i] * 27.8 * sd, rc.Y[i] + rc.TX[i] * 27.8 * sd, 0); ctx.rect(p.x - 1.2, p.y - 1.2, 2.4, 2.4); }
+  }
+  ctx.fillStyle = T.cn(100, 78, .85); ctx.fill();
+  // esplanades sous les plateformes (sol)
+  D3_PADS.forEach(p => {
+    const B = d3P(p.x, p.y, 0); if(B.y < -100 || B.y > H + 140) return;
+    const oc = (h, c) => { const a = [[-h + c, -h], [h - c, -h], [h, -h + c], [h, h - c], [h - c, h], [-h + c, h], [-h, h - c], [-h, -h + c]]; ctx.beginPath(); a.forEach((q, i) => { const z = d3P(p.x + q[0], p.y + q[1], 0); i ? ctx.lineTo(z.x, z.y) : ctx.moveTo(z.x, z.y); }); ctx.closePath(); };
+    oc(50, 12); ctx.fillStyle = T.plaza; ctx.fill();
+    oc(43, 9); ctx.fillStyle = T.plazaIn; ctx.fill(); ctx.strokeStyle = T.cn(100, 62, .22); ctx.lineWidth = 1; ctx.stroke();
+  });
+}
+// partie fixe de la scène (sol + route) : dessinée directement quand la caméra bouge, mise en cache quand elle s'arrête
+function dqStatic(ctx, W, H){
+  dqGroundS(ctx, W, H); dqRoadS(ctx, W, H);
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';       // halos des lampadaires (fixes : mis en cache avec le reste)
+  D3_ITEMS.forEach(it => { if(it.k === 'l') d3Glow(ctx, it.x, it.y, 60, it.lc, .3); });
+  ctx.restore();
+}
+// partie animée : dalles lumineuses, pales, bande lumineuse, chevrons, cadres des plateformes, véhicules
+function dqDyn(ctx, t, W, H){
+  const T = D3T, rc = D3_RC, sDone = DQ.sDone;
+  DQ.litQ.forEach(q => {
+    ctx.globalAlpha = .07 + .11 * (.5 + .5 * Math.sin(t * 1.5 + q[9])); ctx.fillStyle = q[8];
+    ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[2], q[3]); ctx.lineTo(q[4], q[5]); ctx.lineTo(q[6], q[7]); ctx.closePath(); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  if(DQ.vents.length){
+    ctx.strokeStyle = T.cn(100, 64, .6); ctx.lineWidth = 2.4; ctx.beginPath();
+    DQ.vents.forEach(o => { const ph = t * .9, q0 = d3P(o.cx, o.cy, 0);
+      for(let a = 0; a < 4; a++){ const g = ph + a * Math.PI / 2, q1 = d3P(o.cx + Math.cos(g) * 37, o.cy + Math.sin(g) * 37, 0); ctx.moveTo(q0.x, q0.y); ctx.lineTo(q1.x, q1.y); } });
+    ctx.stroke();
+  }
+  { const bb = DQ.bb, sy = bb[2] + ((t * 260) % (bb[3] - bb[2])); d3Poly(ctx, d3Rect(bb[0], sy, bb[1], sy + 70, 0), T.sweep); }
+  // chevrons : l'onde lumineuse avance dans le sens du parcours
+  const buckets = [[[], [], []], [[], [], []]], NC = Math.floor((rc.L - 48) / 46), glows = DQ.cglow; glows.length = 0;
+  const chev = [[6, 0], [-4, 10], [-8, 10], [2, 0], [-8, -10], [-4, -10]];
+  for(let m = 0; m < NC; m++){
+    const s = 24 + m * 46, i = Math.round(s / rc.ds); if(!DQ.rcv[i >> 3]) continue;
+    const cx = rc.X[i], cy = rc.Y[i], tx = rc.TX[i], ty = rc.TY[i];
+    let skip = false; for(let q = 0; q < D3_PADS.length; q++){ const pd = D3_PADS[q]; if(Math.abs(pd.x - cx) < 60 && Math.abs(pd.y - cy) < 60){ skip = true; break; } }
+    if(skip) continue;
+    const ph = ((s - t * 85) % 276 + 276) % 276, a = ph < 92 ? .95 - ph / 92 * .66 : .22, bk = a > .72 ? 2 : a > .42 ? 1 : 0, dn = s <= sDone ? 1 : 0;
+    buckets[dn][bk].push(chev.map(([u, v]) => d3P(cx + tx * u - ty * v, cy + ty * u + tx * v, 0)));
+    if(bk === 2 && ph < 40) glows.push([cx, cy, dn ? '#46d6a0' : T.neon, .4]);
+  }
+  for(let dn = 0; dn < 2; dn++) for(let bk = 0; bk < 3; bk++){
+    const L = buckets[dn][bk]; if(!L.length) continue;
+    ctx.fillStyle = dn ? '#46d6a0' : T.neon; ctx.globalAlpha = [.34, .7, 1][bk]; ctx.beginPath();
+    L.forEach(pl => { pl.forEach((p, k) => k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); });
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  D3_PADS.forEach(p => {
+    const B = d3P(p.x, p.y, 0); if(B.y < -100 || B.y > H + 140) return;
+    const col = p.st === 'ready' ? '#ffd65c' : p.st === 'done' ? '#46d6a0' : T.neon, R = d3Rect(p.x - 46, p.y - 46, p.x + 46, p.y + 46, 0);
+    ctx.save(); ctx.globalAlpha = p.st === 'ready' ? .55 + .25 * Math.sin(t * 5) : .4; ctx.strokeStyle = col; ctx.lineWidth = 1.6;
+    ctx.beginPath(); R.forEach((r, i) => i ? ctx.lineTo(r.x, r.y) : ctx.moveTo(r.x, r.y)); ctx.closePath(); ctx.stroke();
+    ctx.globalAlpha *= .7; ctx.lineWidth = 3.2;
+    const cn = 14; ctx.beginPath();
+    [[p.x - 46, p.y - 46, 1, 1], [p.x + 46, p.y - 46, -1, 1], [p.x + 46, p.y + 46, -1, -1], [p.x - 46, p.y + 46, 1, -1]].forEach(([x, y, sx, sy2]) => {
+      const a = d3P(x + sx * cn, y, 0), b = d3P(x, y, 0), d = d3P(x, y + sy2 * cn, 0); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(d.x, d.y); });
+    ctx.stroke(); ctx.restore();
+  });
+  dqCars(ctx, t, W, H);
+}
+// halos additifs : phares, feux arrière, lueur sous les véhicules, tête des vagues lumineuses
+function dqGlows(ctx){
+  DQ.cg.forEach(g => d3Glow(ctx, g[0], g[1], g[4], g[2], g[3]));
+  DQ.cglow.forEach(g => d3Glow(ctx, g[0], g[1], 26, g[2], g[3]));
+}
+// couches fixes (brume + halo néon de l'horizon), dessinées une seule fois par taille d'écran / semaine
 function d3Layers(){
   const key = D3V.W + 'x' + D3V.H + '@' + D3V.dpr + '#' + d3BuiltWeek;
   if(D3V.layers && D3V.layers.key === key) return D3V.layers;
-  const mk = () => { const c = document.createElement('canvas'); c.width = Math.round(D3V.W * D3V.dpr); c.height = Math.round(D3V.H * D3V.dpr); const x = c.getContext('2d'); x.scale(D3V.dpr, D3V.dpr); return [c, x]; };
+  const cv = document.createElement('canvas'); cv.width = Math.round(D3V.W * D3V.dpr); cv.height = Math.round(D3V.H * D3V.dpr);
+  const f = cv.getContext('2d'); f.scale(D3V.dpr, D3V.dpr);
   const W = D3V.W, H = D3V.H;
-  const [bg, b] = mk();
-  let g = b.createLinearGradient(0, 0, 0, H); g.addColorStop(0, D3T.sky[0]); g.addColorStop(1, D3T.sky[1]); b.fillStyle = g; b.fillRect(0, 0, W, H);
-  g = b.createRadialGradient(W * .6, 0, 0, W * .6, 0, H * .7); g.addColorStop(0, D3T.skyGlow[0]); g.addColorStop(1, D3T.skyGlow[1]); b.fillStyle = g; b.fillRect(0, 0, W, H);
-  const [fog, f] = mk();
-  g = f.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, D3T.fog(.95)); g.addColorStop(.16, D3T.fog(.35)); g.addColorStop(.32, D3T.fog(0)); g.addColorStop(.86, D3T.fog(0)); g.addColorStop(1, D3T.fog(.85));
+  let g = f.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, D3T.fog(.96)); g.addColorStop(.14, D3T.fog(.55)); g.addColorStop(.34, D3T.fog(0)); g.addColorStop(.88, D3T.fog(0)); g.addColorStop(1, D3T.fog(.82));
   f.fillStyle = g; f.fillRect(0, 0, W, H);
-  D3V.layers = { key, bg, fog };
+  g = f.createRadialGradient(W * .62, 0, 0, W * .62, 0, H * .6);
+  g.addColorStop(0, D3T.cn(100, 62, .30)); g.addColorStop(.5, D3T.c(90, 55, .10)); g.addColorStop(1, D3T.cn(100, 62, 0));
+  f.fillStyle = g; f.fillRect(0, 0, W, H * .65);
+  D3V.layers = { key, fog: cv };
   return D3V.layers;
 }
 function d3Draw(){
   const ctx = D3V.ctx; if(!ctx || !D3V.W || !D3T) return;
-  const t = (performance.now() - D3V.t0) / 1000;
-  const W = D3V.W, H = D3V.H;
+  const t = (performance.now() - D3V.t0) / 1000, W = D3V.W, H = D3V.H;
   ctx.setTransform(D3V.dpr, 0, 0, D3V.dpr, 0, 0);
-  // ciel
-  const layers = d3Layers();
-  ctx.drawImage(layers.bg, 0, 0, W, H);
-  let g;
-  // Sol/grille bien plus larges ET plus profonds qu'avant, pour ne plus laisser voir de bordure
-  // vide dans les coins de l'écran (le sol est un rectangle fini en projection isométrique :
-  // trop étroit, ses bords passent avant les coins de l'écran et laissent voir le vide derrière).
-  const cy = d3Cam.y, Y0 = cy - 2600, Y1 = cy + 900, GX = 1700, GXL = 1680;
-  // sol
-  d3Poly(ctx, d3Rect(-GX, Y0, GX, Y1, 0), D3T.ground);
-  ctx.lineWidth = 1; ctx.strokeStyle = D3T.grid;
-  ctx.beginPath();
-  for(let x = -GXL; x <= GXL; x += 40){ const a = d3P(x, Y0, 0), b = d3P(x, Y1, 0); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
-  for(let y = Math.ceil(Y0 / 40) * 40; y <= Y1; y += 40){ const a = d3P(-GX, y, 0), b = d3P(GX, y, 0); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
-  ctx.stroke();
-  // vague de lumière qui balaie le sol
-  const sy = Y0 + ((t * 260) % (Y1 - Y0));
-  d3Poly(ctx, d3Rect(-GX, sy, GX, sy + 70, 0), D3T.sweep);
-  // lumières au sol (lampadaires + plateformes)
+  const layers = d3Layers(), q = Math.min(1.6, D3V.dpr);
+  if(DQ.q !== q){ DQ.q = q; DQ.spr = {}; }
+  const cy = d3Cam.y, Y0 = cy - 2600, Y1 = cy + 900;
+  // sol + route : partie fixe (dessinée directement quand la caméra bouge, copiée depuis un cache quand elle est à l'arrêt) puis partie animée
+  dqVis(W, H);
+  { const key = d3Cam.x.toFixed(1) + '|' + d3Cam.y.toFixed(1) + '|' + W + 'x' + H + '@' + D3V.dpr + '#' + DQ.gen + ':' + d3State.done;
+    if(DQ.sc && DQ.sc.key === key) ctx.drawImage(DQ.sc.cv, 0, 0, W, H);
+    else if(DQ.lastKey === key){
+      const sc = DQ.sc || (DQ.sc = { cv: document.createElement('canvas'), key: '' }), pw = Math.round(W * D3V.dpr), ph = Math.round(H * D3V.dpr);
+      if(sc.cv.width !== pw || sc.cv.height !== ph) { sc.cv.width = pw; sc.cv.height = ph; }
+      const c2 = sc.cv.getContext('2d'); c2.setTransform(D3V.dpr, 0, 0, D3V.dpr, 0, 0); dqStatic(c2, W, H); sc.key = key;
+      ctx.drawImage(sc.cv, 0, 0, W, H);
+    } else dqStatic(ctx, W, H);
+    DQ.lastKey = key; }
+  dqDyn(ctx, t, W, H);
+  // lumières au sol (additives) : lampadaires, plateformes, impulsions qui suivent la route
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  D3_ITEMS.forEach(it => { if(it.k === 'l' && it.y > Y0 && it.y < Y1) d3Glow(ctx, it.x, it.y, 80, it.lc, .28 + .08 * Math.sin(t * 2 + it.x)); });
-  D3_PATH.forEach(p => {
-    if(!p[2]) return;
-    const i = p[2] - 1;
-    if(i < d3State.done) d3Glow(ctx, p[0], p[1], 120, '#ffd65c', .22);
-    else if(i === d3State.claimIdx) d3Glow(ctx, p[0], p[1], 150, D3T.ready, .35 + .15 * Math.sin(t * 5));
+  D3_PADS.forEach(p => {
+    if(p.st === 'done') d3Glow(ctx, p.x, p.y, 90, '#46d6a0', .2);
+    else if(p.st === 'ready') d3Glow(ctx, p.x, p.y, 115, D3T.ready, .35 + .15 * Math.sin(t * 5));
   });
+  dqGlows(ctx);
   ctx.restore();
-  // ombres
-  ctx.fillStyle = 'rgba(0,0,0,.42)';
-  D3_ITEMS.forEach(it => {
-    if(it.k === 'l' || it.y < Y0 - 200 || it.y > Y1 + 200) return;
-    const kx = it.h * .55;
-    d3Poly(ctx, d3Rect(it.x - it.s / 2 - kx, it.y - it.s / 2 - kx, it.x + it.s / 2, it.y + it.s / 2, 0), 'rgba(0,0,0,.4)');
-  });
-  // route : bord, chaussée, pointillés, partie parcourue
-  const seg = (w, color) => {
-    for(let i = 1; i < D3_PATH.length; i++){
-      const [ax, ay] = D3_PATH[i - 1], [bx, by] = D3_PATH[i];
-      d3Poly(ctx, d3Rect(Math.min(ax, bx) - w, Math.min(ay, by) - w, Math.max(ax, bx) + w, Math.max(ay, by) + w, 0), color);
-    }
-  };
-  seg(31, D3T.roadEdge); seg(27, D3T.road);
-  ctx.save(); ctx.setLineDash([8, 10]); ctx.lineDashOffset = -t * 20; ctx.strokeStyle = D3T.dash; ctx.lineWidth = 1.6;
-  ctx.beginPath(); D3_PATH.forEach((p, i) => { const q = d3P(p[0], p[1], 0); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.stroke(); ctx.restore();
-  if(d3State.done > 0){
-    const last = D3_PATH.findIndex(p => p[2] === d3State.done);
-    ctx.save(); ctx.strokeStyle = '#ffd65c'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-    ctx.beginPath(); D3_PATH.slice(0, last + 1).forEach((p, i) => { const q = d3P(p[0], p[1], 0); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); });
-    ctx.globalAlpha = .25; ctx.lineWidth = 14; ctx.stroke(); ctx.globalAlpha = 1; ctx.lineWidth = 5; ctx.stroke(); ctx.restore();
+  // bâtiments + plateformes, du fond vers l'avant
+  for(let n = 0; n < D3_DRAW.length; n++){
+    const it = D3_DRAW[n];
+    if(it.y < Y0 - 250 || it.y > Y1 + 250) continue;
+    const B = d3P(it.x, it.y, 0);
+    if(it.k === 'pad'){ if(B.y > H + 60 || B.y < -100) continue; d3Slab(ctx, { x:it.x, y:it.y, r:34 }, it.h, it.st, t, it.label); continue; }
+    const sp = dqSprite(it), Tp = d3P(it.x, it.y, it.h), kk = (B.k + Tp.k) / 2;
+    const dx = B.x - sp.ax * kk, dy = B.y - sp.ay * kk, w = sp.w * kk, h = sp.h * kk;
+    if(dx > W || dx + w < 0 || dy > H || dy + h < 0) continue;
+    ctx.drawImage(sp.c, dx, dy, w, h);
   }
-  // volumes (du fond vers l'avant)
-  const pads = D3_PATH.filter(p => p[2]).map(p => {
-    const i = p[2] - 1;
-    return { x:p[0], y:p[1], s:70, h:22, k:'pad', st: i < d3State.done ? 'done' : i === d3State.claimIdx ? 'ready' : 'locked' };
-  });
-  D3_ITEMS.concat(pads).filter(it => it.y > Y0 - 250 && it.y < Y1 + 250)
-    .sort((a, b) => (a.x + a.s / 2 + a.y + a.s / 2) - (b.x + b.s / 2 + b.y + b.s / 2))
-    .forEach(it => d3Cube(ctx, it, t));
-  // faisceaux sous les cases de récompense
-  pads.forEach(p => {
+  // faisceau sous la plateforme à récupérer
+  D3_PADS.forEach(p => {
+    if(p.st !== 'ready') return;
     const a = d3P(p.x, p.y, p.h), b = d3P(p.x, p.y, p.h + 60);
-    ctx.save();
-    ctx.strokeStyle = p.st === 'ready' ? '#ffffff' : p.st === 'done' ? '#ffd65c' : D3T.dash;
-    ctx.lineWidth = p.st === 'ready' ? 3 : 1.5;
+    ctx.save(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-    if(p.st === 'ready'){ ctx.save(); ctx.strokeStyle = '#ffd65c'; ctx.globalAlpha = .3; ctx.lineWidth = 10; ctx.stroke(); ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = '#ffd65c'; ctx.globalAlpha = .3; ctx.lineWidth = 10; ctx.stroke(); ctx.restore();
     ctx.stroke(); ctx.restore();
   });
-  // brume sur l'horizon
+  // véhicules volants : traînée lumineuse + point chaud
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+  DQ.drones.forEach(d => {
+    const span = d.ax ? 2400 : (700 - (D3_END - 500)), u = (((d.ph + d.sp * t) % span) + span) % span, sg = d.sp < 0 ? -1 : 1;
+    const x = d.ax ? -1200 + u : d.lane, y = d.ax ? d.lane : D3_END - 500 + u;
+    const h = d3P(x, y, d.z); if(h.x < -30 || h.x > W + 30 || h.y < -30 || h.y > H + 30) return;
+    const tl = d3P(x - (d.ax ? sg * 26 : 0), y - (d.ax ? 0 : sg * 26), d.z);
+    ctx.strokeStyle = d.col; ctx.globalAlpha = .28; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(tl.x, tl.y); ctx.lineTo(h.x, h.y); ctx.stroke();
+    ctx.globalAlpha = .95; ctx.lineWidth = 1.5; ctx.stroke();
+    const gs = d3GlowSprite(d.col), r = 9 * h.k; ctx.globalAlpha = .7; ctx.drawImage(gs, h.x - r, h.y - r, r * 2, r * 2);
+  });
+  ctx.restore();
+  // brume + halo néon sur l'horizon
   ctx.drawImage(layers.fog, 0, 0, W, H);
   // cases de récompense (HTML) collées au-dessus des plateformes
   // (D3_BOX_CACHE : liste + point de tracé déjà résolus par renderDaily(), cf déclaration plus haut)
-  D3_BOX_CACHE.forEach(({ el, p }) => {
-    const a = d3P(p[0], p[1], 82);
-    const vis = a.y > -60 && a.y < H + 160;
-    el.style.display = vis ? '' : 'none';
-    if(vis){ const bx = Math.max(46, Math.min(W - 52, a.x)); el.style.opacity = Math.max(0, Math.min(1, (a.y - H * .2) / (H * .16))).toFixed(2); el.style.visibility = a.y < H * .21 ? 'hidden' : ''; el.style.transform = `translate(${bx.toFixed(1)}px, ${a.y.toFixed(1)}px) scale(${Math.min(1.25, a.k).toFixed(3)})`; el.style.zIndex = Math.round(a.y); }
+  // 1) position voulue de chaque bulle ; 2) on écarte celles qui se chevauchent (côté opposé, sinon décalage vers le haut)
+  const items = D3_BOX_CACHE.map(({ el, p }) => {
+    const i = p[2] - 1, b = el.firstElementChild;
+    const P0 = d3P(p[0], p[1], 22), s = Math.min(1.15, P0.k);
+    const open = !!(b && b.classList.contains('expanded')), cl = !open && !!(b && b.classList.contains('closed'));
+    const halfW = (cl ? 122 : 140) / 2 * s * (open ? 1.3 : 1), hh = (cl ? 14 : 33) * s * (open ? 1.3 : 1);
+    return { el, i, P0, s, open, halfW, hh, gap: halfW + 34 * s, by: P0.y - 22 * s, bx: 0, side: i % 2 === 0 ? 1 : -1 };
+  }).sort((a, b) => (b.open - a.open) || (b.P0.y - a.P0.y));
+  const placed = [];
+  const bxOf = (it, sd) => Math.max(it.halfW + 6, Math.min(W - it.halfW - 6, it.P0.x + sd * it.gap));
+  const hit = (it, bx, by) => placed.find(q => Math.abs(q.bx - bx) < q.halfW + it.halfW + 4 && Math.abs(q.by - by) < q.hh + it.hh + 3);
+  items.forEach(it => {
+    if(!(it.by > H * .08 && it.by < H * .97)){ it.vis = false; return; }
+    it.vis = true;
+    const fits = sd => it.P0.x + sd * it.gap >= it.halfW + 6 && it.P0.x + sd * it.gap <= W - it.halfW - 6;
+    const order = [it.side, -it.side].sort((a, b) => (fits(b) - fits(a)) || 0);
+    if(fits(it.side)) order.sort((a, b) => (a === it.side ? -1 : 1));
+    let sel = null;
+    for(const sd of order){ if(!hit(it, bxOf(it, sd), it.by)){ sel = sd; break; } }
+    if(sel === null){ sel = order[0]; for(let n = 0; n < 5; n++){ const q = hit(it, bxOf(it, sel), it.by); if(!q) break; it.by = q.by - q.hh - it.hh - 4; } }
+    it.bx = bxOf(it, sel); placed.push(it);
+  });
+  items.forEach(it => {
+    const el = it.el;
+    el.style.visibility = it.vis ? '' : 'hidden';
+    if(!it.vis) return;
+    const { P0, s, bx, by } = it;
+    el.style.opacity = Math.max(0, Math.min(1, (by - H * .08) / (H * .11), (H * .97 - by) / (H * .1))).toFixed(2);
+    el.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px) scale(${s.toFixed(3)})`;
+    el.style.zIndex = Math.round(by);
+    const st = it.i < d3State.done ? 'done' : it.i === d3State.claimIdx ? 'ready' : 'locked';   // trait de liaison plateforme -> bulle
+    const col = st === 'ready' ? '#ffd65c' : st === 'done' ? '#46d6a0' : '#8fb0ee';
+    ctx.save(); ctx.globalAlpha = +el.style.opacity * .9; ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.5;
+    const L = dqLink(P0, 20 * P0.k, bx, by, it.halfW, it.hh);
+    ctx.beginPath(); ctx.moveTo(L[0], L[1]); ctx.lineTo(L[2], L[3]); ctx.stroke();
+    ctx.beginPath(); ctx.arc(L[0], L[1], 3, 0, Math.PI * 2); ctx.fill(); ctx.arc(L[2], L[3], 2.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
   });
   const bar = document.getElementById('d3Prog'); if(bar) bar.style.height = (d3Cam.cur / d3PathInfo().L * 100) + '%';
   const hint = document.querySelector('.d3-hint'); if(hint && d3Cam.moved) hint.style.opacity = '0';
 }
 
-function dailyBoxHtml(rew, i, state){
-  let main;
-  if(rew.card) main = `<div class="db-card r-${rew.card}"><i></i>${rew.cardN > 1 ? '<b>×' + rew.cardN + '</b>' : ''}</div><div class="db-lbl">${RARITIES[rew.card].label}</div>`;
-  else if(rew.gold) main = `<div class="db-ico">${ICON_GOLD}</div><div class="db-lbl">${fmtNum(rew.gold)}</div>`;
-  else main = `<div class="db-ico">${ICON_XP}</div><div class="db-lbl">${fmtNum(rew.xp)}</div>`;
-  const more = [];
-  if(rew.card && rew.gold) more.push(fmtNum(rew.gold) + ' OR');
-  else if(rew.gold && rew.xp) more.push(fmtNum(rew.xp) + ' XP');
-  if(rew.mat) MAT_ORDER.forEach(k => { if(rew.mat[k]) more.push(rew.mat[k] + ' MAT. ' + (k === 'rare' ? 'R' : k === 'epique' ? 'É' : 'L')); });
-  return `<div class="db-day">JOUR ${i + 1}</div>${main}${more.length ? '<div class="db-plus">+ ' + more.join(' · ') + '</div>' : ''}${state === 'done' ? '<div class="db-check">✓</div>' : ''}`;
+function dailyBoxHtml(rew, i, state, wait){
+  const desc = state === 'done' ? 'Récupérée' : state === 'ready' ? '★ Touche pour récupérer' : wait <= 1 ? 'Disponible demain' : 'Disponible dans ' + wait + ' jours';
+  return `<div class="tb-in"><div class="tb-top"><span class="tb-num">${state === 'done' ? '✓' : String(i + 1).padStart(2, '0')}</span><span class="tb-name">JOUR ${i + 1}</span></div>
+    <div class="tb-desc">${desc}</div><div class="tb-rew">${rewardChips(rew)}</div></div>`;
 }
 
 function renderDaily(keepPos){
@@ -18845,26 +19430,54 @@ function renderDaily(keepPos){
   d3State = { done, claimIdx };
   const week = dailyWeek() + 1;
   if(d3BuiltWeek !== week - 1){ d3Build(week - 1); keepPos = false; }
+  D3_PADS = D3_PATH.filter(p => p[2]).map(p => { const i = p[2] - 1; return { x:p[0], y:p[1], s:70, h:22, k:'pad', label:i + 1, st: i < done ? 'done' : i === claimIdx ? 'ready' : 'locked' }; });
+  D3_DRAW = D3_ITEMS.concat(D3_PADS).sort((a, b) => (a.x + a.s / 2 + a.y + a.s / 2) - (b.x + b.s / 2 + b.y + b.s / 2));
   document.getElementById('d3Stage').style.setProperty('--wk', D3T.c(90, 72));
   document.getElementById('dailyTag').textContent = 'J ' + done + ' / 7';
+  { // V0.05.46 : compteur dans la scène
+    const hn = document.getElementById('dqHudN'), tk = document.getElementById('dqTicks'), sb = document.getElementById('dqHudSub'), wk = document.getElementById('dqWk');
+    if(hn) hn.textContent = done;
+    if(tk) tk.innerHTML = Array.from({ length:7 }, (_, k) => '<i class="' + (k < done ? 'd' : k === claimIdx ? 'r' : '') + '"></i>').join('');
+    if(sb) sb.innerHTML = can ? 'Jour ' + (done + 1) + ' à récupérer' : 'Prochain jour dans <span id="dailyCd">' + fmtHM(msToMidnight()) + '</span>';
+    if(wk) wk.textContent = 'SEMAINE ' + week + ' · ' + D3T.name;
+  }
   document.getElementById('dailyInfo').innerHTML = (can
     ? `<b>Jour ${done + 1} disponible !</b> Touche la case qui brille.`
-    : `Prochain jour dans <b id="dailyCd">${fmtHM(msToMidnight())}</b>`)
+    : `Prochain jour dans <b>${fmtHM(msToMidnight())}</b>`)
     // V0.02.93, demande d'Alex : "tous les 5 jours tu as droit à un booster aléatoire" -- rappel générique
     // (pas de jour précis affiché : ça dépend du cumul player.daily.total, pas de la position dans CE
     // calendrier 7 jours, cf claimDaily()).
     + `<div class="daily-bonus">SEMAINE ${week} · ${D3T.name} · BOOSTER BONUS TOUS LES 5 JOURS</div>`;
   box.innerHTML = D3_PATH.filter(p => p[2]).map(p => {
     const i = p[2] - 1, st = i < done ? 'done' : i === claimIdx ? 'ready' : 'locked', rew = dailyReward(i);
-    return `<div class="d3-bill" data-day="${p[2]}"><button class="daily-box ${st} ${rew.card ? 'big r-' + rew.card : ''}" data-i="${i}">${dailyBoxHtml(rew, i, st)}</button></div>`;
+    const wait = can ? i - claimIdx : i - done + 1;               // jours restants avant cette récompense
+    return `<div class="d3-bill" data-day="${p[2]}"><button class="dq-box ${st}${st === 'locked' ? ' closed' : ''}" data-i="${i}">${dailyBoxHtml(rew, i, st, wait)}</button></div>`;
   }).join('');
-  box.querySelectorAll('.daily-box').forEach(b => b.onclick = () => {
+  box.querySelectorAll('.dq-box').forEach(b => b.onclick = () => {
     if(d3Cam.dragDist > 8) return;                     // c'était un glissement, pas un toucher
     const i = +b.dataset.i;
-    if(i === claimIdx) claimDaily();                   // les autres jours : rien ne se passe
+    if(i === claimIdx){ claimDaily(); return; }
+    // les autres jours : la bulle s'ouvre pour montrer la récompense (toucher à nouveau pour la replier)
+    const open = !b.classList.contains('expanded');
+    box.querySelectorAll('.dq-box.expanded').forEach(x => x.classList.remove('expanded'));
+    if(open) b.classList.add('expanded');
+    renderDaily.expanded = open ? i : -1;
+    d3Draw();
   });
   // Cache reconstruit ici (une fois par rendu) : cf commentaire sur D3_BOX_CACHE plus haut.
   D3_BOX_CACHE = Array.from(box.querySelectorAll('.d3-bill')).map(el => ({ el, p: D3_PATH.find(q => q[2] === +el.dataset.day) }));
+  if(renderDaily.expanded >= 0){ const e = box.querySelector(`.dq-box[data-i="${renderDaily.expanded}"]:not(.ready)`); if(e) e.classList.add('expanded'); }
+  if(!renderDaily.outsideBound){   // toucher à côté d'une bulle ouverte la replie
+    renderDaily.outsideBound = true;
+    const view = document.querySelector('#dailyView .d3-view');
+    if(view) view.addEventListener('pointerup', e => {
+      if(e.target.closest('.dq-box') || d3Cam.dragDist > 8) return;
+      const bx = document.getElementById('d3Boxes');
+      if(!bx || !bx.querySelector('.dq-box.expanded')) return;
+      bx.querySelectorAll('.dq-box.expanded').forEach(x => x.classList.remove('expanded'));
+      renderDaily.expanded = -1; d3Draw();
+    });
+  }
   if(!keepPos){
     const focus = claimIdx >= 0 ? claimIdx + 1 : Math.max(1, done);
     const P = d3PathInfo(), ni = Math.max(0, D3_PATH.findIndex(p => p[2] === focus));
@@ -19500,8 +20113,10 @@ function spDraw(){
       if(!isB){   // trait de liaison plateforme -> case
         const stt = stOf(idx), col = stt === 'ready' ? '#ffd65c' : stt === 'done' ? '#46d6a0' : '#8fb0ee';
         ctx.save(); ctx.globalAlpha = op * .9; ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(P0.x, P0.y - 6 * s); ctx.lineTo(bx, by); ctx.stroke();
-        ctx.beginPath(); ctx.arc(P0.x, P0.y - 6 * s, 3, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        const hh = ((!open && el.firstElementChild && el.firstElementChild.classList.contains('closed')) ? 14 : 33) * s * (open ? 1.3 : 1);
+        const L = dqLink(P0, .95 * n.r * D3_SC * P0.k, bx, by, halfW, hh);
+        ctx.beginPath(); ctx.moveTo(L[0], L[1]); ctx.lineTo(L[2], L[3]); ctx.stroke();
+        ctx.beginPath(); ctx.arc(L[0], L[1], 3, 0, Math.PI * 2); ctx.fill(); ctx.arc(L[2], L[3], 2.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
     }
   });
@@ -30753,7 +31368,7 @@ setInterval(() => {
   if(document.getElementById('dailyView').classList.contains('active')){
     const cd = document.getElementById('dailyCd');
     if(cd) cd.textContent = fmtHM(msToMidnight());
-    if(dailyCanClaim() && !document.querySelector('.daily-box.ready')) renderDaily(true);   // minuit passé
+    if(dailyCanClaim() && !document.querySelector('.dq-box.ready')) renderDaily(true);   // minuit passé
   }
   if(document.getElementById('tasksView').classList.contains('active')){
     const sig = tasksOfWeek().map(taskState).join() + taskProgressSig();
