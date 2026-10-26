@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.38</title>
+<title>Projet MECA V0.05.39</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -4396,6 +4396,8 @@
     border:1px solid #ffe7a8;
     box-shadow:0 3px 0 #6b4000, 0 0 14px -2px rgba(255,190,50,.8), 0 1px 0 rgba(255,255,255,.5) inset;
     animation:claimGlassPulse 1.2s ease-in-out infinite;}
+  .econ-wait{pointer-events:none; animation:econWait .45s ease-in-out infinite alternate;}
+  @keyframes econWait{from{filter:brightness(1);} to{filter:brightness(.62) saturate(.75);}}
   .tr-claim:active{transform:translateY(2px); box-shadow:0 1px 0 #6b4000, 0 1px 0 rgba(255,255,255,.5) inset;}
   @keyframes claimGlassPulse{50%{box-shadow:0 3px 0 #6b4000, 0 0 22px rgba(255,190,50,1), 0 1px 0 rgba(255,255,255,.5) inset;}}
   @keyframes claimPulse{50%{box-shadow:0 3px 0 #6b4000, 0 0 22px rgba(255,190,50,1);}}
@@ -8830,7 +8832,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.38</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.39</b></div>
   </div>
 
     </div>
@@ -9098,7 +9100,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
 //  Toute action passe par econAct() : file d'attente unique, une requête à la fois, identifiant unique
 //  par action (rejouer la même requête ne l'applique jamais deux fois), temps et hasard fournis par le serveur.
 // ===================================================================================================
-var ECON = { ready:false, offset:0, version:-1, chain:Promise.resolve(), pending:0, uiBusy:false, seenTroph:null, favPending:{}, dayKey:'',
+var ECON = { ready:false, offset:0, version:-1, chain:Promise.resolve(), q:[], busyQ:false, hbWait:0, pending:0, uiBusy:false, seenTroph:null, favPending:{}, dayKey:'',
   syncAt:0, syncTimer:null, hbTick:0, hiddenAt:0, needName:false, downOpen:false };
 
 // ---------- Heure : celle du SERVEUR (fuseau Europe/Paris), jamais celle de l'appareil ----------
@@ -9156,10 +9158,20 @@ function econFail(code, message, opts){
 function econAct(op, params, opts){
   opts = Object.assign({ op }, opts || {});
   const rid = opts.rid || econUuid();   // opts.rid : on rejoue la MÊME requête (jamais appliquée deux fois)
-  const run = () => econRun(op, params || {}, rid, opts);
-  const p = ECON.chain.then(run, run);
-  ECON.chain = p.then(() => {}, () => {});
-  return p;
+  // V0.05.39 : une seule requête en vol à la fois (comme avant), mais une action du joueur passe devant les requêtes de fond (opts.low : battements, suivi) encore en attente
+  return new Promise((resolve, reject) => {
+    const job = { low:!!opts.low, go:() => econRun(op, params || {}, rid, opts), resolve, reject };
+    if(job.low) ECON.q.push(job);
+    else { const i = ECON.q.findIndex(j => j.low); if(i < 0) ECON.q.push(job); else ECON.q.splice(i, 0, job); }
+    econPump();
+  });
+}
+function econPump(){
+  if(ECON.busyQ) return;
+  const j = ECON.q.shift(); if(!j) return;
+  ECON.busyQ = true;
+  let p; try{ p = Promise.resolve(j.go()); }catch(e){ p = Promise.reject(e); }
+  p.then(j.resolve, j.reject).then(() => { ECON.busyQ = false; econPump(); });
 }
 async function econRun(op, params, rid, opts){
   const waits = opts.quiet ? [0, 1500] : [0, 700, 2000, 4000];
@@ -9211,7 +9223,7 @@ function econGiveUp(st, b, opts){
 function econTrack(kind, name){
   if(!ECON.ready) return;
   const p = { kind }; if(name) p.name = name;
-  return econAct('track', p, { quiet:true, render:'light' });
+  return econAct('track', p, { quiet:true, render:'light', low:true });
 }
 // Resynchronisation avec le serveur (jour qui change, offre de la Fabrique échue, solde incohérent...)
 function econSyncSoon(delay){
@@ -9224,8 +9236,10 @@ function econDayCheck(){ if(ECON.ready && ECON.dayKey && todayKey() !== ECON.day
 function econUi(fn){
   if(ECON.uiBusy) return;
   ECON.uiBusy = true;
+  let mark = null;   // V0.05.39 : le bouton touché réagit tout de suite (légère pulsation) en attendant la réponse du serveur
+  try{ const ev = window.event, t = ev && ev.target; mark = (t && t.closest) ? t.closest('button, .tr-claim, .tr-claim-all') : null; if(mark) mark.classList.add('econ-wait'); }catch(_){ mark = null; }
   let p; try{ p = Promise.resolve(fn()); }catch(e){ p = Promise.reject(e); }
-  p.catch(e => { try{ console.error(e); }catch(_){} }).then(() => { ECON.uiBusy = false; });
+  p.catch(e => { try{ console.error(e); }catch(_){} }).then(() => { ECON.uiBusy = false; if(mark) mark.classList.remove('econ-wait'); });
 }
 
 // ---------- Miroir : l'état du serveur est recopié dans les variables du jeu ----------
@@ -9428,6 +9442,7 @@ async function econBoosterOpen(type){
   try{ r = await econAct('booster_open', { type }, { render:'none' }); }catch(e){ if(type === 'cards') BCUBE.abort(); throw e; }
   if(!r.ok){ if(type === 'cards') BCUBE.abort(); return; }   // V0.05.36 : le cube 3D retourne dans la rangée
   const results = econBoostResults(type, r.result.results);
+  if(type !== 'res') await econCardsReady(results, 1800);   // V0.05.39 : illustrations + cadres prêts avant de montrer les cartes
   econRenderAll('full');
   try{ openBoosterFlow(type, results); }catch(e){ if(type === 'cards') BCUBE.abort(); throw e; }
 }
@@ -9461,7 +9476,8 @@ async function econClaimDaily(){
   if(!dailyCanClaim()) return;
   const r = await econAct('claim_daily');
   if(!r.ok) return;
-  showRewardModal('SEMAINE ' + ((r.result.cycle || 0) + 1) + ' · JOUR ' + (r.result.day + 1), econItems(r.result.items));
+  const its = econItems(r.result.items); await econCardsReady(its);
+  showRewardModal('SEMAINE ' + ((r.result.cycle || 0) + 1) + ' · JOUR ' + (r.result.day + 1), its);
   renderDaily(true);
 }
 async function econClaimTrophy(id){
@@ -9469,14 +9485,16 @@ async function econClaimTrophy(id){
   if(!t || !trophyClaimable(t)) return;
   const r = await econAct('claim_trophy', { id });
   if(!r.ok) return;
-  showRewardModal(t.hidden ? '✦ TROPHÉE CACHÉ ✦' : 'TROPHÉE ' + TROPHY_TIERS[t.tier].label, econItems(r.result.items));
+  const its = econItems(r.result.items); await econCardsReady(its);
+  showRewardModal(t.hidden ? '✦ TROPHÉE CACHÉ ✦' : 'TROPHÉE ' + TROPHY_TIERS[t.tier].label, its);
   renderTrophies();
 }
 async function econClaimAllTrophies(){
   if(!TROPHIES.some(trophyClaimable)) return;
   const r = await econAct('claim_all_trophies');
   if(!r.ok) return;
-  showRewardModal(r.result.count + ' TROPHÉES RÉCUPÉRÉS', mergeRewardItems(econItems(r.result.items)));
+  const its = mergeRewardItems(econItems(r.result.items)); await econCardsReady(its);
+  showRewardModal(r.result.count + ' TROPHÉES RÉCUPÉRÉS', its);
   renderTrophies();
 }
 // Le temps de jeu est compté par le serveur (battements) : on lui envoie un battement juste avant de réclamer, pour que « EN SERVICE » soit à jour
@@ -9489,30 +9507,44 @@ function econClaimTask(i){
     return econAct('claim_task', { index:i });
   }).then(r => {
     if(!r || !r.ok) return;
-    const list = tasksOfWeek();
-    showRewardModal(i === list.length ? 'TOUTES LES TÂCHES ACCOMPLIES !' : 'TÂCHE : ' + list[i].name, econItems(r.result.items));
-    renderTasks(true);
+    const list = tasksOfWeek(), its = econItems(r.result.items);
+    return econCardsReady(its).then(() => {
+      showRewardModal(i === list.length ? 'TOUTES LES TÂCHES ACCOMPLIES !' : 'TÂCHE : ' + list[i].name, its);
+      renderTasks(true);
+    });
   });
 }
 function econClaimAllTasks(){
   const waitHb = tasksOfWeek().some(t => taskState(t) === 'locked');   // V0.05.04 : battement seulement si une tâche peut encore devenir prête avec le temps de jeu
   return (waitHb ? econAct('heartbeat', {}, { quiet:true, render:'none' }) : Promise.resolve()).then(() => econAct('claim_all_tasks')).then(r => {
     if(!r.ok) return;
-    const n = r.result.count;
-    showRewardModal(n > 1 ? n + ' TÂCHES RÉCUPÉRÉES' : '1 TÂCHE RÉCUPÉRÉE', mergeRewardItems(econItems(r.result.items)));
-    renderTasks(true);
+    const n = r.result.count, its = mergeRewardItems(econItems(r.result.items));
+    return econCardsReady(its).then(() => {
+      showRewardModal(n > 1 ? n + ' TÂCHES RÉCUPÉRÉES' : '1 TÂCHE RÉCUPÉRÉE', its);
+      renderTasks(true);
+    });
   });
 }
 // ---------- Battements : temps de jeu compté par le serveur ----------
 document.addEventListener('pointerdown', () => {
-  if(!ECON.ready || document.hidden || ECON.pending || window.BTL) return;
+  if(!ECON.ready || document.hidden || ECON.pending || window.BTL || ECON.hbWait) return;
   if(Date.now() - (ECON.lastNet || 0) < 25000) return;
-  ECON.lastNet = Date.now();
-  econAct('heartbeat', {}, { quiet:true, render:'none' });   // V0.05.04 : réveille le serveur avant le prochain clic (premier clic plus rapide)
+  // V0.05.39 : le battement « de réveil » partait au toucher même, donc un clic sur RÉCUPÉRER attendait derrière lui (2 allers-retours). On le diffère : si une action est partie entre-temps, elle sert de réveil et on ne l'envoie pas.
+  ECON.hbWait = setTimeout(() => {
+    ECON.hbWait = 0;
+    if(!ECON.ready || document.hidden || ECON.pending || ECON.q.length || window.BTL) return;
+    if(Date.now() - (ECON.lastNet || 0) < 25000) return;
+    ECON.lastNet = Date.now();
+    econAct('heartbeat', {}, { quiet:true, render:'none', low:true });
+  }, 450);
 }, { capture:true, passive:true });
 function econHeartbeat1s(){
   if(!ECON.ready) return;
-  if(++ECON.hbTick >= 60){ ECON.hbTick = 0; econAct('heartbeat', {}, { quiet:true, render:'light' }); }
+  if(++ECON.hbTick >= 60){ ECON.hbTick = 0; econAct('heartbeat', {}, { quiet:true, render:'light', low:true }); }
+  // V0.05.39 : le jeton de connexion est renouvelé en arrière-plan avant d'expirer (sinon c'est le clic du joueur qui payait ce renouvellement)
+  if(ECON.hbTick % 20 === 10 && !ECON.pending){
+    try{ const se = readSupaSession(); if(se && se.refresh_token && se.expires_at && se.expires_at - Math.floor(Date.now() / 1000) < 240) supaRefresh().catch(() => {}); }catch(_){}
+  }
 }
 document.addEventListener('visibilitychange', () => {
   if(document.hidden){ ECON.hiddenAt = Date.now(); return; }
@@ -9651,9 +9683,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.38';
+var BUILD_VERSION = 'V0.05.39';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.39', items:[
+    'Récupérer (tâches, récompenses journalières, trophées) : la réponse est plus rapide et le bouton réagit tout de suite au toucher.',
+    'Cartes : les images (illustration et cadre) sont maintenant prêtes avant l’affichage des récompenses et des boosters, et chargées en priorité au lancement : plus de cartes qui apparaissent à moitié.',
+  ] },
   { v:'V0.05.38', items:[
     'Boosters : le cube 3D est désormais dessiné par le processeur graphique (WebGL) au lieu de centaines de calques : beaucoup plus fluide sur téléphone, et la face qui « clippait » est corrigée (profondeur gérée correctement).',
     'Boosters : les flammes et halos suivent maintenant exactement le contour visible du dos de la carte (les marges transparentes de l’image ne décalent plus le cadre).',
@@ -15032,6 +15068,46 @@ function backWinHtml(res){
 // Simple new Image() sans attente ni callback : en cas d'échec (coupure réseau), l'onerror posé sur
 // chaque <img> au moment de l'affichage réel prend le relais (cf plus bas), donc rien à gérer ici.
 var __IMGKEEP = [];   // images préchargées, gardées en mémoire pour toute la session
+// V0.05.39 : une image « prête » = téléchargée ET décodée. imgReady() ne charge chaque adresse qu'une fois ; econCardsReady() attend (au plus ms) les images des cartes qu'on va montrer, pour qu'elles apparaissent complètes.
+var __IMGP = {};
+function imgReady(u){
+  if(!u || typeof u !== 'string' || u.indexOf('data:') === 0) return Promise.resolve();
+  return __IMGP[u] || (__IMGP[u] = new Promise(res => {
+    const i = new Image(); i.decoding = 'async'; __IMGKEEP.push(i);
+    i.onload = () => { (i.decode ? i.decode() : Promise.resolve()).catch(() => {}).then(() => res()); };
+    i.onerror = () => res();
+    i.src = u;
+  }));
+}
+var __FRAMEURLS = null;
+function frameUrlsOf(rar){   // images du cadre d'une rareté (variables CSS de .lg-layer.f-<rareté>)
+  if(!__FRAMEURLS){
+    __FRAMEURLS = {};
+    try{
+      const html = document.documentElement.innerHTML;
+      ['rare', 'epique', 'legendaire', 'ecarlate', 'holo'].forEach(r => {
+        const rr = new RegExp('\\.lg-layer\\.f-' + r + '\\{([^}]*)\\}', 'g'), out = []; let m;
+        while((m = rr.exec(html))){ const re = /url\((https:[^)]+\/fx\/[^)]+)\)/g; let x; while((x = re.exec(m[1]))){ if(out.indexOf(x[1]) < 0) out.push(x[1]); } }
+        __FRAMEURLS[r] = out;
+      });
+    }catch(_){}
+  }
+  return __FRAMEURLS[rar] || [];
+}
+function econCardsReady(items, ms){
+  try{
+    const urls = [];
+    (items || []).forEach(it => {
+      const d = it && it.def; if(!d || typeof d !== 'object') return;
+      if(d.tech){ if(d.art) urls.push(d.art); urls.push(TECH_FRAME_URL); return; }
+      try{ urls.push(winArt(d)); }catch(_){}
+      if(it.rar) frameUrlsOf(it.rar).forEach(u => urls.push(u));
+    });
+    const uniq = urls.filter((u, i) => u && urls.indexOf(u) === i);
+    if(!uniq.length) return Promise.resolve();
+    return Promise.race([Promise.all(uniq.map(imgReady)), new Promise(r => setTimeout(r, ms || 1400))]);
+  }catch(_){ return Promise.resolve(); }
+}
 function preloadBoosterBacks(){
   [BOOST_CARD_BACK].forEach(set => {
     Object.values(set).forEach(url => { const img = new Image(); __IMGKEEP.push(img); img.src = url; });
@@ -15083,7 +15159,9 @@ function preloadGameArt(){
   try{ if(navigator.connection && navigator.connection.saveData) return; }catch(_){}
   const seen = {}, first = [], mid = [], last = [];
   const add = (list, u) => { if(typeof u === 'string' && u.indexOf('/card-assets/') > 0 && !seen[u]){ seen[u] = 1; list.push(u); } };
-  try{ decks.forEach(dk => (dk.cards || []).forEach(k => { const e = sqEntry(k); if(e && e.def){ add(first, e.def.art); add(first, e.def.artExt); add(first, e.def.artBig); } })); }catch(_){}
+  try{ ['rare', 'epique', 'legendaire', 'ecarlate', 'holo'].forEach(r => frameUrlsOf(r).forEach(u => add(first, u))); add(first, TECH_FRAME_URL); }catch(_){}   // V0.05.39 : les cadres servent à CHAQUE carte (avant, ils étaient chargés en dernier)
+  try{ decks.forEach(dk => (dk.cards || []).forEach(k => { const e = sqEntry(k); if(e && e.def){ add(first, winArt(e.def)); add(first, e.def.art); add(first, e.def.artExt); add(first, e.def.artBig); } })); }catch(_){}
+  try{ CHAR_DEFS.forEach(d => { if(copiesOf(d) > 0){ add(first, winArt(d)); } }); }catch(_){}   // puis les cartes que le joueur possède
   try{
     const src = document.documentElement.innerHTML;
     const re = /https:\/\/okrdywhctnlayyfltivc\.supabase\.co\/storage\/v1\/object\/public\/card-assets\/[A-Za-z0-9_\-\/.]+\.(?:webp|png|jpe?g)/g;
@@ -15093,7 +15171,7 @@ function preloadGameArt(){
   let i = 0, run = 0;
   const next = () => {
     if(window.BTL){ setTimeout(next, 3000); return; }          // jamais pendant un combat (réseau libre pour la partie)
-    while(run < 4 && i < q.length){
+    while(run < 6 && i < q.length){
       const img = new Image(); __IMGKEEP.push(img); run++;
       img.onload = img.onerror = () => { run--; next(); };
       img.src = q[i++];
@@ -16249,6 +16327,7 @@ function openBoosterFlow(type, results){   // V0.05.00 : le contenu (results) es
     results.forEach(r => {
       const url = r.def && (r.def.artBig || r.def.art);
       if(url){ const img = new Image(); img.src = url; }
+      try{ if(r.def && !r.def.tech) imgReady(winArt(r.def)); }catch(_){}   // V0.05.39 : c'est winArt() que la face avant affiche
     });
   }
   // V0.05.36 : booster CARTES MECHS en cube 3D -> les cartes sortent de la moins rare à la plus rare (la plus rare en dernier) ; si le cube n'est pas là, on garde l'ancienne révélation
