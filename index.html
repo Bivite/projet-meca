@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.36</title>
+<title>Projet MECA V0.05.37</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8831,7 +8831,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.36</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.37</b></div>
   </div>
 
     </div>
@@ -9652,9 +9652,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.36';
+var BUILD_VERSION = 'V0.05.37';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.37', items:[
+    'Version de contrôle : tests complets (économie sur plusieurs jours, combats, cartes, performances). Aucun changement de jeu ni de visuel.',
+  ] },
   { v:'V0.05.36', items:[
     'Boosters : le booster CARTES MECHS est maintenant un vrai cube 3D en relief, couvert de détails techniques. On le glisse sur le rond : il se charge, s’ouvre dans une animation futuriste, puis les cartes en sortent, les moins rares d’abord et la plus rare en dernier.',
     'À partir de LÉGENDAIRE, la boîte explose quand la carte sort, dans la couleur de la rareté. La traînée de lumière de chaque carte prend aussi la couleur de sa rareté.',
