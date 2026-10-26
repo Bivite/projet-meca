@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.53</title>
+<title>Projet MECA V0.05.54</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8977,7 +8977,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.53</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.54</b></div>
   </div>
 
     </div>
@@ -9828,9 +9828,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.53';
+var BUILD_VERSION = 'V0.05.54';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.54', items:[
+    'COMBAT : nouvelles destructions des cartes, en accord avec leur cadre robotique. 4 styles tirés au hasard (jamais deux fois le même d\'affilée) : SURCHARGE (arcs électriques puis panneaux blindés en relief), EFFONDREMENT (la carte s\'éteint en ligne puis en point, onde de choc), NUMÉRIQUE (grille, double image puis dissolution en blocs et pixels), COUPE LASER (la carte est tranchée en deux, les moitiés basculent et retombent). Éclairage retravaillé (halos, reflets, métal éclairé par l\'explosion), étincelles et braises qui retombent, fumée éclairée, éclairs ramifiés.',
+  ] },
   { v:'V0.05.53', items:[
     'TIRAGE et LABO : l\'offre se renouvelle maintenant toutes les heures (au lieu de 30 minutes).',
     'TIRAGE : les cartes Tech peuvent maintenant apparaître dans l\'offre (5 % par emplacement, comme dans les boosters de cartes).',
@@ -24151,6 +24154,698 @@ async function btlDieBoth(a, b){
   if(da && !earlyDone(a)) await btlTrigger('baroud', a);
   if(db && !earlyDone(b)) await btlTrigger('baroud', b);
 }
+// =====================================================================================================
+//  DESTRUCTION D'UNE CARTE (V0.05.54) : 4 styles tirés au hasard (jamais deux fois le même d'affilée)
+//    0 SURCHARGE    : arcs électriques, chauffe à blanc, la carte se disloque en plaques blindées 3D
+//    1 EFFONDREMENT : la carte s'éteint (ligne puis point), l'énergie est aspirée, onde de choc
+//    2 NUMÉRIQUE    : grille, double image, scan, puis dissolution en blocs et en pixels
+//    3 COUPE LASER  : un trait de laser tranche la carte, les deux moitiés basculent et retombent
+//  Tous partagent la même mise en scène : verrouillage (cadre de visée) -> la scène s'assombrit autour de la carte
+//  (suspense) -> rupture avec éclairage dynamique (halo, flare anamorphique, rayons, lumière qui se répand sur le plateau)
+//  -> la lumière retombe en braises. Tout est fait de transformations et d'opacité (aucun filtre, aucun mode de fusion).
+// =====================================================================================================
+const BTL_DX = { cy:'#6ff0ff', cy2:'#eaffff', steel:'#10151d', hot:'#ff8a2a', hot2:'#ffd37a' };
+// tons de lumière : w = cœur blanc, hi = reflet clair, rgb = teinte dominante, lo = ombre colorée de l'arête qui refroidit
+const BTL_DXT = {
+  fire:  { w:'#fff6e4', hi:'255,214,140', rgb:'255,128,44', lo:'#ff3a1a', a:'#ffd890', b:'#ff8a2a' },
+  ice:   { w:'#f4fdff', hi:'170,245,255', rgb:'70,200,255', lo:'#2a6bff', a:'#b4f6ff', b:'#46c8ff' },
+  digi:  { w:'#f4ffff', hi:'160,248,255', rgb:'47,216,255', lo:'#1990d8', a:'#a8faff', b:'#2fd8ff' },
+  laser: { w:'#fffaf2', hi:'255,206,170', rgb:'255,92,52', lo:'#e01830', a:'#ffd0a0', b:'#ff5a30' }
+};
+function btlDxR(a, b){ return a + Math.random() * (b - a); }
+function btlDxEl(css, cls){ const e = document.createElement('i'); if(cls) e.className = cls; e.style.cssText = 'position:fixed;pointer-events:none;margin:0;' + css; return e; }
+function btlDxGone(a, e){ a.finished.then(() => e.remove(), () => e.remove()); }
+function btlDxLayer(ov, css, html){ const e = document.createElement('i'); e.style.cssText = 'position:absolute;pointer-events:none;' + css; if(html) e.innerHTML = html; ov.appendChild(e); return e; }
+// surcouche fixe posée sur la carte (copie de son rectangle)
+function btlDxOv(r, over){ const ov = btlDxEl('left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;z-index:31;border-radius:7px;will-change:transform;' + (over ? '' : 'overflow:hidden')); btlQ('#btlFx').appendChild(ov); return ov; }
+// disque de lumière (halo) : s = diamètre, bg = dégradé, kf = images clés
+function btlDxDisc(cx, cy, s, bg, z, kf, d, dl, ease){
+  const e = btlDxEl('left:' + (cx - s / 2) + 'px;top:' + (cy - s / 2) + 'px;width:' + s + 'px;height:' + s + 'px;border-radius:50%;z-index:' + z + ';background:' + bg + ';opacity:0;will-change:transform,opacity');
+  btlQ('#btlFx').appendChild(e);
+  btlDxGone(btlWA(e, kf, { duration:d, delay:dl || 0, easing:ease || 'cubic-bezier(.2,.8,.3,1)', fill:'both' }), e); return e;
+}
+// ---------------------------------------------------------------------------------------------------
+//  KIT DE LUMIÈRE ET DE MISE EN SCÈNE
+// ---------------------------------------------------------------------------------------------------
+// cadre de visée : quatre équerres qui se resserrent sur la carte (rouge), puis se libèrent à la rupture
+function btlDxLock(r){
+  const m = 6, c = btlDxEl('left:' + (r.left - m) + 'px;top:' + (r.top - m) + 'px;width:' + (r.width + 2 * m) + 'px;height:' + (r.height + 2 * m) + 'px;z-index:34;will-change:transform,opacity;opacity:0');
+  const arm = Math.round(Math.min(r.width, r.height) * .24), bd = '2px solid #ff5a4a';
+  [['top:0;left:0;border-top:' + bd + ';border-left:' + bd], ['top:0;right:0;border-top:' + bd + ';border-right:' + bd], ['bottom:0;left:0;border-bottom:' + bd + ';border-left:' + bd], ['bottom:0;right:0;border-bottom:' + bd + ';border-right:' + bd]].forEach(s => {
+    const k = document.createElement('b'); k.style.cssText = 'position:absolute;width:' + arm + 'px;height:' + arm + 'px;box-sizing:border-box;box-shadow:0 0 6px rgba(255,70,50,.8);' + s[0]; c.appendChild(k);
+  });
+  btlQ('#btlFx').appendChild(c);
+  btlWA(c, [{ transform:'scale(1.9)', opacity:0 }, { transform:'scale(1.05)', opacity:1, offset:.55 }, { transform:'scale(1)', opacity:1 }], { duration:230, easing:'cubic-bezier(.2,.8,.3,1)', fill:'both' }).finished.then(() => {
+    if(c.isConnected) btlWA(c, [{ opacity:1 }, { opacity:.45 }, { opacity:1 }, { opacity:.45 }, { opacity:1 }], { duration:360, easing:'steps(1,end)', fill:'both' });
+  }, () => {});
+  return c;
+}
+function btlDxLockOut(c, tn){
+  if(!c) return;
+  [].forEach.call(c.children, k => { k.style.borderColor = '#ffffff'; k.style.boxShadow = '0 0 8px ' + (tn ? 'rgb(' + tn.rgb + ')' : '#fff'); });
+  btlDxGone(btlWA(c, [{ transform:'scale(1)', opacity:1 }, { transform:'scale(1.12)', opacity:1, offset:.18 }, { transform:'scale(2)', opacity:0 }], { duration:420, easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), c);
+}
+// projecteur : la scène s'assombrit autour de la carte pendant la montée (suspense), levée à la rupture
+function btlDxSpot(r, T, str, tint){
+  const W = r.width, H = r.height, m = Math.max(W, H), S = m * 8, cx = r.left + W / 2, cy = r.top + H / 2, t = tint || '2,6,14';
+  const e = btlDxEl('left:' + (cx - S / 2) + 'px;top:' + (cy - S / 2) + 'px;width:' + S + 'px;height:' + S + 'px;z-index:4;background:radial-gradient(circle,rgba(' + t + ',0) 0,rgba(' + t + ',0) ' + Math.round(m * .64) + 'px,rgba(' + t + ',' + str + ') ' + Math.round(m * 1.9) + 'px,rgba(' + t + ',' + (str * .94).toFixed(2) + ') 100%);opacity:0;will-change:opacity');
+  btlQ('#btlFx').appendChild(e);
+  btlWA(e, [{ opacity:0 }, { opacity:1 }], { duration:T * .8, easing:'ease-in', fill:'both' });
+  return e;
+}
+function btlDxSpotOff(ov){
+  const e = ov && ov._spot; if(!e) return;
+  btlDxGone(btlWA(e, [{ opacity:1 }, { opacity:0 }], { duration:620, easing:'ease-out', fill:'both' }), e);
+}
+// lumière qui se répand sur le plateau : grand halo teinté, attaque brutale, décroissance qui vacille
+function btlDxSpill(cx, cy, W, tn, k, d){
+  k = k || 1;
+  btlDxDisc(cx, cy, W * 5.6, 'radial-gradient(circle,rgba(' + tn.rgb + ',' + (.5 * k).toFixed(2) + ') 0,rgba(' + tn.rgb + ',' + (.24 * k).toFixed(2) + ') 30%,rgba(' + tn.rgb + ',0) 66%)', 28,
+    [{ transform:'scale(.4)', opacity:0 }, { transform:'scale(.85)', opacity:1, offset:.1 }, { transform:'scale(1)', opacity:.55, offset:.3 }, { opacity:.8, offset:.4 }, { opacity:.3, offset:.6 }, { transform:'scale(1.1)', opacity:0 }], d || 1000, 0, 'ease-out');
+}
+// éclat : cœur blanc, halo, grand halo, flare anamorphique horizontal (ou incliné de ang) et rayons qui tournent
+function btlDxBloom(cx, cy, W, tn, k, ang){
+  k = k || 1; ang = ang || 0;
+  const hi = tn.hi, rgb = tn.rgb;
+  btlDxDisc(cx, cy, W * 3.2, 'radial-gradient(circle,rgba(' + rgb + ',' + (.55 * k).toFixed(2) + ') 0,rgba(' + rgb + ',' + (.2 * k).toFixed(2) + ') 40%,rgba(' + rgb + ',0) 70%)', 33,
+    [{ transform:'scale(.3)', opacity:0 }, { transform:'scale(.9)', opacity:1, offset:.2 }, { transform:'scale(1.2)', opacity:.4, offset:.6 }, { transform:'scale(1.4)', opacity:0 }], 780);
+  btlDxDisc(cx, cy, W * 1.7, 'radial-gradient(circle,#fff 0,rgba(255,255,255,.92) 14%,rgba(' + hi + ',.78) 34%,rgba(' + rgb + ',.3) 56%,rgba(' + rgb + ',0) 72%)', 34,
+    [{ transform:'scale(.12)', opacity:0 }, { transform:'scale(.7)', opacity:1, offset:.16 }, { transform:'scale(1.15)', opacity:.7, offset:.5 }, { transform:'scale(1.6)', opacity:0 }], 540);
+  // flare anamorphique : longue lentille étirée
+  [[W * 6.2, 7, 620, 1], [W * 3.6, 3, 460, .9]].forEach(([w, h, d, o]) => {
+    const e = btlDxEl('left:' + (cx - w / 2) + 'px;top:' + (cy - h / 2) + 'px;width:' + w + 'px;height:' + h + 'px;border-radius:50%;z-index:35;background:radial-gradient(ellipse,#fff 0,rgba(' + hi + ',.85) 22%,rgba(' + rgb + ',0) 70%);opacity:0;will-change:transform,opacity;transform:rotate(' + ang + 'rad)');
+    btlQ('#btlFx').appendChild(e);
+    const R = 'rotate(' + ang + 'rad) ';
+    btlDxGone(btlWA(e, [{ transform:R + 'scaleX(.05)', opacity:0 }, { transform:R + 'scaleX(.7)', opacity:o, offset:.18 }, { transform:R + 'scaleX(1)', opacity:o * .8, offset:.4 }, { transform:R + 'scaleX(1.12)', opacity:0 }], { duration:d * k, easing:'cubic-bezier(.15,.8,.3,1)', fill:'both' }), e);
+  });
+  // rayons : faisceaux fins qui tournent lentement et s'éteignent
+  const s = W * 3.6, ry = btlDxEl('left:' + (cx - s / 2) + 'px;top:' + (cy - s / 2) + 'px;width:' + s + 'px;height:' + s + 'px;z-index:32;border-radius:50%;opacity:0;will-change:transform,opacity;'
+    + 'background:repeating-conic-gradient(from ' + Math.round(btlDxR(0, 20)) + 'deg,rgba(' + hi + ',.75) 0deg,rgba(' + hi + ',.75) 2.2deg,rgba(' + hi + ',0) 2.2deg,rgba(' + hi + ',0) 15deg);'
+    + '-webkit-mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 26%,rgba(0,0,0,0) 56%);mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 26%,rgba(0,0,0,0) 56%)');
+  btlQ('#btlFx').appendChild(ry);
+  btlDxGone(btlWA(ry, [{ transform:'rotate(0deg) scale(.4)', opacity:0 }, { transform:'rotate(10deg) scale(.9)', opacity:.55 * k, offset:.18 }, { transform:'rotate(30deg) scale(1.1)', opacity:0 }], { duration:620, easing:'ease-out', fill:'both' }), ry);
+}
+// ---------------------------------------------------------------------------------------------------
+//  ÉTINCELLES : trajectoires balistiques (arc de parabole + traînée qui suit la vitesse et raccourcit en ralentissant),
+//  trois familles : fines (rapides), traceuses (longues) et braises (rondes, lourdes, rebondissent et refroidissent)
+// ---------------------------------------------------------------------------------------------------
+function btlDxSpk(x, y, ang, dist, o){
+  o = o || {}; const tn = o.tn || BTL_DXT.fire, fx = btlQ('#btlFx'), kind = o.kind || 'fine';
+  const g = o.g != null ? o.g : 24, d = o.d || btlDxR(520, 1000), dl = o.dl || 0;
+  const ex = Math.cos(ang) * dist, ey = Math.sin(ang) * dist, TT = [0, .1, .24, .42, .64, .84, 1];
+  const pos = TT.map(t => { const e = 1 - Math.pow(1 - t, 2.3); let py = ey * e + g * t * t; if(o.floor != null && py > o.floor) py = o.floor - (py - o.floor) * .3; return [ex * e, py]; });
+  const sp0 = Math.hypot(pos[1][0] - pos[0][0], pos[1][1] - pos[0][1]) / (TT[1] - TT[0]) || 1, rot = [], sc = [];
+  TT.forEach((t, i) => {
+    const i0 = Math.max(0, i - 1), i1 = Math.min(TT.length - 1, i + 1), vx = pos[i1][0] - pos[i0][0], vy = pos[i1][1] - pos[i0][1];
+    let a = Math.atan2(vy, vx); if(i && Math.abs(a - rot[i - 1]) > Math.PI) a += (a < rot[i - 1] ? 1 : -1) * Math.PI * 2;
+    rot.push(a); sc.push(Math.max(.2, Math.min(1.5, .22 + 1.15 * (Math.hypot(vx, vy) / (TT[i1] - TT[i0])) / sp0)));
+  });
+  let e, op, kf;
+  if(kind === 'ember'){
+    const s = btlDxR(3, 5.5);
+    e = btlDxEl('left:' + (x - s / 2) + 'px;top:' + (y - s / 2) + 'px;width:' + s + 'px;height:' + s + 'px;border-radius:50%;background:' + tn.lo + ';box-shadow:0 0 7px 1px rgba(' + tn.rgb + ',.9);z-index:' + (o.z || 32) + ';opacity:0;will-change:transform,opacity');
+    const c1 = document.createElement('i'), c2 = document.createElement('i');
+    c1.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:rgb(' + tn.rgb + ')'; c2.style.cssText = 'position:absolute;inset:20%;border-radius:50%;background:#fff';
+    e.appendChild(c1); e.appendChild(c2);
+    btlWA(c1, [{ opacity:1 }, { opacity:1, offset:.3 }, { opacity:0 }], { duration:d * .7, delay:dl, fill:'both', easing:'ease-out' });
+    btlWA(c2, [{ opacity:1 }, { opacity:0 }], { duration:d * .3, delay:dl, fill:'both', easing:'ease-out' });
+    op = [1, 1, .95, 1, .65, .9, 0];
+    kf = TT.map((t, i) => ({ transform:'translate(' + pos[i][0].toFixed(1) + 'px,' + pos[i][1].toFixed(1) + 'px) scale(' + (1 - .45 * t).toFixed(2) + ')', opacity:op[i], offset:t }));
+  } else {
+    const len = kind === 'tracer' ? btlDxR(24, 38) : (o.w || btlDxR(10, 18)), h = o.h || (kind === 'tracer' ? 2 : btlDxR(1.5, 2.4));
+    e = btlDxEl('left:' + (x - len) + 'px;top:' + (y - h / 2) + 'px;width:' + len + 'px;height:' + h + 'px;border-radius:2px;background:linear-gradient(90deg,rgba(' + tn.rgb + ',0),rgba(' + tn.rgb + ',.8) 50%,rgb(' + tn.rgb + '));box-shadow:0 0 5px rgba(' + tn.rgb + ',.8);transform-origin:100% 50%;z-index:' + (o.z || 32) + ';opacity:0;will-change:transform,opacity');
+    const c = document.createElement('i'); c.style.cssText = 'position:absolute;right:0;top:0;bottom:0;width:42%;border-radius:2px;background:linear-gradient(90deg,rgba(255,255,255,0),' + (o.c || '#fff') + ')'; e.appendChild(c);
+    btlWA(c, [{ opacity:1 }, { opacity:.8, offset:.2 }, { opacity:0 }], { duration:d * .5, delay:dl, fill:'both', easing:'ease-out' });
+    op = [1, 1, 1, 1, .55, .9, 0];
+    kf = TT.map((t, i) => ({ transform:'translate(' + pos[i][0].toFixed(1) + 'px,' + pos[i][1].toFixed(1) + 'px) rotate(' + rot[i].toFixed(3) + 'rad) scaleX(' + sc[i].toFixed(2) + ')', opacity:op[i], offset:t }));
+  }
+  fx.appendChild(e);
+  btlDxGone(btlWA(e, kf, { duration:d, delay:dl, easing:'linear', fill:'both' }), e);
+}
+// gerbe : mélange d'étincelles fines, de traceuses et de braises ; dir() / pt() permettent de la diriger ou de l'émettre sur une ligne
+function btlDxBurst(x, y, W, H, tn, n, o){
+  o = o || {};
+  for(let i = 0; i < n; i++){
+    const u = Math.random(), kind = u < .5 ? 'fine' : u < .74 ? 'tracer' : 'ember', p = o.pt ? o.pt() : [x, y], a = o.dir ? o.dir() : btlDxR(0, Math.PI * 2);
+    const t2 = o.tn2 && Math.random() < (o.alt || .25) ? o.tn2 : tn;
+    btlDxSpk(p[0], p[1], a, W * (kind === 'tracer' ? btlDxR(1, 2.1) : kind === 'ember' ? btlDxR(.4, 1.1) : btlDxR(.7, 1.7)) * (o.k || 1), {
+      kind, tn:t2, g:H * (kind === 'ember' ? btlDxR(.7, 1.1) : kind === 'tracer' ? btlDxR(.05, .15) : btlDxR(.25, .4)), floor:kind === 'ember' ? H * .75 : null,
+      d:kind === 'ember' ? btlDxR(1200, 1800) : kind === 'tracer' ? btlDxR(600, 1000) : btlDxR(520, 950), dl:btlDxR(0, 80), c:Math.random() < .5 ? '#fff' : t2.w });
+  }
+  // scintillements : petites étoiles à quatre branches qui claquent autour du foyer
+  for(let i = 0; i < (o.stars != null ? o.stars : 6); i++){
+    const p = o.pt ? o.pt() : [x + btlDxR(-W * .5, W * .5), y + btlDxR(-H * .4, H * .4)], s = btlDxR(10, 20);
+    const st = btlDxEl('left:' + (p[0] - s / 2) + 'px;top:' + (p[1] - s / 2) + 'px;width:' + s + 'px;height:' + s + 'px;z-index:34;opacity:0;will-change:transform,opacity;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 50%,rgba(255,255,255,0)) center/100% 1.5px no-repeat,linear-gradient(0deg,rgba(255,255,255,0),#fff 50%,rgba(255,255,255,0)) center/1.5px 100% no-repeat');
+    btlQ('#btlFx').appendChild(st);
+    btlDxGone(btlWA(st, [{ transform:'scale(.1) rotate(0deg)', opacity:0 }, { transform:'scale(1) rotate(25deg)', opacity:1, offset:.3 }, { transform:'scale(.2) rotate(50deg)', opacity:0 }], { duration:btlDxR(220, 380), delay:btlDxR(0, 420), easing:'ease-out', fill:'both' }), st);
+  }
+}
+// tache de brûlure sur l'emplacement ; la braise (tint) éclaire encore un instant le métal
+function btlDxScorch(r, tint, dur){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height;
+  const sc = btlDxEl('left:' + (r.left - W * .1) + 'px;top:' + (r.top - H * .06) + 'px;width:' + W * 1.2 + 'px;height:' + H * 1.12 + 'px;z-index:12;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.72) 0,rgba(0,0,0,.46) 40%,rgba(0,0,0,0) 72%);opacity:0;will-change:opacity');
+  const sc2 = btlDxEl('left:' + (r.left + W * .1) + 'px;top:' + (r.top + H * .14) + 'px;width:' + W * .8 + 'px;height:' + H * .72 + 'px;z-index:12;border-radius:50%;background:radial-gradient(ellipse,' + tint + ' 0,rgba(0,0,0,0) 72%);opacity:0;will-change:opacity');
+  fx.appendChild(sc); fx.appendChild(sc2);
+  btlDxGone(btlWA(sc, [{ opacity:0 }, { opacity:1, offset:.1 }, { opacity:.85, offset:.55 }, { opacity:0 }], { duration:dur || 1700, easing:'ease-out', fill:'both' }), sc);
+  btlDxGone(btlWA(sc2, [{ opacity:0 }, { opacity:1, offset:.08 }, { opacity:.55, offset:.35 }, { opacity:.8, offset:.45 }, { opacity:0 }], { duration:1300, easing:'ease-out', fill:'both' }), sc2);
+}
+// ---------------------------------------------------------------------------------------------------
+//  FUMÉE : bouffées irrégulières (3 lobes) qui gonflent en montant, éclairées du côté du foyer par une lueur qui s'éteint vite,
+//  filets qui ondulent, nappe de poussière au ras du sol. kind 'vapor' = brume froide (style Effondrement)
+// ---------------------------------------------------------------------------------------------------
+function btlDxSmoke(cx, cy, W, H, n, tn, o){
+  o = o || {}; const vap = o.kind === 'vapor', fx = btlQ('#btlFx');
+  const C = vap ? ['215,235,250', '160,200,232', '120,160,205'] : ['104,110,124', '64,69,82', '38,42,52'];
+  for(let i = 0; i < n; i++){
+    const s = W * btlDxR(.55, 1), x = cx + btlDxR(-W * .32, W * .32), y = cy + btlDxR(-H * .08, H * .28);
+    const rl = s * btlDxR(.26, .33), lobes = [0, 1, 2].map(() => 'radial-gradient(circle at ' + Math.round(btlDxR(34, 66)) + '% ' + Math.round(btlDxR(34, 66)) + '%,rgba(' + C[0] + ',.8) 0,rgba(' + C[1] + ',.48) ' + Math.round(rl * .5) + 'px,rgba(' + C[2] + ',0) ' + Math.round(rl) + 'px)').join(',');
+    const sm = btlDxEl('left:' + (x - s / 2) + 'px;top:' + (y - s / 2) + 'px;width:' + s + 'px;height:' + s + 'px;z-index:29;opacity:0;will-change:transform,opacity;background:' + lobes);
+    let lx = cx - x, ly = cy - y; const lm = Math.hypot(lx, ly) || 1; lx = Math.round(50 + lx / lm * 18); ly = Math.round(50 + ly / lm * 18);
+    const gl = document.createElement('i'); gl.style.cssText = 'position:absolute;inset:0;background:radial-gradient(circle at ' + lx + '% ' + ly + '%,rgba(' + tn.rgb + ',' + (vap ? .35 : .6) + ') 0,rgba(' + tn.rgb + ',0) ' + Math.round(s * .3) + 'px)'; sm.appendChild(gl);
+    fx.appendChild(sm);
+    const d = btlDxR(1300, 1900), dl = btlDxR(40, 480), rise = H * btlDxR(.45, .95), dr = btlDxR(-W * .3, W * .3), rz = btlDxR(-40, 40), k = btlDxR(1.3, 1.8);
+    btlDxGone(btlWA(sm, [
+      { transform:'translate(0,0) rotate(0deg) scale(.3)', opacity:0 },
+      { transform:'translate(' + dr * .2 + 'px,' + -rise * .2 + 'px) rotate(' + rz * .25 + 'deg) scale(' + k * .55 + ')', opacity:.8, offset:.16, easing:'cubic-bezier(.2,.7,.3,1)' },
+      { transform:'translate(' + dr * .6 + 'px,' + -rise * .6 + 'px) rotate(' + rz * .7 + 'deg) scale(' + k * .9 + ')', opacity:.55, offset:.55 },
+      { transform:'translate(' + dr + 'px,' + -rise + 'px) rotate(' + rz + 'deg) scale(' + k + ')', opacity:0 }
+    ], { duration:d, delay:dl, easing:'ease-out', fill:'both' }), sm);
+    btlWA(gl, [{ opacity:1 }, { opacity:.3, offset:.3 }, { opacity:0 }], { duration:d * .5, delay:dl, easing:'ease-out', fill:'both' });
+  }
+  // filets de fumée fins qui ondulent
+  for(let i = 0; i < 4; i++){
+    const w = W * btlDxR(.16, .26), h = H * btlDxR(.8, 1.1), x = cx + btlDxR(-W * .3, W * .3), r1 = btlDxR(8, 18) * (i % 2 ? 1 : -1);
+    const wp = btlDxEl('left:' + (x - w / 2) + 'px;top:' + (cy - h * .4) + 'px;width:' + w + 'px;height:' + h + 'px;border-radius:50%;z-index:29;opacity:0;will-change:transform,opacity;transform-origin:50% 100%;background:radial-gradient(ellipse,rgba(' + C[0] + ',.5) 0,rgba(' + C[1] + ',.26) 45%,rgba(' + C[2] + ',0) 70%)');
+    fx.appendChild(wp);
+    btlDxGone(btlWA(wp, [{ transform:'translateY(0) scaleY(.2) rotate(' + r1 + 'deg)', opacity:0 }, { transform:'translateY(' + -H * .25 + 'px) scaleY(.8) rotate(' + -r1 * .5 + 'deg)', opacity:.7, offset:.3 }, { transform:'translateY(' + -H * .75 + 'px) scaleY(1.25) rotate(' + r1 + 'deg)', opacity:0 }], { duration:btlDxR(1500, 2000), delay:btlDxR(150, 600), easing:'ease-out', fill:'both' }), wp);
+  }
+  // nappe de poussière qui s'étale au ras du sol
+  const du = btlDxEl('left:' + (cx - W * .95) + 'px;top:' + (cy + H * .02) + 'px;width:' + W * 1.9 + 'px;height:' + H * .55 + 'px;border-radius:50%;z-index:13;opacity:0;will-change:transform,opacity;background:radial-gradient(ellipse,rgba(' + C[0] + ',.55) 0,rgba(' + C[1] + ',.28) 40%,rgba(' + C[2] + ',0) 70%)');
+  fx.appendChild(du);
+  btlDxGone(btlWA(du, [{ transform:'scale(.25,.3)', opacity:0 }, { transform:'scale(.8,.8)', opacity:.85, offset:.18 }, { transform:'scale(1.25,1)', opacity:0 }], { duration:1000, easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), du);
+}
+// bandes de glitch : copies horizontales de la carte qui glissent de côté
+function btlDxGlitch(ov, el, W, H, n, amp, A){
+  for(let i = 0; i < n; i++){
+    const a = btlDxR(0, 80), b = Math.min(100, a + btlDxR(10, 26)), dx = (Math.random() < .5 ? -1 : 1) * btlDxR(amp * .6, amp), t0 = btlDxR(.08, .85);
+    const s = el.cloneNode(true); s.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;margin:0;opacity:1;pointer-events:none;clip-path:inset(' + a + '% 0 ' + (100 - b) + '% 0);will-change:transform';
+    ov.appendChild(s);
+    A(s, [{ transform:'translateX(0)' }, { transform:'translateX(0)', offset:t0 }, { transform:'translateX(' + dx + 'px)', offset:t0 + .015 }, { transform:'translateX(' + dx * .4 + 'px)', offset:t0 + .05 }, { transform:'translateX(0)', offset:t0 + .075 }, { transform:'translateX(0)' }]);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  ÉCLAIRS : tracé fractal (déplacement du point milieu) avec branches, trois épaisseurs (halo, corps, cœur blanc),
+//  deux variantes de tracé qui alternent pour que l'éclair « vive », croissance depuis l'origine et extinction qui vacille
+// ---------------------------------------------------------------------------------------------------
+function btlDxBoltPts(a, b, off, d){
+  if(d <= 0) return [a, b];
+  const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, o = btlDxR(-1, 1) * off, m = [(a[0] + b[0]) / 2 - dy / len * o, (a[1] + b[1]) / 2 + dx / len * o];
+  return btlDxBoltPts(a, m, off * .55, d - 1).concat(btlDxBoltPts(m, b, off * .55, d - 1).slice(1));
+}
+function btlDxBoltSvg(x1, y1, x2, y2, w, forks, col){
+  const len = Math.hypot(x2 - x1, y2 - y1) || 1, ang = Math.atan2(y2 - y1, x2 - x1), main = btlDxBoltPts([x1, y1], [x2, y2], len * .2, 4), paths = [{ p:main, w }];
+  for(let i = 0; i < forks; i++){
+    const s = main[Math.floor(btlDxR(.2, .8) * main.length)], a = ang + (Math.random() < .5 ? -1 : 1) * btlDxR(.35, .9), l = len * btlDxR(.16, .34);
+    paths.push({ p:btlDxBoltPts(s, [s[0] + Math.cos(a) * l, s[1] + Math.sin(a) * l], l * .3, 3), w:w * .55 });
+  }
+  let h = '';
+  paths.forEach(q => {
+    const d = 'M' + q.p.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (q.w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+    h += st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
+  });
+  return h;
+}
+// éclair le long d'un périmètre (cadre de la carte) : électricité qui court sur le métal
+function btlDxPerimSvg(W, H, w, col){
+  const per = 2 * (W + H), p0 = Math.random() * per, span = per * btlDxR(.35, .6), pts = [], at = t => { t = ((t % per) + per) % per; if(t < W) return [t, 0]; t -= W; if(t < H) return [W, t]; t -= H; if(t < W) return [W - t, H]; t -= W; return [0, H - t]; };
+  for(let t = 0; t <= span; t += W * .1){ const p = at(p0 + t), j = btlDxR(-1, 1) * W * .045; const q = at(p0 + t + 1), nx = -(q[1] - p[1]), ny = q[0] - p[0], m = Math.hypot(nx, ny) || 1; pts.push([p[0] + nx / m * j + 0, p[1] + ny / m * j]); }
+  const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+  return st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
+}
+// images clés d'opacité d'une variante : n pas, éclat qui décroît, quelques extinctions aléatoires
+function btlDxFlick(n, vis){
+  const kf = [];
+  for(let j = 0; j < n; j++){
+    const a = j / n, b = (j + 1) / n, v = (j % 2 === vis && (j < 2 || Math.random() > .22)) ? Math.max(.25, 1 - j / n * .7) : 0;
+    kf.push({ opacity:v, offset:a }, { opacity:v, offset:Math.max(a, b - .0005) });
+  }
+  kf.push({ opacity:0, offset:1 }); return kf;
+}
+// pose un éclair (2 variantes) dans un cadre bx,by,bw,bh ; (ox,oy) = point d'origine de la croissance ; abs : cadre positionné dans une surcouche
+function btlDxBoltEl(parent, abs, bx, by, bw, bh, fa, fb, ox, oy, d, dl, grow, z){
+  const e = document.createElement('i');
+  e.style.cssText = 'position:' + (abs ? 'absolute' : 'fixed') + ';pointer-events:none;left:' + bx + 'px;top:' + by + 'px;width:' + bw + 'px;height:' + bh + 'px;z-index:' + (z || 35) + ';will-change:transform;transform-origin:' + ox + 'px ' + oy + 'px';
+  const n = Math.max(3, Math.round(d / 70));
+  [[fa, 0], [fb, 1]].forEach(([frag, vis]) => {
+    const v = document.createElement('i'); v.style.cssText = 'position:absolute;inset:0;opacity:0;will-change:opacity';
+    v.innerHTML = '<svg viewBox="0 0 ' + bw + ' ' + bh + '" width="' + bw + '" height="' + bh + '" style="display:block;overflow:visible">' + frag + '</svg>'; e.appendChild(v);
+    btlWA(v, btlDxFlick(n, vis), { duration:d, delay:dl, easing:'linear', fill:'both' });
+  });
+  parent.appendChild(e);
+  btlDxGone(btlWA(e, grow ? [{ transform:'scale(.1)' }, { transform:'scale(1)', offset:.16, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:'scale(1)' }] : [{ transform:'scale(1)' }, { transform:'scale(1)' }], { duration:d, delay:dl, easing:'linear', fill:'both' }), e);
+}
+// point aléatoire sur le bord d'un rectangle w × h
+function btlDxEdgePt(w, h){
+  const s = Math.floor(Math.random() * 4);
+  return [() => [btlDxR(.1, .9) * w, 0], () => [w, btlDxR(.1, .9) * h], () => [btlDxR(.1, .9) * w, h], () => [0, btlDxR(.1, .9) * h]][s]();
+}
+// éclairs qui jaillissent d'un foyer (cx, cy) dans le repère fixe : n éclairs de longueur ≈ L
+function btlDxBoltBurst(cx, cy, L, w, n, cols, d, dl0){
+  const R = L * 1.4, fx = btlQ('#btlFx');
+  for(let i = 0; i < n; i++){
+    const a = btlDxR(0, Math.PI * 2), l = L * btlDxR(.6, 1), x2 = R + Math.cos(a) * l, y2 = R + Math.sin(a) * l, col = cols[i % cols.length];
+    btlDxBoltEl(fx, false, cx - R, cy - R, 2 * R, 2 * R, btlDxBoltSvg(R, R, x2, y2, w, 2, col), btlDxBoltSvg(R, R, x2, y2, w, 2, col), R, R, d, dl0 + btlDxR(0, 90), true, 35);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  ÉCLAIRS : tracé fractal (déplacement du point milieu) avec branches, trois épaisseurs (halo, corps, cœur blanc),
+//  deux variantes de tracé qui alternent pour que l'éclair « vive », croissance depuis l'origine et extinction qui vacille
+// ---------------------------------------------------------------------------------------------------
+function btlDxBoltPts(a, b, off, d){
+  if(d <= 0) return [a, b];
+  const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, o = btlDxR(-1, 1) * off, m = [(a[0] + b[0]) / 2 - dy / len * o, (a[1] + b[1]) / 2 + dx / len * o];
+  return btlDxBoltPts(a, m, off * .55, d - 1).concat(btlDxBoltPts(m, b, off * .55, d - 1).slice(1));
+}
+function btlDxBoltSvg(x1, y1, x2, y2, w, forks, col){
+  const len = Math.hypot(x2 - x1, y2 - y1) || 1, ang = Math.atan2(y2 - y1, x2 - x1), main = btlDxBoltPts([x1, y1], [x2, y2], len * .2, 4), paths = [{ p:main, w }];
+  for(let i = 0; i < forks; i++){
+    const s = main[Math.floor(btlDxR(.2, .8) * main.length)], a = ang + (Math.random() < .5 ? -1 : 1) * btlDxR(.35, .9), l = len * btlDxR(.16, .34);
+    paths.push({ p:btlDxBoltPts(s, [s[0] + Math.cos(a) * l, s[1] + Math.sin(a) * l], l * .3, 3), w:w * .55 });
+  }
+  let h = '';
+  paths.forEach(q => {
+    const d = 'M' + q.p.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (q.w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+    h += st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
+  });
+  return h;
+}
+// éclair le long d'un périmètre (cadre de la carte) : électricité qui court sur le métal
+function btlDxPerimSvg(W, H, w, col){
+  const per = 2 * (W + H), p0 = Math.random() * per, span = per * btlDxR(.35, .6), pts = [], at = t => { t = ((t % per) + per) % per; if(t < W) return [t, 0]; t -= W; if(t < H) return [W, t]; t -= H; if(t < W) return [W - t, H]; t -= W; return [0, H - t]; };
+  for(let t = 0; t <= span; t += W * .1){ const p = at(p0 + t), j = btlDxR(-1, 1) * W * .045; const q = at(p0 + t + 1), nx = -(q[1] - p[1]), ny = q[0] - p[0], m = Math.hypot(nx, ny) || 1; pts.push([p[0] + nx / m * j + 0, p[1] + ny / m * j]); }
+  const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+  return st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
+}
+// images clés d'opacité d'une variante : n pas, éclat qui décroît, quelques extinctions aléatoires
+function btlDxFlick(n, vis){
+  const kf = [];
+  for(let j = 0; j < n; j++){
+    const a = j / n, b = (j + 1) / n, v = (j % 2 === vis && (j < 2 || Math.random() > .22)) ? Math.max(.25, 1 - j / n * .7) : 0;
+    kf.push({ opacity:v, offset:a }, { opacity:v, offset:Math.max(a, b - .0005) });
+  }
+  kf.push({ opacity:0, offset:1 }); return kf;
+}
+// pose un éclair (2 variantes) dans un cadre bx,by,bw,bh ; (ox,oy) = point d'origine de la croissance ; abs : cadre positionné dans une surcouche
+function btlDxBoltEl(parent, abs, bx, by, bw, bh, fa, fb, ox, oy, d, dl, grow, z){
+  const e = document.createElement('i');
+  e.style.cssText = 'position:' + (abs ? 'absolute' : 'fixed') + ';pointer-events:none;left:' + bx + 'px;top:' + by + 'px;width:' + bw + 'px;height:' + bh + 'px;z-index:' + (z || 35) + ';will-change:transform;transform-origin:' + ox + 'px ' + oy + 'px';
+  const n = Math.max(3, Math.round(d / 70));
+  [[fa, 0], [fb, 1]].forEach(([frag, vis]) => {
+    const v = document.createElement('i'); v.style.cssText = 'position:absolute;inset:0;opacity:0;will-change:opacity';
+    v.innerHTML = '<svg viewBox="0 0 ' + bw + ' ' + bh + '" width="' + bw + '" height="' + bh + '" style="display:block;overflow:visible">' + frag + '</svg>'; e.appendChild(v);
+    btlWA(v, btlDxFlick(n, vis), { duration:d, delay:dl, easing:'linear', fill:'both' });
+  });
+  parent.appendChild(e);
+  btlDxGone(btlWA(e, grow ? [{ transform:'scale(.1)' }, { transform:'scale(1)', offset:.16, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:'scale(1)' }] : [{ transform:'scale(1)' }, { transform:'scale(1)' }], { duration:d, delay:dl, easing:'linear', fill:'both' }), e);
+}
+// point aléatoire sur le bord d'un rectangle w × h
+function btlDxEdgePt(w, h){
+  const s = Math.floor(Math.random() * 4);
+  return [() => [btlDxR(.1, .9) * w, 0], () => [w, btlDxR(.1, .9) * h], () => [btlDxR(.1, .9) * w, h], () => [0, btlDxR(.1, .9) * h]][s]();
+}
+// éclairs qui jaillissent d'un foyer (cx, cy) dans le repère fixe : n éclairs de longueur ≈ L
+function btlDxBoltBurst(cx, cy, L, w, n, cols, d, dl0){
+  const R = L * 1.4, fx = btlQ('#btlFx');
+  for(let i = 0; i < n; i++){
+    const a = btlDxR(0, Math.PI * 2), l = L * btlDxR(.6, 1), x2 = R + Math.cos(a) * l, y2 = R + Math.sin(a) * l, col = cols[i % cols.length];
+    btlDxBoltEl(fx, false, cx - R, cy - R, 2 * R, 2 * R, btlDxBoltSvg(R, R, x2, y2, w, 2, col), btlDxBoltSvg(R, R, x2, y2, w, 2, col), R, R, d, dl0 + btlDxR(0, 90), true, 35);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  PLAQUE MÉTALLIQUE 3D (utilisée par la surcharge et la coupe laser)
+//  face = vraie copie de la carte découpée ; tranche d'acier côté opposé à la lumière ; biseau éclairé par le point
+//  lumineux (lx, ly en %) ; métal chauffé qui refroidit en 3 temps (blanc -> orange -> braise) ; reflet qui glisse
+// ---------------------------------------------------------------------------------------------------
+function btlDxPlate(el, r, q, lx, ly, tn, d, cutPts){
+  const W = r.width, H = r.height;
+  const poly = q.map(p => p[0].toFixed(1) + '% ' + p[1].toFixed(1) + '%').join(','), pts = q.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  let gx = 0, gy = 0; q.forEach(p => { gx += p[0]; gy += p[1]; }); gx /= q.length; gy /= q.length;
+  const vx = gx - lx, vy = gy - ly, vm = Math.hypot(vx, vy) || 1, ux = vx / vm, uy = vy / vm, ca = Math.round(Math.atan2(ux, -uy) * 180 / Math.PI);
+  const box = btlDxEl('left:' + r.left + 'px;top:' + r.top + 'px;width:' + W + 'px;height:' + H + 'px;transform-origin:' + gx.toFixed(1) + '% ' + gy.toFixed(1) + '%;will-change:transform,opacity');
+  const svg = (inner, css) => '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;' + (css || '') + '">' + inner + '</svg>';
+  box.innerHTML = svg('<polygon points="' + pts + '" fill="#06090e" stroke="#02030a" stroke-width="1.2" vector-effect="non-scaling-stroke"/>', 'transform:translate(' + (2.5 + ux * 1.6).toFixed(1) + 'px,' + (3.6 + uy * 1.6).toFixed(1) + 'px)')
+    + svg('<polygon points="' + pts + '" fill="#1a212c" stroke="#0a0e15" stroke-width="1" vector-effect="non-scaling-stroke"/>', 'transform:translate(' + (1.2 + ux * .8).toFixed(1) + 'px,' + (1.8 + uy * .8).toFixed(1) + 'px)');
+  const face = document.createElement('div'); face.style.cssText = 'position:absolute;inset:0;clip-path:polygon(' + poly + ')';
+  const cl = el.cloneNode(true); cl.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;margin:0;opacity:1'; cl.querySelectorAll('[id]').forEach(n => n.removeAttribute('id')); face.appendChild(cl);
+  const mk = css => { const e = document.createElement('i'); e.style.cssText = 'position:absolute;inset:0;' + css; face.appendChild(e); return e; };
+  // côté tourné vers le cœur : reflet chaud ; côté opposé : ombre
+  const lit = mk('background:linear-gradient(' + ca + 'deg,rgba(' + tn.hi + ',.9) 0,rgba(' + tn.rgb + ',.3) 26%,rgba(0,0,0,0) 50%,rgba(0,0,0,.6) 100%)');
+  const hotW = mk('background:linear-gradient(135deg,#fff,' + tn.w + ' 55%,rgba(' + tn.hi + ',.9));opacity:0');
+  const hotB = mk('background:linear-gradient(135deg,rgba(' + tn.rgb + ',.95),' + tn.lo + ');opacity:0');
+  const gl = mk('left:-45%;width:34%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.8) 50%,rgba(255,255,255,0));transform:skewX(-18deg);opacity:0;will-change:transform,opacity');
+  box.appendChild(face);
+  const edge = (stroke, w, op) => { const e = document.createElement('div'); e.style.cssText = 'position:absolute;inset:0;opacity:' + op; e.innerHTML = svg(cutPts
+    ? '<polygon points="' + pts + '" fill="none" stroke="rgba(190,205,225,.7)" stroke-width="1.1" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><polyline points="' + cutPts + '" fill="none" stroke="' + stroke + '" stroke-width="' + w + '" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'
+    : '<polygon points="' + pts + '" fill="none" stroke="' + stroke + '" stroke-width="' + w + '" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'); box.appendChild(e); return e; };
+  if(!cutPts) edge('rgba(190,205,225,.65)', 1.1, 1);
+  const eR = edge(tn.lo, 3.4, 1), eB = edge(tn.b, 2.6, 1), eW = edge('#ffffff', 1.4, 1);
+  // refroidissement
+  btlWA(hotW, [{ opacity:.95 }, { opacity:.3, offset:.45 }, { opacity:0 }], { duration:420, easing:'ease-out', fill:'both' });
+  btlWA(hotB, [{ opacity:.68 }, { opacity:.4, offset:.3 }, { opacity:.08, offset:.7 }, { opacity:0 }], { duration:900, easing:'ease-out', fill:'both' });
+  btlWA(eW, [{ opacity:1 }, { opacity:0 }], { duration:480, easing:'ease-out', fill:'both' });
+  btlWA(eB, [{ opacity:1 }, { opacity:.9, offset:.2 }, { opacity:0 }], { duration:900, easing:'ease-out', fill:'both' });
+  btlWA(eR, [{ opacity:1 }, { opacity:.8, offset:.4 }, { opacity:.12 }], { duration:d, easing:'ease-out', fill:'both' });
+  btlWA(lit, [{ opacity:1 }, { opacity:.45, offset:.5 }, { opacity:.85 }], { duration:d, easing:'ease-in-out', fill:'both' });
+  btlWA(gl, [{ transform:'translateX(0) skewX(-18deg)', opacity:0 }, { opacity:.95, offset:.2 }, { transform:'translateX(430%) skewX(-18deg)', opacity:0 }], { duration:btlDxR(480, 700), delay:btlDxR(120, 380), easing:'ease-in-out', fill:'both' });
+  return box;
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  0 · SURCHARGE
+// ---------------------------------------------------------------------------------------------------
+// fracture en plaques : grille 3 × 4 aux sommets décalés, les 2 cases les plus proches du point d'impact sont coupées en deux
+function btlDxFracture(){
+  const C = 3, R = 4, P = [];
+  for(let j = 0; j <= R; j++){ P[j] = []; for(let i = 0; i <= C; i++){
+    let x = i / C * 100, y = j / R * 100;
+    if(i > 0 && i < C) x += btlDxR(-1, 1) * 8; if(j > 0 && j < R) y += btlDxR(-1, 1) * 7;
+    P[j][i] = [x, y]; } }
+  const mx = 50 + btlDxR(-12, 12), my = 46 + btlDxR(-10, 10), cells = [];
+  for(let j = 0; j < R; j++) for(let i = 0; i < C; i++){
+    const q = [P[j][i], P[j][i + 1], P[j + 1][i + 1], P[j + 1][i]];
+    const cx = (q[0][0] + q[2][0]) / 2, cy = (q[0][1] + q[2][1]) / 2;
+    cells.push({ q, d:Math.hypot(cx - mx, cy - my) });
+  }
+  const near = cells.slice().sort((a, b) => a.d - b.d).slice(0, 2), out = [];
+  cells.forEach(c => {
+    if(near.indexOf(c) < 0){ out.push(c.q); return; }
+    const k = Math.random() < .5 ? 0 : 1, q = c.q;
+    if(k === 0){ out.push([q[0], q[1], q[2]]); out.push([q[0], q[2], q[3]]); } else { out.push([q[0], q[1], q[3]]); out.push([q[1], q[2], q[3]]); }
+  });
+  return { shards:out, mx, my };
+}
+// montée : arcs électriques, glitch, chauffe, tremblement qui s'arrête net une fraction de seconde avant la rupture (hit-stop)
+async function btlDxSurge(el, r, col){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, tn = BTL_DXT.fire, T = 600, ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T, .5, '10,4,2');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .13) + 'px ' + Math.round(W * .03) + 'px rgba(255,92,40,.95),inset 0 0 ' + Math.round(W * .4) + 'px rgba(255,60,30,.45);opacity:0'), [{ opacity:0 }, { opacity:.7, offset:.13 }, { opacity:.25, offset:.22 }, { opacity:.9, offset:.34 }, { opacity:.35, offset:.43 }, { opacity:1, offset:.56 }, { opacity:.55, offset:.64 }, { opacity:1, offset:.74 }, { opacity:1 }]);
+  btlDxGlitch(ov, el, W, H, 3, 8, A);
+  // éclairs fractals : 6 jaillissent du cadre vers le cœur (croissance + clignotement), 2 courent le long du métal du cadre
+  const wb = W * .02, ec = 'rgb(111,240,255)';
+  [.05, .17, .3, .43, .57, .72].forEach(f => {
+    const st = btlDxEdgePt(W, H), en = [btlDxR(.3, .7) * W, btlDxR(.3, .7) * H];
+    btlDxBoltEl(ov, true, 0, 0, W, H, btlDxBoltSvg(st[0], st[1], en[0], en[1], wb, 2, ec), btlDxBoltSvg(st[0], st[1], en[0], en[1], wb, 2, ec), st[0], st[1], 170, f * T, true, 3);
+  });
+  [.12, .5].forEach(f => btlDxBoltEl(ov, true, 0, 0, W, H, btlDxPerimSvg(W, H, wb, ec), btlDxPerimSvg(W, H, wb, ec), W / 2, H / 2, 240, f * T, false, 3));
+  A(btlDxLayer(ov, 'left:0;right:0;top:0;height:22%;background:linear-gradient(180deg,rgba(111,240,255,0),rgba(111,240,255,.5) 70%,rgba(234,255,255,.95) 96%,rgba(111,240,255,0));opacity:.9;will-change:transform'), [{ transform:'translateY(-110%)' }, { transform:'translateY(520%)' }], { iterations:2, duration:T * .43 });
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;background:radial-gradient(ellipse at 50% 46%,#fff 0,rgba(255,236,200,.92) 30%,rgba(255,140,60,.55) 62%,rgba(255,60,30,0) 100%);opacity:0'), [{ opacity:0 }, { opacity:0, offset:.28 }, { opacity:.35, offset:.46 }, { opacity:.15, offset:.53 }, { opacity:.55, offset:.7 }, { opacity:.3, offset:.76 }, { opacity:.95, offset:.88 }, { opacity:1 }]);
+  const sh = [0, -2.2, 2.2, -2.8, 2.8, -3.4, 3.4, -4, 4, -3, 0, 0];
+  const jit = sh.map((v, i) => ({ transform:'translate(' + v + 'px,' + ((i % 2 ? -1 : 1) * Math.abs(v) * .3) + 'px) scale(' + (1 + Math.min(i, 9) * .004) + ')' }));
+  A(ov, jit, { easing:'linear' }); btlWA(el, jit, { duration:T, easing:'linear', fill:'both' });
+  for(let i = 0; i < 16; i++){
+    const side = Math.floor(Math.random() * 4), t = Math.random();
+    const x = r.left + (side === 1 ? W : side === 3 ? 0 : t * W), y = r.top + (side === 0 ? 0 : side === 2 ? H : t * H);
+    btlDxSpk(x, y, [-Math.PI / 2, 0, Math.PI / 2, Math.PI][side] + btlDxR(-.9, .9), btlDxR(18, 46), { kind:i % 4 === 0 ? 'tracer' : 'fine', c:Math.random() < .35 ? BTL_DX.cy2 : tn.w, tn:Math.random() < .35 ? BTL_DXT.ice : tn, g:14, d:btlDxR(300, 520), dl:Math.random() * (T * .85) });
+  }
+  await btlSleep(T);
+  return ov;
+}
+function btlDxBreak(el, r, col, ov){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, tn = BTL_DXT.fire;
+  const fr = btlDxFracture(), mx = fr.mx, my = fr.my, mxp = r.left + mx / 100 * W, myp = r.top + my / 100 * H;
+  btlDxBloom(mxp, myp, W, tn, 1.1); btlDxSpill(mxp, myp, W, tn, 1.1, 1100);
+  const w3 = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:30;perspective:760px;perspective-origin:' + cx + 'px ' + cy + 'px');
+  fx.appendChild(w3);
+  fr.shards.forEach(q => {
+    let gx = 0, gy = 0; q.forEach(p => { gx += p[0]; gy += p[1]; }); gx /= q.length; gy /= q.length;
+    const d = btlDxR(1000, 1350), box = btlDxPlate(el, r, q, mx, my, tn, d);
+    w3.appendChild(box);
+    let vx = gx - mx, vy = gy - my; const m = Math.hypot(vx, vy) || 1; vx /= m; vy /= m;
+    const pw = Math.max(.6, 1.15 - Math.hypot(gx - mx, gy - my) / 90);
+    const dist = W * btlDxR(.55, 1.05) * pw, px = vx * dist, py = vy * dist * .9 - H * .12, z = btlDxR(70, 260) * pw;
+    const rx = btlDxR(-190, 190), ry = btlDxR(-190, 190), rz = btlDxR(-120, 120);
+    btlDxGone(btlWA(box, [
+      { transform:'translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)', opacity:1 },
+      { transform:'translate3d(' + px + 'px,' + py + 'px,' + z + 'px) rotateX(' + rx * .5 + 'deg) rotateY(' + ry * .5 + 'deg) rotateZ(' + rz * .5 + 'deg)', opacity:1, offset:.34, easing:'cubic-bezier(.35,0,.6,1)' },
+      { transform:'translate3d(' + px * 1.25 + 'px,' + (py + H * btlDxR(.55, .95)) + 'px,' + z * .15 + 'px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)', opacity:0 }
+    ], { duration:d, delay:btlDxR(0, 50), easing:'cubic-bezier(.08,.75,.3,1)', fill:'both' }), box);
+  });
+  btlAfter(() => w3.remove(), 1700);
+  if(ov) setTimeout(() => ov.remove(), 40);
+  // débris : boulons, puces, bandes de blindage, rondelles (étirés dans le sens du mouvement au départ)
+  const kinds = [
+    'width:9px;height:9px;background:linear-gradient(135deg,#e6ecf6,#5b6676 55%,#232a35);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)',
+    'width:10px;height:6px;background:#202734;border:1px solid ' + BTL_DX.cy + ';box-sizing:border-box;box-shadow:0 0 5px ' + BTL_DX.cy,
+    'width:20px;height:3px;background:linear-gradient(90deg,#c0cad9,#454e5d);border-radius:1px',
+    'width:8px;height:8px;border-radius:50%;border:2.5px solid #9aa6b8;box-sizing:border-box;background:#11161e',
+    'width:12px;height:7px;background:linear-gradient(135deg,#d0d8e6,#4a5463);clip-path:polygon(0 0,100% 20%,80% 100%,10% 80%)'
+  ];
+  for(let i = 0; i < 16; i++){
+    const e = btlDxEl(kinds[i % kinds.length] + ';left:' + (r.left + btlDxR(.25, .75) * W) + 'px;top:' + (r.top + btlDxR(.25, .75) * H) + 'px;z-index:32;will-change:transform,opacity');
+    fx.appendChild(e);
+    const a = btlDxR(0, Math.PI * 2), dist = btlDxR(W * .5, W * 1.35), ex = Math.cos(a) * dist, ey = Math.sin(a) * dist * .75 - H * .22, fall = H * btlDxR(.55, 1.1);
+    btlDxGone(btlWA(e, [
+      { transform:'translate3d(0,0,0) rotate(' + a + 'rad) scale(2,.55)', opacity:1 },
+      { transform:'translate3d(' + ex + 'px,' + ey + 'px,0) rotate(' + btlDxR(-360, 360) + 'deg) scale(1.1)', opacity:1, offset:.38, easing:'cubic-bezier(.3,0,.55,1)' },
+      { transform:'translate3d(' + ex * 1.2 + 'px,' + (ey + fall) + 'px,0) rotate(' + btlDxR(-720, 720) + 'deg) scale(.9)', opacity:0 }
+    ], { duration:btlDxR(900, 1400), delay:btlDxR(0, 90), easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), e);
+  }
+  btlDxBoltBurst(mxp, myp, W * .85, W * .022, 5, ['rgb(111,240,255)', 'rgb(255,190,110)'], 420, 0);
+  btlDxBurst(mxp, myp, W, H, tn, 28, { tn2:BTL_DXT.ice, alt:.2 });
+  btlDxSmoke(cx, cy, W, H, 7, tn);
+  btlDxScorch(r, 'rgba(255,120,50,.55)', 1700);
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  1 · EFFONDREMENT
+// ---------------------------------------------------------------------------------------------------
+async function btlDxCollapse(el, r, col){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, T = 580, ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T, .58, '2,5,16');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .14) + 'px ' + Math.round(W * .03) + 'px rgba(111,240,255,.95),inset 0 0 ' + Math.round(W * .4) + 'px rgba(60,150,255,.45);opacity:0'), [{ opacity:0 }, { opacity:.8, offset:.12 }, { opacity:.3, offset:.2 }, { opacity:.95, offset:.32 }, { opacity:1 }]);
+  A(btlDxLayer(ov, 'inset:0;background:repeating-linear-gradient(0deg,rgba(111,240,255,.42) 0,rgba(111,240,255,.42) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 4px);opacity:0'), [{ opacity:0 }, { opacity:.8, offset:.2 }, { opacity:.8, offset:.6 }, { opacity:0, offset:.75 }, { opacity:0 }]);
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;background:radial-gradient(ellipse at 50% 50%,#fff 0,rgba(235,252,255,.95) 45%,rgba(140,225,255,.85) 100%);opacity:0'), [{ opacity:0 }, { opacity:0, offset:.26 }, { opacity:.55, offset:.4 }, { opacity:1, offset:.6 }, { opacity:1 }]);
+  btlDxGlitch(ov, el, W, H, 3, 9, (e, kf, o) => A(e, kf, Object.assign({}, o, { duration:T * .55 })));
+  const tr = (tx, sx, sy) => 'translate(' + tx + 'px,0) scale(' + sx + ',' + sy + ')';
+  const kf = [
+    { transform:tr(0, 1, 1), offset:0 }, { transform:tr(-2.2, 1, 1), offset:.07 }, { transform:tr(2.4, 1, 1), offset:.13 }, { transform:tr(-1.6, 1, 1), offset:.2 }, { transform:tr(1.2, 1.02, .98), offset:.28 },
+    { transform:tr(0, 1.1, 1.04), offset:.4, easing:'cubic-bezier(.6,0,.9,.4)' }, { transform:tr(0, 1.14, .014), offset:.58 }, { transform:tr(0, 1.14, .014), offset:.66, easing:'cubic-bezier(.5,0,.9,.5)' },
+    { transform:tr(0, .018, .014), offset:.88 }, { transform:tr(0, .018, .014), offset:1 }
+  ];
+  A(ov, kf, { easing:'linear' }); btlWA(el, kf, { duration:T, easing:'linear', fill:'both' });
+  // trait lumineux de l'écran écrasé (avec halo) : flare horizontal qui s'éteint en point
+  const ln = btlDxEl('left:' + (cx - W * .66) + 'px;top:' + (cy - 2.5) + 'px;width:' + W * 1.32 + 'px;height:5px;z-index:32;border-radius:3px;background:linear-gradient(90deg,rgba(111,240,255,0),#fff 16%,#fff 84%,rgba(111,240,255,0));box-shadow:0 0 12px 3px rgba(111,240,255,.9),0 0 30px 6px rgba(70,200,255,.5);opacity:0;will-change:transform,opacity');
+  fx.appendChild(ln);
+  btlDxGone(A(ln, [{ transform:'scaleX(1)', opacity:0 }, { transform:'scaleX(1)', opacity:0, offset:.54 }, { transform:'scaleX(1)', opacity:1, offset:.6 }, { transform:'scaleX(1)', opacity:1, offset:.68 }, { transform:'scaleX(.03)', opacity:1, offset:.9 }, { transform:'scaleX(.03)', opacity:1 }]), ln);
+  // l'énergie des environs est aspirée vers le centre
+  for(let i = 0; i < 22; i++){
+    const a = btlDxR(0, Math.PI * 2), R0 = W * btlDxR(.8, 1.3), sx = Math.cos(a) * R0, sy = Math.sin(a) * R0 * .85, d = btlDxR(260, 360), dl = btlDxR(.04, .55) * T;
+    const sp = btlDxEl('left:' + cx + 'px;top:' + cy + 'px;width:' + btlDxR(12, 22) + 'px;height:2px;z-index:32;border-radius:2px;background:linear-gradient(90deg,rgba(70,200,255,0),rgba(150,235,255,.85) 60%,' + (i % 3 ? '#eaffff' : '#fff') + ');transform-origin:100% 50%;opacity:0;will-change:transform,opacity');
+    fx.appendChild(sp); const ang = a + Math.PI;
+    btlDxGone(btlWA(sp, [{ transform:'translate(' + sx + 'px,' + sy + 'px) rotate(' + ang + 'rad) scaleX(.4)', opacity:0 }, { opacity:1, offset:.2 }, { transform:'translate(0,0) rotate(' + ang + 'rad) scaleX(1.1)', opacity:0 }], { duration:d, delay:dl, easing:'cubic-bezier(.5,0,.9,.6)', fill:'both' }), sp);
+  }
+  await btlSleep(T);
+  return ov;
+}
+function btlDxImplode(el, r, col, ov){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, tn = BTL_DXT.ice;
+  if(ov) setTimeout(() => ov.remove(), 40);
+  btlDxBloom(cx, cy, W, tn, 1); btlDxSpill(cx, cy, W, tn, .95, 1000);
+  // ondes de choc : anneaux fins lumineux
+  [[W * .8, 3, BTL_DX.cy2, 720, 0, 3.2], [W * .8, 2, '#ffffff', 640, 90, 4.2], [W * .8, 2, BTL_DX.cy, 820, 200, 2.5]].forEach(([s, bw, c, d, dl, k]) => {
+    const e = btlDxDisc(cx, cy, s, 'transparent', 32, [{ transform:'scale(.15)', opacity:0 }, { opacity:1, offset:.12 }, { transform:'scale(' + k + ')', opacity:0 }], d, dl, 'cubic-bezier(.1,.7,.3,1)');
+    e.style.border = bw + 'px solid ' + c; e.style.boxSizing = 'border-box'; e.style.boxShadow = '0 0 12px ' + BTL_DX.cy + ',inset 0 0 8px ' + BTL_DX.cy;
+  });
+  // éclairs fractals radiaux autour du cœur, puis étincelles, braises glacées, pièces projetées
+  btlDxBoltBurst(cx, cy, W * .95, W * .02, 6, ['rgb(111,240,255)', 'rgb(190,235,255)'], 380, 20);
+  btlDxBurst(cx, cy, W, H, tn, 30, { tn2:BTL_DXT.digi, alt:.3 });
+  btlDxSmoke(cx, cy, W, H, 6, tn, { kind:'vapor' });
+  for(let i = 0; i < 9; i++){
+    const e = btlDxEl('left:' + (cx - 4) + 'px;top:' + (cy - 4) + 'px;width:8px;height:8px;border-radius:50%;border:2.5px solid #9fb0c4;box-sizing:border-box;background:#11161e;z-index:32;will-change:transform,opacity');
+    fx.appendChild(e); const a = btlDxR(0, Math.PI * 2), dist = btlDxR(W * .5, W * 1.2);
+    btlDxGone(btlWA(e, [{ transform:'translate(0,0) rotate(0deg) scale(.6)', opacity:1 }, { transform:'translate(' + Math.cos(a) * dist + 'px,' + Math.sin(a) * dist * .8 + 'px) rotate(' + btlDxR(-300, 300) + 'deg) scale(1)', opacity:1, offset:.45, easing:'cubic-bezier(.2,.7,.4,1)' }, { transform:'translate(' + Math.cos(a) * dist * 1.15 + 'px,' + (Math.sin(a) * dist * .8 + H * .5) + 'px) rotate(' + btlDxR(-500, 500) + 'deg) scale(.9)', opacity:0 }], { duration:btlDxR(800, 1200), easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), e);
+  }
+  // trou sombre laissé sur l'emplacement, cerclé de cyan qui s'éteint
+  btlDxDisc(cx, cy, W * 1.15, 'radial-gradient(circle,rgba(0,0,0,.88) 0,rgba(5,10,20,.62) 38%,rgba(0,0,0,0) 72%)', 12, [{ transform:'scale(.2)', opacity:0 }, { transform:'scale(1)', opacity:1, offset:.14 }, { opacity:.8, offset:.55 }, { opacity:0 }], 1700, 0, 'ease-out');
+  const rim = btlDxDisc(cx, cy, W * .8, 'transparent', 12, [{ transform:'scale(.3)', opacity:0 }, { transform:'scale(1)', opacity:.9, offset:.16 }, { transform:'scale(1.05)', opacity:.35, offset:.5 }, { transform:'scale(1.1)', opacity:0 }], 1300, 0, 'ease-out');
+  rim.style.border = '2px solid ' + BTL_DX.cy; rim.style.boxSizing = 'border-box'; rim.style.boxShadow = '0 0 10px ' + BTL_DX.cy;
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  2 · NUMÉRIQUE
+// ---------------------------------------------------------------------------------------------------
+// pixel carré qui dérive par à-coups puis s'éteint
+function btlDxPix(x, y, delay, big){
+  const s = btlDxR(3, 7) * (1 + (big || 0)), c = ['#6ff0ff', '#eaffff', '#9bf7ff', '#ffffff', '#2fd8ff', '#ff5a7a'][Math.floor(Math.random() * 6)];
+  const e = btlDxEl('left:' + x + 'px;top:' + y + 'px;width:' + s + 'px;height:' + s + 'px;z-index:32;background:' + c + ';box-shadow:0 0 6px ' + (c === '#ff5a7a' ? '#ff5a7a' : BTL_DX.cy) + ';opacity:0;will-change:transform,opacity');
+  btlQ('#btlFx').appendChild(e);
+  const dx = btlDxR(-30, 30), dy = btlDxR(-70, -14);
+  btlDxGone(btlWA(e, [{ transform:'translate(0,0)', opacity:0 }, { opacity:1, offset:.08 }, { opacity:.2, offset:.3 }, { opacity:1, offset:.45 }, { opacity:.3, offset:.7 }, { transform:'translate(' + dx + 'px,' + dy + 'px)', opacity:0 }], { duration:btlDxR(600, 1000), delay:delay, easing:'steps(6,end)', fill:'both' }), e);
+}
+async function btlDxDigitize(el, r, col){
+  const W = r.width, H = r.height, T = 560, ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T, .55, '1,6,12');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  // la carte s'assombrit et passe en « filaire » : fond sombre teinté, grille fine, cadre lumineux
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;background:rgba(0,28,44,.55);opacity:0'), [{ opacity:0 }, { opacity:.6, offset:.12 }, { opacity:.2, offset:.2 }, { opacity:.9, offset:.4 }, { opacity:.8 }]);
+  A(btlDxLayer(ov, 'inset:0;background:repeating-linear-gradient(0deg,rgba(130,245,255,.55) 0,rgba(130,245,255,.55) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 7px),repeating-linear-gradient(90deg,rgba(130,245,255,.55) 0,rgba(130,245,255,.55) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 7px);opacity:0'), [{ opacity:0 }, { opacity:0, offset:.2 }, { opacity:.85, offset:.34 }, { opacity:.45, offset:.5 }, { opacity:.9, offset:.7 }, { opacity:.7 }]);
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .12) + 'px ' + Math.round(W * .02) + 'px rgba(111,240,255,.95),inset 0 0 0 1px rgba(200,252,255,.9);opacity:0'), [{ opacity:0 }, { opacity:.6, offset:.15 }, { opacity:.25, offset:.25 }, { opacity:1, offset:.5 }, { opacity:1 }]);
+  // double image : décalage rouge / cyan
+  [[-5, 'rgba(255,50,90,.5)'], [5, 'rgba(50,225,255,.5)']].forEach(([dx, tint]) => {
+    const s = el.cloneNode(true); s.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;margin:0;opacity:1;pointer-events:none;will-change:transform,opacity';
+    const w = document.createElement('i'); w.style.cssText = 'position:absolute;inset:0;background:' + tint; s.appendChild(w);
+    ov.appendChild(s);
+    A(s, [{ transform:'translateX(0)', opacity:0 }, { transform:'translateX(0)', opacity:0, offset:.14 }, { transform:'translateX(' + dx + 'px)', opacity:.6, offset:.18 }, { transform:'translateX(' + dx * .3 + 'px)', opacity:.15, offset:.3 }, { transform:'translateX(' + dx * 1.5 + 'px)', opacity:.7, offset:.46 }, { transform:'translateX(' + dx + 'px)', opacity:.25, offset:.62 }, { transform:'translateX(' + dx * 1.8 + 'px)', opacity:.7, offset:.8 }, { transform:'translateX(' + dx + 'px)', opacity:.5 }], { easing:'steps(1,end)' });
+  });
+  btlDxGlitch(ov, el, W, H, 5, 12, A);
+  A(btlDxLayer(ov, 'left:0;right:0;top:0;height:20%;background:linear-gradient(180deg,rgba(111,240,255,0),rgba(111,240,255,.5) 70%,rgba(234,255,255,.95) 96%,rgba(111,240,255,0));will-change:transform'), [{ transform:'translateY(-110%)' }, { transform:'translateY(520%)' }], { duration:T * .8 });
+  const sh = [0, -3, 3, -2, 4, -4, 2, -3, 0, 3, 0, 0];
+  const jit = sh.map((v, i) => ({ transform:'translate(' + v + 'px,0)', opacity:i % 3 === 2 && i < 10 ? .45 : 1 }));
+  A(ov, jit.map(k => ({ transform:k.transform })), { easing:'steps(1,end)' }); btlWA(el, jit, { duration:T, easing:'steps(1,end)', fill:'both' });
+  for(let i = 0; i < 12; i++) btlDxPix(r.left + btlDxR(0, W), r.top + btlDxR(0, H), btlDxR(.2, .9) * T, .35);
+  await btlSleep(T);
+  return ov;
+}
+function btlDxDissolve(el, r, col, ov){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, tn = BTL_DXT.digi;
+  if(ov) setTimeout(() => ov.remove(), 40);
+  btlDxBloom(cx, cy, W, tn, .75); btlDxSpill(cx, cy, W, tn, .8, 900);
+  const C = 4, R = 5, cw = W / C, ch = H / R, w3 = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:30');
+  fx.appendChild(w3);
+  const cr = Math.floor(Math.random() * 4), ox = cr % 2 ? 1 : 0, oy = cr > 1 ? 1 : 0;
+  for(let j = 0; j < R; j++) for(let i = 0; i < C; i++){
+    const box = btlDxEl('left:' + (r.left + i * cw) + 'px;top:' + (r.top + j * ch) + 'px;width:' + cw + 'px;height:' + ch + 'px;overflow:hidden;will-change:transform,opacity');
+    const cl = el.cloneNode(true); cl.style.cssText = 'position:absolute;left:' + -i * cw + 'px;top:' + -j * ch + 'px;width:' + W + 'px;height:' + H + 'px;margin:0;opacity:1';
+    const tint = document.createElement('i'); tint.style.cssText = 'position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,255,255,.9),rgba(30,170,225,.85));opacity:0';
+    const rim = document.createElement('i'); rim.style.cssText = 'position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(190,252,255,.95),inset 0 0 6px rgba(111,240,255,.8)';
+    box.appendChild(cl); box.appendChild(tint); box.appendChild(rim); w3.appendChild(box);
+    const k = (Math.abs(i - ox * (C - 1)) / (C - 1) + Math.abs(j - oy * (R - 1)) / (R - 1)) / 2, dl = k * 420 + btlDxR(0, 90);
+    const dx = (i - (C - 1) / 2) * btlDxR(5, 16) + btlDxR(-10, 10), dy = btlDxR(-46, -8), d = btlDxR(620, 880);
+    btlDxGone(btlWA(box, [
+      { transform:'translate(0,0) scale(1)', opacity:1 }, { transform:'translate(' + (Math.random() < .5 ? -3 : 3) + 'px,0) scale(1)', opacity:0, offset:.1 }, { transform:'translate(0,0) scale(1)', opacity:1, offset:.18 },
+      { transform:'translate(' + dx * .4 + 'px,' + dy * .3 + 'px) scale(.96)', opacity:.35, offset:.34 }, { transform:'translate(' + dx * .7 + 'px,' + dy * .6 + 'px) scale(.92)', opacity:1, offset:.5 },
+      { transform:'translate(' + dx + 'px,' + dy + 'px) scale(.8)', opacity:0 }
+    ], { duration:d, delay:dl, easing:'steps(7,end)', fill:'both' }), box);
+    btlWA(tint, [{ opacity:0 }, { opacity:.9, offset:.15 }, { opacity:.55, offset:.5 }, { opacity:.9 }], { duration:d, delay:dl, easing:'steps(1,end)', fill:'both' });
+    for(let n = 0; n < 2; n++) btlDxPix(r.left + (i + Math.random()) * cw, r.top + (j + Math.random()) * ch, dl + btlDxR(0, 160), 0);
+  }
+  btlAfter(() => w3.remove(), 1500);
+  // colonnes de données qui montent
+  for(let i = 0; i < 9; i++){
+    const w = btlDxR(2, 4), h = H * btlDxR(.5, 1.1), x = r.left + btlDxR(.04, .96) * W;
+    const e = btlDxEl('left:' + x + 'px;top:' + (r.top + H - h * .2) + 'px;width:' + w + 'px;height:' + h + 'px;z-index:31;background:linear-gradient(0deg,rgba(111,240,255,0),rgba(150,250,255,.85) 60%,#fff);box-shadow:0 0 6px rgba(111,240,255,.7);opacity:0;will-change:transform,opacity;transform-origin:50% 100%');
+    fx.appendChild(e);
+    btlDxGone(btlWA(e, [{ transform:'translateY(0) scaleY(.2)', opacity:0 }, { transform:'translateY(' + -H * .25 + 'px) scaleY(1)', opacity:.95, offset:.25 }, { transform:'translateY(' + -H * btlDxR(.8, 1.4) + 'px) scaleY(.6)', opacity:0 }], { duration:btlDxR(500, 800), delay:btlDxR(0, 380), easing:'cubic-bezier(.2,.7,.4,1)', fill:'both' }), e);
+  }
+  // lignes de déchirure : traits horizontaux qui claquent
+  for(let i = 0; i < 4; i++){
+    const y = r.top + btlDxR(.08, .92) * H, ln = btlDxEl('left:' + (cx - W * .85) + 'px;top:' + y + 'px;width:' + W * 1.7 + 'px;height:' + (i % 2 ? 2 : 3) + 'px;z-index:33;background:linear-gradient(90deg,rgba(111,240,255,0),#eaffff 20%,#fff 50%,#eaffff 80%,rgba(111,240,255,0));box-shadow:0 0 8px ' + BTL_DX.cy + ';opacity:0');
+    fx.appendChild(ln);
+    btlDxGone(btlWA(ln, [{ opacity:0 }, { opacity:1, offset:.2 }, { opacity:0, offset:.45 }, { opacity:.8, offset:.6 }, { opacity:0 }], { duration:260, delay:btlDxR(0, 380), easing:'steps(1,end)', fill:'both' }), ln);
+  }
+  for(let i = 0; i < 22; i++) btlDxPix(r.left + btlDxR(0, W), r.top + btlDxR(0, H), btlDxR(0, 420), .4);
+  btlDxScorch(r, 'rgba(70,215,255,.35)', 1400);
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  3 · COUPE LASER
+// ---------------------------------------------------------------------------------------------------
+async function btlDxCutPre(el, r, col){
+  const W = r.width, H = r.height, T = 600, ov = btlDxOv(r, true), tn = BTL_DXT.laser;
+  ov._spot = btlDxSpot(r, T, .6, '8,2,4');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  // trajet du laser : bord à bord, en diagonale (en % de la carte)
+  let p1, p2, halves;
+  const flip = Math.random() < .5;
+  if(Math.random() < .55){
+    const y1 = btlDxR(14, 40), y2 = btlDxR(60, 86); p1 = [0, flip ? y2 : y1]; p2 = [100, flip ? y1 : y2];
+    halves = [[[0, 0], [100, 0], p2, p1], [p1, p2, [100, 100], [0, 100]]];
+  } else {
+    const x1 = btlDxR(20, 42), x2 = btlDxR(58, 80); p1 = [flip ? x2 : x1, 0]; p2 = [flip ? x1 : x2, 100];
+    halves = [[[0, 0], [p1[0], 0], [p2[0], 100], [0, 100]], [[p1[0], 0], [100, 0], [100, 100], [p2[0], 100]]];
+  }
+  const X1 = p1[0] / 100 * W, Y1 = p1[1] / 100 * H, X2 = p2[0] / 100 * W, Y2 = p2[1] / 100 * H, L = Math.hypot(X2 - X1, Y2 - Y1), ang = Math.atan2(Y2 - Y1, X2 - X1);
+  ov._dx = { p1, p2, halves, ang, L, X1, Y1, X2, Y2 };
+  // charge : point lumineux à l'entrée du trait, puis le laser file jusqu'à l'autre bord (halo large rouge, corps orange, cœur blanc)
+  const ch = btlDxLayer(ov, 'left:' + (X1 - 11) + 'px;top:' + (Y1 - 11) + 'px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(255,200,170,.95) 35%,rgba(255,70,50,0) 72%);opacity:0;will-change:transform,opacity');
+  A(ch, [{ transform:'scale(.2)', opacity:0 }, { transform:'scale(1.2)', opacity:1, offset:.2 }, { transform:'scale(.8)', opacity:.9, offset:.3 }, { transform:'scale(1.8)', opacity:1, offset:.4 }, { transform:'scale(2.4)', opacity:0, offset:.55 }, { transform:'scale(2.4)', opacity:0 }]);
+  const bar = (h, bg, sh) => btlDxLayer(ov, 'left:' + X1 + 'px;top:' + (Y1 - h / 2) + 'px;width:' + L + 'px;height:' + h + 'px;border-radius:' + h / 2 + 'px;background:' + bg + ';box-shadow:' + sh + ';transform-origin:0 50%;opacity:0;will-change:transform,opacity');
+  const draw = (e, k) => A(e, [{ transform:'rotate(' + ang + 'rad) scaleX(0)', opacity:0 }, { transform:'rotate(' + ang + 'rad) scaleX(0)', opacity:1, offset:.3 }, { transform:'rotate(' + ang + 'rad) scaleX(1)', opacity:1, offset:.58, easing:'cubic-bezier(.5,0,.2,1)' }, { transform:'rotate(' + ang + 'rad) scaleX(1)', opacity:k ? 1 : .55, offset:.76 }, { transform:'rotate(' + ang + 'rad) scaleX(1)', opacity:1 }]);
+  draw(bar(16, 'rgba(255,60,50,.28)', '0 0 22px 6px rgba(255,50,50,.45)'), 0);
+  draw(bar(8, 'rgba(255,110,60,.6)', '0 0 12px 3px rgba(255,90,50,.8)'), 0);
+  draw(bar(3, '#fff', '0 0 8px 2px #fff'), 1);
+  const tip = btlDxLayer(ov, 'left:' + (X1 - 15) + 'px;top:' + (Y1 - 15) + 'px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(255,225,190,.9) 30%,rgba(255,110,60,0) 72%);opacity:0;will-change:transform,opacity');
+  A(tip, [{ transform:'translate(0,0)', opacity:0 }, { transform:'translate(0,0)', opacity:1, offset:.3 }, { transform:'translate(' + (X2 - X1) + 'px,' + (Y2 - Y1) + 'px)', opacity:1, offset:.58, easing:'cubic-bezier(.5,0,.2,1)' }, { transform:'translate(' + (X2 - X1) + 'px,' + (Y2 - Y1) + 'px)', opacity:0, offset:.68 }, { opacity:0 }]);
+  for(let i = 0; i < 16; i++){
+    const t = 0.05 + i / 15 * .9, x = r.left + X1 + (X2 - X1) * t, y = r.top + Y1 + (Y2 - Y1) * t, side = i % 2 ? 1 : -1;
+    btlDxSpk(x, y, ang + side * btlDxR(1.0, 2.1), btlDxR(14, 38), { tn, w:btlDxR(7, 13), dl:(.3 + t * .28) * T, d:btlDxR(240, 420), g:6 });
+  }
+  const sh = [0, -1, 1, -1.6, 1.6, -2.4, 2.4, -3, 3, -3.4, 0, 0];
+  const jit = sh.map((v, i) => ({ transform:'translate(' + v + 'px,' + ((i % 2 ? -1 : 1) * Math.abs(v) * .35) + 'px)' }));
+  A(ov, jit, { easing:'linear' }); btlWA(el, jit, { duration:T, easing:'linear', fill:'both' });
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;background:radial-gradient(ellipse at 50% 50%,#fff 0,rgba(255,225,200,.9) 50%,rgba(255,120,70,.7) 100%);opacity:0'), [{ opacity:0 }, { opacity:0, offset:.6 }, { opacity:.5, offset:.78 }, { opacity:.95, offset:.9 }, { opacity:1 }]);
+  await btlSleep(T);
+  return ov;
+}
+function btlDxCutBreak(el, r, col, ov){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, g = (ov && ov._dx), tn = BTL_DXT.laser;
+  if(!g){ btlDxBreak(el, r, col, ov); return; }
+  const mx = (g.X1 + g.X2) / 2 + r.left, my = (g.Y1 + g.Y2) / 2 + r.top;
+  if(ov) setTimeout(() => ov.remove(), 40);
+  btlDxBloom(mx, my, W, tn, 1.05, g.ang); btlDxSpill(mx, my, W, tn, 1.05, 1100);
+  const nx = -Math.sin(g.ang), ny = Math.cos(g.ang);
+  const w3 = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:30;perspective:760px;perspective-origin:' + mx + 'px ' + my + 'px');
+  fx.appendChild(w3);
+  g.halves.forEach((q, hi) => {
+    const sgn = hi ? 1 : -1, cut = hi ? [q[0], q[1]] : [q[2], q[3]], cp = cut.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    // le point lumineux est le milieu de la coupe : chaque moitié est éclairée sur son arête de coupe
+    const lx = (g.p1[0] + g.p2[0]) / 2, ly = (g.p1[1] + g.p2[1]) / 2, d = btlDxR(1050, 1250);
+    const box = btlDxPlate(el, r, q, lx, ly, tn, d, cp);
+    w3.appendChild(box);
+    const dist = W * btlDxR(.34, .5), tilt = sgn * btlDxR(14, 30), spin = sgn * btlDxR(60, 140), sx = nx * sgn, sy = ny * sgn;
+    btlDxGone(btlWA(box, [
+      { transform:'translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)', opacity:1 },
+      { transform:'translate3d(' + sx * 5 + 'px,' + sy * 5 + 'px,0) rotateZ(' + tilt * .08 + 'deg)', opacity:1, offset:.1, easing:'cubic-bezier(.4,0,.8,.6)' },
+      { transform:'translate3d(' + sx * dist + 'px,' + (sy * dist - H * .06) + 'px,' + btlDxR(40, 140) + 'px) rotateX(' + btlDxR(-35, 35) + 'deg) rotateY(' + btlDxR(-45, 45) + 'deg) rotateZ(' + tilt + 'deg)', opacity:1, offset:.46, easing:'cubic-bezier(.3,0,.6,1)' },
+      { transform:'translate3d(' + sx * dist * 1.35 + 'px,' + (sy * dist + H * btlDxR(.95, 1.35)) + 'px,' + btlDxR(-40, 20) + 'px) rotateX(' + btlDxR(-80, 80) + 'deg) rotateY(' + btlDxR(-70, 70) + 'deg) rotateZ(' + spin + 'deg)', opacity:0 }
+    ], { duration:d, easing:'cubic-bezier(.12,.7,.3,1)', fill:'both' }), box);
+  });
+  btlAfter(() => w3.remove(), 1500);
+  // éclair le long de la coupe : trait blanc qui se fend, avec halo
+  const ln = btlDxEl('left:' + (r.left + g.X1) + 'px;top:' + (r.top + g.Y1 - 3) + 'px;width:' + g.L + 'px;height:6px;border-radius:3px;z-index:35;background:linear-gradient(90deg,rgba(255,230,200,0),#fff 12%,#fff 88%,rgba(255,230,200,0));box-shadow:0 0 14px 4px rgba(255,150,70,.9),0 0 34px 8px rgba(255,70,40,.45);transform-origin:0 50%;opacity:0;will-change:transform,opacity');
+  fx.appendChild(ln);
+  btlDxGone(btlWA(ln, [{ transform:'rotate(' + g.ang + 'rad) scaleY(.6)', opacity:1 }, { transform:'rotate(' + g.ang + 'rad) scaleY(2.4)', opacity:1, offset:.2 }, { transform:'rotate(' + g.ang + 'rad) scaleY(.2)', opacity:0 }], { duration:440, easing:'cubic-bezier(.2,.8,.3,1)', fill:'both' }), ln);
+  // gerbe émise tout le long de la coupe, projetée des deux côtés ; crépitement d'éclairs qui sautent le long du trait
+  const cutPt = () => { const t = btlDxR(.04, .96); return [r.left + g.X1 + (g.X2 - g.X1) * t, r.top + g.Y1 + (g.Y2 - g.Y1) * t]; };
+  btlDxBurst(mx, my, W, H, tn, 36, { pt:cutPt, dir:() => g.ang + (Math.random() < .5 ? 1 : -1) * btlDxR(.9, 2.2), stars:8 });
+  const mg = W * .3, bw = W + 2 * mg, bh = H + 2 * mg, wb = W * .018;
+  for(let i = 0; i < 5; i++){
+    const t = btlDxR(0, .7), t2 = t + btlDxR(.18, .3), ax = mg + g.X1 + (g.X2 - g.X1) * t, ay = mg + g.Y1 + (g.Y2 - g.Y1) * t, bx2 = mg + g.X1 + (g.X2 - g.X1) * t2, by2 = mg + g.Y1 + (g.Y2 - g.Y1) * t2, col = i % 2 ? 'rgb(255,190,120)' : 'rgb(255,120,70)';
+    btlDxBoltEl(fx, false, r.left - mg, r.top - mg, bw, bh, btlDxBoltSvg(ax, ay, bx2, by2, wb, 1, col), btlDxBoltSvg(ax, ay, bx2, by2, wb, 1, col), ax, ay, 260, btlDxR(0, 380), true, 35);
+  }
+  btlDxSmoke(mx, my, W, H, 7, tn);
+  btlDxScorch(r, 'rgba(255,100,50,.5)', 1700);
+}
+
+// ---- tirage : jamais deux fois la même d'affilée -------------------------------------------------
+const BTL_DXV = [
+  { pre:btlDxSurge, post:btlDxBreak, tn:BTL_DXT.fire },
+  { pre:btlDxCollapse, post:btlDxImplode, tn:BTL_DXT.ice },
+  { pre:btlDxDigitize, post:btlDxDissolve, tn:BTL_DXT.digi },
+  { pre:btlDxCutPre, post:btlDxCutBreak, tn:BTL_DXT.laser }
+];
+let BTL_DX_LAST = -1;
+function btlDxPick(){
+  const f = window.__dxv; let k;
+  if(typeof f === 'number' && f >= 0) k = f % BTL_DXV.length;
+  else k = (BTL_DX_LAST + 1 + Math.floor(Math.random() * (BTL_DXV.length - 1))) % BTL_DXV.length;
+  BTL_DX_LAST = k; return k;
+}
 async function btlDie0(c, defer){
   const el = btlUnitEl(c), slot = btlSlotOf(c);
   if(!el || !slot){ const Q = BTL && BTL.S[c.side]; if(Q && !c.leader && Q.slots[c.slot] === c) Q.slots[c.slot] = null; return; }   // carte sans élément à l'écran : on libère quand même son emplacement
@@ -24158,24 +24853,19 @@ async function btlDie0(c, defer){
   { const un = el.querySelector('.unit.cbt'); if(un) un.classList.remove('can-act', 'can-atk', 'can-dfn'); btlFlameKick(); }   // V0.05.16 : les flammes d'une carte qui meurt s'éteignent tout de suite
   const r = btlRect(el), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   const col = btlRarColor(c.rar), plate = btlQ('#btlPlate');
-  // 1) dernier souffle : la carte vacille et rougeoie, l'énergie est aspirée vers elle (le temps de lire « 0 PV »)
-  await btlSleep(260);
-  btlRing(r, '#ff4a4a', true); btlAfter(() => { if(BTL) btlRing(r, col, true); }, 230);
-  btlParticles(cx, cy, { n:14, color:'#ff6a4a', dist:84, dur:560, size:5, inward:true, spread:300 });
-  btlFlashEl(el, '#ff3a3a', .8, 760);
-  const sh = [0, -3.5, 3.5, -4.5, 4.5, -5.5, 5.5, -6.5, 6.5, 0];
-  btlAfter(() => { if(BTL && !BTL.abort) musDie(); }, 620 - 250 / BTL_TS);   // son de destruction (V0.04.87)
-  await btlAnim(el, sh.map((v, i) => ({ transform:'translate(' + v + 'px,' + (i % 2 ? -1 : 1) * Math.abs(v) * .25 + 'px) scale(' + (1 + i * .007) + ')' })), { duration:620, easing:'linear' });
-  // 2) rupture : éclair blanc, la carte éclate en éclats incandescents qui retombent, onde de choc, braises
+  // 1) dernier souffle (le temps de lire « 0 PV »), puis montée : verrouillage, scène qui s'assombrit, surcharge propre au style tiré (V0.05.54)
+  await btlSleep(200);
+  btlFlashEl(el, '#ff3a3a', .8, 600);
+  btlAfter(() => { if(BTL && !BTL.abort) musDie(); }, 600 - 250 / BTL_TS);   // son de destruction (V0.04.87)
+  const lock = btlDxLock(r);
+  const dxv = BTL_DXV[btlDxPick()];   // 4 destructions différentes, tirées au hasard
+  const ov = await dxv.pre(el, r, col);
+  // 2) rupture : la lumière explose (halo, flare, rayons), la carte se détruit selon le style, la scène se rallume
   const fx0 = BTL_CARD_FX[c.name];
-  btlBloom(r, col);
-  btlShatter(el, r, col);
+  btlDxLockOut(lock, dxv.tn); btlDxSpotOff(ov);
+  dxv.post(el, r, col, ov);
   el.style.opacity = '0';
-  btlRing(r, '#ffffff', false); btlAfter(() => { if(BTL) btlRing(r, col, false); }, 160);
-  btlParticles(cx, cy, { n:20, color:col, dist:110, dur:760, size:9, sq:true, spread:120 });
-  btlParticles(cx, cy, { n:12, color:'#ffffff', dist:70, dur:560, size:5 });
-  btlParticles(cx, r.top + r.height * .8, { n:10, color:'#ffb27a', dist:60, dur:1300, size:4, rise:true, spread:500 });
-  btlShake(plate, 4);
+  btlShake(plate, 5);
   // baroud « en direct » (PRAWN) : l'effet démarre au moment de l'éclatement
   const early = (fx0 && fx0.early && fx0.baroud) ? btlTrigger('baroud', c) : null;
   await btlSleep(620);
