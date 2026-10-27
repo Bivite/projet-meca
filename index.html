@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.57</title>
+<title>Projet MECA V0.05.58</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7439,6 +7439,18 @@
   /* V0.04.50 : BATAILLE en haut à droite (découpe et hauteur de l'ancienne case ORDRE DE MISSION), ORDRE DE MISSION dans la grande case du milieu (découpe et hauteur de l'ancienne case BATAILLE) */
   #modeHub .mode-grid .mode-tile#tileBattle{ --clip:polygon(var(--cut) 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - var(--cut2)),calc(100% - var(--cut2)) 100%,0 100%); height:clamp(130px, calc((100dvh - 440px) / 3), 250px); }
   #modeHub .mode-grid .mode-tile#tileBattle .mt-inner{ padding-left:38px; }
+  /* V0.05.58 : booster de la 1re victoire du jour (Entraînement IA) */
+  #tileBattle .mt-trw{ position:absolute; top:8px; right:18px; width:40px; height:42px; z-index:3; pointer-events:none; filter:drop-shadow(0 0 6px rgba(255,226,140,.55)) drop-shadow(0 2px 3px rgba(0,0,0,.7)); }
+  #tileBattle .mt-trw img, #tileBattle .mt-trw svg{ width:100%; height:100%; object-fit:contain; display:block; }
+  #batTrainRw{ flex-direction:row; align-items:center; gap:12px; padding:10px 12px; }
+  #batTrainRw .btr-ico{ flex:0 0 auto; width:42px; height:54px; filter:drop-shadow(0 0 7px rgba(255,214,110,.5)); transition:filter .3s, opacity .3s; }
+  #batTrainRw .btr-ico img, #batTrainRw .btr-ico svg{ width:100%; height:100%; object-fit:contain; display:block; }
+  #batTrainRw .btr-txt{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+  #batTrainRw .btr-title{ font-family:var(--font-title); font-size:11px; font-weight:900; letter-spacing:3px; color:#ffe9b0; text-shadow:0 0 10px rgba(255,184,48,.45); }
+  #batTrainRw .btr-sub{ font-family:var(--font-ui); font-size:12.5px; color:rgba(235,240,255,.82); }
+  #batTrainRw .btr-sub b{ color:#ffe49a; font-weight:700; }
+  #batTrainRw.done .btr-ico{ filter:grayscale(1) brightness(.55); opacity:.6; }
+  #batTrainRw.done .btr-sub b{ color:#cfe4ff; }
   #modeHub .mode-grid .mode-tile#tileBattle .mt-title{ font-size:12.5px; letter-spacing:1.6px; white-space:nowrap; }
   #modeHub .mode-grid .mode-tile#tileOrders{ --clip:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); height:120px; margin-right:0; }
   #modeHub .mode-grid .mode-tile#tileOrders .tile-dot{ top:12px; right:12px; }
@@ -8708,6 +8720,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <div class="mode-tile battle-big s-b" id="tileBattle">
         <div class="mt-inner">
           <div class="mt-battle-ico"><i class="ico-ordersbadge"></i></div>
+          <div class="mt-trw" id="tileTrainRw" role="img" hidden></div>
           <div class="mt-title">ENTRAÎNEMENT IA</div>
         </div>
       </div>
@@ -8758,6 +8771,10 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
         <span class="bs-next" id="bsNext">PROCHAINE VICTOIRE</span>
         <span class="bs-rew"><span class="bs-g"><i class="ico-goldbar"></i><b id="bsG">+25</b></span><span class="bs-x"><i class="ico-xpchip"></i><b id="bsX">+15</b></span></span>
       </div>
+    </div>
+    <div class="res-panel" id="batTrainRw" style="display:none">
+      <div class="btr-ico"></div>
+      <div class="btr-txt"><span class="btr-title">RÉCOMPENSE DU JOUR</span><span class="btr-sub"></span></div>
     </div>
     <div class="res-panel" id="batPanel">
       <div class="team-label player">CHOIX DU DECK</div>
@@ -8977,7 +8994,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.57</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.58</b></div>
   </div>
 
     </div>
@@ -9376,7 +9393,37 @@ function econSyncSoon(delay){
   const wait = Math.max(delay || 0, 5000 - (Date.now() - ECON.syncAt));
   ECON.syncTimer = setTimeout(() => { ECON.syncTimer = null; ECON.syncAt = Date.now(); econAct('bootstrap', {}, { quiet:true, noResync:true }); }, Math.max(0, wait));
 }
-function econDayCheck(){ if(ECON.ready && ECON.dayKey && todayKey() !== ECON.dayKey) econSyncSoon(0); }
+function econDayCheck(){ if(ECON.ready && ((ECON.dayKey && todayKey() !== ECON.dayKey) || (ECON.trainKey && trainKeyNow() !== ECON.trainKey))) econSyncSoon(0); }   // V0.05.58 : aussi à 6 h (récompense de l'Entraînement IA)
+// V0.05.58 : journée de l'ENTRAÎNEMENT IA (6 h -> 6 h, heure de Paris, d'après l'heure du serveur) -- même calcul que trainKey() du serveur
+function trainKeyNow(){
+  const p = econParts(econNow());
+  if(p.hour >= 6) return p.year + '-' + String(p.month).padStart(2, '0') + '-' + String(p.day).padStart(2, '0');
+  const t = new Date(Date.UTC(p.year, p.month - 1, p.day - 1));
+  return t.getUTCFullYear() + '-' + String(t.getUTCMonth() + 1).padStart(2, '0') + '-' + String(t.getUTCDate()).padStart(2, '0');
+}
+// récompense du jour : { open:true|false, bt:'cards'|'res'|null } (bt inconnu tant que le serveur n'a pas tiré la journée)
+function trainRwState(){
+  const r = player.trainRw, k = trainKeyNow();
+  if(r && r.day === k) return { open:!r.got, bt:r.bt };
+  return { open:true, bt:null };
+}
+function renderTrainRw(){
+  const el = document.getElementById('tileTrainRw'); if(!el) return;
+  const st = trainRwState(), show = ECON.ready && st.open && !!st.bt;
+  if(ECON.ready && st.open && !st.bt && ECON.trainAsk !== trainKeyNow()){ ECON.trainAsk = trainKeyNow(); econSyncSoon(0); }   // une seule demande par journée
+  el.hidden = !show;
+  if(show && el.dataset.bt !== st.bt){ el.dataset.bt = st.bt; el.innerHTML = boostRewardChipIcon(st.bt); }
+  el.setAttribute('aria-label', show ? 'Récompense de la première victoire du jour : booster ' + BOOST_LABEL[st.bt].toLowerCase() : '');
+  if(econViewOn('batailleView')) batRenderTrainRw();
+}
+function batRenderTrainRw(){
+  const p = document.getElementById('batTrainRw'); if(!p) return;
+  const st = trainRwState(), ic = p.querySelector('.btr-ico'), t1 = p.querySelector('.btr-sub');
+  p.classList.toggle('done', !st.open);
+  const bt = st.bt || 'cards';
+  if(ic && ic.dataset.bt !== bt){ ic.dataset.bt = bt; ic.innerHTML = boostRewardChipIcon(bt); }
+  if(t1) t1.innerHTML = st.open ? (st.bt ? 'Première victoire : <b>BOOSTER ' + BOOST_LABEL[st.bt] + '</b>' : 'Première victoire : <b>un booster</b>') : 'Gagnée aujourd’hui · revient demain à <b>6 h</b>';
+}
 // Empêche deux actions d'interface de se chevaucher (un clic pendant qu'une requête est en cours est ignoré)
 function econUi(fn){
   if(ECON.uiBusy) return;
@@ -9396,7 +9443,7 @@ function econMirror(s, op){
   player.boosters = { res:(s.boosters && s.boosters.res) || 0, cards:(s.boosters && s.boosters.cards) || 0, modules:0 };
   player.stats = Object.assign(defaultStats(), J(s.stats));
   player.totals = J(s.totals); player.troph = J(s.troph); player.daily = J(s.daily); player.login = J(s.login);
-  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.backs = J(s.backs); player.defi = J(s.defi || {});
+  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.trainRw = s.trainRw ? J(s.trainRw) : null; player.backs = J(s.backs); player.defi = J(s.defi || {});
   CHAR_DEFS.forEach(d => {
     const had = warm ? copiesOf(d) : -1;
     const st = emptyStack(); st[rarityOf(d)] = (s.cards && s.cards[d.name]) || 0; cardCopies[d.name] = st;
@@ -9425,7 +9472,7 @@ function econAdopt(b, opts){
   if(!b.state || typeof b.state !== 'object') return;
   ECON.version = b.version;
   econMirror(b.state, opts && opts.op);
-  ECON.ready = true; ECON.dayKey = todayKey();
+  ECON.ready = true; ECON.dayKey = todayKey(); ECON.trainKey = trainKeyNow();
   const mode = (opts && opts.render) || 'full';
   if(mode !== 'none') econRenderAll(mode);
 }
@@ -9456,6 +9503,7 @@ function econRenderAll(mode){
   renderNotifs();
   renderResources();
   renderPlayerTile();
+  renderTrainRw();
   renderLoginBonus();
   updateRewardTiles();
   tickFabTimer();
@@ -9737,11 +9785,13 @@ async function econBattleLaunch(d, defi){
   if(late) econBattleLate(late);
   const params = Object.assign({ mode:defi ? 'defi' : 'train' }, deck);
   if(defi){ params.name = defi.def.name; params.tier = defi.tier; }
+  else params.aiv = 2;                                    // V0.05.58 : IA fine connue de ce jeu
   const r = await econAct('battle_start', params, { render:'none' });
   if(!r.ok || !r.result || !r.result.match) return false;
   const m = r.result.match;
   const d2 = Object.assign({}, d, { seed:m.seed, srv:{ p:m.p, o:m.o } });
   if(defi) d2.defi = { focus:m.name, tier:m.tier, ai:(m.ai && m.ai.lv) || 0, hand:0 };
+  else d2.ai = { lv:(m.ai && +m.ai.lv) || 0, sk:(m.ai && +m.ai.sk) || 0 };   // V0.05.58 : adversaire de l'Entraînement IA (cote du joueur)
   if(defi){ defiBtlCtx = { def:defi.def, tier:defi.tier }; closeDefiLaunch(); }
   btlStart(d2);
   if(!BTL){ if(defi) defiBtlCtx = null; return false; }   // lancement refusé : le combat enregistré sera abandonné au prochain départ
@@ -9804,7 +9854,7 @@ function econBattleShow(fin, r){
     return;
   }
   if(res.mode === 'defi'){ defiBtlShowResult(res); return; }
-  showRewardModal(res.won && res.n > 1 ? 'SÉRIE DE ' + res.n + ' VICTOIRES' : '', econItems(res.items), { resultType:res.won ? 'victory' : 'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
+  showRewardModal(res.won ? (res.first ? 'RÉCOMPENSE DU JOUR' : (res.n > 1 ? 'SÉRIE DE ' + res.n + ' VICTOIRES' : (res.items && res.items.length ? '' : 'RÉCOMPENSE DU JOUR DÉJÀ GAGNÉE'))) : '', econItems(res.items), { resultType:res.won ? 'victory' : 'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
 }
 // Résultat d'un combat précédent, reçu après coup
 function econBattleLate(res){
@@ -9828,9 +9878,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.57';
+var BUILD_VERSION = 'V0.05.58';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.58', items:[
+    'ENTRAÎNEMENT IA : la série de victoires (WINSTREAK) disparaît. La première victoire de la journée rapporte un booster, cartes ou ressources au hasard : son icône est affichée en haut à droite de la case ENTRAÎNEMENT IA et disparaît une fois gagnée. Les victoires suivantes ne rapportent plus rien jusqu\'au lendemain 6 h (elles comptent toujours pour les tâches et les trophées).',
+    'ENTRAÎNEMENT IA : l\'adversaire s\'adapte au joueur. La force de son deck suit celle du tien, et il devient plus coriace quand tu gagnes souvent, plus doux quand tu perds souvent.',
+    'ENTRAÎNEMENT IA : l\'IA joue mieux (achève un chef à sa portée, enchaîne ses attaques sans gaspiller, protège son chef menacé, garde du mana pour ses cartes en jeu), plus ou moins finement selon ton niveau. Les Défis ne changent pas.',
+  ] },
   { v:'V0.05.57', items:[
     'COMBAT : destructions de cartes allégées sans changement visuel : fumée, étincelles, étoiles et pixels créés seulement au moment où ils apparaissent, éclats et lueurs retirés dès qu\'ils sont éteints, copie de la carte faite une seule fois pour tous les éclats (jusqu\'à 18 % d\'éléments et 28 % d\'animations en moins au pic).',
   ] },
@@ -11558,7 +11613,7 @@ var TUT_STEPS = [
     mock:'<div class="tut-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3z"/></svg></div>' },
   { title:'TA FICHE JOUEUR', text:'En haut de l\'écran, ton avatar affiche ton nom et ton niveau de commandant. C\'est ta carte de visite.',
     mock: () => tutIconFrom('#tilePlayer .mt-avatar', 'cyan') },
-  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner. Chaque victoire d\'affilée allume un point de ta WINSTREAK (5 au maximum) et rapporte de plus en plus d\'or et d\'XP ; une défaite remet la série à zéro.',
+  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner. Ta première victoire de la journée rapporte un booster (cartes ou ressources) : son icône est en haut à droite de la case tant qu\'il est à gagner. Ensuite, plus rien jusqu\'au lendemain 6 h. L\'adversaire s\'adapte à ton deck et à tes résultats.',
     mock: () => tutIconFrom('#tileBattle .mt-battle-ico', 'green') },
   { title:'LA BATAILLE', text:'La grande case rouge BATAILLE te met face à un autre joueur, en direct : choisis ton deck, patiente le temps qu\'un adversaire arrive, puis le meilleur commandant l\'emporte. Pour l\'instant, c\'est une phase de test, sans récompense.',
     mock:'<div class="tut-badge red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4l7 7M19 4l-7 7M12 11l-6 8M12 11l6 8M4 17l3 3M20 17l-3 3"/></svg></div>' },
@@ -20384,7 +20439,8 @@ function renderBataille(){
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
   batRenderStreak();
   const pv = batMode === 'pvp', st = document.getElementById('batStreak'), lb = document.querySelector('#batPanel .team-label'), bt = document.getElementById('batLaunchBtn');
-  if(st) st.style.display = '';   // V0.05.51 : la WINSTREAK existe aussi en BATAILLE (série PvP)
+  if(st) st.style.display = pv ? '' : 'none';   // V0.05.58 : la WINSTREAK n'existe plus qu'en BATAILLE (série PvP) ; l'Entraînement IA affiche la récompense du jour
+  const tr = document.getElementById('batTrainRw'); if(tr){ tr.style.display = pv ? 'none' : ''; if(!pv) batRenderTrainRw(); }
   if(lb) lb.textContent = pv ? 'CHOIX DU DECK · BATAILLE' : 'CHOIX DU DECK';
   if(bt) bt.textContent = pv ? 'RECHERCHER UN ADVERSAIRE' : 'LANCER LE COMBAT';
   batSyncLaunch();
@@ -29938,18 +29994,122 @@ BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
 
 // ---------- adversaire ----------
 function btlPwr(c){ return c.atk * 2 + c.df * 1.5 + c.maxHp * 1; }
+// ===================================================================================================
+//  V0.05.58 -- IA FINE de l'ENTRAÎNEMENT IA. Ce bloc est le MÊME TEXTE dans le jeu et dans le noyau du serveur
+//  (le serveur rejoue la partie : la moindre différence changerait le vainqueur). Il ne lit l'état qu'à travers X :
+//  X.side / X.foe, X.mana(), X.hand() (cartes posables), X.slots(camp), X.leader(camp), X.canAct(c), X.noDef(c), X.has(c, mot-clé),
+//  X.validFoes(camp) (cibles permises, Tank compris), X.byUid(uid), X.onField(c), X.modCost(), X.ATK_K, X.LEADER_COUNTER.
+//  Aucun tirage au hasard ici : le dosage entre jeu fin et jeu « ancien » (sk = finesse 0..1) est fait par l'appelant.
+// ===================================================================================================
+function aiFPwr(c){ return c.atk * 2 + c.df * 1.5 + c.maxHp; }
+function aiFDmg(X, c){ return Math.max(1, Math.round(c.atk * X.ATK_K)); }
+// état prévu à la fin du tour d'après les plans déjà posés (des deux camps, dans l'ordre de résolution) : uid -> { hp, df }
+function aiFSim(X){
+  const st = new Map(), get = c => { let s = st.get(c.uid); if(!s){ s = { hp:c.hp, df:Math.max(0, c.df) }; st.set(c.uid, s); } return s; };
+  const hitS = (s, d) => { const sh = Math.min(s.df, d); s.df -= sh; s.hp = Math.max(0, s.hp - (d - sh)); };
+  const plans = [];
+  ['p', 'o'].forEach(sd => X.slots(sd).forEach(c => { if(c && c.plan && c.plan.tgt != null && X.onField(c)) plans.push(c); }));
+  plans.sort((a, b) => (a.plan.seq || 0) - (b.plan.seq || 0));
+  plans.forEach(c => {
+    const a = get(c); if(a.hp <= 0) return;
+    const t0 = X.byUid(c.plan.tgt); if(!t0 || !X.onField(t0)) return;
+    const t = get(t0); if(t.hp <= 0) return;
+    if(c.plan.kind === 'def'){ t.df += Math.max(0, Math.round(a.df)); return; }
+    if(c.plan.kind !== 'atk') return;
+    hitS(t, aiFDmg(X, c));
+    if(!t0.leader || X.LEADER_COUNTER) hitS(a, aiFDmg(X, t0));
+  });
+  return get;
+}
+// cartes de l'IA qui peuvent encore agir ce tour
+function aiFActors(X){ return X.slots(X.side).filter(c => c && c.hp > 0 && !c.plan && X.canAct(c)); }
+// le chef adverse tombe-t-il ce tour si toutes les actions restantes le visent ?
+function aiFLethal(X, get){
+  const L = X.leader(X.foe); if(X.validFoes(X.side).indexOf(L) < 0) return false;
+  const s = get(L); if(s.hp <= 0) return true;
+  const ds = aiFActors(X).map(c => aiFDmg(X, c)).sort((a, b) => b - a).slice(0, Math.max(0, X.mana()));
+  return ds.reduce((a, b) => a + b, 0) >= s.hp + s.df;
+}
+// menace sur le chef de l'IA au prochain tour adverse : dégâts des cartes adverses encore debout (si aucun Tank ne le protège)
+function aiFThreat(X, get){
+  const L = X.leader(X.side); if(X.validFoes(X.foe).indexOf(L) < 0) return { open:false, dmg:0, rem:1 };
+  const dmg = X.slots(X.foe).reduce((a, c) => a + (c && get(c).hp > 0 ? aiFDmg(X, c) : 0), 0), s = get(L);
+  return { open:true, dmg, rem:s.hp + s.df };
+}
+// poser une carte de plus ? (le mana restant sert aussi aux actions des cartes déjà en jeu)
+function aiFWantPlay(X){
+  const get = aiFSim(X), m = X.mana(), act = aiFActors(X).length, n = X.slots(X.side).filter(c => c && c.hp > 0).length;
+  if(aiFLethal(X, get)) return false;
+  if(m > act || n === 0 || (n === 1 && m >= 2)) return true;
+  const th = aiFThreat(X, get);
+  return th.open && th.dmg >= th.rem && X.hand().some(c => X.has(c, 'tank'));
+}
+// quelle carte poser : la plus solide, un peu plus pour un effet, beaucoup plus pour un Tank quand le chef est menacé
+function aiFPickPlay(X){
+  const th = aiFThreat(X, aiFSim(X)), danger = th.open && th.dmg >= th.rem * 0.7;
+  let best = null, bs = -1e9;
+  X.hand().forEach(c => {
+    const sc = aiFPwr(c) + ((X.has(c, 'appel') || X.has(c, 'baroud')) ? 3 : 0) + (danger && X.has(c, 'tank') ? 15 : 0);
+    if(sc > bs){ bs = sc; best = c; }
+  });
+  return best;
+}
+// module : seulement s'il reste assez de mana pour les actions des cartes en jeu
+function aiFModOk(X){ const act = aiFActors(X).length; return act === 0 || X.mana() - X.modCost() >= Math.min(act, 2); }
+// action d'une carte : { kind:'atk'|'def', tgt:carte }
+function aiFPlan(X, c){
+  const get = aiFSim(X), L = X.leader(X.foe), d = aiFDmg(X, c), me = get(c);
+  let foes = X.validFoes(X.side).filter(t => get(t).hp > 0); if(!foes.length) foes = X.validFoes(X.side);
+  if(foes.indexOf(L) >= 0 && aiFLethal(X, get)) return { kind:'atk', tgt:L };
+  let best = foes[0], bs = -1e9;
+  foes.forEach(t => {
+    const s = get(t), rem = Math.max(1, s.hp + s.df), kill = d >= rem;
+    let sc;
+    if(t.leader) sc = kill ? 1e6 : 2 + 8 * d / rem;
+    else {
+      const cnt = aiFDmg(X, t), mine = Math.max(1, me.hp + me.df), dies = cnt >= mine;
+      sc = kill ? 12 + aiFPwr(t) / 3 - (dies ? aiFPwr(c) / 4 : 0)
+                : 6 * d / rem + aiFPwr(t) / 20 - (dies ? aiFPwr(c) / 3 : 2 * cnt / mine);
+    }
+    if(sc > bs){ bs = sc; best = t; }
+  });
+  if(!X.noDef(c) && c.df > 0 && bs < 1e6){
+    const th = aiFThreat(X, get), myL = X.leader(X.side);
+    let dt = null, ds = -1e9;
+    if(th.open && th.dmg >= th.rem - 2){ dt = myL; ds = 40; }
+    else if(th.open && th.dmg >= th.rem * 0.7){ dt = myL; ds = 5; }
+    X.slots(X.side).forEach(a => {
+      if(!a || a === c || a.hp <= 0) return; const s = get(a); if(s.hp <= 0 || s.hp / a.maxHp >= 0.45) return;
+      const v = 3 + aiFPwr(a) / 10; if(v > ds){ ds = v; dt = a; }
+    });
+    if(dt && ds > bs) return { kind:'def', tgt:dt };
+  }
+  return { kind:'atk', tgt:best };
+}
+// adaptateur du jeu pour l'IA fine (même interface que dans le noyau du serveur)
+function aiFX(){
+  return { side:'o', foe:'p', mana:() => BTL.mana.o, hand:() => BTL.S.o.hand.filter(x => !x.tech), slots:sd => BTL.S[sd].slots, leader:sd => BTL.S[sd].leader,
+    canAct:btlCanAct, noDef:btlNoDef, has:btlHas, validFoes:btlValidFoes, byUid:btlCardByUid, onField:btlOnField,
+    modCost:() => btlModCost(BTL.mod.o.t), ATK_K:BTL_ATK_K, LEADER_COUNTER:BTL_LEADER_COUNTER };
+}
 async function btlAI(){
   BTL.phase = 'ai'; btlRefreshCan();
   const side = 'o', S = BTL.S.o, E = BTL.S.p;
+  // V0.05.58 : ENTRAÎNEMENT IA -- finesse sk (0..1) et hésitation lv imposées par le serveur ; DÉFI : palier (lv), sans finesse (ancien jeu à l'identique)
+  const aiLv = (BTL.d.defi && BTL.d.defi.ai) || (BTL.d.ai && +BTL.d.ai.lv) || 0, sk = (!BTL.d.defi && BTL.d.ai && +BTL.d.ai.sk) || 0;
+  const X = sk > 0 ? aiFX() : null, fine = () => sk > 0 && btlLrand() < sk;
   await btlSleep(700);
   // 1) poser des cartes
   while(!BTL.over && BTL.mana.o > 0 && S.hand.some(x => !x.tech) && S.slots.some(x => !x)){
-    const onField = S.slots.filter(Boolean).length;
-    const unplanned = S.slots.filter(c => c && !c.plan && btlCanAct(c)).length;
-    const aiLv = (BTL.d.defi && BTL.d.defi.ai) || 0;   // DÉFI : plus le palier est haut, moins l'IA hésite à poser ses cartes
-    if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && btlLrand() < 0.7 * (1 - aiLv)) break;
-    if(onField >= 2 && btlLrand() < 0.25 * (1 - aiLv)) break;
-    const c = S.hand.filter(x => !x.tech).sort((a, b) => btlPwr(b) - btlPwr(a))[0];
+    let c;
+    if(fine()){ if(!aiFWantPlay(X)) break; c = aiFPickPlay(X); }
+    else {
+      const onField = S.slots.filter(Boolean).length;
+      const unplanned = S.slots.filter(c => c && !c.plan && btlCanAct(c)).length;
+      if(onField >= 1 && BTL.mana.o <= 1 && unplanned > 0 && btlLrand() < 0.7 * (1 - aiLv)) break;
+      if(onField >= 2 && btlLrand() < 0.25 * (1 - aiLv)) break;
+      c = S.hand.filter(x => !x.tech).sort((a, b) => btlPwr(b) - btlPwr(a))[0];
+    }
     const free = [0, 1, 2].filter(i => !S.slots[i]); const si = free[Math.floor(btlLrand() * free.length)];
     const hand = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), rect = hand ? btlRect(hand) : btlRect(btlQ('#btlOHand'));
     const e = document.createElement('div'); e.className = 'btl-fly'; e.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(e);
@@ -29958,19 +30118,22 @@ async function btlAI(){
   }
   // 1b) module de l'adversaire : une fois par tour, quand l'effet est utile
   const om = BTL.mod && BTL.mod.o;
-  if(om && !BTL.over && btlModCanUse('o') && !(om.name === 'ROCKET' && btlField('p').length <= btlField('o').length) && btlLrand() < .75){
+  if(om && !BTL.over && btlModCanUse('o') && !(om.name === 'ROCKET' && btlField('p').length <= btlField('o').length) && (sk > 0 ? aiFModOk(X) : btlLrand() < .75)){
     await btlModuleUse('o'); btlModPaint(); await btlSleep(400);
   }
   // 2) agir avec les cartes du terrain
   for(const c of S.slots.slice()){
     if(BTL.over) return;
     if(!c || c.hp <= 0 || BTL.mana.o <= 0 || !btlCanAct(c)) continue;
-    const allies = btlAlly(side).filter(t => t.hp > 0), foes = btlValidFoes('o');
-    const doomed = btlPredict({ skip:c });   // V0.05.09 : l'IA ne défend pas une carte condamnée
-    const weakAlly = allies.filter(x => x !== c && !doomed.has(x.uid)).sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];   // V0.05.06 : l'IA ne se défend pas elle-même
     let plan = null;
-    if(!plan && !btlNoDef(c) && weakAlly && weakAlly.hp / weakAlly.maxHp < 0.45 && c.df > 0 && btlLrand() < 0.8) plan = { kind:'def', tgt:weakAlly.uid, heal:false };
-    if(!plan) plan = { kind:'atk', tgt:btlPickFoe(c, foes, 1).uid, heal:false };
+    if(fine()){ const d = aiFPlan(X, c); plan = { kind:d.kind, tgt:d.tgt.uid, heal:false }; }
+    else {
+      const allies = btlAlly(side).filter(t => t.hp > 0), foes = btlValidFoes('o');
+      const doomed = btlPredict({ skip:c });   // V0.05.09 : l'IA ne défend pas une carte condamnée
+      const weakAlly = allies.filter(x => x !== c && !doomed.has(x.uid)).sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];   // V0.05.06 : l'IA ne se défend pas elle-même
+      if(!plan && !btlNoDef(c) && weakAlly && weakAlly.hp / weakAlly.maxHp < 0.45 && c.df > 0 && btlLrand() < 0.8) plan = { kind:'def', tgt:weakAlly.uid, heal:false };
+      if(!plan) plan = { kind:'atk', tgt:btlPickFoe(c, foes, 1).uid, heal:false };
+    }
     btlSetPlan(c, plan);
     await btlSleep(520);
   }
@@ -34199,7 +34362,7 @@ const HELP_CONTENT = {
     '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li></ul>' },
   batailleView: { title:'ENTRAÎNEMENT IA', text:'Choisis l’un de tes decks, puis touche <b>LANCER LE COMBAT</b>.<br><br>' +
     'À chaque tour, pose des cartes grâce à ton mana, prépare leurs attaques ou leurs défenses, puis touche <b>FIN</b> : tes actions se jouent dans l’ordre où tu les as lancées. Détruis le chef d’escouade adverse pour gagner.<br><br>' +
-    'Chaque victoire d’affilée allume un point de <b>WINSTREAK</b> et augmente la récompense ; une défaite remet la série à zéro.' },
+    'Ta <b>première victoire de la journée</b> rapporte un booster (cartes ou ressources : son icône est sur la case ENTRAÎNEMENT IA). Les victoires suivantes ne rapportent rien jusqu’au lendemain 6 h. L’adversaire s’adapte à la force de ton deck et à tes résultats.' },
   rewardsView: { title:'RÉCOMPENSES', text:'Trois façons de gagner des récompenses gratuites :<ul>' +
     '<li><b>RÉCOMPENSE JOURNALIÈRE</b> — à réclamer chaque jour.</li>' +
     '<li><b>TROPHÉES</b> — des exploits à débloquer une fois pour toutes.</li>' +
