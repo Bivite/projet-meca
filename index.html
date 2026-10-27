@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.54</title>
+<title>Projet MECA V0.05.55</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8977,7 +8977,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.54</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.55</b></div>
   </div>
 
     </div>
@@ -9828,9 +9828,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.54';
+var BUILD_VERSION = 'V0.05.55';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.55', items:[
+    'COMBAT : nouvelles destructions du chef d\'escouade, à l\'échelle de tout le plateau. 3 styles tirés au hasard (jamais deux fois le même d\'affilée) : RÉACTEUR CRITIQUE (le cœur surchauffe, fissures de feu, alarme, puis explosion qui balaie le plateau), FRAPPE ORBITALE (cible verrouillée au sol, faisceau venu du ciel, la carte est soulevée et vaporisée), SINGULARITÉ (la carte se disloque, ses éclats sont aspirés par un trou noir qui s\'effondre en onde de choc).',
+  ] },
   { v:'V0.05.54', items:[
     'COMBAT : nouvelles destructions des cartes, en accord avec leur cadre robotique. 4 styles tirés au hasard (jamais deux fois le même d\'affilée) : SURCHARGE (arcs électriques puis panneaux blindés en relief), EFFONDREMENT (la carte s\'éteint en ligne puis en point, onde de choc), NUMÉRIQUE (grille, double image puis dissolution en blocs et pixels), COUPE LASER (la carte est tranchée en deux, les moitiés basculent et retombent). Éclairage retravaillé (halos, reflets, métal éclairé par l\'explosion), étincelles et braises qui retombent, fumée éclairée, éclairs ramifiés.',
   ] },
@@ -24420,71 +24423,6 @@ function btlDxBoltBurst(cx, cy, L, w, n, cols, d, dl0){
 }
 
 // ---------------------------------------------------------------------------------------------------
-//  ÉCLAIRS : tracé fractal (déplacement du point milieu) avec branches, trois épaisseurs (halo, corps, cœur blanc),
-//  deux variantes de tracé qui alternent pour que l'éclair « vive », croissance depuis l'origine et extinction qui vacille
-// ---------------------------------------------------------------------------------------------------
-function btlDxBoltPts(a, b, off, d){
-  if(d <= 0) return [a, b];
-  const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, o = btlDxR(-1, 1) * off, m = [(a[0] + b[0]) / 2 - dy / len * o, (a[1] + b[1]) / 2 + dx / len * o];
-  return btlDxBoltPts(a, m, off * .55, d - 1).concat(btlDxBoltPts(m, b, off * .55, d - 1).slice(1));
-}
-function btlDxBoltSvg(x1, y1, x2, y2, w, forks, col){
-  const len = Math.hypot(x2 - x1, y2 - y1) || 1, ang = Math.atan2(y2 - y1, x2 - x1), main = btlDxBoltPts([x1, y1], [x2, y2], len * .2, 4), paths = [{ p:main, w }];
-  for(let i = 0; i < forks; i++){
-    const s = main[Math.floor(btlDxR(.2, .8) * main.length)], a = ang + (Math.random() < .5 ? -1 : 1) * btlDxR(.35, .9), l = len * btlDxR(.16, .34);
-    paths.push({ p:btlDxBoltPts(s, [s[0] + Math.cos(a) * l, s[1] + Math.sin(a) * l], l * .3, 3), w:w * .55 });
-  }
-  let h = '';
-  paths.forEach(q => {
-    const d = 'M' + q.p.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (q.w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
-    h += st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
-  });
-  return h;
-}
-// éclair le long d'un périmètre (cadre de la carte) : électricité qui court sur le métal
-function btlDxPerimSvg(W, H, w, col){
-  const per = 2 * (W + H), p0 = Math.random() * per, span = per * btlDxR(.35, .6), pts = [], at = t => { t = ((t % per) + per) % per; if(t < W) return [t, 0]; t -= W; if(t < H) return [W, t]; t -= H; if(t < W) return [W - t, H]; t -= W; return [0, H - t]; };
-  for(let t = 0; t <= span; t += W * .1){ const p = at(p0 + t), j = btlDxR(-1, 1) * W * .045; const q = at(p0 + t + 1), nx = -(q[1] - p[1]), ny = q[0] - p[0], m = Math.hypot(nx, ny) || 1; pts.push([p[0] + nx / m * j + 0, p[1] + ny / m * j]); }
-  const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'), st = (c, op, k) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (w * k).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
-  return st(col, .2, 4.4) + st(col, .55, 2) + st('#ffffff', 1, .8);
-}
-// images clés d'opacité d'une variante : n pas, éclat qui décroît, quelques extinctions aléatoires
-function btlDxFlick(n, vis){
-  const kf = [];
-  for(let j = 0; j < n; j++){
-    const a = j / n, b = (j + 1) / n, v = (j % 2 === vis && (j < 2 || Math.random() > .22)) ? Math.max(.25, 1 - j / n * .7) : 0;
-    kf.push({ opacity:v, offset:a }, { opacity:v, offset:Math.max(a, b - .0005) });
-  }
-  kf.push({ opacity:0, offset:1 }); return kf;
-}
-// pose un éclair (2 variantes) dans un cadre bx,by,bw,bh ; (ox,oy) = point d'origine de la croissance ; abs : cadre positionné dans une surcouche
-function btlDxBoltEl(parent, abs, bx, by, bw, bh, fa, fb, ox, oy, d, dl, grow, z){
-  const e = document.createElement('i');
-  e.style.cssText = 'position:' + (abs ? 'absolute' : 'fixed') + ';pointer-events:none;left:' + bx + 'px;top:' + by + 'px;width:' + bw + 'px;height:' + bh + 'px;z-index:' + (z || 35) + ';will-change:transform;transform-origin:' + ox + 'px ' + oy + 'px';
-  const n = Math.max(3, Math.round(d / 70));
-  [[fa, 0], [fb, 1]].forEach(([frag, vis]) => {
-    const v = document.createElement('i'); v.style.cssText = 'position:absolute;inset:0;opacity:0;will-change:opacity';
-    v.innerHTML = '<svg viewBox="0 0 ' + bw + ' ' + bh + '" width="' + bw + '" height="' + bh + '" style="display:block;overflow:visible">' + frag + '</svg>'; e.appendChild(v);
-    btlWA(v, btlDxFlick(n, vis), { duration:d, delay:dl, easing:'linear', fill:'both' });
-  });
-  parent.appendChild(e);
-  btlDxGone(btlWA(e, grow ? [{ transform:'scale(.1)' }, { transform:'scale(1)', offset:.16, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:'scale(1)' }] : [{ transform:'scale(1)' }, { transform:'scale(1)' }], { duration:d, delay:dl, easing:'linear', fill:'both' }), e);
-}
-// point aléatoire sur le bord d'un rectangle w × h
-function btlDxEdgePt(w, h){
-  const s = Math.floor(Math.random() * 4);
-  return [() => [btlDxR(.1, .9) * w, 0], () => [w, btlDxR(.1, .9) * h], () => [btlDxR(.1, .9) * w, h], () => [0, btlDxR(.1, .9) * h]][s]();
-}
-// éclairs qui jaillissent d'un foyer (cx, cy) dans le repère fixe : n éclairs de longueur ≈ L
-function btlDxBoltBurst(cx, cy, L, w, n, cols, d, dl0){
-  const R = L * 1.4, fx = btlQ('#btlFx');
-  for(let i = 0; i < n; i++){
-    const a = btlDxR(0, Math.PI * 2), l = L * btlDxR(.6, 1), x2 = R + Math.cos(a) * l, y2 = R + Math.sin(a) * l, col = cols[i % cols.length];
-    btlDxBoltEl(fx, false, cx - R, cy - R, 2 * R, 2 * R, btlDxBoltSvg(R, R, x2, y2, w, 2, col), btlDxBoltSvg(R, R, x2, y2, w, 2, col), R, R, d, dl0 + btlDxR(0, 90), true, 35);
-  }
-}
-
-// ---------------------------------------------------------------------------------------------------
 //  PLAQUE MÉTALLIQUE 3D (utilisée par la surcharge et la coupe laser)
 //  face = vraie copie de la carte découpée ; tranche d'acier côté opposé à la lumière ; biseau éclairé par le point
 //  lumineux (lx, ly en %) ; métal chauffé qui refroidit en 3 temps (blanc -> orange -> braise) ; reflet qui glisse
@@ -24909,19 +24847,490 @@ function btlShatter(el, r, col, prep){
     btlAnim(hot, [{ opacity:.95 }, { opacity:0 }], { duration:560, easing:'ease-out' }).catch(() => {});
   }
 }
-async function btlLeaderDeath(c){
-  const el = btlUnitEl(c), r = btlRect(el), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-  const col = btlRarColor(c.rar), fx = btlQ('#btlFx');
-  const fl = document.createElement('div'); fl.className = 'btl-flash'; fx.appendChild(fl);
-  btlShake(btlQ('#btlPlate'), 3);
-  btlAnim(fl, [{ opacity:0 }, { opacity:.85, offset:.18 }, { opacity:0 }], { duration:1700, easing:'ease-out' }).then(() => fl.remove(), () => fl.remove());
-  btlParticles(cx, cy, { n:40, color:col, dist:210, dur:2100, size:12, sq:true, spread:260 });
-  btlParticles(cx, cy, { n:22, color:'#fff', dist:150, dur:1700, size:7, spread:200 });
-  btlRing(r, col, false); btlAfter(() => { if(BTL) btlRing(r, '#fff', false); }, 260);
-  btlFlashEl(el, '#fff', 1, 1100);
-  await btlAnim(el, [{ transform:'scale(1)', opacity:1 }, { transform:'scale(1.15)', opacity:1, offset:.3 }, { transform:'scale(1.6)', opacity:0 }], { duration:2100, easing:'cubic-bezier(.2,.6,.3,1)' });
-  btlSlotOf(c).innerHTML = '';
+// =====================================================================================================
+//  DESTRUCTION DU CHEF D'ESCOUADE (V0.05.55) : 3 styles tirés au hasard (jamais deux fois le même d'affilée)
+//    0 RÉACTEUR CRITIQUE : le cœur surchauffe (fissures de feu, alarme), puis explosion qui balaie tout le plateau
+//    1 FRAPPE ORBITALE   : cible verrouillée au sol, un faisceau tombe du ciel, la carte est soulevée et vaporisée
+//    2 SINGULARITÉ       : la carte se disloque, ses éclats sont aspirés par un trou noir qui s'effondre en une onde de choc
+//  Même kit d'effets que les cartes (death054.js) mais à l'échelle du plateau : c'est la fin du combat.
+//  Tout est fait de transformations et d'opacité (aucun filtre, aucun mode de fusion).
+// =====================================================================================================
+BTL_DXT.void = { w:'#fbf4ff', hi:'222,176,255', rgb:'168,96,255', lo:'#5a1fd0', a:'#e4c8ff', b:'#a860ff' };
+function btlLdBoard(){ const p = btlQ('#btlPlate'), b = p ? btlRect(p) : null; return (b && b.width > 50) ? b : { left:0, top:0, width:innerWidth, height:innerHeight }; }
+function btlLdAlive(){ return !!BTL && !BTL.abort; }
+// surveillance de la fluidité : si l'appareil peine pendant la montée (moins de ~40 images/s), la rupture est allégée (moitié moins de particules, pas de grand halo)
+let BTL_LD_M = null;
+function btlLdMon(){ const m = { dt:[], on:true, last:performance.now() }, f = t => { if(!m.on) return; m.dt.push(t - m.last); m.last = t; if(m.dt.length > 40) m.dt.shift(); requestAnimationFrame(f); }; requestAnimationFrame(f); return m; }
+function btlLdLiteOf(m){
+  if(typeof window.__ldlite === 'number') return !!window.__ldlite;
+  if(!m) return false; m.on = false;
+  const d = m.dt.slice(5).sort((a, b) => a - b); if(d.length < 8) return false;
+  return d[Math.floor(d.length * .5)] > 24 || d[Math.floor(d.length * .8)] > 34;
 }
+// étale la création des éléments lourds sur quelques images (ms réelles) pour éviter un à-coup à l'instant de l'explosion
+function btlLdLater(fn, ms){ setTimeout(() => { if(btlLdAlive()) try{ fn(); }catch(_){} }, ms); }
+function btlLdQuake(amp, dl){ btlAfter(() => { if(btlLdAlive()) btlShake(btlQ('#btlPlate'), amp); }, dl || 0); }
+// éclair entre deux points quelconques (repère fixe) : voir btlLdStrike
+function btlLdBolt(x1, y1, x2, y2, w, col, d, dl){ btlLdStrike(btlQ('#btlFx'), false, x1, y1, x2, y2, w, col, d, dl || 0, 35); }
+// éclat plein écran
+function btlLdFlash(rgb, peak, d, dl){
+  const e = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:36;background:rgb(' + rgb + ');opacity:0;will-change:opacity');
+  btlQ('#btlFx').appendChild(e);
+  btlDxGone(btlWA(e, [{ opacity:0 }, { opacity:peak, offset:.07 }, { opacity:peak * .35, offset:.3 }, { opacity:peak * .5, offset:.38 }, { opacity:0 }], { duration:d, delay:dl || 0, easing:'ease-out', fill:'both' }), e);
+}
+// onde de choc : anneau lumineux qui s'élargit ; flat < 1 : posé au sol (écrasé)
+function btlLdRing(cx, cy, S, tn, d, dl, flat, k, thin){
+  flat = flat || 1; k = k || 1;
+  const bg = thin ? 'radial-gradient(circle,rgba(' + tn.rgb + ',0) 0,rgba(' + tn.rgb + ',0) 60%,rgba(' + tn.hi + ',' + Math.min(1, .9 * k).toFixed(2) + ') 66%,rgba(255,255,255,' + Math.min(1, k).toFixed(2) + ') 68%,rgba(' + tn.rgb + ',.3) 71%,rgba(' + tn.rgb + ',0) 76%)'
+    : 'radial-gradient(circle,rgba(' + tn.rgb + ',0) 0,rgba(' + tn.rgb + ',0) 50%,rgba(' + tn.rgb + ',' + (.3 * k).toFixed(2) + ') 59%,rgba(' + tn.hi + ',' + Math.min(1, .95 * k).toFixed(2) + ') 65%,rgba(255,255,255,' + Math.min(1, k).toFixed(2) + ') 67.5%,rgba(' + tn.rgb + ',.35) 72%,rgba(' + tn.rgb + ',0) 82%)';
+  const e = btlDxEl('left:' + (cx - S / 2) + 'px;top:' + (cy - S / 2) + 'px;width:' + S + 'px;height:' + S + 'px;border-radius:50%;z-index:31;opacity:0;will-change:transform,opacity;background:' + bg);
+  btlQ('#btlFx').appendChild(e);
+  btlDxGone(btlWA(e, [{ transform:'scale(.04,' + (.04 * flat) + ')', opacity:0 }, { transform:'scale(.3,' + (.3 * flat) + ')', opacity:1, offset:.12 }, { transform:'scale(1,' + flat + ')', opacity:0 }], { duration:d, delay:dl || 0, easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), e);
+}
+// anneau qui se resserre vers le cœur (charge)
+function btlLdCharge(cx, cy, S, tn, d, dl){
+  const bg = 'radial-gradient(circle,rgba(' + tn.rgb + ',0) 0,rgba(' + tn.rgb + ',0) 60%,rgba(' + tn.hi + ',.7) 67%,rgba(' + tn.rgb + ',0) 73%)';
+  btlDxDisc(cx, cy, S, bg, 33, [{ transform:'scale(1.5)', opacity:0 }, { transform:'scale(1.1)', opacity:1, offset:.4 }, { transform:'scale(.22)', opacity:0 }], d, dl, 'cubic-bezier(.5,0,.9,.5)');
+}
+// vignette d'alarme : le bord de l'écran claque à chaque battement
+function btlLdAlarm(rgb, T, times){
+  const e = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:5;opacity:0;will-change:opacity;background:radial-gradient(ellipse at 50% 50%,rgba(' + rgb + ',0) 34%,rgba(' + rgb + ',.34) 74%,rgba(' + rgb + ',.62) 100%)');
+  btlQ('#btlFx').appendChild(e);
+  btlWA(e, btlLdBeatKf(times, i => .08 + .3 * i / times.length, i => .6 + .4 * i / times.length, .14), { duration:T, easing:'linear', fill:'both' });
+  return e;
+}
+function btlLdFade(e, d, dl){ if(!e) return; btlDxGone(btlWA(e, [{ opacity:1 }, { opacity:0 }], { duration:d, delay:dl || 0, easing:'ease-out', fill:'both' }), e); }
+// éclats de métal qui partent loin (dist = multiple de la largeur du chef)
+function btlLdDebris(r, n, k){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, kinds = [
+    'width:11px;height:11px;background:linear-gradient(135deg,#e6ecf6,#5b6676 55%,#232a35);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)',
+    'width:13px;height:7px;background:#202734;border:1px solid ' + BTL_DX.cy + ';box-sizing:border-box;box-shadow:0 0 5px ' + BTL_DX.cy,
+    'width:26px;height:4px;background:linear-gradient(90deg,#c0cad9,#454e5d);border-radius:1px',
+    'width:10px;height:10px;border-radius:50%;border:3px solid #9aa6b8;box-sizing:border-box;background:#11161e',
+    'width:15px;height:9px;background:linear-gradient(135deg,#d0d8e6,#4a5463);clip-path:polygon(0 0,100% 20%,80% 100%,10% 80%)'
+  ];
+  for(let i = 0; i < n; i++){
+    const e = btlDxEl(kinds[i % kinds.length] + ';left:' + (r.left + btlDxR(.25, .75) * W) + 'px;top:' + (r.top + btlDxR(.25, .75) * H) + 'px;z-index:32;will-change:transform,opacity');
+    fx.appendChild(e);
+    const a = btlDxR(0, Math.PI * 2), dist = btlDxR(W * 1.2, W * 4.4) * (k || 1), ex = Math.cos(a) * dist, ey = Math.sin(a) * dist * .8 - H * .5, fall = H * btlDxR(1.2, 3);
+    btlDxGone(btlWA(e, [
+      { transform:'translate3d(0,0,0) rotate(' + a + 'rad) scale(2.2,.5)', opacity:1 },
+      { transform:'translate3d(' + ex + 'px,' + ey + 'px,0) rotate(' + btlDxR(-360, 360) + 'deg) scale(1.1)', opacity:1, offset:.4, easing:'cubic-bezier(.3,0,.55,1)' },
+      { transform:'translate3d(' + ex * 1.2 + 'px,' + (ey + fall) + 'px,0) rotate(' + btlDxR(-720, 720) + 'deg) scale(.9)', opacity:0 }
+    ], { duration:btlDxR(1100, 1700), delay:btlDxR(0, 110), easing:'cubic-bezier(.1,.7,.3,1)', fill:'both' }), e);
+  }
+}
+// plaques blindées (copies découpées de la carte), projetées à grande distance ; mode 'up' : soulevées puis dissoutes
+function btlLdShards(el, r, tn, o){
+  o = o || {};
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, fr = btlDxFracture(), mx = fr.mx, my = fr.my;
+  const w3 = btlDxEl('left:0;top:0;width:100%;height:100%;z-index:30;perspective:900px;perspective-origin:' + cx + 'px ' + cy + 'px');
+  fx.appendChild(w3);
+  const list = [];
+  fr.shards.forEach(q => {
+    let gx = 0, gy = 0; q.forEach(p => { gx += p[0]; gy += p[1]; }); gx /= q.length; gy /= q.length;
+    const d = o.d || btlDxR(1200, 1500), box = btlDxPlate(el, r, q, o.lx != null ? o.lx : mx, o.ly != null ? o.ly : my, tn, d);
+    w3.appendChild(box);
+    let vx = gx - mx, vy = gy - my; const m = Math.hypot(vx, vy) || 1; vx /= m; vy /= m;
+    list.push({ box, vx, vy, gx, gy, pw:Math.max(.6, 1.15 - Math.hypot(gx - mx, gy - my) / 90), d });
+  });
+  return { w3, list, mx, my, cx, cy };
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  ÉCLAIRS (tracé refait) : tronc en déplacement du point milieu (6 niveaux, très découpé), branches qui se ramifient
+//  encore une fois, trois tracés qui se relaient (re-décharge), apparition en cercle depuis le point d'origine.
+//  Trois épaisseurs : halo large très pâle, corps, cœur blanc fin. Une seule balise <path> par groupe et par épaisseur (peu de nœuds).
+// ---------------------------------------------------------------------------------------------------
+function btlLdTrunk(a, b, rough, depth){
+  let pts = [a, b], off = Math.hypot(b[0] - a[0], b[1] - a[1]) * rough;
+  for(let i = 0; i < depth; i++){
+    const np = [pts[0]];
+    for(let j = 0; j < pts.length - 1; j++){
+      const p = pts[j], q = pts[j + 1], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1, o = btlDxR(-1, 1) * off;
+      np.push([(p[0] + q[0]) / 2 - dy / l * o, (p[1] + q[1]) / 2 + dx / l * o], q);
+    }
+    pts = np; off *= .52;
+  }
+  return pts;
+}
+function btlLdTree(a, b, depth, out, lv){
+  const main = btlLdTrunk(a, b, lv ? .2 : .15, lv ? 4 : 6); out.push({ p:main, lv:lv });
+  if(depth <= 0) return;
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]), dir = Math.atan2(b[1] - a[1], b[0] - a[0]), n = lv ? 1 : 3;
+  for(let i = 0; i < n; i++){
+    const s = main[Math.floor(btlDxR(.2, .8) * main.length)], an = dir + (Math.random() < .5 ? -1 : 1) * btlDxR(.35, .85), L = len * btlDxR(.2, .4) * (lv ? .7 : 1);
+    btlLdTree(s, [s[0] + Math.cos(an) * L, s[1] + Math.sin(an) * L], depth - 1, out, lv + 1);
+  }
+}
+function btlLdBoltSvg(x1, y1, x2, y2, w, col){
+  const out = []; btlLdTree([x1, y1], [x2, y2], 1, out, 0);
+  const g = ['', ''], ds = p => 'M' + p.map(q => q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('L');
+  out.forEach(q => { g[q.lv ? 1 : 0] += ds(q.p); });
+  let h = '';
+  [[0, w], [1, w * .5]].forEach(([k, ww]) => {
+    if(!g[k]) return;
+    const st = (c, op, m) => '<path d="' + g[k] + '" fill="none" stroke="' + c + '" stroke-opacity="' + op + '" stroke-width="' + (ww * m).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+    h += st(col, .15, 5) + st(col, .5, 2.2) + st('#ffffff', 1, .9);
+  });
+  return h;
+}
+// éclair de (x1,y1) à (x2,y2) dans le repère de parent ; abs : parent positionné (surcouche) ; d : durée ; dl : départ
+function btlLdStrike(parent, abs, x1, y1, x2, y2, w, col, d, dl, z){
+  const pad = 40, bx = Math.min(x1, x2) - pad, by = Math.min(y1, y2) - pad, bw = Math.abs(x2 - x1) + 2 * pad, bh = Math.abs(y2 - y1) + 2 * pad, ox = x1 - bx, oy = y1 - by;
+  const e = document.createElement('i');
+  e.style.cssText = 'position:' + (abs ? 'absolute' : 'fixed') + ';pointer-events:none;left:' + bx + 'px;top:' + by + 'px;width:' + bw + 'px;height:' + bh + 'px;z-index:' + (z || 35) + ';clip-path:circle(0px at ' + ox + 'px ' + oy + 'px)';
+  const V = [0, 1].map(() => { const v = document.createElement('i'); v.style.cssText = 'position:absolute;inset:0;opacity:0;will-change:opacity'; v.innerHTML = '<svg viewBox="0 0 ' + bw + ' ' + bh + '" width="' + bw + '" height="' + bh + '" style="display:block;overflow:visible">' + btlLdBoltSvg(ox, oy, x2 - bx, y2 - by, w, col) + '</svg>'; e.appendChild(v); return v; });
+  // relais : un tracé après l'autre, éclat qui décroît, un trou sombre puis une re-décharge à pleine intensité
+  const n = Math.max(5, Math.round(d / 48)), seq = [], dark = 2 + Math.floor(Math.random() * Math.max(1, n * .25)), re = Math.min(n - 2, dark + 1);
+  let last = -1; for(let j = 0; j < n; j++){ let v; do{ v = Math.floor(Math.random() * 2); }while(v === last); seq.push(v); last = v; }
+  V.forEach((v, vi) => {
+    const kf = [];
+    for(let j = 0; j < n; j++){
+      const a = j / n, b = (j + 1) / n - .0005, inten = j === re ? 1 : j === dark ? .08 : Math.max(.3, 1 - j / n * .75), val = seq[j] === vi ? inten : 0;
+      kf.push({ opacity:val, offset:a }, { opacity:val, offset:b });
+    }
+    kf.push({ opacity:0, offset:1 });
+    btlWA(v, kf, { duration:d, delay:dl, easing:'linear', fill:'both' });
+  });
+  parent.appendChild(e);
+  const R = Math.hypot(bw, bh) + 20;
+  btlWA(e, [{ clipPath:'circle(0px at ' + ox + 'px ' + oy + 'px)' }, { clipPath:'circle(' + R + 'px at ' + ox + 'px ' + oy + 'px)', offset:.18 }, { clipPath:'circle(' + R + 'px at ' + ox + 'px ' + oy + 'px)' }], { duration:d, delay:dl, easing:'cubic-bezier(.2,.8,.3,1)', fill:'both' }).finished.then(() => e.remove(), () => e.remove());
+}
+// gerbe d'éclairs depuis un foyer : une première vague équilibrée sur tous les angles, puis une seconde, plus courte, en retard
+function btlLdBoltBurst(cx, cy, L, w, n, cols, d, dl0){
+  const fx = btlQ('#btlFx'), a0 = btlDxR(0, Math.PI * 2);
+  for(let i = 0; i < n; i++){
+    const a = a0 + i / n * Math.PI * 2 + btlDxR(-.25, .25), l = L * btlDxR(.6, 1), r0 = btlDxR(0, 10);
+    btlLdStrike(fx, false, cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * l, cy + Math.sin(a) * l, w, cols[i % cols.length], d, dl0 + btlDxR(0, 70), 35);
+  }
+  for(let i = 0; i < Math.round(n * .3); i++){
+    const a = a0 + btlDxR(0, Math.PI * 2), l = L * btlDxR(.35, .65);
+    btlLdStrike(fx, false, cx, cy, cx + Math.cos(a) * l, cy + Math.sin(a) * l, w * .8, cols[(i + 1) % cols.length], d * .7, dl0 + btlDxR(230, 360), 35);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  PULSATIONS : un calendrier de battements qui s'accélèrent ; à chaque battement, tout claque ensemble :
+//  lueur du cœur, anneau mince qui part de la carte, éclair de lumière, vignette, coup sur la carte
+// ---------------------------------------------------------------------------------------------------
+function btlLdSchedule(n, t0, t1){ const o = []; for(let i = 0; i < n; i++) o.push(t0 + (t1 - t0) * Math.pow(n > 1 ? i / (n - 1) : 0, .66)); return o; }
+// images clés d'opacité : base(i) = niveau de repos après le battement i, peak(i) = sommet du battement i, decay = durée de retombée (part de T)
+function btlLdBeatKf(times, base, peak, decay){
+  const kf = [{ opacity:base(0), offset:0 }];
+  times.forEach((t, i) => {
+    const nxt = times[i + 1] != null ? times[i + 1] : 1, dec = Math.min(decay, (nxt - t) * .9), top = Math.min(1, peak(i)), flo = base(i + 1);
+    kf.push({ opacity:base(i), offset:Math.max(t - .004, kf[kf.length - 1].offset) }, { opacity:top, offset:t + .008 }, { opacity:flo + (top - flo) * .3, offset:t + dec * .4 }, { opacity:flo, offset:t + dec });
+  });
+  kf.push({ opacity:base(times.length), offset:1 });
+  return kf;
+}
+// tremblement qui monte + gonflement à chaque battement ; hold : fin immobile (hit-stop)
+function btlLdShakeKf(times, amp, kick, hold){
+  const N = 72, kf = [];
+  for(let i = 0; i <= N; i++){
+    const t = i / N; let k = 0; times.forEach(tt => { if(t >= tt) k += Math.exp(-(t - tt) / .03); });
+    const ramp = Math.pow(Math.min(1, t / (1 - hold)), 1.4), a = t > 1 - hold ? 0 : amp * ramp, sg = i % 2 ? -1 : 1;
+    kf.push({ transform:'translate(' + (sg * a * btlDxR(.5, 1)).toFixed(2) + 'px,' + ((i % 3 - 1) * a * .3).toFixed(2) + 'px) scale(' + (1 + kick * Math.min(1, k) * (.4 + .6 * ramp)).toFixed(3) + ')', offset:t });
+  }
+  return kf;
+}
+function btlLdBeat(cx, cy, S, tn, times, T){
+  times.forEach((t, i) => {
+    const dl = t * T, k = .55 + .45 * i / Math.max(1, times.length - 1);
+    btlLdRing(cx, cy, S * (1 + .2 * i / times.length), tn, 520, dl, 1, k, true);
+    btlDxDisc(cx, cy, S * .8, 'radial-gradient(circle,rgba(' + tn.hi + ',.95) 0,rgba(' + tn.rgb + ',.45) 38%,rgba(' + tn.rgb + ',0) 70%)', 33, [{ transform:'scale(.6)', opacity:0 }, { transform:'scale(.95)', opacity:k, offset:.14 }, { transform:'scale(1.25)', opacity:0 }], 380, dl);
+  });
+}
+// éclairs dans la carte (surcouche ov) : n éclairs du cœur vers le bord à chaque battement choisi
+function btlLdCardBolts(ov, W, H, times, T, col, w, per, d){
+  times.forEach((t, i) => {
+    for(let j = 0; j < per; j++){
+      const en = btlDxEdgePt(W, H), st = [btlDxR(.38, .62) * W, btlDxR(.38, .62) * H];
+      btlLdStrike(ov, true, st[0], st[1], en[0], en[1], w, col, d || 240, t * T + j * 40, 3);
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  0 · RÉACTEUR CRITIQUE
+// ---------------------------------------------------------------------------------------------------
+async function btlLdReactor(el, r, c){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, B = btlLdBoard(), BW = B.width, tn = BTL_DXT.fire, T = 900;
+  const lock = btlDxLock(r), ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T, .66, '14,4,2');
+  const tm = btlLdSchedule(7, .08, .84), alarm = btlLdAlarm('255,40,24', T, tm);
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  // cœur : la lueur claque à chaque battement et ne retombe plus jamais tout à fait
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .16) + 'px ' + Math.round(W * .04) + 'px rgba(255,92,40,.95),inset 0 0 ' + Math.round(W * .5) + 'px rgba(255,60,30,.5);opacity:0'),
+    btlLdBeatKf(tm, i => .1 + .55 * i / tm.length, i => .8 + .2 * i / tm.length, .13), { easing:'linear' });
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;background:radial-gradient(ellipse at 50% 46%,#fff 0,rgba(255,236,200,.92) 30%,rgba(255,140,60,.55) 62%,rgba(255,60,30,0) 100%);opacity:0'),
+    btlLdBeatKf(tm, i => Math.max(0, (i - 2) * .16), i => .25 + .6 * i / tm.length, .09), { easing:'linear' });
+  btlDxGlitch(ov, el, W, H, 3, 7, A);
+  // éclairs : deux fissures de feu à chaque battement, deux courent sur le cadre aux battements 4 et 6
+  const wb = W * .022, ec = 'rgb(255,172,80)';
+  btlLdCardBolts(ov, W, H, tm, T, ec, wb, 2, 250);
+  [tm[3], tm[5]].forEach(f => btlDxBoltEl(ov, true, 0, 0, W, H, btlDxPerimSvg(W, H, wb, ec), btlDxPerimSvg(W, H, wb, ec), W / 2, H / 2, 260, f * T, false, 3));
+  // la carte tremble de plus en plus fort, gonfle à chaque battement et s'arrête net avant la rupture (hit-stop)
+  const jit = btlLdShakeKf(tm, 5.2, .05, .1);
+  A(ov, jit, { easing:'linear' }); btlWA(el, jit, { duration:T, easing:'linear', fill:'both' });
+  btlLdBeat(cx, cy, W * 3.2, tn, tm, T);
+  btlDxDisc(cx, cy, W * 3, 'radial-gradient(circle,rgba(255,150,60,.55) 0,rgba(255,90,30,.2) 45%,rgba(255,60,20,0) 72%)', 27, [{ transform:'scale(.4)', opacity:0 }, { transform:'scale(.8)', opacity:.7, offset:.5 }, { transform:'scale(1.1)', opacity:1 }], T, 0, 'ease-in');
+  for(let i = 0; i < 18; i++){
+    const side = Math.floor(Math.random() * 4), t = Math.random();
+    const x = r.left + (side === 1 ? W : side === 3 ? 0 : t * W), y = r.top + (side === 0 ? 0 : side === 2 ? H : t * H);
+    btlDxSpk(x, y, [-Math.PI / 2, 0, Math.PI / 2, Math.PI][side] + btlDxR(-.9, .9), btlDxR(26, 70), { kind:i % 4 === 0 ? 'tracer' : i % 5 === 0 ? 'ember' : 'fine', c:Math.random() < .35 ? BTL_DX.cy2 : tn.w, tn:Math.random() < .3 ? BTL_DXT.ice : tn, g:20, d:btlDxR(340, 620), dl:tm[Math.floor(Math.random() * tm.length)] * T + btlDxR(0, 60) });
+  }
+  tm.forEach((t, i) => { if(i > 1) btlLdQuake(1 + i * .55, t * T); });
+  await btlSleep(T);
+  if(!btlLdAlive()) return;
+  // ---- rupture ----
+  const rb = { left:r.left - W * .5, top:r.top - H * .5, width:W * 2, height:H * 2 };
+  const lite = btlLdLiteOf(BTL_LD_M);
+  el.style.opacity = '0'; ov.remove(); btlDxLockOut(lock, tn); btlDxSpotOff(ov); btlLdFade(alarm, 900);
+  btlLdFlash('255,238,214', .88, 560);
+  btlDxBloom(cx, cy, W * 2.5, tn, 1.5); if(!lite) btlDxSpill(cx, cy, BW * .52, tn, 1.4, 1500);
+  btlLdRing(cx, cy, BW * 1.9, tn, 800, 0, 1, 1); if(!lite){ btlLdRing(cx, cy, BW * 1.7, BTL_DXT.laser, 1000, 130, .5, .85); btlLdRing(cx, cy, BW * 2.3, tn, 1200, 270, 1, .7); }
+  const sd = btlLdShards(el, r, tn, { d:btlDxR(1300, 1600) });
+  sd.list.forEach(s => {
+    const dist = W * btlDxR(1.5, 3.1) * s.pw, px = s.vx * dist, py = s.vy * dist * .85 - H * .5, z = btlDxR(120, 380) * s.pw, rx = btlDxR(-200, 200), ry = btlDxR(-200, 200), rz = btlDxR(-140, 140);
+    btlDxGone(btlWA(s.box, [
+      { transform:'translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)', opacity:1 },
+      { transform:'translate3d(' + px + 'px,' + py + 'px,' + z + 'px) rotateX(' + rx * .5 + 'deg) rotateY(' + ry * .5 + 'deg) rotateZ(' + rz * .5 + 'deg)', opacity:1, offset:.36, easing:'cubic-bezier(.35,0,.6,1)' },
+      { transform:'translate3d(' + px * 1.25 + 'px,' + (py + H * btlDxR(1.3, 2.4)) + 'px,' + z * .15 + 'px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)', opacity:0 }
+    ], { duration:s.d * 1.2, delay:btlDxR(0, 50), easing:'cubic-bezier(.08,.75,.3,1)', fill:'both' }), s.box);
+  });
+  btlAfter(() => sd.w3.remove(), 2200);
+  btlLdLater(() => btlLdDebris(r, lite ? 10 : 22, 1), 45);
+  btlLdLater(() => btlLdBoltBurst(cx, cy, BW * .52, 2.2, lite ? 5 : 8, ['rgb(255,206,130)', 'rgb(255,120,50)', 'rgb(111,240,255)'], 560, 0), 20);
+  btlLdLater(() => btlDxBurst(cx, cy, W * 3.3, H * 3.3, tn, lite ? 28 : 54, { tn2:BTL_DXT.laser, alt:.25, stars:10, k:1 }), 95);
+  btlLdLater(() => btlDxSmoke(cx, cy, W * 2.8, H * 2.8, lite ? 5 : 9, tn), 150);
+  btlDxScorch(rb, 'rgba(255,120,50,.6)', 2600);
+  btlShake(btlQ('#btlPlate'), 13); btlLdQuake(8, 240); btlLdQuake(4.5, 520); btlLdQuake(2.5, 800);
+  await btlSleep(1000);
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  1 · FRAPPE ORBITALE
+// ---------------------------------------------------------------------------------------------------
+async function btlLdOrbital(el, r, c){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, B = btlLdBoard(), BW = B.width, tn = BTL_DXT.ice, T = 820;
+  const lock = btlDxLock(r), ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T, .72, '2,7,16');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T, fill:'both' }, o));
+  // cible au sol : deux anneaux (un plein, un en pointillés) qui tournent en sens inverse, couchés sur le plateau
+  const gs = W * 3.1, gy = cy + H * .28;
+  const gw = btlDxEl('left:' + (cx - gs / 2) + 'px;top:' + (gy - gs / 2) + 'px;width:' + gs + 'px;height:' + gs + 'px;z-index:14;transform:scaleY(.4)');
+  fx.appendChild(gw);
+  const g1 = btlDxLayer(gw, 'inset:0;border-radius:50%;border:2px solid rgba(255,90,74,.95);box-shadow:0 0 9px rgba(255,60,50,.8),inset 0 0 14px rgba(255,60,50,.5);opacity:0;will-change:transform,opacity');
+  const g2 = btlDxLayer(gw, 'inset:14%;border-radius:50%;border:2px dashed rgba(255,170,150,.95);opacity:0;will-change:transform,opacity');
+  const g3 = btlDxLayer(gw, 'inset:0;opacity:0;background:linear-gradient(90deg,rgba(255,90,74,0) 4%,rgba(255,90,74,.95) 5%,rgba(255,90,74,0) 22%,rgba(255,90,74,0) 78%,rgba(255,90,74,.95) 95%,rgba(255,90,74,0) 96%) center/100% 2px no-repeat,linear-gradient(0deg,rgba(255,90,74,0) 4%,rgba(255,90,74,.95) 5%,rgba(255,90,74,0) 22%,rgba(255,90,74,0) 78%,rgba(255,90,74,.95) 95%,rgba(255,90,74,0) 96%) center/2px 100% no-repeat;will-change:opacity');
+  A(g1, [{ transform:'scale(1.7) rotate(0deg)', opacity:0 }, { transform:'scale(1) rotate(60deg)', opacity:1, offset:.22 }, { transform:'scale(.9) rotate(150deg)', opacity:1 }], { easing:'cubic-bezier(.2,.8,.3,1)' });
+  A(g2, [{ transform:'scale(1.9) rotate(0deg)', opacity:0 }, { transform:'scale(1) rotate(-90deg)', opacity:1, offset:.3 }, { transform:'scale(.82) rotate(-220deg)', opacity:1 }], { easing:'cubic-bezier(.2,.8,.3,1)' });
+  A(g3, [{ opacity:0 }, { opacity:1, offset:.2 }, { opacity:.5, offset:.3 }, { opacity:1, offset:.4 }, { opacity:.5, offset:.5 }, { opacity:1, offset:.6 }, { opacity:1 }]);
+  btlAfter(() => gw.remove(), T + 700);
+  // rayon de visée : un fil rouge qui descend du haut de l'écran vers le chef, puis clignote
+  const lw = 2, lh = Math.max(40, cy + 20);
+  const ld = btlDxEl('left:' + (cx - lw / 2) + 'px;top:-10px;width:' + lw + 'px;height:' + lh + 'px;z-index:33;background:linear-gradient(180deg,rgba(255,90,74,0),rgba(255,120,100,.95) 70%,#fff);box-shadow:0 0 6px rgba(255,70,60,.9);transform-origin:50% 0;opacity:0;will-change:transform,opacity');
+  fx.appendChild(ld);
+  btlDxGone(A(ld, [{ transform:'scaleY(0)', opacity:0 }, { transform:'scaleY(1)', opacity:1, offset:.2 }, { opacity:.4, offset:.3 }, { opacity:1, offset:.38 }, { opacity:.4, offset:.46 }, { opacity:1, offset:.54 }, { opacity:.5, offset:.62 }, { opacity:1, offset:.7 }, { opacity:1 }], { delay:T * .12, duration:T * .88 }), ld);
+  // charge sur la carte : la lueur claque à chaque battement, éclairs dans la carte, anneaux qui partent, tremblement qui monte
+  const tm = btlLdSchedule(6, .2, .86);
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .16) + 'px ' + Math.round(W * .03) + 'px rgba(111,240,255,.95),inset 0 0 ' + Math.round(W * .5) + 'px rgba(60,150,255,.5);opacity:0'),
+    btlLdBeatKf(tm, i => .15 + .55 * i / tm.length, i => .8 + .2 * i / tm.length, .12), { easing:'linear' });
+  btlDxGlitch(ov, el, W, H, 3, 6, A);
+  const wb = W * .022, ec = 'rgb(150,242,255)';
+  btlLdCardBolts(ov, W, H, tm, T, ec, wb, 2, 240);
+  btlDxBoltEl(ov, true, 0, 0, W, H, btlDxPerimSvg(W, H, wb, ec), btlDxPerimSvg(W, H, wb, ec), W / 2, H / 2, 260, tm[3] * T, false, 3);
+  const jit = btlLdShakeKf(tm, 3.4, .04, .1);
+  A(ov, jit, { easing:'linear' }); btlWA(el, jit, { duration:T, easing:'linear', fill:'both' });
+  btlLdBeat(cx, cy, W * 3.1, tn, tm, T);
+  for(let i = 0; i < 16; i++){
+    const x = r.left + btlDxR(.05, .95) * W, y = r.top + btlDxR(.4, 1) * H;
+    btlDxSpk(x, y, -Math.PI / 2 + btlDxR(-.7, .7), btlDxR(30, 80), { kind:i % 3 === 0 ? 'tracer' : 'fine', c:'#fff', tn:Math.random() < .3 ? BTL_DXT.fire : tn, g:-10, d:btlDxR(420, 760), dl:tm[Math.floor(Math.random() * tm.length)] * T + btlDxR(0, 60) });
+  }
+  tm.forEach((t, i) => { if(i > 1) btlLdQuake(1 + i * .5, t * T); });
+  await btlSleep(T);
+  if(!btlLdAlive()) return;
+  // ---- impact ----
+  const rb = { left:r.left - W * .5, top:r.top - H * .45, width:W * 2, height:H * 1.9 };
+  const colW = W * 1.75, colH = Math.max(80, gy + 6), D = 1150;
+  const lite = btlLdLiteOf(BTL_LD_M);
+  ov.remove(); btlDxLockOut(lock, tn); btlDxSpotOff(ov); ld.remove();
+  btlLdFlash('232,250,255', .85, 700);
+  // colonne de lumière : halo large, faisceau, cœur blanc ; elle descend d'un coup, vibre, puis s'effile
+  const mkCol = (w, bg, z, kf, o) => { const e = btlDxEl('left:' + (cx - w / 2) + 'px;top:-30px;width:' + w + 'px;height:' + (colH + 30) + 'px;z-index:' + z + ';background:' + bg + ';transform-origin:50% 0;opacity:0;will-change:transform,opacity;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 80%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(180deg,#000 0,#000 80%,rgba(0,0,0,0) 100%)'); fx.appendChild(e); btlDxGone(btlWA(e, kf, Object.assign({ duration:D, fill:'both', easing:'linear' }, o)), e); return e; };
+  const prof = (a, b) => 'linear-gradient(90deg,rgba(' + tn.rgb + ',0),rgba(' + tn.rgb + ',' + a + ') 20%,rgba(' + tn.hi + ',.95) 38%,#fff 50%,rgba(' + tn.hi + ',.95) 62%,rgba(' + tn.rgb + ',' + a + ') 80%,rgba(' + tn.rgb + ',0))';
+  mkCol(colW * 2.6, 'linear-gradient(90deg,rgba(' + tn.rgb + ',0),rgba(' + tn.rgb + ',.3) 40%,rgba(' + tn.rgb + ',.42) 50%,rgba(' + tn.rgb + ',.3) 60%,rgba(' + tn.rgb + ',0))', 29,
+    [{ transform:'scale(.2,0)', opacity:0 }, { transform:'scale(.7,1)', opacity:1, offset:.07 }, { transform:'scale(1,1)', opacity:.9, offset:.2 }, { transform:'scale(1.15,1)', opacity:.7, offset:.5 }, { transform:'scale(.6,1)', opacity:0 }]);
+  mkCol(colW, prof(.5), 33,
+    [{ transform:'scale(.15,0)', opacity:0 }, { transform:'scale(.45,1)', opacity:1, offset:.06, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:'scale(1.1,1)', opacity:1, offset:.14 }, { transform:'scale(.92,1)', opacity:1, offset:.24 }, { transform:'scale(1.06,1)', opacity:1, offset:.34 }, { transform:'scale(.95,1)', opacity:.95, offset:.46 }, { transform:'scale(1.0,1)', opacity:.9, offset:.58 }, { transform:'scale(.5,1)', opacity:.5, offset:.8 }, { transform:'scale(.04,1)', opacity:0 }]);
+  mkCol(colW * .38, 'linear-gradient(90deg,rgba(255,255,255,0),#fff 35%,#fff 65%,rgba(255,255,255,0))', 34,
+    [{ transform:'scale(.2,0)', opacity:0 }, { transform:'scale(1,1)', opacity:1, offset:.06 }, { transform:'scale(1.25,1)', opacity:1, offset:.2 }, { transform:'scale(.8,1)', opacity:1, offset:.34 }, { transform:'scale(1.15,1)', opacity:1, offset:.5 }, { transform:'scale(.7,1)', opacity:.6, offset:.74 }, { transform:'scale(.05,1)', opacity:0 }]);
+  // éclairs qui crépitent le long de la colonne
+  btlLdLater(() => { for(let i = 0; i < (lite ? 3 : 6); i++){
+    const x1 = cx + btlDxR(-colW * .55, colW * .55), y1 = btlDxR(.04, .5) * colH, x2 = cx + btlDxR(-W * .5, W * .5), y2 = gy + btlDxR(-H * .2, H * .15);
+    btlLdBolt(x1, y1, x2, y2, 2.2, i % 2 ? 'rgb(150,240,255)' : 'rgb(255,255,255)', 380, 40 + i * 120);
+  } }, 25);
+  // point d'impact : lueur couchée sur le plateau
+  { const gw2 = BW * .95, gh2 = gw2 * .4, ge = btlDxEl('left:' + (cx - gw2 / 2) + 'px;top:' + (gy - gh2 / 2) + 'px;width:' + gw2 + 'px;height:' + gh2 + 'px;border-radius:50%;z-index:32;opacity:0;will-change:transform,opacity;background:radial-gradient(ellipse,#fff 0,rgba(' + tn.hi + ',.85) 22%,rgba(' + tn.rgb + ',.4) 50%,rgba(' + tn.rgb + ',0) 72%)');
+    fx.appendChild(ge); btlDxGone(btlWA(ge, [{ transform:'scale(.15)', opacity:0 }, { transform:'scale(.8)', opacity:1, offset:.1 }, { transform:'scale(1)', opacity:.8, offset:.45 }, { transform:'scale(1.1)', opacity:0 }], { duration:D, easing:'ease-out', fill:'both' }), ge); }
+  btlDxBloom(cx, gy - H * .2, W * 2.6, tn, 1.5); if(!lite) btlDxSpill(cx, cy, BW * .5, tn, 1.4, 1500);
+  btlLdRing(cx, gy, BW * 1.8, tn, 850, 0, .4, 1); if(!lite){ btlLdRing(cx, gy, BW * 2.1, tn, 1050, 140, .4, .85); btlLdRing(cx, gy, BW * 2.5, BTL_DXT.fire, 1250, 290, .4, .6); }
+  // la carte est soulevée dans le faisceau : plaques qui montent en tournant lentement, rougeoient puis se dissolvent
+  el.style.opacity = '0';
+  const sd = btlLdShards(el, r, tn, { d:btlDxR(1250, 1500), lx:50, ly:100 });
+  sd.list.forEach((s, i) => {
+    const px = s.vx * W * btlDxR(.25, .8), up = H * btlDxR(2.2, 5.2) * s.pw, z = btlDxR(60, 200), rx = btlDxR(-120, 120), ry = btlDxR(-120, 120), rz = btlDxR(-80, 80);
+    btlDxGone(btlWA(s.box, [
+      { transform:'translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)', opacity:1 },
+      { transform:'translate3d(' + px * .5 + 'px,' + (-up * .28) + 'px,' + z * .4 + 'px) rotateX(' + rx * .3 + 'deg) rotateY(' + ry * .3 + 'deg) rotateZ(' + rz * .3 + 'deg)', opacity:1, offset:.22, easing:'cubic-bezier(.3,.1,.5,1)' },
+      { transform:'translate3d(' + px + 'px,' + (-up) + 'px,' + z + 'px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)', opacity:0 }
+    ], { duration:D * .95, delay:btlDxR(30, 120) + i * 8, easing:'cubic-bezier(.4,0,.6,1)', fill:'both' }), s.box);
+  });
+  btlAfter(() => sd.w3.remove(), 2200);
+  // étincelles et traînées qui montent avec le faisceau, retombent en braises
+  btlLdLater(() => btlDxBurst(cx, cy, W * 3, H * 3, tn, lite ? 26 : 50, { pt:() => [cx + btlDxR(-W * .6, W * .6), cy + btlDxR(-H * .1, H * .4)], dir:() => -Math.PI / 2 + btlDxR(-1.15, 1.15), tn2:BTL_DXT.fire, alt:.25, stars:10 }), 70);
+  btlLdLater(() => btlLdDebris(r, lite ? 6 : 14, .8), 40);
+  btlLdLater(() => btlDxSmoke(cx, gy - H * .1, W * 2.8, H * 2.5, lite ? 5 : 9, tn), 140);
+  btlDxScorch(rb, 'rgba(70,200,255,.5)', 2700);
+  btlShake(btlQ('#btlPlate'), 13); btlLdQuake(8, 260); btlLdQuake(5, 560); btlLdQuake(2.5, 880);
+  await btlSleep(1050);
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  2 · SINGULARITÉ
+// ---------------------------------------------------------------------------------------------------
+// trou noir : halo, anneau d'accrétion (disque couché qui tourne, une moitié passe derrière, l'autre devant), cœur noir bordé de lumière
+function btlLdHole(cx, cy, S, tn, grow){
+  const fx = btlQ('#btlFx'), R = tn.rgb, HI = tn.hi;
+  const grp = btlDxEl('left:' + (cx - S / 2) + 'px;top:' + (cy - S / 2) + 'px;width:' + S + 'px;height:' + S + 'px;z-index:30;transform:scale(0);will-change:transform');
+  const ring = (clip) => {
+    const w = document.createElement('i'); w.style.cssText = 'position:absolute;inset:0;transform:rotate(-18deg) scaleY(.55)' + (clip ? ';clip-path:inset(50% 0 0 0)' : '');
+    const m = 'radial-gradient(circle,transparent 30%,#000 40%,#000 54%,transparent 64%)';
+    const i = document.createElement('i'); i.style.cssText = 'position:absolute;inset:0;border-radius:50%;will-change:transform;background:conic-gradient(from 0deg,rgba(' + R + ',.55) 0deg,rgba(' + HI + ',.95) 40deg,#fff 72deg,rgba(' + HI + ',.85) 130deg,rgba(' + R + ',.5) 200deg,rgba(' + HI + ',.75) 270deg,rgba(' + R + ',.55) 360deg);-webkit-mask-image:' + m + ';mask-image:' + m;
+    w.appendChild(i); grp.appendChild(w); btlWA(i, [{ transform:'rotate(0deg)' }, { transform:'rotate(360deg)' }], { duration:700, iterations:Infinity, easing:'linear' }); return w;
+  };
+  const glow = document.createElement('i'); glow.style.cssText = 'position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(' + R + ',0) 0,rgba(' + R + ',0) 22%,rgba(' + R + ',.55) 30%,rgba(' + R + ',.18) 46%,rgba(' + R + ',0) 64%)'; grp.appendChild(glow);
+  ring(false);
+  const core = document.createElement('i'); core.style.cssText = 'position:absolute;left:32%;top:32%;width:36%;height:36%;border-radius:50%;background:radial-gradient(circle,#000 0,#000 62%,rgba(8,0,18,.96) 70%,rgba(' + R + ',.95) 84%,rgba(' + HI + ',.0) 100%);box-shadow:0 0 14px 2px rgba(' + R + ',.8)'; grp.appendChild(core);
+  ring(true);
+  fx.appendChild(grp);
+  const a = btlWA(grp, [{ transform:'scale(0)' }, { transform:'scale(1)' }], { duration:grow, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' });
+  return { el:grp, grow:a, collapse(d){ btlDxGone(btlWA(grp, [{ transform:'scale(1)' }, { transform:'scale(1.12)', offset:.3 }, { transform:'scale(.03)' }], { duration:d, easing:'cubic-bezier(.5,0,.9,.4)', fill:'both' }), grp); } };
+}
+// traits de lumière qui convergent vers le cœur depuis tout le plateau
+function btlLdInflow(cx, cy, Rmin, Rmax, n, tn, T){
+  const fx = btlQ('#btlFx');
+  for(let i = 0; i < n; i++){
+    const a = btlDxR(0, Math.PI * 2), rad = btlDxR(Rmin, Rmax), x0 = Math.cos(a) * rad, y0 = Math.sin(a) * rad * .9, ang = Math.atan2(-y0, -x0), len = btlDxR(46, 110);
+    const e = btlDxEl('left:' + (cx - len) + 'px;top:' + (cy - 1) + 'px;width:' + len + 'px;height:2px;border-radius:2px;z-index:31;opacity:0;will-change:transform,opacity;transform-origin:100% 50%;background:linear-gradient(90deg,rgba(' + tn.rgb + ',0),rgba(' + tn.hi + ',.9) 70%,#fff)');
+    fx.appendChild(e);
+    const d = btlDxR(380, 560), dl = btlDxR(0, T - d);
+    btlDxGone(btlWA(e, [
+      { transform:'translate(' + x0 + 'px,' + y0 + 'px) rotate(' + ang + 'rad) scaleX(1)', opacity:0 },
+      { transform:'translate(' + x0 * .72 + 'px,' + y0 * .72 + 'px) rotate(' + ang + 'rad) scaleX(1.1)', opacity:.95, offset:.25 },
+      { transform:'translate(' + x0 * .04 + 'px,' + y0 * .04 + 'px) rotate(' + ang + 'rad) scaleX(.25)', opacity:0 }
+    ], { duration:d, delay:dl, easing:'cubic-bezier(.5,0,.9,.4)', fill:'both' }), e);
+  }
+}
+async function btlLdSingularity(el, r, c){
+  const fx = btlQ('#btlFx'), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2, B = btlLdBoard(), BW = B.width, tn = BTL_DXT.void, T = 1150;
+  const lock = btlDxLock(r), ov = btlDxOv(r);
+  ov._spot = btlDxSpot(r, T * .5, .8, '6,2,14');
+  const A = (e, kf, o) => btlWA(e, kf, Object.assign({ duration:T * .2, fill:'both' }, o));
+  // amorce : trois battements rapprochés, la carte se charge de violet, vibre et gonfle à chaque coup
+  const t1 = btlLdSchedule(3, .12, .8), T1 = T * .2;
+  A(btlDxLayer(ov, 'inset:0;border-radius:7px;box-shadow:inset 0 0 ' + Math.round(W * .16) + 'px ' + Math.round(W * .04) + 'px rgba(168,96,255,.95),inset 0 0 ' + Math.round(W * .5) + 'px rgba(110,50,220,.55);opacity:0'),
+    btlLdBeatKf(t1, i => .2 + .3 * i / 3, i => .8 + .2 * i / 3, .22), { easing:'linear' });
+  btlDxGlitch(ov, el, W, H, 3, 8, A);
+  const jit = btlLdShakeKf(t1, 3.2, .05, .1);
+  A(ov, jit, { easing:'linear' }); btlWA(el, jit, { duration:T1, easing:'linear', fill:'both' });
+  btlLdBeat(cx, cy, W * 3, tn, t1, T1);
+  btlLdCardBolts(ov, W, H, t1, T1, 'rgb(214,160,255)', W * .022, 1, 200);
+  btlLdQuake(2, 0);
+  await btlSleep(T * .2);
+  if(!btlLdAlive()) return;
+  // la carte se disloque : les plaques se décollent, puis spiralent vers le cœur en accélérant
+  el.style.opacity = '0'; ov.remove();
+  const hole = btlLdHole(cx, cy, W * 2.3, tn, T * .62);
+  const sd = btlLdShards(el, r, tn, { d:btlDxR(1200, 1500) }), TT = T * .78;
+  sd.list.forEach(s => {
+    const out = W * btlDxR(.28, .62), ox = s.vx * out, oy = s.vy * out * .9 - H * .12, sp = btlDxR(1.1, 1.9) * (Math.random() < .5 ? -1 : 1);
+    const ang = Math.atan2(s.vy, s.vx), rad = out * 1.15, mid = ang + sp * 1.4, ex = Math.cos(mid) * rad * .6, ey = Math.sin(mid) * rad * .6;
+    const rx = btlDxR(-160, 160), ry = btlDxR(-160, 160), rz = btlDxR(-240, 240) + sp * 160;
+    btlDxGone(btlWA(s.box, [
+      { transform:'translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)', opacity:1 },
+      { transform:'translate3d(' + ox + 'px,' + oy + 'px,' + btlDxR(40, 140) + 'px) rotateX(' + rx * .3 + 'deg) rotateY(' + ry * .3 + 'deg) rotateZ(' + rz * .2 + 'deg) scale(1)', opacity:1, offset:.24, easing:'cubic-bezier(.2,.7,.4,1)' },
+      { transform:'translate3d(' + ex + 'px,' + ey + 'px,40px) rotateX(' + rx * .7 + 'deg) rotateY(' + ry * .7 + 'deg) rotateZ(' + rz * .65 + 'deg) scale(.55,.9)', opacity:1, offset:.7, easing:'cubic-bezier(.55,0,.9,.5)' },
+      { transform:'translate3d(0,0,0) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg) scale(.04,.5)', opacity:0 }
+    ], { duration:TT, delay:btlDxR(0, 120), easing:'linear', fill:'both' }), s.box);
+  });
+  btlAfter(() => sd.w3.remove(), T * 1.2);
+  btlLdInflow(cx, cy, BW * .35, BW * .95, 26, tn, T * .74);
+  // l'étau se resserre : le plateau s'assombrit, les poussières violettes sont aspirées
+  for(let i = 0; i < 12; i++){
+    const a = btlDxR(0, Math.PI * 2), rad = btlDxR(W * 1, W * 2.2);
+    btlDxSpk(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad * .8, a + Math.PI, rad * .95, { kind:'fine', c:'#fff', tn, g:0, d:btlDxR(360, 560), dl:btlDxR(.1, .8) * T });
+  }
+  // gravité : cinq battements qui s'accélèrent, chacun resserre un anneau sur le trou noir et le fait crépiter
+  btlLdSchedule(5, .26, .78).forEach((t, i) => {
+    btlLdCharge(cx, cy, W * (3.8 - i * .15), tn, 360, t * T);
+    btlLdRing(cx, cy, W * 2.4, tn, 420, t * T + 120, 1, .6 + .08 * i, true);
+    if(i >= 1) for(let j = 0; j < 2; j++){ const a = btlDxR(0, Math.PI * 2), r0 = W * .45, l = W * (1 + .35 * i) * btlDxR(.8, 1.1); btlLdStrike(fx, false, cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * l, cy + Math.sin(a) * l, 1.8, 'rgb(214,160,255)', 300, t * T + j * 50, 35); }
+    if(i >= 1) btlLdQuake(1 + i * .6, t * T);
+  });
+  await btlSleep(T * .62);
+  if(!btlLdAlive()) return;
+  // tout se tait une fraction de seconde, le trou noir se contracte...
+  btlDxLockOut(lock, tn); btlDxSpotOff(ov);
+  hole.collapse(T * .14); btlLdCharge(cx, cy, W * 4, tn, T * .14, 0);
+  await btlSleep(T * .16);
+  if(!btlLdAlive()) return;
+  // ---- effondrement : onde de choc ----
+  const rb = { left:r.left - W * .5, top:r.top - H * .5, width:W * 2, height:H * 2 };
+  const lite = btlLdLiteOf(BTL_LD_M);
+  btlLdFlash('242,230,255', .9, 560);
+  btlDxBloom(cx, cy, W * 2.7, tn, 1.6); if(!lite) btlDxSpill(cx, cy, BW * .55, tn, 1.5, 1600);
+  btlLdRing(cx, cy, BW * 2, tn, 850, 0, 1, 1); if(!lite){ btlLdRing(cx, cy, BW * 1.5, BTL_DXT.ice, 1050, 130, .55, .85); btlLdRing(cx, cy, BW * 2.5, tn, 1250, 280, 1, .7); }
+  // jets polaires : deux colonnes de lumière, vers le haut et vers le bas
+  [-1, 1].forEach(sg => {
+    const jh = BW * .95, jw = W * .34, e = btlDxEl('left:' + (cx - jw / 2) + 'px;top:' + (sg < 0 ? cy - jh : cy) + 'px;width:' + jw + 'px;height:' + jh + 'px;z-index:33;opacity:0;will-change:transform,opacity;transform-origin:50% ' + (sg < 0 ? '100%' : '0') + ';background:linear-gradient(90deg,rgba(' + tn.rgb + ',0),rgba(' + tn.hi + ',.9) 30%,#fff 50%,rgba(' + tn.hi + ',.9) 70%,rgba(' + tn.rgb + ',0)),linear-gradient(' + (sg < 0 ? '0deg' : '180deg') + ',#fff,rgba(255,255,255,0))');
+    e.style.backgroundBlendMode = 'normal'; fx.appendChild(e);
+    btlDxGone(btlWA(e, [{ transform:'scale(.3,0)', opacity:0 }, { transform:'scale(1,1)', opacity:1, offset:.14, easing:'cubic-bezier(.1,.8,.3,1)' }, { transform:'scale(.7,1)', opacity:.7, offset:.4 }, { transform:'scale(.1,1.04)', opacity:0 }], { duration:760, fill:'both', easing:'ease-out' }), e);
+  });
+  btlLdLater(() => btlLdBoltBurst(cx, cy, BW * .56, 2.2, lite ? 5 : 8, ['rgb(214,160,255)', 'rgb(255,255,255)', 'rgb(111,240,255)'], 560, 0), 20);
+  btlLdLater(() => btlDxBurst(cx, cy, W * 3.3, H * 3.3, tn, lite ? 28 : 52, { tn2:BTL_DXT.ice, alt:.3, stars:10 }), 95);
+  btlLdLater(() => btlLdDebris(r, lite ? 6 : 12, 1.1), 45);
+  btlLdLater(() => btlDxSmoke(cx, cy, W * 2.8, H * 2.8, lite ? 5 : 9, tn), 150);
+  btlDxScorch(rb, 'rgba(168,96,255,.55)', 2600);
+  btlShake(btlQ('#btlPlate'), 13); btlLdQuake(8, 240); btlLdQuake(4.5, 520); btlLdQuake(2.5, 800);
+  await btlSleep(1000);
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  tirage du style : jamais deux fois le même d'affilée ; window.__ldv = 0..2 impose un style (tests)
+// ---------------------------------------------------------------------------------------------------
+const BTL_LDV = [{ run:btlLdReactor }, { run:btlLdOrbital }, { run:btlLdSingularity }];
+let BTL_LD_LAST = -1;
+function btlLdPick(){
+  let k = (typeof window.__ldv === 'number') ? window.__ldv : -1;
+  if(k < 0 || k >= BTL_LDV.length){ do{ k = Math.floor(Math.random() * BTL_LDV.length); }while(k === BTL_LD_LAST && BTL_LDV.length > 1); }
+  BTL_LD_LAST = k; return k;
+}
+async function btlLeaderDeath(c){
+  const el = btlUnitEl(c), r = btlRect(el);
+  try{
+    if(!el || !(r.width > 8)) return;
+    BTL_LD_M = btlLdMon();
+    await BTL_LDV[btlLdPick()].run(el, r, c);
+  } finally {
+    if(BTL_LD_M) BTL_LD_M.on = false;
+    try{ const s = btlSlotOf(c); if(s) s.innerHTML = ''; }catch(_){}
+  }
+}
+
 async function btlFinish(winner){
   if(BTL.over) return;
   if(pvpOn()) return pvpLocalEnd(winner);   // PvP : seule la fin annoncée par le serveur compte
