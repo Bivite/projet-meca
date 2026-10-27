@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.55</title>
+<title>Projet MECA V0.05.56</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8977,7 +8977,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.55</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.56</b></div>
   </div>
 
     </div>
@@ -9828,9 +9828,19 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.55';
+var BUILD_VERSION = 'V0.05.56';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.56', items:[
+    'TIRAGE : si le téléphone était en veille au moment du renouvellement de l\'offre, le compte à rebours restait bloqué à 0:00 ; la nouvelle offre est maintenant demandée automatiquement.',
+    'COMBAT : quitter un combat pendant la résolution des actions laissait tourner la boucle du combat fermé (erreur en console) ; elle s\'arrête maintenant proprement.',
+    'BATAILLE (PvP) : un joueur pouvait voir « AUCUN ADVERSAIRE TROUVÉ » au moment exact où son match était créé (et perdre ensuite par déconnexion) ; le jeu vérifie maintenant auprès du serveur et rejoint le match.',
+    'BATAILLE (PvP) : la fenêtre de victoire n\'affichait jamais l\'or et l\'XP gagnés ni la série de victoires (la demande au serveur était annulée au bout de 8 millisecondes au lieu de 8 secondes) ; les gains étaient pourtant bien versés.',
+    'BATAILLE (PvP) : un module ou une Tech utilisé juste après une autre action (pendant son animation) n\'était joué que sur l\'écran du joueur, puis « annulé » par le serveur (mana qui saute) ; il passe maintenant toujours par le serveur.',
+    'BATAILLE (PvP) : un geste fait pendant l\'animation de l\'action précédente (par exemple FIN DE TOUR juste après une attaque) était ignoré et devait être refait ; il est maintenant pris en compte dès la fin de l\'animation.',
+    'PVP AMIS : si la liste d\'amis était déjà en train de se mettre à jour, accepter ou refuser une demande ne la relisait pas (le nouvel ami pouvait apparaître avec quelques secondes de retard) ; elle est maintenant relue juste après.',
+    'PVP AMIS : un joueur qui n\'avait jamais ouvert sa fiche JOUEUR n\'apparaissait pas dans la liste de ses amis (et ne pouvait pas être invité) ; son code ami est maintenant créé automatiquement.',
+  ] },
   { v:'V0.05.55', items:[
     'COMBAT : nouvelles destructions du chef d\'escouade, à l\'échelle de tout le plateau. 3 styles tirés au hasard (jamais deux fois le même d\'affilée) : RÉACTEUR CRITIQUE (le cœur surchauffe, fissures de feu, alarme, puis explosion qui balaie le plateau), FRAPPE ORBITALE (cible verrouillée au sol, faisceau venu du ciel, la carte est soulevée et vaporisée), SINGULARITÉ (la carte se disloque, ses éclats sont aspirés par un trou noir qui s\'effondre en onde de choc).',
   ] },
@@ -13645,8 +13655,9 @@ function formatCountdown(ms){
   return m + ':' + String(s).padStart(2, '0');
 }
 function tickFabTimer(){
-  const el = document.getElementById('fabTimerVal');
-  if(el) el.textContent = formatCountdown(fabResetAt - econNow());
+  const el = document.getElementById('fabTimerVal'), left = fabResetAt - econNow();
+  if(el) el.textContent = formatCountdown(left);
+  if(ECON.ready && fabResetAt > 0 && left < -2000 && !document.hidden) econSyncSoon(0);   // V0.05.56 : échéance passée sans renouvellement (minuteur gelé en veille) -> nouvelle offre demandée au serveur
 }
 // tickFabTimer() est aussi appelée depuis heartbeat1s() (voir plus bas) — même raison que ci-dessus.
 rollFabriqueOffer();
@@ -20466,7 +20477,9 @@ async function pvpQueueOpen(d){
     const st = r.body && r.body.status;
     if(st === 'matched'){ PVPQ = null; pvpQueueShow(false); return await pvpStartMatch(r.body.match_id, Q.d, Q.deck); }
     if(st === 'expired' || st === 'none' || Date.now() - Q.t0 >= PVP_QUEUE_MS){
-      pvpDbgErr('queue', 0, 'fin d\'attente st=' + st + ' age=' + (Date.now() - Q.t0)); PVPQ = null; await pvpSend('queue_leave', {});
+      pvpDbgErr('queue', 0, 'fin d\'attente st=' + st + ' age=' + (Date.now() - Q.t0)); PVPQ = null;
+      const lv = await pvpSend('queue_leave', {});
+      if(lv.body && lv.body.status === 'matched' && lv.body.match_id){ pvpQueueShow(false); return await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); }   // V0.05.56 : le match a été créé pendant la relecture de la file
       pvpQueueShow(false); showToast('AUCUN ADVERSAIRE TROUVÉ'); return false;
     }
     const left = Math.max(1, Math.min(20, Math.floor((PVP_QUEUE_MS - (Date.now() - Q.t0)) / 1000))), w = PVP_WAIT ? left : 0;
@@ -20474,7 +20487,7 @@ async function pvpQueueOpen(d){
     r = await pvpSend('queue_poll', { wait:w }, { timeout:(w + 12) * 1000, signal:Q.ctl.signal });
     if(Q.cancelled) return false;
     if(r.status !== 200 || !r.body || !r.body.ok){
-      if(++errs > 6){ PVPQ = null; pvpQueueShow(false); showToast('CONNEXION PERDUE'); await pvpSend('queue_leave', {}); return false; }
+      if(++errs > 6){ PVPQ = null; const lv = await pvpSend('queue_leave', {}); pvpQueueShow(false); if(lv.body && lv.body.status === 'matched' && lv.body.match_id) return await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); showToast('CONNEXION PERDUE'); return false; }
       await pvpSleep(1200); r = { status:200, body:{ ok:true, status:'waiting' } };
     } else errs = 0;
   }
@@ -20746,8 +20759,8 @@ async function pvpReplayAction(ev){
     let c, rect, el;
     if(side === 'p'){
       c = S.hand[a.hi]; if(!c || c.name !== sc.n) c = S.hand.find(x => x.name === sc.n) || pvpReal('p', sc.n, false);
-      const pp = P.pendingPlay; P.pendingPlay = null;
-      if(pp && pp.c === c){ rect = pp.rect; el = pp.g; }
+      const pp = P.pend && P.pend.get(c);
+      if(pp){ P.pend.delete(c); rect = pp.rect; el = pp.g; }
       else {
         const he = btlQ('#btlHand [data-uid="' + c.uid + '"]'); rect = he ? btlRect(he) : btlRect(btlQ('#btlHand'));
         el = document.createElement('div'); el.className = 'btl-ghost'; el.style.width = rect.width + 'px'; el.style.height = rect.height + 'px'; el.innerHTML = btlBigHtml(c); btlQ('#btlFx').appendChild(el);
@@ -20772,13 +20785,13 @@ async function pvpReplayAction(ev){
     btlClearPlan(c);
   } else if(a.t === 'mod'){
     const t = a.tgt ? pvpCardByRef(a.tgt) : null;
-    await btlModuleUse(side, t || undefined); btlModPaint(); await btlSleep(400);
+    await btlModuleUse(side, t || undefined, true); btlModPaint(); await btlSleep(400);
   } else if(a.t === 'tech'){   // V0.05.08 : le nom de la Tech jouée est donné par le serveur (a.n) : l'adversaire la dévoile
     let c, rect, el;
     if(side === 'p'){
       c = S.hand[a.hi]; if(!c || c.name !== a.n) c = S.hand.find(x => x.name === a.n) || pvpReal('p', a.n, false);
-      const pp = P.pendingTech; P.pendingTech = null;
-      if(pp && pp.c === c){ rect = pp.rect; el = pp.g; }
+      const pp = P.pend && P.pend.get(c);
+      if(pp){ P.pend.delete(c); rect = pp.rect; el = pp.g; }
       else {
         const he = btlQ('#btlHand [data-uid="' + c.uid + '"]'); rect = he ? btlRect(he) : btlRect(btlQ('#btlHand'));
         el = document.createElement('div'); el.className = 'btl-ghost'; el.style.width = rect.width + 'px'; el.style.height = rect.height + 'px'; el.innerHTML = btlBigHtml(c); btlQ('#btlFx').appendChild(el);
@@ -20792,7 +20805,7 @@ async function pvpReplayAction(ev){
       el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
     }
     const t = a.tgt ? pvpCardByRef(a.tgt) : null;
-    const ok = await btlTechUse(side, c, t || undefined, rect, el);
+    const ok = await btlTechUse(side, c, t || undefined, rect, el, true);
     if(!ok){ pvpWarn('Tech non jouée ' + a.n); if(el && el.parentNode) el.remove(); }
     await btlSleep(280);
   }
@@ -20838,7 +20851,10 @@ function pvpLock(on){
   else { if(BTL.phase === 'wait') BTL.phase = PVPC.prevPhase === 'wait' ? 'plan' : (PVPC.prevPhase || 'plan'); if(BTL.side === 'p' && BTL.phase === 'plan' && !BTL.over) btlSetEnd(true); }
 }
 async function pvpAct(action){
-  const P = PVPC; if(!P || P.sending || P.replayBusy || P.q.length || BTL.over || BTL.phase !== 'plan' || BTL.side !== 'p') return false;
+  const P = PVPC; if(!P) return false;
+  for(let k = 0; k < 40 && P === PVPC && (P.sending || P.replayBusy || P.q.length) && BTL && !BTL.over && !BTL.abort && BTL.side === 'p'; k++) await pvpSleep(150);   // V0.05.56 : geste fait pendant un rejeu -> attendu, plus ignoré
+  if(P !== PVPC || !BTL || P.sending || P.replayBusy || P.q.length || BTL.over || BTL.phase !== 'plan' || BTL.side !== 'p') return false;
+  if(typeof action === 'function'){ action = action(); if(!action) return false; }   // V0.05.56 : action construite après l'attente (indice de la carte en main à jour)
   P.sending = true; pvpLock(true);
   let ok = false;
   try{
@@ -20867,11 +20883,11 @@ async function pvpAct(action){
   }
 }
 async function pvpPlayIntent(c, si, rect, g){
-  const P = PVPC, hi = BTL.S.p.hand.indexOf(c);
-  P.pendingPlay = { c, si, rect, g };
-  const ok = hi >= 0 && await pvpAct({ t:'play', hi, slot:si });
+  const P = PVPC;
+  (P.pend = P.pend || new Map()).set(c, { c, si, rect, g });
+  const ok = BTL.S.p.hand.indexOf(c) >= 0 && await pvpAct(() => { const hi = BTL.S.p.hand.indexOf(c); return hi >= 0 ? { t:'play', hi, slot:si } : null; });
   if(!ok){
-    P.pendingPlay = null;
+    P.pend.delete(c);
     const hc = btlQ('#btlHand [data-uid="' + c.uid + '"]'), to = hc ? btlRect(hc) : rect;
     try{ await btlAnim(g, [{ transform:'none' }, { transform:btlXf(rect, to) }], { duration:260, easing:'cubic-bezier(.3,.8,.3,1)' }); }catch(_){}
     g.remove(); if(hc) hc.style.opacity = '';
@@ -20884,10 +20900,10 @@ function pvpPlanIntent(c, plan){
 function pvpUnplanIntent(c){ return pvpAct({ t:'unplan', slot:c.slot }); }
 function pvpModIntent(pre){ return pvpAct({ t:'mod', tgt:pre ? pvpRefOf(pre) : null }); }
 async function pvpTechIntent(c, pre, rect, g){   // V0.05.08 : Tech jouée en PvP -> action { t:'tech', hi, tgt }
-  const P = PVPC, hi = BTL.S.p.hand.indexOf(c);
-  P.pendingTech = { c, rect, g };
-  const ok = hi >= 0 && await pvpAct({ t:'tech', hi, tgt:pre ? pvpRefOf(pre) : null });
-  if(!ok) P.pendingTech = null;
+  const P = PVPC;
+  (P.pend = P.pend || new Map()).set(c, { c, rect, g });
+  const ok = BTL.S.p.hand.indexOf(c) >= 0 && await pvpAct(() => { const hi = BTL.S.p.hand.indexOf(c); return hi >= 0 ? { t:'tech', hi, tgt:pre ? pvpRefOf(pre) : null } : null; });
+  if(!ok) P.pend.delete(c);
   return ok;
 }
 async function pvpEndIntent(){
@@ -20906,7 +20922,7 @@ const PVP_WHY = {
 async function pvpFetchReward(mid){
   for(let i = 0; i < 3; i++){
     try{
-      const r = await pvpSend('match_reward', { match_id:mid }, { timeout:8 });
+      const r = await pvpSend('match_reward', { match_id:mid }, { timeout:8000 });   // V0.05.56 : 8 s (c'était 8 ms : requête toujours annulée)
       if(r.status === 200 && r.body && r.body.ok){
         if(r.body.skipped) return null;
         if(r.body.state) econAdopt(r.body, { render:'none', op:'pvp_result' });
@@ -22869,7 +22885,8 @@ async function tutoFinish(winner){
   showRewardModal(won ? 'TUTORIEL TERMINÉ' : '', items, { resultType:won ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
 }
 async function btlRun(){
-  if(pvpOn()) return pvpRun();   // PvP : le serveur mène la partie
+  if(pvpOn()) return pvpRun();
+  const B0 = BTL;   // V0.05.56 : la boucle s'arrête si ce combat est quitté (BTL remis à zéro ou remplacé par un autre combat)   // PvP : le serveur mène la partie
   if(tutoOn()){ if(typeof btlVsIntro === 'function') await btlVsIntro(); await tutoIntro(); } else if(typeof btlVsIntro === 'function') await btlVsIntro();   // V0.04.90 : écran VS (Bataille + Défis ; adversaire de défi = nom de la carte du défi)
   if(!BTL || BTL.abort) return;
   await btlSleep(250);
@@ -22885,9 +22902,9 @@ async function btlRun(){
   await btlSleep(250);
   if(tutoOn()) await tutoAfterDeal();
   let side = BTL.first;
-  while(!BTL.over){
+  while(BTL === B0 && !BTL.over && !BTL.abort){
     await btlTurn(side);
-    if(BTL.over) break;
+    if(BTL !== B0 || BTL.over || BTL.abort) break;
     // fin de partie : manche 60, OU plus aucune carte nulle part (pioches, mains et terrain vides des deux côtés : plus rien ne peut arriver, inutile de faire tourner 30 tours à vide) -> le chef le plus en forme gagne
     const dry = ['p', 'o'].every(k => { const Q = BTL.S[k]; return !Q.pile.length && !Q.hand.length && !Q.slots.some(c => c && c.hp > 0); });
     if(BTL.turn >= 60 || dry){ const pp = BTL.S.p.leader.hp / BTL.S.p.leader.maxHp, oo = BTL.S.o.leader.hp / BTL.S.o.leader.maxHp; await btlFinish(pp >= oo ? 'p' : 'o'); break; }
@@ -23287,7 +23304,9 @@ async function btlTurn(side){
   if(BTL.over || BTL.abort) return;
   BTL.phase = 'resolve'; btlCancelInteractions(); btlSetEnd(false); btlRefreshCan();
   await btlResolve(side);
+  if(!BTL || BTL.abort) return;   // V0.05.56 : combat quitté pendant la résolution
   if(!BTL.over){ await btlPassifs(side, 'fin'); await btlUltEnd(side); }
+  if(!BTL || BTL.abort) return;
   if(!BTL.over){ BTL.mana[side] = 0; btlRenderMana(); }
 }
 async function btlPlayerPhase(){
@@ -24022,7 +24041,7 @@ async function btlResolve(side){
   BTL.ord = {}; order.forEach((c, i) => { BTL.ord[c.uid] = i + 1; });   // V0.05.15 : numéros figés pendant la résolution
   for(const c of order){
     if(!c.plan || !btlOnField(c)) continue;
-    try{ await btlDoAction(c); }catch(e){ (window.__btlErrs = window.__btlErrs || []).push(String(e && e.stack || e).slice(0, 400)); try{ console.error('btlDoAction', e); }catch(_){} btlHealUnits(); }   // V0.05.14
+    try{ await btlDoAction(c); }catch(e){ if(e === 'abort' || !BTL || BTL.abort) return; (window.__btlErrs = window.__btlErrs || []).push(String(e && e.stack || e).slice(0, 400)); try{ console.error('btlDoAction', e); }catch(_){} btlHealUnits(); }   // V0.05.14
     if(!BTL || BTL.over) return;
     await btlSleep(560);
   }
@@ -30046,8 +30065,8 @@ function btlModCanUse(side){
   if(side === 'p' && BTL.phase !== 'plan') return false;
   return BTL.mana[side] >= btlModCost(m.t) && BTL_MODULES[m.name].cands(side).length > 0;
 }
-async function btlModuleUse(side, pre){
-  if(pvpOn() && side === 'p' && !PVPC.replaying) return await pvpModIntent(pre);   // PvP : demandé au serveur, joué à son retour
+async function btlModuleUse(side, pre, rep){
+  if(pvpOn() && side === 'p' && !rep) return await pvpModIntent(pre);   // PvP : le geste du joueur est TOUJOURS demandé au serveur (V0.05.56 : même pendant un rejeu) ; seul le rejeu (rep) joue l'effet   // PvP : demandé au serveur, joué à son retour
   if(!btlModCanUse(side)) return false;
   const m = BTL.mod[side], def = BTL_MODULES[m.name], wasPlan = side === 'p' && BTL.phase === 'plan';
   if(wasPlan){ BTL.phase = 'fx'; btlSetEnd(false); }
@@ -31167,8 +31186,8 @@ BTL_TECH_FX['SOUS PRESSION'] = { mode:'ally',
       await btlHit(btlTechSrc(s), f, dmg, { noRet:true, shot:() => btlSpFire(dm, f) });
     } finally { if(!dm.fired) dm.lay.end(); }
   } };
-async function btlTechUse(side, c, pre, fromRect, el){
-  if(pvpOn() && side === 'p' && !PVPC.replaying) return await pvpTechIntent(c, pre, fromRect, el);   // PvP : demandé au serveur, joué à son retour
+async function btlTechUse(side, c, pre, fromRect, el, rep){
+  if(pvpOn() && side === 'p' && !rep) return await pvpTechIntent(c, pre, fromRect, el);   // V0.05.56 : idem module   // PvP : demandé au serveur, joué à son retour
   if(!btlTechCanUse(side, c)) return false;
   const S = BTL.S[side], def = BTL_TECH_FX[c.name], hi = S.hand.indexOf(c); if(hi < 0) return false;
   const wasPlan = side === 'p' && BTL.phase === 'plan';
@@ -33126,7 +33145,8 @@ function frRenderList(){
 async function frLoad(){
   frSyncUser();
   frRenderList();
-  if(!frReady() || FR.loadBusy) return;
+  if(!frReady()) return;
+  if(FR.loadBusy){ FR.loadAgain = true; return; }   // V0.05.56 : relue dès la fin de la lecture en cours
   FR.loadBusy = true;
   try{
     const [r, q] = await Promise.all([frRpc('friend_list'), frRpc('friend_requests').catch(() => null)]);
@@ -33135,9 +33155,11 @@ async function frLoad(){
   }catch(_){ FR.err = true; }
   FR.loadBusy = false;
   frRenderList();
+  if(FR.loadAgain){ FR.loadAgain = false; frLoad(); }
 }
 function enterFriends(){
   openSub('friendsView');
+  frCodeFetch();   // V0.05.56 : sans code ami, le joueur n'apparaît pas dans la liste de ses amis
   frAddClose();
   frLoad();
 }
@@ -33345,6 +33367,7 @@ async function frInboxTick(){
 }
 function frInboxStart(){
   if(FR.inboxTimer) return;
+  setTimeout(() => { try{ frCodeFetch(); }catch(_){} }, 4000);   // V0.05.56 : code ami créé dès le lancement (comptes qui ont déjà des amis)
   FR.inboxTimer = setInterval(frInboxTick, 4000);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) frInboxTick(); });
 }
