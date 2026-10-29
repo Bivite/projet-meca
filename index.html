@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.62</title>
+<title>Projet MECA V0.05.63</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8104,6 +8104,20 @@
 
   /* case ULT du chef d'escouade : grisée (carte passive, pas d'ultimate) */
   .btl .unit.cbt .s-ult.off{ --c:84,90,100; --t:150,156,166; }
+  /* V0.05.63 : chiffres plus grands, centrés, incrustés dans un verre plus clair et uniforme (plus de voile sombre en bas) */
+  .btl .unit.cbt .cbt-st.cbt-st b{ font-size:14.6cqw; transform:none; background:none; color:var(--dk); -webkit-text-fill-color:var(--dk); filter:none;
+    text-shadow:0 .38cqw .06cqw rgba(255,255,255,.7), 0 -.22cqw .12cqw rgba(0,0,0,.45); }
+  .btl .unit.cbt .cbt-st.cbt-st b.l2{ font-size:12.2cqw; }
+  .btl .unit.cbt .cbt-st.cbt-st b.l3{ font-size:9.6cqw; }
+  .btl .unit.cbt .cbt-st.cbt-st b.l4{ font-size:8cqw; }
+  .btl .unit.cbt .cbt-st.cbt-st::before, .btl .unit.cbt .cbt-st.cbt-st::after{ inset:-2.3cqw; }
+  .btl .unit.cbt .cbt-st.cbt-st::before{
+    background:repeating-linear-gradient(135deg, rgba(255,255,255,.10) 0 .45cqw, rgba(255,255,255,0) .45cqw 1.3cqw),
+      radial-gradient(120% 90% at 30% 15%, rgba(255,255,255,.4), rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, rgba(var(--c),.95), rgba(var(--c),.95)), #070b12;
+    box-shadow:inset 0 0 0 .3cqw rgba(var(--c),.9), inset 0 .5cqw .3cqw rgba(255,255,255,.34); }
+  .btl .unit.cbt .cbt-st.s-atk{ --dk:#33383f; } .btl .unit.cbt .cbt-st.s-def{ --dk:#0b2a63; }
+  .btl .unit.cbt .cbt-st.s-ult{ --dk:#7a3300; } .btl .unit.cbt .cbt-st.s-hp{ --dk:#5c0b0d; } .btl .unit.cbt .cbt-st.s-ult.off{ --dk:#3a3f47; }
 
   /* ===== emplacement du MODULE (V0.04.53) : petite case entre les chefs d'escouade, cadre métal + artwork du module ===== */
   .btl-mod{ --ms:calc(var(--sw) * .5); --g:#6fb6ff; position:absolute; z-index:3; left:calc(2px + (var(--sw) - var(--ms)) / 2); width:var(--ms); height:var(--ms); margin:0;
@@ -9008,7 +9022,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.62</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.63</b></div>
   </div>
 
     </div>
@@ -9889,9 +9903,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.62';
+var BUILD_VERSION = 'V0.05.63';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.63', items:[
+    'Chiffres des petites cartes de combat plus grands et plus lisibles : centrés dans leur case, incrustés dans le verre (ATQ gris foncé, DEF bleu foncé, ultime orange foncé, PV rouge foncé), cases plus claires sans voile sombre en bas.',
+    'La jauge d\'ultime des petites cartes s\'affiche sans le « % ».',
+  ] },
   { v:'V0.05.62', items:[
     'NOUVELLE CARTE ÉPIQUE : DIMAVERSE (PASSIF). Quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main, avant que l\'effet de la Tech se lance (main pleine : la copie est perdue). DIMAVERSE n\'a pas d\'attaque : elle ne peut que défendre, et ne riposte pas.',
     'DIMAVERSE : à sa pose, une nébuleuse se répand sur le champ de bataille puis un trou noir l\'aspire et en fait ressortir la carte ; à chaque Tech jouée, un trou noir à disque violet s\'ouvre au centre du plateau, éjecte la copie vers la main de l\'adversaire et s\'effondre en un point blanc.',
@@ -11590,7 +11608,7 @@ function tutUltimateMock(){
   const def = CHAR_DEFS.find(c => c.name === 'NEUTRON');
   if(!def || typeof btlMakeCard !== 'function') return '';
   let h = '';
-  try{ const c = btlMakeCard('p', def, def.rarity, 1, false); c.energy = 100; h = btlSmallHtml(c).replace(/(s-ult[^>]*><b[^>]*>)0%/, '$1100%'); }catch(_){ return ''; }
+  try{ const c = btlMakeCard('p', def, def.rarity, 1, false); c.energy = 100; h = btlSmallHtml(c).replace(/(s-ult[^>]*><b)[^>]*>0</, '$1 class="l3">100<'); }catch(_){ return ''; }
   return `<div class="tut-cbt-mock btl tut-btlcard"><div class="btl-unit">${h}</div></div>`;
 }
 // Icône de badge clonée directement depuis l'élément réel du jeu (case de hub, bouton...) plutôt que
@@ -21289,7 +21307,7 @@ async function btlUltEnd(side){
 // ---------- rendu des cartes ----------
 // petite carte : artwork au centre + 4 verres (ATK bleu, DEF vert, ULT % jaune, PV rouge) dans les carrés du cadre
 function btlFmtN(n){ n = Math.max(0, Math.round(n)); return n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n); }
-function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class="cbt-st ' + cls + '"><b class="' + (L >= 4 ? 'l4' : L === 2 ? 'l2' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
+function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class="cbt-st ' + cls + '"><b class="' + (L >= 4 ? 'l4' : L === 3 ? 'l3' : L === 2 ? 'l2' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
 function btlSmallHtml(c){
   if(c.leader){ const ca = c.def && c.def.art ? c.def.art.replace(/[()\s'"]/g, ch => encodeURIComponent(ch)) : ''; return '<div class="unit cbt chief"><i class="chief-fill' + (ca ? ' has-art' : '') + '"' + (ca ? ' style="--ca:url(' + ca + ')"' : '') + '></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>'; }   // case pentagonale du chef : illustration du chef dans la case (V0.04.85), DEF à gauche, PV à droite
   const art = winArt(c.def), af = winFocus(c.def);
@@ -21299,16 +21317,16 @@ function btlSmallHtml(c){
     (art ? '<div class="cbt-art-img"><img class="cbt-art-fg" src="' + art + '" alt="" style="object-position:50% ' + af + '%" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'"></div>' : '') +
     '<div class="cbt-ring"></div>' + (kh('baroud') ? '<div class="cbt-brd' + (kh('tank') ? ' both' : '') + '"></div>' : '') + (kh('tank') ? '<div class="cbt-tank"></div><i class="cbt-wm"></i>' : kh('baroud') ? '<i class="cbt-wm sk"></i>' : kh('passif') ? '<i class="cbt-wm pa"></i>' : kh('appel') ? '<i class="cbt-wm ap"></i>' : kh('percee') ? '<i class="cbt-wm pe"></i>' : '') + (c.off && kwAny ? '<i class="cbt-off"></i>' : '') + '<div class="cbt-fl"></div>' +
     btlStatHtml('s1 s-atk', btlFmtN(c.atk)) + btlStatHtml('s2 s-def', btlFmtN(c.df)) +
-    btlStatHtml('s3 s-ult' + (c.leader ? ' off' : ''), c.leader ? '–' : '0%') + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) +
+    btlStatHtml('s3 s-ult' + (c.leader ? ' off' : ''), c.leader ? '–' : '0') + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) +
   '</div>';
 }
 function btlSetStat(root, cls, txt){
   const b = root && root.querySelector('.cbt-st.' + cls + ' b'); if(!b) return;
-  if(b.textContent !== txt){ b.textContent = txt; b.classList.toggle('l4', txt.length >= 4); b.classList.toggle('l2', txt.length === 2); b.classList.toggle('dash', txt === '–'); }
+  if(b.textContent !== txt){ b.textContent = txt; b.classList.toggle('l4', txt.length >= 4); b.classList.toggle('l3', txt.length === 3); b.classList.toggle('l2', txt.length === 2); b.classList.toggle('dash', txt === '–'); }
 }
 function btlPaintIn(root, c){
   btlSetStat(root, 's-atk', btlFmtN(c.atk)); btlSetStat(root, 's-def', btlFmtN(c.df));
-  btlSetStat(root, 's-ult', c.leader ? '–' : Math.min(100, Math.round(c.energy)) + '%');
+  btlSetStat(root, 's-ult', c.leader ? '–' : String(Math.min(100, Math.round(c.energy))));   // V0.05.63 : sans « % »
   btlSetStat(root, 's-hp', btlFmtN(c.hp));
   const ult = root.querySelector('.cbt-st.s-ult'); if(ult) ult.classList.toggle('btl-ready', btlUltReady(c));
   const un = root.classList && root.classList.contains('unit') ? root : root.querySelector('.unit.cbt');
