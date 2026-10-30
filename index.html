@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.67</title>
+<title>Projet MECA V0.05.68</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -2870,8 +2870,8 @@
   .dk-back{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; -webkit-tap-highlight-color:transparent; min-width:0;}
   .dk-back .bk-img{position:relative; width:100%; aspect-ratio:195/272; display:flex; align-items:center; justify-content:center;}
   .dk-back.mod .bk-img{aspect-ratio:900/506;}
-  .dk-back img{width:100%; height:100%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.55)); pointer-events:none;}
-  .dk-back.lock img{filter:grayscale(1) brightness(.32) contrast(.9);}
+  .dk-back .bk-img > img{width:100%; height:100%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.55)); pointer-events:none;}
+  .dk-back.lock .bk-img > img{filter:grayscale(1) brightness(.32) contrast(.9);}
   
   
   .dk-back.sel .bk-img::after{content:''; position:absolute; inset:-3px; border:2px solid #ffd978; border-radius:10px; box-shadow:0 0 16px rgba(255,200,74,.55); pointer-events:none;}
@@ -2884,7 +2884,7 @@
   #batailleList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #5dffa0; border-radius:6px; box-shadow:0 0 16px rgba(93,255,160,.55);}
   #defiDeckList .deck-tile.selected .deck-mod-vit .mod-card{outline:2px solid #b08cff; border-radius:6px; box-shadow:0 0 16px rgba(176,140,255,.6);}
   .br-bwin{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-radius:10px; background:radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), #0c0a14 75%);}
-  .br-bwin img{width:86%; height:70%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
+  .br-bwin > img{width:86%; height:70%; object-fit:contain; display:block; filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
   .br-bwin > b{font-family:var(--font-title); font-size:9px; letter-spacing:1.2px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8);}   /* V0.04.92 : seulement le libellé (pas le gras du texte du module) */
   .deck-mod-grid .mod-card.deck-mod-sel{box-shadow:0 0 0 2px #ffd978, 0 0 16px rgba(255,200,74,.55); border-radius:6px;}
   .deck-mod-slot{flex:none; margin:6px 0 0;}
@@ -8287,7 +8287,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.67</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.68</b></div>
   </div>
 
     </div>
@@ -9326,9 +9326,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.67';
+var BUILD_VERSION = 'V0.05.68';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.68', items:[
+    'Correction : dans DECK > ENCADRÉ DE MODULES et dans les boosters, l\'image du module remplit maintenant toute la fenêtre de l\'encadré (elle était réduite au centre, avec des bandes grises).',
+    'Les encadrés de module ÉPIQUE et LÉGENDAIRE ne tombent plus des boosters : ce sont maintenant des récompenses de trophée. ÉPIQUE : trophée « Défi accompli » (terminer un défi jusqu\'au palier 10). LÉGENDAIRE : trophée « Expert de l\'ultimate » (terminer complètement 3 défis en mode ultimate). Les encadrés déjà obtenus sont conservés.'
+  ] },
   { v:'V0.05.67', items:[
     'Correction : le nom de la carte TRANSPORTEUR s\'affiche en entier (le R final était coupé). La taille du nom des cartes tient maintenant compte de la largeur réelle des lettres, pour qu\'aucun nom ne déborde du bandeau.'
   ] },
@@ -14824,6 +14828,8 @@ const BOOST_CARD_BACK = {
 const BACK_RARS = { card:['rare', 'epique', 'legendaire', 'ecarlate', 'tech', 'holo'], mod:['rare', 'epique', 'legendaire'] };
 const BACK_LABEL = { rare:'RARE', epique:'ÉPIQUE', legendaire:'LÉGENDAIRE', ecarlate:'ÉCARLATE', tech:'TECH', holo:'HOLOGRAPHIQUE' };
 function backOwned(kind, rar){ return !!(player.backs && player.backs[kind] && player.backs[kind][rar]); }
+function backRewIco(kind, rar){ return kind === 'mod' ? '<img src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/ui/module-frame-' + (rar === 'epique' || rar === 'legendaire' ? rar : 'rare') + '.webp" alt="" style="width:100%;height:100%;object-fit:contain">' : '<img src="' + backSrc(kind, rar) + '" alt="" style="width:100%;height:100%;object-fit:contain">'; }   // V0.05.68
+function backRewLabel(kind, rar){ return (kind === 'mod' ? 'ENCADRÉ ' : 'DOS ') + BACK_LABEL[rar]; }
 function backSrc(kind, rar){ return BOOST_CARD_BACK[rar] || BOOST_CARD_BACK.rare; }   // V0.04.92 : les modules n'ont plus de dos (kind 'mod' = ENCADRÉ, face avant)
 function deckBack(d, kind){
   const r = d && (kind === 'mod' ? d.backMod : d.backCard);
@@ -17445,7 +17451,7 @@ function deckBackListHtml(){
 }
 function deckPickBack(kind, rar){
   if(!deckDraft){ showToast(kind === 'mod' ? 'OUVRE UN DECK POUR CHOISIR SON ENCADRÉ' : 'OUVRE UN DECK POUR CHOISIR SON DOS'); return; }
-  if(!backOwned(kind, rar)){ showToast((kind === 'mod' ? 'ENCADRÉ NON OBTENU : ' : 'DOS NON OBTENU : ') + (rar === 'holo' ? 'TROPHÉE « MAÎTRE DE L’ULTIMATE »' : 'BOOSTERS RESSOURCES')); return; }
+  if(!backOwned(kind, rar)){ showToast((kind === 'mod' ? 'ENCADRÉ NON OBTENU : ' : 'DOS NON OBTENU : ') + (kind === 'mod' && rar === 'epique' ? 'TROPHÉE « DÉFI ACCOMPLI »' : kind === 'mod' && rar === 'legendaire' ? 'TROPHÉE « EXPERT DE L’ULTIMATE »' : rar === 'holo' ? 'TROPHÉE « MAÎTRE DE L’ULTIMATE »' : 'BOOSTERS RESSOURCES')); return; }
   if(kind === 'mod') deckDraft.backMod = rar; else deckDraft.backCard = rar;
   renderDeckView();
   if(navigator.vibrate) try{ navigator.vibrate(10); }catch(_){}
@@ -17998,7 +18004,7 @@ function rewardChips(rew, small){
   if(rew.crystal) out.push(`<span class="rw-chip"><i>${ICON_CRYSTAL}</i>${rew.crystal}</span>`);
   if(rew.mat) MAT_ORDER.forEach(r => { if(rew.mat[r]) out.push(`<span class="rw-chip"><i>${matIcon(r)}</i>${rew.mat[r]}</span>`); });
   if(rew.booster) out.push(`<span class="rw-chip"><i>${boostRewardChipIcon(rew.booster)}</i>${rew.boosterN || 1}</span>`);
-  if(rew.back) out.push(`<span class="rw-chip"><i><img src="${backSrc(rew.back.kind, rew.back.rar)}" alt="" style="width:100%;height:100%;object-fit:contain"></i>DOS ${BACK_LABEL[rew.back.rar]}</span>`);
+  if(rew.back) out.push(`<span class="rw-chip"><i>${backRewIco(rew.back.kind, rew.back.rar)}</i>${backRewLabel(rew.back.kind, rew.back.rar)}</span>`);
   return out.join('');
 }
 // `opts.actionLabel`/`opts.onAction` (V0.01.89) : permet à un appelant (ex. RÉCOLTER ET RELANCER sur
@@ -18012,8 +18018,8 @@ function showRewardModal(title, items, opts){
   const res = items.filter(i => i.t !== 'card' && i.t !== 'module').map((it, k) => {
     // V0.02.93, demande d'Alex : "ajoute des booster en récompense" -- t:'booster' (cf grantReward()) a
     // sa propre icône dédiée (image réelle du booster, bt déjà résolu à ce stade) et son propre libellé.
-    const ico = it.t === 'gold' ? ICON_GOLD : it.t === 'xp' ? ICON_XP : it.t === 'crystal' ? ICON_CRYSTAL : it.t === 'booster' ? boostRewardChipIcon(it.bt) : it.t === 'back' ? `<img src="${backSrc(it.bk, it.r)}" alt="" style="width:100%;height:100%;object-fit:contain">` : matIcon(it.r);
-    const lab = it.t === 'gold' ? 'OR' : it.t === 'xp' ? 'EXPÉRIENCE' : it.t === 'crystal' ? 'CRISTAUX DE FABRICATION' : it.t === 'booster' ? 'BOOSTER ' + BOOST_LABEL[it.bt] : it.t === 'back' ? 'DOS ' + BACK_LABEL[it.r] : 'MATÉRIAU ' + RARITIES[it.r].label;
+    const ico = it.t === 'gold' ? ICON_GOLD : it.t === 'xp' ? ICON_XP : it.t === 'crystal' ? ICON_CRYSTAL : it.t === 'booster' ? boostRewardChipIcon(it.bt) : it.t === 'back' ? backRewIco(it.bk, it.r) : matIcon(it.r);
+    const lab = it.t === 'gold' ? 'OR' : it.t === 'xp' ? 'EXPÉRIENCE' : it.t === 'crystal' ? 'CRISTAUX DE FABRICATION' : it.t === 'booster' ? 'BOOSTER ' + BOOST_LABEL[it.bt] : it.t === 'back' ? backRewLabel(it.bk, it.r) : 'MATÉRIAU ' + RARITIES[it.r].label;
     const showLab = it.t === 'mat' || it.t === 'booster' || it.t === 'back';
     return `<div class="rw-item" style="--k:${k}"><span class="rw-ico" data-lbl="${lab}">${ico}</span><b>+${fmtNum(it.n)}</b>${showLab ? '<small>' + lab + '</small>' : ''}</div>`;
   }).join('');
@@ -19267,7 +19273,10 @@ TROPHIES.push(
   { id:'df50',   tier:3, name:'Seigneur des défis',   desc:'Remporter 50 paliers de défi',       target:50,  val:() => player.stats.defisWon || 0 },
   { id:'dk1',    tier:1, name:'Premier deck',         desc:'Enregistrer un deck',                target:1,   val:() => player.stats.deckEdits || 0 },
   { id:'dk10',   tier:2, name:'Stratège',             desc:'Enregistrer 10 decks',               target:10,  val:() => player.stats.deckEdits || 0 },
-  { id:'ult5',   tier:5, name:'Maître de l\'ultimate', desc:'Terminer complètement 5 défis en mode ultimate', target:5, val:() => CHAR_DEFS.filter(d => defiCardUltimateDone(d)).length, rew:{ back:{ kind:'card', rar:'holo' } } }
+  { id:'ult5',   tier:5, name:'Maître de l\'ultimate', desc:'Terminer complètement 5 défis en mode ultimate', target:5, val:() => CHAR_DEFS.filter(d => defiCardUltimateDone(d)).length, rew:{ back:{ kind:'card', rar:'holo' } } },
+  // V0.05.68 (demande d'Alex) : les encadrés de module ÉPIQUE et LÉGENDAIRE ne tombent plus des boosters, ils se gagnent ici (même expression côté serveur)
+  { id:'dfmod10', tier:3, name:'Défi accompli',        desc:'Terminer un défi jusqu\'au palier 10', target:1, val:() => CHAR_DEFS.filter(d => defiCardCompleted(d)).length, rew:{ back:{ kind:'mod', rar:'epique' } } },
+  { id:'ultmod3', tier:4, name:'Expert de l\'ultimate', desc:'Terminer complètement 3 défis en mode ultimate', target:3, val:() => CHAR_DEFS.filter(d => defiCardUltimateDone(d)).length, rew:{ back:{ kind:'mod', rar:'legendaire' } } }
 );
 function tTarget(t){ return typeof t.target === 'function' ? t.target() : t.target; }
 function tReward(t){ return t.hidden ? { card:'holo' } : (t.rew || TROPHY_TIERS[t.tier].rew); }
