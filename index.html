@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.73</title>
+<title>Projet MECA V0.05.74</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7494,6 +7494,10 @@
 .btl-body-in .pc-lc.t{ animation:pcBreath 3.6s steps(6) infinite, pcSweepT 5.2s steps(52) infinite; }   /* V0.05.11 : batterie, 10 i/s au lieu de 60 */
 .btl-body-in .pc-lc.b{ animation:pcBreath 3.6s steps(6) -1.8s infinite, pcSweepB 5.2s steps(52) -2.6s infinite; }
 @keyframes pcBreath{ 0%,100%{ opacity:.88; } 50%{ opacity:1; } }
+.btl-body-in .pc-fl{ position:absolute; pointer-events:none; animation:pcFlk 4.3s step-end infinite; }
+@keyframes pcFlk{ 0%{ opacity:1; } 6%{ opacity:.12; } 7%{ opacity:1; } 8.5%{ opacity:.3; } 10%{ opacity:1; } 44%{ opacity:0; } 47%{ opacity:.8; } 48%{ opacity:.08; } 50%{ opacity:1; } 76%{ opacity:.45; } 77%{ opacity:1; } }
+.btl-plate.lit .btl-body-in .pc-fl.t{ filter:brightness(1.25) drop-shadow(0 0 5px var(--lt)); }
+.btl-plate.lit .btl-body-in .pc-fl.b{ filter:brightness(1.25) drop-shadow(0 0 5px var(--lb)); }
 @keyframes pcSweepT{ from{ -webkit-mask-position:100% 0; mask-position:100% 0; } to{ -webkit-mask-position:0% 0; mask-position:0% 0; } }
 @keyframes pcSweepB{ from{ -webkit-mask-position:0% 0; mask-position:0% 0; } to{ -webkit-mask-position:100% 0; mask-position:100% 0; } }
 .btl-plate.lit .btl-body-in .pc-lc.t{ filter:brightness(1.25) drop-shadow(0 0 5px var(--lt)) drop-shadow(0 0 12px var(--lt)); animation-duration:.9s, 1.6s; }
@@ -8314,7 +8318,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.73</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.74</b></div>
   </div>
 
     </div>
@@ -9353,9 +9357,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.73';
+var BUILD_VERSION = 'V0.05.74';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.74', items:[
+    'Nouveau champ de bataille : ZONE MORTE. Tôle rouillée et écaillée, câbles à nu, verre fendu, tags, et des néons rose et cyan à moitié cassés qui grésillent.',
+    'Le champ de bataille est tiré au hasard à chaque combat. En PvP, les deux joueurs se battent sur le même champ.',
+  ] },
   { v:'V0.05.73', items:[
     'Pioche plus fluide : la carte tirée glisse dans ta main en gardant son format et se pose exactement à sa place dans l\'éventail (même inclinaison), sans paraître étirée ni floue. Pareil pour la distribution de départ et quand une carte retourne dans ta main.',
     'Jeu plus léger : les images de MARCH sont chargées depuis le serveur.',
@@ -23028,6 +23036,17 @@ function btlPillar(r, col){
 // lumières du champ de bataille : à l'arrivée d'une carte légendaire (ou plus rare), les néons prennent la couleur de sa rareté puis reviennent rouge (haut) / bleu (bas)
 const BTL_HI_RAR = { legendaire:1, ecarlate:1, holo:1 };
 const BTL_LG_T = [255, 52, 64], BTL_LG_B = [48, 140, 255];
+// V0.05.74 : champ n°2 « ZONE MORTE » : néons rose (adversaire) / cyan (joueur)
+const BTL_FIELDS = { 1:{ t:BTL_LG_T, b:BTL_LG_B }, 2:{ t:[255, 46, 150], b:[40, 226, 255] } };
+function btlLgBase(){ return BTL_FIELDS[(BTL && BTL.field) || 1] || BTL_FIELDS[1]; }
+// champ tiré au hasard à chaque combat ; en PvP, déduit de l'identifiant du match -> le même pour les deux joueurs ; tutoriel : champ n°1
+function btlPickField(){
+  const N = Object.keys(BTL_FIELDS).length, d = BTL && BTL.d;
+  if(window.__btlField && BTL_FIELDS[window.__btlField]) return window.__btlField;   // bancs de test
+  if(d && d.tuto) return 1;
+  if(d && d.pvp && d.pvp.mid){ let h = 2166136261; const m = String(d.pvp.mid); for(let i = 0; i < m.length; i++) h = Math.imul(h ^ m.charCodeAt(i), 16777619); return 1 + ((h >>> 0) % N); }
+  return 1 + Math.floor(Math.random() * N);   // hasard d'affichage : ne touche pas au hasard des règles
+}
 function btlHexRgb(h){ h = String(h).replace('#', ''); if(h.length === 3) h = h.replace(/./g, '$&$&'); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
 function btlLgVars(){
   const pl = btlQ('#btlPlate'); if(!pl || !BTL.lg) return;
@@ -23035,7 +23054,7 @@ function btlLgVars(){
 }
 // fondu de couleur des néons (image par image : le calque de lumière est repeint à chaque pas)
 function btlLightsTo(t, b, ms){
-  if(!BTL.lg) BTL.lg = { t:BTL_LG_T.slice(), b:BTL_LG_B.slice() };
+  if(!BTL.lg) BTL.lg = { t:btlLgBase().t.slice(), b:btlLgBase().b.slice() };
   const L = BTL.lg, ft = L.t.slice(), fb = L.b.slice(), tok = BTL.lgTok = (BTL.lgTok || 0) + 1, t0 = performance.now();
   const step = now => {
     if(!BTL || BTL.lgTok !== tok) return;
@@ -23051,21 +23070,33 @@ function btlLights(rar, ms){
   const pl = btlQ('#btlPlate'); if(!pl) return;
   const col = btlHexRgb(btlRarColor(rar)), id = BTL.litId = (BTL.litId || 0) + 1;
   pl.classList.add('lit'); btlLightsTo(col, col, 240);
-  btlAfter(() => { if(!BTL || BTL.litId !== id) return; pl.classList.remove('lit'); btlLightsTo(BTL_LG_T, BTL_LG_B, 1000); }, ms);
+  btlAfter(() => { if(!BTL || BTL.litId !== id) return; pl.classList.remove('lit'); btlLightsTo(btlLgBase().t, btlLgBase().b, 1000); }, ms);
 }
 // ---------- champ de bataille généré en code (V0.04.81) : acier, carbone, plaques, vis et néons dessinés dans des canvas (aucune image) ----------
 function btlPlateTex(body, g, top){
   try{
     const dpr = Math.min(3, window.devicePixelRatio || 1), ext = 36, plate = btlQ('#btlPlate'); if(!plate) return;
-    const R = btlPlateGen(g.G, dpr), Wd = R.Wd, Hd = R.Hd;
+    const sty = BTL.field || (BTL.field = btlPickField());
+    if(BTL.lgF !== sty){ BTL.lgF = sty; BTL.lg = { t:btlLgBase().t.slice(), b:btlLgBase().b.slice() }; }
+    const R = btlPlateGen(g.G, dpr, sty), Wd = R.Wd, Hd = R.Hd;
     const mk = (cls, y, h) => { const c = document.createElement('canvas'); c.className = cls; c.width = Wd; c.height = Math.round(h * dpr); c.style.cssText = 'top:' + (top - ext + y) + 'px;height:' + h + 'px;'; return c; };
     const hm = Math.round((g.mid1 + g.mid2) / 2 * dpr) / dpr + ext, hmd = Math.round(hm * dpr);
     const cb = R.base; cb.className = 'pc-tx'; cb.style.cssText = 'top:' + (top - ext) + 'px;height:' + (g.H + ext) + 'px;';
     const ct = mk('pc-lc t', 0, hm), cl = mk('pc-lc b', hm, g.H + ext - hm);
+    // V0.05.74 : néons qui grésillent (petits calques, chacun son rythme)
+    const FG = (R.flk || []).map((f, k) => { const c = document.createElement('canvas'); c.className = 'pc-fl ' + f.s; c.width = f.halo.width; c.height = f.halo.height;
+      c.style.cssText = 'top:' + (top - ext + f.y) + 'px;left:' + f.x + 'px;width:' + f.w + 'px;height:' + f.h + 'px;animation-duration:' + [4.3, 5.9, 3.7, 6.6, 5.1][k % 5] + 's;animation-delay:-' + (k * 1.37 % 4).toFixed(2) + 's;';
+      return { c, f, tmp:document.createElement('canvas') }; });
     const tmp = document.createElement('canvas'), tx = tmp.getContext('2d');
     const mixW = (col, k) => col.map(v => v + (255 - v) * k);
     const paint = () => {
-      const L = BTL.lg || (BTL.lg = { t:BTL_LG_T.slice(), b:BTL_LG_B.slice() });
+      const L = BTL.lg || (BTL.lg = { t:btlLgBase().t.slice(), b:btlLgBase().b.slice() });
+      FG.forEach(({ c:cv, f, tmp:tp }) => { const c = cv.getContext('2d'), x = tp.getContext('2d'), col = f.s === 't' ? L.t : L.b, w = cv.width, h = cv.height; c.clearRect(0, 0, w, h);
+        if(tp.width !== w || tp.height !== h){ tp.width = w; tp.height = h; }
+        [[f.halo, col, .95], [f.core, mixW(col, .12), 1], [f.hot, mixW(col, .72), 1]].forEach(([m, cc, al]) => {
+          x.globalCompositeOperation = 'source-over'; x.clearRect(0, 0, w, h); x.drawImage(m, 0, 0);
+          x.globalCompositeOperation = 'source-in'; x.fillStyle = 'rgb(' + cc.map(Math.round).join(',') + ')'; x.fillRect(0, 0, w, h);
+          c.globalAlpha = al; c.drawImage(tp, 0, 0); c.globalAlpha = 1; }); });
       [[ct, 0, hmd, L.t], [cl, hmd, Hd - hmd, L.b]].forEach(([cv, y0, h, col]) => {
         const c = cv.getContext('2d'); c.clearRect(0, 0, cv.width, cv.height);
         if(tmp.width !== Wd || tmp.height !== h){ tmp.width = Wd; tmp.height = h; }
@@ -23077,7 +23108,9 @@ function btlPlateTex(body, g, top){
       });
     };
     BTL.pt = { paint, spots:R.spots }; paint(); btlLgVars(); btlSmokePrewarm();
+    for(let k = FG.length - 1; k >= 0; k--) body.insertBefore(FG[k].c, body.firstChild);
     body.insertBefore(cl, body.firstChild); body.insertBefore(ct, body.firstChild); body.insertBefore(cb, body.firstChild);
+    plate.classList.toggle('fld2', sty === 2);
     plate.classList.add('pt-on');
     const arm = btlQ('#pcArmor'); if(arm) arm.style.display = 'none';
   }catch(e){ console.error(e); }
@@ -32736,7 +32769,7 @@ var BTL_COIN = { n:40, w:256, h:256, src:'https://okrdywhctnlayyfltivc.supabase.
 // ===== champ de bataille généré en code (V0.04.81) : acier brossé, fibre de carbone tissée, plaques biseautées, vis, tubes néon =====
 // Aucune image : tout est dessiné au chargement dans des canvas (matières procédurales + géométrie des blocs).
 // G = { W, H, ext, slots:[{s,x,y,w,h}], leaders:[...], mods:[...], mid:{y1,y2}, hex:{x,y,w,h}, tab:{x,w,h} } en px CSS, repère = coin haut-gauche de la plaque.
-function btlPlateGen(G, dpr){
+function btlPlateGen(G, dpr, sty){
   const S = dpr, W = G.W, H = G.H, EX = G.ext, Wd = Math.round(W * S), Hd = Math.round((H + EX) * S);
   let sd = 20240611; const rnd = () => { sd = sd + 0x6D2B79F5 | 0; let t = Math.imul(sd ^ sd >>> 15, 1 | sd); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const cvs = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
@@ -32934,9 +32967,13 @@ function btlPlateGen(G, dpr){
   // ---------- calques de lumière (blanc + alpha, teintés à l'exécution) ----------
   const halo = cvs(Wd, Hd), core = cvs(Wd, Hd), hot = cvs(Wd, Hd), hx = halo.getContext('2d'), kx = core.getContext('2d'), tx2 = hot.getContext('2d');
   [hx, kx, tx2].forEach(x => x.setTransform(S, 0, 0, S, 0, EX * S));
+  // V0.05.74 : néons qui grésillent (champ n°2) : mis de côté pendant la scène, puis dessinés dans de PETITS calques à part (un par groupe), animés en CSS
+  const FLQ = sty === 2 ? [] : null;
+  let hx0 = hx, kx0 = kx, tx20 = tx2;
   const tubes = [];    // { pts, w } en coordonnées du demi-plateau haut ; dupliqué en miroir pour le bas
-  function tube(pts, w, mirror){
-    pts = WP(pts, true);
+  function tube(pts, w, mirror, flk, X){
+    if(!X){ pts = WP(pts, true); if(flk && FLQ){ FLQ.push(['t', pts, w]); return; } }
+    const [hx, kx, tx2] = X || [hx0, kx0, tx20];
     const draw = (ctx, ww, blur, a) => { ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = '#fff'; ctx.globalAlpha = a;
       if(blur){ const OFF = 4000; ctx.shadowColor = '#fff'; ctx.shadowBlur = blur * S; ctx.shadowOffsetX = OFF * S; ctx.translate(-OFF, 0); }
       ctx.lineWidth = ww; ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke(); ctx.restore(); };
@@ -32944,8 +32981,9 @@ function btlPlateGen(G, dpr){
   }
 
   // pièce lumineuse pleine (polygone) : halo flou + cœur + point chaud réduit autour du centre (la teinte est appliquée à l'exécution)
-  function lamp(pts){
-    pts = WP(pts);
+  function lamp(pts, flk, X){
+    if(!X){ pts = WP(pts); if(flk && FLQ){ FLQ.push(['l', pts]); return; } }
+    const [hx, kx] = X || [hx0, kx0];
     const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, cy = pts.reduce((a, q) => a + q[1], 0) / pts.length;
     const sc = k => pts.map(q => [cx + (q[0] - cx) * k, cy + (q[1] - cy) * k]);
     const fillIn = (ctx, p, blur, a) => { ctx.save(); ctx.fillStyle = '#fff'; ctx.globalAlpha = a;
@@ -32956,14 +32994,349 @@ function btlPlateGen(G, dpr){
 
   // ---------- la scène ----------
   const spots = [];   // bouches d'aération (fumée) : repère de la plaque, en px CSS
-  btlPlateScene({ spots, c, S, W:Wr, H:Hr, EX, YM, MY, fl, path:p => path(WP(p)), rr, plate, pocket, bevel, bolt, seam, ridge, vents, tube, lamp, mix, rgba, insetP, area, rnd, carbP, steelP, WX:WARP.WX, WY:WARP.WY }, Gr);
-  return { base, halo, core, hot, Wd, Hd, spots };
+  (sty === 2 ? btlPlateScene2 : btlPlateScene)({ spots, c, S, W:Wr, H:Hr, EX, YM, MY, fl, path:p => path(WP(p)), rr, plate, pocket, bevel, bolt, seam, ridge, vents, tube, lamp, mix, rgba, insetP, area, rnd, carbP, steelP, WX:WARP.WX, WY:WARP.WY,
+    WP:WARP.WP, mp:WARP.mp, cvs, wrapNoise, crack, Wd, Hd }, Gr);
+  // néons qui grésillent : regroupés par voisinage (sans franchir la ligne centrale), un petit calque (3 masques) par groupe
+  let flk = null;
+  if(FLQ && FLQ.length){
+    const M = 15, ym = (G.mid.y1 + G.mid.y2) / 2, box = q => { const xs = q[1].map(v => v[0]), ys = q[1].map(v => v[1]); return [Math.min(...xs) - M, Math.min(...ys) - M, Math.max(...xs) + M, Math.max(...ys) + M]; };
+    let gs = FLQ.map(q => { const b = box(q); return { b, s:(b[1] + b[3]) / 2 < ym ? 't' : 'b', it:[q] }; });
+    for(let again = true; again;){ again = false;
+      for(let i = 0; i < gs.length && !again; i++) for(let j = i + 1; j < gs.length; j++){ const A = gs[i], B = gs[j], a = A.b, b = B.b;
+        if(A.s === B.s && a[0] <= b[2] && b[0] <= a[2] && a[1] <= b[3] && b[1] <= a[3]){ A.b = [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; A.it = A.it.concat(B.it); gs.splice(j, 1); again = true; break; } } }
+    flk = gs.map(g => {
+      const x0 = Math.max(0, Math.floor(g.b[0] * S)), y0 = Math.max(0, Math.floor((g.b[1] + EX) * S)), x1 = Math.min(Wd, Math.ceil(g.b[2] * S)), y1 = Math.min(Hd, Math.ceil((g.b[3] + EX) * S));
+      const L = [cvs(x1 - x0, y1 - y0), cvs(x1 - x0, y1 - y0), cvs(x1 - x0, y1 - y0)], X = L.map(v => v.getContext('2d'));
+      X.forEach(x => x.setTransform(S, 0, 0, S, -x0, EX * S - y0));
+      g.it.forEach(q => q[0] === 't' ? tube(q[1], q[2], false, true, X) : lamp(q[1], true, X));
+      return { s:g.s, x:x0 / S, y:y0 / S, w:(x1 - x0) / S, h:(y1 - y0) / S, halo:L[0], core:L[1], hot:L[2] };
+    }).filter(g => g.w > 0 && g.h > 0);
+  }
+  return { base, halo, core, hot, Wd, Hd, spots, flk };
 }
 
 // ----- scène du champ de bataille : blocs d'acier, carbone, néons (demi-plateau haut dessiné, bas obtenu par miroir) -----
 // Coordonnées en px CSS, repère de référence = coin haut-gauche de la plaque (le générateur déforme ensuite pour épouser les vraies cases).
 // Règles de cohérence : en-tête symétrique gauche / droite autour de l'axe x = W/2, modules alignés sur une grille, néons dans des logements creusés
 // (deux tailles seulement : longs 17 px, courts 12 px), biseaux et chanfreins identiques partout, rien de flottant.
+// ===== champ de bataille n°2 « ZONE MORTE » (V0.05.74) : même géométrie que le n°1, version cyberpunk à l'abandon =====
+// tôle peinte écaillée, rouille et coulures, bandes de danger usées, câbles à nu, verre fendu, néons cassés qui clignotent, tags.
+// Structure symétrique (comme le n°1), dégâts asymétriques (passe finale en coordonnées absolues).
+function btlPlateScene2(K, G){
+  const { spots, c, S, W, H, EX, YM, MY, fl, rr, bevel, bolt, vents, tube, lamp, mix, rgba, rnd, steelP, WX, WY, WP, mp, cvs, wrapNoise, pocket, crack, Wd, Hd } = K;
+  const ID = p => p, T1 = (T, q) => T([q])[0], mir = p => p.map(q => [W - q[0], q[1]]);
+  const sl = G.slots.filter(s => s.s === 'o').sort((a, b) => a.x - b.x), E = 4.5, MC = YM, bx = G.tab.x, bw = G.tab.w;
+  const PA = [44, 48, 57], PB = [50, 58, 64], PS = [112, 118, 124], HZ = [214, 168, 36], RU1 = [96, 40, 16], RU2 = [168, 82, 34];
+  const raw = (p, x) => { x = x || c; x.beginPath(); p.forEach((q, i) => i ? x.lineTo(q[0], q[1]) : x.moveTo(q[0], q[1])); x.closePath(); };
+  const bbox = p => p.reduce((m, q) => [Math.min(m[0], q[0]), Math.min(m[1], q[1]), Math.max(m[2], q[0]), Math.max(m[3], q[1])], [1e9, 1e9, -1e9, -1e9]);
+  const sgn = p => p.reduce((s, a, i) => { const b = p[(i + 1) % p.length]; return s + a[0] * b[1] - b[0] * a[1]; }, 0) > 0 ? 1 : -1;
+  const LX = -.56, LY = -.83;
+
+  // ---------- matières : crasse (multiplie), rouille (alpha), usure (gomme) ----------
+  const tile = (n, f) => { const t = cvs(n, n), x = t.getContext('2d'), im = x.createImageData(n, n); f(im.data, n); x.putImageData(im, 0, 0); return t; };
+  const dirtT = tile(256, (d, n) => { const a = wrapNoise(n, 64), b = wrapNoise(n, 18), e = wrapNoise(n, 5);
+    for(let i = 0; i < n * n; i++){ const v = Math.max(0, a[i] * .65 + b[i] * .35 - .38) * 2.1 + (e[i] - .5) * .18, k = 255 - Math.max(0, Math.min(1, v)) * 150;
+      d[i * 4] = k; d[i * 4 + 1] = k * .95; d[i * 4 + 2] = k * .88; d[i * 4 + 3] = 255; } });
+  const rustT = tile(320, (d, n) => { const a = wrapNoise(n, 64), b = wrapNoise(n, 26), e = wrapNoise(n, 9), f = wrapNoise(n, 3);
+    for(let i = 0; i < n * n; i++){ const v = a[i] * .48 + b[i] * .28 + e[i] * .15 + f[i] * .09, al = Math.max(0, Math.min(1, (v - .58) * 7)) * (.55 + f[i] * .45), col = mix(RU1, RU2, Math.min(1, e[i] * 1.2 + f[i] * .3));
+      d[i * 4] = col[0]; d[i * 4 + 1] = col[1]; d[i * 4 + 2] = col[2]; d[i * 4 + 3] = al * 255; } });
+  const wearT = tile(256, (d, n) => { const a = wrapNoise(n, 22), b = wrapNoise(n, 6), e = wrapNoise(n, 2);
+    for(let i = 0; i < n * n; i++){ const v = a[i] * .5 + b[i] * .32 + e[i] * .18; d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0; d[i * 4 + 3] = Math.max(0, Math.min(1, (v - .5) * 4.2)) * 255; } });
+  const pat = (x, t, k, r) => { const p = x.createPattern(t, 'repeat'); if(p.setTransform) p.setTransform(new DOMMatrix().rotate(r || 0).scale(k / S)); return p; };
+  const dirtP = pat(c, dirtT, S * .8, -14), rustP = pat(c, rustT, S * .5, 27);
+  // calque de travail (petit canvas à la taille de la zone) : ce qui y est dessiné est « usé » (gommé par plaques) avant d'être posé sur la plaque
+  function worn(draw, amt, b){   // b = rectangle concerné (px de la plaque)
+    const x0 = Math.max(0, Math.floor((b[0] - 3) * S)), y0 = Math.max(0, Math.floor((b[1] + EX - 3) * S)), x1 = Math.min(Wd, Math.ceil((b[2] + 3) * S)), y1 = Math.min(Hd, Math.ceil((b[3] + EX + 3) * S));
+    if(x1 <= x0 || y1 <= y0) return;
+    const L = cvs(x1 - x0, y1 - y0), lx = L.getContext('2d');
+    lx.setTransform(S, 0, 0, S, -x0, EX * S - y0); draw(lx);
+    lx.globalCompositeOperation = 'destination-out'; lx.globalAlpha = amt == null ? 1 : amt; lx.fillStyle = pat(lx, wearT, S * .5); lx.fillRect(b[0] - 3, b[1] - 3, b[2] - b[0] + 6, b[3] - b[1] + 6);
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(L, x0, y0); c.restore();
+  }
+  const hazard = (x, b, w, a) => { x.save(); x.globalAlpha = a == null ? 1 : a; x.fillStyle = rgba(HZ, 1); const h = b[3] - b[1] + 2, st = w || 3.6;
+    for(let u = b[0] - h - st * 2; u < b[2] + st * 2; u += st * 2){ x.beginPath(); x.moveTo(u, b[3] + 1); x.lineTo(u + st, b[3] + 1); x.lineTo(u + st + h, b[1] - 1); x.lineTo(u + h, b[1] - 1); x.closePath(); x.fill(); }
+    x.restore(); };
+
+  // éclats de peinture le long des bords : la tôle nue (ou la rouille) apparaît
+  function chips(p, k){
+    const sg = sgn(p), n = p.length;
+    for(let i = 0; i < n; i++){ const a = p[i], b = p[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); if(l < 4) continue;
+      const ox = sg * dy / l, oy = -sg * dx / l, m = Math.round(l / 16 * k * (.5 + rnd()));
+      for(let j = 0; j < m; j++){ const t = rnd(), r = .7 + rnd() * rnd() * 3.2, cx = a[0] + dx * t - ox * r * .35, cy = a[1] + dy * t - oy * r * .35, q = [], kk = 6 + Math.floor(rnd() * 4);
+        for(let v = 0; v < kk; v++){ const an = v / kk * 6.283 + rnd() * .5, rr2 = r * (.45 + rnd() * .7); q.push([cx + Math.cos(an) * rr2 * 1.3, cy + Math.sin(an) * rr2]); }
+        const rust = rnd() < .38, g = c.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+        if(rust){ g.addColorStop(0, rgba(RU2, .95)); g.addColorStop(1, rgba(RU1, .95)); } else { g.addColorStop(0, 'rgba(176,182,188,.95)'); g.addColorStop(1, 'rgba(92,98,106,.95)'); }
+        c.fillStyle = g; raw(q); c.fill(); c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = .45; raw(q); c.stroke(); } }
+  }
+  // plaque de tôle peinte, usée
+  function pl2(p0, o){
+    o = o || {}; const p = WP(p0), b = bbox(p), X0 = b[0] - 2, Y0 = b[1] - 2, XW = b[2] - b[0] + 4, YH = b[3] - b[1] + 4;
+    if(o.sh !== 0){ c.save(); c.shadowColor = 'rgba(0,0,0,.85)'; c.shadowBlur = (o.sh || 2.6) * S; c.shadowOffsetY = 1.2 * S; c.fillStyle = '#030405'; raw(p); c.fill(); c.restore(); }
+    c.save(); raw(p); c.clip();
+    const col = o.col || PA, c2 = mix(col, [6, 7, 10], .5), g = c.createLinearGradient(b[0], b[1], b[0] + (b[2] - b[0]) * .5, b[3]);
+    g.addColorStop(0, rgba(col, 1)); g.addColorStop(1, rgba(c2, 1)); c.fillStyle = g; c.fillRect(X0, Y0, XW, YH);
+    if(o.haz) worn(x => { x.save(); raw(p, x); x.clip(); hazard(x, b, o.hw, .92); x.restore(); }, o.hazW == null ? .75 : o.hazW, b);
+    c.globalCompositeOperation = 'overlay'; c.globalAlpha = o.tex == null ? .75 : o.tex; c.fillStyle = steelP; c.fillRect(X0, Y0, XW, YH);
+    c.globalCompositeOperation = 'multiply'; c.globalAlpha = o.dirt == null ? 1 : o.dirt; c.fillStyle = dirtP; c.fillRect(X0, Y0, XW, YH);
+    c.globalCompositeOperation = 'source-over'; c.globalAlpha = o.rust == null ? .55 : o.rust; c.fillStyle = rustP; c.fillRect(X0, Y0, XW, YH); c.globalAlpha = 1;
+    chips(p, o.chip == null ? 1 : o.chip);
+    const gl = c.createLinearGradient(0, b[1], 0, b[3]); gl.addColorStop(0, 'rgba(255,255,255,.08)'); gl.addColorStop(.45, 'rgba(255,255,255,0)'); gl.addColorStop(1, 'rgba(0,0,0,.3)'); c.fillStyle = gl; c.fillRect(X0, Y0, XW, YH);
+    c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 4 * S; c.shadowOffsetX = -.8 * S; c.shadowOffsetY = -1.3 * S; c.strokeStyle = '#000'; c.lineWidth = 3; raw(p); c.stroke();
+    c.shadowColor = 'transparent'; c.shadowBlur = 0; c.shadowOffsetX = 0; c.shadowOffsetY = 0;
+    bevel(p, { w:o.w || 1.6, hi:.8, lo:.85, mid:[74, 78, 86], hic:[214, 218, 224] });
+    c.restore();
+    c.strokeStyle = 'rgba(1,2,3,.95)'; c.lineWidth = 1; raw(p); c.stroke();
+  }
+  // vis rouillée (+ coulure de rouille vers le bas de l'écran, ajoutée à la fin)
+  const bolts = [];
+  function bolt2(x, y, r){ bolt(x, y, r); const q = mp([x, y]); bolts.push([q[0], q[1], r || 2.3, x, y]);
+    c.save(); c.globalCompositeOperation = 'multiply'; c.fillStyle = 'rgba(214,132,78,.6)'; c.beginPath(); c.arc(q[0], q[1], (r || 2.3) + .4, 0, 6.3); c.fill(); c.restore();
+    c.save(); c.globalAlpha = .5; c.fillStyle = rustP; c.beginPath(); c.arc(q[0], q[1], (r || 2.3) + 1.2, 0, 6.3); c.fill(); c.restore(); }
+  // trait sur une ligne (coordonnées réelles)
+  const strokeL = (pts, st, lw, dx, dy) => { c.strokeStyle = st; c.lineWidth = lw; c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0] + dx, q[1] + dy) : c.moveTo(q[0] + dx, q[1] + dy)); c.stroke(); };
+  function wire(pts, w, col){ c.save(); c.lineJoin = 'round'; c.lineCap = 'round';
+    strokeL(pts, 'rgba(0,0,0,.85)', w + 1, .2, .7); strokeL(pts, rgba(col, 1), w, 0, 0); strokeL(pts, rgba(mix(col, [255, 255, 255], .55), .5), w * .3, -w * .15, -w * .28); c.restore(); }
+  const WIRES = [[18, 18, 20], [128, 22, 30], [176, 134, 30], [22, 86, 104], [74, 74, 80], [112, 30, 92], [30, 30, 34]];
+  // faisceau de câbles dans une tranchée (horizontal ou vertical), coordonnées de référence ; T = transformation du demi-plateau
+  function cables(T, x0, y0, x1, y1, n, vert){
+    const out = [];
+    for(let i = 0; i < n; i++){ const col = WIRES[Math.floor(rnd() * WIRES.length)], w = 1.2 + rnd() * .9, ph = rnd() * 6, pts = [];
+      if(!vert){ const yy = y0 + (i + .5) * (y1 - y0) / n; for(let x = x0; x <= x1 + .01; x += 2.5) pts.push([x, yy + Math.sin(x * .19 + ph) * .55 + (rnd() - .5) * .25]); }
+      else { const xx = x0 + (i + .5) * (x1 - x0) / n; for(let y = y0; y <= y1 + .01; y += 2.5) pts.push([xx + Math.sin(y * .17 + ph) * .45, y]); }
+      out.push([WP(T(pts), true), w, col]); }
+    out.forEach(q => wire(q[0], q[1], q[2]));
+  }
+  // tranchée de câbles = cuvette sombre + câbles + colliers
+  function trench(T, x0, y0, x1, y1, n, vert, clamps){
+    const poly = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+    pocket(T(poly), { fill:'#05060a', w:1.1, ish:2 });
+    c.save(); raw(WP(T(poly))); c.clip(); cables(T, x0 + .5, y0 + .5, x1 - .5, y1 - .5, n, vert);
+    c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = 3 * S; c.shadowOffsetX = .8 * S; c.shadowOffsetY = 1.2 * S; c.strokeStyle = '#000'; c.lineWidth = 3; raw(WP(T(poly))); c.stroke(); c.restore();
+    (clamps || []).forEach(k => { const q = vert ? [[x0 - .8, k - 1.6], [x1 + .8, k - 1.6], [x1 + .8, k + 1.6], [x0 - .8, k + 1.6]] : [[k - 1.6, y0 - .8], [k + 1.6, y0 - .8], [k + 1.6, y1 + .8], [k - 1.6, y1 + .8]]; pl2(T(q), { col:PS, w:.8, sh:1.2, chip:.3, rust:.8 }); });
+  }
+  // néon cassé : morceaux allumés + embouts de verre brisé ; flk = clignote
+  function neon(T, a, b, w, gaps, flk){
+    const seg = [], P = (t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; let t0 = 0;
+    (gaps || []).forEach(g => { if(g[0] > t0) seg.push([t0, g[0]]); t0 = g[1]; }); if(t0 < 1) seg.push([t0, 1]);
+    seg.forEach((s, i) => tube(T([P(s[0]), P(s[1])]), w, false, flk && (flk === true || flk === i + 1)));
+    (gaps || []).forEach(g => { [g[0], g[1]].forEach((t, k) => { const q = WP(T([P(t)]))[0], dir = k ? 1 : -1;
+        c.save(); c.fillStyle = 'rgba(214,232,255,.75)'; c.beginPath(); c.moveTo(q[0], q[1] - w * .6); c.lineTo(q[0] + dir * (1.4 + rnd() * 1.4), q[1] + (rnd() - .5) * w); c.lineTo(q[0], q[1] + w * .6); c.closePath(); c.fill(); c.restore(); });
+      for(let k = 0; k < 4; k++){ const q = WP(T([P(g[0] + (g[1] - g[0]) * rnd())]))[0]; c.fillStyle = 'rgba(200,220,245,' + (.35 + rnd() * .4) + ')'; c.fillRect(q[0] + (rnd() - .5) * 3, q[1] + 1 + rnd() * 2.5, .6 + rnd() * .6, .5 + rnd() * .5); } });
+  }
+  // logement de néon : rainure sombre
+  const SLOTF = '#07060b';
+  const nslot = (T, x0, y0, x1, y1) => pocket(T([[x0, y0], [x1, y0], [x1, y1], [x0, y1]]), { fill:SLOTF, w:.8, ish:.9 });
+  // verre fendu (impact + toile d'araignée) — coordonnées réelles
+  function glass(cx, cy, R){
+    c.save(); c.lineJoin = 'round'; const rays = [], n = 7 + Math.floor(rnd() * 3);
+    for(let i = 0; i < n; i++){ const a0 = i / n * 6.283 + rnd() * .5, L = R * (.45 + rnd() * .65), pts = [[cx, cy]]; let a = a0, x = cx, y = cy;
+      for(let s = 0; s < 6; s++){ a += (rnd() - .5) * .35; x += Math.cos(a) * L / 6; y += Math.sin(a) * L / 6; pts.push([x, y]); } rays.push(pts); }
+    const ring = k => rays.map(r => r[Math.min(r.length - 1, k)]);
+    [[.45, .45, 'rgba(0,0,0,.55)', .6], [0, 0, 'rgba(225,238,255,.32)', .45]].forEach(([dx, dy, st, lw]) => {
+      rays.forEach(r => strokeL(r, st, lw, dx, dy));
+      [2, 4].forEach(k => { const q = ring(k); for(let i = 0; i < q.length; i++) if(rnd() < .75) strokeL([q[i], q[(i + 1) % q.length]], st, lw * .8, dx, dy); });
+    });
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, 3.2); g.addColorStop(0, 'rgba(230,240,255,.55)'); g.addColorStop(1, 'rgba(230,240,255,0)'); c.fillStyle = g; c.beginPath(); c.arc(cx, cy, 3.2, 0, 6.3); c.fill();
+    c.restore();
+  }
+  // trou arraché dans la tôle (coordonnées réelles) : lèvres déchirées, câbles au fond, câble qui pend
+  function hole(cx, cy, rx, ry){
+    const n = 15, p = [];
+    for(let i = 0; i < n; i++){ const a = i / n * 6.283 + (rnd() - .5) * .3, k = (i % 4 === 1 ? .5 : .8) + rnd() * .35; p.push([cx + Math.cos(a) * rx * k, cy + Math.sin(a) * ry * k]); }
+    c.save(); raw(p); c.clip();
+    const g = c.createRadialGradient(cx + 1, cy + 1, 0, cx, cy, Math.max(rx, ry)); g.addColorStop(0, '#000'); g.addColorStop(1, '#0b0c11'); c.fillStyle = g; c.fillRect(cx - rx - 2, cy - ry - 2, rx * 2 + 4, ry * 2 + 4);
+    for(let k = 0; k < 4; k++){ const y = cy - ry * .6 + k * ry * .4, col = WIRES[(k * 3 + 1) % WIRES.length]; wire([[cx - rx, y], [cx - rx * .3, y + 1.4], [cx + rx * .4, y + .3], [cx + rx, y - 1]], 1.1, mix(col, [0, 0, 0], .45)); }
+    c.shadowColor = 'rgba(0,0,0,.95)'; c.shadowBlur = 3 * S; c.shadowOffsetX = 1.4 * S; c.shadowOffsetY = 2 * S; c.strokeStyle = '#000'; c.lineWidth = 5; raw(p); c.stroke(); c.restore();
+    const sg = sgn(p);
+    for(let i = 0; i < n; i++){ const a = p[i], b = p[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1, ox = sg * dy / l, oy = -sg * dx / l, s = ox * LX + oy * LY;
+      strokeL([a, b], s < -.15 ? 'rgba(206,212,220,' + (.35 + -s * .5) + ')' : 'rgba(0,0,0,.9)', s < -.15 ? .8 : 1.1, 0, 0); }
+    // lèvres de tôle repliées vers l'extérieur
+    for(let k = 0; k < 4; k++){ const i = Math.floor(rnd() * n), a = p[i], b = p[(i + 1) % n], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], d = Math.hypot(m[0] - cx, m[1] - cy) || 1, ux = (m[0] - cx) / d, uy = (m[1] - cy) / d, L = 1.6 + rnd() * 2.4;
+      const q = [a, b, [m[0] + ux * L - uy * .8, m[1] + uy * L + ux * .8]], lit = ux * LX + uy * LY > 0;
+      c.fillStyle = lit ? 'rgba(188,194,202,.95)' : 'rgba(58,62,70,.95)'; raw(q); c.fill(); c.strokeStyle = 'rgba(0,0,0,.7)'; c.lineWidth = .5; raw(q); c.stroke(); }
+    return p;
+  }
+  // tag à la bombe (texte en coordonnées réelles), usé
+  function tag(txt, x, y, sz, col, rot){
+    worn(x2 => { x2.save(); x2.translate(x, y); x2.rotate(rot || -.12); x2.font = 'italic 900 ' + sz + 'px "Arial Black", Impact, "Helvetica Neue", Arial, sans-serif'; x2.lineJoin = 'round';
+      x2.shadowColor = rgba(col, .7); x2.shadowBlur = 1.6 * S; x2.lineWidth = sz * .2; x2.strokeStyle = 'rgba(10,8,14,.9)'; x2.strokeText(txt, 0, 0);
+      x2.fillStyle = rgba(col, .85); x2.fillText(txt, 0, 0); x2.shadowBlur = 0;
+      x2.fillStyle = rgba(mix(col, [255, 255, 255], .6), .55); x2.fillText(txt, -.35, -.45);
+      const w = x2.measureText(txt).width;
+      for(let k = 0; k < 5; k++){ const u = rnd() * w, L = 1.5 + rnd() * 4.5; const g = x2.createLinearGradient(0, 0, 0, L); g.addColorStop(0, rgba(col, .75)); g.addColorStop(1, rgba(col, 0)); x2.save(); x2.translate(u, -sz * .05); x2.fillStyle = g; x2.fillRect(0, 0, .55, L); x2.restore(); }
+      for(let k = 0; k < 90; k++){ x2.fillStyle = rgba(col, .18 + rnd() * .25); x2.fillRect(-2 + rnd() * (w + 4), -sz - 1 + rnd() * (sz + 3), .35, .35); }
+      x2.restore(); }, .45, [x - 4, y - sz * 1.6, x + sz * txt.length * .9 + 4, y + sz * .9]);
+  }
+  // pochoir (peinture), usé
+  function stencil(txt, x, y, sz, col, a){
+    worn(x2 => { x2.save(); x2.font = '700 ' + sz + 'px "Arial Narrow", "Roboto Condensed", Arial, sans-serif'; x2.fillStyle = rgba(col, a || .8); x2.fillText(txt, x, y);
+      const w = x2.measureText(txt).width; x2.fillStyle = 'rgba(0,0,0,.6)'; for(let u = x + w * .23; u < x + w; u += w * .28) x2.fillRect(u, y - sz, .35, sz * 1.1); x2.restore(); }, .55, [x - 2, y - sz * 1.2, x + sz * txt.length * .75 + 2, y + sz * .4]);
+  }
+
+  // ---------- coque ----------
+  const P = [[9, 0], [bx - 6, 0], [bx + 10, -36], [bx + bw - 10, -36], [bx + bw + 6, 0], [W - 9, 0], [W, 9], [W, H - 9], [W - 9, H], [9, H], [0, H - 9], [0, 9]];
+  c.fillStyle = '#050608'; raw(WP(P)); c.fill();
+  pl2(P, { col:[52, 55, 62], w:2.3, sh:0, chip:1.4, rust:.5 });
+  pocket([[12, 3.2], [W - 12, 3.2], [W - 5, 9], [W - 5, H - 9], [W - 12, H - 3.2], [12, H - 3.2], [5, H - 9], [5, 9]], { fill:'#060709', w:1.2, ish:2.5 });
+  pocket([[bx + 13, -27], [bx + bw - 13, -27], [bx + bw - 5, -3], [bx + 5, -3]], { fill:'#05060a', ish:3 });
+  pl2([[bx + 5, -2.5], [bx + bw - 5, -2.5], [bx + bw - 1, 2.5], [bx + 1, 2.5]], { haz:true, w:.8, sh:0, hw:2.6 });   // bande de danger sous le capot du temps
+  pl2([[12.5, 3.7], [W - 12.5, 3.7], [W - 5.5, 9.5], [W - 5.5, H - 9.5], [W - 12.5, H - 3.7], [12.5, H - 3.7], [5.5, H - 9.5], [5.5, 9.5]], { col:[34, 37, 44], w:1.2, sh:0, chip:.5, rust:.35 });
+  const chamf = (x0, y0, x1, y1, k) => [[x0 + k, y0], [x1 - k, y0], [x1, y0 + k], [x1, y1 - k], [x1 - k, y1], [x0 + k, y1], [x0, y1 - k], [x0, y0 + k]];
+
+  let side = 0;
+  const half = T => {
+    const haut = T([[0, 0]])[0][1] === 0, Pl = (p, o) => pl2(T(p), o), Po = (p, o) => pocket(T(p), o);
+    const B = (x, y, r) => { const q = T1(T, [x, y]); bolt2(q[0], q[1], r); };
+    const sym = f => { side = 0; f(p => p); side = 1; f(mir); };
+    const Sp = (k, q) => { const a = q.map(v => T1(T, v)), xs = a.map(v => WX(v[0])), ys = a.map(v => WY(v[1])); spots.push({ s:haut ? 'o' : 'p', k, x0:Math.min(...xs), x1:Math.max(...xs), y0:Math.min(...ys), y1:Math.max(...ys) }); };
+    const STL = { col:PS, w:1.4, chip:.4, rust:.9, tex:.9 };            // tôle nue
+    const VOID = { fill:'#040509', w:1.1, ish:1.6 };
+
+    // ===== bord supérieur et en-tête =====
+    sym(M => {
+      Pl(M([[10, 5], [15, 3.7], [57, 3.7], [61, 8], [61, 11], [14.5, 11], [10, 9]]), STL);
+      { const q = M([[6.5, 10]])[0]; B(q[0], q[1], 2.4); }
+      nslot(p => T(M(p)), 63, 3.7, 79, 9.5);
+      neon(p => T(M(p)), [65.2, 5.5], [76.8, 5.5], 1.4, side ? [[.38, .62]] : null, haut && !side ? true : 0);
+      neon(p => T(M(p)), [65.2, 7.9], [76.8, 7.9], 1.2, null, 0);
+      Pl(M([[80, 3.7], [97, 3.7], [104, 24], [87, 24]]), { haz:true, w:1.3, hw:3.2 });
+      trench(p => T(M(p)), 101.5, 3.7, 123, 15.5, 4, false, [108, 117]);
+      nslot(p => T(M(p)), 105.4, 17.2, 122.6, 20.8); neon(p => T(M(p)), [107.4, 19], [120.6, 19], 1.4, (side === 1) === haut ? [[.55, .72]] : null, 0);
+      Pl(M([[102, 26.5], [123, 26.5], [123, 31], [102, 31]]), STL);
+    });
+
+    // ===== couronne : ailes rayées + ventilateur central (bouche de fumée) =====
+    Po([[149.5, 4.3], [170, 3.7], [212, 3.7], [232.5, 4.3], [226.3, 17.2], [213.5, 17.2], [211, 23], [205, 25.6], [191, 27.2], [177, 25.6], [171, 23], [168.5, 17.2], [155.7, 17.2]], { fill:'#08070c', ish:2.4, w:1.3 });
+    sym(M => {
+      Pl(M([[125, 4.3], [147.1, 4.3], [155.7, 17.2], [170, 17.2], [180.7, 30.8], [125, 30.8]]), { col:PB, haz:side === 0, hw:3.4, w:1.7, chip:1.3 });
+      nslot(p => T(M(p)), 155.5, 5.6, 169.5, 9.2); neon(p => T(M(p)), [157, 7.4], [168, 7.4], 2, null, 0);
+      Po(M([[133, 19], [145, 19], [148, 22], [148, 27], [145, 30], [133, 30]]), { fill:'#0a0b10', ish:1.6, w:1 });
+      { const q = M([[140.5, 24.5]])[0]; B(q[0], q[1], 2.4); const q2 = M([[168.6, 21.6]])[0]; B(q2[0], q2[1], 1.8); }
+      trench(p => T(M(p)), 156, 33.5, 179, 40, 3, false, [167]);
+    });
+    Pl([[177, 27], [205, 27], [205, 31], [177, 31]], STL);
+    // ventilateur dans son carter
+    Pl([[176.4, 7.4], [205.6, 7.4], [208, 10.4], [208, 21.6], [204.4, 25.4], [177.6, 25.4], [174, 21.6], [174, 10.4]], { col:PS, w:1.5, chip:.6, rust:1 });
+    Sp('g', [[180.5, 8.8], [201.5, 24]]);
+    {
+      const ctr = T1(T, [191, 16.4]), q = mp(ctr), R = Math.min(WX(201) - WX(181), Math.abs(WY(T1(T, [0, 25])[1]) - WY(T1(T, [0, 8])[1]))) / 2;
+      c.save(); c.fillStyle = '#020204'; c.beginPath(); c.arc(q[0], q[1], R, 0, 6.3); c.fill();
+      c.beginPath(); c.arc(q[0], q[1], R, 0, 6.3); c.clip();
+      const rot = haut ? .4 : 1.3;
+      for(let k = 0; k < 6; k++){ const a = rot + k * 6.283 / 6, L = (k === 2 ? .55 : .95) * R;   // une pale cassée
+        c.save(); c.translate(q[0], q[1]); c.rotate(a);
+        const g = c.createLinearGradient(0, -R * .3, 0, R * .3); g.addColorStop(0, '#8c939c'); g.addColorStop(1, '#2b2f36');
+        c.fillStyle = g; c.beginPath(); c.moveTo(R * .2, -R * .1); c.quadraticCurveTo(L * .7, -R * .42, L, -R * .12); c.lineTo(L * (k === 2 ? 1.05 : 1), R * .12); c.quadraticCurveTo(L * .6, R * .1, R * .2, R * .16); c.closePath(); c.fill();
+        c.strokeStyle = 'rgba(0,0,0,.7)'; c.lineWidth = .4; c.stroke(); c.restore(); }
+      const hb = c.createRadialGradient(q[0] - 1, q[1] - 1, 0, q[0], q[1], R * .28); hb.addColorStop(0, '#b6bcc4'); hb.addColorStop(1, '#3a3f47');
+      c.fillStyle = hb; c.beginPath(); c.arc(q[0], q[1], R * .26, 0, 6.3); c.fill();
+      c.strokeStyle = 'rgba(140,146,154,.75)'; c.lineWidth = .55;   // grille de protection, tordue
+      for(let k = 1; k <= 3; k++){ c.beginPath(); c.arc(q[0], q[1], R * k / 3.15, haut ? .3 : 2.2, (haut ? .3 : 2.2) + 5.3); c.stroke(); }
+      for(let k = 0; k < 8; k++){ const a = k * .785 + .2; c.beginPath(); c.moveTo(q[0] + Math.cos(a) * R * .3, q[1] + Math.sin(a) * R * .3); c.lineTo(q[0] + Math.cos(a) * R, q[1] + Math.sin(a) * R); c.stroke(); }
+      c.globalAlpha = .5; c.fillStyle = rustP; c.fillRect(q[0] - R, q[1] - R, R * 2, R * 2); c.globalAlpha = 1;
+      c.shadowColor = 'rgba(0,0,0,.95)'; c.shadowBlur = 2.5 * S; c.shadowOffsetX = .8 * S; c.shadowOffsetY = 1.2 * S; c.strokeStyle = '#000'; c.lineWidth = 3; c.beginPath(); c.arc(q[0], q[1], R + 1.2, 0, 6.3); c.stroke();
+      c.restore();
+    }
+    Pl([[179, 31], [203, 31], [197, 46], [185, 46]], { col:PB, w:1.5, chip:.8 });
+
+    // ===== colonne gauche : module (cadre rayé), alvéole du chef, bloc éventré =====
+    const mod = G.mods.find(m => m.s === 'o') || { x:30, y:18, w:39, h:39 };
+    Pl(rr(mod.x - 5, mod.y - 5, mod.w + 10, mod.h + 10, 3, 2), { haz:true, hw:3, w:2, chip:1.2, col:[30, 30, 34] });
+    Po(rr(mod.x - 1, mod.y - 1, mod.w + 2, mod.h + 2, 2, 2), { fill:'#0a0c12', ish:2.5 });
+    [[-2.7, -2.7], [mod.w + 2.7, -2.7], [-2.7, mod.h + 2.7], [mod.w + 2.7, mod.h + 2.7]].forEach(d => B(mod.x + d[0], mod.y + d[1], 1.5));
+    const ld = G.leaders.find(l => l.s === (haut ? 'o' : 'p'));
+    pocket([[.5, 0], [1, .38], [.79, 1], [.21, 1], [0, .38]].map(q => [ld.x - 1 + q[0] * (ld.w + 2), ld.y - 2 - ld.h * .05 + q[1] * (ld.h + 4)]), { fill:'#2c2f36', ish:2.2, w:1.2, sh:.3 });
+    Pl([[77, 26.5], [88, 26.5], [92, 32], [100.5, 47], [100.5, 72], [94, 72], [77, 56]], { col:PB, w:1.4, chip:1.2, rust:.8 });
+    nslot(T, 78, 60, 92, 63.4); neon(T, [79.6, 61.7], [90.4, 61.7], .9, haut ? [[.3, .55]] : null, haut ? 0 : true);
+    trench(T, 92, 90, 99.5, 148, 2, true, [104, 132]);
+    Pl([[76, 150], [100, 150], [100, 154], [76, 154]], STL);
+
+    // ===== bandes sous les cases : grille d'aération (fumée), câbles à nu, rail rayé =====
+    const cell = (Mf, i) => {
+      const TM = p => T(Mf(p));
+      Sp('c', Mf([[104, 129], [124, 149]])); Sp('c', Mf([[164, 129], [184, 149]]));   // deux bouches d'aération par case (fumée), comme le champ n°1
+      Po(Mf(chamf(104, 129, 124, 149, 2.5)), VOID);
+      vents(108.4, 130.8, 0, 16.6, 4, -3.2 + (i - 1) * .9, TM, { pitch:3.8, bw:2, a:.55 });
+      Po(Mf(chamf(164, 129, 184, 149, 2.5)), VOID);
+      vents(167.4, 131.6, 0, 14.4, 4, 2.6 - i * .7, TM, { pitch:4.2, bw:2.2, a:.55, tip:true });
+      trench(TM, 127, 129.5, 161, 148.5, 4 + (i % 2), false, [144]);
+      Pl(Mf([[104, 150.8], [184, 150.8], [184, 153.4], [104, 153.4]]), { haz:true, hw:2.4, w:.8, sh:1.4, chip:.8 });
+    };
+    cell(p => p, 0); cell(mir, 1); cell(p => p.map(q => [q[0] + 188, q[1]]), 2);
+    // piliers entre les cases : néon vertical (un des deux grésille)
+    [191, 285].forEach((g, i) => { nslot(T, g - 1.8, 47, g + 1.8, 152); neon(T, [g, 50], [g, 149], .85, (i === 0) === haut ? [[.62, .7]] : null, (i === 1) === haut ? true : 0); });
+
+    // ===== écran fendu au-dessus de la case de droite =====
+    Po([[289, 26.5], [366, 26.5], [372, 32], [372, 39], [289, 39]], { fill:'#03060a', w:1.2, ish:1.8 });
+    {
+      const scr = WP(T([[290, 27.5], [365.5, 27.5], [371, 32.4], [371, 38], [290, 38]]));
+      c.save(); raw(scr); c.clip(); const b = bbox(scr);
+      for(let y = b[1]; y < b[3]; y += 1.1){ c.fillStyle = 'rgba(120,180,220,.05)'; c.fillRect(b[0], y, b[2] - b[0], .5); }
+      c.restore();
+      // barres « glitch » (lumière, clignotent)
+      const bars = haut ? [[293, 29.2, 40, 1.4], [336, 29.2, 9, 1.4], [293, 32, 22, 1], [318, 32, 31, 1], [293, 34.6, 54, 1.4], [351, 34.6, 14, 1.4]] : [[293, 29.2, 28, 1.4], [324, 29.2, 36, 1.4], [293, 32, 47, 1], [293, 34.6, 18, 1.4], [314, 34.6, 22, 1.4]];
+      bars.forEach((r, k) => lamp(T([[r[0], r[1]], [r[0] + r[2], r[1]], [r[0] + r[2], r[1] + r[3]], [r[0], r[1] + r[3]]]), k % 2 === 0));
+      const gq = mp(T1(T, [haut ? 352 : 300, haut ? 30 : 36])); glass(gq[0], gq[1], 9);
+    }
+
+    // ===== cadres des cases (verre de fond fendu sur deux d'entre elles) =====
+    sl.forEach((s, i) => {
+      Pl(rr(s.x - E, s.y - E, s.w + 2 * E, s.h + 2 * E, 6, 3), { col:PB, w:1.8, chip:1.5, rust:.65 });
+      Po(rr(s.x - 1, s.y - 1, s.w + 2, s.h + 2, 4.2, 3), { fill:'#0a0d17', ish:3.2, w:1.3 });
+      if(i === (haut ? 0 : 2)){ const q = mp(T1(T, [s.x + (haut ? 14 : s.w - 16), s.y + (haut ? 64 : 18)])); glass(q[0], q[1], 30); }
+    });
+
+    // ===== barre centrale (moitié) : embouts rayés, plaque, tranchée de câbles, rail =====
+    sym(M => {
+      Pl(M([[5.5, 152], [22, 168], [22, 176.5], [5.5, 176.5]]), { haz:true, hw:2.8, w:1.2 });
+      { const q = M([[10, 166]])[0]; B(q[0], q[1], 2.2); }
+      Pl(M([[49, 163], [54, 158], [80, 158], [85, 163], [80, 168.4], [54, 168.4]]), { col:[64, 30, 52], w:1.3, chip:1.6, rust:.5 });
+      { const q2 = M([[82.2, 163.2]])[0]; B(q2[0], q2[1], 1.3); }
+      trench(p => T(M(p)), 104, 159.5, 170, 168, 3, false, [128, 152]);
+      Pl(M([[24, 171.6], [186, 171.6], [186, 175.4], [24, 175.4]]), STL);
+      { const q3 = M([[26.6, 173.5]])[0]; B(q3[0], q3[1], 1.2); const q4 = M([[183.4, 173.5]])[0]; B(q4[0], q4[1], 1.2); }
+    });
+  };
+  half(ID); half(fl);
+
+  // rail central : même géométrie que le champ n°1, repères roses (haut) / cyan (bas)
+  [[7, 98]].forEach(r => { const pp = [[r[0], MC - 12], [r[1], MC - 12], [r[1], MC + 12], [r[0], MC + 12]]; pocket(pp, { fill:'#0a0b12', ish:2.2, w:1.3 }); pocket(mir(pp), { fill:'#0a0b12', ish:2.2, w:1.3 }); });
+  const tr = [[104, MC - 14], [186, MC - 14], [186, MC + 14], [104, MC + 14], [100, MC + 10], [100, MC - 10]];
+  [tr, mir(tr)].forEach(pp => pocket(pp, { fill:'#06070c', ish:2.6, w:1.5 }));
+  [0, 1].forEach(k => { for(let j = 0; j < 5; j++){ const dx = k ? W - (110 + 16.5 * j) : 110 + 16.5 * j, d = WP([[dx, MC - 8], [dx + 3.6, MC], [dx, MC + 8], [dx - 3.6, MC]]);
+    c.fillStyle = '#010103'; raw(d); c.fill(); c.strokeStyle = 'rgba(170,140,190,.25)'; c.lineWidth = .6; raw(d); c.stroke(); } });
+  c.save(); for(let x = 10.5; x < W - 8; x += 6.25){ if(x > 98 && x < W - 98) continue; if(rnd() < .12) continue; const X = WX(x), Y1 = WY(MC - 9), Y2 = WY(MC + 5.4), Y3 = WY(MC - 5.4), Y4 = WY(MC + 9);
+    c.fillStyle = 'rgba(255,150,210,.7)'; c.fillRect(X, Y1, .9, Y3 - Y1); c.fillStyle = 'rgba(110,230,255,.7)'; c.fillRect(X, Y2, .9, Y4 - Y2); } c.restore();
+
+  // ---------- dégâts (asymétriques, en coordonnées réelles) ----------
+  // coulures de rouille sous les vis (vers le bas de l'écran), sauf sur les cases
+  const inSlot = (x, y) => G.slots.some(s => x > s.x - 6 && x < s.x + s.w + 6 && y > s.y - 6 && y < s.y + s.h + 6);
+  bolts.forEach(b => { if(rnd() < .35) return; const L = 5 + rnd() * 14, x = b[0], y = b[1] + b[2] * .6;
+    let ok = true; for(let t = 0; t <= L; t += 2) if(inSlot(x, y + t)) ok = false; if(!ok) return;
+    c.save(); c.globalCompositeOperation = 'multiply'; const g = c.createLinearGradient(0, y, 0, y + L); g.addColorStop(0, 'rgba(150,72,30,.85)'); g.addColorStop(1, 'rgba(150,72,30,0)');
+    c.fillStyle = g; c.beginPath(); c.moveTo(x - b[2] * .5, y); c.lineTo(x + b[2] * .5, y); c.lineTo(x + .3, y + L); c.lineTo(x - .3, y + L); c.closePath(); c.fill(); c.restore(); });
+  // fissures
+  const ck = (x, y, len, a) => { const q = mp([x, y]); crack(q[0], q[1], len, a); };
+  ck(283, 3.5, 9, 1.75); ck(285.5, 4, 7, 1.2); ck(14, 205, 10, .2); ck(371, 240, 12, 2.9); ck(120, 372, 11, -1.4); ck(240, 377, 8, -1.9); ck(6, 120, 8, .4); ck(376, 300, 9, 3.4);
+  // bloc éventré (colonne gauche, en haut)
+  { const q = mp([89, 47]); hole(q[0], q[1], (WX(99) - WX(79)) / 2, (WY(66) - WY(30)) / 2);
+    // câble qui pend du trou, avec étincelle
+    const a = mp([86, 54]), e = mp([82, 76]); wire([a, [a[0] - 3, a[1] + 6], [e[0] + 1, e[1] - 6], e], 1.3, [128, 22, 30]);
+    c.fillStyle = 'rgba(200,170,120,.9)'; c.fillRect(e[0] - .6, e[1] - .2, 1.2, 1.4);
+    lamp([[80.6, 75.6], [83.4, 75.6], [82, 78.4]], true); }
+  // coin cassé (bas gauche) : la tôle manque
+  { const p = [[0, H - 24], [3.5, H - 21], [6, H - 15], [10.5, H - 12.5], [12, H - 7], [17.5, H - 4.5], [21, H + 1], [-1, H + 1]].map(mp);
+    c.save(); c.globalCompositeOperation = 'destination-out'; raw(p); c.fill(); c.restore();
+    const edge = p.slice(0, 7); c.save(); c.lineJoin = 'round'; strokeL(edge, 'rgba(0,0,0,.9)', 1.6, -.4, .4); strokeL(edge, 'rgba(178,184,192,.75)', .6, .3, -.3); c.restore();
+    const q = mp([12, H - 9]); crack(q[0] - 1, q[1] - 3, 9, -.9); }
+  // tags et pochoirs
+  { const q = mp([51, 167.4]); tag('NØX', q[0], q[1], 9.5, [255, 60, 170], -.1); }
+  { const q = mp([300, 222]); tag('R1OT', q[0], q[1], 8, [60, 230, 255], .08); }
+  { const q = mp([30, 72.5]); stencil('B-07', q[0], q[1], 5.2, HZ, .8); }
+  { const q = mp([312, 352]); stencil('HV 4000', q[0], q[1], 5, [230, 230, 226], .55); }
+  { const q = mp([106, 157.6]); stencil('DANGER', q[0], q[1], 4.6, HZ, .7); }
+}
+
 function btlPlateScene(K, G){
   const { spots, c, S, W, H, EX, YM, MY, plate, pocket, bevel, bolt, seam, ridge, vents, tube, lamp, rr, fl, mix, rgba, insetP, path, WX, WY } = K;
   const ID = p => p, T1 = (T, q) => T([q])[0], mir = p => p.map(q => [W - q[0], q[1]]);
@@ -33117,11 +33490,11 @@ function btlSmokePrewarm(){
 }
 function btlSmokeTinted(i, side){
   const S = BTL_SMOKE, key = i + side; if(S.tc[key]) return S.tc[key];
-  const L = BTL.lg || { t:BTL_LG_T, b:BTL_LG_B }, col = side === 'o' ? L.t : L.b, sp = S.sp[i], c = document.createElement('canvas'); c.width = sp.width; c.height = sp.height;
+  const L = BTL.lg || btlLgBase(), col = side === 'o' ? L.t : L.b, sp = S.sp[i], c = document.createElement('canvas'); c.width = sp.width; c.height = sp.height;
   const g = c.getContext('2d'); g.drawImage(sp, 0, 0); g.globalCompositeOperation = 'source-atop'; g.fillStyle = 'rgb(' + col.map(Math.round).join(',') + ')'; g.fillRect(0, 0, c.width, c.height);
   return (S.tc[key] = c);
 }
-function btlSmokeColor(side){ const L = BTL.lg || { t:BTL_LG_T, b:BTL_LG_B }; return (side === 'o' ? L.t : L.b).map(Math.round); }
+function btlSmokeColor(side){ const L = BTL.lg || btlLgBase(); return (side === 'o' ? L.t : L.b).map(Math.round); }
 
 // bouches d'aération d'un côté, en px de l'écran (relatifs au calque d'effets)
 function btlSmokeVents(side){
