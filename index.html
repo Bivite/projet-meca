@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.70</title>
+<title>Projet MECA V0.05.71</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7185,6 +7185,8 @@
   .btl-ff .codex-card{ width:100%; }
   .btl-ghost{ position:fixed; pointer-events:none; z-index:30; filter:drop-shadow(0 12px 14px rgba(0,0,0,.6)); }
   .btl-ghost .codex-card{ width:100%; cursor:default; }
+  .btl-ghost .btl-gh-big{ position:absolute; inset:0; }   /* V0.05.71 : grande carte (main) */
+  .btl-ghost .btl-gh-sm{ position:absolute; opacity:0; pointer-events:none; }   /* V0.05.71 : petite carte (champ de bataille), centrée sous le doigt */
   .btl-float{ pointer-events:none; transform-origin:50% 50% !important; animation:btlBob 1.5s ease-in-out infinite; filter:drop-shadow(0 8px 10px rgba(0,0,0,.6)) drop-shadow(0 0 8px rgba(255,255,255,.35)); }
   @keyframes btlBob{ 0%,100%{ transform:translateY(-6px) scale(1.13); } 50%{ transform:translateY(-10px) scale(1.16); } }
   .btl-p{ position:fixed; margin:-3px 0 0 -3px; border-radius:2px; pointer-events:none; }
@@ -8295,7 +8297,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.70</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.71</b></div>
   </div>
 
     </div>
@@ -9334,9 +9336,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.70';
+var BUILD_VERSION = 'V0.05.71';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.71', items:[
+    'Glisser une carte de ta main sur le champ de bataille : dès qu\'elle passe la bordure du champ de bataille, elle prend l\'apparence de la petite carte sous ton doigt (et redevient grande si tu la ramènes sur ta main). Même geste qu\'avant.',
+  ] },
   { v:'V0.05.70', items:[
     'SONS : déplacement des cartes qui attaquent (un son sur 3, au hasard, au moment où la carte fonce sur sa cible), bouton FIN (au 2e appui, quand le tour se termine), vapeur des bouches d\'aération du champ de bataille (un son sur 4, au hasard) et pioche (un son sur 3, au hasard, pour chaque carte piochée par toi ou par l\'adversaire, calé sur la sortie de la carte du tiroir de la pioche).',
     'Distribution de départ : les cartes partent une par une, en alternance toi / adversaire, à un rythme régulier (au lieu de deux en même temps) : chaque carte a son propre son de pioche.',
@@ -23293,6 +23298,7 @@ function btlHandDown(ev){
     } else if(h.mode === 'drag'){
       h.fl.move(e.clientX, e.clientY - 40);
       if(h.c.tech){ btlTechDragMove(h, e); return; }   // V0.05.08
+      btlGhostForm(h, e.clientY - 40 < h.pb);   // V0.05.71 : petite carte dès que la carte passe la bordure du champ de bataille
       const si = btlSlotAtPoint(e.clientX, e.clientY - 20);
       BTL.el.querySelectorAll('.btl-slot.drop').forEach(s => s.classList.toggle('drop-cur', +s.dataset.i === si));
       h.si = si;
@@ -23304,11 +23310,17 @@ function btlHandDown(ev){
     h.fl.stop();
     BTL.el.querySelectorAll('.btl-slot.drop').forEach(s => s.classList.remove('drop', 'drop-cur'));
     const si = btlSlotAtPoint(e.clientX, e.clientY - 20), c = h.c, g = h.ghost;
-    const rect = btlRect(g);
+    const okSlot = !c.tech && si >= 0 && !BTL.S.p.slots[si] && BTL.mana.p >= 1 && canPlay();
+    let rect;
+    if(!c.tech && h.sm && okSlot){   // V0.05.71 : la carte posée est la petite carte, exactement là où elle est sous le doigt
+      const sp = g.querySelector('.btl-gh-sm'), un = sp && sp.querySelector('.btl-unit');
+      rect = btlRect(sp);
+      if(un){ g.innerHTML = ''; g.appendChild(un); g.style.width = rect.width + 'px'; g.style.height = rect.height + 'px'; }
+    } else { if(!c.tech) btlGhostForm(h, false, true); rect = btlRect(g); }
     BTL.hold = null;
     btlZoomHide();
     if(c.tech){ await btlTechRelease(h, c, g, rect, e); return; }   // V0.05.08
-    if(si >= 0 && !BTL.S.p.slots[si] && BTL.mana.p >= 1 && canPlay()){
+    if(okSlot){
       g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px'; g.style.position = 'fixed';
       try{ if(pvpOn()) await pvpPlayIntent(c, si, rect, g); else await btlPlay('p', c, si, rect, g); }catch(err){ if(err !== 'abort') console.error(err); }
     } else {
@@ -23329,7 +23341,13 @@ function btlDragStart(e){
   const sr = btlRect(btlSlotEl('p', 0)), gw = sr.width * 1.12, gh = gw * BTL_RATIO;
   const g = document.createElement('div'); g.className = 'btl-ghost';
   g.style.width = gw + 'px'; g.style.height = gh + 'px';
-  g.innerHTML = btlBigHtml(h.c);
+  if(h.c.tech) g.innerHTML = btlBigHtml(h.c);
+  else {   // V0.05.71 : la petite carte attend, cachée, au centre de la carte flottante (même point sous le doigt)
+    const sw = sr.width;
+    g.innerHTML = '<div class="btl-gh-big">' + btlBigHtml(h.c) + '</div><div class="btl-gh-sm" style="left:' + ((gw - sw) / 2).toFixed(1) + 'px;top:' + ((gh - sw) / 2).toFixed(1) + 'px;width:' + sw.toFixed(1) + 'px;height:' + sw.toFixed(1) + 'px"><div class="btl-unit">' + btlSmallHtml(h.c).replace(/ can-act can-atk( can-dfn)?/, '') + '</div></div>';
+    btlPaintIn(g.querySelector('.btl-gh-sm'), h.c);
+    h.gk = sw / gw; h.sm = false; h.pb = btlRect(btlQ('#btlPlate')).bottom;   // bordure du champ de bataille (bas de la plaque)
+  }
   btlQ('#btlFx').appendChild(g);
   h.ghost = g; h.fl = floatGhostStart(g, gw / 2, gh / 2, e.clientX, e.clientY - 40, 1.03);
   const hc = btlQ('#btlHand [data-uid="' + h.c.uid + '"]'); if(hc) hc.style.opacity = '.25';
@@ -23337,6 +23355,17 @@ function btlDragStart(e){
   btlQ('#btlBlur').classList.remove('on');
   if(h.c.tech){ btlTechDragOn(h.c); return; }   // V0.05.08 : une Tech ne vise pas un emplacement
   BTL.S.p.slots.forEach((c, i) => { if(!c) btlSlotEl('p', i).classList.add('drop'); });
+}
+// V0.05.71 : la carte glissée change d'apparence sous le doigt : petite carte au-dessus du champ de bataille, grande carte au-dessus de la main
+function btlGhostForm(h, sm, now){
+  if(!h || !h.ghost || !!h.sm === !!sm) return;
+  const big = h.ghost.querySelector('.btl-gh-big'), sp = h.ghost.querySelector('.btl-gh-sm'); if(!big || !sp) return;
+  h.sm = !!sm; btlClearAnims(big); btlClearAnims(sp);
+  if(now){ big.style.opacity = sm ? '0' : '1'; sp.style.opacity = sm ? '1' : '0'; return; }
+  const k = h.gk || .8, o = { duration:130, easing:'cubic-bezier(.2,.8,.3,1)', fill:'both' };
+  big.style.opacity = ''; sp.style.opacity = '';
+  big.animate(sm ? [{ opacity:1, transform:'scale(1)' }, { opacity:0, transform:'scale(' + k + ')' }] : [{ opacity:0, transform:'scale(' + k + ')' }, { opacity:1, transform:'scale(1)' }], o);
+  sp.animate(sm ? [{ opacity:0, transform:'scale(' + (1 / k) + ')' }, { opacity:1, transform:'scale(1)' }] : [{ opacity:1, transform:'scale(1)' }, { opacity:0, transform:'scale(' + (1 / k) + ')' }], o);
 }
 // ----- maintien sur une petite carte du terrain : grande carte tant que le doigt reste appuyé -----
 const BTL_HOLD_MS = 260;
