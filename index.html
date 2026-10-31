@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.76</title>
+<title>Projet MECA V0.05.77</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8323,7 +8323,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.76</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.77</b></div>
   </div>
 
     </div>
@@ -8731,12 +8731,18 @@ window.addEventListener('pagehide', () => { try{ const j = JSON.parse(localStora
 function crashBootCheck(){   // au démarrage : un combat était en cours à la dernière seconde connue ?
   if(CRASH.booted) return; CRASH.booted = true;
   try{
-    const j = JSON.parse(localStorage.getItem(CRASH_LIVE_KEY) || 'null'); localStorage.removeItem(CRASH_LIVE_KEY);
+    const j = JSON.parse(localStorage.getItem(CRASH_LIVE_KEY) || 'null');
     if(!j || !j.t) return;
     const age = Date.now() - j.t;
-    if(j.left || age > 6 * 3600e3) return;          // le joueur a quitté la page lui-même (fermeture, rechargement volontaire) ou très vieux témoin
-    const kind = j.hidden ? 'VEIL' : 'FERM';
-    crashReport(kind, '', { battle:j.battle, mem:j.mem, log:j.log, info:'dernier signe de vie ' + Math.round(age / 1000) + ' s avant le redémarrage, version ' + j.ver });
+    const go = () => {
+      localStorage.removeItem(CRASH_LIVE_KEY);
+      if(j.left || age > 6 * 3600e3) return;          // le joueur a quitté la page lui-même (fermeture, rechargement volontaire) ou très vieux témoin
+      const kind = j.hidden ? 'VEIL' : 'FERM';
+      crashReport(kind, '', { battle:j.battle, mem:j.mem, log:j.log, info:'dernier signe de vie ' + Math.round(age / 1000) + ' s avant le redémarrage, version ' + j.ver });
+    };
+    // V0.05.77 : témoin récent = peut-être un AUTRE onglet encore en combat (un onglet caché ne bat qu'une fois par minute) : on regarde s'il bat encore
+    if(age < 90000 && !j.left){ setTimeout(() => { try{ const j2 = JSON.parse(localStorage.getItem(CRASH_LIVE_KEY) || 'null'); if(j2 && j2.t !== j.t) return; go(); }catch(_){} }, 65000); return; }
+    go();
   }catch(_){}
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(crashBootCheck, 1500)); else setTimeout(crashBootCheck, 1500);
@@ -9042,8 +9048,14 @@ function econShowDown(code, retryFn){
 }
 function econHideDown(){ ECON.downOpen = false; const el = document.getElementById('econDownModal'); if(el) el.classList.remove('show'); }
 // La session n'est plus valable (jeton refusé et impossible à renouveler) : retour à la fenêtre de connexion
+// V0.05.77 : reconnexion après une session expirée : on repart d'une page neuve (aucune donnée de l'ancienne session gardée en mémoire)
+function econRelogReload(){
+  let stored = false; try{ stored = !!localStorage.getItem(SUPA_SESSION_KEY); }catch(_){}
+  if(ECON.relog && stored){ location.reload(); return true; }
+  return false;
+}
 function econAuthLost(){
-  ECON.ready = false; ECON.version = -1;
+  ECON.ready = false; ECON.version = -1; ECON.relog = true;   // V0.05.77
   try{ writeSupaSession(null); }catch(_){}
   cloud.uid = null; cloud.email = null; cloud.status = 'unavailable';
   econHideDown();
@@ -9349,7 +9361,16 @@ function econBattleLate(res){
 }
 
 // Fin du démarrage (compte relié et progression chargée) : lien de récupération de mot de passe, sinon choix du nom si le compte est neuf, sinon nouveautés de la version.
+// V0.05.77 : cartes du tutoriel pas reçues (réseau coupé à la fin) : redemandées (le serveur ne les donne qu'une fois)
+var TUTO_DUE = false;
+async function econTutoRetry(){
+  let due = TUTO_DUE; try{ due = due || localStorage.getItem('meca_tuto_due') === '1'; }catch(_){}
+  if(!due || !ECON.ready) return;
+  const r = await econAct('tutorial_complete', {}, { quiet:true, render:'full' });
+  if(r && r.ok){ TUTO_DUE = false; try{ localStorage.removeItem('meca_tuto_due'); }catch(_){} if(r.result && r.result.first) showToast('CARTES DU TUTORIEL REÇUES'); }
+}
 function econAfterBoot(){
+  setTimeout(econTutoRetry, 2500);
   setTimeout(() => { econBattleFlush().then(res => { if(res) econBattleLate(res); }, () => {}); }, 1200);   // bande de combat restée en attente (réseau coupé à la fin du combat précédent)
   if(typeof nmRecoveryTokens !== 'undefined' && nmRecoveryTokens){ nmOpenNewPass(); return; }
   if(ECON.needName){
@@ -9362,9 +9383,20 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.76';
+var BUILD_VERSION = 'V0.05.77';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.77', items:[
+    'Sauvegarde plus sûre : deux téléphones (ou deux onglets) sur le même compte ne s\'écrasent plus leurs decks, et un démarrage sans réseau ne peut plus effacer ta sauvegarde.',
+    'Quitter un combat pendant une animation n\'affiche plus de fausse fenêtre d\'erreur.',
+    'Combat : quand l\'écran change de taille (rotation, barre du navigateur), le champ de bataille n\'est plus redessiné en double. Moins de calcul et de batterie.',
+    'Combat : si le chrono tombe pendant un effet (Appel, module, Tech), le tour se termine bien ; plus possible de poser une carte après la fin du temps.',
+    'PvP : la recherche d\'adversaire s\'arrête si tu quittes l\'appli. Un match perdu par le serveur affiche un message et te ramène au menu.',
+    'Défis : l\'aperçu des récompenses annonçait un booster de modules ; c\'est bien un booster de cartes qui est donné.',
+    'Boosters : un glisser interrompu (appel, retour à l\'accueil) est annulé proprement.',
+    'Fin du tutoriel : si le réseau coupe, les cartes offertes sont redemandées automatiquement.',
+    'Batterie : moins de requêtes réseau en arrière-plan, son mis en veille quand la musique est coupée, néons repeints moins souvent.',
+  ] },
   { v:'V0.05.76', items:[
     'Jeu plus léger (-700 Ko) : les nouveaux fonds de combat sont chargés depuis le serveur.',
   ] },
@@ -11340,6 +11372,7 @@ function musSfx(rar, at){   // at (V0.05.70) : départ différé de at secondes 
   const m = MUS, f = m.sfx; if(!m.ctx || !f.gain || !f.buf[rar] || document.hidden || (SETTINGS.vfx || 0) <= 0) return;
   const go = () => { f.gain.gain.value = Math.max(0, Math.min(1, SETTINGS.vfx / 100)); const so = m.ctx.createBufferSource(); so.buffer = f.buf[rar]; const lv = f.lvl && f.lvl[rar]; if(lv){ const g = m.ctx.createGain(); g.gain.value = lv; so.connect(g); g.connect(f.gain); } else so.connect(f.gain); so.start(at > 0 ? m.ctx.currentTime + at : 0, (f.off && f.off[rar]) || 0); };
   if(m.ctx.state === 'running') go(); else m.ctx.resume().then(go).catch(() => {});
+  if(!musMode()){ clearTimeout(m.sfxT); m.sfxT = setTimeout(() => { if(!musMode()) musSync(); }, 2500 + (at > 0 ? at * 1000 : 0)); }   // V0.05.77 : remise en veille
 }
 // carte détruite : un des trois sons au hasard
 function musDie(){ musSfx('die' + (1 + Math.floor(Math.random() * 3))); }
@@ -11349,7 +11382,7 @@ function btlContactSound(el, t){
   const hit = r => r.left < tr.right + m && r.right > tr.left - m && r.top < tr.bottom + m && r.bottom > tr.top - m;
   const fire = () => { if(done) return; done = true; cancelAnimationFrame(raf); musAtk(); };
   if(hit(btlRect(el))) return { fire };   // déjà au contact au départ : le son part à l'impact final
-  const tick = () => { if(done) return; if(hit(btlRect(el))) fire(); else raf = requestAnimationFrame(tick); };
+  let nf = 0; const tick = () => { if(done) return; if(!BTL || BTL.abort || !el.isConnected || ++nf > 240){ done = true; return; } if(hit(btlRect(el))) fire(); else raf = requestAnimationFrame(tick); };   // V0.05.77 : jamais de boucle sans fin
   raf = requestAnimationFrame(tick);
   return { fire };
 }
@@ -16272,6 +16305,10 @@ function endBoostDrag(ev){
 }
 document.addEventListener('pointerup', endBoostDrag);
 document.addEventListener('pointercancel', endBoostDrag);
+// V0.05.77 : geste perdu (appel entrant, appli mise en arrière-plan) : le glisser est annulé
+window.addEventListener('blur', () => { if(boostDrag) endBoostDrag(null); });
+window.addEventListener('touchcancel', () => { if(boostDrag) endBoostDrag(null); }, true);
+document.addEventListener('visibilitychange', () => { if(document.hidden && boostDrag) endBoostDrag(null); });
 // ---------- Ouverture + révélation (pentagone, même géométrie que teamStarHtml()) ----------
 function boostPentagonPos(i){
   const a = (-90 + i * 72) * Math.PI / 180;
@@ -17715,7 +17752,7 @@ function dragGhostSweep(){
     ['deckRight', 'deckLeft'].forEach(id => { const e = document.getElementById(id); if(e) e.classList.remove('drop-ok'); });
     document.querySelectorAll('#deckView .dragging, .boost-box.dragging').forEach(e => e.classList.remove('dragging'));
     if(typeof collDrag !== 'undefined' && collDrag){ try{ if(collDrag.fl) collDrag.fl.stop(); }catch(_){} collDrag = null; }
-    if(typeof boostDrag !== 'undefined' && boostDrag){ try{ if(boostDrag.fl) boostDrag.fl.stop(); }catch(_){} boostDrag = null; }
+    if(typeof boostDrag !== 'undefined' && boostDrag){ try{ if(boostDrag.fl) boostDrag.fl.stop(); if(boostDrag.bq) BCUBE.dragCancel(); }catch(_){} boostDrag = null; }
   }catch(_){}
 }
 ['pointerup', 'pointercancel'].forEach(t => window.addEventListener(t, e => setTimeout(() => {   // relâchement reçu ailleurs que sur la carte d'origine : l'aperçu de CE doigt est supprimé
@@ -20145,6 +20182,9 @@ async function pvpQueueOpen(d){
   }
   return false;
 }
+document.addEventListener('visibilitychange', () => {   // V0.05.77
+  if(document.hidden && PVPQ && !PVPQ.cancelled){ PVPQ.bg = true; pvpQueueCancel(); setTimeout(() => showToast('RECHERCHE PVP ANNULÉE (JEU EN ARRIÈRE-PLAN)'), 400); }
+});
 async function pvpQueueCancel(){
   const Q = PVPQ; if(!Q || Q.cancelled) return;
   Q.cancelled = true; try{ Q.ctl.abort(); }catch(_){}
@@ -20208,11 +20248,16 @@ async function pvpPoll(){
         P.waitingFinal = true;                                     // le serveur dit « terminé » sans nouvel événement : la fin est déjà passée, on la lit
         pvpFinish(r.body.win, r.body.why || 'leader');
       }
-    } else if(r.status === 404){ pvpWarn('match introuvable'); P.stop = true; return; }
+    } else if(r.status === 404){ pvpWarn('match introuvable'); pvpLost(P); return; }
     else { P.fails++; await pvpSleep(Math.min(3000, 400 * P.fails)); }
     }catch(e){ dg.err = String(e && e.stack || e).slice(0, 400); console.warn('[PVP] erreur dans la réception', e); await pvpSleep(500); }
   }
   dg.st = 'sorti';
+}
+// V0.05.77 : le serveur ne connaît plus ce match : on prévient et on sort au lieu de rester figé
+function pvpLost(P){
+  pvpStop();
+  if(BTL && !BTL.over && BTL.d && BTL.d.pvp === P){ showToast('MATCH INTERROMPU PAR LE SERVEUR'); setTimeout(() => { if(BTL && BTL.d && BTL.d.pvp === P && !BTL.over) btlExit(); }, 2500); }
 }
 function pvpStop(){
   const P = PVPC; if(!P) return;
@@ -21593,6 +21638,7 @@ function btlCircuit(){
   const W = Math.round(br.width), H = Math.round(br.height); if(W < 50) return;
   svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   const top = pr.top - br.top, bot = pr.bottom - br.top, my = mr.top - br.top + mr.height / 2, cx = W / 2;
+  { const ck = [W, H, Math.round(top), Math.round(bot), Math.round(my)].join(); if(BTL.cKey === ck) return; BTL.cKey = ck; }   // V0.05.77 : même taille -> rien à refaire
   const rel = e => { const r = e.getBoundingClientRect(); return { x:r.left - br.left, y:r.top - br.top, w:r.width, h:r.height }; };
   const sl = Array.from(BTL.el.querySelectorAll('.btl-slot:not(.leader)')).map(e => Object.assign(rel(e), { side:e.dataset.side }));
   const ld = Array.from(BTL.el.querySelectorAll('.btl-slot.leader')).map(e => Object.assign(rel(e), { side:e.dataset.side }));
@@ -22097,11 +22143,11 @@ function btlStart(d){
   btlCircuit();
   btlRenderPile('p', 0); btlRenderPile('o', 0); btlRenderMana(); btlRenderHand(); btlRenderOHand();
   ['p', 'o'].forEach(sd => { const c = BTL.S[sd].leader; btlPutCard(c); btlSlotOf(c).classList.add('lead-on'); });   // V0.04.66 : les chefs d'escouade sont déjà en place dès le lancement du combat (plus de sortie de pile)
-  BTL.onResize = () => { btlRenderArrows(); btlCircuit(); };
+  BTL.onResize = () => { btlRenderArrows(); clearTimeout(BTL.rsT); BTL.rsT = setTimeout(() => { if(BTL) btlCircuit(); }, 200); };   // V0.05.77 : regroupé
   window.addEventListener('resize', BTL.onResize);
   btlWire();
   btlModMount();
-  btlRun().catch(e => { if(e !== 'abort'){ console.error(e); crashReport('BTL', e); } });   // V0.05.65 : la boucle du combat s'arrête sur une erreur -> fenêtre de rapport
+  const Bst = BTL; btlRun().catch(e => { if(e === 'abort' || Bst.abort || BTL !== Bst) return; console.error(e); crashReport('BTL', e); });   // V0.05.77 : combat quitté pendant une animation -> pas de fausse fenêtre   // V0.05.65 : la boucle du combat s'arrête sur une erreur -> fenêtre de rapport
 }
 function btlExit(){
   if(!BTL) return;
@@ -22551,6 +22597,7 @@ async function tutoFinish(winner){
   if(won){
     const r = await econAct('tutorial_complete', {}, { quiet:true, render:'full' });
     if(r && r.ok && r.result) items = econItems(r.result.items);
+    else { try{ localStorage.setItem('meca_tuto_due', '1'); }catch(_){} TUTO_DUE = true; showToast('CARTES DU TUTORIEL EN ATTENTE : RÉSEAU'); setTimeout(econTutoRetry, 20000); }   // V0.05.77
   }
   if(BTL !== B0) return;
   const rm = document.getElementById('rewardModal');
@@ -23081,7 +23128,7 @@ function btlLightsTo(t, b, ms){
     if(!BTL || BTL.lgTok !== tok) return;
     const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 2);
     L.t = ft.map((v, i) => v + (t[i] - v) * e); L.b = fb.map((v, i) => v + (b[i] - v) * e);
-    if(BTL.pt) BTL.pt.paint(); btlLgVars();
+    if(BTL.pt && (k >= 1 || now - (BTL.lgPaint || 0) >= 30)){ BTL.lgPaint = now; BTL.pt.paint(); } btlLgVars();   // V0.05.77 : 30 repeintes / s
     if(k < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -23099,6 +23146,7 @@ function btlPlateTex(body, g, top){
     const dpr = Math.min(3, window.devicePixelRatio || 1), ext = 36, plate = btlQ('#btlPlate'); if(!plate) return;
     const sty = BTL.field || (BTL.field = btlPickField());
     if(BTL.lgF !== sty){ BTL.lgF = sty; BTL.lg = { t:btlLgBase().t.slice(), b:btlLgBase().b.slice() }; }
+    body.querySelectorAll('.pc-tx, .pc-lc, .pc-fl').forEach(e => e.remove());   // V0.05.77 : l'ancien plateau est retiré (avant : empilé à chaque redimensionnement)
     const R = btlPlateGen(g.G, dpr, sty), Wd = R.Wd, Hd = R.Hd;
     const mk = (cls, y, h) => { const c = document.createElement('canvas'); c.className = cls; c.width = Wd; c.height = Math.round(h * dpr); c.style.cssText = 'top:' + (top - ext + y) + 'px;height:' + h + 'px;'; return c; };
     const hm = Math.round((g.mid1 + g.mid2) / 2 * dpr) / dpr + ext, hmd = Math.round(hm * dpr);
@@ -23217,7 +23265,7 @@ async function btlPlay(side, c, si, fromRect, el){
   } finally {
     if(BTL){
       BTL.fxBusy--;
-      if(wasPlan && BTL.phase === 'fx' && !BTL.over){ BTL.phase = 'plan'; if(!BTL.timeUp) btlSetEnd(true); btlRefreshCan(); }
+      if(wasPlan && BTL.phase === 'fx' && !BTL.over && !BTL.timeUp){ BTL.phase = 'plan'; btlSetEnd(true); btlRefreshCan(); }
     }
   }
 }
@@ -30027,7 +30075,7 @@ async function btlModuleUse(side, pre, rep){
     ks.forEach(x => btlXOff(x));
     if(BTL){
       BTL.fxBusy--;
-      if(wasPlan && BTL.phase === 'fx' && !BTL.over){ BTL.phase = 'plan'; if(!BTL.timeUp) btlSetEnd(true); btlRefreshCan(); }
+      if(wasPlan && BTL.phase === 'fx' && !BTL.over && !BTL.timeUp){ BTL.phase = 'plan'; btlSetEnd(true); btlRefreshCan(); }
     }
   }
 }
@@ -32616,7 +32664,7 @@ async function btlTechUse(side, c, pre, fromRect, el, rep){
     ks.forEach(x => btlXOff(x));
     if(BTL){
       BTL.fxBusy--;
-      if(wasPlan && BTL.phase === 'fx' && !BTL.over){ BTL.phase = 'plan'; if(!BTL.timeUp) btlSetEnd(true); btlRefreshCan(); }
+      if(wasPlan && BTL.phase === 'fx' && !BTL.over && !BTL.timeUp){ BTL.phase = 'plan'; btlSetEnd(true); btlRefreshCan(); }
     }
   }
 }
@@ -33873,15 +33921,15 @@ const DEFI_REWARDS = [
   { gold:80,   xp:40,  mat:{ rare:3 }, booster:'res', boosterN:1 },
   { gold:100,  xp:50,  mat:{ rare:4, epique:1 } },
   { gold:125,  xp:62,  mat:{ rare:4, epique:2 }, booster:'cards', boosterN:1 },
-  { gold:200,  xp:100, crystal:15, mat:{ rare:5, epique:3 }, booster:'modules', boosterN:1 },
+  { gold:200,  xp:100, crystal:15, mat:{ rare:5, epique:3 }, booster:'cards', boosterN:1 },
   { gold:170,  xp:85,  mat:{ rare:5, epique:3, legendaire:1 } },
   { gold:210,  xp:105, mat:{ rare:6, epique:4, legendaire:1 }, booster:'res', boosterN:2 },
   { gold:255,  xp:128, mat:{ epique:5, legendaire:2 } },
   { gold:300,  xp:150, mat:{ epique:6, legendaire:2 }, booster:'cards', boosterN:2 },
-  { gold:500,  xp:250, crystal:40, mat:{ epique:8, legendaire:4 }, booster:'modules', boosterN:2 },
+  { gold:500,  xp:250, crystal:40, mat:{ epique:8, legendaire:4 }, booster:'cards', boosterN:2 },
   { gold:900,  xp:420, crystal:60, mat:{ epique:10, legendaire:6 }, booster:'res', boosterN:3 },
   { gold:1400, xp:640, crystal:90, mat:{ epique:12, legendaire:8 }, booster:'cards', boosterN:3 },
-  { gold:2200, xp:950, crystal:150, mat:{ epique:15, legendaire:12 }, booster:'modules', boosterN:4 }
+  { gold:2200, xp:950, crystal:150, mat:{ epique:15, legendaire:12 }, booster:'cards', boosterN:4 }
 ];
 
 // Filtre d'affichage du hub DÉFI (V0.03.53, demande d'Alex) : le bouton ULTIMATE n'ouvre PAS un accès
@@ -34639,6 +34687,7 @@ function renderAccountStatus(){
     busy(true); setMsg('Connexion…');
     try{
       await supaSignIn(email, pass);
+      if(econRelogReload()) return;   // V0.05.77
       await connectCloud();
       showToast('CONNECTÉ');
     }catch(e){ setMsg(supaErrMsg(e), true); busy(false); }
@@ -35108,6 +35157,8 @@ function frInboxApply(inv){
 }
 async function frInboxTick(){
   if(document.hidden || FR.inboxBusy || !frReady()) return;
+  { const near = FR.inv || ['friendsView', 'playerView'].some(id => { const e = document.getElementById(id); return e && e.classList.contains('active'); });   // V0.05.77
+    if(!near && Date.now() - (FR.inboxAt || 0) < 12000) return; FR.inboxAt = Date.now(); }
   if(typeof nameModalFirst !== 'undefined' && nameModalFirst) return;
   if(frBusy()){ if(FR.inv && FR.inv.step === 'ask'){ FR.inv = null; frInvHide(); } return; }   // un combat commence : on n'interrompt pas
   FR.inboxBusy = true;
@@ -35162,11 +35213,14 @@ var restoring = false;
 var SUPA_URL = 'https://okrdywhctnlayyfltivc.supabase.co';
 var SUPA_KEY = 'sb_publishable_UHoyTs2vc99pPncWU9uuwQ_SFhw7bPy';
 var SUPA_SESSION_KEY = 'projetMeta.supaSession';
+var SUPA_MEM = null;   // V0.05.77 : copie en mémoire (navigateur qui bloque le stockage local)
 function readSupaSession(){
-  try{ const r = localStorage.getItem(SUPA_SESSION_KEY); return r ? JSON.parse(r) : null; }catch(_){ return null; }
+  try{ const r = localStorage.getItem(SUPA_SESSION_KEY); if(r) return JSON.parse(r); }catch(_){}
+  return SUPA_MEM;
 }
 function writeSupaSession(s){
   try{
+    SUPA_MEM = s || null;
     if(!s){ localStorage.removeItem(SUPA_SESSION_KEY); return; }
     if(s.expires_in && !s.expires_at) s.expires_at = Math.floor(Date.now() / 1000) + s.expires_in;
     localStorage.setItem(SUPA_SESSION_KEY, JSON.stringify(s));
@@ -35259,12 +35313,19 @@ function escapeHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;',
 
 // Date du record : toujours renvoyer une Date valide, même si la sauvegarde en ligne
 // contient une chaîne ou une date vide (sinon toute la sauvegarde échouait en silence).
+var SAVE_SIG = null, SAVE_AT = 0, SAVE_PUSHED = null;   // V0.05.77 : contenu (sans la date), date de sa dernière vraie modification, contenu déjà en ligne
 function serializeSave(){
+  const d = saveData(), sig = JSON.stringify(d);
+  if(sig !== SAVE_SIG){ SAVE_SIG = sig; SAVE_AT = Date.now(); }
+  d.savedAt = SAVE_AT;
+  return d;
+}
+function saveData(){
   // V0.05.00 : la sauvegarde ne contient plus que l'interface (équipe, decks, rangement, réglages, pastilles) -- jamais une ressource ni une carte.
   return {
     v: 2,
     uid: cloud.uid || null,
-    savedAt: Date.now(),
+    savedAt: 0,
     player: { lastSeenVersion: player.lastSeenVersion },
     unseen: CHAR_DEFS.filter(d => !d.seen).map(d => d.name),
     notif: JSON.parse(JSON.stringify(notif)),
@@ -35367,18 +35428,22 @@ async function saveNow(routine){
   }
   clearTimeout(cloud.deferT); cloud.deferT = null;
   if(cloud.writing){ cloud.again = true; return; }   // une écriture à la fois
+  const sig = SAVE_SIG;
+  if(cloud.remoteOk === false && await cloudPull()) return;            // V0.05.77 : la copie en ligne n'a pas pu être lue : on la relit AVANT d'écrire (jamais d'écrasement à l'aveugle)
+  if(cloud.remoteOk === false) return;
+  if(sig === SAVE_PUSHED && cloud.status === 'online') return;          // V0.05.77 : rien n'a changé depuis le dernier envoi
   cloud.writing = true;
   cloud.pushAt = Date.now();
   try{
     await cloudSet(cloud.uid, 'save', data);
     cloud.lastSave = new Date();
-    cloud.status = 'online';
+    cloud.status = 'online'; SAVE_PUSHED = sig;
   }catch(e){
     if(e && e.status === 401){
       // jeton expiré en cours de partie : on tente un rafraîchissement puis un seul nouvel essai
       const sess = await supaRefresh();
       if(sess){
-        try{ await cloudSet(cloud.uid, 'save', data); cloud.lastSave = new Date(); cloud.status = 'online'; }
+        try{ await cloudSet(cloud.uid, 'save', data); cloud.lastSave = new Date(); cloud.status = 'online'; SAVE_PUSHED = sig; }
         catch(_){ cloud.status = 'error'; }
       } else if(!readSupaSession()){ cloud.writing = false; econAuthLost(); return; }
       else cloud.status = 'offline';
@@ -35391,6 +35456,17 @@ async function saveNow(routine){
   if(cloud.again){ cloud.again = false; saveNow(); }
 }
 
+// V0.05.77 : relit la copie en ligne ; si elle est plus récente que ce que cet appareil a modifié, on la prend (decks faits sur un autre appareil)
+async function cloudPull(){
+  if(!cloud.uid || restoring) return false;
+  let rm; try{ rm = await cloudGet(cloud.uid, 'save'); cloud.remoteOk = true; }catch(_){ return false; }
+  if(!rm || (rm.savedAt || 0) <= (SAVE_AT || 0)) return false;
+  if(typeof BTL !== 'undefined' && BTL) return false;
+  if(['deckView', 'collectionView'].some(id => { const e = document.getElementById(id); return e && e.classList.contains('active'); })) return false;   // pas en pleine édition
+  if(!applySave(rm)) return false;
+  SAVE_SIG = JSON.stringify(saveData()); SAVE_AT = rm.savedAt; SAVE_PUSHED = SAVE_SIG; writeLocalSave(serializeSave());
+  return true;
+}
 async function connectCloud(){
   cloud.status = 'checking';
   // Tout le corps est protégé par un seul try/catch : la fonction ne doit JAMAIS remonter
@@ -35403,15 +35479,17 @@ async function connectCloud(){
     const r = await econAct('bootstrap', {}, { boot:true, quiet:true, render:'none' });
     if(!r.ok){ cloud.status = (r.error === 'unauthorized') ? 'unavailable' : 'error'; return false; }
     // Réglages et équipes : la copie la plus récente entre celle du compte (en ligne) et celle de cet appareil (seulement si elle est bien celle de CE compte)
-    let remote = null; try{ remote = await cloudGet(uid, 'save'); }catch(_){}
+    let remote = null; cloud.remoteOk = true; try{ remote = await cloudGet(uid, 'save'); }catch(_){ cloud.remoteOk = false; }   // V0.05.77 : échec noté -> pas d'envoi tant qu'on n'a pas relu
     const local = readLocalSave();
     let best = null;
     [remote, (local && local.uid === uid) ? local : null].filter(Boolean).forEach(c => { if(!best || (c.savedAt || 0) > (best.savedAt || 0)) best = c; });
     if(best) applySave(best);
+    SAVE_SIG = null; SAVE_PUSHED = null;
     if(!squad.some(Boolean)){ squad = CHAR_DEFS.filter(c => isOwned(c)).map(c => sqKey(c.name, effRarity(c))).slice(0, 5); while(squad.length < 5) squad.push(null); }
     ECON.needName = (player.name === 'COMMANDANT');   // nom encore par défaut : on le demande
     nmGateIsNewPlayer = ECON.needName;
     cloud.uid = uid; cloud.email = email;             // branché en dernier : tant que l'interface n'est pas chargée, saveNow() n'écrit rien
+    serializeSave(); SAVE_AT = (best && best.savedAt) || (cloud.remoteOk === false ? 0 : Date.now());   // V0.05.77 : la sauvegarde garde sa vraie date (pas « maintenant ») ; rien de lu -> la copie en ligne gagnera
     cloud.status = 'online';
     econRenderAll('full');
     if(!nmGateActive && !ECON.needName){ nameModalFirst = false; closeNameModal(true); }
@@ -35639,6 +35717,7 @@ function nmGateGoToNameStep(){
     try{
       if(nmGateMode === 'login'){
         await supaSignIn(email, pass);
+        if(econRelogReload()) return;   // V0.05.77
         await connectCloud();
         if(cloud.status !== 'online'){ setMsg('Connexion au compte impossible pour le moment. Réessaie.', true); busy(false); return; }
         // Connexion réussie sur un compte existant : le joueur retrouve directement sa partie, pas d'étape en plus.
@@ -36018,8 +36097,11 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
     }
   } else econAfterBoot();
   // Le temps de jeu est compté par le serveur ; les équipes et réglages sont sauvegardés régulièrement et quand on quitte l'app
-  setInterval(() => saveNow(), 60000);
-  document.addEventListener('visibilitychange', () => { if(document.hidden) saveNow(); });
+  setInterval(() => { if(!document.hidden) saveNow(); }, 60000);   // V0.05.77 : rien n'est envoyé si rien n'a changé
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){ saveNow(); return; }
+    if(Date.now() - (cloud.pullAt || 0) > 10000){ cloud.pullAt = Date.now(); cloudPull(); }   // V0.05.77 : retour sur le jeu : on reprend ce qui a été fait sur un autre appareil
+  });
 })();
 
 // V0.05.65 : journal des dernières actions du combat pour le rapport de plantage (enveloppes, aucun changement de comportement)
