@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.77</title>
+<title>Projet MECA V0.05.78</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7142,6 +7142,7 @@
   .btl-ar2.ult{ --a:#ffc02e; --b:#ffe8a0; --c:#fffbe8; }
   .btl-ar2.heal{ --a:#37d67a; --b:#a6f2c6; --c:#effff6; }
   .btl-ar2.fx{ --a:#ff8a1f; --b:#ffd09a; --c:#fff6ea; }
+  .btl-ar2.tech{ --a:#23e866; --b:#9dffbf; --c:#f0fff5; }   /* V0.05.78 : trait vert d'une Tech qui vise */
   .btl-ar2 .s0{ stop-color:var(--a); stop-opacity:.28; } .btl-ar2 .s2{ stop-color:var(--a); stop-opacity:.9; } .btl-ar2 .s1{ stop-color:var(--b); stop-opacity:1; }
   .btl-ar2 path, .btl-ar2 polygon, .btl-ar2 circle{ pointer-events:none; }
   .btl-ar2 .glo{ fill:none; stroke:var(--a); stroke-width:15; stroke-linecap:round; opacity:.16; }
@@ -8323,7 +8324,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.77</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.78</b></div>
   </div>
 
     </div>
@@ -9383,9 +9384,12 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.77';
+var BUILD_VERSION = 'V0.05.78';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.78', items:[
+    'Tech qui visent une carte (PRÉPARATION, POSITRON, HÉROS ENGAGÉ, SOUS PRESSION) : en glissant, la carte s\'arrête au bord du champ de bataille et un trait vert part d\'elle jusqu\'à la cible, comme les flèches d\'attaque et de défense. Relâche sur la cible pour jouer la Tech, ailleurs pour la reprendre en main.',
+  ] },
   { v:'V0.05.77', items:[
     'Sauvegarde plus sûre : deux téléphones (ou deux onglets) sur le même compte ne s\'écrasent plus leurs decks, et un démarrage sans réseau ne peut plus effacer ta sauvegarde.',
     'Quitter un combat pendant une animation n\'affiche plus de fausse fenêtre d\'erreur.',
@@ -21168,6 +21172,12 @@ function btlRenderArrowsNow(){
       want.set('tg', { kind:tg.kind, a:{ x:ax, y:ay }, b:{ x:tg.x, y:tg.y }, mk:Math.max(0, Math.min(1, (ay - tg.y) / 70)), dir:-1, lock:false, rate:30, intro:220, n:nTg });
     }
   }
+  const th = BTL.hold && BTL.hold.tech;   // V0.05.78 : trait vert d'une Tech qui vise (carte bloquée au bord du champ de bataille)
+  if(th && th.aim && th.blk){
+    const cr = { left:th.bx - th.gw / 2, top:th.lim - th.gh / 2, width:th.gw, height:th.gh }; cr.right = cr.left + cr.width; cr.bottom = cr.top + cr.height;
+    if(th.over && th.over.hp > 0){ const n = btlArAnch(cr, btlUnitRect(th.over), 'atk'); want.set('tech', { kind:'tech', a:{ x:n.x0, y:n.y0 }, b:{ x:n.x1, y:n.y1 }, mk:n.mk, dir:n.dir, lock:true, rate:14, intro:220 }); }
+    else want.set('tech', { kind:'tech', a:{ x:th.bx, y:cr.top }, b:{ x:th.x, y:th.y }, mk:Math.max(0, Math.min(1, (cr.top - th.y) / 70)), dir:-1, lock:false, rate:30, intro:220 });
+  }
   btlArSync(want);
   btlRenderMarks();
 }
@@ -23448,8 +23458,8 @@ function btlHandDown(ev){
       const i = btlHandIdxAt(e.clientX);
       if(i !== h.idx && i >= 0 && Math.abs(e.clientX - h.x0) > Math.abs(e.clientY - h.y0)){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }   // V0.05.04 : un glissé vers le haut (même en diagonale) garde la carte touchée
     } else if(h.mode === 'drag'){
+      if(h.c.tech){ btlTechDragMove(h, e); return; }   // V0.05.08 ; V0.05.78 : la Tech place la carte (bloquée au bord du champ de bataille si elle vise)
       h.fl.move(e.clientX, e.clientY - 40);
-      if(h.c.tech){ btlTechDragMove(h, e); return; }   // V0.05.08
       btlGhostForm(h, e.clientY - 40 < h.pb);   // V0.05.71 : petite carte dès que la carte passe la bordure du champ de bataille
       const si = btlSlotAtPoint(e.clientX, e.clientY - 20);
       BTL.el.querySelectorAll('.btl-slot.drop').forEach(s => s.classList.toggle('drop-cur', +s.dataset.i === si));
@@ -23505,7 +23515,7 @@ function btlDragStart(e){
   const hc = btlQ('#btlHand [data-uid="' + h.c.uid + '"]'); if(hc) hc.style.opacity = '.25';
   const z = btlQ('#btlZoom'); z.classList.remove('show');
   btlQ('#btlBlur').classList.remove('on');
-  if(h.c.tech){ btlTechDragOn(h.c); return; }   // V0.05.08 : une Tech ne vise pas un emplacement
+  if(h.c.tech){ btlTechDragOn(h.c, e); return; }   // V0.05.08 : une Tech ne vise pas un emplacement
   BTL.S.p.slots.forEach((c, i) => { if(!c) btlSlotEl('p', i).classList.add('drop'); });
 }
 // V0.05.71 : la carte glissée change d'apparence sous le doigt : petite carte au-dessus du champ de bataille, grande carte au-dessus de la main
@@ -30102,15 +30112,35 @@ function btlTechDeny(c){
   else btlDeny('target');   // V0.05.12 : plus de texte en combat (règle de la bataille) : les cases tremblent
 }
 // geste : la carte suit le doigt ; au-dessus de la main elle est « armée » ; une Tech qui vise doit être relâchée SUR une carte visable
-function btlTechDragOn(c){
+function btlTechDragOn(c, e){
   const h = BTL.hold, def = BTL_TECH_FX[c.name];
   h.tech = { def, cands:(def && def.mode !== 'none') ? def.cands('p').filter(t => t.hp > 0) : [], over:null, armed:false };
+  const T = h.tech; T.aim = !!(def && def.mode !== 'none'); T.blk = false; T.gl = false; T.x = 0; T.y = 0; T.bx = 0;   // V0.05.78
+  if(T.aim){ T.gw = (h.ghost && parseFloat(h.ghost.style.width)) || 80; T.gh = (h.ghost && parseFloat(h.ghost.style.height)) || 112; T.lim = btlRect(btlQ('#btlPlate')).bottom + T.gh * 1.07 / 2 + 2; }
   BTL.el.classList.add('tech-drag');
   BTL.xdmg = (def && def.mode === 'dmg') ? (def.n || 0) : 0;
   if(h.tech.cands.length) btlHighlight(h.tech.cands, true);
+  if(h.tech.aim && e) btlTechDragMove(h, e);   // V0.05.78 : jamais une image au-dessus du champ de bataille
 }
 function btlTechDragMove(h, e){
-  const T = h.tech; if(!T) return;
+  const T = h.tech; if(!T){ h.fl.move(e.clientX, e.clientY - 40); return; }
+  if(T.aim){   // V0.05.78 : Tech qui vise -- la carte se bloque au bord du champ de bataille ; le trait vert part d'elle et suit le doigt jusqu'à la cible
+    const cy = e.clientY - 40;
+    if(cy < T.lim){
+      if(!T.blk){ T.blk = true; T.gl = false; T.bx = Math.max(T.gw / 2 + 4, Math.min(innerWidth - T.gw / 2 - 4, e.clientX)); }
+      h.fl.move(T.bx, T.lim);
+      T.x = e.clientX; T.y = e.clientY - (e.pointerType === 'touch' ? 22 : 0);
+      const o = btlCardAt(T.cands, T.x, T.y, T.over); if(o !== T.over){ T.over = o; btlHighlight(T.cands, true, o); }
+    } else {
+      if(T.blk){ T.blk = false; T.gl = true; if(T.over){ T.over = null; btlHighlight(T.cands, true, null); } }
+      if(T.gl){ T.bx += (e.clientX - T.bx) * .35; if(Math.abs(e.clientX - T.bx) < 1.5) T.gl = false; }   // la carte rejoint le doigt en glissant (pas de saut)
+      h.fl.move(T.gl ? T.bx : e.clientX, cy);
+    }
+    T.armed = T.blk;
+    btlRenderArrows();
+    return;
+  }
+  h.fl.move(e.clientX, e.clientY - 40);
   const hr = btlRect(btlQ('#btlHand'));
   T.armed = e.clientY < hr.top - 6; BTL.el.classList.toggle('tech-armed', T.armed);
   if(T.cands.length){ const o = btlCardAt(T.cands, e.clientX, e.clientY - 20, T.over); if(o !== T.over){ T.over = o; btlHighlight(T.cands, true, o); } }
@@ -30121,13 +30151,14 @@ function btlTechDragOff(h){
   const T = h && h.tech;
   if(T && T.cands.length) btlHighlight(T.cands, false);
   BTL.xdmg = 0;
+  if(T && T.aim){ T.blk = false; btlRenderArrows(); }   // V0.05.78 : le trait vert s'efface
 }
 async function btlTechRelease(h, c, g, rect, e){
   const T = h.tech || { cands:[], def:BTL_TECH_FX[c.name] };
   btlTechDragOff(h);
-  const hr = btlRect(btlQ('#btlHand')), above = e.clientY < hr.top - 6;
+  const hr = btlRect(btlQ('#btlHand')), above = T.aim ? (e.clientY - 40 < T.lim) : e.clientY < hr.top - 6;   // V0.05.78 : Tech qui vise = carte bloquée au bord
   let ok = above && btlTechCanUse('p', c), pre = null;
-  if(ok && T.def && T.def.mode !== 'none'){ pre = btlCardAt(T.cands, e.clientX, e.clientY - 20, null); if(!pre) ok = false; }
+  if(ok && T.def && T.def.mode !== 'none'){ pre = T.aim ? btlCardAt(T.cands, e.clientX, e.clientY - (e.pointerType === 'touch' ? 22 : 0), T.over) : btlCardAt(T.cands, e.clientX, e.clientY - 20, null); if(!pre) ok = false; }
   let played = false;
   if(ok){
     g.style.transform = ''; g.style.left = rect.left + 'px'; g.style.top = rect.top + 'px'; g.style.position = 'fixed';
