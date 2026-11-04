@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.88</title>
+<title>Projet MECA V0.05.89</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6585,6 +6585,15 @@
   .cvw.err .cvw-err{display:block;} .cvw.err .cvw-load{display:none;}
   .cvw-hint{color:rgba(255,255,255,.55); font-size:11px; letter-spacing:1.4px; font-family:var(--font-title);}
   @keyframes cvwSpin{to{transform:rotate(360deg);}}
+  /* V0.05.89 : BAROUD GÉNÉRAL -- « +1 » de mana qui monte depuis la jauge */
+  .btl-evm{position:fixed; z-index:60; transform:translate(-50%,-30%); pointer-events:none; display:flex; flex-direction:column; align-items:center; gap:1px;
+    font-family:var(--font-title); color:#9ff3ff; text-shadow:0 0 10px rgba(80,220,255,.9), 0 2px 4px rgba(0,0,0,.8); animation:btlEvm 1.4s cubic-bezier(.2,.8,.3,1) forwards;}
+  .btl-evm b{font-size:20px; font-weight:900; letter-spacing:1px;}
+  .btl-evm span{font-size:7.5px; font-weight:700; letter-spacing:1.4px; color:#b9ffd6; text-shadow:0 0 8px rgba(60,230,140,.8), 0 1px 3px rgba(0,0,0,.9);}
+  .btl-evm.later{color:#b9ffd6; text-shadow:0 0 10px rgba(60,230,140,.9), 0 2px 4px rgba(0,0,0,.8);}
+  @keyframes btlEvm{0%{opacity:0; transform:translate(-50%,0) scale(.6);} 18%{opacity:1; transform:translate(-50%,-60%) scale(1.15);} 70%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-190%) scale(1);}}
+  @media (prefers-reduced-motion:reduce){ .btl-evm{animation-duration:.9s;} }
+
   @media (prefers-reduced-motion:reduce){ .cvw, .cvw-win{transition:none;} }
 
   /* Panneau de montée de niveau ouvert : on ferme en touchant à côté de la carte */
@@ -7772,6 +7781,118 @@
   .mode-tile.ph-board{--ac:#d0a148;}
   .mode-tile.soon{--ac:#7384a8;}
 
+
+  /* ===== V0.05.89 : OPÉRATION SPÉCIALE ===== */
+  /* case du MENU : verre nuit, accent jaune « danger » (bande hachurée en bas, titre ambré) -- distincte de RÉCOMPENSES (orange plein) */
+  .mode-tile.specop{--ac:#2a3446;}
+  #modeHub .mode-tile.specop{background:linear-gradient(160deg, #ffe16a 0%, #8a6a12 22%, #2a3142 48%, #0b0f18 100%) !important;}
+  #modeHub .mode-tile.specop .mt-inner{
+    background:
+      radial-gradient(120% 64% at 16% -14%, rgba(255,255,255,.18) 0%, rgba(255,255,255,.04) 44%, transparent 68%),
+      radial-gradient(90% 70% at 0% 108%, rgba(255,196,40,.34) 0%, transparent 70%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.022) 0 6px, transparent 6px 14px),
+      linear-gradient(165deg, #2c3546 0%, #161c28 55%, #090c13 100%) !important;
+  }
+  .specop .so-haz{position:absolute; left:0; right:0; bottom:0; height:7px; z-index:1; pointer-events:none; opacity:.85;
+    background:repeating-linear-gradient(-45deg, #ffcc29 0 7px, #14161c 7px 14px);
+    box-shadow:0 -1px 0 rgba(0,0,0,.6);}
+  .specop .mt-so-ico{position:absolute; left:58%; top:42%; transform:translate(-50%,-50%); height:56%; aspect-ratio:1; color:#ffd54a; opacity:.62;
+    filter:drop-shadow(0 0 10px rgba(255,200,40,.45)) drop-shadow(0 1.5px 0 rgba(255,255,255,.25));}
+  .specop .mt-so-ico svg{width:100%; height:100%; display:block;}
+  #modeHub .mode-tile.specop .mt-title{position:relative; z-index:2; font-size:12.5px; line-height:1.18; letter-spacing:2.2px; color:#fff3c4; text-shadow:0 0 10px rgba(255,196,40,.5), 0 2px 4px rgba(0,0,0,.7); margin-bottom:6px;}
+  .specop .so-chip{position:absolute; top:12px; left:16px; z-index:2; display:flex; align-items:center; gap:6px;
+    font-family:var(--font-title); font-size:8px; font-weight:700; letter-spacing:1.6px; color:#ffe9a6; white-space:nowrap;
+    padding:4px 8px 4px 7px; background:rgba(6,8,12,.62); border:1px solid rgba(255,204,41,.5);
+    clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px);}
+  .specop .so-chip i{width:6px; height:6px; border-radius:50%; background:#ffcc29; box-shadow:0 0 8px #ffcc29; animation:soPulse 1.6s ease-in-out infinite;}
+  @keyframes soPulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+  .specop .mt-lock{display:none;}
+  /* fermée (lundi 6 h -> mercredi 6 h) : la case s'éteint, cadenas au centre */
+  #modeHub .mode-tile.specop.so-closed{background:linear-gradient(160deg, #a3a7b0, #4c505a 45%, #14161c) !important; cursor:default;}
+  #modeHub .mode-tile.specop.so-closed .mt-inner{background:
+      linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.5) 16%, transparent 32%),
+      linear-gradient(135deg, rgba(40,44,54,.62) 0%, rgba(40,44,54,.34) 40%, rgba(40,44,54,.12) 70%, transparent 100%) !important;}
+  .specop.so-closed .mt-so-ico{opacity:.12; color:#fff; filter:none;}
+  .specop.so-closed .so-haz{opacity:.22; filter:grayscale(1);}
+  .specop.so-closed .mt-lock{display:block; position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:30px; height:30px; color:rgba(255,255,255,.5); z-index:2;}
+  #modeHub .mode-tile.specop.so-closed .mt-title{color:rgba(255,255,255,.6); text-shadow:0 2px 6px rgba(0,0,0,.9);}
+  .specop.so-closed .so-chip{color:rgba(255,255,255,.62); border-color:rgba(255,255,255,.22);}
+  .specop.so-closed .so-chip i{display:none;}
+  .specop.so-closed:active{transform:none;}
+  /* 4e rangée : même hauteur que les autres tant qu'il y a la place, sinon un peu plus basse (jamais les cases existantes) */
+  /* R = hauteur des 3 rangées existantes (inchangée) ; la 4e prend R si la place le permet, sinon ce qui reste au-dessus du bandeau (96 px mini, au-delà le MENU défile) */
+  #modeHub .mode-grid .mode-row.so-row .mode-tile{--soR:clamp(130px, calc((100dvh - 440px) / 3), 250px);
+    height:clamp(96px, min(var(--soR), calc(100dvh - 252px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 3 * var(--soR))), 250px);}
+  /* MENU : plus d'espace de fin sous la dernière rangée (il faisait défiler de quelques pixels) */
+  #battleView.active #modeHub.sub-view.active::after{display:none;}
+  #modeHub .mode-grid{padding-bottom:0;}
+
+  /* écran de l'opération : tient dans l'écran, sans défilement */
+  #battleView.active:has(#specOpView.active){overflow:hidden; padding-bottom:0; -webkit-mask-image:none; mask-image:none;}
+  #battleView.active:has(#specOpView.active)::after{display:none;}
+  #specOpView.active{flex:1; min-height:0; gap:10px; padding:2px 0 10px;}
+  #specOpView.active::after{display:none !important;}
+  .so-win{position:relative; flex:1 1 auto; min-height:180px; --cut:18px; border-radius:0; overflow:hidden;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, #ffe16a 0%, #6d5410 18%, #283043 46%, #0a0d15 100%); padding:1.5px;}
+  .so-win-in{position:absolute; inset:1.5px; clip-path:inherit; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center;
+    background:
+      radial-gradient(70% 55% at 50% 42%, rgba(255,200,40,.10) 0%, transparent 70%),
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px) 0 0/100% 22px,
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0/22px 100%,
+      linear-gradient(170deg, #1d2432 0%, #0e121b 60%, #07090e 100%);}
+  .so-win-in::before{content:''; position:absolute; inset:14px; pointer-events:none;
+    background:
+      linear-gradient(#ffcc29,#ffcc29) 0 0/18px 2px, linear-gradient(#ffcc29,#ffcc29) 0 0/2px 18px,
+      linear-gradient(#ffcc29,#ffcc29) 100% 0/18px 2px, linear-gradient(#ffcc29,#ffcc29) 100% 0/2px 18px,
+      linear-gradient(#ffcc29,#ffcc29) 0 100%/18px 2px, linear-gradient(#ffcc29,#ffcc29) 0 100%/2px 18px,
+      linear-gradient(#ffcc29,#ffcc29) 100% 100%/18px 2px, linear-gradient(#ffcc29,#ffcc29) 100% 100%/2px 18px;
+    background-repeat:no-repeat; opacity:.7;}
+  .so-tag{position:absolute; top:24px; font-family:var(--font-title); font-size:8.5px; font-weight:700; letter-spacing:2.4px; color:#ffe9a6;}
+  .so-tag.l{left:28px;} .so-tag.r{right:28px; color:#0b0d12; background:#ffcc29; padding:3px 7px 3px 8px; letter-spacing:2px;}
+  .so-win .so-emb{width:86px; height:86px; color:#ffd54a; opacity:.5; filter:drop-shadow(0 0 14px rgba(255,200,40,.4));}
+  .so-win .so-emb svg{width:100%; height:100%; display:block;}
+  .so-op{font-family:var(--font-title); font-size:22px; font-weight:900; letter-spacing:4px; color:#fff3c4; text-shadow:0 0 16px rgba(255,196,40,.45), 0 2px 6px rgba(0,0,0,.8); line-height:1.15; padding:0 18px;}
+  .so-wk{font-family:var(--font-title); font-size:9px; font-weight:700; letter-spacing:2.4px; color:rgba(255,255,255,.55);}
+  .so-ill{position:absolute; bottom:24px; left:0; right:0; font-size:11px; letter-spacing:1.2px; color:rgba(255,255,255,.32); font-style:italic;}
+  .so-brief{flex:none; --cut:12px; border-radius:0; padding:12px 14px 12px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(255,204,41,.45);
+    background:linear-gradient(160deg, rgba(255,255,255,.10) 0%, transparent 34%), radial-gradient(ellipse 80% 50% at 0% 0%, rgba(255,204,41,.16), transparent 70%), linear-gradient(180deg, #1a1f2b, #0c0f16);
+    display:flex; flex-direction:column; gap:6px;}
+  .so-brief h3{margin:0; display:flex; align-items:center; gap:8px; font-family:var(--font-title); font-size:12px; font-weight:900; letter-spacing:2.6px; color:#ffd54a;}
+  .so-brief h3 small{font-size:8px; letter-spacing:1.8px; color:rgba(255,255,255,.5); font-weight:700; margin-left:auto;}
+  .so-brief p{margin:0; font-size:14px; line-height:1.32; color:rgba(255,255,255,.86); text-align:left;}
+  .so-time{display:flex; align-items:center; gap:7px; font-family:var(--font-title); font-size:9px; font-weight:700; letter-spacing:1.6px; color:rgba(255,255,255,.6); padding-top:6px; border-top:1px solid rgba(255,255,255,.08);}
+  .so-time b{color:#ffe9a6;}
+  .so-time i{width:6px; height:6px; border-radius:50%; background:#ffcc29; box-shadow:0 0 8px #ffcc29; animation:soPulse 1.6s ease-in-out infinite;}
+  .so-btns{flex:none; display:flex; flex-direction:column; gap:8px;}
+  .so-launch{position:static; transform:none; width:100%; max-width:none; bottom:auto;}
+  .so-launch:active{transform:translateY(2px);}
+  .so-ia{--cut:10px; border-radius:0; padding:9px 8px; cursor:pointer; width:100%;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:10px; font-weight:700; letter-spacing:2.4px; color:#ffe9a6;
+    border:1px dashed rgba(255,204,41,.55); background:linear-gradient(180deg, rgba(40,36,20,.85), rgba(14,13,10,.9));}
+  .so-ia:active{transform:translateY(1px);}
+
+  .so-launch:disabled{filter:grayscale(1) brightness(.6); cursor:default;}
+  .so-rw{display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; font-family:var(--font-title); font-size:8.5px; font-weight:700; letter-spacing:1.4px; color:rgba(255,255,255,.62);}
+  .so-rw b{color:#ffe9a6;} .so-rw .ok{color:#7dffb0;}
+  #specOpView.so-off .so-time i{display:none;}
+  /* choix du mode du combat de test */
+  .so-pick{position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(4,6,10,.72); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);}
+  .so-pick[hidden]{display:none;}
+  .so-pick-in{width:min(360px, 100%); --cut:14px; border-radius:0; padding:16px 14px 14px; display:flex; flex-direction:column; gap:9px;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    border:1px solid rgba(255,204,41,.5); background:linear-gradient(160deg, rgba(255,255,255,.10) 0%, transparent 34%), linear-gradient(180deg, #1a1f2b, #0c0f16);}
+  .so-pick-in h4{margin:0 0 4px; font-family:var(--font-title); font-size:11px; font-weight:900; letter-spacing:2.4px; color:#ffd54a; text-align:center;}
+  .so-pick-in button{--cut:9px; border-radius:0; padding:11px 10px; cursor:pointer; text-align:left;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:2px; color:#fff3c4;
+    border:1px solid rgba(255,255,255,.16); background:linear-gradient(180deg, #252c3b, #121620);}
+  .so-pick-in button small{display:block; margin-top:3px; font-size:8px; letter-spacing:1.4px; color:rgba(255,255,255,.5);}
+  .so-pick-in button.cur{border-color:rgba(255,204,41,.7); box-shadow:inset 0 0 0 1px rgba(255,204,41,.25);}
+  .so-pick-in .so-pick-x{text-align:center; color:rgba(255,255,255,.7); background:transparent; border-style:dashed;}
   /* ---- icônes des cases : toutes au même niveau que DÉFI (85 %) au lieu de 17-40 % ---- */
   .mode-tile .mt-avatar, .mode-tile .mt-target, .mode-tile .mt-battle-ico, .mode-tile .mt-gift-ico,
   .mode-tile .mt-deck-ico, .mode-tile .mt-book-ico, .mode-tile .mt-cal-ico, .mode-tile .mt-cup-ico,
@@ -8157,6 +8278,47 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
         </div>
       </div>
       </div>
+      <div class="mode-row so-row">
+      <!-- V0.05.89 : OPÉRATION SPÉCIALE (PvP en évent court, du mercredi 6 h au lundi 6 h) + une case encore fermée -->
+      <div class="mode-tile specop s-a" id="tileSpecOp">
+        <div class="mt-inner">
+          <div class="so-chip" id="soTileChip"><i></i><span></span></div>
+          <div class="mt-so-ico"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-linecap="square"><circle cx="50" cy="50" r="34" stroke-width="3"/><circle cx="50" cy="50" r="22" stroke-width="1.6" stroke-dasharray="4 5"/><path d="M50 6v16M50 78v16M6 50h16M78 50h16" stroke-width="3"/><path d="M36 46l14-10 14 10M36 58l14-10 14 10" stroke-width="4" stroke-linejoin="miter"/><circle cx="50" cy="66" r="2.6" fill="currentColor" stroke="none"/></svg></div>
+          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <div class="mt-title">OPÉRATION<br>SPÉCIALE</div>
+          <div class="so-haz"></div>
+        </div>
+      </div>
+      <div class="mode-tile soon s-b">
+        <div class="mt-inner">
+          <div class="mt-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <div class="mt-soon">PROCHAINEMENT</div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V0.05.89 : OPÉRATION SPÉCIALE -->
+  <div id="specOpView" class="sub-view">
+    <div class="so-win">
+      <div class="so-win-in">
+        <span class="so-tag l">OPÉRATION SPÉCIALE</span><span class="so-tag r">PVP</span>
+        <div class="so-emb"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-linecap="square"><circle cx="50" cy="50" r="34" stroke-width="3"/><circle cx="50" cy="50" r="22" stroke-width="1.6" stroke-dasharray="4 5"/><path d="M50 6v16M50 78v16M6 50h16M78 50h16" stroke-width="3"/><path d="M36 46l14-10 14 10M36 58l14-10 14 10" stroke-width="4" stroke-linejoin="miter"/><circle cx="50" cy="66" r="2.6" fill="currentColor" stroke="none"/></svg></div>
+        <div class="so-op" id="soOpName"></div>
+        <div class="so-wk" id="soOpWeek"></div>
+        <div class="so-ill">illustration à venir</div>
+      </div>
+    </div>
+    <div class="so-brief">
+      <h3><span id="soBriefName"></span><small>DECK IMPOSÉ</small></h3>
+      <p id="soBriefText"></p>
+      <div class="so-rw" id="soRw"></div>
+      <div class="so-time"><i></i><span id="soTime"></span></div>
+    </div>
+    <div class="so-btns">
+      <button type="button" class="bat-launch so-launch" id="soLaunchBtn">LANCER</button>
+      <button type="button" class="so-ia" id="soIaBtn">LANCER IA (TEST)</button>
     </div>
   </div>
 
@@ -8400,7 +8562,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.88</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.89</b></div>
   </div>
 
     </div>
@@ -9010,7 +9172,7 @@ function econMirror(s, op){
   player.boosters = { res:(s.boosters && s.boosters.res) || 0, cards:(s.boosters && s.boosters.cards) || 0, modules:0 };
   player.stats = Object.assign(defaultStats(), J(s.stats));
   player.totals = J(s.totals); player.troph = J(s.troph); player.daily = J(s.daily); player.login = J(s.login);
-  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.trainRw = s.trainRw ? J(s.trainRw) : null; player.backs = J(s.backs); player.defi = J(s.defi || {});
+  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.trainRw = s.trainRw ? J(s.trainRw) : null; player.spec = s.spec ? J(s.spec) : null; player.backs = J(s.backs); player.defi = J(s.defi || {});
   CHAR_DEFS.forEach(d => {
     const had = warm ? copiesOf(d) : -1;
     const st = emptyStack(); st[rarityOf(d)] = (s.cards && s.cards[d.name]) || 0; cardCopies[d.name] = st;
@@ -9460,9 +9622,16 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.88';
+var BUILD_VERSION = 'V0.05.89';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.89', items:[
+    'MENU : nouvelle case OPÉRATION SPÉCIALE (sous RÉCOMPENSES et DÉFI) et une case PROCHAINEMENT à sa droite.',
+    'OPÉRATION SPÉCIALE : un évent PvP court, du mercredi 6 h au lundi 6 h (heure de Paris), avec un mode de jeu qui change chaque semaine et un deck imposé, le même pour les deux joueurs ; il suffit de toucher LANCER. Entre le lundi 6 h et le mercredi 6 h, la case est fermée par un cadenas.',
+    'Modes : BAROUD GÉNÉRAL (détruire une carte donne 1 mana), PERCÉE ÉCLAIR (les cartes Percée attaquent gratuitement le tour où elles sont posées), TEMPÊTE DIMENSIONNELLE (deck de 1 DIMAVERSE et 19 TRANSPORTEUR). Le deck change à chaque retour d’un mode.',
+    'Récompenses : 40 or + 25 XP par victoire (10 victoires payées au plus par évent) et 1 booster (cartes ou ressources) à la première victoire. Une partie compte comme un combat pour les tâches et les trophées, pas pour la série de victoires de BATAILLE.',
+    'Bouton LANCER IA (TEST) : une partie contre l’IA dans le mode de ton choix, sans récompense (bouton provisoire, retiré avant le lancement officiel).',
+  ] },
   { v:'V0.05.88', items:[
     'COLLECTION : quand tu ouvres une carte en grand, un bouton « VOIR L’ANIMATION » sous la carte montre ses animations en vidéo, sur un champ de bataille préparé pour elle (par exemple pour un Baroud d’honneur : la carte est détruite, puis son Baroud se joue).',
     'La vidéo s’ouvre dans une fenêtre et tourne en boucle ; touche la fenêtre pour la fermer. Le son suit le réglage EFFETS SONORES et la musique baisse pendant la vidéo.',
@@ -16995,6 +17164,49 @@ document.getElementById('codexModal').addEventListener('click', (e) => {
 // Les vidéos sont filmées dans le vrai combat (champ de bataille adapté à la carte) et rangées dans le bucket (card-assets/vid/, nom avec empreinte => cache 1 an).
 // Fenêtre sans aucun contrôle (ni pause, ni avance, ni retour) : la vidéo tourne en boucle, on touche n'importe où pour fermer. Son = réglage EFFETS SONORES du jeu.
 var CARD_VID_BASE = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/';
+// ================= V0.05.89 : OPÉRATION SPÉCIALE -- calendrier, modes et decks (MÊME TEXTE dans le jeu et dans le serveur pvp) =================
+// L'évent est ouvert du mercredi 6 h au lundi 6 h (heure de Paris), puis fermé jusqu'au mercredi suivant. Semaine 0 = mercredi 4 novembre 2026.
+// Les modes tournent chaque semaine (BAROUD GÉNÉRAL, PERCÉE ÉCLAIR, TEMPÊTE DIMENSIONNELLE) ; le deck d'un mode change à chacun de ses retours.
+// Tout se calcule à partir de l'heure du SERVEUR (le jeu ajoute son décalage avec le serveur avant d'appeler specAt).
+const SPEC_E0 = Date.UTC(2026, 10, 4, 6, 0, 0);          // mercredi 4/11/2026 6 h, heure murale de Paris (écrite comme de l'UTC)
+const SPEC_WEEK = 7 * 864e5, SPEC_OPEN = 5 * 864e5;        // ouvert 5 jours (mercredi 6 h -> lundi 6 h)
+const SPEC_MODES = ['baroud', 'percee', 'dima'];
+const SPEC_WIN = { gold:40, xp:25, max:10 };               // par victoire payée, au plus 10 victoires payées par évent ; + 1 booster (cartes ou ressources) à la 1re victoire
+const SPEC_INFO = {
+  baroud:{ name:'BAROUD GÉNÉRAL', text:'Toutes les cartes ont un Baroud d’honneur : détruire une carte donne 1 mana à celui qui l’a détruite (tout de suite pendant son tour, sinon au début de son prochain tour).' },
+  percee:{ name:'PERCÉE ÉCLAIR', text:'Les cartes Percée attaquent gratuitement (0 mana) le tour où elles sont posées.' },
+  dima:{ name:'TEMPÊTE DIMENSIONNELLE', text:'Deck de 1 DIMAVERSE et 19 TRANSPORTEUR : chaque TRANSPORTEUR (0 mana) donne une carte mécha au hasard, et DIMAVERSE en jeu renvoie à l’adversaire une copie de chaque Tech jouée.' }
+};
+// decks imposés (le même pour les deux joueurs) : 20 cartes, le chef en fait partie ; un deck différent à chaque retour du mode
+const SPEC_DECKS = {
+  baroud:[
+    { n:'CHAMP DE RUINES', leader:'PIGTAIL', module:'BAVURES', cards:['PIGTAIL','PIGTAIL','PRAWN','PRAWN','BRI-KB-ROCK','BRI-KB-ROCK','HARKO','HARKO','ELYSIUM','ELYSIUM','EXO-MKI','EXO-MKI','RYPEAL','RYPEAL','TRASH-BOT','TRASH-BOT','MED-POD','AMALGAME','BARRAGES','POSITRON'] },
+    { n:'KAMIKAZES', leader:'ZAPPAN', module:'ROCKET', cards:['ZAPPAN','LARVOTRON','LARVOTRON','PRAWN','PRAWN','ELYSIUM','ELYSIUM','SOSFOR','SOSFOR','POUNDER','POUNDER','BRI-KB-ROCK','BRI-KB-ROCK','EXO-MKI','EXO-MKI','MED-POD','MED-POD','BARRAGES','HÉROS ENGAGÉ','RENFORTS'] },
+    { n:'RECYCLAGE', leader:'TRASH-BOT', module:'PROTO-SHIELD', cards:['TRASH-BOT','TRASH-BOT','TOA2','HARKO','HARKO','RYPEAL','RYPEAL','BRI-KB-ROCK','BRI-KB-ROCK','PIGTAIL','PIGTAIL','AMALGAME','AMALGAME','ELYSIUM','ELYSIUM','BUZZY','BUZZY','POSITRON','SABOTAGE','PRÉPARATION'] },
+    { n:'DERNIER SOUFFLE', leader:'MED-POD', module:'T-ARMS 09', cards:['MED-POD','MED-POD','AMALGAME','AMALGAME','ZAPPAN','PRAWN','PRAWN','RYPEAL','RYPEAL','EXO-MKI','EXO-MKI','HARKO','HARKO','LARVOTRON','GAZELLE','GAZELLE','GOTHIKA','GOTHIKA','BARRAGES','EXTERMINATION'] }
+  ],
+  percee:[
+    { n:'ASSAUT ÉCLAIR', leader:'DELOK', module:'ROCKET', cards:['DELOK','DELOK','MORPHE','MORPHE','EXO-MKIV','EXO-MKIV','EXO-MKV','EXO-MKV','WHIPLASH','WHIPLASH','TECHNOSORUS','TECHNOSORUS','SCOPT','SCOPT','LACRIUM','LACRIUM','FENCY','FENCY','PRÉPARATION','PRÉPARATION'] },
+    { n:'RUÉE', leader:'MAGNEMER', module:'AZ-5', cards:['MAGNEMER','MAGNEMER','AMALGAME','AMALGAME','LARVOTRON','LARVOTRON','MOTOKO','WHIPLASH','WHIPLASH','LACRIUM','LACRIUM','SCOPT','SCOPT','TECHNOSORUS','TECHNOSORUS','HYPPER','HYPPER','HÉROS ENGAGÉ','PRÉPARATION','SOUS PRESSION'] },
+    { n:'COMMANDO', leader:'WHIPLASH', module:'PROK-IEM', cards:['WHIPLASH','WHIPLASH','LE COMÈTEUR','MORPHE','MORPHE','EXO-MKV','EXO-MKV','EXO-MKIV','EXO-MKIV','DELOK','DELOK','TECHNOSORUS','TECHNOSORUS','TUNNELIER','TUNNELIER','PRÉPARATION','PRÉPARATION','RENFORTS','RENFORTS','SABOTAGE'] },
+    { n:'BLITZ', leader:'AMALGAME', module:'SAPHYR', cards:['AMALGAME','AMALGAME','MAGNEMER','MAGNEMER','MORPHE','MORPHE','LACRIUM','LACRIUM','SCOPT','SCOPT','EXO-MKV','EXO-MKV','LARVOTRON','LARVOTRON','CATER-PILLARD','CATER-PILLARD','BARRAGES','PRÉPARATION','PRÉPARATION','HÉROS ENGAGÉ'] }
+  ],
+  dima:['ROCKET', 'BAVURES', 'SAPHYR', 'T-ARMS 09'].map((m, i) => ({ n:'TEMPÊTE ' + (i + 1), leader:'DIMAVERSE', module:m, cards:['DIMAVERSE'].concat(Array(19).fill('TRANSPORTEUR')) }))
+};
+const SPEC_DTF = new Intl.DateTimeFormat('en-GB', { timeZone:'Europe/Paris', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' });
+function specWall(ms){ const o = {}; SPEC_DTF.formatToParts(new Date(ms)).forEach(p => { if(p.type !== 'literal') o[p.type] = +p.value; }); return Date.UTC(o.year, o.month - 1, o.day, o.hour, o.minute, o.second); }   // heure de Paris écrite comme de l'UTC
+function specUtc(wall){ let t = wall - 3600e3; for(let i = 0; i < 3; i++) t = wall - (specWall(t) - Math.floor(t / 1000) * 1000); return t; }        // instant réel d'une heure murale de Paris
+function specMode(w){ return SPEC_MODES[((w % 3) + 3) % 3]; }
+function specDeck(w){ const m = specMode(w), L = SPEC_DECKS[m], i = ((Math.floor(w / 3) % L.length) + L.length) % L.length; return L[i]; }
+// état de l'évent à l'instant ms (heure du serveur) : { w (semaine), open, start, end, next (prochaine ouverture ou fermeture), mode, key, deck }
+function specAt(ms){
+  const w = Math.floor((specWall(ms) - SPEC_E0) / SPEC_WEEK);
+  if(w < 0) return { w:0, open:false, start:specUtc(SPEC_E0), end:specUtc(SPEC_E0 + SPEC_OPEN), next:specUtc(SPEC_E0), mode:specMode(0), key:'spec:0', deck:specDeck(0) };
+  const start = specUtc(SPEC_E0 + w * SPEC_WEEK), end = specUtc(SPEC_E0 + w * SPEC_WEEK + SPEC_OPEN), open = ms >= start && ms < end;
+  if(open) return { w, open, start, end, next:end, mode:specMode(w), key:'spec:' + w, deck:specDeck(w) };
+  const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
+  return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
+}
 var CARD_VIDS = {"AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-0ed02a04.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
@@ -18149,6 +18361,7 @@ function placeNavPill(idx, px){
 // Écran "Prêt au combat" tant qu'aucun combat n'est lancé
 // Démarre (ou relance) une Mission ONE de 4 h à la vague 1
 function showHub(){
+  try{ specTileRender(); }catch(_){}   // V0.05.89 : OPÉRATION SPÉCIALE
   dragGhostSweep();
   // DÉFI (V0.03.47) : showHub() est le point de passage commun à TOUTE sortie de l'écran de combat
   // (changement d'onglet via switchView(), bouton RETOUR via openOrders()...) -- si un combat défi est
@@ -18159,7 +18372,7 @@ function showHub(){
   document.getElementById('playerView').classList.remove('active');
   document.getElementById('collectionView').classList.remove('active');
   document.getElementById('deckView').classList.remove('active');
-  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView', 'specOpView'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('resBar').style.display = '';
   const allBtn = document.getElementById('trClaimAllBtn');
   if(allBtn) allBtn.classList.remove('show');
@@ -20243,7 +20456,7 @@ function updateRewardTiles(){
   renderRewardDots();
 }
 function openSub(id){
-  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView', 'playerView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
+  ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView', 'playerView', 'specOpView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
   // Le bouton "récupérer tout" n'a de sens que sur l'écran des trophées, et seulement à partir
@@ -20255,6 +20468,78 @@ function openSub(id){
 }
 document.getElementById('tileRewards').onclick = () => { checkTrophies(true); updateRewardTiles(); openSub('rewardsView'); };
 document.getElementById('rwBackBtn').onclick = showHub;
+// ================= V0.05.89 : OPÉRATION SPÉCIALE (case du MENU + écran) =================
+// L'évent est calculé par specAt (même texte que le serveur pvp) à l'heure du SERVEUR. LANCER = PvP de l'évent (deck choisi par le serveur).
+// SPEC_TEST : bouton LANCER IA (TEST) -- combat local contre l'IA dans le mode choisi, même quand l'évent est fermé (à retirer avant le lancement officiel du jeu).
+const SPEC_TEST = true;
+const SPEC_MONTHS = ['JANVIER', 'FÉVRIER', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILLET', 'AOÛT', 'SEPTEMBRE', 'OCTOBRE', 'NOVEMBRE', 'DÉCEMBRE'];
+function specNow(){ return specAt(econNow()); }
+function specLeft(ms){ const m = Math.max(0, Math.floor(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mi = m % 60; return d ? d + ' J ' + h + ' H' : h ? h + ' H ' + String(mi).padStart(2, '0') + ' MIN' : Math.max(1, mi) + ' MIN'; }
+function specWeekTxt(sp){ const a = econParts(sp.start), b = econParts(sp.end - 1000);
+  return a.month === b.month ? 'DU ' + a.day + ' AU ' + b.day + ' ' + SPEC_MONTHS[b.month - 1] : 'DU ' + a.day + ' ' + SPEC_MONTHS[a.month - 1] + ' AU ' + b.day + ' ' + SPEC_MONTHS[b.month - 1]; }
+function specTileRender(){
+  const t = document.getElementById('tileSpecOp'); if(!t) return;
+  const sp = specNow(), c = t.querySelector('#soTileChip span');
+  t.classList.toggle('so-closed', !sp.open);
+  if(c) c.textContent = sp.open ? 'FIN DANS ' + specLeft(sp.end - econNow()) : 'RETOUR MERCREDI 6 H';
+}
+// deck de test d'un mode : celui de sa prochaine semaine (la semaine en cours si c'est elle)
+function specTestDeck(mode){ const w0 = specNow().w; for(let w = w0; w < w0 + 3; w++) if(specMode(w) === mode) return specDeck(w); return specDeck(w0); }
+function specRender(){
+  const v = document.getElementById('specOpView'); if(!v) return;
+  const sp = specNow(), I = SPEC_INFO[sp.mode], now = econNow();
+  v.classList.toggle('so-off', !sp.open);
+  document.getElementById('soOpName').textContent = I.name;
+  document.getElementById('soOpWeek').textContent = (sp.open ? 'SEMAINE ' : 'PROCHAINE OPÉRATION · ') + specWeekTxt(sp);
+  document.getElementById('soBriefName').textContent = I.name;
+  document.getElementById('soBriefText').textContent = I.text + ' Deck «\u00a0' + sp.deck.n + '\u00a0», identique pour les deux joueurs.';
+  const g = (player.spec && player.spec.w === sp.w) ? player.spec : { n:0, b:0 };
+  document.getElementById('soRw').innerHTML = '<span>VICTOIRE : <b>' + SPEC_WIN.gold + ' OR + ' + SPEC_WIN.xp + ' XP</b> (' + Math.min(g.n, SPEC_WIN.max) + '/' + SPEC_WIN.max + ')</span>' +
+    '<span>1<sup>RE</sup> VICTOIRE : <b>1 BOOSTER</b>' + (g.b ? ' <span class="ok">✓</span>' : '') + '</span>';
+  document.getElementById('soTime').innerHTML = sp.open ? 'FIN LUNDI 6 H · ENCORE <b>' + specLeft(sp.end - now) + '</b>' : 'FERMÉE · RETOUR MERCREDI 6 H · DANS <b>' + specLeft(sp.next - now) + '</b>';
+  const L = document.getElementById('soLaunchBtn'); L.disabled = !sp.open;
+  document.getElementById('soIaBtn').hidden = !SPEC_TEST;
+}
+function specOpen(){
+  const sp = specNow();
+  if(!sp.open && !SPEC_TEST){ showToast('OPÉRATION SPÉCIALE FERMÉE · RETOUR MERCREDI 6 H'); return; }
+  specRender(); openSub('specOpView'); updateNavBack();
+}
+// deck d'affichage d'un combat de l'évent (les vraies cartes sont choisies par le serveur en PvP)
+function specDeckObj(dk, extra){
+  const rk = n => { const x = CHAR_DEFS.find(y => y.name === n); return n + '|' + (x ? rarityOf(x) : 'rare'); };
+  return Object.assign({ id:'spec', name:'OPÉRATION SPÉCIALE', cards:dk.cards.map(rk), leader:rk(dk.leader), module:{ name:dk.module, rar:'rare' }, backCard:'rare', backMod:'rare' }, extra || {});
+}
+async function specLaunch(){
+  const sp = specNow();
+  if(!sp.open){ showToast('OPÉRATION SPÉCIALE FERMÉE · RETOUR MERCREDI 6 H'); specRender(); return; }
+  if(BTL || PVPQ || PVPC) return;
+  await pvpQueueOpen(specDeckObj(sp.deck, { spec:{ ev:sp.mode, w:sp.w } }));
+}
+function specTestStart(mode){
+  if(BTL || PVPQ || PVPC) return;
+  const dk = specTestDeck(mode), side = { cards:dk.cards.slice(), leader:dk.leader, module:dk.module };
+  btlStart(specDeckObj(dk, { id:'spectest', seed:(Math.random() * 4294967296) >>> 0, srv:{ p:side, o:JSON.parse(JSON.stringify(side)) }, ai:{ lv:0, sk:0.75, tx:1 }, spec:{ ev:mode, test:true }, specTest:true }));
+}
+function specPickOpen(){
+  let el = document.getElementById('soPick');
+  if(!el){
+    el = document.createElement('div'); el.id = 'soPick'; el.className = 'so-pick'; el.hidden = true;
+    el.innerHTML = '<div class="so-pick-in"><h4>COMBAT DE TEST CONTRE L\'IA</h4>' + SPEC_MODES.map(m => '<button type="button" data-m="' + m + '">' + SPEC_INFO[m].name + '<small>DECK «\u00a0' + specTestDeck(m).n + '\u00a0»</small></button>').join('') +
+      '<button type="button" class="so-pick-x" data-m="">ANNULER</button></div>';
+    el.addEventListener('click', e => { const b = e.target.closest('button'); if(!b && e.target !== el) return; el.hidden = true; const m = b && b.dataset.m; if(m) specTestStart(m); });
+    document.body.appendChild(el);
+  }
+  const cur = specNow().mode;
+  el.querySelectorAll('button[data-m]').forEach(b => { b.classList.toggle('cur', b.dataset.m === cur); const sm = b.querySelector('small'); if(sm && b.dataset.m) sm.textContent = 'DECK «\u00a0' + specTestDeck(b.dataset.m).n + '\u00a0»'; });
+  el.hidden = false;
+}
+document.getElementById('tileSpecOp').onclick = specOpen;
+document.getElementById('soLaunchBtn').onclick = specLaunch;
+document.getElementById('soIaBtn').onclick = specPickOpen;
+setInterval(() => { specTileRender(); const v = document.getElementById('specOpView'); if(v && v.classList.contains('active')) specRender(); }, 20000);
+specTileRender();
+
 // ---------- BATAILLE (V0.04.18) : choix du deck avant le combat ----------
 var PVP_DIRTY = false;   // V0.05.51 : un match PvP vient de se terminer sans que l'état économique ait été relu (abandon, réseau) : relu à l'ouverture de BATAILLE
 var batSelected = null, batMode = 'ai';   // batMode : 'ai' (ENTRAÎNEMENT IA) ou 'pvp' (BATAILLE)
@@ -20380,16 +20665,16 @@ function pvpQueueEl(){
 function pvpQueueShow(on){ const el = pvpQueueEl(); el.hidden = !on; document.body.classList.toggle('pvq-on', !!on); }
 async function pvpQueueOpen(d){
   if(BTL || PVPQ || PVPC) return false;
-  const deck = econBattleDeck(d);
-  if(!deck){ showToast('DECK INCOMPLET'); return false; }
+  const deck = d.spec ? null : econBattleDeck(d);   // V0.05.89 : OPÉRATION SPÉCIALE -- deck imposé par le serveur
+  if(!deck && !d.spec){ showToast('DECK INCOMPLET'); return false; }
   const Q = PVPQ = { d, deck, cancelled:false, ctl:new AbortController(), t0:Date.now() };
   pvpQueueShow(true);
-  Q.joinP = pvpSend('queue_join', { deck });         // non interrompable : le serveur le traite de toute façon, l'annulation attend sa fin avant de quitter la file
+  Q.joinP = pvpSend('queue_join', d.spec ? { spec:1 } : { deck });         // non interrompable : le serveur le traite de toute façon, l'annulation attend sa fin avant de quitter la file
   let r = await Q.joinP;
   if(Q.cancelled) return false;
   if(r.status !== 200 || !r.body || !r.body.ok){
     const msg = r.body && r.body.message;
-    showToast(r.status === 0 ? 'RÉSEAU INDISPONIBLE' : (r.body && r.body.error === 'bad_param' && msg) ? String(msg).toUpperCase() : 'FILE D\'ATTENTE INDISPONIBLE');
+    showToast(r.status === 0 ? 'RÉSEAU INDISPONIBLE' : (r.body && r.body.error === 'spec_closed') ? 'OPÉRATION SPÉCIALE FERMÉE' : (r.body && r.body.error === 'bad_param' && msg) ? String(msg).toUpperCase() : 'FILE D\'ATTENTE INDISPONIBLE');
     pvpDbgErr('queue_join', r.status, 'refusé ' + (r.body && r.body.error)); PVPQ = null; pvpQueueShow(false); return false;
   }
   let errs = 0;
@@ -20597,6 +20882,8 @@ function pvpReconcile(snap){
     if((cur.p ? 1 : 0) !== sb[0] || (cur.o ? 1 : 0) !== sb[1]){ diffs.push('sabotage ' + (cur.p ? 1 : 0) + '/' + (cur.o ? 1 : 0) + '→' + sb); BTL.sab = { p:sb[0], o:sb[1] }; try{ btlRenderMana(); }catch(_){} } }
   { const sm = snap.mod || [];   // V0.05.72 : MARCH -- module de chaque camp
     ['p', 'o'].forEach((sd, i) => { const cur = BTL.mod && BTL.mod[sd] ? BTL.mod[sd].name : null; if(sm[i] && cur !== sm[i]){ diffs.push('module ' + sd + ' ' + cur + '→' + sm[i]); try{ btlMarchSet(sd, sm[i], true); }catch(_){} } }); }
+  { const eb = snap.eb || [0, 0], cur = BTL.evb || { p:0, o:0 };   // V0.05.89 : BAROUD GÉNÉRAL -- mana en attente
+    if((cur.p || 0) !== eb[0] || (cur.o || 0) !== eb[1]){ diffs.push('mana en attente ' + (cur.p || 0) + '/' + (cur.o || 0) + '→' + eb); BTL.evb = { p:eb[0], o:eb[1] }; } }
   if(BTL.turn !== snap.turn){ diffs.push('tour ' + BTL.turn + '→' + snap.turn); BTL.turn = snap.turn; }
   if(diffs.length){ pvpWarn('écart au tour ' + snap.turn + ' (' + snap.tag + ') : ' + diffs.join(' ; ') + ' | ' + JSON.stringify((PVPC.cur && PVPC.cur.a) || null) + ' bande ' + JSON.stringify((PVPC.cur && PVPC.cur.tape) || null)); try{ btlRenderArrows(); }catch(_){} }
   return diffs;
@@ -20628,7 +20915,8 @@ async function pvpTurn(side){
   BTL.turn++; BTL.side = side; BTL.phase = 'banner';
   const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1 + (side !== BTL.first ? 1 : 0)), bonus = 0;   // V0.05.35 : même règle que le serveur
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE (mana « verts »)
-  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
+  const evb = (BTL.evb && BTL.evb[side]) || 0; if(evb){ BTL.evb[side] = 0; BTL.extra[side] += evb; }   // V0.05.89 : BAROUD GÉNÉRAL -- mana gagné hors de son tour (cristaux verts)
+  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
   btlRenderMana();
   await btlTurnFx(side);
   if(side === 'p') pvpPrimePile(P.cur);
@@ -20898,7 +21186,7 @@ async function pvpFinish(winner, why){
   const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); if(BTL === B0) btlExit(); } });
   mo.observe(rm, { attributes:true, attributeFilter:['class'] });
   const art = B0.S.p.leader.def;
-  const title = w || (won && rr && rr.paid && rr.n > 1 ? 'SÉRIE DE ' + rr.n + ' VICTOIRES' : '');
+  const title = w || ((B0.d && B0.d.spec) ? (won && rr && rr.cap ? SPEC_WIN.max + ' VICTOIRES DÉJÀ PAYÉES' : '') : (won && rr && rr.paid && rr.n > 1 ? 'SÉRIE DE ' + rr.n + ' VICTOIRES' : ''));   // V0.05.89 : OPÉRATION SPÉCIALE
   showRewardModal(title, rr && rr.items ? econItems(rr.items) : [], { resultType:won ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
 }
 // le moteur local annonce un chef détruit : on ne conclut que si le serveur l'a conclu dans l'événement en cours de rejeu
@@ -21043,7 +21331,8 @@ const BTL_RATIO = 966 / 692;   // hauteur / largeur d'une grande carte
 
 // ---------- cartes ----------
 function btlMakeCard(side, def, rar, level, leader, k){ const c0 = btlMakeCard0(side, def, rar, level, leader, k); if(c0 && !leader && def && def.name === 'LARVOTRON') c0.own = side; return c0; }   // V0.05.87 : propriétaire de LARVOTRON
-function btlLxFree(c, kind){ return !!c && btlFxN(c) === 'LARVOTRON' && kind === 'atk' && !c.off && !!c.own && c.own === c.side; }   // V0.05.87 : LARVOTRON -- attaque gratuite chez celui qui l'a posé (DÉFENDRE : 1 mana)
+function btlLxFree(c, kind){ return (!!c && btlFxN(c) === 'LARVOTRON' && kind === 'atk' && !c.off && !!c.own && c.own === c.side)   // V0.05.87 : LARVOTRON -- attaque gratuite chez celui qui l'a posé
+  || (!!c && !!BTL && BTL.ev === 'percee' && kind === 'atk' && btlHas(c, 'percee') && c.playedTurn === BTL.turn); }   // V0.05.89 : PERCÉE ÉCLAIR -- attaque gratuite le tour de la pose (même règle que evFree du serveur)
 function btlMakeCard0(side, def, rar, level, leader, k){
   if(def.tech && !leader) return { uid:++btlUid, side, def, rar, level:1, name:def.name, atk:0, df:0, maxHp:0, hp:0, energy:0, leader:false, plan:null, slot:-1, kw:[], playedTurn:-1, ultOn:false, base:null, tech:true, cost:def.cost | 0 };   // V0.05.08 : Tech (jamais posée)
   const s = statsAtLevel(def, level, rar); k = k || 1;
@@ -21246,7 +21535,7 @@ function btlRenderMana(){
   ['p', 'o'].forEach(s => {
     const box = btlQ(s === 'p' ? '#btlMMana' : '#btlOMana');
     let h = '';
-    const ex = (BTL.extra && BTL.extra[s]) || 0, cap = BTL.cap[s], shown = Math.max(5, cap - (BTL.side === s ? 0 : ex));   // V0.05.14 : hors de son tour, le camp ne montre plus les cristaux verts du tour passé
+    const ex = (BTL.extra && BTL.extra[s]) || 0, cap = BTL.cap[s], shown = Math.max(5, cap - (BTL.side === s ? 0 : ex), BTL.mana[s]);   // V0.05.14 : hors de son tour, le camp ne montre plus les cristaux verts du tour passé
     const sb = BTL.sab && BTL.sab[s] && !(BTL.sabAnim && BTL.sabPend === s);   // V0.05.81 : SABOTAGE -- 2 cristaux « débranchés » juste après le plafond
     const sbE = Math.max(cap, BTL.mana[s]) + 2, n = sb ? Math.max(shown, sbE) : shown;   // les 2 cristaux perdus restent visibles même au-delà de 5
     for(let i = 0; i < n; i++) h += '<i class="btl-md ' + (i < BTL.mana[s] ? 'on' + (ex && i >= cap - ex && i < cap ? ' x' : '') : i < cap ? 'spent' : (sb && i < sbE) ? 'sab' : 'off') + '"></i>';
@@ -22338,6 +22627,8 @@ function btlVsIntro(){
   });
 }
 
+// V0.05.89 : mode OPÉRATION SPÉCIALE d'un combat : PvP = celui de la 1re photo du serveur, combat de test = celui choisi
+function btlEvOf(d){ try{ if(d && d.pvp) return (d.pvp.start.snaps[0] && d.pvp.start.snaps[0].ev) || null; return (d && d.spec && d.spec.ev) || null; }catch(_){ return null; } }
 function btlStart(d){
   if(BTL) return;
   try{ rdPre(); }catch(_){}
@@ -22346,6 +22637,7 @@ function btlStart(d){
   const seed = btlSeed(d.seed != null ? d.seed : (Math.random() * 4294967296) >>> 0);   // graine des règles (rejouable)
   const S = btlBuildSides(d);
   BTL = { d, seed, abort:false, over:false, turn:0, side:null, first:null, phase:'intro', mana:{ p:0, o:0 }, cap:{ p:0, o:0 }, pile:{ p:0, o:0 }, extra:{ p:0, o:0 }, sab:{ p:0, o:0 }, S, menu:null, tg:null, hold:null, timer:0, endRes:null, timeUp:false, el:null, deadline:0, fxBusy:0, pick:null, arAll:new Set(), arw:new Map(), arRaf:0, mod:btlModInit(d), modTurn:{ p:-1, o:-1 }, modFree:{ p:0, o:0 }, rec:[], fin:null };
+  BTL.ev = btlEvOf(d); BTL.evb = { p:0, o:0 };   // V0.05.89 : OPÉRATION SPÉCIALE (mode des règles)
   BTL.el = btlBuildDom();
   BTL.bg = btlPickBg(); if(BTL.bg > 1) BTL.el.classList.add('bg' + BTL.bg);   // V0.05.75 : fond tiré au hasard
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
@@ -22362,10 +22654,10 @@ function btlStart(d){
 }
 function btlExit(){
   if(!BTL) return;
-  const dfx = !!(BTL.d && BTL.d.defi);
+  const dfx = !!(BTL.d && BTL.d.defi), sfx = !!(BTL.d && BTL.d.spec);   // V0.05.89 : retour sur l'écran OPÉRATION SPÉCIALE
   const fin0 = BTL.fin;
   if(pvpOn()) pvpLeave();   // PvP : quitter avant la fin = abandon (victoire de l'adversaire)
-  else if(!BTL.over && BTL.d && BTL.d.srv) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
+  else if(!BTL.over && BTL.d && BTL.d.srv && !BTL.d.specTest) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
   else if(fin0 && !fin0.shown) fin0.p.then(r => econBattleShow(fin0, r));   // quitté pendant l'envoi du résultat : il s'affiche quand même
   if(BTL.vs && BTL.vs.kill) BTL.vs.kill();
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
@@ -22374,6 +22666,7 @@ function btlExit(){
   document.body.classList.remove('btl-on');
   document.getElementById('actionModal').classList.remove('show');
   if(dfx){ if(typeof defiBtlReturn === 'function') defiBtlReturn(); }
+  else if(sfx){ if(typeof specRender === 'function') specRender(); }
   else if(typeof renderBataille === 'function') renderBataille();
 }
 // =====================================================================================================
@@ -23232,7 +23525,8 @@ async function btlTurn(side){
   const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1 + (side !== BTL.first ? 1 : 0));   // V0.04.61 : 1 mana au départ, puis +1 tous les 2 tours ; V0.05.35 : le joueur qui ne commence pas a 1 mana de plus À CHAQUE TOUR (2, 3, 4, 5), toujours plafonné à 5
   const bonus = 0;
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE jouée au tour précédent (mana « verts »)
-  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
+  const evb = (BTL.evb && BTL.evb[side]) || 0; if(evb){ BTL.evb[side] = 0; BTL.extra[side] += evb; }   // V0.05.89 : BAROUD GÉNÉRAL -- mana gagné hors de son tour (cristaux verts)
+  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
   btlRenderMana();
   await btlTurnFx(side);
   if(!await btlDraw(side)){ await btlFatigue(side); if(BTL.over || BTL.abort) return; }
@@ -24835,8 +25129,26 @@ function btlDxPick(){
   else k = (BTL_DX_LAST + 1 + Math.floor(Math.random() * (BTL_DXV.length - 1))) % BTL_DXV.length;
   BTL_DX_LAST = k; return k;
 }
+// V0.05.89 : OPÉRATION SPÉCIALE -- BAROUD GÉNÉRAL (même règle que evBaroud du serveur) : la carte détruite (jamais un chef) donne +1 mana à l'adversaire de son camp,
+// tout de suite s'il joue son tour (avant la résolution de fin de tour), sinon au début de son prochain tour
+function btlEvBaroud(c){
+  if(!BTL || BTL.ev !== 'baroud' || !c || c.leader) return;
+  const to = btlOther(c.side), now = BTL.side === to && ['resolve', 'end', 'intro'].indexOf(BTL.phase) < 0;
+  if(now){ BTL.mana[to]++; try{ btlRenderMana(); }catch(_){} }
+  else { BTL.evb = BTL.evb || { p:0, o:0 }; BTL.evb[to]++; }
+  try{ btlEvManaFx(to, !now); }catch(_){}
+}
+// petit « +1 » qui monte depuis la jauge de mana du camp qui le gagne (« +1 au prochain tour » s'il est mis de côté)
+function btlEvManaFx(side, later){
+  const box = btlQ(side === 'p' ? '#btlMMana' : '#btlOMana'), fx = btlQ('#btlFx'); if(!box || !fx) return;
+  const r = box.getBoundingClientRect(), e = document.createElement('div');
+  e.className = 'btl-evm' + (later ? ' later' : ''); e.innerHTML = '<b>+1</b>' + (later ? '<span>PROCHAIN TOUR</span>' : '');
+  e.style.left = Math.round(r.left + r.width / 2) + 'px'; e.style.top = Math.round(r.top) + 'px';
+  fx.appendChild(e); setTimeout(() => e.remove(), 1500);
+}
 async function btlDie0(c, defer){
-  btlTbGain(c);   // V0.05.80 : TRASH-BOT (+2/+2/+2 à chaque carte détruite ; le repas s'affiche à la fin de l'action)
+  btlTbGain(c);
+  btlEvBaroud(c);   // V0.05.89 : OPÉRATION SPÉCIALE -- BAROUD GÉNÉRAL   // V0.05.80 : TRASH-BOT (+2/+2/+2 à chaque carte détruite ; le repas s'affiche à la fin de l'action)
   const el = btlUnitEl(c), slot = btlSlotOf(c);
   if(!el || !slot){ const Q = BTL && BTL.S[c.side]; if(Q && !c.leader && Q.slots[c.slot] === c) Q.slots[c.slot] = null; return; }
   if(c._exGone || await btlFxDie(c)){   // V0.05.87 : destruction propre à la carte (LARVOTRON : éclate en vase) ; V0.05.79 : EXTERMINATION -- la carte a déjà été désintégrée par sa propre mise en scène
@@ -25392,9 +25704,24 @@ async function btlLeaderDeath(c){
   }
 }
 
+// V0.05.89 : fin d'un combat de test de l'OPÉRATION SPÉCIALE (contre l'IA) : rien n'est envoyé au serveur
+async function specTestEnd(winner){
+  const B0 = BTL;
+  BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
+  btlArClear();
+  try{ await btlLeaderDeath(BTL.S[btlOther(winner)].leader); }catch(_){}
+  await btlSleep(450);
+  if(BTL !== B0) return;
+  const rm = document.getElementById('rewardModal');
+  const mo = new MutationObserver(() => { if(!rm.classList.contains('show')){ mo.disconnect(); if(BTL === B0) btlExit(); } });
+  mo.observe(rm, { attributes:true, attributeFilter:['class'] });
+  const art = B0.S.p.leader.def;
+  showRewardModal('PARTIE DE TEST', [], { resultType:winner === 'p' ? 'victory' : 'defeat', resultArt:art.artExt, artPosY:defiResultArtPosY(art.name), actionLabel:'CONTINUER' });
+}
 async function btlFinish(winner){
   if(BTL.over) return;
   if(pvpOn()) return pvpLocalEnd(winner);   // PvP : seule la fin annoncée par le serveur compte
+  if(BTL.d && BTL.d.specTest) return specTestEnd(winner);   // V0.05.89 : OPÉRATION SPÉCIALE -- combat de test (ni serveur ni récompense)
   const B0 = BTL;
   BTL.over = true; BTL.phase = 'end'; btlCancelInteractions(); btlSetEnd(false);
   const fin = BTL.fin = econBattleEnd(winner);   // V0.05.00 : la bande part tout de suite au serveur ; c'est SON verdict (rejeu de la partie) qui compte, pas celui de l'écran
@@ -29968,6 +30295,7 @@ const BTL_MODULES = {
 // module équipé d'un camp : { name, rar, level, t }  (null = aucun)
 function btlPModName(d){ const x = d && d.module; if(!x || !BTL_MODULES[x.name]) return null; if(typeof modStackCount === 'function' && modStackCount(x.name, x.rar || 'rare') < 1) return null; return x.name; }
 function btlModInit(d){
+  if(d && d.spec){ const mk1 = n => (n && BTL_MODULES[n]) ? { name:n, rar:'rare', level:1, t:btlModT('rare', 1), frame:'rare' } : null; return { p:mk1(d.srv.p.module), o:mk1(d.srv.o.module) }; }   // V0.05.89 : OPÉRATION SPÉCIALE
   const mk = x => {
     if(!x || !BTL_MODULES[x.name]) return null;
     if(typeof modStackCount === 'function' && modStackCount(x.name, x.rar || 'rare') < 1) return null;   // module plus possédé : pas de module
@@ -39016,7 +39344,7 @@ renderResources();
 window.addEventListener('pagehide', () => saveNow());
 
 // ----- Retour par balayage (gauche -> droite) : remplace les boutons « retour » -----
-const BACK_OF = { tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'playerHub', friendsView:'playerHub', playerHubView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
+const BACK_OF = { specOpView:'hub', tasksView:'rewards', dailyView:'rewards', trophyView:'rewards', rewardsView:'hub', playerView:'playerHub', friendsView:'playerHub', playerHubView:'hub', defiView:'hub', defiPathView:'defi', batailleView:'hub' };
 function activeSubView(){
   if(!document.getElementById('battleView').classList.contains('active')) return null;
   return Object.keys(BACK_OF).find(id => document.getElementById(id).classList.contains('active')) || null;
