@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.87</title>
+<title>Projet MECA V0.05.88</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -6560,6 +6560,33 @@
   .cx-below .cx-close-round{width:44px; height:44px; border-radius:50%; margin-top:4px; font-size:15px; color:#fff; cursor:pointer;
     background:linear-gradient(180deg, #2a2340, #141020); border:1px solid var(--line-strong); box-shadow:0 3px 0 #06050b;}
 
+  /* V0.05.88 : COLLECTION -- bouton « VOIR L'ANIMATION » sous la grande carte, et fenêtre vidéo (aucun contrôle : on touche la fenêtre pour la fermer) */
+  .cx-below .cx-vid-btn{display:flex; align-items:center; justify-content:center; gap:10px; min-width:230px; padding:13px 22px 13px 18px; cursor:pointer; color:#fff;
+    --cut:10px; border-radius:0; clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    font-family:var(--font-title); font-size:12px; font-weight:700; letter-spacing:3px; -webkit-tap-highlight-color:transparent;
+    background:linear-gradient(160deg, rgba(255,255,255,.12) 0%, transparent 45%), linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid rgba(139,92,246,.55); box-shadow:var(--shadow-card), 0 0 14px -6px var(--violet-glow); transition:transform .08s;}   /* même recette « verre biseauté » que les boutons de GESTION DE CARTE (.mod-fuse-toggle) */
+  .cx-below .cx-vid-btn:active{transform:scale(.98);}
+  .cx-below .cx-vid-btn i{width:0; height:0; border-style:solid; border-width:6px 0 6px 10px; border-color:transparent transparent transparent #fff; filter:drop-shadow(0 0 4px var(--violet-glow));}
+  .cvw{position:fixed; inset:0; z-index:9000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+    background:rgba(4,3,8,.82); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); opacity:0; transition:opacity .18s ease; cursor:pointer;
+    padding:calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); touch-action:none; -webkit-user-select:none; user-select:none;}
+  .cvw.show{opacity:1;}
+  .cvw-win{position:relative; width:min(92vw, 420px, calc((100dvh - 96px) * .4621)); aspect-ratio:780/1688; border-radius:14px; overflow:hidden; background:#06070c;
+    border:1px solid rgba(255,255,255,.16); box-shadow:0 20px 50px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.6), 0 0 28px rgba(120,150,255,.12);
+    transform:scale(.94); transition:transform .22s cubic-bezier(.2,.8,.3,1);}
+  .cvw.show .cvw-win{transform:none;}
+  .cvw-win video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; display:block; background:#06070c;}
+  .cvw-win video::-webkit-media-controls{display:none !important;}
+  .cvw-load{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity .2s;}
+  .cvw-load i{width:34px; height:34px; border-radius:50%; border:3px solid rgba(255,255,255,.18); border-top-color:#fff; animation:cvwSpin .8s linear infinite;}
+  .cvw.ready .cvw-load{opacity:0;}
+  .cvw-err{position:absolute; left:12%; right:12%; top:50%; transform:translateY(-50%); text-align:center; color:#fff; font-size:13px; line-height:1.45; display:none;}
+  .cvw.err .cvw-err{display:block;} .cvw.err .cvw-load{display:none;}
+  .cvw-hint{color:rgba(255,255,255,.55); font-size:11px; letter-spacing:1.4px; font-family:var(--font-title);}
+  @keyframes cvwSpin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion:reduce){ .cvw, .cvw-win{transition:none;} }
+
   /* Panneau de montée de niveau ouvert : on ferme en touchant à côté de la carte */
   .codex-modal.lvl-open #lvlOpenBtn,
   .codex-modal.lvl-open .cx-close-round,
@@ -8373,7 +8400,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.87</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.88</b></div>
   </div>
 
     </div>
@@ -9433,9 +9460,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.87';
+var BUILD_VERSION = 'V0.05.88';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.88', items:[
+    'COLLECTION : quand tu ouvres une carte en grand, un bouton « VOIR L’ANIMATION » sous la carte montre ses animations en vidéo, sur un champ de bataille préparé pour elle (par exemple pour un Baroud d’honneur : la carte est détruite, puis son Baroud se joue).',
+    'La vidéo s’ouvre dans une fenêtre et tourne en boucle ; touche la fenêtre pour la fermer. Le son suit le réglage EFFETS SONORES et la musique baisse pendant la vidéo.',
+    'Vidéos pour 49 cartes mécha et les 10 cartes Tech qui ont une animation propre ; les cartes sans animation n’ont pas de bouton. La vidéo se télécharge seulement quand tu touches le bouton.',
+  ] },
   { v:'V0.05.87', items:[
     'Nouvelle carte ÉCARLATE : MAGNEMER (5 ATQ / 4 DEF / 7 PV), bouledogue gardien des champs de lave. PERCÉE + APPEL : le joueur le plus en difficulté (toi ou l’adversaire) reçoit la réponse : +1 ou +2 mana, une carte Tech ou une carte mécha.',
     'MAGNEMER analyse la partie (PV et DEF des chefs, attaques à venir, Tank, force des terrains, main bloquée) et choisit la réponse la plus utile au joueur en difficulté. Le mana arrive tout de suite pour celui qui pose MAGNEMER, au tour suivant pour l’autre ; main pleine : du mana.',
@@ -16922,6 +16954,10 @@ function openCodexModal(name, rar, opts){
     
   `;
   }
+  if(opts && opts.anim && cardVidUrl(def.name)){   // V0.05.88 : vidéo des animations de la carte
+    belowEl.insertAdjacentHTML('beforeend', '<button class="cx-vid-btn" id="cxVidBtn" type="button"><i></i>VOIR L\'ANIMATION</button>');
+    document.getElementById('cxVidBtn').onclick = e => { e.stopPropagation(); cardVidOpen(def.name); };
+  }
   const cxCloseBtn = document.getElementById('cxCloseBtn');
   if(cxCloseBtn) cxCloseBtn.onclick = closeCodexModal;
   setupLorePin();
@@ -16945,6 +16981,7 @@ function openCodexModal(name, rar, opts){
 }
 function closeCodexModal(){
   hideCraftBar();
+  if(typeof cardVidClose === 'function') cardVidClose();
   if(typeof clearPendingQueueAdvance === 'function') clearPendingQueueAdvance();
   const m = document.getElementById('codexModal');
   m.classList.remove('show');
@@ -16953,6 +16990,51 @@ function closeCodexModal(){
 document.getElementById('codexModal').addEventListener('click', (e) => {
   if(e.target.id === 'codexModal') closeCodexModal();
 });
+
+// ---------- V0.05.88 : COLLECTION -- vidéo des animations d'une carte ----------
+// Les vidéos sont filmées dans le vrai combat (champ de bataille adapté à la carte) et rangées dans le bucket (card-assets/vid/, nom avec empreinte => cache 1 an).
+// Fenêtre sans aucun contrôle (ni pause, ni avance, ni retour) : la vidéo tourne en boucle, on touche n'importe où pour fermer. Son = réglage EFFETS SONORES du jeu.
+var CARD_VID_BASE = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/';
+var CARD_VIDS = {"AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-0ed02a04.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CVW = { el:null, v:null, t:0, duck:0 };
+function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
+function cardVidClose(){
+  const w = CVW.el; if(!w || !w.classList.contains('show')) return;
+  clearTimeout(CVW.t); w.classList.remove('show');
+  const v = CVW.v; try{ v.pause(); }catch(_){}
+  setTimeout(() => { if(w.classList.contains('show')) return; w.hidden = true; try{ v.removeAttribute('src'); v.load(); }catch(_){} }, 200);
+  if(CVW.duck){ CVW.duck = 0; try{ musSync(); }catch(_){} }
+}
+function cardVidOpen(name){
+  const url = cardVidUrl(name); if(!url) return;
+  if(CVW.el && CVW.el.classList.contains('show')) return;   // déjà ouverte (double appui)
+  if(!CVW.el){
+    const w = document.createElement('div'); w.className = 'cvw'; w.id = 'cardVidWin'; w.hidden = true;
+    w.innerHTML = '<div class="cvw-win"><video playsinline webkit-playsinline loop preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback"></video>'
+      + '<div class="cvw-load"><i></i></div><div class="cvw-err">Vidéo indisponible pour le moment.<br>Vérifie ta connexion puis réessaie.</div></div><div class="cvw-hint">TOUCHE POUR FERMER</div>';
+    document.body.appendChild(w);
+    const v = w.querySelector('video');
+    const stop = e => { e.preventDefault(); e.stopPropagation(); };
+    w.addEventListener('pointerdown', stop); w.addEventListener('contextmenu', stop);
+    w.addEventListener('click', e => { stop(e); cardVidClose(); });
+    v.addEventListener('playing', () => { clearTimeout(CVW.t); w.classList.add('ready'); w.classList.remove('err'); });
+    v.addEventListener('error', () => { if(w.classList.contains('show')) w.classList.add('err'); });
+    v.addEventListener('pause', () => { if(w.classList.contains('show') && !document.hidden) v.play().catch(() => {}); });   // aucune pause possible : la vidéo repart
+    document.addEventListener('visibilitychange', () => { if(!document.hidden && w.classList.contains('show')) v.play().catch(() => {}); });
+    CVW.el = w; CVW.v = v;
+  }
+  const w = CVW.el, v = CVW.v, vol = Math.max(0, Math.min(1, ((SETTINGS && SETTINGS.vfx) || 0) / 100));
+  w.classList.remove('ready', 'err'); w.hidden = false;
+  v.muted = vol <= 0; try{ v.volume = vol; }catch(_){}
+  v.src = url; v.currentTime = 0;
+  const p = v.play(); if(p && p.catch) p.catch(e => {   // lecture refusée avec le son (règle du navigateur) : on rejoue sans le son
+    if(!e || e.name !== 'NotAllowedError' || !w.classList.contains('show') || v.muted) return;
+    v.muted = true; v.play().catch(() => {}); if(CVW.duck){ CVW.duck = 0; try{ musSync(); }catch(_){} } });
+  void w.offsetWidth; w.classList.add('show');
+  clearTimeout(CVW.t); CVW.t = setTimeout(() => { if(!w.classList.contains('ready')) w.classList.add('err'); }, 15000);
+  // musique du menu plus basse pendant la vidéo (si la vidéo a du son)
+  try{ const m = MUS, g = m && m.tr && m.tr.menu && m.tr.menu.gain; if(g && !v.muted){ CVW.duck = 1; g.gain.setTargetAtTime(musVol() * .25, m.ctx.currentTime, .15); } }catch(_){}
+}
 
 // ---------- Escouade de combat (slots) ----------
 
@@ -18174,7 +18256,7 @@ function renderBinderPage(){
       card.style.setProperty('--sh-delay', shineDelay());
       card.style.setProperty('--sh-dur', shineDur(rar));
       if(isOwned(def) && cardHasNotif(def)){ const nd = document.createElement('span'); nd.className = 'sl-new'; sl.appendChild(nd); }
-      card.onclick = () => { openCodexModal(def.name, rar); const nd = sl.querySelector('.sl-new'); if(nd && !cardHasNotif(def)) nd.remove(); collNewArrows(); };
+      card.onclick = () => { openCodexModal(def.name, rar, { anim:true }); const nd = sl.querySelector('.sl-new'); if(nd && !cardHasNotif(def)) nd.remove(); collNewArrows(); };
     } else {
       sl.classList.add('locked');
       sl.innerHTML = `<div class="sleeve-lock-no">${def.tech ? techNo(def).replace('TECH ', 'T') : cardNo(def)}</div>`;
