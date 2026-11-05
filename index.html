@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.90</title>
+<title>Projet MECA V0.05.91</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1497,6 +1497,19 @@
   #dlLaunchGo:active{ box-shadow:0 1px 0 #2e1777, 0 1px 0 rgba(255,255,255,.3) inset; }
   /* V0.04.65 : lancement d'un défi = deck adverse + choix de son deck (Bataille) */
   #defiLaunchInner .dl-sec{ margin:10px 0 2px; width:100%; text-align:center; }
+  /* V0.05.91 : limite de 5 nouveaux paliers de Défi par jour */
+  #defiLaunchInner .dl-cap{ width:100%; text-align:center; margin-top:8px; font-family:var(--font-ui); font-size:12.5px; color:rgba(220,228,255,.75); }
+  #defiLaunchInner .dl-cap.full{ color:#ffb3ab; }
+  .defi-day-bar{ --cut:8px; margin-top:8px; display:flex; align-items:center; gap:10px; padding:9px 14px; border-radius:0;
+    clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+    background:linear-gradient(160deg, rgba(255,255,255,.10) 0%, transparent 45%), linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel)); border:1px solid var(--line-strong); }
+  .defi-day-bar .ddb-l{ flex:1; min-width:0; text-align:left; font-family:var(--font-title); font-size:10px; font-weight:700; letter-spacing:1.8px; color:#dfe3ff; }
+  .defi-day-bar .ddb-pips{ display:flex; gap:5px; }
+  .defi-day-bar .ddb-pips i{ width:15px; height:7px; transform:skewX(-20deg); background:rgba(255,255,255,.08); border:1px solid rgba(180,160,255,.35); }
+  .defi-day-bar .ddb-pips i.on{ background:var(--violet-hi); border-color:transparent; box-shadow:0 0 6px var(--violet-glow); }
+  .defi-day-bar .ddb-n{ min-width:30px; text-align:right; font-family:var(--font-title); font-size:11px; font-weight:700; letter-spacing:1px; color:var(--violet-hi); }
+  .defi-day-bar.full .ddb-pips i.on{ background:#ff8a80; box-shadow:0 0 6px rgba(255,90,78,.6); }
+  .defi-day-bar.full .ddb-n{ color:#ffb3ab; }
   #defiLaunchInner .dl-banner{ position:relative; width:100%; aspect-ratio:16/8; margin-top:12px; overflow:hidden; clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px)); background:#0b0c1c; box-shadow:0 0 0 1px rgba(255,255,255,.28) inset; }
   #defiLaunchInner .dl-banner img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; animation:dlBannerIn .7s ease-out both; }
   #defiLaunchInner .dl-banner::after{ content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,rgba(255,255,255,.2) 0,rgba(255,255,255,0) 22%,rgba(0,0,0,0) 62%,rgba(5,6,16,.55) 100%); box-shadow:0 0 0 2px rgba(150,170,255,.35) inset, 0 -2px 0 rgba(255,255,255,.18) inset; }
@@ -8349,10 +8362,6 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
         <span class="bs-rew"><span class="bs-g"><i class="ico-goldbar"></i><b id="bsG">+25</b></span><span class="bs-x"><i class="ico-xpchip"></i><b id="bsX">+15</b></span></span>
       </div>
     </div>
-    <div class="res-panel" id="batTrainRw" style="display:none">
-      <div class="btr-ico"></div>
-      <div class="btr-txt"><span class="btr-title">RÉCOMPENSE DU JOUR</span><span class="btr-sub"></span></div>
-    </div>
     <div class="res-panel" id="batPanel">
       <div class="team-label player">CHOIX DU DECK</div>
       <div id="batailleList"></div>
@@ -8479,6 +8488,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       </div>
       <button type="button" class="defi-ultimate-btn" id="defiUltimateBtn">ULTIMATE</button>
     </div>
+    <div class="defi-day-bar" id="defiDayBar"></div>
     <div class="codex-grid" id="defiList"></div>
   </div>
 
@@ -8571,7 +8581,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.90</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.91</b></div>
   </div>
 
     </div>
@@ -9045,7 +9055,7 @@ async function econSend(op, params, rid){
 // Messages d'erreur métier (code renvoyé par le serveur -> texte du jeu)
 const ECON_MSG = { gold:'OR INSUFFISANT', crystal:'CRISTAUX INSUFFISANTS', mat:'MATÉRIAUX INSUFFISANTS', stock:'AUCUN BOOSTER DISPONIBLE', empty:'RIEN À ACHETER',
   already:'DÉJÀ RÉCUPÉRÉE AUJOURD\'HUI', not_claimable:'RIEN À RÉCUPÉRER', protected:'CARTE EN FAVORI : PROTÉGÉE', qty:'QUANTITÉ INVALIDE',
-  not_craftable:'CETTE CARTE NE SE FABRIQUE PAS', not_owned:'CARTE NON POSSÉDÉE', no_match:'AUCUN COMBAT EN COURS', too_fast:'COMBAT TROP COURT POUR ÊTRE VALIDÉ' };
+  not_craftable:'CETTE CARTE NE SE FABRIQUE PAS', not_owned:'CARTE NON POSSÉDÉE', no_match:'AUCUN COMBAT EN COURS', too_fast:'COMBAT TROP COURT POUR ÊTRE VALIDÉ', defi_cap:'LIMITE DU JOUR : 5 PALIERS DE DÉFI' };
 function econFail(code, message, opts){
   if(!opts || !opts.quiet){
     const t = ECON_MSG[code];
@@ -9134,7 +9144,7 @@ function econSyncSoon(delay){
   const wait = Math.max(delay || 0, 5000 - (Date.now() - ECON.syncAt));
   ECON.syncTimer = setTimeout(() => { ECON.syncTimer = null; ECON.syncAt = Date.now(); econAct('bootstrap', {}, { quiet:true, noResync:true }); }, Math.max(0, wait));
 }
-function econDayCheck(){ if(ECON.ready && ((ECON.dayKey && todayKey() !== ECON.dayKey) || (ECON.trainKey && trainKeyNow() !== ECON.trainKey))) econSyncSoon(0); }   // V0.05.58 : aussi à 6 h (récompense de l'Entraînement IA)
+function econDayCheck(){ if(ECON.ready && ECON.dayKey && todayKey() !== ECON.dayKey) econSyncSoon(0); }   // V0.05.91 : plus de changement de jour propre à l'Entraînement IA (6 h)   // V0.05.58 : aussi à 6 h (récompense de l'Entraînement IA)
 // V0.05.58 : journée de l'ENTRAÎNEMENT IA (6 h -> 6 h, heure de Paris, d'après l'heure du serveur) -- même calcul que trainKey() du serveur
 function trainKeyNow(){
   const p = econParts(econNow());
@@ -9148,12 +9158,7 @@ function trainRwState(){
   if(r && r.day === k) return { open:!r.got, bt:r.bt };
   return { open:true, bt:null };
 }
-function renderTrainRw(){
-  const st = trainRwState(), show = ECON.ready && st.open;   // V0.05.59 : point rouge de notification (plus d'icône de booster)
-  if(ECON.ready && st.open && !st.bt && ECON.trainAsk !== trainKeyNow()){ ECON.trainAsk = trainKeyNow(); econSyncSoon(0); }   // une seule demande par journée
-  setDot('dotTrain', show);
-  if(econViewOn('batailleView')) batRenderTrainRw();
-}
+function renderTrainRw(){ setDot('dotTrain', false); }   // V0.05.91 : plus de récompense du jour à l'Entraînement IA (ni point rouge, ni panneau)
 function batRenderTrainRw(){
   const p = document.getElementById('batTrainRw'); if(!p) return;
   const st = trainRwState(), ic = p.querySelector('.btr-ico'), t1 = p.querySelector('.btr-sub');
@@ -9181,7 +9186,7 @@ function econMirror(s, op){
   player.boosters = { res:(s.boosters && s.boosters.res) || 0, cards:(s.boosters && s.boosters.cards) || 0, modules:0 };
   player.stats = Object.assign(defaultStats(), J(s.stats));
   player.totals = J(s.totals); player.troph = J(s.troph); player.daily = J(s.daily); player.login = J(s.login);
-  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.trainRw = s.trainRw ? J(s.trainRw) : null; player.spec = s.spec ? J(s.spec) : null; player.backs = J(s.backs); player.defi = J(s.defi || {});
+  player.tasks = s.tasks ? J(s.tasks) : null; player.winStreak = s.winStreak || 0; player.pvpStreak = s.pvpStreak || 0; player.trainRw = s.trainRw ? J(s.trainRw) : null; player.spec = s.spec ? J(s.spec) : null; player.backs = J(s.backs); player.defi = J(s.defi || {}); player.defiDay = s.defiDay ? J(s.defiDay) : null;
   CHAR_DEFS.forEach(d => {
     const had = warm ? copiesOf(d) : -1;
     const st = emptyStack(); st[rarityOf(d)] = (s.cards && s.cards[d.name]) || 0; cardCopies[d.name] = st;
@@ -9598,7 +9603,7 @@ function econBattleShow(fin, r){
     return;
   }
   if(res.mode === 'defi'){ defiBtlShowResult(res); return; }
-  showRewardModal(res.won ? (res.first ? 'RÉCOMPENSE DU JOUR' : (res.n > 1 ? 'SÉRIE DE ' + res.n + ' VICTOIRES' : (res.items && res.items.length ? '' : 'RÉCOMPENSE DU JOUR DÉJÀ GAGNÉE'))) : '', econItems(res.items), { resultType:res.won ? 'victory' : 'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
+  showRewardModal(res.won ? (res.first ? 'RÉCOMPENSE DU JOUR' : (res.n > 1 ? 'SÉRIE DE ' + res.n + ' VICTOIRES' : '')) : '', econItems(res.items), { resultType:res.won ? 'victory' : 'defeat', resultArt:fin.art.artExt, artPosY:defiResultArtPosY(fin.art.name), actionLabel:'CONTINUER' });
 }
 // Résultat d'un combat précédent, reçu après coup
 function econBattleLate(res){
@@ -9631,9 +9636,16 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.90';
+var BUILD_VERSION = 'V0.05.91';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.91', items:[
+    'Économie rééquilibrée : les cartes s’obtiennent plus lentement, pour que chaque nouvelle carte compte (et en prévision des nombreuses cartes à venir).',
+    'DÉFI : 5 nouveaux paliers gagnés au plus par jour, toutes cartes confondues (compteur dans l’en-tête, il repart à minuit) ; rejouer un palier déjà gagné reste possible.',
+    'DÉFI : récompenses revues (or et matériaux divisés par deux, un booster de cartes aux paliers 5, 10 et 13, moins de cristaux).',
+    'BOUTIQUE : le booster de cartes coûte 2000 or. FABRIQUER une carte demande plus de matériaux (rare 20, épique 50, légendaire 120, écarlate 250, Tech 80).',
+    'ENTRAÎNEMENT IA : la première victoire de la journée ne rapporte plus de booster (plus de point rouge sur la case ni de panneau « RÉCOMPENSE DU JOUR »). Tes victoires comptent toujours pour les tâches et les trophées.',
+  ] },
   { v:'V0.05.90', items:[
     'OPÉRATION SPÉCIALE : un double appui sur LANCER au moment où l’adversaire est trouvé ne relance plus une 2e recherche par-dessus le combat ; l’écran d’attente reste affiché jusqu’au début du match.',
     'Connexion : si le réseau se bloque pendant le renouvellement de la connexion, le jeu n’attend plus indéfiniment (10 s au plus) ; un téléphone qui n’est pas à l’heure ne garde plus une connexion expirée ; en PvP, une connexion expirée est renouvelée tout de suite au lieu de faire perdre le match.',
@@ -11537,7 +11549,7 @@ var TUT_STEPS = [
     mock:'<div class="tut-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8-7 10-3.8-2-7-5-7-10V6l7-3z"/></svg></div>' },
   { title:'TA FICHE JOUEUR', text:'En haut de l\'écran, ton avatar affiche ton nom et ton niveau de commandant. C\'est ta carte de visite.',
     mock: () => tutIconFrom('#tilePlayer .mt-avatar', 'cyan') },
-  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner. Ta première victoire de la journée rapporte un booster (cartes ou ressources) : son icône est en haut à droite de la case tant qu\'il est à gagner. Ensuite, plus rien jusqu\'au lendemain 6 h. L\'adversaire s\'adapte à ton deck et à tes résultats.',
+  { title:'L\'ENTRAÎNEMENT IA', text:'Choisis l\'un de tes decks dans la case ENTRAÎNEMENT IA du menu. À chaque tour, pose des cartes grâce à ton mana (de 1 à 5), prépare leurs attaques ou leurs défenses, puis touche FIN : tes actions se jouent dans l\'ordre où tu les as lancées. Détruis le chef d\'escouade adverse pour gagner. Tes victoires comptent pour les tâches et les trophées. L\'adversaire s\'adapte à ton deck et à tes résultats.',
     mock: () => tutIconFrom('#tileBattle .mt-battle-ico', 'green') },
   { title:'LA BATAILLE', text:'La grande case rouge BATAILLE te met face à un autre joueur, en direct : choisis ton deck, patiente le temps qu\'un adversaire arrive, puis le meilleur commandant l\'emporte. Pour l\'instant, c\'est une phase de test, sans récompense.',
     mock:'<div class="tut-badge red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4l7 7M19 4l-7 7M12 11l-6 8M12 11l6 8M4 17l3 3M20 17l-3 3"/></svg></div>' },
@@ -16934,7 +16946,7 @@ MAT_ORDER.forEach(rar => {
 // l'écran BOOSTERS), injectée en JS plutôt que dupliquée en HTML pour rester identique au pixel près.
 const SHOP_BOOST_MAX = 10;
 const SHOP_BOOST_CRYSTAL_COST = { res:5, cards:5, modules:5 };
-const SHOP_BOOST_GOLD_COST = { res:1000, cards:1000, modules:1000 };   // V0.04.32 : au choix, cristaux OU or
+const SHOP_BOOST_GOLD_COST = { res:1000, cards:2000, modules:1000 };   // V0.05.91 : booster de cartes 2000 or   // V0.04.32 : au choix, cristaux OU or
 const SHOP_BOOST_ID = { res:'BoostRes', cards:'BoostCards', modules:'BoostModules' };
 const shopBoostAmount = { res:1, cards:1, modules:1 };
 function shopBoostPrice(type){ return shopBoostAmount[type] * SHOP_BOOST_CRYSTAL_COST[type]; }
@@ -17665,7 +17677,7 @@ function deckTileHtml(e, badge){
 }
 // ---------- CRÉER (V0.04.56) : toutes les cartes / tous les modules, fantômes si non possédés ----------
 // Coût de fabrication : matériaux de la rareté de la carte (l'écarlate se paie en légendaires, comme la destruction). Holographique : non fabricable.
-const CRAFT_COST = { rare:{ mat:'rare', n:10 }, epique:{ mat:'epique', n:20 }, legendaire:{ mat:'legendaire', n:40 }, ecarlate:{ mat:'legendaire', n:80 }, tech:{ mat:'epique', n:30 } };
+const CRAFT_COST = { rare:{ mat:'rare', n:20 }, epique:{ mat:'epique', n:50 }, legendaire:{ mat:'legendaire', n:120 }, ecarlate:{ mat:'legendaire', n:250 }, tech:{ mat:'epique', n:80 } };   // V0.05.91 : fabrication plus chère
 // V0.05.10 : une Tech se fabrique comme une légendaire (même rareté de tirage en booster) ; le serveur applique le même coût (econ_data.craft.tech)
 function craftCostOf(rar, def){ return (def && def.tech) ? CRAFT_COST.tech : (CRAFT_COST[rar] || null); }
 // V0.04.84 : tuiles gardées d'un affichage à l'autre (clé type|nom|rareté) ; on ne crée que celles jamais vues, on replace les autres.
@@ -20613,8 +20625,7 @@ function renderBataille(){
   list.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { batSelected = t.dataset.deck; renderBataille(); }; });
   batRenderStreak();
   const pv = batMode === 'pvp', st = document.getElementById('batStreak'), lb = document.querySelector('#batPanel .team-label'), bt = document.getElementById('batLaunchBtn');
-  if(st) st.style.display = pv ? '' : 'none';   // V0.05.58 : la WINSTREAK n'existe plus qu'en BATAILLE (série PvP) ; l'Entraînement IA affiche la récompense du jour
-  const tr = document.getElementById('batTrainRw'); if(tr){ tr.style.display = pv ? 'none' : ''; if(!pv) batRenderTrainRw(); }
+  if(st) st.style.display = pv ? '' : 'none';   // V0.05.58 : la WINSTREAK n'existe plus qu'en BATAILLE (série PvP) ; V0.05.91 : l'Entraînement IA ne rapporte plus de booster
   if(lb) lb.textContent = pv ? 'CHOIX DU DECK · BATAILLE' : 'CHOIX DU DECK';
   if(bt) bt.textContent = pv ? 'RECHERCHER UN ADVERSAIRE' : 'LANCER LE COMBAT';
   batSyncLaunch();
@@ -37394,6 +37405,14 @@ function defiUltimateReady(def){
 // Un palier ne se joue que dans l'ordre (le suivant juste après le dernier remporté), et pour un
 // palier "dizaine", seulement si le niveau de CETTE carte (sa meilleure rareté possédée) atteint le
 // minimum requis (cf DEFI_BOSS_LEVEL_GATE) -- sinon il reste affiché mais non lançable.
+// V0.05.91 : 5 NOUVEAUX paliers gagnés au plus par jour (minuit, heure de Paris ; même règle que le serveur) ; rejouer un palier gagné ne compte pas
+const DEFI_DAY_CAP = 5;
+function defiDayUsed(){ const d = player.defiDay; return (d && d.day === todayKey()) ? (d.n | 0) : 0; }
+function defiDayLeft(){ return Math.max(0, DEFI_DAY_CAP - defiDayUsed()); }
+function defiDayBar(){ const el = document.getElementById('defiDayBar'); if(!el) return; const u = Math.min(DEFI_DAY_CAP, defiDayUsed());
+  let pips = ''; for(let i = 0; i < DEFI_DAY_CAP; i++) pips += '<i' + (i < u ? ' class="on"' : '') + '></i>';
+  el.innerHTML = '<span class="ddb-l">PALIERS DU JOUR</span><span class="ddb-pips">' + pips + '</span><span class="ddb-n">' + u + '/' + DEFI_DAY_CAP + '</span>';
+  el.classList.toggle('full', u >= DEFI_DAY_CAP); }
 function defiTierUnlockable(def, tier){
   const done = defiCardProgress(def).done;
   if(tier > done + 1) return false;
@@ -37411,20 +37430,20 @@ function defiTierReward(tier){
   const R = DEFI_REWARDS[Math.max(1, Math.min(ULTIMATE_MAX_TIER, tier)) - 1];
   return JSON.parse(JSON.stringify(R));
 }
-const DEFI_REWARDS = [
-  { gold:60,   xp:30,  mat:{ rare:2 } },
-  { gold:80,   xp:40,  mat:{ rare:3 }, booster:'res', boosterN:1 },
-  { gold:100,  xp:50,  mat:{ rare:4, epique:1 } },
-  { gold:125,  xp:62,  mat:{ rare:4, epique:2 }, booster:'cards', boosterN:1 },
-  { gold:200,  xp:100, crystal:15, mat:{ rare:5, epique:3 }, booster:'cards', boosterN:1 },
-  { gold:170,  xp:85,  mat:{ rare:5, epique:3, legendaire:1 } },
-  { gold:210,  xp:105, mat:{ rare:6, epique:4, legendaire:1 }, booster:'res', boosterN:2 },
-  { gold:255,  xp:128, mat:{ epique:5, legendaire:2 } },
-  { gold:300,  xp:150, mat:{ epique:6, legendaire:2 }, booster:'cards', boosterN:2 },
-  { gold:500,  xp:250, crystal:40, mat:{ epique:8, legendaire:4 }, booster:'cards', boosterN:2 },
-  { gold:900,  xp:420, crystal:60, mat:{ epique:10, legendaire:6 }, booster:'res', boosterN:3 },
-  { gold:1400, xp:640, crystal:90, mat:{ epique:12, legendaire:8 }, booster:'cards', boosterN:3 },
-  { gold:2200, xp:950, crystal:150, mat:{ epique:15, legendaire:12 }, booster:'cards', boosterN:4 }
+const DEFI_REWARDS = [   // V0.05.91 : rééquilibrage (or et matériaux ÷2, boosters de cartes aux paliers 5, 10, 13 seulement, cristaux 3/5/5/8/10) -- même table que le serveur econ
+  { gold:30, xp:30, mat:{ rare:1 } },
+  { gold:40, xp:40, mat:{ rare:2 } },
+  { gold:50, xp:50, mat:{ rare:2, epique:1 } },
+  { gold:65, xp:62, mat:{ rare:2, epique:1 }, booster:'res', boosterN:1 },
+  { gold:100, xp:100, crystal:3, mat:{ rare:3, epique:2 }, booster:'cards', boosterN:1 },
+  { gold:85, xp:85, mat:{ rare:3, epique:2, legendaire:1 } },
+  { gold:105, xp:105, mat:{ rare:3, epique:2, legendaire:1 } },
+  { gold:130, xp:128, mat:{ epique:3, legendaire:1 } },
+  { gold:150, xp:150, mat:{ epique:3, legendaire:1 }, booster:'res', boosterN:1 },
+  { gold:250, xp:250, crystal:5, mat:{ epique:4, legendaire:2 }, booster:'cards', boosterN:1 },
+  { gold:450, xp:420, crystal:5, mat:{ epique:5, legendaire:3 } },
+  { gold:700, xp:640, crystal:8, mat:{ epique:6, legendaire:4 }, booster:'res', boosterN:1 },
+  { gold:1100, xp:950, crystal:10, mat:{ epique:8, legendaire:6 }, booster:'cards', boosterN:1 }
 ];
 
 // Filtre d'affichage du hub DÉFI (V0.03.53, demande d'Alex) : le bouton ULTIMATE n'ouvre PAS un accès
@@ -37488,6 +37507,7 @@ function renderDefi(){
   const done = DEFI_DEFS.filter(isOwned).length;
   const counter = document.getElementById('defiProgressCount');
   if(counter) counter.textContent = done + '/' + total;
+  defiDayBar();   // V0.05.91
   // Case déverrouillée -> ouvre la piste des paliers de CETTE carte (V0.03.47, demande d'Alex).
   list.querySelectorAll('.defi-cell.unlocked').forEach(cell => {
     cell.onclick = () => {
@@ -37719,14 +37739,16 @@ function renderDefiLaunch(){
     const card = deckShowcaseHtml(d);
     return `<div class="deck-tile${defiLaunchDeck === d.id ? ' selected' : ''}" data-deck="${d.id}">${card}<div class="deck-name">${escDeckHtml(d.name)}<small>${d.cards.length}/${DECK_SIZE} cartes</small></div></div>`;
   }).join('') : '<div class="fab-empty">AUCUN DECK POUR LE MOMENT<br>CRÉE-EN UN DANS CARTE › DECK</div>';
-  const ready = decks.some(d => d.id === defiLaunchDeck && d.cards.length >= 2);
+  const capped = tier > defiCardProgress(def).done && defiDayLeft() <= 0;   // V0.05.91 : limite du jour (rejouer un palier gagné reste possible)
+  const ready = !capped && decks.some(d => d.id === defiLaunchDeck && d.cards.length >= 2);
+  const capLine = tier > defiCardProgress(def).done ? `<div class="dl-cap${capped ? ' full' : ''}">${capped ? '5 nouveaux paliers par jour · reviens demain' : 'Paliers du jour : ' + defiDayUsed() + '/' + DEFI_DAY_CAP}</div>` : '';
   inner.innerHTML = `
     <button class="cx-close" id="dlClose">✕</button>
     <div class="team-label player" style="margin:0;">${boss ? 'BOSS · ' : ''}${defiTierIsUltimate(tier) ? 'ULTIMATE · ' : ''}PALIER ${tier} — ${def.name}</div>
     <div class="dl-banner"><img src="${bnSrc}" alt="" draggable="false" style="object-position:50% ${defiResultArtPosY(bn.name)}%"></div>
     <div class="team-label player dl-sec">TON DECK</div>
     <div id="defiDeckList">${deckHtml}</div>
-    <div class="controls" style="width:100%;"><button class="primary-btn" id="dlLaunchGo" ${ready ? '' : 'disabled'}>LANCER LE COMBAT</button></div>`;
+    <div class="controls" style="width:100%;"><button class="primary-btn" id="dlLaunchGo" ${ready ? '' : 'disabled'}>${capped ? 'LIMITE DU JOUR ATTEINTE' : 'LANCER LE COMBAT'}</button></div>${capLine}`;
   document.getElementById('dlClose').onclick = closeDefiLaunch;
   inner.querySelectorAll('[data-deck]').forEach(t => { t.onclick = () => { defiLaunchDeck = t.dataset.deck; renderDefiLaunch(); }; });
   document.getElementById('dlLaunchGo').onclick = () => { if(ready) defiEnterCombat(); };
@@ -39531,7 +39553,7 @@ const HELP_CONTENT = {
     '<li><b>DÉFI</b> — le parcours propre à chaque carte.</li></ul>' },
   batailleView: { title:'ENTRAÎNEMENT IA', text:'Choisis l’un de tes decks, puis touche <b>LANCER LE COMBAT</b>.<br><br>' +
     'À chaque tour, pose des cartes grâce à ton mana, prépare leurs attaques ou leurs défenses, puis touche <b>FIN</b> : tes actions se jouent dans l’ordre où tu les as lancées. Détruis le chef d’escouade adverse pour gagner.<br><br>' +
-    'Ta <b>première victoire de la journée</b> rapporte un booster (cartes ou ressources : son icône est sur la case ENTRAÎNEMENT IA). Les victoires suivantes ne rapportent rien jusqu’au lendemain 6 h. L’adversaire s’adapte à la force de ton deck et à tes résultats.' },
+    'Tes victoires comptent pour les tâches et les trophées. L’adversaire s’adapte à la force de ton deck et à tes résultats.' },
   rewardsView: { title:'RÉCOMPENSES', text:'Trois façons de gagner des récompenses gratuites :<ul>' +
     '<li><b>RÉCOMPENSE JOURNALIÈRE</b> — à réclamer chaque jour.</li>' +
     '<li><b>TROPHÉES</b> — des exploits à débloquer une fois pour toutes.</li>' +
@@ -39539,7 +39561,7 @@ const HELP_CONTENT = {
   dailyView: { title:'RÉCOMPENSE JOURNALIÈRE', text:'Reviens chaque jour réclamer ta récompense : elle grandit avec les jours consécutifs.<br><br>Glisse pour avancer sur la piste et découvrir les prochaines cases.' },
   trophyView: { title:'TROPHÉES', text:'Chaque trophée récompense un exploit accompli, une seule fois (or, cristaux, cartes bonus…).<br><br><b>RÉCUPÉRER TOUT</b> apparaît en bas à droite dès que plusieurs trophées sont prêts en même temps.' },
   tasksView: { title:'TÂCHES', text:'Des objectifs qui se renouvellent régulièrement : les accomplir fait progresser ta collection plus vite.<br><br><b>RÉCUPÉRER TOUT</b> apparaît dès que 2 tâches ou plus sont prêtes.' },
-  defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de 10 paliers à vaincre un par un, en combat Bataille : plus tu avances, plus le deck adverse est redoutable et plus les récompenses sont généreuses.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> : 3 paliers de plus, encore plus difficiles.' },
+  defiView: { title:'DÉFI', text:'Chaque carte a son propre parcours de 10 paliers à vaincre un par un, en combat Bataille : plus tu avances, plus le deck adverse est redoutable et plus les récompenses sont généreuses.<br><br>Un parcours terminé débloque le mode <b>ULTIMATE</b> : 3 paliers de plus, encore plus difficiles.<br><br>Tu peux gagner <b>5 nouveaux paliers par jour</b> (toutes cartes confondues) ; le compteur repart à minuit. Rejouer un palier déjà gagné reste possible.' },
   defiPathView: { title:'LES PALIERS', text:'La piste d’une carte : chaque palier est un combat Bataille contre un deck bâti autour de cette carte, de plus en plus fort.<br><br>Appuie sur un palier débloqué pour voir le deck adverse, choisir ton deck, puis lance le combat.' },
   playerHubView: { title:'JOUEUR', text:'Tout ce qui te concerne :<ul>' +
     '<li><b>JOUEUR</b> — ta fiche de commandant : nom, niveau et statistiques.</li>' +
