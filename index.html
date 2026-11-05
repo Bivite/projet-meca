@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.89</title>
+<title>Projet MECA V0.05.90</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7875,6 +7875,15 @@
     border:1px dashed rgba(255,204,41,.55); background:linear-gradient(180deg, rgba(40,36,20,.85), rgba(14,13,10,.9));}
   .so-ia:active{transform:translateY(1px);}
 
+  /* V0.05.90 : OPÉRATION SPÉCIALE -- titre long et petits écrans */
+  .so-brief h3{align-items:flex-start;} .so-brief h3 > span{flex:1 1 auto; min-width:0; text-align:left;} .so-brief h3 small{flex:none; padding-top:2px;}
+  .so-op{max-width:100%; overflow-wrap:anywhere;}
+  @media (max-height:720px){
+    .so-win{min-height:112px;} .so-win .so-emb{display:none;} .so-op{font-size:17px; letter-spacing:3px;} .so-tag{top:16px;} .so-ill{bottom:14px; font-size:10px;}
+    .so-win-in{gap:6px;} .so-brief{padding:9px 12px; gap:4px;} .so-brief p{font-size:12.5px; line-height:1.26;} #specOpView.active{gap:7px;}
+    .so-btns{gap:6px;} .so-ia{padding:7px 8px;}
+  }
+
   .so-launch:disabled{filter:grayscale(1) brightness(.6); cursor:default;}
   .so-rw{display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; font-family:var(--font-title); font-size:8.5px; font-weight:700; letter-spacing:1.4px; color:rgba(255,255,255,.62);}
   .so-rw b{color:#ffe9a6;} .so-rw .ok{color:#7dffb0;}
@@ -8562,7 +8571,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.89</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.90</b></div>
   </div>
 
     </div>
@@ -9471,7 +9480,7 @@ function econHeartbeat1s(){
   if(++ECON.hbTick >= 60){ ECON.hbTick = 0; econAct('heartbeat', {}, { quiet:true, render:'light', low:true }); }
   // V0.05.39 : le jeton de connexion est renouvelé en arrière-plan avant d'expirer (sinon c'est le clic du joueur qui payait ce renouvellement)
   if(ECON.hbTick % 20 === 10 && !ECON.pending){
-    try{ const se = readSupaSession(); if(se && se.refresh_token && se.expires_at && se.expires_at - Math.floor(Date.now() / 1000) < 240) supaRefresh().catch(() => {}); }catch(_){}
+    try{ const se = readSupaSession(); if(se && se.refresh_token && se.expires_at && se.expires_at - Math.floor(supaClock() / 1000) < 240) supaRefresh().catch(() => {}); }catch(_){}
   }
 }
 document.addEventListener('visibilitychange', () => {
@@ -9622,9 +9631,19 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.89';
+var BUILD_VERSION = 'V0.05.90';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.90', items:[
+    'OPÉRATION SPÉCIALE : un double appui sur LANCER au moment où l’adversaire est trouvé ne relance plus une 2e recherche par-dessus le combat ; l’écran d’attente reste affiché jusqu’au début du match.',
+    'Connexion : si le réseau se bloque pendant le renouvellement de la connexion, le jeu n’attend plus indéfiniment (10 s au plus) ; un téléphone qui n’est pas à l’heure ne garde plus une connexion expirée ; en PvP, une connexion expirée est renouvelée tout de suite au lieu de faire perdre le match.',
+    'Quitter un combat pendant que tu glisses une carte ou une flèche d’attaque n’ouvre plus de fenêtre d’erreur.',
+    'Combat : en glissant une carte en diagonale vers un emplacement, c’est bien la carte touchée qui est posée (elle pouvait changer en passant sur l’éventail de la main).',
+    'LARVOTRON : si le jeu passait en arrière-plan pendant son changement de camp, son animation pouvait tourner jusqu’à la fin du combat (batterie) : corrigé.',
+    'iPhone : le son des vidéos de la COLLECTION suit maintenant le réglage EFFETS SONORES.',
+    'Une victoire pendant ton propre tour arrête le chrono et la surchauffe derrière la fenêtre de fin.',
+    'DIMAVERSE : sur un téléphone qui peine, l’effet du trou noir s’allège plus vite pour rester fluide (aucun changement sur un téléphone rapide).',
+  ] },
   { v:'V0.05.89', items:[
     'MENU : nouvelle case OPÉRATION SPÉCIALE (sous RÉCOMPENSES et DÉFI) et une case PROCHAINEMENT à sa droite.',
     'OPÉRATION SPÉCIALE : un évent PvP court, du mercredi 6 h au lundi 6 h (heure de Paris), avec un mode de jeu qui change chaque semaine et un deck imposé, le même pour les deux joueurs ; il suffit de toucher LANCER. Entre le lundi 6 h et le mercredi 6 h, la case est fermée par un cadenas.',
@@ -17217,6 +17236,15 @@ function cardVidClose(){
   setTimeout(() => { if(w.classList.contains('show')) return; w.hidden = true; try{ v.removeAttribute('src'); v.load(); }catch(_){} }, 200);
   if(CVW.duck){ CVW.duck = 0; try{ musSync(); }catch(_){} }
 }
+// V0.05.90 : iPhone -- iOS ignore video.volume : le son de la vidéo passe par le moteur audio du jeu (gain = EFFETS SONORES). Sans moteur audio : volume de la vidéo (autres appareils).
+function cardVidRoute(v, vol){
+  try{
+    const m = typeof MUS !== 'undefined' ? MUS : null; if(!m || !m.ctx || typeof m.ctx.createMediaElementSource !== 'function') return !!CVW.gn;
+    if(!CVW.gn){ CVW.mes = m.ctx.createMediaElementSource(v); CVW.gn = m.ctx.createGain(); CVW.mes.connect(CVW.gn); CVW.gn.connect(m.ctx.destination); }
+    CVW.gn.gain.value = vol; if(m.ctx.state !== 'running' && m.ctx.resume) m.ctx.resume().catch(() => {});
+    return true;
+  }catch(_){ return !!CVW.gn; }
+}
 function cardVidOpen(name){
   const url = cardVidUrl(name); if(!url) return;
   if(CVW.el && CVW.el.classList.contains('show')) return;   // déjà ouverte (double appui)
@@ -17225,7 +17253,7 @@ function cardVidOpen(name){
     w.innerHTML = '<div class="cvw-win"><video playsinline webkit-playsinline loop preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback"></video>'
       + '<div class="cvw-load"><i></i></div><div class="cvw-err">Vidéo indisponible pour le moment.<br>Vérifie ta connexion puis réessaie.</div></div><div class="cvw-hint">TOUCHE POUR FERMER</div>';
     document.body.appendChild(w);
-    const v = w.querySelector('video');
+    const v = w.querySelector('video'); v.crossOrigin = 'anonymous';   // V0.05.90 : nécessaire pour faire passer le son par le moteur audio du jeu (le bucket autorise les autres sites)
     const stop = e => { e.preventDefault(); e.stopPropagation(); };
     w.addEventListener('pointerdown', stop); w.addEventListener('contextmenu', stop);
     w.addEventListener('click', e => { stop(e); cardVidClose(); });
@@ -17237,7 +17265,7 @@ function cardVidOpen(name){
   }
   const w = CVW.el, v = CVW.v, vol = Math.max(0, Math.min(1, ((SETTINGS && SETTINGS.vfx) || 0) / 100));
   w.classList.remove('ready', 'err'); w.hidden = false;
-  v.muted = vol <= 0; try{ v.volume = vol; }catch(_){}
+  v.muted = vol <= 0; try{ v.volume = (!v.muted && cardVidRoute(v, vol)) ? 1 : vol; }catch(_){}
   v.src = url; v.currentTime = 0;
   const p = v.play(); if(p && p.catch) p.catch(e => {   // lecture refusée avec le son (règle du navigateur) : on rejoue sans le son
     if(!e || e.name !== 'NotAllowedError' || !w.classList.contains('show') || v.muted) return;
@@ -20513,11 +20541,11 @@ function specDeckObj(dk, extra){
 async function specLaunch(){
   const sp = specNow();
   if(!sp.open){ showToast('OPÉRATION SPÉCIALE FERMÉE · RETOUR MERCREDI 6 H'); specRender(); return; }
-  if(BTL || PVPQ || PVPC) return;
+  if(BTL || PVPQ || PVPC || PVPS) return;
   await pvpQueueOpen(specDeckObj(sp.deck, { spec:{ ev:sp.mode, w:sp.w } }));
 }
 function specTestStart(mode){
-  if(BTL || PVPQ || PVPC) return;
+  if(BTL || PVPQ || PVPC || PVPS) return;
   const dk = specTestDeck(mode), side = { cards:dk.cards.slice(), leader:dk.leader, module:dk.module };
   btlStart(specDeckObj(dk, { id:'spectest', seed:(Math.random() * 4294967296) >>> 0, srv:{ p:side, o:JSON.parse(JSON.stringify(side)) }, ai:{ lv:0, sk:0.75, tx:1 }, spec:{ ev:mode, test:true }, specTest:true }));
 }
@@ -20535,7 +20563,7 @@ function specPickOpen(){
   el.hidden = false;
 }
 document.getElementById('tileSpecOp').onclick = specOpen;
-document.getElementById('soLaunchBtn').onclick = specLaunch;
+document.getElementById('soLaunchBtn').onclick = () => econUi(specLaunch);   // V0.05.90 : verrou contre le double appui
 document.getElementById('soIaBtn').onclick = specPickOpen;
 setInterval(() => { specTileRender(); const v = document.getElementById('specOpView'); if(v && v.classList.contains('active')) specRender(); }, 20000);
 specTileRender();
@@ -20635,7 +20663,8 @@ async function pvpSend(op, params, opt){
   try{ sess = await ensureFreshSupaSession(); }catch(_){ sess = null; }
   if(!sess || !sess.access_token){ pvpDbgErr(op, readSupaSession() ? 0 : 401, 'sans jeton'); return { status: readSupaSession() ? 0 : 401, body:null }; }
   const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), (opt.timeout || 15000) * PVP_TMO);
-  if(opt.signal){ if(opt.signal.aborted) ctl.abort(); else opt.signal.addEventListener('abort', () => ctl.abort()); }
+  const onAb = () => ctl.abort();   // V0.05.90 : écouteur retiré à la fin de la requête (il s'empilait sur le signal du match)
+  if(opt.signal){ if(opt.signal.aborted) ctl.abort(); else opt.signal.addEventListener('abort', onAb, { once:true }); }
   try{
     const res = await fetch(SUPA_URL + '/functions/v1/pvp', {
       method:'POST', signal:ctl.signal,
@@ -20644,9 +20673,10 @@ async function pvpSend(op, params, opt){
     });
     let body = null; try{ body = await res.json(); }catch(_){}
     if(res.status !== 200) pvpDbgErr(op, res.status, body && (body.error || body.message));
+    if(res.status === 401 && !opt._re){ clearTimeout(tm); const s2 = await supaRefresh().catch(() => null); if(s2 && s2.access_token) return pvpSend(op, params, Object.assign({}, opt, { _re:1 })); }   // V0.05.90 : jeton expiré -> renouvelé, requête rejouée une fois
     return { status:res.status, body };
   }catch(e){ if(!ctl.signal.aborted) pvpDbgErr(op, 0, String(e && e.message || e)); return { status:0, body:null, aborted:ctl.signal.aborted }; }
-  finally{ clearTimeout(tm); }
+  finally{ clearTimeout(tm); if(opt.signal) opt.signal.removeEventListener('abort', onAb); }
 }
 
 // ---------- file d'attente ----------
@@ -20664,7 +20694,7 @@ function pvpQueueEl(){
 }
 function pvpQueueShow(on){ const el = pvpQueueEl(); el.hidden = !on; document.body.classList.toggle('pvq-on', !!on); }
 async function pvpQueueOpen(d){
-  if(BTL || PVPQ || PVPC) return false;
+  if(BTL || PVPQ || PVPC || PVPS) return false;
   const deck = d.spec ? null : econBattleDeck(d);   // V0.05.89 : OPÉRATION SPÉCIALE -- deck imposé par le serveur
   if(!deck && !d.spec){ showToast('DECK INCOMPLET'); return false; }
   const Q = PVPQ = { d, deck, cancelled:false, ctl:new AbortController(), t0:Date.now() };
@@ -20680,11 +20710,11 @@ async function pvpQueueOpen(d){
   let errs = 0;
   while(!Q.cancelled){
     const st = r.body && r.body.status;
-    if(st === 'matched'){ PVPQ = null; pvpQueueShow(false); return await pvpStartMatch(r.body.match_id, Q.d, Q.deck); }
+    if(st === 'matched'){ PVPQ = null; return await pvpStartFromQueue(r.body.match_id, Q.d, Q.deck); }
     if(st === 'expired' || st === 'none' || Date.now() - Q.t0 >= PVP_QUEUE_MS){
       pvpDbgErr('queue', 0, 'fin d\'attente st=' + st + ' age=' + (Date.now() - Q.t0)); PVPQ = null;
       const lv = await pvpSend('queue_leave', {});
-      if(lv.body && lv.body.status === 'matched' && lv.body.match_id){ pvpQueueShow(false); return await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); }   // V0.05.56 : le match a été créé pendant la relecture de la file
+      if(lv.body && lv.body.status === 'matched' && lv.body.match_id) return await pvpStartFromQueue(lv.body.match_id, Q.d, Q.deck);   // V0.05.56 : le match a été créé pendant la relecture de la file
       pvpQueueShow(false); showToast('AUCUN ADVERSAIRE TROUVÉ'); return false;
     }
     const left = Math.max(1, Math.min(20, Math.floor((PVP_QUEUE_MS - (Date.now() - Q.t0)) / 1000))), w = PVP_WAIT ? left : 0;
@@ -20692,7 +20722,7 @@ async function pvpQueueOpen(d){
     r = await pvpSend('queue_poll', { wait:w }, { timeout:(w + 12) * 1000, signal:Q.ctl.signal });
     if(Q.cancelled) return false;
     if(r.status !== 200 || !r.body || !r.body.ok){
-      if(++errs > 6){ PVPQ = null; const lv = await pvpSend('queue_leave', {}); pvpQueueShow(false); if(lv.body && lv.body.status === 'matched' && lv.body.match_id) return await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); showToast('CONNEXION PERDUE'); return false; }
+      if(++errs > 6){ PVPQ = null; const lv = await pvpSend('queue_leave', {}); if(lv.body && lv.body.status === 'matched' && lv.body.match_id) return await pvpStartFromQueue(lv.body.match_id, Q.d, Q.deck); pvpQueueShow(false); showToast('CONNEXION PERDUE'); return false; }
       await pvpSleep(1200); r = { status:200, body:{ ok:true, status:'waiting' } };
     } else errs = 0;
   }
@@ -20706,12 +20736,16 @@ async function pvpQueueCancel(){
   Q.cancelled = true; try{ Q.ctl.abort(); }catch(_){}
   try{ if(Q.joinP) await Q.joinP; }catch(_){}
   const lv = await pvpSend('queue_leave', {});
-  PVPQ = null; pvpQueueShow(false);
-  if(lv.body && lv.body.status === 'matched'){ await pvpStartMatch(lv.body.match_id, Q.d, Q.deck); }   // un adversaire a été trouvé juste avant l'annulation : le match existe déjà
+  PVPQ = null;
+  if(lv.body && lv.body.status === 'matched'){ await pvpStartFromQueue(lv.body.match_id, Q.d, Q.deck); } else pvpQueueShow(false);   // un adversaire a été trouvé juste avant l'annulation : le match existe déjà
 }
 
 // ---------- démarrage du match ----------
+// V0.05.90 : démarrage depuis la file : le voile reste affiché jusqu'au début du combat (aucun autre lancement possible entre-temps)
+var PVPS = false;
+async function pvpStartFromQueue(mid, d, deck){ PVPS = true; try{ return await pvpStartMatch(mid, d, deck); } finally { PVPS = false; pvpQueueShow(false); } }
 async function pvpStartMatch(mid, d, deck){
+  if(BTL || PVPC){ pvpDbgErr('start', 0, 'combat déjà en cours'); return false; }   // V0.05.90 : jamais deux matchs en même temps
   let evs = [], more = true;
   while(more){
     const r = await pvpSend('match_sync', { match_id:mid, after:evs.length ? evs[evs.length - 1].seq : 0 });
@@ -22660,6 +22694,7 @@ function btlExit(){
   else if(!BTL.over && BTL.d && BTL.d.srv && !BTL.d.specTest) econBattleAbandon();   // V0.05.00 : combat quitté avant la fin = abandon enregistré par le serveur (série remise à zéro pour l'Entraînement)
   else if(fin0 && !fin0.shown) fin0.p.then(r => econBattleShow(fin0, r));   // quitté pendant l'envoi du résultat : il s'affiche quand même
   if(BTL.vs && BTL.vs.kill) BTL.vs.kill();
+  try{ btlCloseMenu(); if(BTL.tg) btlEndTarget(false); if(BTL.hold) btlHoldCancel(); if(BTL.modDrag) BTL.modDrag.cancel(); }catch(_){}   // V0.05.90 : gestes en cours (glisser, ciblage) arrêtés avant de quitter
   BTL.abort = true; clearInterval(BTL.timer); if(BTL.fz){ clearTimeout(BTL.fz.t); } if(BTL.pick && BTL.pick.off) BTL.pick.off();
   window.removeEventListener('resize', BTL.onResize);
   BTL.el.remove(); BTL = null;
@@ -23551,6 +23586,7 @@ async function btlPlayerPhase(){
     BTL.endRes = res;
     BTL.timer = setInterval(() => {
       if(!BTL || BTL.abort){ clearInterval(BTL && BTL.timer); return; }
+      if(BTL.over){ clearInterval(BTL.timer); btlSetHeat(0); return; }   // V0.05.90 : victoire pendant son tour -> plus de chrono ni de surchauffe derrière la fenêtre de fin
       const left = BTL.deadline - Date.now();
       btlSetHeat(left <= BTL_HEAT_MS ? 1 - Math.max(0, left) / BTL_HEAT_MS : 0);
       btlHolo(left);
@@ -23957,8 +23993,9 @@ function btlHandDown(ev){
         else btlDragStart(e);
         return;
       }
+      if(h.y0 - e.clientY > 28) h.lock = true;   // V0.05.90 : le doigt est monté -> la carte touchée est gardée
       const i = btlHandIdxAt(e.clientX);
-      if(i !== h.idx && i >= 0 && Math.abs(e.clientX - h.x0) > Math.abs(e.clientY - h.y0)){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }   // V0.05.04 : un glissé vers le haut (même en diagonale) garde la carte touchée
+      if(!h.lock && i !== h.idx && i >= 0 && Math.abs(e.clientX - h.x0) > 1.5 * Math.abs(e.clientY - h.y0)){ h.c = BTL.S.p.hand[i]; btlZoomShow(i); }   // V0.05.04 : un glissé vers le haut (même en diagonale) garde la carte touchée
     } else if(h.mode === 'drag'){
       if(h.c.tech){ btlTechDragMove(h, e); return; }   // V0.05.08 ; V0.05.78 : la Tech place la carte (bloquée au bord du champ de bataille si elle vise)
       h.fl.move(e.clientX, e.clientY - 40);
@@ -24131,6 +24168,7 @@ function btlAimDown(ev){
   const sx = ev.clientX, sy = ev.clientY;
   const off = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', off); window.removeEventListener('pointercancel', off); };
   const move = e => {
+    if(!BTL){ off(); return; }   // V0.05.90 : combat quitté pendant le geste
     const dx = e.clientX - sx, dy = e.clientY - sy;
     if(Math.hypot(dx, dy) < 14) return;
     off();
@@ -33774,8 +33812,9 @@ function btlLxDrawStrands(X, c, now){
 }
 // traînée de bave (changement de camp) : ruban translucide et brillant qui sèche puis disparaît
 function btlLxDrawTrails(X, c, now){
-  for(let i = X.tr.length - 1; i >= 0; i--){ const T = X.tr[i], P = T.pts; if(P.length < 2) continue;
-    const age = T.end ? now - T.end : 0; if(T.end && age > 900){ X.tr.splice(i, 1); continue; }
+  for(let i = X.tr.length - 1; i >= 0; i--){ const T = X.tr[i], P = T.pts;
+    const age = T.end ? now - T.end : 0; if(T.end && age > 900){ X.tr.splice(i, 1); continue; }   // V0.05.90 : une traînée terminée est retirée même si elle n'a qu'un point
+    if(P.length < 2) continue;
     const fa = T.end ? Math.max(0, 1 - Math.max(0, age - 380) / 520) : 1;
     c.lineCap = 'round'; c.lineJoin = 'round';
     const path = () => { c.beginPath(); c.moveTo(P[0][0], P[0][1]); for(let j = 1; j < P.length; j++) c.lineTo(P[j][0], P[j][1]); };
@@ -34646,7 +34685,7 @@ async function btlDmArriveGL(c, to, col){
         rs:RS, disk:so(ez(H0 + 80, S0 + 150, t)), flash:Math.max(0, 1 - Math.abs(t - (E0 + 40)) / 160) * .9 + Math.max(0, 1 - Math.abs(t - (END - 120)) / 120) * .6 };
       btlDmGLDraw(G, VW, VH, u);
       // résolution adaptée au téléphone : si les images tardent, le canvas passe en plus basse définition
-      const now = performance.now(); if(last){ frames++; if(now - last > 30) slow++; if(frames % 12 === 0){ if(slow > 5){ if(G.steps > 10) G.steps = 10; else if(G.scale > .38) G.scale = Math.max(.38, G.scale - .08); } slow = 0; } } last = now;   // qualité adaptée au téléphone (gardée pour la suite)
+      const now = performance.now(); if(last){ frames++; if(now - last > 30) slow++; if(frames % 8 === 0){ if(slow > 3){ if(G.steps > 10) G.steps = 10; else if(G.scale > .38) G.scale = Math.max(.38, G.scale - .08); else if(G.q2 > .6) G.q2 = Math.max(.6, G.q2 - .2); } slow = 0; } } last = now;   // qualité adaptée au téléphone (gardée pour la suite)
       if(!landed && t >= E0){
         landed = true;
         fl = document.createElement('div'); fl.className = 'btl-float'; btlPlaceFixed(fl, to); fl.style.zIndex = '34'; fl.innerHTML = btlSmallHtml(c); fx.appendChild(fl); try{ btlPaintIn(fl, c); }catch(_){}
@@ -34693,7 +34732,7 @@ async function btlDmEjectGL(dm, dest, copy){
         flash:Math.max(0, 1 - Math.abs(t - (B0 + 60)) / 140) * .5 + Math.max(0, 1 - Math.abs(t - EJ) / 130) * .55,
         point:t < C1 - 40 ? 0 : Math.pow(1 - ez(C1 + 60, END - 40, t), 1.6) * so(ez(C1 - 40, C1 + 40, t)) * (1 + .25 * Math.sin(t / 18)) };
       btlDmGLDraw(G, VW, VH, u);
-      const now = performance.now(); if(last){ frames++; if(now - last > 30) slow++; if(frames % 12 === 0){ if(slow > 5){ if(G.steps > 10) G.steps = 10; else if(G.scale > .38) G.scale = Math.max(.38, G.scale - .08); } slow = 0; } } last = now;
+      const now = performance.now(); if(last){ frames++; if(now - last > 30) slow++; if(frames % 8 === 0){ if(slow > 3){ if(G.steps > 10) G.steps = 10; else if(G.scale > .38) G.scale = Math.max(.38, G.scale - .08); else if(G.q2 > .6) G.q2 = Math.max(.6, G.q2 - .2); } slow = 0; } } last = now;
       if(!ejected && t >= EJ){ ejected = true; btlParticles(cx, cy, { n:12, color:'#d2b4ff', dist:RS * 3.4, dur:560, size:4 }); flying = eject(); }
       if(t >= END && flying){ return false; }
       return t < END;
@@ -38694,7 +38733,9 @@ async function supaFetch(path, opts){
     const sess = readSupaSession();
     headers['Authorization'] = 'Bearer ' + (sess && sess.access_token ? sess.access_token : SUPA_KEY);
   }
-  const res = await fetch(SUPA_URL + path, Object.assign({}, opts, { headers }));
+  let ctl = null, tmo = 0;   // V0.05.90 : délai maximal (renouvellement du jeton : 10 s)
+  if(opts.timeout && typeof AbortController === 'function'){ ctl = new AbortController(); tmo = setTimeout(() => ctl.abort(), opts.timeout); }
+  let res; try{ res = await fetch(SUPA_URL + path, Object.assign({}, opts, { headers }, ctl ? { signal:ctl.signal } : {})); } finally { if(tmo) clearTimeout(tmo); }
   if(!res.ok){
     let msg = 'Erreur réseau (' + res.status + ')';
     try{ const j = await res.json(); msg = j.msg || j.message || j.error_description || j.error || msg; }catch(_){}
@@ -38705,10 +38746,12 @@ async function supaFetch(path, opts){
 }
 // Rafraîchit le jeton si besoin (expiration proche ou déjà dépassée). Renvoie la session
 // valide (déjà à jour) ou null si personne n'est connecté / le rafraîchissement a échoué.
+// V0.05.90 : heure du serveur quand elle est connue (un téléphone en retard de quelques minutes gardait un jeton déjà expiré)
+function supaClock(){ try{ if(typeof ECON !== 'undefined' && ECON && ECON.offset) return Date.now() + ECON.offset; }catch(_){} return Date.now(); }
 async function ensureFreshSupaSession(){
   const sess = readSupaSession();
   if(!sess || !sess.refresh_token) return null;
-  const expSoon = !sess.expires_at || (sess.expires_at - Math.floor(Date.now() / 1000) < 60);
+  const expSoon = !sess.expires_at || (sess.expires_at - Math.floor(supaClock() / 1000) < 60);
   if(!expSoon) return sess;
   return await supaRefresh();
 }
@@ -38732,7 +38775,7 @@ async function supaRefresh0(){
   const sess = readSupaSession();
   if(!sess || !sess.refresh_token) return null;
   try{
-    const data = await supaFetch('/auth/v1/token?grant_type=refresh_token', { method:'POST', noAuth:true, body: JSON.stringify({ refresh_token: sess.refresh_token }) });
+    const data = await supaFetch('/auth/v1/token?grant_type=refresh_token', { method:'POST', noAuth:true, timeout:10000, body: JSON.stringify({ refresh_token: sess.refresh_token }) });
     writeSupaSession(data);
     return data;
   }catch(e){
