@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.91</title>
+<title>Projet MECA V0.05.92</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8581,7 +8581,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.91</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.92</b></div>
   </div>
 
     </div>
@@ -9636,9 +9636,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.91';
+var BUILD_VERSION = 'V0.05.92';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.92', items:[
+    'Nouvelle carte ÉCARLATE : EL-DIABLO (4 ATQ / 5 DEF / 8 PV), démone de métal liquide. TANK. PASSIF : à chaque carte jouée (méchas et Tech, par toi comme par l’adversaire), elle inflige 2 dégâts à toutes les cartes et aux deux chefs, sauf elle. La DEF absorbe d’abord, la carte qui vient d’être posée est touchée aussi, et plusieurs EL-DIABLO cumulent leurs salves.',
+    'Animations d’EL-DIABLO : son métal liquide entre en une seule masse, se divise en courants qui flottent sur tout le champ de bataille, se rejoignent et dessinent la carte au-dessus de sa case. À chaque carte jouée, elle se soulève et son métal suinte en gouttes qui volent au-dessus des cibles, se figent en lames (une forme par case) et frappent toutes ensemble.',
+    'EL-DIABLO a son Défi, et TRANSPORTEUR et CASSIS peuvent aussi la donner (MAGNEMER ne la donne jamais comme réponse).',
+  ] },
   { v:'V0.05.91', items:[
     'Économie rééquilibrée : les cartes s’obtiennent plus lentement, pour que chaque nouvelle carte compte (et en prévision des nombreuses cartes à venir).',
     'DÉFI : 5 nouveaux paliers gagnés au plus par jour, toutes cartes confondues (compteur dans l’en-tête, il repart à minuit) ; rejouer un palier déjà gagné reste possible.',
@@ -12029,6 +12034,7 @@ const CHAR_LORE = {
   'LE COMÈTEUR': { pilot:'Inconnu — signal capté au-dessus de la mégapole', text:"Les capteurs l'appellent LE COMÈTEUR : une silhouette cybernétique qui flotte au-dessus des tours sous un ciel rouge, un trou noir tournant dans chaque main. Personne ne sait d'où il vient ; ses images se brouillent dès qu'on le fixe. Là où il se pose, il tombe comme une météorite, et chaque machine qui arrive à ses côtés répète son ordre d'entrée, comme si le temps hésitait." },
   MAGNEMER: { pilot:'Aucun — gardien autonome des champs de lave', text:"Là où la terre saigne de la lave, un bouledogue d'acier garde les coulées. Ses runes rougeoient, ses chaînes traînent dans le magma et l'on dit qu'il sent qui va perdre avant même le premier coup. Quand MAGNEMER arrive, la lave monte, bouillonne… et la bulle qui éclate apporte toujours la bonne réponse — à celui qui en a le plus besoin, quel que soit son camp." },
   LARVOTRON: { pilot:'Aucun — larve sans maître', text:"Pondue dans la vase d'un marais par une usine oubliée, LARVOTRON n'obéit à personne. À chaque tour, elle rampe d'un camp à l'autre en laissant un filet de bave et se bat pour celui qui l'abrite. Elle frappe dès sa sortie de l'œuf, et chez celui qui l'a fait éclore ses coups ne lui coûtent rien. Quand elle meurt — ou quand elle ne trouve plus de place où ramper — elle éclate, et son acide ronge le chef du camp où elle se trouvait." },
+  'EL-DIABLO': { pilot:'Aucune — démone de métal liquide', text:"Aucune fonderie n'avoue l'avoir coulée. EL-DIABLO n'a pas de forme fixe : un métal rouge et vivant qui s'écoule, se sépare et se reforme où il veut. Elle ne sert aucun camp — chaque carte jouée sur le champ de bataille la réveille, et son métal jaillit en lames qui frappent tout ce qui tient debout, alliés comme ennemis. Elle seule en sort intacte." },
   RYPEAL: { pilot:'Aucun — atelier autonome « Ry-Peal »', text:"Dans les friches industrielles, quand les usines se sont tues, un atelier a continué à travailler. RYPEAL avance sur ses deux jambes, le dos hérissé de petits bras mécaniques qui ne s'arrêtent jamais : ils démontent, soudent, assemblent. Quand on l'abat, ses bras finissent le dernier objet commencé, le tendent à son camp, puis se retournent les uns contre les autres. Rien de l'atelier ne doit tomber aux mains de l'ennemi." },
   'TRASH-BOT': { pilot:'Aucun — programme de recyclage « Broyeur-7 »', text:"Dans les décharges sans fin sous les autoroutes suspendues, TRASH-BOT roule de tas en tas, la mâchoire ouverte. On l'a construit pour recycler les épaves ; personne n'a pensé à lui dire de s'arrêter. Chaque mécha qui tombe au combat finit entre ses dents : broyé, fondu, puis soudé à sa propre carcasse. Plus la bataille fait de victimes, plus il remonte du sol lourd, solide et affamé." },
   MARCH:     { pilot:'Aucun — intelligence marchande « Toile »', text:"Sur la route de terre qui traverse le marché des terres basses, MARCH avance courbé sous son grand sac de toile. Personne ne sait ce qu'il y range : des pièces de méchas, des processeurs encore chauds, parfois un module entier arraché à une épave. Quand il pose son sac au milieu d'un combat, il en déballe trois et laisse son escouade choisir. Il ne fait jamais crédit, mais il ne repart jamais sans avoir vendu." },
@@ -12472,7 +12478,13 @@ const CHAR_DEFS = [
     ultName:"MUE TOXIQUE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:52, def:14, hp:380}, max:{atk:380, def:110, hp:1400}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/larvotron-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/larvotron-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/larvotron-art-ext.webp' },
+  // ---- Nouvelle carte ÉCARLATE (V0.05.92) : EL-DIABLO, démone de métal liquide. TANK + PASSIF (à chaque carte jouée : 2 dégâts à tout le champ de bataille, sauf elle) ----
+  { name:"EL-DIABLO", rarity:"ecarlate", color:"#ff2438", shape:"block", role:"Tank — démone de métal liquide",
+    ultName:"MARÉE DE SANG", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:40, def:46, hp:470}, max:{atk:280, def:340, hp:1780}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/el-diablo-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/el-diablo-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -12547,7 +12559,7 @@ function fxFilterBtns(attr, cur){
 // peut valoir plus qu'une carte à grosses stats si son effet est plus fort. Chef d'escouade : PV + DEF < 50 (cf btl.js).
 const CARD_TIERS = {
   holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI', 'LE COMÈTEUR'],
-  ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME', 'MAGNEMER'],
+  ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME', 'MAGNEMER', 'EL-DIABLO'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII', 'HAKILX', 'SEEKER', 'LARVOTRON'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE', 'CASSIS', 'DIMAVERSE', 'PIGTAIL', 'TRASH-BOT', 'RYPEAL'],
   rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH']
@@ -12556,7 +12568,7 @@ const CARD_STATS = {
   // [ATQ, DEF, PV]
   'MOTOKO':[9,5,8], 'ZAPPAN':[10,3,8], 'TOA2':[6,8,9], 'MOG-AI':[9,4,8],
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
-  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6],
+  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
   'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3], 'SCOOT':[3,1,4], 'POUNDER':[4,2,5], 'PITTY BELL':[3,1,4], 'SOSFOR':[4,3,5], 'GAST':[3,1,3], 'SYLVERLAKE':[4,5,6], 'ANAKA':[4,0,2], 'KOTAMA':[4,0,2]
 };
@@ -17238,7 +17250,7 @@ function specAt(ms){
   const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
   return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
 }
-var CARD_VIDS = {"AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-0ed02a04.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS = {"EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-0ed02a04.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
 function cardVidClose(){
@@ -22687,7 +22699,7 @@ function btlStart(d){
   BTL.bg = btlPickBg(); if(BTL.bg > 1) BTL.el.classList.add('bg' + BTL.bg);   // V0.05.75 : fond tiré au hasard
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
   btlWarm();
-  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm();
+  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm();
   btlCircuit();
   btlRenderPile('p', 0); btlRenderPile('o', 0); btlRenderMana(); btlRenderHand(); btlRenderOHand();
   ['p', 'o'].forEach(sd => { const c = BTL.S[sd].leader; btlPutCard(c); btlSlotOf(c).classList.add('lead-on'); });   // V0.04.66 : les chefs d'escouade sont déjà en place dès le lancement du combat (plus de sortie de pile)
@@ -23765,6 +23777,7 @@ async function btlPlay0(side, c, si, fromRect, el){
       try{ await btlTrigger('appel', c);
       await btlCmRepeat(c, cmL); }
       finally { if(BTL && BTL.mgHold){ BTL.mgHold = 0; await btlMgFinish(c); } }   // V0.05.87 : MAGNEMER -- la lave repart après le dernier Appel
+      await btlEdOnPlay(c);   // V0.05.92 : EL-DIABLO
       return;
     } }
   btlLights(c.rar, 1500);
@@ -23820,6 +23833,7 @@ async function btlPlay0(side, c, si, fromRect, el){
   if(!ghost && BTL_CARD_FX[btlFxN(c)] && BTL_CARD_FX[btlFxN(c)].slam) await btlSleepR(1000); else await btlSleep(ghost ? 1000 : 760);
   await btlTrigger('appel', c);
   await btlCmRepeat(c, cmL);
+  await btlEdOnPlay(c);   // V0.05.92 : EL-DIABLO (après l'Appel de la carte posée)
   } finally {
     if(BTL){
       BTL.fxBusy--;
@@ -30035,7 +30049,7 @@ BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
     'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'SYLVERLAKE':['appel'], 'BUZZY':['passif'],
-    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud']
+    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif']
   };
   Object.keys(K).forEach(n => { BTL_CARD_KW[n] = K[n]; });
 })();
@@ -30196,8 +30210,11 @@ function aiTYc(){
     cands:c => { const d = BTL_TECH_FX[c.name]; return d ? d.cands('o') : []; }, mode:c => BTL_TECH_FX[c.name].mode, canAct:btlCanAct, pwr:btlPwr, rnd:btlLrand };
 }
 // l'IA joue jusqu'à 3 Tech (même boucle que aiTechs du serveur : un tirage « réfléchi ou naïf » par décision)
+// V0.05.92 : EL-DIABLO -- chaque carte jouée déclenche chaque EL-DIABLO en jeu (2 dégâts chacun à tout le terrain et aux deux chefs) : l'IA ne joue pas une carte qui tuerait son propre chef
+function edSelfKill(all, L){ let n = 0; for(const x of all) if(x && x.hp > 0 && (x.as || x.name) === 'EL-DIABLO' && !x.off && x.kw && x.kw.indexOf('passif') >= 0) n++; return n > 0 && !!L && L.hp + L.df <= 2 * n; }
+function btlEdAll(){ return BTL.S.p.slots.concat(BTL.S.o.slots); }
 async function btlAITechs(early, q){
-  for(let k = 0; k < 3 && BTL && !BTL.over && BTL.S.o.hand.some(x => x.tech); k++){
+  for(let k = 0; k < 3 && BTL && !BTL.over && BTL.S.o.hand.some(x => x.tech) && !edSelfKill(btlEdAll(), BTL.S.o.leader); k++){
     const d = aiTechPick(aiTYc(), btlLrand() < q, early); if(!d) break;
     const c = d.c, he = btlQ('#btlOHand [data-uid="' + c.uid + '"]'), r0 = he ? btlRect(he) : btlRect(btlQ('#btlOHand'));
     const el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
@@ -30216,7 +30233,7 @@ async function btlAI(){
   await btlSleep(700);
   if(tx) await btlAITechs(true, tq);
   // 1) poser des cartes
-  while(!BTL.over && BTL.mana.o > 0 && S.hand.some(x => !x.tech) && S.slots.some(x => !x)){
+  while(!BTL.over && BTL.mana.o > 0 && S.hand.some(x => !x.tech) && S.slots.some(x => !x) && !edSelfKill(btlEdAll(), S.leader)){   // V0.05.92 : EL-DIABLO
     let c;
     if(fine()){ if(!aiFWantPlay(X)) break; c = aiFPickPlay(X); }
     else {
@@ -31601,7 +31618,7 @@ function btlCsTex(VW, VH){
 // la carte se pose dans son emplacement avec son nouvel effet. L'Appel de l'effet gagné (s'il en a un) est joué ensuite (btlTrigger -> btlFxN).
 // Coût : une quarantaine d'éléments animés par le compositeur (transform / opacity), plus le rouleau (~50 encadrés de texte), tous retirés à la fin.
 // Durées en unités du combat (x BTL_TS).
-var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER"];
+var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO"];
 function btlFxN(c){ return c && (c.as || c.name); }   // nom sous lequel les effets d'une carte sont cherchés (CASSIS : l'effet gagné)
 function btlCsGain(c, n){ c.as = n; c.kw = (BTL_CARD_KW[n] || []).slice(); delete c._big; }
 // ---- TANDEEM (V0.05.61) : PASSIF -- +2 DEF à chaque carte Tech jouée (par l'un ou l'autre joueur) ; affichage habituel d'un gain de DEF ----
@@ -33142,7 +33159,7 @@ function mgPick(X){
   const cands = [];
   for(const n of [1, 2]){ const g = hv(m + n) - hv(m); if(g > 0) cands.push({ s:g - .4 * n, key:'M' + n, mana:n }); }
   if(!full){
-    if(free > 0) for(const n of X.pool){ if(n === 'MAGNEMER' || n === 'LARVOTRON') continue; const k = X.kw(n) || [], st = X.stats(n) || [0, 0, 1];   // une carte mécha doit encore être posée : note x0,7
+    if(free > 0) for(const n of X.pool){ if(n === 'MAGNEMER' || n === 'LARVOTRON' || n === 'EL-DIABLO') continue; const k = X.kw(n) || [], st = X.stats(n) || [0, 0, 1];   // une carte mécha doit encore être posée : note x0,7
       let v = mgPwN(X, n) * .7 + (mine.length <= 1 ? Math.max(0, Q - P) / 12 : 0) + (C.lethal && k.indexOf('tank') >= 0 && inc - st[1] - st[2] < eff ? 6 : 0) + (R === cur && m >= 2 && k.indexOf('percee') >= 0 ? 2 : 0);
       if(m < 1) v *= .7; cands.push({ s:v, key:'C' + n, card:n }); }
     for(const n of X.techs){ if(n === 'SABOTAGE' || X.cost(n) > m || !X.techOk(R, n)) continue; const v = mgTechVal(X, R, n, C); if(v > 0) cands.push({ s:v, key:'T' + n, card:n }); }
@@ -34752,6 +34769,508 @@ async function btlDmEjectGL(dm, dest, copy){
   } finally { cv.remove(); btlDmGLFree(G); }
 }
 BTL_CARD_FX['DIMAVERSE'] = { drop:btlDmArrive, passif:{ quand:'techpre', run: async () => {} } };
+// ================= EL-DIABLO (V0.05.92) : TANK + PASSIF -- métal liquide rouge =================
+// Règle (MÊME RÈGLE que edSalvo() du noyau econ / pvp) : à chaque carte JOUÉE -- mécha posé ou Tech, par l'un ou l'autre joueur -- chaque EL-DIABLO en jeu
+// inflige 2 dégâts (DEF d'abord) à TOUTES les cartes des deux camps et aux DEUX chefs, sauf lui-même. Sa propre pose ne déclenche rien ; plusieurs EL-DIABLO
+// cumulent (une salve chacun : camp de la carte jouée d'abord, puis l'autre, emplacements dans l'ordre). Cartes détruites ensemble ; si un chef tombe, fin de partie
+// (chef adverse d'EL-DIABLO compté d'abord, comme POSITRON).
+// Rendu : UN canvas WebGL plein écran au-dessus du plateau, en deux passes -- 1) champ de « métaballes » : chaque goutte est un point (profil (1-d²)³) additionné
+// en définition réduite ; 2) surface du métal (seuil du champ) : normales tirées du champ, reflets chromés, spéculaire, cœur incandescent qui coule, ombre portée.
+// Les gouttes sont calculées en JS (corde « qui suit la tête » pour le ruban, chaînes pour les gouttes et les lames). Sans WebGL : gouttes dessinées en 2D.
+var BTL_ED = { gl:null, dmg:2, n:0, bw:1.25, slowA:1.4, slowP:1.3 };   // bw : épaisseur des lames ; slowA / slowP : ralenti de l'arrivée / du passif (demandé par Alex : « trop rapide »)
+var BTL_ED_VS1 = 'attribute vec4 aB; uniform vec2 uV; uniform float uS; varying float vH;' +
+  'void main(){ vec2 p = aB.xy / uV * 2. - 1.; gl_Position = vec4(p.x, -p.y, 0., 1.); gl_PointSize = max(1., aB.z * 2. * uS); vH = aB.w; }';
+var BTL_ED_FS1 = 'precision mediump float; varying float vH;' +
+  'void main(){ vec2 q = gl_PointCoord * 2. - 1.; float d = dot(q, q); if(d >= 1.) discard; float f = 1. - d; f = f * f * f; gl_FragColor = vec4(f * .3, f * .3 * vH, 0., 0.); }';
+// maillage en relief (lames de métal figé) : chaque sommet porte sa hauteur, additionnée au même champ que les gouttes
+var BTL_ED_VS3 = 'attribute vec4 aT; uniform vec2 uV; varying vec2 vH;' +
+  'void main(){ vec2 p = aT.xy / uV * 2. - 1.; gl_Position = vec4(p.x, -p.y, 0., 1.); vH = aT.zw; }';
+var BTL_ED_FS3 = 'precision mediump float; varying vec2 vH; void main(){ gl_FragColor = vec4(vH.x, vH.x * vH.y, 0., 0.); }';
+var BTL_ED_VS2 = 'attribute vec2 aP; void main(){ gl_Position = vec4(aP, 0., 1.); }';
+var BTL_ED_FS2 = [
+'#ifdef GL_FRAGMENT_PRECISION_HIGH',
+'precision highp float;',
+'#else',
+'precision mediump float;',
+'#endif',
+'uniform sampler2D uF; uniform sampler2D uN; uniform vec2 uRes; uniform vec2 uFR; uniform float uT; uniform float uIso; uniform vec2 uSh;',
+'float F(vec2 uv){ return texture2D(uF, uv).r; }',
+'void main(){',
+'  vec2 uv = gl_FragCoord.xy / uRes;',
+'  vec4 s = texture2D(uF, uv); float f = s.r;',
+'  float sh = smoothstep(uIso - .07, uIso + .05, F(uv + uSh)) * .5;',                 // ombre portée sur le plateau (relief)
+'  if(f < uIso - .03){ gl_FragColor = vec4(0., 0., 0., sh); return; }',
+'  vec2 e = 1.5 / uFR;',
+'  float fx = F(uv + vec2(e.x, 0.)) - F(uv - vec2(e.x, 0.));',
+'  float fy = F(uv + vec2(0., e.y)) - F(uv - vec2(0., e.y));',
+'  float th = 1. - exp(-max(f - uIso, 0.) * 7.);',                                      // hauteur du métal (0 au bord -> 1 au cœur)
+'  vec3 n = normalize(vec3(-fx * 7., -fy * 7., .12 + th * .5));',
+'  vec3 K = normalize(vec3(-.42, .62, .66));',                                             // lumière principale (haut gauche)
+'  vec3 R = reflect(vec3(0., 0., -1.), n);',
+'  float dif = max(dot(n, K), 0.);',
+'  float sp = pow(max(dot(n, normalize(K + vec3(0., 0., 1.))), 0.), 90.);',
+'  vec2 q = vec2(uv.x * uRes.x / uRes.y, uv.y) * 2.6;',
+'  float v1 = texture2D(uN, q * .5 + vec2(uT * .02, -uT * .013)).r;',
+'  float v2 = texture2D(uN, q * 1.3 - vec2(uT * .032, uT * .018)).g;',
+// corps cramoisi sombre + reflets de la lumière de studio (rouges, les plus forts deviennent argent)
+'  float env = .85 * exp(-pow((R.y - .5) * 7., 2.)) + .45 * exp(-pow((R.x + .45) * 9., 2.)) * smoothstep(-.2, .3, R.y) + .22 * smoothstep(.2, .9, R.y);',
+'  vec3 col = vec3(.15, .004, .018) * (.5 + .75 * dif) + vec3(.92, .1, .09) * env * .72;',
+'  col = mix(col, vec3(1., .93, .92), smoothstep(.6, 1.05, env));',
+// filets qui suivent le courant (lignes de niveau de la hauteur, cassées par le bruit), comme les stries du fluide de l'artwork
+'  float str = smoothstep(.7, 1., sin(th * 15. + v1 * 6. - uT * 1.4) * .5 + .5) * smoothstep(.2, .7, v2);',
+'  col += vec3(1., .2, .13) * str * (.32 + .4 * (1. - th));',
+// liseré argenté sur les bords tournés vers la lumière
+'  vec2 nd = n.xy / max(length(n.xy), 1e-4); float side = smoothstep(-.3, .7, dot(nd, normalize(K.xy)));',
+'  float rim = (1. - smoothstep(0., .3, th)) * (.2 + .8 * side);',
+'  col = mix(col, vec3(1., .92, .92), rim * .85);',
+'  col += vec3(1.) * (sp * 1.3 + pow(max(dot(n, normalize(vec3(.45, .25, 1.))), 0.), 70.) * .55);',
+// cœur incandescent qui coule dans le métal épais
+'  float vein = smoothstep(.56, .86, v1 * .62 + v2 * .5) * (1. - str * .6);',
+'  float heat = clamp(s.g / max(f, .001), 0., 1.);',
+'  col += vec3(1., .32, .06) * vein * smoothstep(.2, .7, th) * (.4 + 1.1 * heat) + vec3(.85, .06, .03) * th * heat * .2;',
+'  float a = smoothstep(uIso - .012, uIso + .012, f);',
+'  gl_FragColor = vec4(col * a, a + sh * (1. - a));',
+'}'].join('\n');
+function btlEdGLInit(){
+  if(BTL_ED.gl) return BTL_ED.gl.ok ? BTL_ED.gl : null;
+  const G = BTL_ED.gl = { ok:false };
+  try{
+    const cv = document.createElement('canvas'), gl = cv.getContext('webgl', { premultipliedAlpha:true, alpha:true, antialias:false, depth:false, stencil:false, preserveDrawingBuffer:false });
+    if(!gl) return null;
+    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if(!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+    const prog = (vs, fs, at, un) => { const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+      if(!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr)); const P = { pr, a:gl.getAttribLocation(pr, at) }; un.forEach(n => { P[n] = gl.getUniformLocation(pr, n); }); return P; };
+    const P1 = prog(BTL_ED_VS1, BTL_ED_FS1, 'aB', ['uV', 'uS']), P3 = prog(BTL_ED_VS3, BTL_ED_FS3, 'aT', ['uV']), P2 = prog(BTL_ED_VS2, BTL_ED_FS2, 'aP', ['uF', 'uN', 'uRes', 'uFR', 'uT', 'uIso', 'uSh']);
+    const vb = gl.createBuffer(), qb = gl.createBuffer(), mb = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, qb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    // bruit lisse (valeurs aléatoires adoucies sur 3 octaves) pour les veines incandescentes
+    const S = 128, px = new Uint8Array(S * S * 4); let sd = 4711; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+    const lay = (n, amp, out) => { const g = []; for(let i = 0; i < n * n; i++) g.push(rnd()); for(let y = 0; y < S; y++) for(let x = 0; x < S; x++){ const fx = x / S * n, fy = y / S * n, x0 = Math.floor(fx), y0 = Math.floor(fy), tx = fx - x0, ty = fy - y0,
+      sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty), at = (i, j) => g[((j % n) * n) + (i % n)];
+      out[y * S + x] += amp * ((at(x0, y0) * (1 - sx) + at(x0 + 1, y0) * sx) * (1 - sy) + (at(x0, y0 + 1) * (1 - sx) + at(x0 + 1, y0 + 1) * sx) * sy); } };
+    const nA = new Float32Array(S * S), nB = new Float32Array(S * S); lay(8, .55, nA); lay(16, .3, nA); lay(32, .15, nA); lay(8, .55, nB); lay(16, .3, nB); lay(32, .15, nB);
+    for(let i = 0; i < S * S; i++){ px[i * 4] = Math.min(255, nA[i] * 255) | 0; px[i * 4 + 1] = Math.min(255, nB[i] * 255) | 0; px[i * 4 + 3] = 255; }
+    const tN = gl.createTexture(); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tN);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, S, S, 0, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    // champ des gouttes : demi-flottants si le téléphone sait les dessiner et les filtrer (dégradés plus doux), sinon 8 bits
+    const hf = gl.getExtension('OES_texture_half_float'), hfl = gl.getExtension('OES_texture_half_float_linear'); gl.getExtension('EXT_color_buffer_half_float');
+    const tF = gl.createTexture(), fb = gl.createFramebuffer();
+    let type = gl.UNSIGNED_BYTE;
+    if(hf && hfl){
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tF); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 4, 4, 0, gl.RGBA, hf.HALF_FLOAT_OES, null);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tF, 0);
+      if(gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) type = hf.HALF_FLOAT_OES;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tF);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const pmax = (gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE) || [1, 64])[1] || 64;
+    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); BTL_ED.gl = { ok:false, lost:true }; });
+    Object.assign(G, { ok:true, cv, gl, P1, P2, P3, vb, qb, mb, tF, tN, fb, type, fw:0, fh:0, fs:.5, q:1, fsCap:1, qCap:1, pmax });
+    return G;
+  }catch(e){ console.warn('EL-DIABLO WebGL indisponible', e); BTL_ED.gl = { ok:false }; return null; }
+}
+// dessine une image : B = [x, y, rayon, chaleur] * n (pixels CSS de l'écran) ; M = triangles [x, y, hauteur, chaleur] * nm sommets
+function btlEdGLDraw(G, B, n, t, M, nm){
+  const gl = G.gl, W = innerWidth, H = innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cw = Math.max(2, Math.round(W * dpr * G.q)), ch = Math.max(2, Math.round(H * dpr * G.q));
+  if(G.cv.width !== cw || G.cv.height !== ch){ G.cv.width = cw; G.cv.height = ch; }
+  const fw = Math.max(2, Math.round(W * G.fs)), fh = Math.max(2, Math.round(H * G.fs));
+  if(G.fw !== fw || G.fh !== fh){
+    G.fw = fw; G.fh = fh; gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, G.tF);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, fw, fh, 0, gl.RGBA, G.type, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, G.fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, G.tF, 0);
+  }
+  const lim = G.pmax / 2 / G.fs; for(let i = 0; i < n; i++) if(B[i * 4 + 2] > lim) B[i * 4 + 2] = lim;
+  // passe 1 : champ des gouttes
+  gl.bindFramebuffer(gl.FRAMEBUFFER, G.fb); gl.viewport(0, 0, fw, fh); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(G.P1.pr); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  gl.bindBuffer(gl.ARRAY_BUFFER, G.vb); gl.bufferData(gl.ARRAY_BUFFER, B.subarray(0, n * 4), gl.DYNAMIC_DRAW);
+  gl.enableVertexAttribArray(G.P1.a); gl.vertexAttribPointer(G.P1.a, 4, gl.FLOAT, false, 0, 0);
+  gl.uniform2f(G.P1.uV, W, H); gl.uniform1f(G.P1.uS, G.fs);
+  if(n) gl.drawArrays(gl.POINTS, 0, n);
+  gl.disableVertexAttribArray(G.P1.a);
+  if(M && nm){ gl.useProgram(G.P3.pr); gl.bindBuffer(gl.ARRAY_BUFFER, G.mb); gl.bufferData(gl.ARRAY_BUFFER, M.subarray(0, nm * 4), gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(G.P3.a); gl.vertexAttribPointer(G.P3.a, 4, gl.FLOAT, false, 0, 0); gl.uniform2f(G.P3.uV, W, H); gl.drawArrays(gl.TRIANGLES, 0, nm); gl.disableVertexAttribArray(G.P3.a); }
+  // passe 2 : surface du métal
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, cw, ch); gl.disable(gl.BLEND);
+  gl.useProgram(G.P2.pr); gl.bindBuffer(gl.ARRAY_BUFFER, G.qb);
+  gl.enableVertexAttribArray(G.P2.a); gl.vertexAttribPointer(G.P2.a, 2, gl.FLOAT, false, 0, 0);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, G.tF); gl.uniform1i(G.P2.uF, 0);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, G.tN); gl.uniform1i(G.P2.uN, 1);
+  gl.uniform2f(G.P2.uRes, cw, ch); gl.uniform2f(G.P2.uFR, fw, fh); gl.uniform1f(G.P2.uT, t / 1000); gl.uniform1f(G.P2.uIso, .09);
+  gl.uniform2f(G.P2.uSh, 5 / W, -9 / H);
+  gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.disableVertexAttribArray(G.P2.a);
+}
+function btlEdGLFree(G){ try{ if(!G || !G.ok) return; G.cv.width = 1; G.cv.height = 1; const gl = G.gl; gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, G.tF); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, G.type, null); G.fw = 0; G.fh = 0; }catch(_){} }
+// surface de rendu d'une animation : WebGL si possible, sinon canvas 2D (gouttes rouges simples) ; ajuste la qualité si les images tardent
+function btlEdStage(fsW){
+  const G = btlEdGLInit(), fx = btlQ('#btlFx');
+  if(G){ G.cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:31;pointer-events:none;'; fx.appendChild(G.cv); G.fs = Math.min(fsW || .5, G.fsCap); G.q = G.qCap; }
+  const c2 = G ? null : btlCanvasFx(31);
+  let last = 0, frames = 0, slow = 0;
+  return {
+    draw(B, n, t, M, nm){
+      if(G && G.ok && BTL_ED.gl === G){ btlEdGLDraw(G, B, n, t, M, nm); }
+      else if(c2){ const g = c2.ctx; g.clearRect(0, 0, c2.W, c2.H);
+        if(M && nm){ g.fillStyle = '#6a0814'; for(let i = 0; i + 2 < nm; i += 3){ if(M[i * 4 + 2] + M[i * 4 + 6] + M[i * 4 + 10] < .25) continue; g.beginPath(); g.moveTo(M[i * 4], M[i * 4 + 1]); g.lineTo(M[i * 4 + 4], M[i * 4 + 5]); g.lineTo(M[i * 4 + 8], M[i * 4 + 9]); g.fill(); } }
+        for(let i = 0; i < n; i++){ const x = B[i * 4], y = B[i * 4 + 1], r = B[i * 4 + 2] * .62; if(r < .5) continue;
+          const gr = g.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r); gr.addColorStop(0, '#ffd6d0'); gr.addColorStop(.25, '#c4202c'); gr.addColorStop(1, '#3a0408');
+          g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.2832); g.fill(); } }
+      const now = performance.now(); if(last){ frames++; if(now - last > 30) slow++; if(frames % 8 === 0){ if(slow > 3 && G){ if(G.q > .75) G.q = G.qCap = .75; else if(G.fs > .4) G.fs = G.fsCap = .4; else if(G.q > .6) G.q = G.qCap = .6; } slow = 0; } } last = now;
+    },
+    end(){ if(G){ G.cv.remove(); btlEdGLFree(G); } if(c2) c2.cv.remove(); }
+  };
+}
+// boucle image par image sur l'horloge du combat ; fn(t) renvoie false pour s'arrêter
+function btlEdLoop(fn){
+  return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
+}
+const btlEdE = { cl:(x, a, b) => Math.max(a, Math.min(b, x)), io:x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, o3:x => 1 - Math.pow(1 - x, 3), i3:x => x * x * x,
+  ob:x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }, k:(a, b, t) => Math.max(0, Math.min(1, (t - a) / (b - a))) };
+// chemin lissé (Catmull-Rom) échantillonné en abscisse curviligne
+function btlEdPath(pts, step){
+  const out = [];
+  for(let i = 0; i < pts.length - 1; i++){
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const L = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]), n = Math.max(2, Math.ceil(L / 2));
+    for(let k = 0; k < n; k++){ const t = k / n, t2 = t * t, t3 = t2 * t;
+      out.push([.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+                .5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]); }
+  }
+  out.push(pts[pts.length - 1].slice());
+  const cum = [0]; for(let i = 1; i < out.length; i++) cum.push(cum[i - 1] + Math.hypot(out[i][0] - out[i - 1][0], out[i][1] - out[i - 1][1]));
+  const at = s => { s = Math.max(0, Math.min(cum[cum.length - 1], s)); let lo = 0, hi = cum.length - 1; while(hi - lo > 1){ const m = (lo + hi) >> 1; if(cum[m] <= s) lo = m; else hi = m; }
+    const f = (s - cum[lo]) / Math.max(1e-6, cum[hi] - cum[lo]); return [out[lo][0] + (out[hi][0] - out[lo][0]) * f, out[lo][1] + (out[hi][1] - out[lo][1]) * f]; };
+  return { at, len:cum[cum.length - 1] };
+}
+// contour arrondi d'un rectangle (sens horaire depuis le haut gauche) : point à la fraction u du périmètre
+function btlEdRect(cx, cy, w, h, rad){
+  const sx = w / 2 - rad, sy = h / 2 - rad, arc = Math.PI * rad / 2, P = 4 * arc + 2 * (2 * sx) + 2 * (2 * sy);
+  const segs = [['l', -sx, -h / 2, sx, -h / 2], ['a', sx, -sy, -Math.PI / 2], ['l', w / 2, -sy, w / 2, sy], ['a', sx, sy, 0], ['l', sx, h / 2, -sx, h / 2], ['a', -sx, sy, Math.PI / 2], ['l', -w / 2, sy, -w / 2, -sy], ['a', -sx, -sy, Math.PI]];
+  const lens = segs.map(s => s[0] === 'l' ? Math.hypot(s[3] - s[1], s[4] - s[2]) : arc);
+  return { P, at:u => { let d = ((u % 1) + 1) % 1 * P; for(let i = 0; i < segs.length; i++){ const s = segs[i]; if(d <= lens[i] || i === segs.length - 1){ const f = Math.min(1, d / lens[i]);
+    if(s[0] === 'l') return [cx + s[1] + (s[3] - s[1]) * f, cy + s[2] + (s[4] - s[2]) * f]; const a = s[3] + f * Math.PI / 2; return [cx + s[1] + Math.cos(a) * rad, cy + s[2] + Math.sin(a) * rad]; } d -= lens[i]; } return [cx, cy]; } };
+}
+// ---------- ARRIVÉE : le métal liquide entre par le bord en une seule masse, se divise en courants qui flottent sur tout le champ de bataille, se croisent
+//            et se rejoignent, se séparent de nouveau (des gouttes s'en détachent puis y retournent), puis convergent au-dessus de l'emplacement : chaque courant
+//            forme une partie du contour, les parties se rejoignent, le contour se remplit, la carte y prend forme et se pose ----------
+function btlEdCR(pts, s){                                                                               // Catmull-Rom par index (s de 0 à pts.length - 1)
+  const n = pts.length - 1; s = Math.max(0, Math.min(n, s)); const i = Math.min(n - 1, Math.floor(s)), f = s - i, f2 = f * f, f3 = f2 * f;
+  const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n, i + 2)];
+  const cr = j => .5 * ((2 * p1[j]) + (-p0[j] + p2[j]) * f + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * f2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * f3);
+  return [cr(0), cr(1)];
+}
+async function btlEdArrive(c, to, col){
+  const st = btlEdStage(.5), fx = btlQ('#btlFx'), pl = btlQ('#btlPlate'), P = pl ? btlRect(pl) : { left:0, top:innerHeight * .25, width:innerWidth, height:innerHeight * .45 };
+  const E = btlEdE, k = E.k, sm = x => x * x * (3 - 2 * x), w = to.width, h = to.height, cx = to.left + w / 2, cy = to.top + h / 2;
+  const LIFT = h * .16, SC = 1.1, lw = w * SC + 8, lh = h * SC + 8, lcy = cy - LIFT;                    // contour : un peu plus grand que la carte, au-dessus de l'emplacement
+  const rect = btlEdRect(cx, lcy, lw, lh, Math.min(lw, lh) * .12);
+  const NP = Math.max(120, Math.min(200, Math.round(rect.P / 3.1))), NG = 4;
+  const T_G0 = 1000, T_G1 = 1250, T_OUT = 1450, T_FILL = 1700, T_DOWN = 1880, T_LAND = 2060, T_END = 2320;
+  // trajets des 4 courants (fractions du plateau) : une masse entre par la gauche (0-1), se divise (2), deux paires se rejoignent (3), se séparent (4),
+  // puis chaque courant arrive sur son côté du contour (5 : à l'extérieur, 6 : sur le contour)
+  const X = u => P.left + P.width * u, Y = v => P.top + P.height * v;
+  const mid = g => rect.at((g + .5) / NG), out = g => { const q = mid(g), dx = q[0] - cx, dy = q[1] - lcy, d = Math.hypot(dx, dy) || 1; return [q[0] + dx / d * w * .8, q[1] + dy / d * w * .8]; };
+  const WP = [[[-.4, .44], [.1, .45], [.34, .12], [.68, .2], [.93, .1]], [[-.4, .52], [.12, .51], [.42, .9], [.65, .76], [.9, .92]],
+    [[-.4, .47], [.1, .5], [.54, .36], [.71, .25], [.86, .5]], [[-.4, .5], [.13, .47], [.34, .64], [.68, .72], [.5, .54]]]
+    .map((L, g) => L.map(q => [X(q[0]), Y(q[1])]).concat([out(g), mid(g)]));
+  // gouttes de chaque courant : un cœur (grosses gouttes), une traîne régulière qui s'amincit et se resserre par endroits (elle se sépare en gouttes puis
+  // se reforme), et quelques satellites qui s'écartent puis reviennent ; chacune rejoindra un point du quart du contour de son courant
+  const PT = [], NC = 7, NSAT = 4, NS = Math.max(22, Math.round(NP / NG) - NC - NSAT);
+  for(let g = 0; g < NG; g++){
+    const grp = [];
+    for(let i = 0; i < NC; i++){ const a = i / NC * 6.2832, rr = i ? .75 : 0; grp.push({ kind:0, bx:Math.cos(a) * rr, by:Math.sin(a) * rr, lag:i * 3, r:w * (.2 + .06 * Math.random()) }); }
+    for(let j = 1; j <= NS; j++) grp.push({ kind:1, j, bx:0, by:0, lag:j * 6.5, r:w * .22 * (1 - .55 * j / NS) });
+    for(let i = 0; i < NSAT; i++){ const a = Math.random() * 6.2832; grp.push({ kind:2, bx:Math.cos(a), by:Math.sin(a), lag:10 + i * 20, r:w * (.07 + .04 * Math.random()) }); }
+    // places sur le contour : le cœur au milieu du quart, la traîne de part et d'autre (le courant s'étale autour du contour)
+    grp.forEach((p, i) => { const side = i % 2 ? 1 : -1, rank = Math.ceil(i / 2), du = side * rank / grp.length * .5 / NG * 1.98;
+      p.u = (g + .5) / NG + du; p.g = g; p.stg = Math.abs(du) * NG * 240; p.ph = Math.random() * 6.2832; p.sp = Math.random() * 2 - 1; PT.push(p); });
+  }
+  const NPT = PT.length;
+  const drops = [], B = new Float32Array((NPT + 64 + 80) * 4); let lastT = 0, fl = null, landed = false, ripple = 0;
+  // remplissage : nappe de métal qui envahit le contour depuis le bord
+  const fill = []; for(let j = 0; j < 9; j++) for(let i = 0; i < 7; i++){ const fx2 = (i + .5) / 7 - .5, fy2 = (j + .5) / 9 - .5; fill.push({ x:fx2 * lw * .82, y:fy2 * lh * .82, d:1 - Math.max(Math.abs(fx2) * 2, Math.abs(fy2) * 2) }); }
+  const card = () => {                                                                                  // la carte réelle prend forme dans le métal (au-dessus du canvas)
+    fl = document.createElement('div'); fl.style.pointerEvents = 'none'; btlPlaceFixed(fl, to); fl.style.zIndex = '34'; fl.innerHTML = btlSmallHtml(c);
+    try{ btlPaintIn(fl, c); }catch(_){}
+    fl.style.transformOrigin = '50% 50%'; fl.style.opacity = '0'; fl.style.transform = 'translateY(' + (-LIFT) + 'px) scale(' + SC + ')';
+    const sheen = document.createElement('i'); sheen.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:5;border-radius:inherit;overflow:hidden;';
+    sheen.innerHTML = '<i style="position:absolute;left:-60%;top:-20%;width:45%;height:140%;transform:rotate(18deg);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,236,236,.85),rgba(255,120,110,.35),rgba(255,255,255,0));mix-blend-mode:screen"></i>';
+    fl.appendChild(sheen); fx.appendChild(fl);
+    const SH = ' drop-shadow(0 10px 10px rgba(0,0,0,.55))';
+    btlAnim(fl, [{ opacity:0, filter:'sepia(1) saturate(4) hue-rotate(-40deg) brightness(.5) contrast(1.35)' + SH }, { opacity:1, filter:'sepia(1) saturate(3.5) hue-rotate(-40deg) brightness(.7) contrast(1.3)' + SH, offset:.4 },
+      { opacity:1, filter:'sepia(0) saturate(1) hue-rotate(0deg) brightness(1.25) contrast(1)' + SH, offset:.8 }, { opacity:1, filter:'sepia(0) saturate(1) hue-rotate(0deg) brightness(1) contrast(1)' + SH }],
+      { duration:(T_DOWN - T_FILL) * BTL_TS * BTL_ED.slowA + 120, easing:'ease-out', fill:'forwards' }).catch(() => {});
+    btlAnim(sheen.firstChild, [{ transform:'translateX(0) rotate(18deg)' }, { transform:'translateX(420%) rotate(18deg)' }], { duration:520 * BTL_TS * BTL_ED.slowA, delay:60 * BTL_TS * BTL_ED.slowA, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' }).catch(() => {});
+  };
+  try{
+    await btlEdLoop(T => { const t = T / BTL_ED.slowA;
+      const dt = Math.min(40, t - lastT); lastT = t;
+      const lift = t < T_DOWN ? 0 : E.io(k(T_DOWN, T_LAND, t));                                       // descente dans l'emplacement
+      const sc = SC + (1 - SC) * lift, oy = -LIFT * (1 - lift), fade = 1 - E.o3(k(T_LAND, T_END, t));
+      const tight = 1 - .6 * k(T_G1 - 350, T_G1, t);                                                  // les courants se resserrent en arrivant
+      let n = 0;
+      for(let i = 0; i < NPT; i++){
+        const p = PT[i], s1 = 6 * sm(k(0, T_G1, t - p.lag)), L = btlEdCR(WP[p.g], s1), L0 = btlEdCR(WP[p.g], s1 - .05);
+        const tx = L[0] - L0[0], ty = L[1] - L0[1], tl = Math.hypot(tx, ty) || 1, nx = -ty / tl, ny = tx / tl;
+        let x = L[0], y = L[1], r = p.r, ht = .3;
+        if(p.kind === 0){                                                                                // cœur : masse qui tourne lentement sur elle-même
+          const an = t * .0016 + p.g, ca = Math.cos(an), sa = Math.sin(an), R = w * .13 * tight * (1 + .2 * Math.sin(t * .004 + p.ph));
+          x += (p.bx * ca - p.by * sa) * R; y += (p.bx * sa + p.by * ca) * R;
+        } else if(p.kind === 1){                                                                         // traîne : ondule comme un tissu, s'étrangle en gouttes par vagues
+          const wave = Math.sin(p.j * .32 - t * .0085 + p.g * 1.3) * w * .16 * (p.j / NS) * tight;
+          x += nx * wave; y += ny * wave;
+          r *= .62 + .38 * Math.pow(.5 + .5 * Math.sin(p.j * .55 - t * .011 + p.g * 2), .7);
+          ht = .25 + .35 * Math.max(0, Math.sin(p.j * .3 - t * .006));
+        } else {                                                                                         // satellites : se détachent, flottent, puis rejoignent la masse
+          const m = w * (.15 + .5 * Math.pow(Math.max(0, Math.sin(t * .0032 + p.ph)), 2)) * tight, an = t * .0012 * p.sp + p.ph;
+          x += (p.bx * Math.cos(an) - p.by * Math.sin(an)) * m; y += (p.bx * Math.sin(an) + p.by * Math.cos(an)) * m;
+        }
+        x += Math.sin(t * .005 + p.ph * 3) * 1.5; y += Math.cos(t * .0045 + p.ph * 2) * 1.5;
+        r *= t - p.lag < 0 ? 0 : Math.min(1, (t - p.lag) / 140);
+        // le courant rejoint son quart du contour, en s'étalant depuis son point d'arrivée
+        const gs = E.io(k(T_G0 + p.stg, T_OUT - 120 + p.stg, t));
+        if(gs > 0){ const q = rect.at(p.u); x += (q[0] - x) * gs; y += (q[1] - y) * gs; r += (w * .095 * (NP / NPT) - r) * gs; ht += (.3 - ht) * gs; }
+        if(lift > 0){ x = cx + (x - cx) / SC * sc; y = (y - lcy) / SC * sc + cy + oy; }
+        if(ripple > 0){ const dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy) || 1; x += dx / d * ripple * 9; y += dy / d * ripple * 9; }
+        B[n * 4] = x; B[n * 4 + 1] = y; B[n * 4 + 2] = Math.max(0, r * fade); B[n * 4 + 3] = ht; n++;
+        // gouttelettes qui se détachent de la traîne
+        if(gs === 0 && p.kind === 1 && p.j > NS * .5 && t > p.lag + 120 && Math.random() < dt / 14000){ const sg = Math.random() < .5 ? -1 : 1;
+          drops.push({ x, y, vx:nx * sg * (.03 + Math.random() * .04), vy:ny * sg * (.03 + Math.random() * .04), r:w * (.04 + Math.random() * .05), age:0, life:450 + Math.random() * 450 }); }
+      }
+      for(let j = drops.length - 1; j >= 0; j--){ const d = drops[j]; d.age += dt; if(d.age >= d.life){ drops.splice(j, 1); continue; }
+        d.x += d.vx * dt; d.y += d.vy * dt; d.vx *= .995; d.vy *= .995; d.vy += .00002 * dt;
+        if(n < NPT + 64){ B[n * 4] = d.x; B[n * 4 + 1] = d.y; B[n * 4 + 2] = d.r * Math.sin(Math.PI * Math.min(1, d.age / d.life)); B[n * 4 + 3] = .5; n++; } }
+      // remplissage : le métal envahit le contour, la carte y prend forme
+      if(t >= T_OUT - 40){
+        const fin = k(T_OUT - 40, T_FILL, t), dry = E.i3(k(T_FILL - 40, T_DOWN + 80, t));
+        fill.forEach((f, j) => { const gi = E.o3(btlEdE.cl((fin - f.d * .55) / .45, 0, 1)); if(gi <= 0) return; const g = gi * (1 - dry);
+          const e = .95 / Math.max(Math.abs(f.x) / (lw * .41), Math.abs(f.y) / (lh * .41), .001), px = f.x * (e + (1 - e) * gi), py = f.y * (e + (1 - e) * gi);   // part du bord
+          let x = cx + px, y = lcy + py; if(lift > 0){ x = cx + px / SC * sc; y = cy + oy + py / SC * sc; }
+          B[n * 4] = x; B[n * 4 + 1] = y; B[n * 4 + 2] = w * .2 * (.45 + .55 * gi) * (1 - dry); B[n * 4 + 3] = .55 + .45 * Math.sin(j * 1.7 + t * .01); n++; });
+        if(!fl && t >= T_FILL - 120) card();
+      }
+      if(fl && lift > 0) fl.style.transform = 'translateY(' + oy.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
+      // la carte se pose : onde du métal qui s'écarte puis disparaît, éclaboussures
+      if(!landed && t >= T_LAND){ landed = true;
+        btlPutCard(c); const un = btlUnitEl(c); if(un){ un.style.visibility = 'hidden'; }
+        musSfx(c.rar); btlRing(to, '#ff4a3a', false); btlShake(btlQ('#btlPlate'), 4);
+        for(let j = 0; j < 18; j++){ const a = j / 18 * 6.2832 + Math.random() * .3, r0 = Math.max(w, h) * .5, sp = .06 + Math.random() * .08;
+          drops.push({ x:cx + Math.cos(a) * r0 * .9, y:cy + Math.sin(a) * r0 * .7, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp * .8 - .02, r:w * (.04 + Math.random() * .05), age:0, life:260 + Math.random() * 220 }); }
+      }
+      if(landed) ripple = Math.sin(Math.PI * k(T_LAND, T_END, t)) * .9;
+      st.draw(B, n, t);
+      return t < T_END || drops.length > 0 && t < T_END + 300;
+    });
+  } finally {
+    st.end();
+    if(fl) fl.remove();
+    if(BTL && !BTL.abort){ if(!btlUnitEl(c)) btlPutCard(c); const un = btlUnitEl(c); if(un) un.style.visibility = ''; }
+  }
+}
+// ---------- PASSIF : la carte se soulève, le métal suinte de dessous en autant de gouttes que de cibles ; les gouttes volent au-dessus des cibles et s'y
+//            figent en lames de métal liquide solidifié (une forme par emplacement), une goutte coule de la pointe, puis toutes frappent ensemble et refondent ----------
+// formes : repère local (x = travers, en largeurs de la carte visée ; y = le long de la lame vers la cible, en longueurs de lame ; pommeau -.7, pointe +.7)
+//   strips : bandes en relief {c(u), y(u), hl(u), hr(u)} ; blobs : gouttes figées [x, y, rayon] (volutes de la garde, pommeau, perles sur le métal) ;
+//   tips : pointes d'où coule une goutte ; chain : 14 gouttes [x, y, demi-largeur] que le liquide forme avant de se figer
+//   p0 épée, p1 cimeterre, p2 flamberge, o0 lame dentelée, o1 faux, o2 fourche ; chefs : trident (joueur), croissant (adversaire)
+function btlEdBladeDef(kind){
+  const Y0 = -.47, Y1 = .7, tip = (u, s) => u > s ? Math.max(0, (1 - u) / (1 - s)) : 1, ly = u => Y0 + (Y1 - Y0) * u, K = x => () => x;
+  const strips = [], blobs = [], tips = [], path = [];
+  const hilt = () => {
+    strips.push({ c:K(0), y:u => -.67 + .19 * u, hl:K(.032), hr:K(.032), k:6 });                                                 // poignée
+    const gw = u => .036 * (1 - .4 * Math.abs(2 * u - 1));
+    strips.push({ c:u => -.22 + .44 * u, y:u => -.49 - .05 * Math.sin(u * Math.PI), hl:gw, hr:gw, k:12 });                         // garde arquée
+    [-1, 1].forEach(sg => { for(let j = 0; j < 7; j++){ const a = j * .85; blobs.push([sg * (.215 + .04 * Math.sin(a)), -.49 - .045 * (1 - Math.cos(a)), .046 * (1 - j * .09)]); } });   // volutes
+    blobs.push([0, -.71, .058]);                                                                                                // pommeau (goutte)
+  };
+  const pearls = (S, us) => us.forEach((u, j) => blobs.push([S.c(u) + (j % 2 ? 1 : -1) * (j % 2 ? S.hr(u) : S.hl(u)) * .8, S.y(u), .042]));   // gouttes figées sur le tranchant
+  let main = null;
+  if(kind <= 4){ hilt();
+    if(kind === 0){ const hw = u => .095 * tip(u, .78); main = { c:K(0), y:ly, hl:hw, hr:hw }; }                                              // épée droite
+    else if(kind === 1) main = { c:u => .2 * Math.sin(u * Math.PI * .85), y:ly, hl:u => (.06 + .075 * u) * tip(u, .86), hr:u => .06 * tip(u, .75) };   // cimeterre
+    else if(kind === 2){ const hw = u => (.085 + .034 * Math.sin(u * Math.PI * 7)) * tip(u, .84); main = { c:K(0), y:ly, hl:hw, hr:hw }; }        // flamberge
+    else if(kind === 3) main = { c:K(0), y:ly, hl:u => .085 * tip(u, .82), hr:u => (.08 + .075 * Math.pow(1 - ((u * 4.5) % 1), 1.5)) * tip(u, .84) };          // dentelée
+    else main = { c:u => u > .45 ? -.36 * Math.pow((u - .45) / .55, 1.6) : 0, y:u => Y0 + (Y1 - Y0) * (u < .45 ? u : .45 + (u - .45) * .72),
+      hl:u => .085 * tip(u, .8), hr:u => (.085 + .035 * Math.sin(Math.PI * u)) * tip(u, .8) };                                                 // faux
+    strips.push(main); pearls(main, [.22, .46, .64]); tips.push([main.c(1), main.y(1)]); path.push(main);
+  } else if(kind === 5){ hilt();                                                                                                // fourche
+    const base = { c:K(0), y:u => Y0 + (.06 - Y0) * u, hl:K(.095), hr:K(.095) }; strips.push(base); path.push(base);
+    [-1, 1].forEach(sg => { const pr = { c:u => sg * (.035 + .15 * Math.pow(u, .8)), y:u => -.02 + .72 * u, hl:u => .052 * tip(u, .7), hr:u => .052 * tip(u, .7) };
+      strips.push(pr); path.push(pr); tips.push([pr.c(1), pr.y(1)]); });
+    pearls(base, [.35, .7]);
+  } else if(kind === 6){                                                                                                        // trident
+    const shaft = { c:K(0), y:u => -.72 + .86 * u, hl:K(.036), hr:K(.036) }; strips.push(shaft); path.push(shaft);
+    strips.push({ c:u => -.23 + .46 * u, y:u => .12 + .08 * Math.pow(2 * u - 1, 2), hl:K(.034), hr:K(.034), k:12 });
+    const ct = { c:K(0), y:u => .12 + .62 * u, hl:u => .062 * tip(u, .62), hr:u => .062 * tip(u, .62) }; strips.push(ct); path.push(ct); tips.push([0, .74]);
+    [-1, 1].forEach(sg => { const pr = { c:K(sg * .23), y:u => .2 + .46 * u, hl:u => .05 * tip(u, .6), hr:u => .05 * tip(u, .6) }; strips.push(pr); path.push(pr); tips.push([sg * .23, .66]);
+      blobs.push([sg * .3, .5, .034], [sg * .27, .55, .028]); });                                                            // ardillons
+    blobs.push([0, -.74, .055]);
+  } else {                                                                                                                      // croissant
+    const arc = { c:u => .4 * Math.sin(-1.35 + 2.7 * u), y:u => -.12 + .42 * Math.cos(-1.35 + 2.7 * u), hl:u => .11 * Math.pow(Math.max(0, 1 - Math.pow(2 * u - 1, 2)), .7) + .004 };
+    arc.hr = arc.hl; const hd = { c:K(0), y:u => -.58 + .8 * u, hl:K(.034), hr:K(.034) };
+    strips.push(hd, arc, { c:u => -.1 + .2 * u, y:K(-.5), hl:K(.03), hr:K(.03), k:8 }); path.push(hd, arc); tips.push([0, .3]);
+    blobs.push([0, -.62, .052]); [.2, .8].forEach(u => blobs.push([arc.c(u), arc.y(u) - .01, .045]));
+  }
+  // chaîne de 14 gouttes : poignée / garde, puis le long des bandes principales
+  const chain = [];
+  if(kind <= 5) chain.push([0, -.7, .05], [0, -.6, .035], [0, -.5, .07]);
+  const per = Math.floor((14 - chain.length) / path.length); let left = 14 - chain.length - per * path.length;
+  path.forEach(S => { const m = per + (left-- > 0 ? 1 : 0); for(let j = 0; j < m; j++){ const u = (j + .5) / m; chain.push([S.c(u), S.y(u), Math.max(.03, (S.hl(u) + S.hr(u)) / 2 * 1.05)]); } });
+  return { strips, blobs, tips, chain };
+}
+// maillage d'une bande en relief : 5 sommets en travers (bord, flanc, arête, flanc, bord ; hauteurs 0 / .62 / 1 / .62 / 0), tranchants qui ondulent comme du
+// métal figé ; (ox, oy, cA, sA) = repère de la lame à l'écran ; H = hauteur ; yF = front de solidification (pixels le long de la lame) ; renvoie le nombre de sommets
+const BTL_ED_XS = [-1.25, -.55, 0, .55, 1.25], BTL_ED_HS = [0, .5, 1, .5, 0];
+function btlEdStrip(M, nm, S, ww, LL, ox, oy, cA, sA, H, yF, t, ph, heat){
+  const K = S.k || 22, rows = [];
+  for(let j = 0; j <= K; j++){
+    const u = j / K, ua = Math.max(0, u - .02), ub = Math.min(1, u + .02), lx = S.c(u) * ww, ly = S.y(u) * LL;
+    let tx = (S.c(ub) - S.c(ua)) * ww, ty = (S.y(ub) - S.y(ua)) * LL; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const rip = (1 + .06 * Math.sin(u * 19 + t * .006 + ph)) * BTL_ED.bw, hl = S.hl(u) * ww * rip, hr = S.hr(u) * ww * rip;
+    const fr = Math.max(0, Math.min(1, (yF - ly) / 16)), hh = H * fr * (1 + .1 * Math.sin(u * 23 - t * .008 + ph)), row = [];
+    for(let q = 0; q < 5; q++){ const o = BTL_ED_XS[q] * (q < 2 ? hl : hr), px = lx - ty * o, py = ly + tx * o; row.push(ox + px * cA - py * sA, oy + px * sA + py * cA, hh * BTL_ED_HS[q]); }
+    rows.push(row);
+  }
+  const put = (r, q) => { const i = nm * 4; M[i] = r[q * 3]; M[i + 1] = r[q * 3 + 1]; M[i + 2] = r[q * 3 + 2]; M[i + 3] = heat; nm++; };
+  for(let j = 0; j < K; j++){ const a = rows[j], b = rows[j + 1]; for(let q = 0; q < 4; q++){ put(a, q); put(a, q + 1); put(b, q); put(a, q + 1); put(b, q + 1); put(b, q); } }
+  return nm;
+}
+async function btlEdSalvo(d){
+  if(btlGone() || !btlOnField(d)) return;
+  const N = BTL_ED.dmg, sides = pvpSides();
+  const cards = sides.flatMap(sd => BTL.S[sd].slots.filter(x => x && x !== d && x.hp > 0));
+  const leads = [BTL.S[btlOther(d.side)].leader, BTL.S[d.side].leader].filter(x => x.hp > 0);
+  const all = cards.concat(leads);
+  if(!all.length) return;
+  const E = btlEdE, k = E.k, u0 = btlUnitEl(d), r0 = btlUnitRect(d), fx = btlQ('#btlFx'), st = btlEdStage(.75);
+  const scx = r0.left + r0.width / 2, scy = r0.top + r0.height / 2;
+  all.filter(x => btlLethal(x, N)).forEach(btlXOn);
+  // la carte se soulève (copie au-dessus du métal ; l'originale est masquée le temps de l'effet)
+  const fl = document.createElement('div'); fl.style.pointerEvents = 'none'; btlPlaceFixed(fl, r0); fl.style.zIndex = '34'; fl.style.transformOrigin = '50% 60%';
+  fl.innerHTML = btlSmallHtml(d); try{ btlPaintIn(fl, d); }catch(_){}
+  fl.style.filter = 'drop-shadow(0 16px 12px rgba(0,0,0,.6)) drop-shadow(0 0 10px rgba(255,40,30,.45))'; fx.appendChild(fl);
+  if(u0) u0.style.visibility = 'hidden';
+  const T_LIFT = 170, T_EM0 = 70, T_EM1 = 300, T_FLY = 640, T_FORM = 860, T_UP = 1000, T_HIT = 1070, T_DOWN0 = 1100, T_END = 1300;
+  // une goutte par cible : chaîne de 14 gouttes ; trajet : sortie sous la carte -> arc -> au-dessus de la cible
+  const TL = [];
+  all.forEach((t, j) => {
+    const r = btlUnitRect(t), tcx = r.left + r.width / 2, tcy = r.top + r.height / 2;
+    const kind = t.leader ? (t.side === 'p' ? 6 : 7) : (t.side === 'p' ? t.slot : 3 + t.slot);         // une forme de lame par emplacement
+    const ang = (t.leader ? 0 : (t.slot - 1) * 9) + (t.side === 'p' ? 0 : 4) + (j % 2 ? -5 : 5);      // légère inclinaison propre à chaque lame
+    const L = r.height * .95, hov = [tcx, r.top - L * .32];                                             // lame en l'air, pointe vers la cible
+    const dir = Math.atan2(tcy - scy, tcx - scx), ex = scx + Math.cos(dir) * r0.width * .66, ey = scy + Math.sin(dir) * r0.height * .6;   // la goutte suinte hors du bord
+    const mx = (ex + hov[0]) / 2, my = (ey + hov[1]) / 2, dd = Math.hypot(hov[0] - ex, hov[1] - ey), side = (j % 2 ? 1 : -1);
+    const ctrl = [mx + (-(hov[1] - ey) / (dd || 1)) * dd * .28 * side, my + ((hov[0] - ex) / (dd || 1)) * dd * .28 * side - dd * .18];
+    const D = btlEdBladeDef(kind), sA = Math.sin(ang * Math.PI / 180), cA = Math.cos(ang * Math.PI / 180);
+    const ch = []; for(let i = 0; i < 14; i++) ch.push([scx, scy]);
+    TL.push({ t, r, tcx, tcy, hov, ex, ey, ctrl, D, shape:D.chain, sA, cA, L, ch, w:r.width, hit:false, sp:[], ph:j * 1.7 });
+  });
+  const bez = (o, u) => { const a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, c2 = u * u; return [a * o.ex + b * o.ctrl[0] + c2 * o.hov[0], a * o.ey + b * o.ctrl[1] + c2 * o.hov[1]]; };
+  const B = new Float32Array((TL.length * 60 + 40) * 4), M = new Float32Array(TL.length * 3400 * 4), tweens = [], hits = [];
+  let lastT = 0;
+  const hit = o => {
+    const x = o.t, r1 = btlUnitRect(x), el = btlUnitEl(x), before = x.hp / x.maxHp * 100, dealt = Math.min(N, x.hp + x.df), ap = btlApplyDmg(x, N);
+    btlShowDmg(x, r1, el, ap, false);
+    if(el){ btlFlashEl(el, '#ff3a2a', .9, 360); btlShake(el, 5); }
+    btlSpark(r1, '#ff5a3a', 1);
+    btlAddEnergy(x, dealt); hits.push(x);
+    tweens.push(btlTween(x, before, x.hp / x.maxHp * 100, 520));
+    for(let i = 0; i < 12; i++){ const a = -Math.PI / 2 + (Math.random() - .5) * 2.8, sp = .05 + Math.random() * .13; o.sp.push({ x:o.tcx + (Math.random() - .5) * o.w * .3, y:o.tcy - o.r.height * .1, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, r:o.w * (.035 + Math.random() * .045), age:0, life:240 + Math.random() * 180 }); }
+  };
+  try{
+    await btlEdLoop(T => { const t = T / BTL_ED.slowP;
+      const dt = Math.min(40, t - lastT); lastT = t;
+      // carte soulevée (relief 3D), puis reposée
+      const up = E.o3(k(0, T_LIFT, t)) * (1 - E.io(k(T_DOWN0, T_END - 20, t)));
+      fl.style.transform = 'perspective(520px) translateY(' + (-14 * up).toFixed(1) + 'px) rotateX(' + (14 * up).toFixed(1) + 'deg) scale(' + (1 + .12 * up).toFixed(3) + ')';
+      let n = 0, nm = 0;
+      const blob = (x, y, r, ht) => { if(r <= .3) return; B[n * 4] = x; B[n * 4 + 1] = y; B[n * 4 + 2] = r; B[n * 4 + 3] = ht; n++; };
+      // flaque qui suinte sous les bords de la carte soulevée
+      const pool = Math.sin(Math.PI * k(T_EM0 - 50, T_FLY - 60, t));
+      if(pool > 0) for(let i = 0; i < 14; i++){ const a = i / 14 * 6.2832 + t * .002, wv = 1 + .12 * Math.sin(i * 2.3 + t * .012); blob(scx + Math.cos(a) * r0.width * .47 * wv, scy + r0.height * .06 + Math.sin(a) * r0.height * .42 * wv, r0.width * .17 * pool, .6); }
+      TL.forEach(o => {
+        const j = TL.indexOf(o), em = E.o3(k(T_EM0 + j * 18, T_EM1, t)), fly = E.io(k(T_EM1, T_FLY, t)), form = k(T_FLY - 40, T_FORM, t);
+        // tête de la goutte
+        let hx, hy;
+        if(fly <= 0){ hx = scx + (o.ex - scx) * em; hy = scy + (o.ey - scy) * em; } else { const q = bez(o, fly); hx = q[0]; hy = q[1]; }
+        const C = o.ch; C[0][0] = hx; C[0][1] = hy;
+        const sg = o.w * (.05 + .05 * (1 - form));
+        for(let i = 1; i < 14; i++){ const a = C[i], b = C[i - 1], dx = a[0] - b[0], dy = a[1] - b[1], dl = Math.hypot(dx, dy) || 1; if(dl > sg){ a[0] = b[0] + dx / dl * sg; a[1] = b[1] + dy / dl * sg; } }
+        // lame : au-dessus de la cible, léger recul, puis frappe (même instant pour toutes)
+        const back = E.o3(k(T_FORM, T_UP, t)) * (1 - k(T_UP, T_HIT, t)), thrust = E.i3(k(T_UP, T_HIT, t)), gone = k(T_HIT, T_HIT + 90, t);
+        const off = -o.L * .1 * back + o.L * .52 * thrust + o.L * .12 * E.o3(gone);
+        const ox = o.hov[0] - off * o.sA, oy = o.hov[1] + o.L * .1 + off * o.cA, fo = E.ob(form);
+        const P = (lx, ly) => [ox + lx * o.cA - ly * o.sA, oy + lx * o.sA + ly * o.cA];
+        const heat = .3 + .7 * k(T_FORM - 60, T_HIT, t);
+        const rv = E.io(k(T_FORM - 150, T_FORM + 40, t)), yF = (-.8 + 1.62 * rv) * o.L;                // le liquide se fige de la garde vers la pointe
+        if(!o.hit && t >= T_HIT){ o.hit = true; hit(o); }
+        // gouttes liquides (vol, puis forme de la lame avant de se figer ; refonte à l'impact)
+        for(let i = 0; i < 14; i++){
+          const s = o.shape[i], wob = (1 - form) * Math.sin(t * .02 + i) * .03, q = P((s[0] + wob) * o.w, s[1] * o.L);
+          const dr = o.w * (.16 * (1 - i / 14) + .05) * (em > 0 ? 1 : 0) * Math.min(1, em * 1.6 + .2);
+          const liq = o.hit ? Math.sin(Math.PI * Math.min(1, gone * 1.15)) * 1.3 : rv > 0 ? E.cl((s[1] * o.L - (yF - 18)) / 18, 0, 1) : 1;
+          const x = C[i][0] + (q[0] - C[i][0]) * fo, y = C[i][1] + (q[1] - C[i][1]) * fo, rr = (dr + (s[2] * o.w * 1.45 - dr) * Math.min(1, form * 1.15)) * liq;
+          blob(x, y, rr, heat);
+        }
+        if(rv > 0 && gone < 1){
+          const H = .5 * (1 - gone);
+          // lame de métal figé en relief
+          o.D.strips.forEach(S => { nm = btlEdStrip(M, nm, S, o.w, o.L, ox, oy, o.cA, o.sA, H, yF, t, o.ph, .15 + .25 * heat); });
+          // gouttes figées : volutes de la garde, pommeau, perles sur le tranchant (elles respirent un peu)
+          o.D.blobs.forEach((b, i) => { const fr = E.cl((yF - b[1] * o.L) / 16, 0, 1), q = P(b[0] * o.w, b[1] * o.L); blob(q[0], q[1], b[2] * o.w * 1.6 * BTL_ED.bw * fr * (1 - gone) * (1 + .08 * Math.sin(t * .01 + i)), .3); });
+          // une goutte coule de chaque pointe, s'étire, se détache et tombe sur la cible avant la frappe
+          const pd = k(T_FORM - 40, T_UP + 30, t);
+          if(pd > 0 && pd < 1 && !o.hit) o.D.tips.forEach((tp, i) => { const g = Math.min(1, pd * 2.2), hang = o.L * (.03 + .26 * Math.pow(Math.max(0, (pd - .45) / .55), 2.2)), tx = tp[0] * o.w, ty = tp[1] * o.L;
+            if(yF < ty) return; const rr = o.w * .05 * 1.6 * g * (i ? .8 : 1); const q = P(tx, ty + hang); blob(q[0], q[1], rr, .8);
+            if(pd > .4 && pd < .82){ const q2 = P(tx, ty + hang * .45); blob(q2[0], q2[1], rr * .55, .8); } });
+        }
+        // éclaboussures de l'impact
+        for(let i = o.sp.length - 1; i >= 0; i--){ const p = o.sp[i]; p.age += dt; if(p.age >= p.life){ o.sp.splice(i, 1); continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.vy += .00045 * dt;
+          blob(p.x, p.y, p.r * (1 - p.age / p.life), .9); }
+      });
+      if(t >= T_HIT && t < T_HIT + 30 && !TL._snd){ TL._snd = 1; musAtk(); btlShake(btlQ('#btlPlate'), 6); }
+      st.draw(B, n, t, M, nm);
+      return t < T_END || TL.some(o => o.sp.length);
+    });
+    await Promise.all(tweens);
+  } finally {
+    st.end(); fl.remove(); if(u0 && u0.isConnected) u0.style.visibility = '';
+  }
+  if(btlGone()) return;
+  // règlement (MÊME ORDRE que le noyau) : survivants repeints ; cartes détruites ensemble, puis chefs
+  const dead = cards.filter(x => x.hp <= 0), fallen = leads.filter(x => x.hp <= 0);
+  all.filter(x => x.hp > 0).forEach(x => { btlXOff(x); btlPaint(x); });
+  dead.forEach(x => { x._killer = null; if(!x._diePr) x._diePr = btlDie0(x, true); });
+  await Promise.all(dead.map(x => x._diePr));
+  if(fallen.length){ await btlFinish(btlOther(fallen[0].side)); return; }
+  for(const x of dead){ const f = BTL_CARD_FX[btlFxN(x)]; if(f && f.early && f.baroud) continue; await btlTrigger('baroud', x); }
+}
+// une carte vient d'être jouée (mécha posé ou Tech) : chaque EL-DIABLO en jeu frappe -- camp de la carte jouée d'abord, puis l'autre ; pas sur sa propre pose
+async function btlEdOnPlay(played){
+  if(btlGone() || !played) return;
+  const first = played.side === 'o' ? 'o' : 'p';
+  for(const sd of [first, btlOther(first)]){
+    for(const d of BTL.S[sd].slots.slice()){
+      if(btlGone()) return;
+      if(!d || d === played || d.hp <= 0 || btlFxN(d) !== 'EL-DIABLO' || !btlHas(d, 'passif') || !btlOnField(d)) continue;
+      await btlEdSalvo(d);
+    }
+  }
+}
+function btlEdWarm(){
+  if(!BTL || BTL_ED.gl) return;
+  const has = !!(BTL.d && BTL.d.pvp) || ['p', 'o'].some(sd => BTL.S[sd].pile.concat(BTL.S[sd].hand, BTL.S[sd].slots).some(x => x && x.name === 'EL-DIABLO'));
+  if(!has) return;
+  const go = () => { try{ const G = btlEdGLInit(); if(G){ G.cv.width = G.cv.height = 4; G.gl.viewport(0, 0, 4, 4); G.gl.useProgram(G.P2.pr); G.gl.drawArrays(G.gl.TRIANGLES, 0, 3); } }catch(_){} };
+  if(window.requestIdleCallback) requestIdleCallback(go, { timeout:6000 }); else setTimeout(go, 2500);
+}
+BTL_CARD_FX['EL-DIABLO'] = { drop:btlEdArrive, passif:{ quand:'pose', run:async () => {} } };
 function btlAiZeroDef(c){   // V0.05.62 : carte à 0 ATQ jouée par l'IA -- défend l'allié le plus blessé (même règle que aiZeroDef du serveur)
   if(btlNoDef(c)) return null;
   const l = btlTargetsFor(c, 'def').filter(t => t.hp < t.maxHp);
@@ -34772,7 +35291,7 @@ function btlDmWarm(){   // textures de DIMAVERSE préparées pendant un temps mo
 // (face visible pour celui qui l'obtient, de dos pour l'adversaire), parcourue d'arcs électriques, puis file dans la main de son joueur.
 // Rendu : UN canvas plein écran (dpr ≤ 1,5, mélange additif à l'intérieur du canvas seulement, aucun filtre CSS), éclairs en lignes brisées (déplacement du point milieu,
 // branches), trois passes par éclair (halo, lueur, cœur blanc). Sprites (impact, nuages) dessinés une fois. Hasard visuel seulement (Math.random), jamais les règles.
-var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON"];
+var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO"];
 var BTL_TR_TEX = null;
 function btlTrTex(){   // sprites dessinés une fois : lueur d'impact, nuages d'orage (bruit périodique)
   if(BTL_TR_TEX) return BTL_TR_TEX;
@@ -35600,6 +36119,7 @@ async function btlTechUse0(side, c, pre, fromRect, el, rep){
     if(def.kills){ ks = def.kills(side, c); ks.forEach(btlXOn); if(ks.length) await btlSleep(420); }
     await def.run(side, t, c);
     await btlPassifs('p', 'tech'); await btlPassifs('o', 'tech');   // V0.05.61 : TANDEEM (Tech jouée par n'importe quel joueur)
+    await btlEdOnPlay(c);   // V0.05.92 : EL-DIABLO (Tech jouée par n'importe quel joueur)
     return true;
   } finally {
     ks.forEach(x => btlXOff(x));
@@ -35750,6 +36270,7 @@ var CARD_FX_TXT = (function(){
     'MAGNEMER':[['percee'], ['appel','le joueur le plus en difficulté (toi ou l’adversaire) reçoit la réponse : mana, Tech ou mécha.']],
     'LARVOTRON':[['percee'], ['passif','change de camp à chaque fin de tour (plus de place : il explose). Chez toi, ses attaques sont gratuites.'], ['baroud','10 dégâts au chef du camp où il est.']],
     'PIGTAIL':[['baroud','la prochaine utilisation du module de son camp ne coûte pas de mana.']],
+    'EL-DIABLO':[['tank'], ['passif','à chaque carte jouée (méchas et Tech, par les deux joueurs), inflige 2 dégâts à toutes les cartes et aux deux chefs, sauf elle.']],
     'DIMAVERSE':[['passif','quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main.']],
     'TANDEEM':[['passif','à chaque carte Tech jouée (par n’importe quel joueur), gagne +2 DEF.']],
     'SEEKER':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],
@@ -37627,8 +38148,8 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON"];
-const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~';   // V0.05.87 : 64 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON)
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO"];
+const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!';   // V0.05.92 : 65 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO)
 const DEFI_DECKS = {
   "AMALGAME":["gNkhhSZZWjjLIIXiAAff", "gDDMMSaadZZLIiiAAFff", "JgQM8hSdZZejjIIAAFff", "OOgg3kkMhScdZeIIiAff", "ggUQQMMhhSZbjjIIiAff", "OO9ggkkDD0hSSZejjIIf", "OO4JJ6ggNDMMhdjIIAff", "OOK1ggQDMMhhSSciAAff", "OO4gg33kkCMMhSSZjIff", "OO496gg3QQkkMMSSIIAA", "OO44JJggEEDMM0SSjjIf", "OO44J166ggMMhSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
   "MOG-AI":["2O63NNQQkhhSccdZjIX7", "2J3QDHhhaccddZZWj7Ff", "2966UkDDHhhSZZWYbbIF", "22V33UQQND0hhcdZWWAA", "22JJ633UQNQDMMhhaacc", "2244VVJ9KgNQNkDDZZjF", "22OO4JJ633EUkkhhaadW", "22O44JJ9633NNkkDHci7", "22O4VVJ991663UNQQkHZ", "22OO44VVJJ996EQNDCZW", "22OO4VVJ996633NkkHBh", "22OO44VVJ996633Qk5HH", "PP22TOO44VVJ933kkDDh"],
@@ -37693,11 +38214,12 @@ const DEFI_DECKS = {
   "RYPEAL":["yBdeYbjjLLIIXXAAFFff", "yB8aWYYbjjLLII77AAff", "EyHSSdYbjLLIIXiAAFff", "gENyyBB0SSZbbLIIiAff", "OVJRgQyyBjjLLIIXAAff", "O9ggEEyySYbbjjIIXAAf", "OO4RggECCyySSjLLIiff", "OOVJRRgEyyhSSYjjIAff", "OORggEEyyBhSScbjjIAf", "OO9KRRggUyySSYYbjjIf", "OOJ9Rgg3EEyyBSYjjIAf", "OO4JRggyyBBSSbbjIAAf", "PPGGTTOORggEEyyBBSSj"],
   "LE COMÈTEUR":["zO63NNQQkhhSccdZjIX7", "zJ3QDHhhaccddZZWj7Ff", "z966UkDDHhhSZZWYbbIF", "zzV33UQQND0hhcdZWWAA", "zzJJ633UQNQDMMhhaacc", "zz44VVJ9KgNQNkDDZZjF", "zzOO4JJ633EUkkhhaadW", "zzO44JJ9633NNkkDHci7", "zzO4VVJ991663UNQQkHZ", "zzOO44VVJJ996EQNDCZW", "zzOO4VVJ996633NkkHBh", "zzOO44VVJ996633Qk5HH", "PPzzTOO44VVJ933kkDDh"],
   "MAGNEMER":["_NkhhSZZWjjLIIXiAAff", "_DDMMSaadZZLIiiAAFff", "J_QM8hSdZZejjIIAAFff", "OO__3kkMhScdZeIIiAff", "__UQQMMhhSZbjjIIiAff", "OO9__kkDD0hSSZejjIIf", "OO4JJ6__NDMMhdjIIAff", "OOK1__QDMMhhSSciAAff", "OO4__33kkCMMhSSZjIff", "OO496__3QQkkMMSSIIAA", "OO44JJ__EEDMM0SSjjIf", "OO44J166__MMhSSjIIAA", "PP22GGTTOO4__QQMMSjI"],
-  "LARVOTRON":["1U~00adeWWjLXXiiFFff", "KKU~HHhaeebLIXXii7Ff", "1~CC8800aceeWWXXii7F", "96Q~~CH0aceebjLXXiif", "9KK~~C0hacZeeWYXXiif", "KKUNN~~CHHB80ceeWXii", "VKKUNN~~CH880aeWXXiA", "4J9KK11UUN~~CHH800Xi", "V99KK11gD~~C8800acee", "4V9KK11UNN~~CCMH00ee", "44V99KK11U~~CCHH880X", "OVVKK11UUNN~~CC800XX", "PPGTTV99KK11~~CMHH80"]
+  "LARVOTRON":["1U~00adeWWjLXXiiFFff", "KKU~HHhaeebLIXXii7Ff", "1~CC8800aceeWWXXii7F", "96Q~~CH0aceebjLXXiif", "9KK~~C0hacZeeWYXXiif", "KKUNN~~CHHB80ceeWXii", "VKKUNN~~CH880aeWXXiA", "4J9KK11UUN~~CHH800Xi", "V99KK11gD~~C8800acee", "4V9KK11UNN~~CCMH00ee", "44V99KK11U~~CCHH880X", "OVVKK11UUNN~~CC800XX", "PPGTTV99KK11~~CMHH80"],
+  "EL-DIABLO":["!QkDM88ZZeejLXXii77f", "!NkD00hhZeeWYbIXXiiF", "OJ!gQD558cZeeYIXXiiF", "4!!163QQ00acdeeYXiiA", "OVJ!!11D55C8hZZeeXii", "OO!!113kk588heXXii7F", "!!163EQD55CC8hdeeXiA", "OJJ!!1166R5CCB880hXX", "OOJ!!11g3EQk558800ee", "OOJJ!!116NQQ5CC8800e", "OOJJ!!11g3U55C8800hi", "O4J!!11R33k55CC8800e", "PP2GTT4JJ!!11635CC80"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
 const DEFI_MOD_T = {"DOZEUR": ["SAPHYR", "BAVURES", "PROTO-SHIELD", "SAPHYR", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5"], "DILUS": ["SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "SAPHYR", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET"], "CHEIF 117": ["SAPHYR", "T-ARMS 09", "PROK-IEM", "SAPHYR", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES"], "SHADOW": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"], "SYLVERLAKE": ["SAPHYR", "AZ-5", "ROCKET", "SAPHYR", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09"], "SOSFOR": ["SAPHYR", "ROCKET", "BAVURES", "SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM"]};   // V0.05.06 : module adverse PAR PALIER pour les Défis SAPHYR (le reste suit DEFI_MOD)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
