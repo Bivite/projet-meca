@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.95</title>
+<title>Projet MECA V0.05.96</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7504,6 +7504,20 @@
     box-shadow:inset 0 0 0 .3cqw rgba(var(--c),.9), inset 0 .5cqw .3cqw rgba(255,255,255,.34); }
   .btl .unit.cbt .cbt-st.s-atk{ --dk:#33383f; } .btl .unit.cbt .cbt-st.s-def{ --dk:#0b2a63; }
   .btl .unit.cbt .cbt-st.s-ult{ --dk:#7a3300; } .btl .unit.cbt .cbt-st.s-hp{ --dk:#5c0b0d; } .btl .unit.cbt .cbt-st.s-ult.off{ --dk:#3a3f47; }
+  /* V0.05.96 (demande d'Alex, option B) : chiffres des petites cartes -- DEF entamée : chiffre BLEU VIF sur verre sombre au liseré bleu lumineux ;
+     PV entamés : chiffre ROUGE VIF sur verre sombre au liseré rouge lumineux ; ULT à 100 : jaune clair qui brille légèrement ; ATQ inchangée */
+  .btl .unit.cbt .cbt-st.cbt-st.s-def.dmg b{ color:#2bb8ff; -webkit-text-fill-color:#2bb8ff; text-shadow:.42cqw 0 0 #00112e, -.42cqw 0 0 #00112e, 0 .42cqw 0 #00112e, 0 -.42cqw 0 #00112e, .3cqw .3cqw 0 #00112e, -.3cqw .3cqw 0 #00112e, .3cqw -.3cqw 0 #00112e, -.3cqw -.3cqw 0 #00112e, 0 0 2.4cqw rgba(43,184,255,.95); }
+  .btl .unit.cbt .cbt-st.cbt-st.s-hp.dmg b{ color:#ff2a2a; -webkit-text-fill-color:#ff2a2a; text-shadow:.42cqw 0 0 #260003, -.42cqw 0 0 #260003, 0 .42cqw 0 #260003, 0 -.42cqw 0 #260003, .3cqw .3cqw 0 #260003, -.3cqw .3cqw 0 #260003, .3cqw -.3cqw 0 #260003, -.3cqw -.3cqw 0 #260003, 0 0 2.4cqw rgba(255,42,42,.95); }
+  .btl .unit.cbt .cbt-st.cbt-st.s-def.dmg::before{ background:repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 .45cqw, rgba(255,255,255,0) .45cqw 1.3cqw), radial-gradient(120% 90% at 30% 15%, rgba(120,200,255,.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #0c2148, #050d20), #050a14;
+    box-shadow:inset 0 0 0 .45cqw #2bb8ff, inset 0 0 2.6cqw rgba(43,184,255,.6), 0 0 2.2cqw rgba(43,184,255,.85); }
+  .btl .unit.cbt .cbt-st.cbt-st.s-hp.dmg::before{ background:repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 .45cqw, rgba(255,255,255,0) .45cqw 1.3cqw), radial-gradient(120% 90% at 30% 15%, rgba(255,140,130,.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #44080b, #1e0304), #120203;
+    box-shadow:inset 0 0 0 .45cqw #ff2a2a, inset 0 0 2.6cqw rgba(255,42,42,.6), 0 0 2.2cqw rgba(255,42,42,.85); }
+  .btl .unit.cbt .cbt-st.cbt-st.s-ult.btl-ready b{ color:#fff7b8; -webkit-text-fill-color:#fff7b8; animation:btlUltNum 1.8s steps(6) infinite;
+    text-shadow:.32cqw 0 0 #6b2a00, -.32cqw 0 0 #6b2a00, 0 .32cqw 0 #6b2a00, 0 -.32cqw 0 #6b2a00, 0 0 1.6cqw rgba(255,236,120,.7); }
+  @keyframes btlUltNum{
+    0%, 100%{ text-shadow:.32cqw 0 0 #6b2a00, -.32cqw 0 0 #6b2a00, 0 .32cqw 0 #6b2a00, 0 -.32cqw 0 #6b2a00, 0 0 1.2cqw rgba(255,236,120,.5); }
+    50%{ text-shadow:.32cqw 0 0 #6b2a00, -.32cqw 0 0 #6b2a00, 0 .32cqw 0 #6b2a00, 0 -.32cqw 0 #6b2a00, 0 0 3.2cqw rgba(255,246,170,1), 0 0 1.2cqw rgba(255,255,220,.9); } }
+  @media (prefers-reduced-motion: reduce){ .btl .unit.cbt .cbt-st.cbt-st.s-ult.btl-ready b{ animation:none; } }
 
   /* ===== emplacement du MODULE (V0.04.53) : petite case entre les chefs d'escouade, cadre métal + artwork du module ===== */
   .btl-mod{ --ms:calc(var(--sw) * .5); --g:#6fb6ff; position:absolute; z-index:3; left:calc(2px + (var(--sw) - var(--ms)) / 2); width:var(--ms); height:var(--ms); margin:0;
@@ -8596,7 +8610,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.95</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.96</b></div>
   </div>
 
     </div>
@@ -9651,9 +9665,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.95';
+var BUILD_VERSION = 'V0.05.96';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.96', items:[
+    'Combat : sur les petites cartes, une DEF entamée s’affiche en bleu vif et des PV entamés en rouge vif, sur un verre sombre qui s’allume : on voit tout de suite quelles cartes ont pris des dégâts (chefs compris). Un bouclier au-dessus de la DEF normale garde la couleur habituelle.',
+    'L’ultime chargé à 100 % s’affiche en jaune clair et brille légèrement.',
+  ] },
   { v:'V0.05.95', items:[
     'Nouvelle carte LÉGENDAIRE : LOUZY (3 ATQ / 3 DEF / 5 PV), pillard des bidonvilles. APPEL : il enferme 2 emplacements de mana de l’adversaire dans sa capsule : l’adversaire joue avec 2 mana de moins tant qu’il les garde (deux LOUZY : 4 de moins). BAROUD D’HONNEUR : il rend les emplacements (tout de suite si c’est le tour de l’adversaire).',
     'Animations de LOUZY : ses yeux s’allument, deux câbles de drone à grappin arrachent 2 cristaux de la jauge adverse et les enferment dans une capsule rivetée sur la carte ; détruit, la capsule éclate et les cristaux retournent à leur place. Nouveaux sons.',
@@ -21460,7 +21478,7 @@ function btlMakeCard0(side, def, rar, level, leader, k){
     hp = BTL_CHIEF_HP; df0 = BTL_CHIEF_DEF;   // V0.04.58 : chef d'escouade par défaut, identique pour le joueur et l'adversaire
   }
   return { uid:++btlUid, side, def, rar, level, name:def.name, atk:s.atk <= 0 ? 0 : Math.max(1, Math.round(s.atk * k)), df:df0,
-    maxHp:hp, hp, energy:0, leader:!!leader, plan:null, slot:-1,
+    maxHp:hp, hp, dfRef:df0, energy:0, leader:!!leader, plan:null, slot:-1,
     kw:leader ? [] : (BTL_CARD_KW[def.name] || []).slice(), playedTurn:-1, ultOn:false, base:null, k };   // V0.05.18 : k conservé (HÉROS ENGAGÉ recrée la carte)
 }
 // V0.05.00 : l'adversaire { cards:[noms], leader, module, k, lHp, lDf } est IMPOSÉ par le serveur, qui rejoue ensuite le combat pour valider le résultat
@@ -21469,7 +21487,7 @@ function btlSrvSide(side, o){
   const def = n => { const x = CHAR_DEFS.find(y => y.name === n); if(!x) throw new Error('carte inconnue ' + n); return x; };
   const mk = (n, isL) => { const x = def(n); return btlMakeCard(side, x, rarityOf(x), 1, isL, o.k || 1); };
   const L = mk(o.leader, true);
-  if(o.lHp != null || o.lDf != null){ L.maxHp = L.hp = BTL_CHIEF_HP + (o.lHp || 0); L.df = BTL_CHIEF_DEF + (o.lDf || 0); }
+  if(o.lHp != null || o.lDf != null){ L.maxHp = L.hp = BTL_CHIEF_HP + (o.lHp || 0); L.df = L.dfRef = BTL_CHIEF_DEF + (o.lDf || 0); }
   return { leader:L, pile:btlShuffle(o.cards.map(n => mk(n, false))), hand:[], slots:[null, null, null] };
 }
 function btlBuildSides(d){
@@ -21522,6 +21540,7 @@ async function btlUltStart(side){
   for(const c of BTL.S[side].slots.slice()){
     if(!c || c.hp <= 0 || !btlUltReady(c) || BTL.over || BTL.abort) continue;
     c.base = { atk:c.atk, df:c.df, maxHp:c.maxHp, hp:c.hp };
+    c.dfRefU = btlDfRef(c); c.dfRef = c.dfRefU * 2;   // V0.05.96 : valeur normale de la DEF pendant l'ultime
     c.atk *= 2; c.df *= 2; c.maxHp *= 2; c.hp *= 2; c.ultOn = true;
     btlPaint(c);
     const el = btlUnitEl(c);
@@ -21534,7 +21553,7 @@ async function btlUltEnd(side){
     if(!c || !c.ultOn) continue;
     const dfLost = c.df - Math.min(c.df, c.base.df);
     c.atk = c.base.atk; c.df = Math.min(c.df, c.base.df); c.maxHp = c.base.maxHp; c.hp = Math.min(c.hp, c.base.hp);   // les PV en plus servent de bouclier : on ne gagne jamais de vie
-    c.ultOn = false; c.base = null; c.energy = 0;
+    c.ultOn = false; c.base = null; c.energy = 0; if(c.dfRefU != null){ c.dfRef = c.dfRefU; c.dfRefU = null; }
     btlPaint(c);
     const el = btlUnitEl(c); if(el){ const r = btlRect(el); btlRing(r, '#ff9a2a', false); btlFlashEl(el, '#ff9a2a', .6, 360);
       if(dfLost > 0){ btlFloatNum(r, '-' + Math.round(dfLost), 'shield'); btlStatPop(el, 's-def', '#4ea8ff'); } }   // DEF perdue à la fin de l'ultime : -X sur la carte
@@ -21560,6 +21579,19 @@ function btlSmallHtml(c){
 function btlSetStat(root, cls, txt){
   const b = root && root.querySelector('.cbt-st.' + cls + ' b'); if(!b) return;
   if(b.textContent !== txt){ b.textContent = txt; b.classList.toggle('l4', txt.length >= 4); b.classList.toggle('l3', txt.length === 3); b.classList.toggle('l2', txt.length === 2); b.classList.toggle('dash', txt === '–'); }
+  if(cls === 's-def' || cls === 's-hp') btlStatDmg(root);   // V0.05.96 : couleur des chiffres entamés
+}
+// V0.05.96 : DEF normale d'une carte (créée avant cette version : sa DEF au premier affichage)
+function btlDfRef(c){ if(c.dfRef == null) c.dfRef = c.df; return c.dfRef; }
+// V0.05.96 : DEF sous sa valeur normale -> chiffre bleu vif ; PV sous le maximum -> chiffre rouge vif, sur verre sombre (petites cartes et chefs du champ de bataille)
+function btlStatDmg(root){
+  try{
+    const u = root.classList && root.classList.contains('btl-unit') ? root : (root.closest && root.closest('.btl-unit')) || (root.querySelector && root.querySelector('.btl-unit'));
+    const c = u && btlCardByUid(+u.dataset.uid); if(!c || c.tech) return;
+    const d = root.querySelector('.cbt-st.s-def'), h = root.querySelector('.cbt-st.s-hp');
+    if(d) d.classList.toggle('dmg', c.df < btlDfRef(c));
+    if(h) h.classList.toggle('dmg', c.hp < c.maxHp);
+  }catch(_){}
 }
 function btlPaintIn(root, c){
   const tbp = (c._tbPend > 0 && c.hp > 0) ? c._tbPend : 0;   // V0.05.80 : TRASH-BOT -- gain pas encore « mangé »
@@ -22821,7 +22853,7 @@ function tutoSides(){
     const r = rarityOf(x); if(r === 'holo' || r === 'ecarlate') throw new Error('tutoriel : carte ' + r + ' interdite (' + n + ')');
     return btlMakeCard(side, x, r, 1, isL, 1);
   };
-  const lo = mk('o', TUTO_LEAD.o, true); lo.maxHp = lo.hp = TUTO_CHIEF_O.hp; lo.df = TUTO_CHIEF_O.df;
+  const lo = mk('o', TUTO_LEAD.o, true); lo.maxHp = lo.hp = TUTO_CHIEF_O.hp; lo.df = lo.dfRef = TUTO_CHIEF_O.df;
   return {
     p:{ leader:mk('p', TUTO_LEAD.p, true), pile:TUTO_DECK_P.map(n => mk('p', n)).reverse(), hand:[], slots:[null, null, null] },
     o:{ leader:lo, pile:TUTO_DECK_O.map(n => mk('o', n)).reverse(), hand:[], slots:[null, null, null] }
@@ -32455,7 +32487,7 @@ function btlTbGain(dead){
   if(!BTL || !dead || dead.leader) return;
   for(const sd of ['p', 'o']) for(const t of BTL.S[sd].slots){
     if(!t || t === dead || t.hp <= 0 || t._diePr || btlFxN(t) !== 'TRASH-BOT' || !btlHas(t, 'passif')) continue;
-    t.atk += 2; t.df += 2; t.maxHp += 2; t.hp += 2;
+    t.atk += 2; t.df += 2; t.maxHp += 2; t.hp += 2; t.dfRef = btlDfRef(t) + 2; if(t.dfRefU != null) t.dfRefU += 2;   // V0.05.96 : la DEF normale grandit aussi
     if(t.ultOn && t.base){ t.base.atk += 2; t.base.df += 2; t.base.maxHp += 2; t.base.hp += 2; }
     t._tbPend = (t._tbPend || 0) + 2;
     (BTL.tbQ || (BTL.tbQ = new Set())).add(t);
