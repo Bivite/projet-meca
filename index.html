@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.94</title>
+<title>Projet MECA V0.05.95</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7172,6 +7172,21 @@
   .btl-md.sab::before, .btl-mana.opp .btl-md.sab::before{ background:linear-gradient(135deg, transparent 40%, #ff4de8 45%, #ffe0fb 50%, #ff4de8 55%, transparent 60%), conic-gradient(#3b1442 0 25%, #2a0d31 25% 50%, #1d0822 50% 75%, #34113b 75%); }
   .btl-md.sab, .btl-mana.opp .btl-md.sab{ filter:drop-shadow(0 0 2px rgba(255,70,232,.8)); }
   .btl-mana.sab-fx .btl-md.sab{ animation:btlSabMd .7s ease-out; }
+  /* V0.05.95 LOUZY : alvéoles de mana capturées (vides, liseré jaune-vert) + capsule rivetée sur la carte */
+  .btl-md.lzc::before, .btl-mana.opp .btl-md.lzc::before{ background:radial-gradient(circle at 50% 50%, rgba(200,240,64,.55) 0 18%, transparent 24%), conic-gradient(#1d2410 0 25%, #141a0a 25% 50%, #0d1206 50% 75%, #1a2010 75%); }
+  .btl-md.lzc, .btl-mana.opp .btl-md.lzc{ filter:drop-shadow(0 0 2px rgba(200,240,64,.75)); }
+  .btl-mana.lz-fx .btl-md.lzc{ animation:btlLzMd .7s ease-out; }
+  @keyframes btlLzMd{ 0%{ transform:scale(1.8); filter:drop-shadow(0 0 7px #c8f040) brightness(2); } 100%{ transform:scale(1); } }
+  .btl .unit.cbt .cbt-lz{ position:absolute; left:72%; top:17%; width:23cqw; height:12.5cqw; transform:translate(-50%,-50%); z-index:5; pointer-events:none;
+    display:flex; align-items:center; justify-content:center; gap:2.4cqw; border-radius:3.2cqw; box-sizing:border-box;
+    background:linear-gradient(180deg, #7a4a2c 0%, #3b2416 45%, #1c110a 100%); border:.5cqw solid #1a0f08;
+    box-shadow:inset 0 .6cqw 0 rgba(255,214,160,.35), inset 0 -.6cqw 0 rgba(0,0,0,.5), 0 0 3.2cqw rgba(200,240,64,.75), 0 .6cqw 1.2cqw rgba(0,0,0,.6); }
+  .btl .unit.cbt .cbt-lz::before, .btl .unit.cbt .cbt-lz::after{ content:""; position:absolute; top:50%; width:1.3cqw; height:1.3cqw; border-radius:50%; transform:translateY(-50%);
+    background:radial-gradient(circle at 35% 35%, #f0d2a8, #6a4026 70%); }
+  .btl .unit.cbt .cbt-lz::before{ left:1.1cqw; } .btl .unit.cbt .cbt-lz::after{ right:1.1cqw; }
+  .btl .unit.cbt .cbt-lz b{ width:4.4cqw; height:5.6cqw; clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    background:conic-gradient(from 45deg, #f6ffd0 0 25%, #c8f040 25% 50%, #6f9a12 50% 75%, #a6dc2c 75%); filter:drop-shadow(0 0 1.2cqw rgba(214,255,74,.95)); }
+  .btl .unit.cbt .cbt-lz.x2::after{ content:"×2"; right:-5.6cqw; width:auto; height:auto; border-radius:0; background:none; color:#e6ff9a; font:900 4cqw/1 system-ui, sans-serif; text-shadow:0 0 1cqw #000, 0 0 2cqw rgba(200,240,64,.8); }
   @keyframes btlSabMd{ 0%{ transform:scale(1.9); filter:drop-shadow(0 0 7px #ff4de8) brightness(2); } 100%{ transform:scale(1); } }
   .btl-sabwrap{ position:fixed; left:0; top:0; width:100vw; height:100vh; pointer-events:none; z-index:33; perspective:820px; }
   .btl-sabdisk{ position:absolute; left:0; top:0; transform-style:preserve-3d; will-change:transform; }
@@ -8581,7 +8596,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.94</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.95</b></div>
   </div>
 
     </div>
@@ -9636,9 +9651,14 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.94';
+var BUILD_VERSION = 'V0.05.95';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.05.95', items:[
+    'Nouvelle carte LÉGENDAIRE : LOUZY (3 ATQ / 3 DEF / 5 PV), pillard des bidonvilles. APPEL : il enferme 2 emplacements de mana de l’adversaire dans sa capsule : l’adversaire joue avec 2 mana de moins tant qu’il les garde (deux LOUZY : 4 de moins). BAROUD D’HONNEUR : il rend les emplacements (tout de suite si c’est le tour de l’adversaire).',
+    'Animations de LOUZY : ses yeux s’allument, deux câbles de drone à grappin arrachent 2 cristaux de la jauge adverse et les enferment dans une capsule rivetée sur la carte ; détruit, la capsule éclate et les cristaux retournent à leur place. Nouveaux sons.',
+    'LOUZY a son Défi, et TRANSPORTEUR, CASSIS et MAGNEMER peuvent aussi la donner.',
+  ] },
   { v:'V0.05.94', items:[
     'Nouvelle carte LÉGENDAIRE : GOLDY (4 ATQ / 4 DEF / 6 PV), robot d’or gravé de runes. PASSIF : ses actions (attaquer, défendre) ne coûtent aucun mana. Comme toute carte, une seule action par tour.',
     'Animation d’arrivée de GOLDY : une pluie de pièces d’or en 3D tombe sur tout le champ de bataille et s’entasse sur sa case, puis le tas glisse vers le bas du plateau : GOLDY est déjà là, un reflet d’or passe sur la carte. Nouveaux sons de pièces.',
@@ -11713,7 +11733,7 @@ var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
   menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
   fight: { url:MUS_BASE + 'Musique%20Combats.mp3',    buf:null, src:null, gain:null, failAt:0, busy:false } } };
 // Sons de pose des cartes (V0.04.87) : un son par rareté, joués à l'impact de la carte sur son emplacement (joueur et adversaire), volume = EFFETS SONORES
-MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
+MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
 MUS.sfx.emb = {};   // V0.05.70 : FIN, vapeur x4, pioche x3, déplacement d'attaque x3 (copiés ensuite dans le bucket, puis passés dans MUS.sfx.files)
 MUS.sfx.off = { pio1:.32, pio2:.06, pio3:.06, dep1:.28, dep2:.38, dep3:.64 };   // V0.05.70 : début de lecture (s) : on saute le blanc du début pour caler le bruit sur la carte
 MUS.sfx.pk = { pio1:.21, pio2:.23, pio3:.30 };    // V0.05.70 : instant du maximum de chaque son (s, après le blanc sauté)
@@ -12052,6 +12072,7 @@ const CHAR_LORE = {
   'EL-DIABLO': { pilot:'Aucune — démone de métal liquide', text:"Aucune fonderie n'avoue l'avoir coulée. EL-DIABLO n'a pas de forme fixe : un métal rouge et vivant qui s'écoule, se sépare et se reforme où il veut. Elle ne sert aucun camp — chaque carte jouée sur le champ de bataille la réveille, et son métal jaillit en lames qui frappent tout ce qui tient debout, alliés comme ennemis. Elle seule en sort intacte." },
   MATRIARCHE: { pilot:'Aucune — reine-statue des fonderies infernales', text:"Au cœur d'une cité-fonderie noyée de lave se dresse une statue de fer haute comme une cathédrale. On la dit morte depuis des siècles, mais ses bras dégouttent encore de métal en fusion : c'est d'elle que naissent les EL-DIABLO. Quand MATRIARCHE descend sur le champ de bataille, l'ombre de sa main passe sur tous les combattants et l'une de ses filles répond à l'appel. Et quand on l'abat, elle ne tombe pas seule : le sol se met à bouillir et une lave de fer gris engloutit deux combattants avec elle, amis ou ennemis." },
   GOLDY: { pilot:'Aucun — majordome automate d’une famille de banquiers', text:"Forgé dans l'or fondu d'une banque engloutie, GOLDY servait une famille si riche qu'elle payait tout en pièces. Ses plaques sont gravées de runes de comptable : chaque geste qu'il fait est déjà payé d'avance. Quand il descend sur le champ de bataille, une pluie d'or s'abat avant lui — et le temps que les pièces roulent au loin, GOLDY est déjà là, la main tendue." },
+  LOUZY: { pilot:'Aucun — pillard autonome des bidonvilles de la Rouille', text:"Dans les bidonvilles de la Rouille, sous la pluie et les drones de surveillance, LOUZY a appris à tout récupérer. Ses câbles de drone volés arrachent l'énergie là où elle brille encore et l'enferment dans une capsule rivetée à sa poitrine. Tant qu'il tient la capsule, l'adversaire se bat à moitié éteint. Mais qu'on le mette en pièces, et la capsule éclate : tout ce qu'il a volé retourne d'où il vient." },
   RYPEAL: { pilot:'Aucun — atelier autonome « Ry-Peal »', text:"Dans les friches industrielles, quand les usines se sont tues, un atelier a continué à travailler. RYPEAL avance sur ses deux jambes, le dos hérissé de petits bras mécaniques qui ne s'arrêtent jamais : ils démontent, soudent, assemblent. Quand on l'abat, ses bras finissent le dernier objet commencé, le tendent à son camp, puis se retournent les uns contre les autres. Rien de l'atelier ne doit tomber aux mains de l'ennemi." },
   'TRASH-BOT': { pilot:'Aucun — programme de recyclage « Broyeur-7 »', text:"Dans les décharges sans fin sous les autoroutes suspendues, TRASH-BOT roule de tas en tas, la mâchoire ouverte. On l'a construit pour recycler les épaves ; personne n'a pensé à lui dire de s'arrêter. Chaque mécha qui tombe au combat finit entre ses dents : broyé, fondu, puis soudé à sa propre carcasse. Plus la bataille fait de victimes, plus il remonte du sol lourd, solide et affamé." },
   MARCH:     { pilot:'Aucun — intelligence marchande « Toile »', text:"Sur la route de terre qui traverse le marché des terres basses, MARCH avance courbé sous son grand sac de toile. Personne ne sait ce qu'il y range : des pièces de méchas, des processeurs encore chauds, parfois un module entier arraché à une épave. Quand il pose son sac au milieu d'un combat, il en déballe trois et laisse son escouade choisir. Il ne fait jamais crédit, mais il ne repart jamais sans avoir vendu." },
@@ -12513,7 +12534,13 @@ const CHAR_DEFS = [
     ultName:"PLUIE D'OR", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:42, def:40, hp:360}, max:{atk:300, def:290, hp:1340}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/goldy-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/goldy-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/goldy-art-ext.webp' },
+  // ---- Nouvelle carte LÉGENDAIRE (V0.05.95) : LOUZY, robot récupérateur des bidonvilles. APPEL : encapsule 2 emplacements de mana adverses ; BAROUD : les rend ----
+  { name:"LOUZY", rarity:"legendaire", color:"#c8f040", shape:"block", role:"Pillard — robot récupérateur des bidonvilles",
+    ultName:"RAFLE TOTALE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:36, def:34, hp:330}, max:{atk:270, def:260, hp:1240}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/louzy-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/louzy-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -12589,7 +12616,7 @@ function fxFilterBtns(attr, cur){
 const CARD_TIERS = {
   holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI', 'LE COMÈTEUR'],
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME', 'MAGNEMER', 'EL-DIABLO', 'MATRIARCHE'],
-  legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII', 'HAKILX', 'SEEKER', 'LARVOTRON', 'GOLDY'],
+  legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII', 'HAKILX', 'SEEKER', 'LARVOTRON', 'GOLDY', 'LOUZY'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE', 'CASSIS', 'DIMAVERSE', 'PIGTAIL', 'TRASH-BOT', 'RYPEAL'],
   rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH']
 };
@@ -12597,7 +12624,7 @@ const CARD_STATS = {
   // [ATQ, DEF, PV]
   'MOTOKO':[9,5,8], 'ZAPPAN':[10,3,8], 'TOA2':[6,8,9], 'MOG-AI':[9,4,8],
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
-  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6],
+  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6], 'LOUZY':[3,3,5],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
   'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3], 'SCOOT':[3,1,4], 'POUNDER':[4,2,5], 'PITTY BELL':[3,1,4], 'SOSFOR':[4,3,5], 'GAST':[3,1,3], 'SYLVERLAKE':[4,5,6], 'ANAKA':[4,0,2], 'KOTAMA':[4,0,2]
 };
@@ -14547,8 +14574,8 @@ const WIN_KEEP = {'TOA2':1,'RHINO':1,'DELOK':1,'WHIPLASH':1,'TUNNELIER':1};
 const WIN_FOCUS = {'SHADOW':72,'MOG-AI':12,'CHEIF 117':8};
 const winArt = def => (!def ? GREY_ART : (WIN_KEEP[def.name] ? (def.art || def.artExt) : (def.artExt || def.art || def.artBig)) || GREY_ART);
 // V0.05.94 : cadrage recalculé pour toutes les cartes (patch_0594_frames.py / frame_calc.py : sujet annoté, tête toujours visible)
-const WIN_BIG = {'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
-const WIN_SMALL = {'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
+const WIN_BIG = {'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
+const WIN_SMALL = {'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
 const winFocus = (def, big) => { const n = def && def.name, b = big && n && WIN_BIG[n], sm = !big && n && WIN_SMALL[n]; return b && b.y != null ? b.y : (sm != null && sm !== false && sm !== undefined && sm !== '' ? sm : (n && WIN_FOCUS[n] != null ? WIN_FOCUS[n] : 50)); };
 const winZoom = def => { const b = def && WIN_BIG[def.name]; return b ? Math.max(b.z || 100, 100 + 2 * Math.abs(b.x || 0)) : 100; };
 const winShift = def => { const b = def && WIN_BIG[def.name]; return b && b.x ? b.x / winZoom(def) * 100 : 0; };
@@ -17280,7 +17307,7 @@ function specAt(ms){
   const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
   return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
 }
-var CARD_VIDS = {"GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS = {"LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
 function cardVidClose(){
@@ -20971,6 +20998,8 @@ function pvpReconcile(snap){
     ['p', 'o'].forEach((sd, i) => { const cur = BTL.mod && BTL.mod[sd] ? BTL.mod[sd].name : null; if(sm[i] && cur !== sm[i]){ diffs.push('module ' + sd + ' ' + cur + '→' + sm[i]); try{ btlMarchSet(sd, sm[i], true); }catch(_){} } }); }
   { const eb = snap.eb || [0, 0], cur = BTL.evb || { p:0, o:0 };   // V0.05.89 : BAROUD GÉNÉRAL -- mana en attente
     if((cur.p || 0) !== eb[0] || (cur.o || 0) !== eb[1]){ diffs.push('mana en attente ' + (cur.p || 0) + '/' + (cur.o || 0) + '→' + eb); BTL.evb = { p:eb[0], o:eb[1] }; } }
+  { const z = snap.lz || [0, 0, 0, 0], a = BTL.lz || { p:0, o:0 }, b = BTL.lzCut || { p:0, o:0 };   // V0.05.95 : LOUZY -- emplacements encapsulés
+    if((a.p || 0) !== z[0] || (a.o || 0) !== z[1] || (b.p || 0) !== z[2] || (b.o || 0) !== z[3]){ diffs.push('LOUZY ' + [a.p || 0, a.o || 0, b.p || 0, b.o || 0] + '→' + z); BTL.lz = { p:z[0], o:z[1] }; BTL.lzCut = { p:z[2], o:z[3] }; try{ btlRenderMana(); }catch(_){} } }
   if(BTL.turn !== snap.turn){ diffs.push('tour ' + BTL.turn + '→' + snap.turn); BTL.turn = snap.turn; }
   if(diffs.length){ pvpWarn('écart au tour ' + snap.turn + ' (' + snap.tag + ') : ' + diffs.join(' ; ') + ' | ' + JSON.stringify((PVPC.cur && PVPC.cur.a) || null) + ' bande ' + JSON.stringify((PVPC.cur && PVPC.cur.tape) || null)); try{ btlRenderArrows(); }catch(_){} }
   return diffs;
@@ -21003,7 +21032,7 @@ async function pvpTurn(side){
   const cap = Math.min(5, Math.floor((BTL.turn - 1) / 2) + 1 + (side !== BTL.first ? 1 : 0)), bonus = 0;   // V0.05.35 : même règle que le serveur
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE (mana « verts »)
   const evb = (BTL.evb && BTL.evb[side]) || 0; if(evb){ BTL.evb[side] = 0; BTL.extra[side] += evb; }   // V0.05.89 : BAROUD GÉNÉRAL -- mana gagné hors de son tour (cristaux verts)
-  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
+  BTL.cap[side] = BTL.mana[side] = btlLzTurn(side, Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0)));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour ; V0.05.95 : LOUZY -- emplacements encapsulés
   btlRenderMana();
   await btlTurnFx(side);
   if(side === 'p') pvpPrimePile(P.cur);
@@ -21401,11 +21430,12 @@ function btlNoDef(c){ return !c.leader && ((c.playedTurn === BTL.turn && btlHas(
 function btlCanAct(c){ return c.actT !== BTL.turn && (!BTL_SUMMON_SICK || c.leader || c.playedTurn !== BTL.turn || btlHas(c, 'percee')); }   // V0.05.81 : SABOTAGE -- une carte qui a déjà agi ne rejoue pas ce tour
 async function btlTrigger(kind, c){
   if(!BTL || BTL.abort || BTL.over || !c || c.leader) return;
-  if(kind === 'baroud' && c.off) return;   // V0.05.60 : carte désactivée : ni Baroud ni POSITRON
+  if(kind === 'baroud' && c.off){ if(c.lzHeld > 0 && !btlOnField(c)){ try{ await btlLzBaroud(c); }catch(e){ if(e !== 'abort') console.error(e); } } return; }   // V0.05.60 : carte désactivée : ni Baroud ni POSITRON ; V0.05.95 : la capsule de LOUZY rend quand même ses mana
   const fx = BTL_CARD_FX[btlFxN(c)], fn = fx && fx[kind];
   if(typeof fn === 'function' && (kind === 'baroud' || btlOnField(c))){   // carte détruite avant son action : l'action est annulée (le Baroud d'honneur, lui, se joue justement à la mort)
     try{ await fn(c); }catch(e){ if(e !== 'abort') console.error(e); }
   }
+  if(kind === 'baroud' && c.lzHeld > 0 && !btlOnField(c) && BTL && !BTL.abort){ try{ await btlLzBaroud(c); }catch(e){ if(e !== 'abort') console.error(e); } }   // V0.05.95 : capsule d'une LOUZY rejouée par CASSIS sous un autre nom
   if(kind === 'baroud' && c.pos && c._diePr && !c._posDone && BTL && !BTL.abort && !BTL.over){ c._posDone = true; try{ await btlPosBaroud(c); }catch(e){ if(e !== 'abort') console.error(e); } }   // V0.05.24 : POSITRON (après le Baroud d'origine)
 }
 // cartes que 'side' a le droit de viser : s'il y a un Tank adverse en vie, lui seul est ciblable
@@ -21524,7 +21554,7 @@ function btlSmallHtml(c){
     (art ? '<div class="cbt-art-img"><img class="cbt-art-fg" src="' + art + '" alt="" style="object-position:50% ' + af + '%" onerror="this.onerror=null;this.src=\'' + GREY_ART + '\'"></div>' : '') +
     '<div class="cbt-ring"></div>' + (kh('baroud') ? '<div class="cbt-brd' + (kh('tank') ? ' both' : '') + '"></div>' : '') + (kh('tank') ? '<div class="cbt-tank"></div><i class="cbt-wm"></i>' : kh('baroud') ? '<i class="cbt-wm sk"></i>' : kh('passif') ? '<i class="cbt-wm pa"></i>' : kh('appel') ? '<i class="cbt-wm ap"></i>' : kh('percee') ? '<i class="cbt-wm pe"></i>' : '') + (c.off && kwAny ? '<i class="cbt-off"></i>' : '') + '<div class="cbt-fl"></div>' +
     btlStatHtml('s1 s-atk', btlFmtN(c.atk)) + btlStatHtml('s2 s-def', btlFmtN(c.df)) +
-    btlStatHtml('s3 s-ult' + (c.leader ? ' off' : ''), c.leader ? '–' : '0') + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) +
+    btlStatHtml('s3 s-ult' + (c.leader ? ' off' : ''), c.leader ? '–' : '0') + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + btlLzCapHtml(c) +
   '</div>';
 }
 function btlSetStat(root, cls, txt){
@@ -21540,7 +21570,10 @@ function btlPaintIn(root, c){
   const un = root.classList && root.classList.contains('unit') ? root : root.querySelector('.unit.cbt');
   if(un){ un.classList.toggle('ult-rdy', btlUltReady(c)); un.classList.toggle('ult-on', !!c.ultOn); }
 }
-function btlPaint(c){ const u = btlUnitEl(c); if(u) btlPaintIn(u, c); }
+function btlLzCapHtml(c){ const n = (c && !c.leader && !c._lzHide && c.lzHeld) || 0; return n > 0 ? '<i class="cbt-lz' + (n > 2 ? ' x2' : '') + '"><b></b><b></b></i>' : ''; }   // V0.05.95 : LOUZY -- capsule des mana encapsulés
+function btlLzCapSync(root, c){ const un = root && (root.classList && root.classList.contains('unit') ? root : root.querySelector('.unit.cbt')); if(!un || c.leader) return; const k = un.querySelector('.cbt-lz'), want = (!c._lzHide && c.lzHeld) || 0;
+  if(want > 0 && !k) un.insertAdjacentHTML('beforeend', btlLzCapHtml(c)); else if(!(want > 0) && k) k.remove(); else if(k) k.classList.toggle('x2', want > 2); }
+function btlPaint(c){ const u = btlUnitEl(c); if(u){ btlPaintIn(u, c); btlLzCapSync(u, c); } }
 function btlPutCard(c){
   const slot = btlSlotOf(c);
   slot.innerHTML = '<div class="btl-unit" data-uid="' + c.uid + '">' + btlSmallHtml(c) + '</div>';
@@ -21626,8 +21659,9 @@ function btlRenderMana(){
     let h = '';
     const ex = (BTL.extra && BTL.extra[s]) || 0, cap = BTL.cap[s], shown = Math.max(5, cap - (BTL.side === s ? 0 : ex), BTL.mana[s]);   // V0.05.14 : hors de son tour, le camp ne montre plus les cristaux verts du tour passé
     const sb = BTL.sab && BTL.sab[s] && !(BTL.sabAnim && BTL.sabPend === s);   // V0.05.81 : SABOTAGE -- 2 cristaux « débranchés » juste après le plafond
-    const sbE = Math.max(cap, BTL.mana[s]) + 2, n = sb ? Math.max(shown, sbE) : shown;   // les 2 cristaux perdus restent visibles même au-delà de 5
-    for(let i = 0; i < n; i++) h += '<i class="btl-md ' + (i < BTL.mana[s] ? 'on' + (ex && i >= cap - ex && i < cap ? ' x' : '') : i < cap ? 'spent' : (sb && i < sbE) ? 'sab' : 'off') + '"></i>';
+    const sbE = Math.max(cap, BTL.mana[s]) + 2, n0 = sb ? Math.max(shown, sbE) : shown;   // les 2 cristaux perdus restent visibles même au-delà de 5
+    const lzN = (BTL.lz && BTL.lz[s]) || 0, lzS = sb ? sbE : Math.max(cap, BTL.mana[s]), lzE = lzS + lzN, n = Math.max(n0, lzE);   // V0.05.95 : LOUZY -- alvéoles capturées
+    for(let i = 0; i < n; i++) h += '<i class="btl-md ' + (i < BTL.mana[s] ? 'on' + (ex && i >= cap - ex && i < cap ? ' x' : '') : i < cap ? 'spent' : (sb && i < sbE) ? 'sab' : (i >= lzS && i < lzE) ? 'lzc' : 'off') + '"></i>';
     box.classList.toggle('many', n > 5);
     box.innerHTML = h;
   });
@@ -23439,7 +23473,7 @@ async function btlDraw(side){
   if(pvpOn() && side === 'p') pvpPrimePile(PVPC.cur);   // PvP : la carte que je pioche vraiment (photo du serveur) est remise au sommet de ma pioche juste avant
   btlSmokeMaybe(side);   // 1 pioche sur 2 : fumée par les bouches d'aération du côté qui pioche
   musPioche(S.hand.length >= BTL_HAND_MAX ? .22 * 760 * BTL_TS / 1000 : .184 * 1320 * BTL_TS / 1000);   // V0.05.70 : carte sortie du tiroir à 22 % (main pleine) / 18,4 % de l'animation
-  if(S.hand.length >= BTL_HAND_MAX){ const x = S.pile.pop(); const rb = await btlBurnDraw(side, x); await btlOnDraw(side); return rb; }
+  if(S.hand.length >= BTL_HAND_MAX){ const x = S.pile.pop(); if(x && x.lzHeld > 0){ btlLzGive(x); btlRenderMana(); } const rb = await btlBurnDraw(side, x); await btlOnDraw(side); return rb; }   // V0.05.95 : LOUZY brûlée
   const c = S.pile.pop(); S.hand.push(c);
   const pileEl = btlQ(side === 'p' ? '#btlMPile' : '#btlOPile');
   const from = btlPileFrom(pileEl);
@@ -23616,7 +23650,7 @@ async function btlTurn(side){
   const bonus = 0;
   const pile = BTL.pile[side] || 0; BTL.pile[side] = 0; BTL.extra[side] = pile;   // V0.05.14 : PILE D’ÉNERGIE jouée au tour précédent (mana « verts »)
   const evb = (BTL.evb && BTL.evb[side]) || 0; if(evb){ BTL.evb[side] = 0; BTL.extra[side] += evb; }   // V0.05.89 : BAROUD GÉNÉRAL -- mana gagné hors de son tour (cristaux verts)
-  BTL.cap[side] = BTL.mana[side] = Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour
+  BTL.cap[side] = BTL.mana[side] = btlLzTurn(side, Math.max(0, cap + bonus + pile + evb - (BTL.sab && BTL.sab[side] ? 2 : 0)));   // V0.05.81 : SABOTAGE -- 2 mana de moins à chaque tour ; V0.05.95 : LOUZY -- emplacements encapsulés
   btlRenderMana();
   await btlTurnFx(side);
   if(!await btlDraw(side)){ await btlFatigue(side); if(BTL.over || BTL.abort) return; }
@@ -30158,7 +30192,7 @@ BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
     'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'SYLVERLAKE':['appel'], 'BUZZY':['passif'],
-    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif']
+    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif'], 'LOUZY':['appel', 'baroud']
   };
   Object.keys(K).forEach(n => { BTL_CARD_KW[n] = K[n]; });
 })();
@@ -30942,6 +30976,7 @@ async function btlBounce(t){
   S.slots[t.slot] = null; if(slot){ slot.innerHTML = ''; slot.classList.remove('has'); }
   btlRenderArrows(); btlFlameKick();
   const cx = from.left + cw / 2, cy = from.top + ch / 2;
+  if(t.lzHeld > 0){ if(burn) await btlLzBaroud(t); else fresh.lzHeld = t.lzHeld; }   // V0.05.95 : LOUZY
   if(burn){ await btlBurnDraw(o, fresh, from); return; }
   S.hand.push(fresh);
   if(o === 'p') btlRenderHand(fresh.uid); else btlRenderOHand(fresh.uid);
@@ -31727,7 +31762,7 @@ function btlCsTex(VW, VH){
 // la carte se pose dans son emplacement avec son nouvel effet. L'Appel de l'effet gagné (s'il en a un) est joué ensuite (btlTrigger -> btlFxN).
 // Coût : une quarantaine d'éléments animés par le compositeur (transform / opacity), plus le rouleau (~50 encadrés de texte), tous retirés à la fin.
 // Durées en unités du combat (x BTL_TS).
-var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY"];
+var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
 function btlFxN(c){ return c && (c.as || c.name); }   // nom sous lequel les effets d'une carte sont cherchés (CASSIS : l'effet gagné)
 function btlCsGain(c, n){ c.as = n; c.kw = (BTL_CARD_KW[n] || []).slice(); delete c._big; }
 // ---- TANDEEM (V0.05.61) : PASSIF -- +2 DEF à chaque carte Tech jouée (par l'un ou l'autre joueur) ; affichage habituel d'un gain de DEF ----
@@ -36168,6 +36203,218 @@ function btlGdWarm(){
   if(window.requestIdleCallback) requestIdleCallback(go, { timeout:6000 }); else setTimeout(go, 3500);
 }
 BTL_CARD_FX['GOLDY'] = { drop:btlGdArrive, passif:{ quand:'pose', run:async () => {} } };
+// ---- V0.05.95 : LOUZY (LÉGENDAIRE) -- APPEL : encapsule 2 emplacements de mana de l'adversaire ; BAROUD D'HONNEUR : les lui rend.
+// Réponses d'Alex (06/11/2026) : « ce sont des emplacements de mana : tant que LOUZY est sur le champ de bataille l'adversaire joue avec 3 mana maximum » ;
+// les 2 mana ne vont pas au joueur de LOUZY, ils sont « encapsulés » dans la carte ; rendus tout de suite si elle est détruite pendant le tour de
+// l'adversaire, sinon à son tour ; 2 LOUZY = -4 (cumul) ; pas de minimum (l'adversaire peut tomber à 0) ; désactivée (SEEKER) ou renvoyée en main :
+// elle GARDE les mana -- rendus seulement quand elle est détruite (même désactivée : la destruction libère toujours la capsule).
+// Règle (MÊME RÈGLE que le noyau des serveurs, patch_core_louzy.py lzTake / lzGive / lzTurn) :
+//   BTL.lz[v]    = emplacements de v tenus par des LOUZY (toutes zones) ; c.lzHeld = ceux que tient cette carte ;
+//   BTL.lzCut[v] = ce qui est réellement retiré du plafond courant de v (plafond ne descend pas sous 0).
+//   Appel   : lz[v] += 2 ; held += 2 ; cut = min(2, cap[v]) : cap[v] -= cut, lzCut[v] += cut, mana[v] = min(mana[v], cap[v]).
+//   Tour de v : cap = mana = max(0, plafond normal) - min(lz[v], ce plafond) ; lzCut[v] = ce qui a été retiré.
+//   Destruction : r = min(held, lzCut[v]) ; lz[v] -= held ; lzCut[v] -= r ; cap[v] += r ; si c'est le tour de v : mana[v] += r (utilisables tout de suite).
+// Animations (canvas 2D léger, même horloge que le combat) :
+//   Appel  : les yeux de LOUZY s'allument (jaune-vert de l'artwork) ; deux câbles de drone rouillés à grappin partent vers la jauge adverse, saisissent
+//            2 cristaux, les arrachent et les ramènent ; les cristaux deviennent jaune-vert et s'enferment dans une capsule rivetée sur la carte ;
+//            la jauge adverse garde 2 alvéoles « capturées ».
+//   Baroud : la capsule éclate (éclats de rouille, lumière) et les 2 cristaux repartent en comètes jusqu'à leurs alvéoles, qui se rallument.
+const BTL_LZ = { spr:null };
+function btlLzInit(){ if(!BTL.lz) BTL.lz = { p:0, o:0 }; if(!BTL.lzCut) BTL.lzCut = { p:0, o:0 }; }
+function btlLzTake(c){
+  btlLzInit(); const v = btlOther(c.side);
+  BTL.lz[v] += 2; c.lzHeld = (c.lzHeld || 0) + 2;
+  const cut = Math.min(2, Math.max(0, BTL.cap[v])); BTL.cap[v] -= cut; BTL.lzCut[v] += cut; if(BTL.mana[v] > BTL.cap[v]) BTL.mana[v] = BTL.cap[v];
+  return cut;
+}
+function btlLzGive(c){
+  btlLzInit(); const h = c.lzHeld || 0; if(!h) return 0; const v = btlOther(c.side);
+  BTL.lz[v] = Math.max(0, BTL.lz[v] - h); const r = Math.min(h, BTL.lzCut[v]); BTL.lzCut[v] -= r; BTL.cap[v] += r; if(BTL.side === v) BTL.mana[v] += r;
+  c.lzHeld = 0; return r;
+}
+// début du tour de 'side' : plafond normal (déjà réduit par SABOTAGE) -> moins les emplacements tenus par les LOUZY adverses
+function btlLzTurn(side, pre){ btlLzInit(); const cut = Math.min(BTL.lz[side] || 0, Math.max(0, pre)); BTL.lzCut[side] = cut; return Math.max(0, pre) - cut; }
+
+function btlLzSprites(){
+  if(BTL_LZ.spr) return BTL_LZ.spr;
+  const mk = (w, h, f) => { const cv = document.createElement('canvas'); cv.width = w; cv.height = h; f(cv.getContext('2d'), w, h); return cv; };
+  const glow = (c0, c1) => mk(48, 48, (g, w) => { const r = g.createRadialGradient(24, 24, 0, 24, 24, 24); r.addColorStop(0, c0); r.addColorStop(.3, c1); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+  // cristal de mana taillé (4 facettes, arêtes claires) : couleur de la victime puis jaune-vert de LOUZY
+  const gem = (a, b, c, d, edge) => mk(40, 48, g => {
+    const P = [[20, 2], [37, 24], [20, 46], [3, 24]], C = [20, 24];
+    const face = (p, q, col) => { g.beginPath(); g.moveTo(C[0], C[1]); g.lineTo(p[0], p[1]); g.lineTo(q[0], q[1]); g.closePath(); g.fillStyle = col; g.fill(); };
+    face(P[0], P[1], a); face(P[1], P[2], b); face(P[2], P[3], c); face(P[3], P[0], d);
+    g.beginPath(); P.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); g.lineWidth = 1.6; g.strokeStyle = edge; g.stroke();
+    g.beginPath(); g.moveTo(9, 20); g.lineTo(20, 7); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,.85)'; g.stroke();
+  });
+  return (BTL_LZ.spr = {
+    lime:glow('rgba(250,255,210,1)', 'rgba(200,250,60,.75)'), rust:glow('rgba(255,190,120,.9)', 'rgba(150,70,30,.5)'),
+    gemL:gem('#f6ffd0', '#c8f040', '#6f9a12', '#a6dc2c', '#f4ffc0'),
+    gemP:gem('#d6f6ff', '#79d2ff', '#2f7fe6', '#5cc0ff', '#e8fbff'), gemO:gem('#fff0e0', '#ffb27a', '#e0561e', '#ff8a4c', '#fff4ea')
+  });
+}
+// câble de drone : brun foncé + rouille + reflet segmenté ; grappin à 3 griffes (ouvert pendant la course, fermé sur le cristal)
+function btlLzCable(g, ax, ay, hx, hy, sag, open, ang, Z){
+  Z = Z || 1;
+  const mx = (ax + hx) / 2, my = (ay + hy) / 2 + sag;
+  g.lineCap = 'round';
+  g.beginPath(); g.moveTo(ax, ay); g.quadraticCurveTo(mx, my, hx, hy); g.strokeStyle = '#1c120c'; g.lineWidth = 4.2 * Z; g.stroke();
+  g.beginPath(); g.moveTo(ax, ay); g.quadraticCurveTo(mx, my, hx, hy); g.strokeStyle = '#8a4b26'; g.lineWidth = 2.4 * Z; g.stroke();
+  g.setLineDash([3, 4]); g.beginPath(); g.moveTo(ax, ay - .6); g.quadraticCurveTo(mx, my - .6, hx, hy - .6); g.strokeStyle = 'rgba(240,190,130,.75)'; g.lineWidth = .9 * Z; g.stroke(); g.setLineDash([]);
+  g.save(); g.translate(hx, hy); g.rotate(ang); g.scale(1.5 * Z, 1.5 * Z);
+  for(const k of [-1, 0, 1]){
+    const a = k * (.35 + open * .55);
+    g.save(); g.rotate(a); g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(6, -1.5, 9.5, 2.2 * (k || 1) * (1 - open * .4)); g.strokeStyle = '#2a211b'; g.lineWidth = 2.6; g.stroke();
+    g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(6, -1.5, 9.5, 2.2 * (k || 1) * (1 - open * .4)); g.strokeStyle = '#a49a90'; g.lineWidth = 1.1; g.stroke(); g.restore();
+  }
+  g.beginPath(); g.arc(0, 0, 3.3, 0, Math.PI * 2); g.fillStyle = '#3a2c22'; g.fill(); g.beginPath(); g.arc(-.8, -.9, 1.3, 0, Math.PI * 2); g.fillStyle = '#e7c29a'; g.fill();
+  g.restore();
+}
+// alvéoles de la jauge de 'v' (éléments) ; à défaut, le centre de la jauge
+function btlLzBox(v){ return btlQ(v === 'p' ? '#btlMMana' : '#btlOMana'); }
+function btlLzPt(el){ const r = btlRect(el); return [r.left + r.width / 2, r.top + r.height / 2]; }
+// petite capsule rivetée sur la carte (aussi en CSS, voir .cbt-lz) : position à l'écran
+function btlLzCapPt(c){ const r = btlUnitRect(c); return [r.left + r.width * .72, r.top + r.height * .16]; }
+
+// traînée continue entre deux positions (pas de « perles » espacées)
+function btlLzTrail(P, x0, y0, x1, y1, step, mk){ const n = Math.min(12, Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / step))); for(let j = 1; j <= n; j++){ const f = j / n; P.push(mk(x0 + (x1 - x0) * f, y0 + (y1 - y0) * f)); } }
+function btlLzParts(g, P, dt, SP){
+  for(let i = P.length - 1; i >= 0; i--){ const o = P[i]; o.l += dt; if(o.l >= o.L){ P.splice(i, 1); continue; } o.x += o.vx * dt; o.y += o.vy * dt; o.vx *= .93; o.vy = o.vy * .93 + (o.k ? 0 : 300 * dt); const f = o.l / o.L;
+    if(o.k){ g.globalCompositeOperation = 'lighter'; g.globalAlpha = (1 - f) * (o.a || 1); const z = o.s * (1 - f * .4); g.drawImage(SP.lime, o.x - z * 2, o.y - z * 2, z * 4, z * 4); }
+    else { g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1 - f; o.r += o.vr * dt; g.save(); g.translate(o.x, o.y); g.rotate(o.r); g.fillStyle = '#5a2f17'; g.fillRect(-o.s, -o.s * .6, o.s * 2, o.s * 1.2); g.fillStyle = '#c47a44'; g.fillRect(-o.s, -o.s * .6, o.s * 2, o.s * .35); g.restore(); } }
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+}
+// cristal porté : halo + facettes (couleur de la victime -> jaune-vert de LOUZY selon u), légère rotation
+function btlLzGem(g, SP, gemV, x, y, sz, u, rot){
+  g.globalCompositeOperation = 'lighter'; g.globalAlpha = .7; g.drawImage(SP.lime, x - sz * 1.3, y - sz * 1.3, sz * 2.6, sz * 2.6); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+  const w = sz * .82, h = sz; g.save(); g.translate(x, y); g.rotate(rot || 0);
+  if(u < 1){ g.globalAlpha = 1 - u; g.drawImage(gemV, -w / 2, -h / 2, w, h); } if(u > 0){ g.globalAlpha = u; g.drawImage(SP.gemL, -w / 2, -h / 2, w, h); }
+  g.restore(); g.globalAlpha = 1;
+}
+
+async function btlLzAppel(c){
+  const v = btlOther(c.side), box = btlLzBox(v), SP = btlLzSprites(), E = btlEdE;
+  const cap0 = Math.max(0, BTL.cap[v]), ch = box ? [...box.children] : [];
+  // les 2 cristaux saisis : les 2 derniers du plafond actuel (s'il en reste moins, les alvéoles suivantes)
+  const idx = [Math.max(0, cap0 - 2), Math.max(0, cap0 - 1)]; if(idx[0] === idx[1]) idx[1] = idx[0] + 1;
+  const tg = idx.map(i => ch[Math.min(i, ch.length - 1)]).map(el => el ? btlLzPt(el) : (box ? btlLzPt(box) : [innerWidth / 2, 60]));
+  const r0 = btlUnitRect(c), Z = E.cl(r0.width / 70, 1, 1.9);   // échelle : tout grandit avec la carte
+  const ax = r0.left + r0.width / 2, eyeY = r0.top + r0.height * .32, eyeDx = r0.width * .07;
+  const [kx, ky] = btlLzCapPt(c);
+  const gemV = v === 'p' ? SP.gemP : SP.gemO;
+  c._lzHide = true; btlPaint(c);
+  const F = btlCanvasFx(31), g = F.ctx, P = [];
+  // horloge du combat (x2 en temps réel) : yeux, visée, câbles, saisie, retour, capsule
+  const T_SCAN = 110, T_GO = 300, TE = 260, TG = 120, TR = 400, DL = 70, T_IN = T_GO + DL + TE + TG + TR, TEND = T_IN + 360;
+  let took = false, last = 0; const pop = [false, false], prev = [null, null];
+  try{ musSfx('lzgrab'); }catch(_){}
+  try{
+    await btlEdLoop(t => {
+      const dt = Math.min(.04, Math.max(0, (t - last) / 1000)); last = t;
+      g.clearRect(0, 0, F.W, F.H);
+      // 1. les yeux s'allument (jaune-vert de l'artwork)
+      const eye = E.cl(t / 140, 0, 1) * (t < TEND - 220 ? 1 : E.cl((TEND - t) / 220, 0, 1));
+      if(eye > 0){ g.globalCompositeOperation = 'lighter'; for(const sd of [-1, 1]){ g.globalAlpha = eye; const z = (6 + eye * 6) * Z; g.drawImage(SP.lime, ax + sd * eyeDx - z, eyeY - z, 2 * z, 2 * z); } g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; }
+      // 2. visée : deux rayons balaient la jauge adverse et verrouillent les 2 cristaux (réticules)
+      if(t >= T_SCAN && t < T_GO + DL + TE){
+        const u = E.cl((t - T_SCAN) / 170, 0, 1), fade = t < T_GO ? 1 : E.cl(1 - (t - T_GO) / 160, 0, 1);
+        for(let k = 0; k < 2; k++){
+          const [bx, by] = tg[k], ex = ax + (k ? 1 : -1) * eyeDx;
+          const tx = ex + (bx - ex) * E.o3(u), ty = eyeY + (by - eyeY) * E.o3(u);
+          g.globalCompositeOperation = 'lighter'; g.globalAlpha = .55 * fade; g.strokeStyle = '#d8ff5a'; g.lineWidth = 1.4 * Z;
+          g.beginPath(); g.moveTo(ex, eyeY); g.lineTo(tx, ty); g.stroke();
+          if(u >= 1){   // réticule qui se resserre sur le cristal
+            const rr = (6 + 8 * (1 - E.cl((t - T_SCAN - 170) / 120, 0, 1))) * Z, a0 = t / 160;
+            g.globalAlpha = .9 * fade; g.lineWidth = 1.6 * Z;
+            for(let q = 0; q < 4; q++){ const a = a0 + q * Math.PI / 2; g.beginPath(); g.arc(bx, by, rr, a, a + .7); g.stroke(); }
+          }
+          g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+        }
+      }
+      // 3. câbles de drone à grappin : départ, saisie, retour avec le cristal
+      for(let k = 0; k < 2; k++){
+        const t0 = T_GO + k * DL, [bx, by] = tg[k], sd = k ? 1 : -1;
+        const sx = ax + sd * r0.width * .14, sy = r0.top + r0.height * .22;
+        if(t < t0) continue;
+        let hx, hy, open = 1, held = false, u2 = 0;
+        const out = u => { const q = 1 - u, mx = (sx + bx) / 2 + sd * 34 * Z, my = Math.min(sy, by) - 26 * Z; return [q * q * sx + 2 * q * u * mx + u * u * bx, q * q * sy + 2 * q * u * my + u * u * by]; };
+        const back = u => { const q = 1 - u, mx = (bx + kx) / 2 + sd * 52 * Z, my = Math.min(by, ky) - 34 * Z; return [q * q * bx + 2 * q * u * mx + u * u * kx, q * q * by + 2 * q * u * my + u * u * ky]; };
+        if(t < t0 + TE){ [hx, hy] = out(E.o3((t - t0) / TE)); }
+        else if(t < t0 + TE + TG){ hx = bx; hy = by; open = 1 - E.cl((t - t0 - TE) / 60, 0, 1); held = t - t0 - TE > 45;
+          if(!pop[k] && held){ pop[k] = true; const el = ch[Math.min(idx[k], ch.length - 1)]; if(el) el.style.visibility = 'hidden';
+            for(let i = 0; i < 14; i++){ const a = Math.random() * Math.PI * 2, sp = (60 + Math.random() * 110) * Z; P.push({ x:bx, y:by, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, s:(2 + Math.random() * 2.5) * Z, l:0, L:.3 + Math.random() * .25, k:1 }); }
+            for(let i = 0; i < 5; i++){ const a = -Math.PI / 2 + (Math.random() - .5) * 2, sp = (60 + Math.random() * 80) * Z; P.push({ x:bx, y:by, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, s:(1.4 + Math.random()) * Z, l:0, L:.45, k:0, r:Math.random() * 6, vr:(Math.random() - .5) * 16 }); } } }
+        else { u2 = E.io(E.cl((t - t0 - TE - TG) / TR, 0, 1)); [hx, hy] = back(u2); open = 0; held = true; }
+        const inT = t0 + TE + TG + TR;
+        if(t < inT){ const sag = 3 + 10 * (1 - E.cl((t - t0) / (TE + TG + TR), 0, 1)); btlLzCable(g, sx, sy, hx, hy, sag * Z, open, Math.atan2(hy - sy, hx - sx), Z); }
+        if(held && t < inT + 200){
+          const sc = (1 + .35 * Math.sin(E.cl((t - t0 - TE) / 140, 0, 1) * Math.PI)) * (t < inT ? 1 : Math.max(0, 1 - (t - inT) / 200));
+          const gx = hx + 8 * Z, gy = hy + 3 * Z;
+          if(prev[k]) btlLzTrail(P, prev[k][0], prev[k][1], gx, gy, 3, (x, y) => ({ x:x + (Math.random() - .5) * 3, y:y + (Math.random() - .5) * 3, vx:(Math.random() - .5) * 20, vy:(Math.random() - .5) * 20, s:(1.3 + Math.random() * 1.2) * Z, l:0, L:.22 + Math.random() * .14, k:1, a:.7 }));
+          prev[k] = [gx, gy];
+          if(sc > 0) btlLzGem(g, SP, gemV, gx, gy, 22 * Z * sc, u2, Math.sin(t / 90 + k) * .35);
+        }
+      }
+      if(!took && pop[0] && pop[1]){ took = true; btlLzTake(c); btlRenderMana(); try{ const b = btlLzBox(v); if(b){ b.classList.add('lz-fx'); btlAfter(() => b && b.classList.remove('lz-fx'), 800); } }catch(_){} }
+      // 4. les cristaux entrent dans la capsule rivetée
+      if(t >= T_IN && c._lzHide){
+        c._lzHide = false; btlPaint(c);
+        const k = btlUnitEl(c) && btlUnitEl(c).querySelector('.cbt-lz');
+        if(k) btlAnim(k, [{ transform:'translate(-50%,-50%) scale(.2)', opacity:0 }, { transform:'translate(-50%,-50%) scale(1.45)', opacity:1, offset:.55 }, { transform:'translate(-50%,-50%) scale(1)', opacity:1 }], { duration:460, easing:'ease-out' }).catch(() => {});
+        for(let i = 0; i < 22; i++){ const a = Math.random() * Math.PI * 2, sp = (40 + Math.random() * 120) * Z; P.push({ x:kx, y:ky, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, s:(2 + Math.random() * 2.5) * Z, l:0, L:.32 + Math.random() * .25, k:1 }); }
+      }
+      if(t >= T_IN){ const f = E.cl((t - T_IN) / 280, 0, 1); g.globalCompositeOperation = 'lighter'; g.globalAlpha = (1 - f) * .95; const z = (10 + f * 34) * Z; g.drawImage(SP.lime, kx - z, ky - z, 2 * z, 2 * z); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; }
+      btlLzParts(g, P, dt, SP);
+      return t < TEND || P.length > 0;
+    });
+  }catch(e){ if(e !== 'abort') console.error(e); }
+  finally { F.cv.remove(); ch.forEach(el => { if(el) el.style.visibility = ''; }); if(c._lzHide){ c._lzHide = false; try{ btlPaint(c); }catch(_){} } }
+  if(!took && BTL && !BTL.abort){ btlLzTake(c); btlRenderMana(); try{ btlPaint(c); }catch(_){} }   // effet coupé : la règle s'applique quand même
+}
+
+async function btlLzBaroud(c){
+  if(!BTL || !(c.lzHeld > 0)) return;
+  const v = btlOther(c.side), box = btlLzBox(v), SP = btlLzSprites(), E = btlEdE, h = c.lzHeld;
+  const [kx, ky] = btlLzCapPt(c), Z = E.cl(btlUnitRect(c).width / 70, 1, 1.9);
+  const holes = box ? [...box.querySelectorAll('.btl-md.lzc')] : [], gemV = v === 'p' ? SP.gemP : SP.gemO;
+  const n = Math.min(4, Math.max(1, h));
+  const tg = []; for(let i = 0; i < n; i++) tg.push(holes[i] ? btlLzPt(holes[i]) : (box ? btlLzPt(box) : [innerWidth / 2, 60]));
+  const F = btlCanvasFx(31), g = F.ctx, P = [], prev = [];
+  const TB = 170, TF = 560, ST = 70, THIT = TB + TF + (n - 1) * ST, TEND = THIT + 380;
+  let burst = false, given = false, last = 0;
+  try{ musSfx('lzfree'); }catch(_){}
+  try{
+    await btlEdLoop(t => {
+      const dt = Math.min(.04, Math.max(0, (t - last) / 1000)); last = t;
+      g.clearRect(0, 0, F.W, F.H);
+      // la capsule enfle, tremble puis éclate : éclats de rouille + lumière
+      if(t < TB){ const f = t / TB, j = Math.sin(t / 9) * 2 * f * Z, z = (6 + f * 14) * Z; g.globalCompositeOperation = 'lighter'; g.globalAlpha = .4 + f * .6; g.drawImage(SP.lime, kx + j - z, ky - z, 2 * z, 2 * z); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; }
+      if(!burst && t >= TB){ burst = true;
+        for(let i = 0; i < 16; i++){ const a = Math.random() * Math.PI * 2, sp = (70 + Math.random() * 150) * Z; P.push({ x:kx, y:ky, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp - 40 * Z, s:(1.8 + Math.random() * 2.6) * Z, l:0, L:.4 + Math.random() * .3, k:0, r:Math.random() * 6, vr:(Math.random() - .5) * 14 }); }
+        for(let i = 0; i < 18; i++){ const a = Math.random() * Math.PI * 2, sp = (50 + Math.random() * 130) * Z; P.push({ x:kx, y:ky, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, s:(2 + Math.random() * 2.5) * Z, l:0, L:.3 + Math.random() * .25, k:1 }); }
+      }
+      if(t >= TB && t < TB + 300){ const f = (t - TB) / 300, z = (14 + f * 40) * Z; g.globalCompositeOperation = 'lighter'; g.globalAlpha = 1 - f; g.drawImage(SP.lime, kx - z, ky - z, 2 * z, 2 * z); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; }
+      // comètes jusqu'aux alvéoles capturées (le bond de SHADOW, mais en lumière) : le cristal reprend la couleur de son camp en arrivant
+      for(let k = 0; k < n; k++){
+        const t0 = TB + k * ST, [bx, by] = tg[k]; if(t < t0) continue;
+        const u = E.io(E.cl((t - t0) / TF, 0, 1)); if(u >= 1) continue;
+        const sd = k % 2 ? 1 : -1, mx = (kx + bx) / 2 + sd * 60 * Z, my = Math.min(ky, by) - 60 * Z;
+        const q = 1 - u, x = q * q * kx + 2 * q * u * mx + u * u * bx, y = q * q * ky + 2 * q * u * my + u * u * by;
+        if(prev[k]) btlLzTrail(P, prev[k][0], prev[k][1], x, y, 3, (px, py) => ({ x:px + (Math.random() - .5) * 4, y:py + (Math.random() - .5) * 4, vx:(Math.random() - .5) * 24, vy:(Math.random() - .5) * 24, s:(1.5 + Math.random() * 1.6) * Z, l:0, L:.26 + Math.random() * .16, k:1, a:.75 }));
+        prev[k] = [x, y];
+        btlLzGem(g, SP, gemV, x, y, 22 * Z, u, u * Math.PI * 2);
+      }
+      if(!given && t >= THIT){ given = true; btlLzGive(c); btlRenderMana(); try{ btlPaint(c); }catch(_){}
+        for(const [bx, by] of tg) for(let i = 0; i < 10; i++){ const a = Math.random() * Math.PI * 2, sp = (40 + Math.random() * 90) * Z; P.push({ x:bx, y:by, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, s:(2 + Math.random() * 2) * Z, l:0, L:.3 + Math.random() * .2, k:1 }); } }
+      if(t >= TB + TF){ const f = E.cl((t - TB - TF) / 320, 0, 1); g.globalCompositeOperation = 'lighter'; g.globalAlpha = (1 - f) * .95; for(const [bx, by] of tg){ const z = (8 + f * 24) * Z; g.drawImage(SP.lime, bx - z, by - z, 2 * z, 2 * z); } g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; }
+      btlLzParts(g, P, dt, SP);
+      return t < TEND || P.length > 0;
+    });
+  }catch(e){ if(e !== 'abort') console.error(e); }
+  finally { F.cv.remove(); }
+  if(!given && BTL && !BTL.abort){ btlLzGive(c); btlRenderMana(); }   // effet coupé : les mana sont quand même rendus
+}
+BTL_CARD_FX['LOUZY'] = { appel:btlLzAppel, baroud:btlLzBaroud };
 function btlAiZeroDef(c){   // V0.05.62 : carte à 0 ATQ jouée par l'IA -- défend l'allié le plus blessé (même règle que aiZeroDef du serveur)
   if(btlNoDef(c)) return null;
   const l = btlTargetsFor(c, 'def').filter(t => t.hp < t.maxHp);
@@ -36188,7 +36435,7 @@ function btlDmWarm(){   // textures de DIMAVERSE préparées pendant un temps mo
 // (face visible pour celui qui l'obtient, de dos pour l'adversaire), parcourue d'arcs électriques, puis file dans la main de son joueur.
 // Rendu : UN canvas plein écran (dpr ≤ 1,5, mélange additif à l'intérieur du canvas seulement, aucun filtre CSS), éclairs en lignes brisées (déplacement du point milieu,
 // branches), trois passes par éclair (halo, lueur, cœur blanc). Sprites (impact, nuages) dessinés une fois. Hasard visuel seulement (Math.random), jamais les règles.
-var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY"];
+var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
 var BTL_TR_TEX = null;
 function btlTrTex(){   // sprites dessinés une fois : lueur d'impact, nuages d'orage (bruit périodique)
   if(BTL_TR_TEX) return BTL_TR_TEX;
@@ -37170,6 +37417,7 @@ var CARD_FX_TXT = (function(){
     'EL-DIABLO':[['tank'], ['passif','à chaque carte jouée (méchas et Tech, par les deux joueurs), inflige 2 dégâts à toutes les cartes et aux deux chefs, sauf elle.']],
     'MATRIARCHE':[['appel','pioche une EL-DIABLO de ta pioche s’il en reste (main pleine : elle brûle).'], ['baroud','détruit 2 cartes au hasard sur le champ de bataille, alliées comme adverses.']],
     'GOLDY':[['passif','ses actions (attaquer, défendre) ne coûtent aucun mana. Une seule action par tour, comme toute carte.']],
+    'LOUZY':[['appel','encapsule 2 emplacements de mana de l’adversaire : il joue avec 2 mana de moins tant qu’elle les garde.'], ['baroud','rend ses emplacements de mana à l’adversaire (tout de suite si c’est son tour).']],
     'DIMAVERSE':[['passif','quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main.']],
     'TANDEEM':[['passif','à chaque carte Tech jouée (par n’importe quel joueur), gagne +2 DEF.']],
     'SEEKER':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],
@@ -39047,8 +39295,8 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY"];
-const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#';   // V0.05.94 : 67 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY)
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
+const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$';   // V0.05.95 : 68 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY, « $ » = LOUZY)
 const DEFI_DECKS = {
   "AMALGAME":["gNkhhSZZWjjLIIXiAAff", "gDDMMSaadZZLIiiAAFff", "JgQM8hSdZZejjIIAAFff", "OOgg3kkMhScdZeIIiAff", "ggUQQMMhhSZbjjIIiAff", "OO9ggkkDD0hSSZejjIIf", "OO4JJ6ggNDMMhdjIIAff", "OOK1ggQDMMhhSSciAAff", "OO4gg33kkCMMhSSZjIff", "OO496gg3QQkkMMSSIIAA", "OO44JJggEEDMM0SSjjIf", "OO44J166ggMMhSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
   "MOG-AI":["2O63NNQQkhhSccdZjIX7", "2J3QDHhhaccddZZWj7Ff", "2966UkDDHhhSZZWYbbIF", "22V33UQQND0hhcdZWWAA", "22JJ633UQNQDMMhhaacc", "2244VVJ9KgNQNkDDZZjF", "22OO4JJ633EUkkhhaadW", "22O44JJ9633NNkkDHci7", "22O4VVJ991663UNQQkHZ", "22OO44VVJJ996EQNDCZW", "22OO4VVJ996633NkkHBh", "22OO44VVJ996633Qk5HH", "PP22TOO44VVJ933kkDDh"],
@@ -39116,11 +39364,12 @@ const DEFI_DECKS = {
   "LARVOTRON":["1U~00adeWWjLXXiiFFff", "KKU~HHhaeebLIXXii7Ff", "1~CC8800aceeWWXXii7F", "96Q~~CH0aceebjLXXiif", "9KK~~C0hacZeeWYXXiif", "KKUNN~~CHHB80ceeWXii", "VKKUNN~~CH880aeWXXiA", "4J9KK11UUN~~CHH800Xi", "V99KK11gD~~C8800acee", "4V9KK11UNN~~CCMH00ee", "44V99KK11U~~CCHH880X", "OVVKK11UUNN~~CC800XX", "PPGTTV99KK11~~CMHH80"],
   "EL-DIABLO":["!QkDM88ZZeejLXXii77f", "!NkD00hhZeeWYbIXXiiF", "OJ!gQD558cZeeYIXXiiF", "4!!163QQ00acdeeYXiiA", "OVJ!!11D55C8hZZeeXii", "OO!!113kk588heXXii7F", "!!163EQD55CC8hdeeXiA", "OJJ!!1166R5CCB880hXX", "OOJ!!11g3EQk558800ee", "OOJJ!!116NQQ5CC8800e", "OOJJ!!11g3U55C8800hi", "O4J!!11R33k55CC8800e", "PP2GTT4JJ!!11635CC80"],
   "MATRIARCHE":["!QkDM*8ZZeejLXXii77f", "!NkD*0hhZeeWYbIXXiiF", "OJ!gQD*58cZeeYIXXiiF", "4*!163QQ00acdeeYXiiA", "OVJ*!11D55C8hZZeeXii", "OO*!113kk588heXXii7F", "*!163EQD55CC8hdeeXiA", "OJJ*!1166R5CCB880hXX", "OOJ*!11g3EQk558800ee", "OOJJ*!116NQQ5CC8800e", "OOJJ*!11g3U55C8800hi", "O4J*!11R33k55CC8800e", "PP2GTT4JJ*!11635CC80"],
-  "GOLDY":["V#MBhadWWYYbbLLXi77A", "3#BBScceWWYYbbjLLXFf", "#UNMBBhccZYYbbLLIiAF", "RR##CMCBSaccZWYbjLLf", "##UQMMHBaacYYbbLLiiF", "OV9RRg##NDMaYYbbjLLi", "V9RR##DMMHBB0SWYYbLF", "VRR##UDMMHBB80acYYLL", "VVJ9RR##UMMBBadeYYLL", "VVJ996RRg##MMHBBYYbL", "VV99KRR##UNNMMBBYYbb", "VV9K6RR##NNMMBBYYbbL", "PP24VV9RR##MMBBYYbbL"]
+  "GOLDY":["V#MBhadWWYYbbLLXi77A", "3#BBScceWWYYbbjLLXFf", "#UNMBBhccZYYbbLLIiAF", "RR##CMCBSaccZWYbjLLf", "##UQMMHBaacYYbbLLiiF", "OV9RRg##NDMaYYbbjLLi", "V9RR##DMMHBB0SWYYbLF", "VRR##UDMMHBB80acYYLL", "VVJ9RR##UMMBBadeYYLL", "VVJ996RRg##MMHBBYYbL", "VV99KRR##UNNMMBBYYbb", "VV9K6RR##NNMMBBYYbbL", "PP24VV9RR##MMBBYYbbL"],
+  "LOUZY":["$BdeYbjjLLIIXXAAFFff", "$B8aWYYbjjLLII77AAff", "E$HSSdYbjLLIIXiAAFff", "gEN$$BB0SSZbbLIIiAff", "OVJRgQ$$BjjLLIIXAAff", "O9ggEE$$SYbbjjIIXAAf", "OO4RggECC$$SSjLLIiff", "OOVJRRgE$$hSSYjjIAff", "OORggEE$$BhSScbjjIAf", "OO9KRRggU$$SSYYbjjIf", "OOJ9Rgg3EE$$BSYjjIAf", "OO4JRgg$$BBSSbbjIAAf", "PPGGTTOORggEE$$BBSSj"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR", "LOUZY": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
 const DEFI_MOD_T = {"DOZEUR": ["SAPHYR", "BAVURES", "PROTO-SHIELD", "SAPHYR", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5"], "DILUS": ["SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "SAPHYR", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET"], "CHEIF 117": ["SAPHYR", "T-ARMS 09", "PROK-IEM", "SAPHYR", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES"], "SHADOW": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"], "SYLVERLAKE": ["SAPHYR", "AZ-5", "ROCKET", "SAPHYR", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09"], "SOSFOR": ["SAPHYR", "ROCKET", "BAVURES", "SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM"], "GOLDY": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"]};   // V0.05.06 : module adverse PAR PALIER pour les Défis SAPHYR (le reste suit DEFI_MOD)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
@@ -39296,6 +39545,7 @@ const DEFI_RESULT_ART_Y = {
   'EL-DIABLO': 31,   // V0.05.94 : cadrage calculé (tête visible)
   'MATRIARCHE': 13,   // V0.05.94 : cadrage calculé (tête visible)
   'GOLDY': 6,   // V0.05.94 : cadrage calculé (tête visible)
+  'LOUZY': 60,   // V0.05.95 : cadrage calculé (tête visible)
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
