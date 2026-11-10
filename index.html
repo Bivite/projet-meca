@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.05.98</title>
+<title>Projet MECA V0.06.00</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8849,7 +8849,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.05.98</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.00</b></div>
   </div>
 
     </div>
@@ -9907,9 +9907,21 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.05.98';
+var BUILD_VERSION = 'V0.06.00';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.00', items:[
+    'Sauvegarde : un appareil qui démarre sans réseau n’écrase plus les decks faits sur tes autres appareils.',
+    'Combat : quitter un combat en plein effet puis en lancer un autre ne perturbe plus le nouveau combat.',
+    'LES ENFERS : la carte libère sa mémoire quand on la quitte, et consomme moins de batterie quand on ne la touche pas.',
+    'Combat : lumières du plateau plus légères pour le téléphone.',
+  ] },
+  { v:'V0.05.99', items:[
+    'LES ENFERS : on peut de nouveau faire glisser la carte jusqu’aux Portes, la vue suit la hauteur de chaque zone.',
+    'Plus de flashs noirs quand on manipule la carte.',
+    'Le brouillard autour de la montagne et de la Citadelle est une fumée douce, il ne se plie plus sur le relief.',
+    'La montagne de la Citadelle est en roche brute, avec des corniches et des fissures.',
+  ] },
   { v:'V0.05.98', items:[
     'DOSSIER SPÉCIAL — LES ENFERS : carte bien plus fluide (60 i/s quand on la parcourt, qualité qui s’adapte à l’appareil).',
     'Deux colosses armés gardent les Portes, et des carcasses de méchas détruits jonchent toutes les zones de la carte.',
@@ -18742,7 +18754,7 @@ function placeNavPill(idx, px){
 // Démarre (ou relance) une Mission ONE de 4 h à la vague 1
 function showHub(){
   try{ specTileRender(); }catch(_){}   // V0.05.89 : OPÉRATION SPÉCIALE
-  try{ dsMapClose(); dsTileRender(); }catch(_){}   // V0.05.97 : DOSSIER SPÉCIAL
+  try{ dsMapClose(); dsTileRender(); ds3dRelease(45000); }catch(_){}   // V0.05.97 : DOSSIER SPÉCIAL (P1 : monde 3D libéré 45 s après)
   dragGhostSweep();
   // DÉFI (V0.03.47) : showHub() est le point de passage commun à TOUTE sortie de l'écran de combat
   // (changement d'onglet via switchView(), bouton RETOUR via openOrders()...) -- si un combat défi est
@@ -20838,6 +20850,7 @@ function updateRewardTiles(){
 }
 function openSub(id){
   if(id !== 'dsMapView' && typeof dsMapClose === 'function') dsMapClose();   // V0.05.97 : la carte du DOSSIER SPÉCIAL s'arrête dès qu'on la quitte
+  if(id !== 'dsMapView' && id !== 'dsView' && typeof ds3dRelease === 'function') ds3dRelease(45000);   // P1
   ['modeHub', 'rewardsView', 'dailyView', 'trophyView', 'tasksView', 'defiView', 'defiPathView', 'batailleView', 'playerHubView', 'friendsView', 'playerView', 'specOpView', 'dsView', 'dsMapView'].forEach(v => document.getElementById(v).classList.toggle('active', v === id));
   document.getElementById('resBar').style.display = 'none';
   scrollViewTop();
@@ -21453,6 +21466,12 @@ void main(){
     float jn=1.-smoothstep(0.,.018+.05*tvn(wq*.6)+uPx*.9,ce);alb*=(1.-jn*.6*slab)*(1.+(h21(cid)-.5)*.34*slab)*(.88+.12*u);
     float st=sin(vP.y*5.+tfb(vP.xz*.4)*4.)*.5+.5;alb*=1.-(1.-an.y)*(.25*smoothstep(.3,.9,st)-.08);
     alb*=1.+(smoothstep(.62,.8,tvn(tp*11.))*.22-smoothstep(.66,.84,tvn2(tp*13.+4.))*.25)*lod;   // gravillons clairs / trous sombres
+    if(vW<-.5&&vB.y>.01){ // roche brute (montagne de la Citadelle) : fractures sinueuses à deux échelles, bosses et taches ; ni dallage ni surface lisse
+      float rw=vB.y;vec2 rp=tp*.55+twarp(tp*.18)*2.6;
+      float f1=abs(tfb(rp)-.5),f2=abs(tfb2(rp*2.3+7.1)-.5),cr=max(1.-smoothstep(0.,.03+uPx*.6,f1),(1.-smoothstep(0.,.025+uPx*.8,f2))*.65);
+      float bump=tfb(rp*1.7+3.);vec3 gb=tfbg(rp*1.3+11.);hg+=gb.yz*rw*.4;
+      alb*=1.-rw*(cr*.6-(bump-.5)*.4-smoothstep(.55,.75,tvn(tp*3.1))*.16);
+    }
   }else if(mid<1.5){ // fer : plaques rivetées en relief, joints creusés, coulures de rouille, métal brossé
     float prow=floor(tp.y/.9);vec2 g=vec2((tp.x+h21(vec2(prow,3.))*1.3)/(1.3+.5*h21(vec2(prow,8.))),tp.y/.9);vec2 f=fract(g);vec2 ed=min(f,1.-f)*vec2(1.3,.9),sg=sign(.5-f);
     vec2 pu=clamp(ed/.03,0.,1.);vec2 ph=pu*pu*(3.-2.*pu),pd=6.*pu*(1.-pu)/.03*sg;float pan=ph.x*ph.y;
@@ -21668,7 +21687,7 @@ void main(){
   float L=uLayer;
   vec2 fu=(vP.xz-uFR.xy)/uFR.zw;
   float sc=.075*(1.+.35*L),sp=.5+.45*L;
-  vec2 wind=vec2(.8,-.45)*uT*sp,w=vP.xz*sc;
+  vec2 wind=vec2(.8,-.45)*uT*sp,w=(vP.xz+vec2(.35,-.85)*vP.y)*sc;   // la hauteur entre dans les coordonnées : pas de traînées étirées sur les pentes
   vec2 q=twarp(w*.45+wind*.01+L*5.3);                                         // déformation lente : les volutes roulent
   vec2 qe=twarp(w*1.9-wind*.03+3.7);                                           // effilochage fin du bord, qui bouge
   float mm=texture2D(uFog,fu+((q-.5)*4.+(qe-.5)*2.2)/uFR.zw).r;               // zone découverte (décalage en unités du monde)
@@ -21884,8 +21903,14 @@ function baseH(x, s, sn){ if(sn === undefined) sn = s;
     for(const [vx, vs, vr] of VOLC){ const d = Math.hypot(x - vx, s - vs); if(d < vr * 2.6) z += vr * 1.25 * (1 - smooth(0, vr * 2.6, d)) * 1.4 - (1 - smooth(0, vr * .45, d)) * vr * .9; }
     const pd = plazaD(x, s); z = lerp(z, PLAZA_Y - .3, 1 - smooth(.85, 1.2, pd));
     const cs = s - CIT.s, cxm = x - CIT.x;
-    let c = -99 + (PLAZA_Y - 1 + 99) * smooth(CLIFF_S - 16, CLIFF_S - 12, s) + smooth(CLIFF_S - 2, CLIFF_S + 3, s) * (CIT.y - PLAZA_Y) * (1 - smooth(20, 34, Math.abs(cxm))) + 14 * Math.exp(-(cxm * cxm) / (34 * 34) - (cs * cs) / (30 * 30)) * smooth(CLIFF_S - 8, CLIFF_S, s);
+    // montagne de la Citadelle (V0.05.98) : falaise en 4 ressauts irréguliers (corniches), ligne de crête et flancs qui ondulent, roche à arêtes
+    // (avant : une seule marche droite et des flancs rectilignes, qui faisaient un bloc carré)
+    const wig = (fbm(x * .11 + 7, 3.1, 3) - .5) * 3.2 + (fbm(x * .37 + 2, 8.3, 2) - .5) * 1.4, sc0 = s + wig;
+    let cu = 0; for(let k = 0; k < 4; k++){ const o = (fbm(x * .21 + k * 13.7, k * 3.3 + 1, 2) - .5) * 2.2; cu += smooth(CLIFF_S - 2.6 + k * 1.5 + o, CLIFF_S - 1.7 + k * 1.5 + o, sc0) * .25; }
+    const ce = (fbm(s * .07 + (cxm > 0 ? 5 : 9), 2.2, 3) - .5) * 11;
+    let c = -99 + (PLAZA_Y - 1 + 99) * smooth(CLIFF_S - 16, CLIFF_S - 12, s) + cu * (CIT.y - PLAZA_Y) * (1 - smooth(19 + ce, 31 + ce, Math.abs(cxm))) + 14 * Math.exp(-(cxm * cxm) / (34 * 34) - (cs * cs) / (30 * 30)) * smooth(CLIFF_S - 8, CLIFF_S, s);
     c += fbm(x * .12 + 51, sn * .12, 4) * 5 * smooth(CLIFF_S - 4, CLIFF_S + 2, s);
+    { const rg = 1 - Math.abs(fbm(x * .42 + 3, sn * .42 + 1, 3) * 2 - 1), rg2 = 1 - Math.abs(fbm(x * .9 + 8, sn * .9 + 4, 2) * 2 - 1); c += (Math.pow(rg, 2.5) * 1.5 + Math.pow(rg2, 3) * .45) * smooth(CLIFF_S - 3, CLIFF_S + 1, s); }
     if(s > CIT.s - 18) c = lerp(c, CIT.y, (1 - smooth(14, 19, Math.abs(cxm))) * smooth(CIT.s - 18, CIT.s - 15, s) * (1 - smooth(CIT.s + 16, CIT.s + 20, s)));
     z = Math.max(z, c);
     h = lerp(h, z, smooth(196, 212, s));
@@ -21940,7 +21965,7 @@ function build(){
     const w = lavaW(s);
     if(w > 0){ const ld = Math.abs(x - lavaX(s)) - w * .5; const g = Math.pow(1 - smooth(0, 2.6 + w * .5, ld), 2) * (.25 + w * .1);
       c = c.map((k, q) => lerp(k, [.045, .035, .035][q], g * 1.6)); emi = [emi[0] + g * .55, emi[1] + g * .14, emi[2] + g * .03]; heat = Math.max(heat, g * .9 * (1 - rk)); }
-    let spec = .05, slab = (1 - ash * .65) * (1 - rk * .25);
+    let spec = .05, slab = (1 - ash * .65) * (1 - rk * .25), rockW = 0;
     if(s > 200){
       const zs = smooth(206, 214, sd) * (1 - smooth(254, 262, sd)), zf = smooth(254, 262, sd) * (1 - smooth(288, 296, sd)), zv = smooth(288, 296, sd) * (1 - smooth(CLIFF_S - 4, CLIFF_S, sd)), zc = smooth(CLIFF_S - 4, CLIFF_S, sd);
       const moss = smooth(.5, .7, fbm(x * .3 + 60, s * .3, 3)), wet = 1 - smooth(WY - .1, WY + .7, y);
@@ -21952,13 +21977,13 @@ function build(){
       let nz2 = c.map((k, q) => k * (1 - zs - zf - zv - zc) + sw[q] * zs + fo[q] * zf + vo[q] * zv + cl[q] * zc);
       c = c.map((k, q) => lerp(k, nz2[q] * clamp(1 + cav * 1.4, .5, 1.25), smooth(198, 212, sd)));
       c = c.map((k, q) => lerp(k, [.13, .12, .115][q], rk));
-      spec = .05 + wet * zs * .5; slab *= (1 - zs * .75) * (1 - zf * .4);
+      spec = .05 + wet * zs * .5; slab *= (1 - zs * .75) * (1 - zf * .4) * (1 - zc * .85); rockW = zc;   // montagne de la Citadelle : roche brute à fractures (shader), pas de dallage
         if(zf > .01){ const em = smooth(.66, .78, fbm(x * .19 + 80, s * .19, 3)) * zf * (1 - smooth(.25, .5, slope)); heat = Math.max(heat, em * .75); emi = [emi[0] + em * .05, emi[1] + em * .012, emi[2]]; }
       if(zs > .01){ const al = smooth(.7, .82, fbm(x * .35 + 90, s * .35, 3)) * zs * (1 - smooth(WY + .2, WY + 1.4, y)); emi = [emi[0] + al * .02, emi[1] + al * .14, emi[2] + al * .06]; }
     for(const [vx, vs, vr] of VOLC){ const d = Math.hypot(x - vx, sd - vs); if(d < vr * 1.4){ const g = 1 - smooth(vr * .3, vr * 1.4, d); heat = Math.max(heat, g * .9); emi = [emi[0] + g * g * .5, emi[1] + g * g * .1, emi[2]]; } }
       const pd = plazaD(x, sd); if(pd < 1.1) c = c.map((k, q) => lerp(k, [.15, .14, .135][q] * (.9 + v2 * .2), 1 - smooth(.9, 1.1, pd)));
     }
-    terr.vert([x, y, -s, nx, ny, nz, c[0], c[1], c[2], emi[0], emi[1], emi[2], spec, heat, 0, slab, 0, 0, 0, -1]);
+    terr.vert([x, y, -s, nx, ny, nz, c[0], c[1], c[2], emi[0], emi[1], emi[2], spec, heat, 0, slab, rockW, 0, 0, -1]);
   }
   for(let j = 0; j < NS - 1; j++) for(let i = 0; i < NX - 1; i++){ const a = j * NX + i; terr.quad(a, a + 1, a + NX + 1, a + NX); }
   let DM = 0; const gy = (x, s) => H(x, s + DM), rX = s => roadX(s + DM);
@@ -23196,8 +23221,9 @@ function build(){
   LMK.push([lm0, props.n]);
   // ================= ZONE 7-8 : falaise, coulées permanentes, chaînes de la statue, CITADELLE, porte, ruban =================
   const CY = CIT.y, CZ = -CIT.s;
-  for(const [x, w] of [[-21, 1.4], [-17.5, .9], [12, 1.1], [17, 1.6], [22, .9]]){ let prev = null, u = 0;
-    for(let t = 0; t <= 1.0001; t += .05){ const ss = CLIFF_S + 1.5 - t * 1.5, y = CY - t * (CY - gy(x, CLIFF_S - 2) - .2) , k = lava.n; lava.vert([x - w, y, -ss - Math.sin(t * 7) * .2, u, 0, 9]); lava.vert([x + w, y, -ss - Math.sin(t * 7) * .2, u, 1, 9]); if(prev !== null) lava.quad(prev, prev + 1, k + 1, k); prev = k; u += 1.2; } }
+  const cliffFront = (x, y) => { let s = CLIFF_S - 6; while(s < CLIFF_S + 7 && gy(x, s) < y) s += .1; return s; };   // avant de la paroi à la hauteur y
+  for(const [x, w] of [[-21, 1.4], [-17.5, .9], [12, 1.1], [17, 1.6], [22, .9]]){ let prev = null, u = 0; const yb2 = gy(x, cliffFront(x, PLAZA_Y + 2) - 1.5);
+    for(let t = 0; t <= 1.0001; t += .05){ const y = CY - t * (CY - yb2 - .2), ss = Math.min(cliffFront(x, y + .25) - .3, CLIFF_S + 1.5), k = lava.n; lava.vert([x - w, y, -ss - Math.sin(t * 7) * .2, u, 0, 9]); lava.vert([x + w, y, -ss - Math.sin(t * 7) * .2, u, 1, 9]); if(prev !== null) lava.quad(prev, prev + 1, k + 1, k); prev = k; u += 1.2; } }
   { const FALLS = [[-21, 1.4], [-17.5, .9], [12, 1.1], [17, 1.6], [22, .9]], AVOID = [-11, 14, -6, 8, -27, -24, 6.5, 9, 26.5];
     for(let x = -32; x <= 32; x += rr(.72, 1.0)){
       if(FALLS.some(([lx, w]) => Math.abs(x - lx) < w + .8) || AVOID.some(ax => Math.abs(x - ax) < 1.4)) continue;
@@ -23207,9 +23233,10 @@ function build(){
         if(Math.abs(x - rX(sc)) < 4.4) continue;
         const sh = .8 + R() * .4, r = rr(.4, .58), ox = q ? rr(-.35, .35) : 0, rot = R(); if(x < -7.5 || x > 16.5) litPrism(props, [x + ox, emerge - 1.2, -sc + q * .6], r, r * .94, top - emerge + 1.2, 6, [.068 * sh, .06 * sh, .062 * sh], null, MR, rot, [.13, .115, .11]); } } }
   for(let n = 0; n < 16; n++){ const x = rr(-30, 30), ss = rr(CLIFF_S - 3.5, CLIFF_S - 2), r = rr(.8, 1.8); if(Math.abs(x - rX(ss)) < 4) continue; litRock(props, [x, gy(x, ss) - r * .4, -ss], r, [1, rr(.6, 1), 1], 19000 + n, [.07, .062, .064], null, MR); }
-  for(const x of [-27, -24, 6.5, 9, 26.5]){ const yb = gy(x, CLIFF_S - 1);   // poutrelles de fer fixées à la falaise
-    for(let k = 0; k < 2; k++) litBox(props, [x + k * 1.6, (yb + CIT.y) / 2, -CLIFF_S - .6], [.18, (CIT.y - yb) / 2, .18], 0, IRON, null, MI);
-    for(let y = yb + 3; y < CIT.y - 2; y += 4){ const f2 = props.n; litBox(props, [0, 0, 0], [.06, 2.1, .06], 0, IRON2, null, MI); put(f2, 0, .66, 0, [x + .8, y + 2, -CLIFF_S - .6]); litBox(props, [x + .8, y, -CLIFF_S - .6], [.9, .07, .07], 0, IRON2, null, MI); } }
+  for(const x of [-27, -24, 6.5, 9, 26.5]){   // poutrelles de fer fixées à la falaise, posées devant la corniche la plus avancée
+    let fr = CLIFF_S + 7; for(let y = PLAZA_Y + 1; y < CIT.y - 1; y += 1) for(const xx of [x, x + 1.6]) fr = Math.min(fr, cliffFront(xx, y)); const yb = gy(x, fr - 1.2), zb = -(fr - .7);
+    for(let k = 0; k < 2; k++) litBox(props, [x + k * 1.6, (yb + CIT.y) / 2, zb], [.18, (CIT.y - yb) / 2, .18], 0, IRON, null, MI);
+    for(let y = yb + 3; y < CIT.y - 2; y += 4){ const f2 = props.n; litBox(props, [0, 0, 0], [.06, 2.1, .06], 0, IRON2, null, MI); put(f2, 0, .66, 0, [x + .8, y + 2, zb]); litBox(props, [x + .8, y, zb], [.9, .07, .07], 0, IRON2, null, MI); } }
   for(let s2 = 331; s2 < 358; s2 += 1.1){ const xc = rX(s2), xn = rX(s2 + .4), ang = Math.atan2(xn - xc, .4), side = Math.sign(xn - xc) || 1, x = xc - side * 1.9;
     if(R() < .85){ const from = props.n; litBox(props, [0, 0, 0], [.12, .35, .5], 0, STONE, null, MS, STONE2); put(from, 0, 0, ang, [x, gy(x, s2) + .3, -s2]); } }
   lm0 = props.n;
@@ -23538,7 +23565,15 @@ window.ds3dMount = function(host, builder, won0, opt){
   // voile de brouillard drapé sur le relief
   const B = W.bounds; let mFog;
   { const mb = new MB(3), st = 1.5, nx = Math.ceil((B.x1 - B.x0) / st) + 1, nz = Math.ceil((B.z1 - B.z0) / st) + 1;
-    for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ const x = B.x0 + i * st, z = B.z0 + j * st; mb.vert([x, W.H(x, z) + 2.4, z]); }
+    // nappe posée sur une enveloppe adoucie du relief (maximum local puis flou) : elle glisse au-dessus des pentes raides au lieu de s'y plaquer
+    // comme un drap (sur une falaise, le voile suivait la paroi et paraissait plié)
+    let hs = new Float32Array(nx * nz); for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++) hs[j * nx + i] = W.H(B.x0 + i * st, B.z0 + j * st);
+    const pass = (src, r, op) => { const t = new Float32Array(nx * nz), o = new Float32Array(nx * nz);
+      for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ let v = op ? -1e9 : 0, n = 0; for(let k = -r; k <= r; k++){ const ii = Math.min(nx - 1, Math.max(0, i + k)), h = src[j * nx + ii]; if(op) v = Math.max(v, h); else { v += h; n++; } } t[j * nx + i] = op ? v : v / n; }
+      for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ let v = op ? -1e9 : 0, n = 0; for(let k = -r; k <= r; k++){ const jj = Math.min(nz - 1, Math.max(0, j + k)), h = t[jj * nx + i]; if(op) v = Math.max(v, h); else { v += h; n++; } } o[j * nx + i] = op ? v : v / n; }
+      return o; };
+    hs = pass(pass(pass(pass(hs, 2, 1), 2, 0), 2, 0), 2, 0);
+    for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ const x = B.x0 + i * st, z = B.z0 + j * st; mb.vert([x, Math.max(hs[j * nx + i] + 1.6, W.H(x, z) + 1.0), z]); }
     for(let j = 0; j < nz - 1; j++) for(let i = 0; i < nx - 1; i++){ const a = j * nx + i; mb.quad(a, a + nx, a + nx + 1, a + 1); }
     mFog = E.mesh(mb, FOGL); }
   // --- masque du brouillard (monde XZ -> texture) ---
@@ -23582,7 +23617,7 @@ window.ds3dMount = function(host, builder, won0, opt){
   }
   // --- tailles / cibles de rendu ---
   const Q = opt.quality || 1; let qDyn = window.matchMedia && matchMedia('(pointer: coarse)').matches ? .8 : 1;   // qualité auto : résolution ajustée selon la fluidité mesurée
-  let sFbo = null, bA = null, bB = null, bC = null, bD = null, smF = null, SMS = 0;
+  let sFbo = null, bA = null, bB = null, bC = null, bD = null, smF = null, SMS = 0, qWant = 0;
   function resize(){
     const r = root.getBoundingClientRect(); if(!r.width || !r.height) return false;
     const dpr = Math.min(2, window.devicePixelRatio || 1) * Q * qDyn;
@@ -23594,7 +23629,7 @@ window.ds3dMount = function(host, builder, won0, opt){
     const sms = opt.shadows === false || Q * qDyn < .56 ? 0 : (Q * qDyn < .7 ? 1024 : 2048); if(sms !== SMS){ E.freeFbo(smF); smF = sms ? E.fbo(sms, sms, true, true) : null; SMS = sms; smWin = null; }
     return true;
   }
-  const ro = window.ResizeObserver ? new ResizeObserver(() => { resize(); kick(); }) : null; if(ro) ro.observe(root);
+  const ro = window.ResizeObserver ? new ResizeObserver(() => { qWant = 1; kick(); }) : null; if(ro) ro.observe(root);   // redimensionné juste avant la prochaine image (pas d'image vide)
   // --- lumières ponctuelles : les 12 plus proches du centre de la vue ---
   const LPOS = new Float32Array(48), LCOL = new Float32Array(36);
   function lightsFor(){
@@ -23747,26 +23782,29 @@ window.ds3dMount = function(host, builder, won0, opt){
   const stats = { sh:0, fps:0, gpu:0, q:1 }, iv60 = [], iv30 = [], gpuQ = [], tq = gl.getExtension('EXT_disjoint_timer_query'); let qPend = [], qT = 0, upOk = 0;
   const io = window.IntersectionObserver ? new IntersectionObserver(es => { vis = es[0].isIntersecting; if(vis) kick(); }) : null; if(io) io.observe(root);
   const warm = ms => { hot = Math.max(hot, performance.now() + ms); kick(); };
-  function setQ(q){ q = clamp(q, .5, 1); if(Math.abs(q - qDyn) < .02) return; qDyn = q; stats.q = q; resize(); smDirty = true; }
-  function adapt(now, fast){
+  // changement de résolution : appliqué au début de l'image suivante, juste avant de la dessiner. (Redimensionner la toile efface son contenu ;
+  // fait après le rendu, l'écran affichait une image noire = « flash noir » pendant qu'on manipule la carte.) Pas de remontée pendant un glisser.
+  function setQ(q){ q = clamp(q, .5, 1); if(Math.abs(q - qDyn) < .02) return; if(q > qDyn && drag.on) return; qDyn = q; stats.q = q; qWant = 1; }
+  function adapt(now, fast, iv){
     if(tq){ while(qPend.length && tq.getQueryObjectEXT(qPend[0], tq.QUERY_RESULT_AVAILABLE_EXT)){ const q = qPend.shift(); if(!gl.getParameter(tq.GPU_DISJOINT_EXT)) gpuQ.push(tq.getQueryObjectEXT(q, tq.QUERY_RESULT_EXT) / 1e6); tq.deleteQueryEXT(q); }
       if(gpuQ.length >= 24){ gpuQ.sort((a, b) => a - b); const g = gpuQ[12]; gpuQ.length = 0; stats.gpu = g;
         if(g > 12.5) setQ(qDyn * Math.max(.72, Math.sqrt(11 / g))); else if(g < 6.5 && qDyn < 1){ if(++upOk >= 2){ upOk = 0; setQ(qDyn * 1.12); } } else upOk = 0; } }
     if(fast && lastR && now - lastR < 250){ iv60.push(now - lastR); if(iv60.length >= 30){ iv60.sort((a, b) => a - b); const m = iv60[15]; iv60.length = 0; stats.fps = 1000 / m;
       if(m > 24) setQ(qDyn * .85); else if(!tq && m < 17.6 && qDyn < 1){ if(++upOk >= 3){ upOk = 0; setQ(qDyn * 1.08); } } } }
     // au repos (30 i/s visées) : si l'appareil n'arrive même pas à les tenir, la résolution baisse aussi
-    if(!fast && lastR && now - lastR < 400){ iv30.push(now - lastR); if(iv30.length >= 20){ iv30.sort((a, b) => a - b); const m = iv30[10]; iv30.length = 0; if(m > 44) setQ(qDyn * .85); } }
+    if(!fast && lastR && now - lastR < 400){ iv30.push(now - lastR); if(iv30.length >= 20){ iv30.sort((a, b) => a - b); const m = iv30[10]; iv30.length = 0; if(m > iv * 1.32) setQ(qDyn * .85); } }
   }
   function frame(now){
     raf = 0; if(!alive) return;
     if(!roam.on && !reduced && !busy && vis && !document.hidden && !won[N.length - 1] && now > roamNext) roamStart(now);
-    const fast = busy > 0 || drag.on || now < hot || (roam && roam.on), iv = fast ? 1000 / 60 : 1000 / 30;
+    const fast = busy > 0 || drag.on || now < hot || (roam && roam.on), iv = fast ? 1000 / 60 : now - hot > 15000 ? 1000 / 24 : 1000 / 30;   // M1 : 24 i/s après 15 s sans toucher la carte (batterie)
     if(now >= nextT - 2){
       nextT = Math.max(nextT + iv, now + iv * .5);
       let q = null; if(tq && qPend.length < 6){ q = tq.createQueryEXT(); tq.beginQueryEXT(tq.TIME_ELAPSED_EXT, q); }
+      if(qWant){ qWant = 0; resize(); smDirty = true; }
       render((now - t0) / 1000);
       if(q){ tq.endQueryEXT(tq.TIME_ELAPSED_EXT); qPend.push(q); }
-      adapt(now, fast); lastR = now;
+      adapt(now, fast, iv); lastR = now;
     }
     if(vis && !document.hidden && (!reduced || busy || drag.on)) kick();
   }
@@ -23810,12 +23848,17 @@ window.ds3dMount = function(host, builder, won0, opt){
     else { roam.on = false; E.freeMesh(roam.m); roam.m = null; roamNext = opt.noRoamAuto ? Infinity : now + 30000 + Math.random() * 40000; } }
   // --- glisser pour explorer (limité à la zone découverte) ---
   const drag = { on:false, moved:false, x:0, y:0, t:null };
+  // hauteur visée et cadrage en glissant : suivent ceux des caméras des points (interpolés en profondeur). Sinon, en partant d'EL DIABLO (y 66), la visée restait
+  // haut perchée et le sol vu au centre était décalé d'autant : impossible de redescendre jusqu'aux Portes
+  const camZY = W.CAM.map(c => [c.t[2], c.t[1], c.w]).sort((a, b) => a[0] - b[0]);
+  function camI(z, k){ if(z <= camZY[0][0]) return camZY[0][k]; for(let i = 1; i < camZY.length; i++) if(z <= camZY[i][0]){ const A = camZY[i - 1], B = camZY[i]; return A[k] + (B[k] - A[k]) * (z - A[0]) / ((B[0] - A[0]) || 1); } return camZY[camZY.length - 1][k]; }
+  const camY = z => camI(z, 1);
   function zLimits(){ let zmin = W.CAM[0].t[2], zmax = W.CAM[0].t[2] + 6; N.forEach((n, i) => { if(known(i)) zmin = Math.min(zmin, W.CAM[i].t[2]); }); return [zmin - 2, zmax]; }
   root.addEventListener('pointerdown', e => { drag.on = true; drag.moved = false; drag.x = e.clientX; drag.y = e.clientY; drag.t = cam.t.slice(); warm(600); });
   window.addEventListener('pointermove', onMove); window.addEventListener('pointerup', onUp); window.addEventListener('pointercancel', onUp);
   function onMove(e){ if(!drag.on || busy) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if(Math.hypot(dx, dy) > 6) drag.moved = true; if(!drag.moved) return;
     const k = cam.w / root.clientWidth, [z0, z1] = zLimits();
-    cam.t[0] = clamp(drag.t[0] - dx * k, -10, 10); cam.t[2] = clamp(drag.t[2] - dy * k / Math.sin(PITCH), z0, z1); warm(600); }
+    cam.t[0] = clamp(drag.t[0] - dx * k, -10, 10); cam.t[2] = clamp(drag.t[2] - dy * k / Math.sin(PITCH), z0, z1); cam.t[1] = camY(cam.t[2]); cam.w = camI(cam.t[2], 2); warm(600); }
   function onUp(){ if(drag.on) warm(500); drag.on = false; setTimeout(() => { drag.moved = false; }, 0); }
   // --- animations ---
   function tween(dur, f){ return new Promise(res => { busy++; const a0 = performance.now(); const st = now => { const t = Math.min(1, (now - a0) / dur); f(t); kick(); if(t < 1) requestAnimationFrame(st); else { busy--; res(); } }; requestAnimationFrame(st); }); }
@@ -23867,7 +23910,7 @@ window.ds3dMount = function(host, builder, won0, opt){
     window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); window.removeEventListener('pointercancel', onUp); E.lose(); host.innerHTML = ''; }
   // banc de mesure : n images rendues d'affilée (attente de la carte graphique à chaque image), ms par image
   function bench(n, T){ const px = new Uint8Array(4); render(T || 1); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); const a = performance.now(); for(let k = 0; k < n; k++){ render((T || 1) + k * .016); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); } return (performance.now() - a) / n; }
-  return { win, focus:(i, sm) => moveCam(i, sm ? 1200 : 1), look:(t, w) => { cam.t = t.slice(); cam.w = w; warm(500); }, destroy, won:() => won.slice(), stats:() => Object.assign({ w:cw, h:ch, q:qDyn }, stats), bench, setQ, roamNow:() => { roamNext = 0; kick(); }, roamFreeze:t => { roam.freeze = t; kick(); }, roamInfo:() => ({ on:roam.on, head:roam.head, sway:roam.sway, uLook:roam.uLook, uEnd:roam.uEnd, t:roam.t0 ? (performance.now() - roam.t0) / 1000 : 0 }) };
+  return { win, focus:(i, sm) => moveCam(i, sm ? 1200 : 1), look:(t, w) => { cam.t = t.slice(); cam.w = w; warm(500); }, destroy, won:() => won.slice(), stats:() => Object.assign({ w:cw, h:ch, q:qDyn, t:cam.t.slice(), cw:cam.w }, stats), bench, setQ, roamNow:() => { roamNext = 0; kick(); }, roamFreeze:t => { roam.freeze = t; kick(); }, roamInfo:() => ({ on:roam.on, head:roam.head, sway:roam.sway, uLook:roam.uLook, uEnd:roam.uEnd, t:roam.t0 ? (performance.now() - roam.t0) / 1000 : 0 }) };
 };
 })();
 // ================= V0.05.97 : DOSSIER SPÉCIAL -- construction du monde 3D (worker), cache de session =================
@@ -23897,6 +23940,14 @@ function ds3dGL(){
   return ds3dGLok;
 }
 const ds3dCache = {};
+let ds3dRelT = 0;   // P1 : monde 3D libéré hors du DOSSIER SPÉCIAL
+function ds3dRelease(ms){
+  clearTimeout(ds3dRelT);
+  const go = () => { if(typeof dsMap !== 'undefined' && dsMap) return; const a = id => { const e = document.getElementById(id); return !!(e && e.classList.contains('active')); };
+    if(!document.hidden && (a('dsView') || a('dsMapView'))) return; for(const k in ds3dCache) delete ds3dCache[k]; };
+  if(ms > 0) ds3dRelT = setTimeout(go, ms); else go();
+}
+document.addEventListener('visibilitychange', () => { if(document.hidden) ds3dRelease(0); });
 function ds3dRehydrate(name, W){
   const P = DS3D.MB.prototype;
   DS3D_MB_KEYS.forEach(k => { if(W[k]) Object.setPrototypeOf(W[k], P); });
@@ -24737,17 +24788,17 @@ const BTL_BACK_FALLBACK = 'rare';
 // Les animations holo (arrivées / effets validés, réglés image par image) gardent leur rythme propre : elles utilisent les variantes « R » (btlAnimR, btlSleepR).
 const BTL_TS = 2;
 function btlClk(){ return performance.now() / BTL_TS; }                       // horloge ralentie pour les boucles image par image
-function btlSleep(ms, raw){ return new Promise((res, rej) => setTimeout(() => (BTL && !BTL.abort) ? res() : rej('abort'), raw ? ms : ms * BTL_TS)); }
+function btlSleep(ms, raw){ const B0 = BTL; return new Promise((res, rej) => setTimeout(() => (BTL && !BTL.abort && (!B0 || BTL === B0)) ? res() : rej('abort'), raw ? ms : ms * BTL_TS)); }   // C1 : retient son combat
 function btlSleepR(ms){ return btlSleep(ms, true); }
 function btlAfter(fn, ms){ return setTimeout(fn, ms * BTL_TS); }
 function btlWA(el, kf, opt){ opt = Object.assign({}, opt); if(opt.duration) opt.duration *= BTL_TS; if(opt.delay) opt.delay *= BTL_TS; return el.animate(kf, opt); }
 function btlAnim(el, kf, opt){
-  let a; opt = Object.assign({ fill:'both' }, opt);
+  let a; const B0 = BTL; opt = Object.assign({ fill:'both' }, opt);
   const raw = opt.raw; delete opt.raw;
   if(!raw){ if(opt.duration) opt.duration *= BTL_TS; if(opt.delay) opt.delay *= BTL_TS; }
   try{ a = el.animate(kf, opt); }catch(e){ return btlSleep(opt.duration || 0, true); }
   try{ const L = el.__ba || (el.__ba = []); L.push(a); if(L.length > 48) el.__ba = L.filter(x => x.playState !== 'idle' && x.replaceState !== 'removed').slice(-32); }catch(_){}   // V0.05.93 : voir btlClearAnims
-  return a.finished.catch(() => {}).then(() => { if(!BTL || BTL.abort) throw 'abort'; return a; });
+  return a.finished.catch(() => {}).then(() => { if(!BTL || BTL.abort || (B0 && BTL !== B0)) throw 'abort'; return a; });
 }
 function btlAnimR(el, kf, opt){ return btlAnim(el, kf, Object.assign({}, opt, { raw:true })); }
 function btlClearAnims(el){ if(el && el.getAnimations) el.getAnimations().forEach(a => a.cancel()); if(el && el.__ba){ el.__ba.forEach(a => { try{ a.cancel(); }catch(_){} }); el.__ba = null; } }   // V0.05.93 : aussi les animations que Chrome ne liste plus (impact d'une attaque resté figé)
@@ -27162,7 +27213,7 @@ function btlLightsTo(t, b, ms){
     if(!BTL || BTL.lgTok !== tok) return;
     const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 2);
     L.t = ft.map((v, i) => v + (t[i] - v) * e); L.b = fb.map((v, i) => v + (b[i] - v) * e);
-    if(BTL.pt && (k >= 1 || now - (BTL.lgPaint || 0) >= 30)){ BTL.lgPaint = now; BTL.pt.paint(); } btlLgVars();   // V0.05.77 : 30 repeintes / s
+    if(k >= 1 || now - (BTL.lgPaint || 0) >= 30){ BTL.lgPaint = now; if(BTL.pt) BTL.pt.paint(); btlLgVars(); }   // V0.05.77 : 30 repeintes / s ; O1 : couleurs CSS au même rythme
     if(k < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -34488,10 +34539,10 @@ function btlHkGlow(key){   // sprite de halo mis en cache (dessiné en mode « l
 }
 function btlHkLight(g, key, x, y, r, a){ if(a <= .004 || r < 1) return; g.globalAlpha = Math.min(1, a); g.drawImage(btlHkGlow(key), x - r, y - r, r * 2, r * 2); g.globalAlpha = 1; }
 function btlHkLoop(ms, fn){   // boucle image par image sur l'horloge ralentie (ms = durée de base, multipliée par BTL_TS comme les autres animations)
-  return new Promise((res, rej) => {
+  const B0 = BTL; return new Promise((res, rej) => {
     const t0 = btlClk();
     const tick = () => {
-      if(!BTL || BTL.abort) return rej('abort');
+      if(!BTL || BTL.abort || (B0 && BTL !== B0)) return rej('abort');
       const t = btlClk() - t0;
       if(t >= ms){ try{ fn(1, ms); }catch(e){ console.error(e); } return res(); }
       try{ fn(t / ms, t); }catch(e){ console.error(e); return rej(e); }
@@ -38241,7 +38292,7 @@ async function btlDmEjectImg(dm, dest, copy){   // secours sans WebGL
 }
 // arrivée en WebGL : la nébuleuse volumétrique se répand, le trou noir naît et l'aspire en spirale (lentille gravitationnelle), puis rejette la petite carte
 function btlDmLoop(fn){   // boucle image par image sur l'horloge du combat (btlClk, ralentie comme le reste) ; fn(t) renvoie false pour s'arrêter
-  return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
+  const B0 = BTL; return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort || (B0 && BTL !== B0)){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
 }
 async function btlDmArriveGL(c, to, col){
   const VW = innerWidth, VH = innerHeight, G = btlDmGLInit(), fx = btlQ('#btlFx'), cv = G.cv;
@@ -38477,7 +38528,7 @@ function btlEdStage(fsW, S, FS){
 }
 // boucle image par image sur l'horloge du combat ; fn(t) renvoie false pour s'arrêter
 function btlEdLoop(fn){
-  return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
+  const B0 = BTL; return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort || (B0 && BTL !== B0)){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
 }
 const btlEdE = { cl:(x, a, b) => Math.max(a, Math.min(b, x)), io:x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, o3:x => 1 - Math.pow(1 - x, 3), i3:x => x * x * x,
   ob:x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }, k:(a, b, t) => Math.max(0, Math.min(1, (t - a) / (b - a))) };
@@ -44063,8 +44114,8 @@ async function saveNow(routine){
   clearTimeout(cloud.deferT); cloud.deferT = null;
   if(cloud.writing){ cloud.again = true; return; }   // une écriture à la fois
   const sig = SAVE_SIG;
-  if(cloud.remoteOk === false && await cloudPull()) return;            // V0.05.77 : la copie en ligne n'a pas pu être lue : on la relit AVANT d'écrire (jamais d'écrasement à l'aveugle)
-  if(cloud.remoteOk === false) return;
+  if((cloud.remoteOk === false || cloud.baseAt != null) && await cloudPull()) return;            // V0.05.77 : la copie en ligne n'a pas pu être lue : on la relit AVANT d'écrire (jamais d'écrasement à l'aveugle)
+  if(cloud.remoteOk === false || cloud.baseAt != null) return;   // S1 : copie en ligne pas encore relue ET appliquée : aucun envoi
   if(sig === SAVE_PUSHED && cloud.status === 'online') return;          // V0.05.77 : rien n'a changé depuis le dernier envoi
   cloud.writing = true;
   cloud.pushAt = Date.now();
@@ -44094,11 +44145,12 @@ async function saveNow(routine){
 async function cloudPull(){
   if(!cloud.uid || restoring) return false;
   let rm; try{ rm = await cloudGet(cloud.uid, 'save'); cloud.remoteOk = true; }catch(_){ return false; }
-  if(!rm || (rm.savedAt || 0) <= (SAVE_AT || 0)) return false;
+  const base = cloud.baseAt != null ? cloud.baseAt : (SAVE_AT || 0);   // S1
+  if(!rm || (rm.savedAt || 0) <= base){ cloud.baseAt = null; return false; }
   if(typeof BTL !== 'undefined' && BTL) return false;
   if(['deckView', 'collectionView'].some(id => { const e = document.getElementById(id); return e && e.classList.contains('active'); })) return false;   // pas en pleine édition
   if(!applySave(rm)) return false;
-  SAVE_SIG = JSON.stringify(saveData()); SAVE_AT = rm.savedAt; SAVE_PUSHED = SAVE_SIG; writeLocalSave(serializeSave());
+  cloud.baseAt = null; SAVE_SIG = JSON.stringify(saveData()); SAVE_AT = rm.savedAt; SAVE_PUSHED = SAVE_SIG; writeLocalSave(serializeSave());
   return true;
 }
 async function connectCloud(){
@@ -44118,6 +44170,7 @@ async function connectCloud(){
     let best = null;
     [remote, (local && local.uid === uid) ? local : null].filter(Boolean).forEach(c => { if(!best || (c.savedAt || 0) > (best.savedAt || 0)) best = c; });
     if(best) applySave(best);
+    cloud.baseAt = cloud.remoteOk === false ? ((best && best.savedAt) || 0) : null;   // S1 : copie en ligne non lue : date de référence = copie chargée
     SAVE_SIG = null; SAVE_PUSHED = null;
     if(!squad.some(Boolean)){ squad = CHAR_DEFS.filter(c => isOwned(c)).map(c => sqKey(c.name, effRarity(c))).slice(0, 5); while(squad.length < 5) squad.push(null); }
     ECON.needName = (player.name === 'COMMANDANT');   // nom encore par défaut : on le demande
