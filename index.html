@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.02</title>
+<title>Projet MECA V0.06.03</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.02</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.03</b></div>
   </div>
 
     </div>
@@ -9905,9 +9905,15 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.02';
+var BUILD_VERSION = 'V0.06.03';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.03', items:[
+    'Nouvelle carte RARE : KEEPER (3 ATQ / 4 DEF / 5 PV), char d’assaut des Enfers. TANK : l’adversaire doit le détruire avant d’attaquer tes autres cartes ou ton chef.',
+    'Nouvelle carte ÉPIQUE : AKRYLIN (3 ATQ / 3 DEF / 5 PV), serpent de lave. PASSIF : tant qu’il est sur le champ de bataille, quand un joueur pioche une carte, l’autre en pioche une aussi (une par AKRYLIN ; main pleine : la carte est brûlée).',
+    'Arrivée d’AKRYLIN : sa case se remplit de lave, la carte en sort et la fait déborder. Son effet : il crache un jet de lave sur la pioche du joueur qui doit piocher. Nouveaux sons.',
+    'KEEPER et AKRYLIN ont leur Défi, et TRANSPORTEUR et CASSIS peuvent aussi les donner.',
+  ] },
   { v:'V0.06.02', items:[
     'Nouvelle carte RARE : GATEKEEPER (2 ATQ / 5 DEF / 5 PV), gardien des portes des Enfers. TANK : l’adversaire doit le détruire avant d’attaquer tes autres cartes ou ton chef.',
     'Arrivée de GATEKEEPER : sa porte-bouclier tombe du ciel en relief et se fracasse sur sa case (éclats, fissures, étincelles, poussière) ; la carte apparaît quand la poussière retombe. Nouveaux sons.',
@@ -12022,7 +12028,7 @@ var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
   menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
   fight: { url:MUS_BASE + 'Musique%20Combats.mp3',    buf:null, src:null, gain:null, failAt:0, busy:false } } };
 // Sons de pose des cartes (V0.04.87) : un son par rareté, joués à l'impact de la carte sur son emplacement (joueur et adversaire), volume = EFFETS SONORES
-MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ gkfall:'sfx-gkfall.mp3', gkslam:'sfx-gkslam.mp3', lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
+MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ akfill:'sfx-akfill.mp3', akburst:'sfx-akburst.mp3', akspit:'sfx-akspit.mp3', aksplat:'sfx-aksplat.mp3', gkfall:'sfx-gkfall.mp3', gkslam:'sfx-gkslam.mp3', lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
 MUS.sfx.emb = {};   // V0.05.70 : FIN, vapeur x4, pioche x3, déplacement d'attaque x3 (copiés ensuite dans le bucket, puis passés dans MUS.sfx.files)
 MUS.sfx.off = { pio1:.32, pio2:.06, pio3:.06, dep1:.28, dep2:.38, dep3:.64 };   // V0.05.70 : début de lecture (s) : on saute le blanc du début pour caler le bruit sur la carte
 MUS.sfx.pk = { pio1:.21, pio2:.23, pio3:.30 };    // V0.05.70 : instant du maximum de chaque son (s, après le blanc sauté)
@@ -12364,6 +12370,8 @@ const CHAR_LORE = {
   GOLDY: { pilot:'Aucun — majordome automate d’une famille de banquiers', text:"Forgé dans l'or fondu d'une banque engloutie, GOLDY servait une famille si riche qu'elle payait tout en pièces. Ses plaques sont gravées de runes de comptable : chaque geste qu'il fait est déjà payé d'avance. Quand il descend sur le champ de bataille, une pluie d'or s'abat avant lui — et le temps que les pièces roulent au loin, GOLDY est déjà là, la main tendue." },
   LOUZY: { pilot:'Aucun — pillard autonome des bidonvilles de la Rouille', text:"Dans les bidonvilles de la Rouille, sous la pluie et les drones de surveillance, LOUZY a appris à tout récupérer. Ses câbles de drone volés arrachent l'énergie là où elle brille encore et l'enferment dans une capsule rivetée à sa poitrine. Tant qu'il tient la capsule, l'adversaire se bat à moitié éteint. Mais qu'on le mette en pièces, et la capsule éclate : tout ce qu'il a volé retourne d'où il vient." },
   GATEKEEPER: { pilot:'Aucun — sentinelle forgée aux portes des Enfers', text:"Devant les portes des Enfers, entre deux tours de garde et des fleuves de lave, se tient GATEKEEPER. Il a arraché un battant de la porte de la citadelle pour en faire son bouclier : du fer noir hérissé de pointes, d'engrenages et de chaînes, frappé d'un crâne et de runes rouges. Personne ne passe. Quand il descend sur un champ de bataille, sa porte tombe du ciel avant lui et le sol se fend sous le choc : tant qu'il tient debout, c'est lui qu'il faut abattre d'abord." },
+  KEEPER: { pilot:'Aucun — machine de siège des Enfers', text:"Quand une porte des Enfers ne s'ouvre pas, on envoie KEEPER. Ce char d'assaut monté sur chenilles, hérissé de canons, a déjà enfoncé la grande porte de la citadelle : le bouclier de GATEKEEPER en morceaux et sa tête arrachée gisent encore dans les gravats. Lent, increvable, il avance droit devant lui et encaisse tout ce qu'on lui tire dessus : tant qu'il roule, c'est lui qu'il faut abattre d'abord." },
+  AKRYLIN: { pilot:'Aucun — serpent de métal forgé dans la lave', text:"Au fond des Enfers, entre les cristaux violets et les arbres de cendre, un lac de lave tourne sans fin sur lui-même. AKRYLIN en est sorti un jour, serpent de métal dont la lave coule encore des yeux à la gueule. Tant qu'il est sur le champ de bataille, rien ne lui échappe : chaque fois qu'un camp pioche, il crache un jet de lave sur la pioche de l'autre, qui pioche à son tour." },
   RYPEAL: { pilot:'Aucun — atelier autonome « Ry-Peal »', text:"Dans les friches industrielles, quand les usines se sont tues, un atelier a continué à travailler. RYPEAL avance sur ses deux jambes, le dos hérissé de petits bras mécaniques qui ne s'arrêtent jamais : ils démontent, soudent, assemblent. Quand on l'abat, ses bras finissent le dernier objet commencé, le tendent à son camp, puis se retournent les uns contre les autres. Rien de l'atelier ne doit tomber aux mains de l'ennemi." },
   'TRASH-BOT': { pilot:'Aucun — programme de recyclage « Broyeur-7 »', text:"Dans les décharges sans fin sous les autoroutes suspendues, TRASH-BOT roule de tas en tas, la mâchoire ouverte. On l'a construit pour recycler les épaves ; personne n'a pensé à lui dire de s'arrêter. Chaque mécha qui tombe au combat finit entre ses dents : broyé, fondu, puis soudé à sa propre carcasse. Plus la bataille fait de victimes, plus il remonte du sol lourd, solide et affamé." },
   MARCH:     { pilot:'Aucun — intelligence marchande « Toile »', text:"Sur la route de terre qui traverse le marché des terres basses, MARCH avance courbé sous son grand sac de toile. Personne ne sait ce qu'il y range : des pièces de méchas, des processeurs encore chauds, parfois un module entier arraché à une épave. Quand il pose son sac au milieu d'un combat, il en déballe trois et laisse son escouade choisir. Il ne fait jamais crédit, mais il ne repart jamais sans avoir vendu." },
@@ -12837,7 +12845,19 @@ const CHAR_DEFS = [
     ultName:"PORTE SCELLÉE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:8, def:28, hp:380}, max:{atk:52, def:250, hp:1700}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gatekeeper-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gatekeeper-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gatekeeper-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.06.03) : KEEPER, char d'assaut des Enfers qui a enfoncé la porte de GATEKEEPER. TANK ----
+  { name:"KEEPER", rarity:"rare", color:"#d8301e", shape:"block", role:"Tank — char d'assaut des Enfers",
+    ultName:"BÉLIER INFERNAL", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:12, def:24, hp:380}, max:{atk:72, def:220, hp:1700}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/keeper-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/keeper-art-ext.webp' },
+  // ---- Nouvelle carte ÉPIQUE (V0.06.03) : AKRYLIN, serpent de métal né dans un lac de lave. PASSIF : quand un joueur pioche, l'autre pioche aussi ----
+  { name:"AKRYLIN", rarity:"epique", color:"#ff6a1a", shape:"block", role:"Serpent de lave — gardien du lac de feu",
+    ultName:"MARÉE DE MAGMA", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:12, def:24, hp:420}, max:{atk:80, def:220, hp:1900}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/akrylin-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/akrylin-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -12914,14 +12934,14 @@ const CARD_TIERS = {
   holo:       ['MOTOKO', 'ZAPPAN', 'TOA2', 'MOG-AI', 'LE COMÈTEUR'],
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME', 'MAGNEMER', 'EL-DIABLO', 'MATRIARCHE'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII', 'HAKILX', 'SEEKER', 'LARVOTRON', 'GOLDY', 'LOUZY'],
-  epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE', 'CASSIS', 'DIMAVERSE', 'PIGTAIL', 'TRASH-BOT', 'RYPEAL'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH', 'GATEKEEPER']
+  epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE', 'CASSIS', 'DIMAVERSE', 'PIGTAIL', 'TRASH-BOT', 'RYPEAL', 'AKRYLIN'],
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH', 'GATEKEEPER', 'KEEPER']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
   'MOTOKO':[9,5,8], 'ZAPPAN':[10,3,8], 'TOA2':[6,8,9], 'MOG-AI':[9,4,8],
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
-  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6], 'LOUZY':[3,3,5], 'GATEKEEPER':[2,5,5],
+  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6], 'LOUZY':[3,3,5], 'GATEKEEPER':[2,5,5], 'KEEPER':[3,4,5], 'AKRYLIN':[3,3,5],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
   'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3], 'SCOOT':[3,1,4], 'POUNDER':[4,2,5], 'PITTY BELL':[3,1,4], 'SOSFOR':[4,3,5], 'GAST':[3,1,3], 'SYLVERLAKE':[4,5,6], 'ANAKA':[4,0,2], 'KOTAMA':[4,0,2]
 };
@@ -14871,8 +14891,8 @@ const WIN_KEEP = {'TOA2':1,'RHINO':1,'DELOK':1,'WHIPLASH':1,'TUNNELIER':1};
 const WIN_FOCUS = {'SHADOW':72,'MOG-AI':12,'CHEIF 117':8};
 const winArt = def => (!def ? GREY_ART : (WIN_KEEP[def.name] ? (def.art || def.artExt) : (def.artExt || def.art || def.artBig)) || GREY_ART);
 // V0.05.94 : cadrage recalculé pour toutes les cartes (patch_0594_frames.py / frame_calc.py : sujet annoté, tête toujours visible)
-const WIN_BIG = {'GATEKEEPER':{y:100},'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
-const WIN_SMALL = {'GATEKEEPER':86,'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
+const WIN_BIG = {'AKRYLIN':{y:0},'KEEPER':{y:18},'GATEKEEPER':{y:100},'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
+const WIN_SMALL = {'AKRYLIN':0,'KEEPER':0,'GATEKEEPER':86,'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
 const winFocus = (def, big) => { const n = def && def.name, b = big && n && WIN_BIG[n], sm = !big && n && WIN_SMALL[n]; return b && b.y != null ? b.y : (sm != null && sm !== false && sm !== undefined && sm !== '' ? sm : (n && WIN_FOCUS[n] != null ? WIN_FOCUS[n] : 50)); };
 const winZoom = def => { const b = def && WIN_BIG[def.name]; return b ? Math.max(b.z || 100, 100 + 2 * Math.abs(b.x || 0)) : 100; };
 const winShift = def => { const b = def && WIN_BIG[def.name]; return b && b.x ? b.x / winZoom(def) * 100 : 0; };
@@ -17604,7 +17624,7 @@ function specAt(ms){
   const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
   return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
 }
-var CARD_VIDS = {"GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS = {"AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
 function cardVidClose(){
@@ -26294,7 +26314,7 @@ function btlStart(d){
   BTL.bg = btlPickBg(); if(BTL.bg > 1) BTL.el.classList.add('bg' + BTL.bg);   // V0.05.75 : fond tiré au hasard
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
   btlWarm();
-  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm(); btlMtWarm(); btlGdWarm();
+  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm(); btlMtWarm(); btlGdWarm(); btlAkWarm();
   btlCircuit();
   btlRenderPile('p', 0); btlRenderPile('o', 0); btlRenderMana(); btlRenderHand(); btlRenderOHand();
   ['p', 'o'].forEach(sd => { const c = BTL.S[sd].leader; btlPutCard(c); btlSlotOf(c).classList.add('lead-on'); });   // V0.04.66 : les chefs d'escouade sont déjà en place dès le lancement du combat (plus de sortie de pile)
@@ -33721,7 +33741,7 @@ BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
     'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'SYLVERLAKE':['appel'], 'BUZZY':['passif'],
-    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif'], 'LOUZY':['appel', 'baroud'], 'GATEKEEPER':['tank']
+    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif'], 'LOUZY':['appel', 'baroud'], 'GATEKEEPER':['tank'], 'KEEPER':['tank'], 'AKRYLIN':['passif']
   };
   Object.keys(K).forEach(n => { BTL_CARD_KW[n] = K[n]; });
 })();
@@ -35291,7 +35311,7 @@ function btlCsTex(VW, VH){
 // la carte se pose dans son emplacement avec son nouvel effet. L'Appel de l'effet gagné (s'il en a un) est joué ensuite (btlTrigger -> btlFxN).
 // Coût : une quarantaine d'éléments animés par le compositeur (transform / opacity), plus le rouleau (~50 encadrés de texte), tous retirés à la fin.
 // Durées en unités du combat (x BTL_TS).
-var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
+var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER", "KEEPER", "AKRYLIN"];
 function btlFxN(c){ return c && (c.as || c.name); }   // nom sous lequel les effets d'une carte sont cherchés (CASSIS : l'effet gagné)
 function btlCsGain(c, n){ c.as = n; c.kw = (BTL_CARD_KW[n] || []).slice(); delete c._big; }
 // ---- TANDEEM (V0.05.61) : PASSIF -- +2 DEF à chaque carte Tech jouée (par l'un ou l'autre joueur) ; affichage habituel d'un gain de DEF ----
@@ -40083,6 +40103,358 @@ async function btlGkArrive(c, to, col){
   }
 }
 BTL_CARD_FX['GATEKEEPER'] = { drop:btlGkArrive };
+// ================= V0.06.03 : AKRYLIN -- PASSIF « pioche miroir » + animations de lave =================
+// Règle (même que FX['AKRYLIN'] des noyaux serveur) : tant qu'AKRYLIN est sur le champ de bataille, quand un joueur pioche (toute pioche,
+// main pleine = carte brûlée comprise), l'autre joueur pioche une carte par AKRYLIN présent ; cette pioche « en retour » ne redéclenche pas
+// AKRYLIN (DUMADED, lui, se déclenche) ; pioche vide : rien.
+// ARRIVÉE : sa case seule se remplit de lave qui tourbillonne, la carte sort de la lave et la fait déborder ; la lave coule sur la carte et
+// hors de la case, refroidit (croûte) puis disparaît.
+// EFFET : la carte se cabre et crache un jet de lave qui va frapper la pioche du joueur qui doit piocher ; la pioche part de là.
+// Rendu : UN canvas WebGL (champ de hauteur éclairé : relief, reflets, tourbillons incandescents, croûte qui se forme), en définition réduite,
+// limité à la zone de l'effet ; braises, éclaboussures et fumée dans un canvas 2D (rd*). Sans WebGL : lave simplifiée en 2D.
+var BTL_AK = { gl:null, cur:null };
+var BTL_AK_FS = [
+'#extension GL_OES_standard_derivatives : enable',
+'#ifdef GL_FRAGMENT_PRECISION_HIGH',
+'precision highp float;',
+'#else',
+'precision mediump float;',
+'#endif',
+'uniform sampler2D uN;',
+'uniform vec2 uRes, uSz;',
+'uniform float uT, uMode;',
+'uniform vec4 uBox, uCard;',
+'uniform float uFill, uFront, uSpill, uCool, uFade, uBulge;',
+'uniform vec4 uDr[8];',
+'uniform vec4 uP[20];',
+'uniform vec4 uDp[12];',
+'uniform vec4 uSpl;',
+'float tx(vec2 p){ return texture2D(uN, p * 0.00390625).r; }',
+'float fbm(vec2 p){ return .5 * tx(p) + .25 * tx(p * 2.03 + 17.1) + .125 * tx(p * 4.01 + 41.7) + .0625 * tx(p * 8.07 + 3.3); }',
+'float sdBox(vec2 p, vec2 b, float r){ vec2 q = abs(p) - b + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }',
+'float smin(float a, float b, float k){ float h = clamp(.5 + .5 * (b - a) / k, 0., 1.); return mix(b, a, h) - k * h * (1. - h); }',
+'float sdSeg(vec2 p, vec2 a, vec2 b, float ra, float rb, out float u){ vec2 pa = p - a, ba = b - a; float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-6), 0., 1.); u = h; return length(pa - ba * h) - mix(ra, rb, h); }',
+// température -> couleur : rouge sombre, orange, jaune, blanc chaud
+'vec3 heat(float T){ vec3 e = mix(vec3(.22, .01, .0), vec3(.86, .14, .01), smoothstep(.05, .42, T)); e = mix(e, vec3(1., .46, .05), smoothstep(.38, .72, T)); e = mix(e, vec3(1., .78, .3), smoothstep(.72, .95, T)); return mix(e, vec3(1., .96, .78), smoothstep(.98, 1.2, T)); }',
+'float drops(vec2 p){ float d = 9.; for(int i = 0; i < 12; i++){ vec4 q = uDp[i]; if(q.z > 0.){ d = smin(d, length(p - q.xy) - q.z, q.z * .8); } } return d; }',
+'void main(){',
+'  vec2 px = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);',
+'  vec2 p = px / uRes * uSz;',
+'  float pxu = uSz.x / uRes.x;',
+'  float F = -9., H = 0., T = 0., glow = 0., crust = 0., rad = .05;',
+'  float rough = fbm(p * 11.);',
+'  if(uMode < .5){',
+// ---------- la case : lave qui tourbillonne, la carte qui en sort, débordement, coulures ----------
+'    vec2 d = p - uBox.xy; float sz = min(uBox.z, uBox.w); rad = sz * .35;',
+'    float sb = sdBox(d, uBox.zw, .07);',
+'    vec2 dn = d / uBox.zw; float rr = length(dn), an = atan(dn.y, dn.x);',
+'    vec2 wq = vec2(fbm(p * 1.7 + vec2(uT * .11, 0.)), fbm(p * 1.7 + vec2(7.3, -uT * .09))) - .5;',
+'    float fillF = (uFill * 1.7 - rr + (fbm(p * 3. + uT * .5) - .5) * .45) * sz;',
+'    float Fs = min(fillF, -sb);',
+// la carte sort : une nappe de lave glisse de haut en bas sur la carte et la découvre
+'    vec2 dc = p - uCard.xy; float sc = sdBox(dc, uCard.zw, .05);',
+'    float cTop = uCard.y - uCard.w, cH = uCard.w * 2.;',
+'    float frontY = cTop - .15 * cH + uFront * cH * 1.45 + (fbm(vec2(p.x * 3.3, 2.1 + uT * .3)) - .5) * .32 * cH;',
+'    float inCard = 1. - smoothstep(-.012 * sz, .012 * sz, sc);',
+'    float Fc = mix(Fs, min(Fs, (p.y - frontY)), inCard);',
+// débordement : langues de lave par-dessus le bord de la case, surtout vers le bas
+'    float dw = smoothstep(-.35, .85, d.y / max(length(d), 1e-3));',
+'    float tl = pow(fbm(vec2(p.x * 4.4, 4.7)), 2.2) * 3.2;',
+'    float L = uSpill * sz * (.035 + .55 * dw * dw * tl);',
+'    float Fo = min(L - sb + (fbm(p * 6.) - .5) * .05 * sz, sb + .02 * sz);',
+'    float Fd = 9.;',
+'    for(int i = 0; i < 8; i++){ vec4 q = uDr[i]; if(q.w > 0.){ float u; float s1 = sdSeg(p, vec2(q.x, q.y), vec2(q.x + .01 * sin(q.z * 23.), q.z), q.w * .55, q.w * .8, u);',
+'      float hd = length((p - vec2(q.x, q.z + q.w * .2)) * vec2(1., .8)) - q.w * 1.2; Fd = min(Fd, smin(s1, hd, q.w * .9)); } }',
+'    Fd = min(Fd, drops(p));',
+'    F = max(max(Fc, Fo), -Fd);',
+'    float mainF = max(Fc, Fo);',
+// tourbillons concentriques (comme le lac de l'artwork) : anneaux chauds, bandes plus sombres entre eux, plaques de croûte qui dérivent
+'    float rot = uT * (1.6 - rr * .7);',
+'    float ph = rr * 15. + (wq.x + wq.y) * 6. + (fbm(p * .9 + 3.) - .5) * 4. - an * .12 + rot;',
+'    float band = .5 + .5 * sin(ph * 2.);',
+'    float line = pow(band, 12.) + .55 * pow(.5 + .5 * sin(ph * 4.6 + 2. + wq.y * 4.), 22.);',
+'    float sh2 = .5 + .5 * sin(ph * 2. + 1.2);',
+'    vec2 rq = vec2(cos(an * 1. + rot * .5), sin(an * 1. + rot * .5)) * rr * 3. + wq * 2.;',
+'    float plate = smoothstep(.56, .66, fbm(rq * 1.4 + 11.)) * smoothstep(.15, .7, rr);',
+'    float edge = smoothstep(0., .22 * sz, -sb);',
+'    float bulge = uBulge * exp(-rr * rr * 2.2);',
+'    float th = smoothstep(0., .08 * sz, mainF);',
+'    float roll = exp(-pow((p.y - frontY) / (.07 * cH), 2.)) * step(cTop - .2 * cH, p.y) * inCard * (1. - smoothstep(.85, 1., uFront));',
+'    H = th * (.35 + .32 * band + .15 * wq.x + .45 * plate) + bulge * 1.3 + roll * .9 + .12 * smoothstep(0., .03 * sz, sc) * (1. - smoothstep(.03 * sz, .12 * sz, sc)) * uFront;',
+'    float hd2 = clamp(-Fd / max(.001, .045 * sz), 0., 1.); H = max(H, sqrt(hd2) * .6);',
+'    float inS = 1. - smoothstep(-.03 * sz, .02 * sz, sb);',
+'    float vflow = fbm(vec2(p.x * 6., p.y * 1.4 - uT * 1.3));',
+'    T = mix(.5 + .3 * vflow, .46 + .55 * line + .1 * sh2 + .18 * fbm(p * 2.4 + rot * .2), inS) + .2 * bulge + .3 * roll - .5 * plate * inS;',
+'    T *= .7 + .3 * edge;',
+'    if(mainF < -Fd){ T = .62 + .3 * fbm(p * 6. - vec2(0., uT * 2.2)); }',
+'    float ofs = step(.0, sb) * step(-Fd, mainF);',
+'    T -= ofs * .25 * smoothstep(0., L + .001, sb);',
+'    crust = smoothstep(.5, .7, fbm(p * 3.6 + 3.) + uCool * 1.1 - .58) * uCool;',
+'    T *= 1. - .78 * uCool * uCool;',
+'    glow = exp(-max(-F, 0.) * 10. / sz) * (1. - uCool) * .5;',
+'  } else {',
+// ---------- le jet : chaîne de capsules lissées (lave visqueuse), gouttes, flaque sur la pioche ----------
+'    float best = 9., ht = 0., dmin = 9.;',
+'    for(int i = 0; i < 19; i++){ vec4 a = uP[i], b = uP[i + 1]; if(a.z > 0. && b.z > 0.){ float u; float ds = sdSeg(p, a.xy, b.xy, a.z, b.z, u);',
+'      if(ds < best){ best = ds; ht = mix(a.w, b.w, u); rad = mix(a.z, b.z, u); } dmin = smin(dmin, ds, .02); } }',
+'    float dd = drops(p); if(dd < dmin){ ht = max(ht, .85); rad = max(rad, .03); } dmin = smin(dmin, dd, .03);',
+'    if(uSpl.z > 0.){ vec2 q = p - uSpl.xy; float an = atan(q.y, q.x); float R = uSpl.z * (1. + .12 * (fbm(vec2(an * 2.4, 1.7)) - .5) + .05 * sin(an * 7. + 1.));',
+'      float dsp = length(q * vec2(1., 1.2)) - R; if(dsp < dmin){ ht = max(ht * .5, uSpl.w); rad = max(.03, R * .55); } dmin = smin(dmin, dsp, .06); }',
+'    F = -dmin;',
+'    float dome = sqrt(clamp(F / max(rad, .005), 0., 1.));',
+'    H = dome * rad * 6.5 + .04 * rough;',
+'    float flow = fbm(p * 7. + vec2(uT * 2.6, -uT * 3.3)), str = smoothstep(.5, .92, 1. - abs(2. * fbm(p * 12. - uT * 5.) - 1.));',
+'    T = ht * (.28 + .26 * flow + .18 * str + .5 * dome);',
+'    crust = smoothstep(.6, .8, fbm(p * 5.) + (1. - ht) * 1.1 - .5) * (1. - ht);',
+'    glow = exp(-max(dmin, 0.) * 26.) * ht * .55;',
+'  }',
+'  float a = smoothstep(-pxu, pxu, F);',
+'  vec2 g = vec2(dFdx(H), -dFdy(H)) / pxu; vec3 n = normalize(vec3(-g * .26, 1.)); vec3 Lt = normalize(vec3(-.42, -.55, .72));',
+'  float dif = max(dot(n, Lt), 0.), spc = pow(max(dot(n, normalize(Lt + vec3(0., 0., 1.))), 0.), 52.);',
+'  float mol = smoothstep(.12, .5, T) * (1. - crust);',
+'  vec3 cr = vec3(.075, .058, .055) * (.25 + 1.4 * dif) * (.7 + .6 * rough) + vec3(.55, .08, .01) * smoothstep(.15, .55, T) * .4;',
+'  vec3 col = mix(cr, heat(T) * (.78 + .38 * dif), mol);',
+'  col += spc * mix(vec3(.34, .3, .28), vec3(1., .78, .5), mol) * (.45 + 1.1 * mol);',
+'  float dis = 1.;',
+'  if(uFade < 1.){ float th2 = (1. - uFade) * 1.25 - .1; dis = smoothstep(th2, th2 + .12, fbm(p * 3.1 + 5.) + .15 * rough); }',
+'  a *= dis;',
+'  vec3 gl = vec3(1., .4, .07) * glow * uFade;',
+'  gl_FragColor = vec4(col * a + gl * (1. - a), a + glow * .5 * (1. - a) * uFade);',
+'}'].join('\n');
+var BTL_AK_UNI = ['uN', 'uRes', 'uSz', 'uT', 'uMode', 'uBox', 'uCard', 'uFill', 'uFront', 'uSpill', 'uCool', 'uFade', 'uBulge', 'uDr', 'uP', 'uDp', 'uSpl'];
+function btlAkGLInit(){
+  if(BTL_AK.gl && !BTL_AK.gl.lost) return BTL_AK.gl.ok ? BTL_AK.gl : null;
+  BTL_AK.gl = { ok:false };
+  try{
+    const cv = document.createElement('canvas'), gl = cv.getContext('webgl', { premultipliedAlpha:true, alpha:true, antialias:false, depth:false, stencil:false, preserveDrawingBuffer:false });
+    if(!gl || !gl.getExtension('OES_standard_derivatives')) return null;
+    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if(!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }')); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, BTL_AK_FS));
+    gl.bindAttribLocation(pr, 0, 'p'); gl.linkProgram(pr); if(!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+    const L = {}; BTL_AK_UNI.forEach(n => { L[n] = gl.getUniformLocation(pr, n); });
+    const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    let sd = 7311; const rnd = () => { sd = sd + 0x6D2B79F5 | 0; let t = Math.imul(sd ^ sd >>> 15, 1 | sd); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const px = new Uint8Array(256 * 256 * 4); for(let i = 0; i < 256 * 256; i++){ px[i * 4] = rnd() * 255 | 0; px[i * 4 + 3] = 255; }
+    const tN = gl.createTexture(); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tN);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.useProgram(pr); gl.uniform1i(L.uN, 0);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); BTL_AK.gl = { ok:false, lost:true }; });
+    Object.assign(BTL_AK.gl, { ok:true, cv, gl, pr, L });
+    return BTL_AK.gl;
+  }catch(e){ console.warn('AKRYLIN : WebGL indisponible', e); BTL_AK.gl = { ok:false }; return null; }
+}
+// shader préparé pendant un temps mort si AKRYLIN peut apparaître (pas d'à-coup à la première pose)
+function btlAkWarm(){
+  if(!BTL || BTL_AK.gl) return;
+  const has = !!(BTL.d && BTL.d.pvp) || ['p', 'o'].some(sd => BTL.S[sd].pile.concat(BTL.S[sd].hand).some(x => x && x.name === 'AKRYLIN'));
+  if(!has) return;
+  const go = () => { try{ const G = btlAkGLInit(); if(G){ G.cv.width = G.cv.height = 4; G.gl.viewport(0, 0, 4, 4); G.gl.drawArrays(G.gl.TRIANGLES, 0, 3); } }catch(_){} };
+  if(window.requestIdleCallback) requestIdleCallback(go, { timeout:6000 }); else setTimeout(go, 2500);
+}
+// vue de lave : le canvas WebGL partagé (ou un canvas 2D de secours) posé sur la zone R (px de la page), z au-dessus des cartes
+function btlAkView(R, z, q){
+  if(BTL_AK.cur){ try{ BTL_AK.cur.kill(); }catch(_){} }
+  const V = { R, G:btlAkGLInit(), alive:true };
+  const dpr = Math.min(1.25, window.devicePixelRatio || 1);
+  if(V.G){ V.cv = V.G.cv; V.k = dpr * (q || .62); } else { V.cv = document.createElement('canvas'); V.k = dpr * .55; V.c2 = V.cv.getContext('2d'); }
+  V.cv.width = Math.max(8, Math.round(R.width * V.k)); V.cv.height = Math.max(8, Math.round(R.height * V.k));
+  V.cv.style.cssText = 'position:fixed;left:' + R.left + 'px;top:' + R.top + 'px;width:' + R.width + 'px;height:' + R.height + 'px;pointer-events:none;z-index:' + (z || 34);
+  btlQ('#btlFx').appendChild(V.cv);
+  V.kill = () => { V.alive = false; if(V.cv.parentNode) V.cv.remove(); if(BTL_AK.cur === V) BTL_AK.cur = null; };
+  V.lite = () => { if(V.G && !V.lo){ V.lo = 1; V.k *= .6; V.cv.width = Math.max(8, Math.round(R.width * V.k)); V.cv.height = Math.max(8, Math.round(R.height * V.k)); } };
+  BTL_AK.cur = V;
+  return V;
+}
+// u : { mode, T, box[4], card[4], fill, front, spill, cool, fade, bulge, dr (Float32Array 32), pts (Float32Array 80), dp (Float32Array 48), spl[4] } en unités de 100 px depuis le coin de R
+function btlAkDraw(V, u){
+  const R = V.R;
+  if(V.G){
+    const { gl, L } = V.G; gl.viewport(0, 0, V.cv.width, V.cv.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform2f(L.uRes, V.cv.width, V.cv.height); gl.uniform2f(L.uSz, R.width / 100, R.height / 100); gl.uniform1f(L.uT, u.T % 600); gl.uniform1f(L.uMode, u.mode);
+    gl.uniform4fv(L.uBox, u.box || [0, 0, 0, 0]); gl.uniform4fv(L.uCard, u.card || [0, 0, 0, 0]);
+    gl.uniform1f(L.uFill, u.fill || 0); gl.uniform1f(L.uFront, u.front || 0); gl.uniform1f(L.uSpill, u.spill || 0); gl.uniform1f(L.uCool, u.cool || 0); gl.uniform1f(L.uFade, u.fade == null ? 1 : u.fade); gl.uniform1f(L.uBulge, u.bulge || 0);
+    gl.uniform4fv(L.uDr, u.dr || BTL_AK.z32 || (BTL_AK.z32 = new Float32Array(32))); gl.uniform4fv(L.uP, u.pts || BTL_AK.z80 || (BTL_AK.z80 = new Float32Array(80)));
+    gl.uniform4fv(L.uDp, u.dp || BTL_AK.z48 || (BTL_AK.z48 = new Float32Array(48))); gl.uniform4fv(L.uSpl, u.spl || [0, 0, 0, 0]);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    return;
+  }
+  // secours 2D : formes simples (dégradés), mêmes timings
+  const g = V.c2, k = V.k * 100, fade = u.fade == null ? 1 : u.fade; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, V.cv.width, V.cv.height); if(fade <= .01) return;
+  g.setTransform(k, 0, 0, k, 0, 0); g.globalAlpha = fade;
+  const col = t => { const c = Math.max(0, Math.min(1, t)); return 'rgb(' + (90 + 165 * Math.min(1, c * 1.4) | 0) + ',' + (20 + 150 * c * c | 0) + ',' + (10 + 40 * c * c * c | 0) + ')'; };
+  const dots = D => { if(!D) return; for(let i = 0; i < D.length / 4; i++){ const r = D[i * 4 + 2]; if(r <= 0) continue; g.fillStyle = col(.8); g.beginPath(); g.arc(D[i * 4], D[i * 4 + 1], r, 0, 6.283); g.fill(); } };
+  if(u.mode < .5){
+    const b = u.box, hot = 1 - (u.cool || 0) * .8, sp = u.spill || 0;
+    g.save(); g.beginPath(); g.rect(b[0] - b[2] * (1 + .08 * sp), b[1] - b[3], b[2] * 2 * (1 + .08 * sp), b[3] * 2 * (1 + .3 * sp)); g.clip();
+    const r = Math.max(.01, Math.hypot(b[2], b[3]) * 1.3 * (u.fill || 0)), gr = g.createRadialGradient(b[0], b[1], 0, b[0], b[1], r);
+    gr.addColorStop(0, col(1.05 * hot)); gr.addColorStop(.7, col(.7 * hot)); gr.addColorStop(1, 'rgba(120,20,5,0)');
+    g.fillStyle = gr; g.fillRect(b[0] - r, b[1] - r, r * 2, r * 2);
+    if(u.front > 0 && u.card){ const c = u.card, y = c[1] - c[3] * 1.3 + c[3] * 2.9 * u.front; g.clearRect(c[0] - c[2], c[1] - c[3], c[2] * 2, Math.max(0, y - (c[1] - c[3]))); }
+    g.restore();
+    const D = u.dr; if(D){ g.lineCap = 'round'; for(let i = 0; i < 8; i++){ const w = D[i * 4 + 3]; if(w <= 0) continue; g.strokeStyle = col(.7 * hot); g.lineWidth = w * 1.4; g.beginPath(); g.moveTo(D[i * 4], D[i * 4 + 1]); g.lineTo(D[i * 4], D[i * 4 + 2]); g.stroke(); } }
+    dots(u.dp);
+  } else {
+    const P = u.pts; g.lineCap = 'round'; g.lineJoin = 'round';
+    for(let i = 0; i < 19; i++){ const a = i * 4, b = a + 4; if(P[a + 2] <= 0 || P[b + 2] <= 0) continue; g.strokeStyle = col(P[a + 3]); g.lineWidth = (P[a + 2] + P[b + 2]); g.beginPath(); g.moveTo(P[a], P[a + 1]); g.lineTo(P[b], P[b + 1]); g.stroke(); }
+    dots(u.dp);
+    if(u.spl && u.spl[2] > 0){ g.fillStyle = col(u.spl[3]); g.beginPath(); g.ellipse(u.spl[0], u.spl[1], u.spl[2], u.spl[2] * .8, 0, 0, 6.283); g.fill(); }
+  }
+  g.globalAlpha = 1;
+}
+// gouttes balistiques (en unités) : { x, y, vx, vy, r, age, life } -> uDp
+function btlAkDrops(D, dp, dt, gy){
+  dp.fill(0);
+  for(let i = D.length - 1; i >= 0; i--){ const d = D[i]; d.age += dt; if(d.age < 0) continue; if(d.age >= d.life){ D.splice(i, 1); continue; } d.vy += gy * dt; d.x += d.vx * dt; d.y += d.vy * dt; }
+  let n = 0; for(const d of D){ if(d.age < 0 || n >= 12) continue; const q = d.age / d.life; dp.set([d.x, d.y, d.r * (q < .7 ? 1 : 1 - (q - .7) / .3), 0], n * 4); n++; }
+}
+// ---------- ARRIVÉE ----------
+async function btlAkArrive(c, to, col){
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  btlPutCard(c); const un = btlUnitEl(c);
+  if(reduce || !un){ if(un) btlAnim(un, [{ opacity:0 }, { opacity:1 }], { duration:260, fill:'none' }).catch(() => {}); btlRing(to, col, false); return; }
+  un.style.visibility = 'hidden';
+  const plateEl = btlQ('#btlPlate');
+  const m = Math.max(to.width, to.height) * .5;
+  const R = { left:to.left - m * .7, top:to.top - m * .45, width:to.width + m * 1.4, height:to.height + m * 2.2 }; R.right = R.left + R.width; R.bottom = R.top + R.height;
+  const V = btlAkView(R, 34, .92);
+  const P = rdCanvas(35, { l:R.left - 20, t:R.top - 60, r:R.right + 20, b:R.bottom }), ctx = P.ctx;
+  const F = rdFx(), mon = rdLiteMon(), U = 100;
+  const cx = to.left + to.width / 2, cy = to.top + to.height / 2;
+  const box = [(cx - R.left) / U, (cy - R.top) / U, to.width / 2 / U, to.height / 2 / U];
+  const ur = btlRect(un), card = [(ur.left + ur.width / 2 - R.left) / U, (ur.top + ur.height / 2 - R.top) / U, ur.width / 2 / U * .97, ur.height / 2 / U * .97];
+  const T_FILL = 430, T_RISE = 470, T_F0 = 500, T_F1 = 980, T_SP0 = 640, T_SP1 = 1150, T_C0 = 1100, T_C1 = 1600, T_D0 = 1380, T_D1 = 1880, T_END = 1900;
+  // coulures : la lave qui a glissé de la carte passe par-dessus le bord bas de la case et coule hors de la case
+  const DR = [], dr = new Float32Array(32), nd = 6, bot = box[1] + box[3] * .96;
+  for(let i = 0; i < nd; i++){ const f = (i + .5) / nd + (Math.random() - .5) * .1;
+    DR.push({ x:box[0] - box[2] * .86 + box[2] * 1.72 * f, t0:T_SP0 + 60 + Math.random() * 300, v:(.12 + Math.random() * .12), w:box[2] * (.075 + Math.random() * .07), len:box[3] * (.45 + Math.random() * .7) }); }
+  const k = (a, b, t) => Math.max(0, Math.min(1, (t - a) / (b - a)));
+  const DP = [], dp = new Float32Array(48);
+  const u = { mode:0, box, card, dr, dp, fill:0, front:0, spill:0, cool:0, fade:1, bulge:0, T:0 };
+  let last = 0, burst = false, embers = 0;
+  try{ musSfx('akfill'); }catch(_){}
+  try{
+    await btlEdLoop(t => {
+      if(!V.alive) return false;
+      mon.tick(); if(!F.lite && mon.lite()){ F.lite = true; V.lite(); }
+      const dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+      u.T = t / 1000 * BTL_TS;
+      u.fill = rdE.outC(k(0, T_FILL, t));
+      u.bulge = Math.sin(Math.PI * k(320, T_RISE + 90, t)) * .8;
+      u.front = rdE.io(k(T_F0, T_F1, t));
+      u.spill = rdE.outC(k(T_SP0, T_SP1, t));
+      u.cool = rdE.io(k(T_C0, T_C1, t));
+      u.fade = 1 - k(T_D0, T_D1, t);
+      for(let i = 0; i < 8; i++){ const D = DR[i]; if(!D){ dr[i * 4 + 3] = 0; continue; } const q = (t - D.t0) / 1000 * BTL_TS;
+        if(q <= 0){ dr[i * 4 + 3] = 0; continue; }
+        const run = Math.min(D.len, D.v * q + .55 * q * q);
+        dr[i * 4] = D.x; dr[i * 4 + 1] = bot - .02; dr[i * 4 + 2] = bot + run; dr[i * 4 + 3] = D.w * (.6 + .4 * Math.min(1, q * 3)); }
+      // la carte sort de la lave et la fait déborder
+      if(!burst && t >= T_RISE){ burst = true;
+        un.style.visibility = '';
+        btlAnim(un, [{ transform:'translateY(7%) scale(.84)', opacity:.25 }, { opacity:1, offset:.25 }, { transform:'translateY(-3%) scale(1.05)', offset:.6 }, { transform:'none', opacity:1 }], { duration:620, easing:'cubic-bezier(.3,.7,.3,1)', fill:'none' }).catch(() => {});
+        try{ musSfx('akburst'); }catch(_){}
+        if(plateEl) btlShake(plateEl, Math.max(2.5, to.width * .03));
+        for(let i = 0; i < 12; i++){ const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = .9 + Math.random() * 1.2, sx = box[0] + (Math.random() - .5) * box[2] * 1.4;
+          DP.push({ x:sx, y:box[1] - box[3] * (.2 + Math.random() * .6), vx:Math.cos(a) * v * .6, vy:Math.sin(a) * v, r:box[2] * (.05 + Math.random() * .06), age:-Math.random() * .08, life:.55 + Math.random() * .3 }); }
+        rdSparks(F, cx, cy, 18, 360, -Math.PI / 2, 2.4, { life:620, g:420, w:1.3, rgb:'255,170,70' });
+        for(let i = 0; i < 5; i++) rdPuff(F, cx + (Math.random() - .5) * to.width * .7, cy + (Math.random() - .5) * to.height * .3, to.width * .3, to.width * .95, 1300 + Math.random() * 400, { vx:(Math.random() - .5) * 30, vy:-55 - Math.random() * 40, a:.34, kind:'k', delay:150 + Math.random() * 300 });
+      }
+      btlAkDrops(DP, dp, dt * BTL_TS, 6.5);
+      // braises qui montent de la lave, vapeur pendant le refroidissement
+      embers += dt * (t < T_C0 ? 20 : 5) * (F.lite ? .5 : 1);
+      while(embers >= 1){ embers--; if(t < T_FILL * .3) break; rdSparks(F, cx + (Math.random() - .5) * to.width * .8, cy + (Math.random() - .5) * to.height * .7, 1, 80, -Math.PI / 2, .9, { life:950, g:-60, w:1.1, rgb:'255,' + (120 + Math.random() * 90 | 0) + ',40' }); }
+      if(t > T_C0 && t < T_D1 && Math.random() < dt * 8) rdPuff(F, cx + (Math.random() - .5) * to.width, cy + (Math.random() - .1) * to.height * .9, to.width * .22, to.width * .75, 1100, { vy:-38, a:.26, kind:'d' });
+      btlAkDraw(V, u);
+      ctx.clearRect(P.L, P.T, P.W, P.H);
+      rdStep(ctx, F, dt, 0); rdStep(ctx, F, dt, 1); rdStep(ctx, F, dt, 2);
+      if(t >= T_END && !rdBusy(F)) return false;
+      return t < T_END + 900;
+    });
+  } finally {
+    V.kill(); P.cv.remove();
+    un.style.visibility = '';
+  }
+  btlRing(to, col, false);
+}
+// ---------- EFFET : jet de lave vers la pioche ----------
+function btlAkBez(a, c, b, s){ const m = 1 - s; return [m * m * a[0] + 2 * m * s * c[0] + s * s * b[0], m * m * a[1] + 2 * m * s * c[1] + s * s * b[1]]; }
+async function btlAkSpit(c, v){
+  const un = btlUnitEl(c), pile = btlQ(v === 'p' ? '#btlMPile' : '#btlOPile');
+  if(!un || !pile) return;
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if(reduce){ try{ btlFlashEl(pile); }catch(_){} return; }
+  const ur = btlRect(un), pr = btlRect(pile);
+  const A = [ur.left + ur.width * .5, ur.top + ur.height * .3], B = [pr.left + pr.width / 2, pr.top + pr.height * .45];
+  const dx = B[0] - A[0], dy = B[1] - A[1], dist = Math.hypot(dx, dy) || 1;
+  const h = Math.max(95, dist * .75), side = Math.abs(dx) < dist * .35 ? (A[0] < innerWidth / 2 ? -1 : 1) : 0;
+  const C = [(A[0] + B[0]) / 2 + side * dist * .38, Math.min(A[1], B[1]) - h];   // arc vers le haut (sur le côté si la pioche est juste en dessous)
+  const mg = Math.max(60, pr.width * .9);
+  const xs = [A[0], B[0], C[0]], ys = [A[1], B[1], C[1]];
+  const R = { left:Math.min(...xs) - mg, top:Math.min(...ys) - mg * .6, width:0, height:0 };
+  R.width = Math.max(...xs) + mg - R.left; R.height = Math.max(...ys) + mg - R.top; R.right = R.left + R.width; R.bottom = R.top + R.height;
+  const V = btlAkView(R, 36, .88);
+  const P = rdCanvas(37, { l:R.left, t:R.top, r:R.right, b:R.bottom }), ctx = P.ctx;
+  const F = rdFx(), mon = rdLiteMon(), U = 100;
+  const toU = q => [(q[0] - R.left) / U, (q[1] - R.top) / U];
+  const a = toU(A), b = toU(B), cc = toU(C);
+  const r0 = Math.max(6, ur.width * .13) / U;
+  const T_GO = 170, T_HIT = 600, T_TAIL = 820, T_END = 1300;
+  const pts = new Float32Array(80), dp = new Float32Array(48), DP = [], u = { mode:1, pts, dp, spl:[0, 0, 0, 0], fade:1, T:0 };
+  let last = 0, hit = false, onHit;
+  const hitP = new Promise(r => { onHit = r; });
+  btlAnim(un, [{ transform:'none' }, { transform:'translateY(-6%) scale(1.09)', offset:.38 }, { transform:'translateY(2%) scale(.95)', offset:.62 }, { transform:'none' }], { duration:560, easing:'ease-in-out', fill:'none' }).catch(() => {});
+  setTimeout(() => { try{ musSfx('akspit'); }catch(_){} }, 110 * BTL_TS);
+  const ez = x => 1 - Math.pow(1 - x, 1.8);
+  const run = btlEdLoop(t => {
+    if(!V.alive) return false;
+    mon.tick(); if(!F.lite && mon.lite()){ F.lite = true; V.lite(); }
+    const dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+    u.T = t / 1000 * BTL_TS;
+    pts.fill(0);
+    const kh = Math.max(0, Math.min(1, (t - T_GO) / (T_HIT - T_GO))), s1 = ez(kh);
+    const st = Math.max(0, Math.min(1, (t - T_GO - 170) / (T_TAIL - T_GO - 170))), s0 = Math.min(s1, st * st);
+    if(t >= T_GO && s1 - s0 > .004){
+      const N = 19;
+      for(let i = 0; i <= N; i++){ const s = s0 + (s1 - s0) * i / N, q = btlAkBez(a, cc, b, s), w = i / N;
+        const prof = (.38 + .62 * Math.pow(Math.sin(Math.PI * Math.min(1, w * .55 + .45)), .6)) * (w > .88 ? 1.25 : 1) * (1 - .45 * st);
+        pts.set([q[0] + Math.sin(s * 19 + u.T * 11) * r0 * .1, q[1] + Math.cos(s * 17 + u.T * 9) * r0 * .08, r0 * prof, 1.05 - .3 * (1 - w)], i * 4); }
+      if(t < T_TAIL && Math.random() < dt * 26 * BTL_TS){ const s = s0 + (s1 - s0) * Math.random() * .7, q = btlAkBez(a, cc, b, s); DP.push({ x:q[0] + (Math.random() - .5) * r0, y:q[1], vx:(Math.random() - .5) * .4, vy:-.1 - Math.random() * .3, r:r0 * (.3 + Math.random() * .35), age:0, life:.45 + Math.random() * .3 }); }
+    }
+    if(!hit && t >= T_HIT){ hit = true;
+      try{ musSfx('aksplat'); }catch(_){}
+      btlShake(pile, 5);
+      for(let i = 0; i < 10; i++){ const an = -Math.PI / 2 + (Math.random() - .5) * 2.9, sp = .7 + Math.random() * 1.1; DP.push({ x:b[0], y:b[1], vx:Math.cos(an) * sp, vy:Math.sin(an) * sp, r:r0 * (.35 + Math.random() * .4), age:0, life:.5 + Math.random() * .3 }); }
+      rdSparks(F, B[0], B[1], 16, 300, -Math.PI / 2, 3, { life:520, g:520, w:1.3, rgb:'255,170,70' });
+      for(let i = 0; i < 4; i++) rdPuff(F, B[0] + (Math.random() - .5) * pr.width * .5, B[1], pr.width * .35, pr.width * 1.05, 1000 + Math.random() * 300, { vy:-45, a:.3, kind:'d', delay:80 + Math.random() * 200 });
+      setTimeout(onHit, 40 * BTL_TS);
+    }
+    btlAkDrops(DP, dp, dt * BTL_TS, 5.5);
+    if(hit){ const q = (t - T_HIT) / (T_END - T_HIT); u.spl = [b[0], b[1], pr.width / U * (.1 + .26 * rdE.outC(Math.min(1, q * 3.5))), Math.max(0, .8 - q * .95)]; u.fade = 1 - Math.max(0, (q - .5) / .5); }
+    btlAkDraw(V, u);
+    ctx.clearRect(P.L, P.T, P.W, P.H);
+    rdStep(ctx, F, dt, 0); rdStep(ctx, F, dt, 1); rdStep(ctx, F, dt, 2);
+    if(t >= T_END && !rdBusy(F)) return false;
+    return t < T_END + 700;
+  }).catch(e => { if(e !== 'abort') console.error(e); }).finally(() => { V.kill(); P.cv.remove(); if(onHit) onHit(); });
+  await hitP;   // la pioche part dès que le jet frappe (la flaque refroidit pendant la pioche)
+  return run;
+}
+// ---------- la règle ----------
+async function btlAkPassive(c, side){
+  if(!BTL || BTL.akIn || btlGone() || !btlOnField(c)) return;
+  const v = side === 'p' ? 'o' : 'p';
+  if(!BTL.S[v].pile.length) return;   // pioche vide : rien
+  BTL.akIn = 1;
+  try{
+    await btlAkSpit(c, v);
+    if(!btlGone()) await btlDraw(v);
+  } finally { if(BTL) BTL.akIn = 0; }
+}
+BTL_CARD_FX['AKRYLIN'] = { drop:btlAkArrive, passif:{ quand:'pioche', run:btlAkPassive } };
 function btlAiZeroDef(c){   // V0.05.62 : carte à 0 ATQ jouée par l'IA -- défend l'allié le plus blessé (même règle que aiZeroDef du serveur)
   if(btlNoDef(c)) return null;
   const l = btlTargetsFor(c, 'def').filter(t => t.hp < t.maxHp);
@@ -40103,7 +40475,7 @@ function btlDmWarm(){   // textures de DIMAVERSE préparées pendant un temps mo
 // (face visible pour celui qui l'obtient, de dos pour l'adversaire), parcourue d'arcs électriques, puis file dans la main de son joueur.
 // Rendu : UN canvas plein écran (dpr ≤ 1,5, mélange additif à l'intérieur du canvas seulement, aucun filtre CSS), éclairs en lignes brisées (déplacement du point milieu,
 // branches), trois passes par éclair (halo, lueur, cœur blanc). Sprites (impact, nuages) dessinés une fois. Hasard visuel seulement (Math.random), jamais les règles.
-var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
+var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER", "KEEPER", "AKRYLIN"];
 var BTL_TR_TEX = null;
 function btlTrTex(){   // sprites dessinés une fois : lueur d'impact, nuages d'orage (bruit périodique)
   if(BTL_TR_TEX) return BTL_TR_TEX;
@@ -41089,7 +41461,7 @@ var CARD_FX_TXT = (function(){
     'DIMAVERSE':[['passif','quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main.']],
     'TANDEEM':[['passif','à chaque carte Tech jouée (par n’importe quel joueur), gagne +2 DEF.']],
     'SEEKER':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],
-    'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']], 'GATEKEEPER':[['tank']],
+    'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']], 'GATEKEEPER':[['tank']], 'KEEPER':[['tank']], 'AKRYLIN':[['passif','tant qu’il est sur le champ de bataille, quand un joueur pioche une carte, l’autre en pioche une aussi.']],
     'MOTOKO':[['tank'], ['percee']],
     'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'GOTHIKA':[['appel','inflige 3 points d’attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
@@ -42963,8 +43335,8 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
-const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$%';   // V0.06.02 : 69 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY, « $ » = LOUZY, « % » = GATEKEEPER)
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER", "KEEPER", "AKRYLIN"];
+const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$%&+';   // V0.06.03 : 71 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY, « $ » = LOUZY, « % » = GATEKEEPER, « & » = KEEPER, « + » = AKRYLIN)
 const DEFI_DECKS = {
   "AMALGAME":["gNkhhSZZWjjLIIXiAAff", "gDDMMSaadZZLIiiAAFff", "JgQM8hSdZZejjIIAAFff", "OOgg3kkMhScdZeIIiAff", "ggUQQMMhhSZbjjIIiAff", "OO9ggkkDD0hSSZejjIIf", "OO4JJ6ggNDMMhdjIIAff", "OOK1ggQDMMhhSSciAAff", "OO4gg33kkCMMhSSZjIff", "OO496gg3QQkkMMSSIIAA", "OO44JJggEEDMM0SSjjIf", "OO44J166ggMMhSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
   "MOG-AI":["2O63NNQQkhhSccdZjIX7", "2J3QDHhhaccddZZWj7Ff", "2966UkDDHhhSZZWYbbIF", "22V33UQQND0hhcdZWWAA", "22JJ633UQNQDMMhhaacc", "2244VVJ9KgNQNkDDZZjF", "22OO4JJ633EUkkhhaadW", "22O44JJ9633NNkkDHci7", "22O4VVJ991663UNQQkHZ", "22OO44VVJJ996EQNDCZW", "22OO4VVJ996633NkkHBh", "22OO44VVJ996633Qk5HH", "PP22TOO44VVJ933kkDDh"],
@@ -43034,11 +43406,13 @@ const DEFI_DECKS = {
   "MATRIARCHE":["!QkDM*8ZZeejLXXii77f", "!NkD*0hhZeeWYbIXXiiF", "OJ!gQD*58cZeeYIXXiiF", "4*!163QQ00acdeeYXiiA", "OVJ*!11D55C8hZZeeXii", "OO*!113kk588heXXii7F", "*!163EQD55CC8hdeeXiA", "OJJ*!1166R5CCB880hXX", "OOJ*!11g3EQk558800ee", "OOJJ*!116NQQ5CC8800e", "OOJJ*!11g3U55C8800hi", "O4J*!11R33k55CC8800e", "PP2GTT4JJ*!11635CC80"],
   "GOLDY":["V#MBhadWWYYbbLLXi77A", "3#BBScceWWYYbbjLLXFf", "#UNMBBhccZYYbbLLIiAF", "RR##CMCBSaccZWYbjLLf", "##UQMMHBaacYYbbLLiiF", "OV9RRg##NDMaYYbbjLLi", "V9RR##DMMHBB0SWYYbLF", "VRR##UDMMHBB80acYYLL", "VVJ9RR##UMMBBadeYYLL", "VVJ996RRg##MMHBBYYbL", "VV99KRR##UNNMMBBYYbb", "VV9K6RR##NNMMBBYYbbL", "PP24VV9RR##MMBBYYbbL"],
   "LOUZY":["$BdeYbjjLLIIXXAAFFff", "$B8aWYYbjjLLII77AAff", "E$HSSdYbjLLIIXiAAFff", "gEN$$BB0SSZbbLIIiAff", "OVJRgQ$$BjjLLIIXAAff", "O9ggEE$$SYbbjjIIXAAf", "OO4RggECC$$SSjLLIiff", "OOVJRRgE$$hSSYjjIAff", "OORggEE$$BhSScbjjIAf", "OO9KRRggU$$SSYYbjjIf", "OOJ9Rgg3EE$$BSYjjIAf", "OO4JRgg$$BBSSbbjIAAf", "PPGGTTOORggEE$$BBSSj"],
-  "GATEKEEPER":["1Q5580hdZ%XXii77AAFf", "K155M88c%WWLXXii77AA", "K5C88SSZ%WWLIXXii7FF", "K55C0dZ%%jLIXii7AAFF", "OK155800d%%LLXii77FF", "JJ11RCC800c%%jLLii7A", "K11EU55C880S%%WLXi77", "4KK116N55880Sadd%%Li", "K11Rg35CC800S%%LX7AF", "OJJKK11CC880Sdd%%XFF", "JKK11N5CC800SSdd%%i7", "VKK11ECC8800SSd%%XAA", "PP2GTTKK11558SSdd%%F"]
+  "GATEKEEPER":["1Q5580hdZ%XXii77AAFf", "K155M88c%WWLXXii77AA", "K5C88SSZ%WWLIXXii7FF", "K55C0dZ%%jLIXii7AAFF", "OK155800d%%LLXii77FF", "JJ11RCC800c%%jLLii7A", "K11EU55C880S%%WLXi77", "4KK116N55880Sadd%%Li", "K11Rg35CC800S%%LX7AF", "OJJKK11CC880Sdd%%XFF", "JKK11N5CC800SSdd%%i7", "VKK11ECC8800SSd%%XAA", "PP2GTTKK11558SSdd%%F"],
+  "KEEPER":["U5C00eeYbbjLL&ii7Aff", "E5800aZeeWbLLII&iiFF", "C8800ccdeeYYbbL&iiAf", "K11RMH0heeYbbjL&&iiA", "VKK11kDCB0eebbLL&&iF", "11Rg5MCMCB880eej&&ii", "OKK11gEEN5580ebL&&iF", "4VV9KK11RCMCM00eb&&i", "OJKK11REE55CCB800Y&&", "VVKK11RRE55B8800eY&&", "9KK11RRE55CMC00bLL&&", "4VKK11RECCMBB8800e&&", "PPTT44KK11RREE5B88&&"],
+  "AKRYLIN":["D58+SeeLLIIXXii77AFF", "55C+eeWjjLIXXii77AFF", "K13N5+aeeWLLXXii77AA", "1CC8++SdeebXXiiAFFff", "KK155MCH++hSeeLii7FF", "K1Q588++aadeeYXXi77F", "KK15C88++cdeeLXiiAAf", "O99KK116588++SSeeXAF", "11RUQ55CC88++dLLXi7A", "49KK11655CC88++SSL77", "OKK11RN5CC88++SSddeF", "OOKK1155CC88++SSddLi", "PPTTOKK1165C8++SSdLA"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR", "LOUZY": "PROK-IEM", "GATEKEEPER": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR", "LOUZY": "PROK-IEM", "GATEKEEPER": "PROTO-SHIELD", "KEEPER": "PROTO-SHIELD", "AKRYLIN": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
 const DEFI_MOD_T = {"DOZEUR": ["SAPHYR", "BAVURES", "PROTO-SHIELD", "SAPHYR", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5"], "DILUS": ["SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "SAPHYR", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET"], "CHEIF 117": ["SAPHYR", "T-ARMS 09", "PROK-IEM", "SAPHYR", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES"], "SHADOW": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"], "SYLVERLAKE": ["SAPHYR", "AZ-5", "ROCKET", "SAPHYR", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09"], "SOSFOR": ["SAPHYR", "ROCKET", "BAVURES", "SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM"], "GOLDY": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"]};   // V0.05.06 : module adverse PAR PALIER pour les Défis SAPHYR (le reste suit DEFI_MOD)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
@@ -43216,6 +43590,8 @@ const DEFI_RESULT_ART_Y = {
   'GOLDY': 6,   // V0.05.94 : cadrage calculé (tête visible)
   'LOUZY': 60,   // V0.05.95 : cadrage calculé (tête visible)
   'GATEKEEPER': 53,   // V0.06.02 : cadrage calculé (tête visible)
+  'KEEPER': 7,   // V0.06.03 : cadrage calculé (tête visible)
+  'AKRYLIN': 19,   // V0.06.03 : cadrage calculé (tête visible)
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
