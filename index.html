@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.00</title>
+<title>Projet MECA V0.06.02</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7926,13 +7926,12 @@
       linear-gradient(180deg, rgba(8,3,3,.55) 0%, rgba(8,3,3,0) 26%, rgba(8,3,3,0) 46%, rgba(10,3,3,.82) 78%, rgba(6,2,2,.96) 100%),
       radial-gradient(120% 80% at 50% 120%, rgba(255,70,20,.38), transparent 60%);
     box-shadow:inset 0 0 0 1px rgba(255,110,50,.42), inset 0 0 40px rgba(0,0,0,.6);}
-  .ds-case-emb{position:absolute; inset:0; pointer-events:none; opacity:.8; mix-blend-mode:screen;
-    background:
-      radial-gradient(2px 2px at 12% 80%, #ffb36a 50%, transparent 51%), radial-gradient(1.6px 1.6px at 30% 70%, #ff8a3a 50%, transparent 51%),
-      radial-gradient(2px 2px at 55% 88%, #ffc98a 50%, transparent 51%), radial-gradient(1.4px 1.4px at 72% 76%, #ff7a2a 50%, transparent 51%),
-      radial-gradient(1.8px 1.8px at 88% 84%, #ffb36a 50%, transparent 51%), radial-gradient(1.4px 1.4px at 42% 94%, #ff9a4a 50%, transparent 51%);
-    animation:dsEmb 5s linear infinite;}
-  @keyframes dsEmb{0%{transform:translateY(0); opacity:0;} 15%{opacity:.9;} 100%{transform:translateY(-38%); opacity:0;}}
+  .ds-case-emb{position:absolute; inset:0; pointer-events:none; z-index:1; contain:layout paint;}
+  .ds-case-emb i{position:absolute; border-radius:50%; opacity:0; will-change:transform, opacity;
+    background:radial-gradient(circle, #fff0c8 0, #ffa04a 38%, rgba(255,80,20,.55) 62%, rgba(255,60,10,0) 74%); box-shadow:0 0 5px 1px rgba(255,96,30,.5);}
+  @keyframes dsEmbA{0%{transform:translate3d(0,0,0); opacity:0;} 12%{opacity:.95;} 55%{transform:translate3d(7px,-82px,0);} 75%{opacity:.75;} 100%{transform:translate3d(-3px,-150px,0); opacity:0;}}
+  @keyframes dsEmbB{0%{transform:translate3d(0,0,0); opacity:0;} 15%{opacity:.9;} 50%{transform:translate3d(-9px,-70px,0);} 80%{opacity:.6;} 100%{transform:translate3d(-16px,-132px,0); opacity:0;}}
+  @keyframes dsEmbC{0%{transform:translate3d(0,0,0) scale(.8); opacity:0;} 10%{opacity:1;} 45%{transform:translate3d(-4px,-78px,0) scale(1);} 70%{opacity:.8;} 100%{transform:translate3d(9px,-172px,0) scale(.6); opacity:0;}}
   .ds-case-no{position:absolute; top:12px; left:14px; z-index:2; font-family:var(--font-title); font-size:8.5px; font-weight:700; letter-spacing:2px; color:#ffd2b8;
     padding:4px 8px; background:rgba(12,4,4,.7); border:1px solid rgba(255,100,40,.5); clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px);}
   .ds-case-txt{position:absolute; left:16px; right:16px; bottom:40px; z-index:2; display:flex; flex-direction:column; gap:4px;}
@@ -7944,7 +7943,6 @@
   .ds-cells{display:flex; gap:4px; flex:1;}
   .ds-cells i{flex:1; height:6px; background:linear-gradient(180deg, #2a1614, #120808); border:1px solid rgba(255,110,50,.28); transform:skewX(-24deg);}
   .ds-cells i.on{background:linear-gradient(180deg, #ffd08a, #ff5a1c 55%, #a02008); border-color:rgba(255,190,120,.8); box-shadow:0 0 8px rgba(255,90,20,.75);}
-  .ds-case.done .ds-case-name::after{content:' ✓'; color:#ffcf7a;}
   .ds-case.lock{background:linear-gradient(160deg, #262a34, #14161d 55%, #0b0c11); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
     box-shadow:inset 0 0 0 1px rgba(150,160,190,.16);}
   .ds-case-noise{position:absolute; inset:0; opacity:.5; pointer-events:none;
@@ -7988,7 +7986,7 @@
   .ds-nd-deck.imp{color:#ffe0a0; border-color:rgba(255,190,90,.6);}
   .ds-nd-rew{color:rgba(255,210,185,.8);}
   .ds-go{background:linear-gradient(180deg, #ff7a32, #c2300f 55%, #7a1406) !important; color:#fff4ea !important; text-shadow:0 1px 2px rgba(0,0,0,.6);}
-  @media (prefers-reduced-motion: reduce){ .ds-case-art, .ds-case-emb, .ds-nb-art, .dossier .ds-crack, .dossier .mt-ds-ico .seal{animation:none;} }
+  @media (prefers-reduced-motion: reduce){ .ds-case-emb i{animation:none !important; opacity:0;} .ds-case-art, .ds-nb-art, .dossier .ds-crack, .dossier .mt-ds-ico .seal{animation:none;} }
 
   /* préparation d'un combat (provisoire : 10 s puis validation) */
   .ds-prep{position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; padding:24px 16px; opacity:0; transition:opacity .4s;
@@ -8849,7 +8847,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.00</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.02</b></div>
   </div>
 
     </div>
@@ -9907,9 +9905,17 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.00';
+var BUILD_VERSION = 'V0.06.02';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.02', items:[
+    'Nouvelle carte RARE : GATEKEEPER (2 ATQ / 5 DEF / 5 PV), gardien des portes des Enfers. TANK : l’adversaire doit le détruire avant d’attaquer tes autres cartes ou ton chef.',
+    'Arrivée de GATEKEEPER : sa porte-bouclier tombe du ciel en relief et se fracasse sur sa case (éclats, fissures, étincelles, poussière) ; la carte apparaît quand la poussière retombe. Nouveaux sons.',
+    'GATEKEEPER a son Défi, et TRANSPORTEUR et CASSIS peuvent aussi le donner.',
+    'LES ENFERS : tout en haut de la carte, un soleil rouge se couche derrière la nappe de brouillard.',
+    'DOSSIER SPÉCIAL : les braises de la case LES ENFERS volent de façon fluide.',
+    'DOSSIER SPÉCIAL : la case LES ENFERS n’a plus d’image pour l’instant, ni de coche une fois le dossier terminé.',
+  ] },
   { v:'V0.06.00', items:[
     'Sauvegarde : un appareil qui démarre sans réseau n’écrase plus les decks faits sur tes autres appareils.',
     'Combat : quitter un combat en plein effet puis en lancer un autre ne perturbe plus le nouveau combat.',
@@ -12016,7 +12022,7 @@ var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
   menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
   fight: { url:MUS_BASE + 'Musique%20Combats.mp3',    buf:null, src:null, gain:null, failAt:0, busy:false } } };
 // Sons de pose des cartes (V0.04.87) : un son par rareté, joués à l'impact de la carte sur son emplacement (joueur et adversaire), volume = EFFETS SONORES
-MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
+MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ gkfall:'sfx-gkfall.mp3', gkslam:'sfx-gkslam.mp3', lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
 MUS.sfx.emb = {};   // V0.05.70 : FIN, vapeur x4, pioche x3, déplacement d'attaque x3 (copiés ensuite dans le bucket, puis passés dans MUS.sfx.files)
 MUS.sfx.off = { pio1:.32, pio2:.06, pio3:.06, dep1:.28, dep2:.38, dep3:.64 };   // V0.05.70 : début de lecture (s) : on saute le blanc du début pour caler le bruit sur la carte
 MUS.sfx.pk = { pio1:.21, pio2:.23, pio3:.30 };    // V0.05.70 : instant du maximum de chaque son (s, après le blanc sauté)
@@ -12170,6 +12176,7 @@ function ecoLowFps(){
   for(const a of list){
     try{
       if(a.__eco || !a.effect || !a.effect.getKeyframes) continue;
+      try{ const tg = a.effect.target; if(tg && tg.closest && tg.closest('.eco-smooth')){ a.__eco = 1; continue; } }catch(_){}   // V0.06.01 : braises du DOSSIER SPÉCIAL fluides
       const t = a.effect.getComputedTiming();
       if(t.iterations !== Infinity) continue;
       a.__eco = 1;
@@ -12356,6 +12363,7 @@ const CHAR_LORE = {
   MATRIARCHE: { pilot:'Aucune — reine-statue des fonderies infernales', text:"Au cœur d'une cité-fonderie noyée de lave se dresse une statue de fer haute comme une cathédrale. On la dit morte depuis des siècles, mais ses bras dégouttent encore de métal en fusion : c'est d'elle que naissent les EL-DIABLO. Quand MATRIARCHE descend sur le champ de bataille, l'ombre de sa main passe sur tous les combattants et l'une de ses filles répond à l'appel. Et quand on l'abat, elle ne tombe pas seule : le sol se met à bouillir et une lave de fer gris engloutit deux combattants avec elle, amis ou ennemis." },
   GOLDY: { pilot:'Aucun — majordome automate d’une famille de banquiers', text:"Forgé dans l'or fondu d'une banque engloutie, GOLDY servait une famille si riche qu'elle payait tout en pièces. Ses plaques sont gravées de runes de comptable : chaque geste qu'il fait est déjà payé d'avance. Quand il descend sur le champ de bataille, une pluie d'or s'abat avant lui — et le temps que les pièces roulent au loin, GOLDY est déjà là, la main tendue." },
   LOUZY: { pilot:'Aucun — pillard autonome des bidonvilles de la Rouille', text:"Dans les bidonvilles de la Rouille, sous la pluie et les drones de surveillance, LOUZY a appris à tout récupérer. Ses câbles de drone volés arrachent l'énergie là où elle brille encore et l'enferment dans une capsule rivetée à sa poitrine. Tant qu'il tient la capsule, l'adversaire se bat à moitié éteint. Mais qu'on le mette en pièces, et la capsule éclate : tout ce qu'il a volé retourne d'où il vient." },
+  GATEKEEPER: { pilot:'Aucun — sentinelle forgée aux portes des Enfers', text:"Devant les portes des Enfers, entre deux tours de garde et des fleuves de lave, se tient GATEKEEPER. Il a arraché un battant de la porte de la citadelle pour en faire son bouclier : du fer noir hérissé de pointes, d'engrenages et de chaînes, frappé d'un crâne et de runes rouges. Personne ne passe. Quand il descend sur un champ de bataille, sa porte tombe du ciel avant lui et le sol se fend sous le choc : tant qu'il tient debout, c'est lui qu'il faut abattre d'abord." },
   RYPEAL: { pilot:'Aucun — atelier autonome « Ry-Peal »', text:"Dans les friches industrielles, quand les usines se sont tues, un atelier a continué à travailler. RYPEAL avance sur ses deux jambes, le dos hérissé de petits bras mécaniques qui ne s'arrêtent jamais : ils démontent, soudent, assemblent. Quand on l'abat, ses bras finissent le dernier objet commencé, le tendent à son camp, puis se retournent les uns contre les autres. Rien de l'atelier ne doit tomber aux mains de l'ennemi." },
   'TRASH-BOT': { pilot:'Aucun — programme de recyclage « Broyeur-7 »', text:"Dans les décharges sans fin sous les autoroutes suspendues, TRASH-BOT roule de tas en tas, la mâchoire ouverte. On l'a construit pour recycler les épaves ; personne n'a pensé à lui dire de s'arrêter. Chaque mécha qui tombe au combat finit entre ses dents : broyé, fondu, puis soudé à sa propre carcasse. Plus la bataille fait de victimes, plus il remonte du sol lourd, solide et affamé." },
   MARCH:     { pilot:'Aucun — intelligence marchande « Toile »', text:"Sur la route de terre qui traverse le marché des terres basses, MARCH avance courbé sous son grand sac de toile. Personne ne sait ce qu'il y range : des pièces de méchas, des processeurs encore chauds, parfois un module entier arraché à une épave. Quand il pose son sac au milieu d'un combat, il en déballe trois et laisse son escouade choisir. Il ne fait jamais crédit, mais il ne repart jamais sans avoir vendu." },
@@ -12823,7 +12831,13 @@ const CHAR_DEFS = [
     ultName:"RAFLE TOTALE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
     base:{atk:36, def:34, hp:330}, max:{atk:270, def:260, hp:1240}, owned:false, seen:false,
     art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/louzy-art.webp',
-    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/louzy-art-ext.webp' }
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/louzy-art-ext.webp' },
+  // ---- Nouvelle carte RARE (V0.06.02) : GATEKEEPER, gardien des portes des ENFERS, une porte arrachée en guise de bouclier. TANK ----
+  { name:"GATEKEEPER", rarity:"rare", color:"#e0342a", shape:"block", role:"Tank — gardien des portes des Enfers",
+    ultName:"PORTE SCELLÉE", ultMult:1.4, ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+    base:{atk:8, def:28, hp:380}, max:{atk:52, def:250, hp:1700}, owned:false, seen:false,
+    art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gatekeeper-art.webp',
+    artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/gatekeeper-art-ext.webp' }
 ];
 // Cartes-jetons : MALGAME et MALAME n'existent QUE sur le champ de bataille (créées par le Baroud d'honneur en chaîne) -- hors collection, deck, codex, défis, boosters.
 const BTL_TOKEN_DEFS = [
@@ -12901,13 +12915,13 @@ const CARD_TIERS = {
   ecarlate:   ['DELOK', 'MED-07', 'MORPHE', 'GAPIX', 'GAZELLE', 'STAR-HUNTER', 'TUNNELIER', 'GRIEVER', 'AMALGAME', 'MAGNEMER', 'EL-DIABLO', 'MATRIARCHE'],
   legendaire: ['CONQUEST', 'WHIPLASH', 'BEAST', 'SHADOW', 'CHEIF 117', 'NEUTRON', 'MED-POD', 'RHINO', 'EXO-MKVII', 'HAKILX', 'SEEKER', 'LARVOTRON', 'GOLDY', 'LOUZY'],
   epique:     ['PRAWN', 'EXO-MKV', 'DOZEUR', 'EXO-MKIV', 'CATER-PILLARD', 'EXO-MKX', 'SYLVERLAKE', 'CASSIS', 'DIMAVERSE', 'PIGTAIL', 'TRASH-BOT', 'RYPEAL'],
-  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH']
+  rare:       ['ARKHAUL', 'JIPASIS', 'HARKO', 'BRI-KB-ROCK', 'BUZZY', 'TECHNOSORUS', 'HYPPER', 'DILUS', 'KRIGER', 'SCOPT', 'DUMADED', 'LACRIUM', 'RAZOPS', 'FENCY', 'EXO-MKI', 'GOTHIKA', 'TORTUGA', 'ELYSIUM', 'SCOOT', 'POUNDER', 'PITTY BELL', 'SOSFOR', 'GAST', 'TANDEEM', 'MARCH', 'GATEKEEPER']
 };
 const CARD_STATS = {
   // [ATQ, DEF, PV]
   'MOTOKO':[9,5,8], 'ZAPPAN':[10,3,8], 'TOA2':[6,8,9], 'MOG-AI':[9,4,8],
   'DELOK':[8,3,7], 'MED-07':[5,5,9], 'MORPHE':[8,3,6], 'GAPIX':[7,3,6], 'GAZELLE':[7,4,7], 'STAR-HUNTER':[8,3,7], 'TUNNELIER':[4,7,8], 'GRIEVER':[8,4,7],
-  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6], 'LOUZY':[3,3,5],
+  'CONQUEST':[4,6,6], 'WHIPLASH':[6,3,6], 'BEAST':[3,7,6], 'SHADOW':[6,3,6], 'CHEIF 117':[7,3,5], 'NEUTRON':[3,6,7], 'MED-POD':[3,5,6], 'RHINO':[5,5,6], 'EXO-MKVII':[5,3,6], 'HAKILX':[4,6,7], 'SEEKER':[5,3,6], 'CASSIS':[4,4,6], 'TANDEEM':[3,3,5], 'DIMAVERSE':[0,5,8], 'PIGTAIL':[4,4,6], 'MARCH':[2,3,5], 'TRASH-BOT':[1,2,4], 'RYPEAL':[3,3,5], 'LE COMÈTEUR':[8,4,8], 'MAGNEMER':[5,4,7], 'LARVOTRON':[6,3,6], 'EL-DIABLO':[4,5,8], 'MATRIARCHE':[5,4,6], 'GOLDY':[4,4,6], 'LOUZY':[3,3,5], 'GATEKEEPER':[2,5,5],
   'PRAWN':[5,4,6], 'EXO-MKV':[7,2,5], 'DOZEUR':[4,4,6], 'EXO-MKIV':[6,2,5], 'CATER-PILLARD':[3,5,6], 'EXO-MKX':[3,6,6],
   'ARKHAUL':[1,2,5], 'JIPASIS':[1,3,5], 'HARKO':[2,4,3], 'BRI-KB-ROCK':[1,3,5], 'BUZZY':[1,2,5], 'TECHNOSORUS':[3,2,4], 'HYPPER':[1,4,4], 'DILUS':[2,3,4], 'KRIGER':[3,3,3], 'SCOPT':[4,2,3], 'DUMADED':[2,3,5], 'LACRIUM':[4,1,4], 'RAZOPS':[2,4,4], 'FENCY':[1,5,5], 'EXO-MKI':[2,0,5], 'AMALGAME':[6,3,7], 'MALGAME':[4,3,6], 'MALAME':[3,2,4], 'GOTHIKA':[5,2,4], 'TORTUGA':[1,3,5], 'ELYSIUM':[4,1,3], 'SCOOT':[3,1,4], 'POUNDER':[4,2,5], 'PITTY BELL':[3,1,4], 'SOSFOR':[4,3,5], 'GAST':[3,1,3], 'SYLVERLAKE':[4,5,6], 'ANAKA':[4,0,2], 'KOTAMA':[4,0,2]
 };
@@ -14857,8 +14871,8 @@ const WIN_KEEP = {'TOA2':1,'RHINO':1,'DELOK':1,'WHIPLASH':1,'TUNNELIER':1};
 const WIN_FOCUS = {'SHADOW':72,'MOG-AI':12,'CHEIF 117':8};
 const winArt = def => (!def ? GREY_ART : (WIN_KEEP[def.name] ? (def.art || def.artExt) : (def.artExt || def.art || def.artBig)) || GREY_ART);
 // V0.05.94 : cadrage recalculé pour toutes les cartes (patch_0594_frames.py / frame_calc.py : sujet annoté, tête toujours visible)
-const WIN_BIG = {'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
-const WIN_SMALL = {'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
+const WIN_BIG = {'GATEKEEPER':{y:100},'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
+const WIN_SMALL = {'GATEKEEPER':86,'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
 const winFocus = (def, big) => { const n = def && def.name, b = big && n && WIN_BIG[n], sm = !big && n && WIN_SMALL[n]; return b && b.y != null ? b.y : (sm != null && sm !== false && sm !== undefined && sm !== '' ? sm : (n && WIN_FOCUS[n] != null ? WIN_FOCUS[n] : 50)); };
 const winZoom = def => { const b = def && WIN_BIG[def.name]; return b ? Math.max(b.z || 100, 100 + 2 * Math.abs(b.x || 0)) : 100; };
 const winShift = def => { const b = def && WIN_BIG[def.name]; return b && b.x ? b.x / winZoom(def) * 100 : 0; };
@@ -17590,7 +17604,7 @@ function specAt(ms){
   const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
   return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
 }
-var CARD_VIDS = {"LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS = {"GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
 function cardVidClose(){
@@ -20937,7 +20951,7 @@ document.getElementById('tileSpecOp').onclick = specOpen;
 const DS_CDN = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/';
 const DS_EXTS = [
   { id:'enfers', no:1, name:'LES ENFERS', tag:'La dynastie de fer',
-    map:{ world3d:'enfers', cover:DS_CDN + 'ds/enfers-cover.webp', w:819, h:1456, img:DS_CDN + 'ds/enfers-map.webp',
+    map:{ world3d:'enfers', cover:null, w:819, h:1456, img:DS_CDN + 'ds/enfers-map.webp',
       nodes:[
         { id:'portes', banner:DS_CDN + 'ds/enfers-portes.webp', x:410, y:1338, kind:'fight', title:'LES PORTES', need:[], deck:'perso',
           lore:'Les portes de fer s’ouvrent pour la première fois depuis mille ans. Quelque chose t’attendait de l’autre côté.' },
@@ -21406,6 +21420,16 @@ vec4 tvor(vec2 p){vec4 t=texture2D(uNV,p*.03125);return vec4(t.g,t.r,(t.ba-.5)*4
 `;
 const SH = {};
 const PREC = '#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\n';
+// V0.06.01 : couchant. skyCol(pixel) = couleur du ciel derrière ce pixel (dégradé ancré sur l'horizon + halo du soleil) ; le sol, les décors et le
+// brouillard au nord de la Citadelle s'y fondent (voile de distance uHaze : début / fin en unités au nord du bord du relief, force) -> plus de couches visibles.
+const SKY_GLSL = `uniform vec2 uSkS;uniform vec2 uSkSun;uniform float uSkHz;uniform float uSkR;uniform vec2 uSkRes;uniform vec4 uHaze;
+vec3 skyCol(vec2 fc,out vec2 p,out float y){p=(fc/uSkRes*2.-1.)*uSkS;y=p.y-uSkHz*uSkS.y;
+  vec3 c=mix(vec3(.9,.27,.085),vec3(.56,.095,.04),smoothstep(0.,3.5,y));
+  c=mix(c,vec3(.15,.02,.024),smoothstep(1.,8.,y));
+  c=mix(c,vec3(.035,.008,.018),smoothstep(8.,27.,y));
+  c=mix(c,vec3(.42,.075,.035),smoothstep(0.,-5.,y));
+  float r=length(p-uSkSun*uSkS);c+=vec3(.85,.1,.04)*(exp(-max(r-uSkR,0.)/(uSkR*.45))*.22+exp(-r/(uSkR*3.))*.12);return c;}
+float hazeK(float ext){return uHaze.z>0.?smoothstep(uHaze.x,uHaze.y,ext)*uHaze.z:0.;}`;
 SH.lit = { vs:`
 attribute vec3 aP;attribute vec3 aN;attribute vec3 aC;attribute vec3 aE;attribute vec3 aM;attribute vec4 aB;attribute float aW;
 #ifdef BAKED
@@ -21430,6 +21454,7 @@ uniform float uPx;uniform vec3 uL;uniform float uT;uniform sampler2D uFog;unifor
 uniform sampler2D uSM;uniform float uSMs;uniform float uShOn;uniform sampler2D uGI;uniform vec4 uGR;uniform float uGIk;uniform sampler2D uZT;uniform vec2 uZR;uniform vec3 uTune;
 uniform vec4 uPL[12];uniform vec3 uPC[12];
 ${NOISE_GLSL}${TNOISE_GLSL}
+${SKY_GLSL}
 float unpackD(vec4 c){return dot(c,vec4(1.,1./255.,1./65025.,1./16581375.));}
 float shTap(vec2 uv,float z){return step(z,unpackD(texture2D(uSM,uv)));}
 void main(){
@@ -21550,6 +21575,7 @@ void main(){
   c+=e;
   vec2 fu=(vP.xz-uFR.xy)/uFR.zw;float fm=texture2D(uFog,fu).r;
   c=mix(vec3(.075,.06,.06)*(.7+.6*det),c,max(smoothstep(.1,.8,fm),lmk*.4));   // repères : silhouette sombre à travers le brouillard
+  {float hk=hazeK(uFR.y-vP.z);if(hk>.001){vec2 sp;float sy;c=mix(c,skyCol(gl_FragCoord.xy,sp,sy),hk);}}   // V0.06.01 : fondu dans le couchant au nord de la Citadelle
   float cm=max(c.r,max(c.g,c.b));if(cm>.8)c*=(.8+.2*(1.-exp(-(cm-.8)*4.)))/cm;   // compression qui garde la teinte (le tampon 8 bits écrêterait le rouge d'abord)
   gl_FragColor=vec4(c,1.);
 }` };
@@ -21681,16 +21707,20 @@ void main(){vec2 d=gl_PointCoord-.5;float r=length(d)*2.;float nz=1.;if(uSoft<.0
 // brouillard de guerre (V0.05.98) : vraie fumée en deux nappes (parallaxe) qui roulent et dérivent ; volutes en relief éclairées par le haut
 // (normale tirée de la pente de la densité), creux sombres, lueur de la lave par en dessous ; le bord des zones découvertes s'effiloche et bouge.
 SH.fog = { vs:`attribute vec3 aP;uniform mat4 uVP;uniform float uLift;uniform float uT;varying vec3 vP;void main(){vec3 p=aP;p.y+=uLift+sin(uT*.4+p.x*.08+p.z*.05)*.3;vP=p;gl_Position=uVP*vec4(p,1.);}`,
-fs:`${PREC}varying vec3 vP;uniform float uT;uniform sampler2D uFog;uniform vec4 uFR;uniform float uK;uniform float uLayer;uniform sampler2D uZT;uniform vec2 uZR;uniform sampler2D uGI;uniform vec4 uGR;
+fs:`${PREC}varying vec3 vP;uniform float uT;uniform sampler2D uFog;uniform vec4 uFR;uniform float uK;uniform float uLayer;uniform float uFE;uniform sampler2D uZT;
+${SKY_GLSL}
+uniform vec2 uZR;uniform sampler2D uGI;uniform vec4 uGR;
 ${TNOISE_GLSL}
 void main(){
   float L=uLayer;
   vec2 fu=(vP.xz-uFR.xy)/uFR.zw;
+  float ext=uFR.y-vP.z;   // V0.06.01 : > 0 au nord du relief (nappe prolongée devant le couchant)
   float sc=.075*(1.+.35*L),sp=.5+.45*L;
   vec2 wind=vec2(.8,-.45)*uT*sp,w=(vP.xz+vec2(.35,-.85)*vP.y)*sc;   // la hauteur entre dans les coordonnées : pas de traînées étirées sur les pentes
   vec2 q=twarp(w*.45+wind*.01+L*5.3);                                         // déformation lente : les volutes roulent
   vec2 qe=twarp(w*1.9-wind*.03+3.7);                                           // effilochage fin du bord, qui bouge
   float mm=texture2D(uFog,fu+((q-.5)*4.+(qe-.5)*2.2)/uFR.zw).r;               // zone découverte (décalage en unités du monde)
+  mm*=1.-smoothstep(-1.5,1.5,ext);                                              // au-delà du relief : toujours couvert
   float cover=1.-smoothstep(.0,.5+.15*L,mm+(q.y-.5)*.35+(qe.x-.5)*.35);
   if(cover<.004)discard;
   vec2 wp=w+(q-.5)*1.7+wind*.035;
@@ -21701,14 +21731,36 @@ void main(){
   float lit=clamp(dot(nr,vec3(-.55,.72,.42)),0.,1.),cav=smoothstep(.35,.62,dens);
   float a=L<.5?mix(.82,1.,smoothstep(.3,.6,dens)):smoothstep(.42,.7,dens);       // nappe basse pleine, nappe haute en volutes détachées
   a*=cover;
+  if(uFE>0.)a*=1.-smoothstep(-9.,uFE,ext+(q.x-.5)*8.+(qe.y-.5)*4.);           // la nappe s'efface doucement à l'approche du couchant (pas de bord visible)
   float zu=clamp((-vP.z-uZR.x)/(uZR.y-uZR.x),0.,1.);vec3 zs=texture2D(uZT,vec2(zu,.125)).rgb;
   vec3 dark=vec3(.022,.017,.02)+zs*.03,mid=vec3(.1,.083,.085)+zs*.16,hi=vec3(.3,.26,.25)+zs*.31;
   vec3 c=mix(mid*.85,dark,(1.-lit)*cav*.75);c=mix(c,hi,pow(lit,1.6)*cav*(.55+.35*L));   // creux sombres seulement dans la fumée épaisse ; bords fins en demi-teinte
   c*=.75+.5*fine*cav;
   vec4 G=texture2D(uGI,(vP.xz-uGR.xy)/uGR.zw);c+=G.rgb*G.rgb*(1.-lit)*(.7-.3*L)*cav;                       // lave qui éclaire la fumée par dessous
   float rim=smoothstep(.02,.35,mm)*(1.-smoothstep(.35,.8,mm));c+=vec3(.6,.16,.04)*rim*(.12+.4*smoothstep(.55,.9,dens))*(1.-L*.4);
+  {float hk=hazeK(ext);if(hk>.001){vec2 sp;float sy;c=mix(c,skyCol(gl_FragCoord.xy,sp,sy),hk);}}   // nappe fondue dans la couleur du couchant
   a*=uK;
   gl_FragColor=vec4(c*a,a);
+}` };
+// V0.06.01 : ciel du couchant derrière la nappe de brouillard (tout en haut de la carte, au-dessus de la Citadelle) : dégradé ancré sur
+// l'horizon (fin de la nappe), grand soleil rouge à moitié caché par la nappe, halo, traînées de nuages sombres qui passent devant.
+SH.sky = { vs:'attribute vec2 aP;varying vec2 vU;void main(){vU=aP*.5+.5;gl_Position=vec4(aP,.9999,1.);}',
+fs:`${PREC}varying vec2 vU;uniform float uT;
+${SKY_GLSL}
+float h21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}
+void main(){
+  vec2 p;float y;vec3 c=skyCol(gl_FragCoord.xy,p,y);
+  vec2 d=p-uSkSun*uSkS;float r=length(d),k=r/uSkR,disc=1.-smoothstep(1.-.035,1.+.035,k);
+  vec3 sc=mix(vec3(.62,.09,.04),vec3(.38,.022,.018),smoothstep(.1,1.,k));        // soleil rouge sombre, bord assombri
+  sc*=1.+.1*(vn(d*1.3+uT*.05)-.5);
+  c=mix(c,sc,disc);
+  c+=vec3(.95,.28,.08)*smoothstep(.88,1.,k)*(1.-smoothstep(1.,1.09,k))*.3;          // fin liseré lumineux : le disque se détache du ciel
+  float b=vn(vec2(p.x*.07+uT*.012,y*.62))*.65+vn(vec2(p.x*.19-uT*.02,y*1.7))*.35;   // traînées de nuages devant le soleil
+  float st=smoothstep(.56,.78,b)*smoothstep(-.5,2.,y)*(1.-smoothstep(9.,17.,y));
+  c=mix(c,vec3(.11,.018,.022)+vec3(.35,.06,.025)*exp(-r/(uSkR*1.5)),st*.8);
+  c+=(h21(gl_FragCoord.xy+fract(uT))-.5)/160.;                                     // tramage : pas de bandes dans le dégradé
+  gl_FragColor=vec4(c,1.);
 }` };
 // passes du halo
 const QUAD_VS = 'attribute vec2 aP;varying vec2 vU;void main(){vU=aP*.5+.5;gl_Position=vec4(aP,0.,1.);}';
@@ -23506,7 +23558,9 @@ function build(){
       if(d < .01) continue; const off = mar ? .9 : lv ? 1.3 : 1.2; idx[j * mnx + i] = mist.vert([x, y + off, -s2, d, lv, hash2(i, j)]); }
     for(let j = 0; j < mns - 1; j++) for(let i = 0; i < mnx - 1; i++){ const a = idx[j * mnx + i], b = idx[j * mnx + i + 1], c = idx[(j + 1) * mnx + i + 1], dd = idx[(j + 1) * mnx + i]; if(a >= 0 && b >= 0 && c >= 0 && dd >= 0) mist.quad(a, b, c, dd); } }
   const WGLOW = { x:EGG.x, z:-EGG.s, r:12, c:[.1, .38, .05] };
-  return { wrecks:WRECKS, wk:WK, terr, terrL, props, lava, water, mist, fluid, WGLOW, GI, GIR:[X0, gz0, X1 - X0, S1 - S0], GIW:GW, GIH:GHh, ZONES, ZR:[S0, S1], ribbon, ribC:[CIT.x, CY, zW(CZ - 2)], dyn, EM, LIGHTS, NODES, CAM, REVEAL, bounds:{ x0:X0, x1:X1, z0:-S1, z1:-S0 }, H:(x, z) => H(x, -z), HS:(x, z) => HS(x, -z) };
+  // V0.06.01 : couchant au nord de la Citadelle (soleil rouge derrière la nappe de brouillard prolongée de ext unités, qui descend de drop par unité)
+  const SKY = { ext:10, drop:1.2, sun:[11, 51, -S1 - 24], hz:[0, 57, -S1 - 12], r:7, low:40, haze:[-16, 0, .92] };   // haze : voile de distance (début, fin en unités au nord du bord, force)
+  return { SKY, wrecks:WRECKS, wk:WK, terr, terrL, props, lava, water, mist, fluid, WGLOW, GI, GIR:[X0, gz0, X1 - X0, S1 - S0], GIW:GW, GIH:GHh, ZONES, ZR:[S0, S1], ribbon, ribC:[CIT.x, CY, zW(CZ - 2)], dyn, EM, LIGHTS, NODES, CAM, REVEAL, bounds:{ x0:X0, x1:X1, z0:-S1, z1:-S0 }, H:(x, z) => H(x, -z), HS:(x, z) => HS(x, -z) };
 }
 // surface où l'on peut se tenir : relief, ou niveau du lac, du ruisseau, de l'eau du marais
 function HS(x, s){ const h = H(x, s); if(lakeD(x, s) < 1.12) return Math.max(h, LY); const w = lavaW(s); if(w > 0 && Math.abs(x - lavaX(s)) < w * .5 + .2) return Math.max(h, ysAt(s));
@@ -23564,16 +23618,18 @@ window.ds3dMount = function(host, builder, won0, opt){
   const zTex = E.texData(64, 4, ZT);
   // voile de brouillard drapé sur le relief
   const B = W.bounds; let mFog;
-  { const mb = new MB(3), st = 1.5, nx = Math.ceil((B.x1 - B.x0) / st) + 1, nz = Math.ceil((B.z1 - B.z0) / st) + 1;
+  const SKY = W.SKY || null, FE = SKY ? SKY.ext : 0;   // V0.06.01 : couchant ; la nappe se prolonge de FE unités au nord du relief
+  { const mb = new MB(3), st = 1.5, Z0 = B.z0 - FE, nx = Math.ceil((B.x1 - B.x0) / st) + 1, nz = Math.ceil((B.z1 - Z0) / st) + 1;
     // nappe posée sur une enveloppe adoucie du relief (maximum local puis flou) : elle glisse au-dessus des pentes raides au lieu de s'y plaquer
     // comme un drap (sur une falaise, le voile suivait la paroi et paraissait plié)
-    let hs = new Float32Array(nx * nz); for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++) hs[j * nx + i] = W.H(B.x0 + i * st, B.z0 + j * st);
+    let hs = new Float32Array(nx * nz); for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++) hs[j * nx + i] = W.H(B.x0 + i * st, Math.max(B.z0, Z0 + j * st));
     const pass = (src, r, op) => { const t = new Float32Array(nx * nz), o = new Float32Array(nx * nz);
       for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ let v = op ? -1e9 : 0, n = 0; for(let k = -r; k <= r; k++){ const ii = Math.min(nx - 1, Math.max(0, i + k)), h = src[j * nx + ii]; if(op) v = Math.max(v, h); else { v += h; n++; } } t[j * nx + i] = op ? v : v / n; }
       for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ let v = op ? -1e9 : 0, n = 0; for(let k = -r; k <= r; k++){ const jj = Math.min(nz - 1, Math.max(0, j + k)), h = t[jj * nx + i]; if(op) v = Math.max(v, h); else { v += h; n++; } } o[j * nx + i] = op ? v : v / n; }
       return o; };
     hs = pass(pass(pass(pass(hs, 2, 1), 2, 0), 2, 0), 2, 0);
-    for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ const x = B.x0 + i * st, z = B.z0 + j * st; mb.vert([x, Math.max(hs[j * nx + i] + 1.6, W.H(x, z) + 1.0), z]); }
+    for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ const x = B.x0 + i * st, z = Z0 + j * st, zc = Math.max(B.z0, z), dn = SKY ? Math.max(0, B.z0 - z) * SKY.drop : 0;
+      mb.vert([x, Math.max(hs[j * nx + i] + 1.6, W.H(x, zc) + 1.0) - dn, z]); }
     for(let j = 0; j < nz - 1; j++) for(let i = 0; i < nx - 1; i++){ const a = j * nx + i; mb.quad(a, a + nx, a + nx + 1, a + 1); }
     mFog = E.mesh(mb, FOGL); }
   // --- masque du brouillard (monde XZ -> texture) ---
@@ -23681,12 +23737,25 @@ window.ds3dMount = function(host, builder, won0, opt){
     dyn.forEach(dd => { if(!SH_DYN[dd.kind]) return; const m = dynModel(dd, T); if(!m) return; gl.uniformMatrix4fv(P.u.uMdl, false, m); E.draw(dd.m, P); });
     E.unbindAttribs(); stats.sh++;
   }
+  const SKU = [0, 0, 0];
+  function skyU(P){   // V0.06.01 : ciel du couchant et voile de distance (sol, décors, brouillard)
+    if(!SKY){ gl.uniform4f(P.u.uHaze, 0, 1, 0, 0); return; }
+    gl.uniform2f(P.u.uSkS, cam.w / 2, cam.w / 2 * ch / cw); gl.uniform2f(P.u.uSkSun, SKU[0], SKU[1]); gl.uniform1f(P.u.uSkHz, SKU[2]);
+    gl.uniform1f(P.u.uSkR, SKY.r); gl.uniform2f(P.u.uSkRes, cw, ch); gl.uniform4f(P.u.uHaze, SKY.haze[0], SKY.haze[1], SKY.haze[2], 0);
+  }
   function render(T){
     if(!sFbo && !resize()) return;
     const eyeD = camMat();
     if(smF) shadowPass(T);
     gl.bindFramebuffer(gl.FRAMEBUFFER, sFbo.f); gl.viewport(0, 0, cw, ch);
     gl.clearColor(.025, .016, .016, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if(SKY){ const sn = M.xf(VP, SKY.sun[0], SKY.sun[1], SKY.sun[2]), hz = M.xf(VP, SKY.hz[0], SKY.hz[1], SKY.hz[2]); SKU[0] = sn[0]; SKU[1] = sn[1]; SKU[2] = hz[1]; }
+    if(SKY){   // V0.06.01 : couchant derrière la nappe (dessiné seulement quand le bord nord du relief est à l'écran, et seulement au-dessus)
+      const lo = M.xf(VP, 0, SKY.low, B.z0);
+      if(lo[1] < 1.02){ const y0 = Math.max(0, Math.floor((lo[1] * .5 + .5) * ch) - 4);
+        gl.disable(gl.DEPTH_TEST); gl.depthMask(false); gl.disable(gl.CULL_FACE); gl.disable(gl.BLEND); gl.enable(gl.SCISSOR_TEST); gl.scissor(0, y0, cw, ch - y0);
+        const P = E.prog('sky'); gl.useProgram(P.p); skyU(P); gl.uniform1f(P.u.uT, reduced ? 0 : T % 600); E.draw(E.quad, P); E.unbindAttribs();
+        gl.disable(gl.SCISSOR_TEST); stats.sky = 1; } else stats.sky = 0; }
     gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.depthMask(true); gl.disable(gl.BLEND); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     if(fogDirty){ gl.bindTexture(gl.TEXTURE_2D, fTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, fc); fogDirty = false; }
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, smF ? smF.t : giTex);
@@ -23698,7 +23767,7 @@ window.ds3dMount = function(host, builder, won0, opt){
       gl.uniform1f(P.u.uPx, cam.w / cw); gl.uniform3fv(P.u.uL, L); gl.uniform1f(P.u.uT, T); gl.uniform1f(P.u.uTv, reduced ? 0 : T % 600); gl.uniform1i(P.u.uFog, 0); gl.uniform4fv(P.u.uFR, FR); gl.uniform3fv(P.u.uEyeDir, eyeD);
       gl.uniform1i(P.u.uSM, 1); gl.uniform1f(P.u.uSMs, SMS ? 1 / SMS : 0); gl.uniform1f(P.u.uShOn, smF ? 1 : 0);
       gl.uniform1i(P.u.uGI, 2); gl.uniform4fv(P.u.uGR, W.GIR || [0, 0, 1, 1]); gl.uniform1f(P.u.uGIk, W.GI ? 1.7 : 0);
-      gl.uniform1i(P.u.uZT, 3); gl.uniform2fv(P.u.uZR, W.ZR || [0, 1]); gl.uniform3f(P.u.uTune, TUNE[0], TUNE[1], 0); E.bindNoise(P); };
+      gl.uniform1i(P.u.uZT, 3); gl.uniform2fv(P.u.uZR, W.ZR || [0, 1]); gl.uniform3f(P.u.uTune, TUNE[0], TUNE[1], 0); E.bindNoise(P); skyU(P); };
     let P;
     if(W.terrL){ P = E.prog('litT'); gl.useProgram(P.p); litU(P); gl.uniform1f(P.u.uEggF, 1 - st.egg * .8); drawVis(mTerr, W.terr, P, VP); E.unbindAttribs(); }
     P = E.prog('lit'); gl.useProgram(P.p); litU(P);
@@ -23735,7 +23804,7 @@ window.ds3dMount = function(host, builder, won0, opt){
       E.draw(mRib, P); E.unbindAttribs(); gl.depthMask(true); gl.disable(gl.BLEND); }
     // brouillard de guerre
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
-    P = E.prog('fog'); gl.useProgram(P.p); gl.uniformMatrix4fv(P.u.uVP, false, VP); gl.uniform1f(P.u.uT, reduced ? 2 : T % 900); gl.uniform1i(P.u.uFog, 0); gl.uniform4fv(P.u.uFR, FR);
+    P = E.prog('fog'); gl.useProgram(P.p); gl.uniformMatrix4fv(P.u.uVP, false, VP); gl.uniform1f(P.u.uT, reduced ? 2 : T % 900); gl.uniform1i(P.u.uFog, 0); gl.uniform4fv(P.u.uFR, FR); gl.uniform1f(P.u.uFE, FE); skyU(P);
     gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, giTex); gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, zTex); gl.activeTexture(gl.TEXTURE0);
     gl.uniform1i(P.u.uZT, 3); gl.uniform2fv(P.u.uZR, W.ZR || [0, 1]); gl.uniform1i(P.u.uGI, 2); gl.uniform4fv(P.u.uGR, W.GIR || [0, 0, 1, 1]); E.bindNoise(P);
     E.bindMesh(mFog, P);
@@ -23986,6 +24055,12 @@ function dsTileRender(){
 }
 function dsOpen(){ dsRender(); openSub('dsView'); updateNavBack(); }
 function dsCellsHtml(ext){ const w = dsWon(ext); return '<span class="ds-cells">' + w.map(x => '<i class="' + (x ? 'on' : '') + '"></i>').join('') + '</span>'; }
+const DS_EMB = (() => {   // V0.06.01 : 18 braises qui montent (positions, tailles et rythmes fixes, variés)
+  let h = '', z = 7; const r = () => (z = (z * 9301 + 49297) % 233280) / 233280;
+  for(let i = 0; i < 18; i++){ const d = 3.6 + r() * 3, sz = (2.4 + r() * 1.8).toFixed(1);
+    h += '<i style="left:' + (3 + r() * 94).toFixed(1) + '%;bottom:' + (r() * 34).toFixed(1) + '%;width:' + sz + 'px;height:' + sz + 'px;animation:dsEmb' + 'ABC'[i % 3] + ' ' + d.toFixed(2) + 's linear ' + (-r() * d).toFixed(2) + 's infinite"></i>'; }
+  return h;
+})();
 function dsRender(){
   const g = document.getElementById('dsGrid'); if(!g) return;
   const open = DS_EXTS.filter(e => e.id), done = open.reduce((s, e) => s + (dsCount(e) >= e.map.nodes.length ? 1 : 0), 0);
@@ -23994,7 +24069,7 @@ function dsRender(){
     const no = 'DOSSIER ' + String(e.no).padStart(2, '0');
     if(!e.id) return '<div class="ds-case lock"><i class="ds-case-noise"></i><svg class="ds-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b class="ds-case-no">' + no + '</b><b class="ds-case-cls">CLASSIFIÉ</b></div>';
     const n = dsCount(e), all = e.map.nodes.length;
-    return '<button type="button" class="ds-case open' + (n >= all ? ' done' : '') + '" data-ext="' + e.id + '"><i class="ds-case-art" style="background-image:url(\'' + (e.map.cover || e.map.img) + '\')"></i><i class="ds-case-fx"></i><i class="ds-case-emb"></i>' +
+    return '<button type="button" class="ds-case open' + (n >= all ? ' done' : '') + '" data-ext="' + e.id + '">' + (e.map.cover ? '<i class="ds-case-art" style="background-image:url(\'' + e.map.cover + '\')"></i>' : '') + '<i class="ds-case-fx"></i><i class="ds-case-emb eco-smooth">' + DS_EMB + '</i>' +
       '<b class="ds-case-no">' + no + '</b><span class="ds-case-txt"><b class="ds-case-name">' + e.name + '</b><b class="ds-case-tag">' + e.tag + '</b></span>' +
       '<span class="ds-case-prog">' + dsCellsHtml(e) + '<b>' + n + '/' + all + '</b></span></button>';
   }).join('');
@@ -33646,7 +33721,7 @@ BTL_CARD_FX['ANAKA'] = {}; BTL_CARD_FX['KOTAMA'] = {};
     'CHEIF 117':['appel'], 'GRIEVER':['appel'], 'MOTOKO':['percee', 'tank'], 'BEAST':['tank'], 'TUNNELIER':['tank', 'appel'],
     'DELOK':['percee'], 'TECHNOSORUS':['percee'], 'HYPPER':['tank'], 'DILUS':['appel'], 'KRIGER':['appel'], 'SCOPT':['percee'], 'DUMADED':['passif'], 'LACRIUM':['percee'], 'RAZOPS':['appel'], 'FENCY':['tank'], 'EXO-MKI':['baroud'], 'AMALGAME':['percee', 'baroud'], 'GOTHIKA':['appel'], 'TORTUGA':['tank', 'passif'], 'MALGAME':['baroud'], 'MALAME':['baroud'], 'CATER-PILLARD':['tank'], 'HARKO':['baroud'], 'RHINO':['appel'], 'ARKHAUL':['appel'], 'JIPASIS':['appel'],
     'MED-07':['tank'], 'DOZEUR':['appel'], 'MORPHE':['percee'], 'WHIPLASH':['percee'], 'ZAPPAN':['baroud'], 'ELYSIUM':['baroud'], 'SYLVERLAKE':['appel'], 'BUZZY':['passif'],
-    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif'], 'LOUZY':['appel', 'baroud']
+    'EXO-MKIV':['percee'], 'EXO-MKV':['percee'], 'EXO-MKVII':['appel'], 'EXO-MKX':['tank'], 'HAKILX':['tank', 'passif'], 'SEEKER':['appel'], 'CASSIS':['appel'], 'TANDEEM':['passif'], 'DIMAVERSE':['passif'], 'PIGTAIL':['baroud'], 'MARCH':['appel'], 'TRASH-BOT':['passif'], 'RYPEAL':['baroud'], 'LE COMÈTEUR':['percee', 'passif'], 'MAGNEMER':['percee', 'appel'], 'LARVOTRON':['percee', 'passif', 'baroud'], 'EL-DIABLO':['tank', 'passif'], 'MATRIARCHE':['appel', 'baroud'], 'GOLDY':['passif'], 'LOUZY':['appel', 'baroud'], 'GATEKEEPER':['tank']
   };
   Object.keys(K).forEach(n => { BTL_CARD_KW[n] = K[n]; });
 })();
@@ -35216,7 +35291,7 @@ function btlCsTex(VW, VH){
 // la carte se pose dans son emplacement avec son nouvel effet. L'Appel de l'effet gagné (s'il en a un) est joué ensuite (btlTrigger -> btlFxN).
 // Coût : une quarantaine d'éléments animés par le compositeur (transform / opacity), plus le rouleau (~50 encadrés de texte), tous retirés à la fin.
 // Durées en unités du combat (x BTL_TS).
-var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
+var CASSIS_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "HAKILX", "SEEKER", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
 function btlFxN(c){ return c && (c.as || c.name); }   // nom sous lequel les effets d'une carte sont cherchés (CASSIS : l'effet gagné)
 function btlCsGain(c, n){ c.as = n; c.kw = (BTL_CARD_KW[n] || []).slice(); delete c._big; }
 // ---- TANDEEM (V0.05.61) : PASSIF -- +2 DEF à chaque carte Tech jouée (par l'un ou l'autre joueur) ; affichage habituel d'un gain de DEF ----
@@ -39869,6 +39944,145 @@ async function btlLzBaroud(c){
   if(!given && BTL && !BTL.abort){ btlLzGive(c); btlRenderMana(); }   // effet coupé : les mana sont quand même rendus
 }
 BTL_CARD_FX['LOUZY'] = { appel:btlLzAppel, baroud:btlLzBaroud };
+// ---------------------------------------------------------------------------------------------
+// V0.06.02 : GATEKEEPER -- arrivée : la porte-bouclier de son artwork, en relief (CSS 3D : face texturée, tranches de métal, dos),
+// tombe du ciel en basculant et se fracasse sur sa case : la porte vole en éclats, onde de choc, fissures incandescentes, étincelles,
+// cailloux, nuage de poussière ; la carte est posée sous la poussière et apparaît quand elle retombe.
+// Léger : pendant la chute, 6 faces CSS composées (seule la transformation change) ; ensuite un seul canvas limité à la zone,
+// éclats préparés une fois (12 petites images), particules partagées rd*.
+var BTL_GK = { src:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-f845991c6432.webp', w:347, h:665, body:[.248, .039, .991, .992] };
+// éclats : cellules de Voronoï (graines fixes, en fraction de l'image de la porte) -- pointes et engrenages partent avec leur cellule
+const BTL_GK_SEEDS = [[.18, .14], [.55, .08], [.86, .2], [.42, .3], [.72, .42], [.12, .48], [.4, .58], [.82, .66], [.2, .8], [.55, .84], [.88, .93], [.62, .22]];
+let btlGkCellsC = null;
+function btlGkCells(){
+  if(btlGkCellsC) return btlGkCellsC;
+  const clip = (poly, a, b, c) => { const out = []; for(let i = 0; i < poly.length; i++){ const p = poly[i], q = poly[(i + 1) % poly.length], dp = a * p[0] + b * p[1] - c, dq = a * q[0] + b * q[1] - c;
+    if(dp <= 0) out.push(p); if((dp < 0) !== (dq < 0)){ const t = dp / (dp - dq); out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]); } } return out; };
+  const AS = BTL_GK.h / BTL_GK.w;   // cellules calculées dans l'espace réel de l'image (pas étirées)
+  return btlGkCellsC = BTL_GK_SEEDS.map((s, i) => { let poly = [[0, 0], [1, 0], [1, AS], [0, AS]]; const sx = s[0], sy = s[1] * AS;
+    BTL_GK_SEEDS.forEach((o, j) => { if(j === i) return; const ox = o[0], oy = o[1] * AS; poly = clip(poly, ox - sx, oy - sy, (ox * ox + oy * oy - sx * sx - sy * sy) / 2); });
+    poly = poly.map(p => [p[0], p[1] / AS]); let cx = 0, cy = 0; poly.forEach(p => { cx += p[0]; cy += p[1]; }); return { poly, c:[cx / poly.length, cy / poly.length] }; });
+}
+// éclats prêts à dessiner : morceau de la porte + épaisseur sombre décalée + bord chauffé de la cassure (seulement là où il y a du métal)
+function btlGkShards(img, DW, DH){
+  const q = Math.min(1.25, window.devicePixelRatio || 1), OX = Math.max(1.5, DW * .035), OY = Math.max(2, DW * .05);
+  const mk = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w * q)); c.height = Math.max(1, Math.ceil(h * q)); const g = c.getContext('2d'); g.scale(q, q); return [c, g]; };
+  const [sil, gs] = mk(DW, DH); gs.drawImage(img, 0, 0, DW, DH); gs.globalCompositeOperation = 'source-in'; gs.fillStyle = 'rgb(16,10,8)'; gs.fillRect(0, 0, DW, DH);
+  const [msk, gm] = mk(DW + OX, DH + OY); gm.drawImage(img, 0, 0, DW, DH); gm.drawImage(img, OX, OY, DW, DH);
+  const P = 3;
+  return btlGkCells().map(ce => {
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; ce.poly.forEach(p => { x0 = Math.min(x0, p[0] * DW); y0 = Math.min(y0, p[1] * DH); x1 = Math.max(x1, p[0] * DW); y1 = Math.max(y1, p[1] * DH); });
+    const w = x1 - x0 + OX + P * 2, h = y1 - y0 + OY + P * 2, [c, g] = mk(w, h);
+    g.translate(P - x0, P - y0);
+    const path = (dx, dy) => { ce.poly.forEach((p, j) => j ? g.lineTo(p[0] * DW + dx, p[1] * DH + dy) : g.moveTo(p[0] * DW + dx, p[1] * DH + dy)); g.closePath(); };
+    g.save(); g.beginPath(); path(0, 0); path(OX, OY); g.clip('nonzero'); g.drawImage(sil, OX, OY, DW, DH); g.restore();      // épaisseur (tranche sombre)
+    g.save(); g.beginPath(); path(0, 0); g.clip(); g.drawImage(img, 0, 0, DW, DH);
+    g.strokeStyle = 'rgba(255,120,50,.5)'; g.lineWidth = 1.6; g.beginPath(); path(0, 0); g.stroke(); g.restore();               // bord de la cassure
+    g.globalCompositeOperation = 'destination-in'; g.drawImage(msk, 0, 0, DW + OX, DH + OY);                                       // rien hors du métal
+    return { c, ox:ce.c[0] * DW - x0 + P, oy:ce.c[1] * DH - y0 + P, w, h, ce };
+  });
+}
+async function btlGkArrive(c, to, col){
+  const S = BTL_GK, fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), VW = innerWidth, VH = innerHeight;
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const img = reduce ? null : await rdSheet(S);
+  if(!BTL || BTL.abort) throw 'abort';
+  btlPutCard(c); const un = btlUnitEl(c);
+  if(reduce){ if(un) btlAnim(un, [{ opacity:0 }, { opacity:1 }], { duration:260, fill:'none' }).catch(() => {}); btlRing(to, col, false); return; }
+  if(un) un.style.visibility = 'hidden';
+  const cx = to.left + to.width / 2, cy = to.top + to.height / 2, hw = to.width / 2, hh = to.height / 2;
+  const DH = to.height * 1.16, DW = DH * S.w / S.h, B = S.body;
+  const L = cx - (B[0] + B[2]) / 2 * DW, T = cy - (B[1] + B[3]) / 2 * DH;      // le corps de la porte (sans les pointes) est centré sur la case
+  const bx0 = B[0] * DW, by0 = B[1] * DH, bw = (B[2] - B[0]) * DW, bh = (B[3] - B[1]) * DH, TH = Math.max(6, DW * .08);
+  const els = [];
+  let cv = null;
+  try{
+    try{ musSfx('gkfall'); }catch(_){}
+    // ---------- la porte en relief ----------
+    const W3 = document.createElement('div');
+    const PZ = Math.round(Math.max(VW, VH) * 1.05);
+    W3.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:35;perspective:' + PZ + 'px;perspective-origin:' + (cx / VW * 100).toFixed(1) + '% ' + Math.min(98, cy / VH * 100 + 5).toFixed(1) + '%;';
+    const box = document.createElement('div');
+    box.style.cssText = 'position:absolute;left:' + L.toFixed(1) + 'px;top:' + T.toFixed(1) + 'px;width:' + DW.toFixed(1) + 'px;height:' + DH.toFixed(1) + 'px;transform-style:preserve-3d;will-change:transform,opacity;opacity:0;transform-origin:' + (bx0 + bw / 2).toFixed(1) + 'px ' + (by0 + bh / 2).toFixed(1) + 'px;';
+    const face = css => { const e = document.createElement('i'); e.style.cssText = 'position:absolute;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden;' + css; box.appendChild(e); };
+    const TEX = 'url(' + S.src + ') 0 0/100% 100% no-repeat', MH = 'linear-gradient(90deg,#140d0a,#3a281e 20%,#6a4a33 46%,#2c1e16 72%,#110a07)', MV = MH.replace('90deg', '180deg');
+    face('left:0;top:0;width:100%;height:100%;background:' + TEX + ';transform:translateZ(' + (TH / 2).toFixed(1) + 'px);');                                                                   // face
+    face('left:0;top:0;width:100%;height:100%;background:' + TEX + ';transform:rotateY(180deg) translateZ(' + (TH / 2).toFixed(1) + 'px);filter:brightness(.2);');                               // dos
+    face('left:' + bx0.toFixed(1) + 'px;top:' + (by0 - TH / 2).toFixed(1) + 'px;width:' + bw.toFixed(1) + 'px;height:' + TH.toFixed(1) + 'px;background:' + MH + ';transform:rotateX(90deg);');            // tranche haute
+    face('left:' + bx0.toFixed(1) + 'px;top:' + (by0 + bh - TH / 2).toFixed(1) + 'px;width:' + bw.toFixed(1) + 'px;height:' + TH.toFixed(1) + 'px;background:' + MH + ';transform:rotateX(-90deg);');       // tranche basse
+    face('left:' + (bx0 - TH / 2).toFixed(1) + 'px;top:' + by0.toFixed(1) + 'px;width:' + TH.toFixed(1) + 'px;height:' + bh.toFixed(1) + 'px;background:' + MV + ';transform:rotateY(-90deg);');            // tranche gauche
+    face('left:' + (bx0 + bw - TH / 2).toFixed(1) + 'px;top:' + by0.toFixed(1) + 'px;width:' + TH.toFixed(1) + 'px;height:' + bh.toFixed(1) + 'px;background:' + MV + ';transform:rotateY(90deg);');        // tranche droite
+    W3.appendChild(box);
+    // ombre portée sur la case : se resserre et fonce pendant la chute
+    const sh = document.createElement('div');
+    sh.style.cssText = 'position:fixed;pointer-events:none;z-index:30;left:' + (cx - bw * .66).toFixed(1) + 'px;top:' + (cy - bh * .58).toFixed(1) + 'px;width:' + (bw * 1.32).toFixed(1) + 'px;height:' + (bh * 1.16).toFixed(1) + 'px;opacity:0;will-change:transform,opacity;'
+      + 'background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.9) 0,rgba(0,0,0,.66) 42%,rgba(0,0,0,0) 72%);';
+    fx.appendChild(sh); fx.appendChild(W3); els.push(sh, W3);
+    // ---------- canvas (après l'impact) ----------
+    const mg = Math.max(to.width, to.height) * 1.9, R = rdCanvas(34, { l:cx - mg, t:cy - mg, r:cx + mg, b:cy + mg }), ctx = R.ctx; cv = R.cv;
+    const F = rdFx(), mon = rdLiteMon(), sp = btlGkShards(img, DW, DH);
+    const T_HIT = 440, T_REV = T_HIT + 260, T_END = T_HIT + 1100;
+    const Z0 = PZ * .68, X0 = -DW * .2, Y0 = -DH * .35, RX0 = 24, RY0 = -14, RZ0 = -16;
+    const shards = [], cracks = [];
+    let hit = false, revealed = false, ringed = false, flashA = 0, last = 0;
+    const doHit = () => {
+      hit = true; W3.style.display = 'none'; sh.style.display = 'none';
+      try{ musSfx('gkslam'); }catch(_){}
+      if(plateEl) btlShake(plateEl, Math.max(6, to.width * .075));
+      flashA = 1;
+      rdRing(F, cx, cy, to.width * .45, to.width * 1.6, 560, 5, '72,60,50', .58);                 // onde de choc : souffle de poussière au ras du sol
+      // fissures sombres dans le plateau, cœur de braise qui s'éteint : elles partent du bord de la case
+      const NC = F.lite ? 5 : 7;
+      for(let i = 0; i < NC; i++){ const a = -Math.PI / 2 + i / NC * 6.283 + (Math.random() - .5) * .5, ca = Math.cos(a), sa = Math.sin(a), k = Math.min(hw / Math.max(.01, Math.abs(ca)), hh / Math.max(.01, Math.abs(sa))) * .96;
+        cracks.push(rdCrackTree(cx + ca * k, cy + sa * k, a, to.width * (.22 + Math.random() * .16), 1)); }
+      rdSparks(F, cx, cy + hh * .3, 22, 470, -Math.PI / 2, 3.4, { life:520, g:640, w:1.4 });
+      rdChunks(F, cx, cy, 18, 300, null, 0, { s:Math.max(3.2, to.width * .038), up:170, life:1000, g:900, floor:cy + to.height * .6, pal:[[58, 44, 36], [36, 28, 24], [90, 70, 54]], hot:.35 });
+      // poussière : un anneau qui roule vers l'extérieur au ras du sol + un nuage qui recouvre la case (la carte apparaît dessous)
+      const NR = F.lite ? 10 : 18;
+      for(let i = 0; i < NR; i++){ const a = i / NR * 6.283 + Math.random() * .3, ca = Math.cos(a), sa = Math.sin(a), s0 = to.width * (.32 + Math.random() * .16), v = 150 + Math.random() * 110;
+        rdPuff(F, cx + ca * hw * .7, cy + sa * hh * .7, s0, s0 * (2 + Math.random() * .6), 900 + Math.random() * 350, { vx:ca * v, vy:sa * v * .8, a:.62, drag:2.6, kind:i % 3 ? 'g' : 'd', delay:Math.random() * 50 }); }
+      const NM = F.lite ? 4 : 6;
+      for(let i = 0; i < NM; i++){ const a = i / NM * 6.283 + Math.random() * .6, s0 = to.width * (.42 + Math.random() * .16);
+        rdPuff(F, cx + Math.cos(a) * hw * .35, cy + Math.sin(a) * hh * .35, s0, s0 * 2.1, 950 + Math.random() * 300, { vx:Math.cos(a) * 30, vy:Math.sin(a) * 24 - 16, a:.7, drag:1.8, kind:i % 3 ? 'g' : 'd', delay:15 + Math.random() * 50 }); }
+      // la porte vole en éclats : chaque morceau part de sa place, vers l'extérieur, et retombe en s'éteignant
+      const ccx = (B[0] + B[2]) / 2, ccy = (B[1] + B[3]) / 2;
+      sp.forEach(o => { const ce = o.ce, dx = ce.c[0] - ccx, dy = ce.c[1] - ccy, d = Math.hypot(dx, dy) || 1, v = 180 + Math.random() * 190;
+        shards.push({ o, x:L + ce.c[0] * DW, y:T + ce.c[1] * DH, vx:dx / d * v + (Math.random() - .5) * 60, vy:dy / d * v - 90 - Math.random() * 90, r:0, vr:(Math.random() - .5) * 7, age:-(25 + Math.random() * 45), life:700 + Math.random() * 240 }); });
+    };
+    btlAnim(sh, [{ opacity:0, transform:'scale(1.8)' }, { opacity:.8, transform:'scale(1)' }], { duration:T_HIT, easing:'cubic-bezier(.5,0,.9,.5)', fill:'forwards' }).catch(() => {});
+    await btlEdLoop(t => {
+      mon.tick(); if(!F.lite && mon.dt.length === 18 && mon.lite()) F.lite = true;
+      const dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+      if(!hit){
+        const e = Math.min(1, t / T_HIT), f = e * e * (1.3 - .3 * e), w = 1 - f, wob = Math.sin(e * 7.5) * (1 - e) * 3.5;
+        box.style.opacity = String(Math.min(1, e * 7));
+        box.style.transform = 'translate3d(' + (X0 * w).toFixed(1) + 'px,' + (Y0 * w).toFixed(1) + 'px,' + (Z0 * w).toFixed(1) + 'px) rotateX(' + (RX0 * w + wob).toFixed(2) + 'deg) rotateY(' + (RY0 * w).toFixed(2) + 'deg) rotateZ(' + (RZ0 * w).toFixed(2) + 'deg)';
+        if(t >= T_HIT) doHit();
+        return true;
+      }
+      if(!revealed && t >= T_REV){ revealed = true; if(un){ un.style.visibility = ''; btlAnim(un, [{ opacity:0, transform:'scale(1.05)' }, { opacity:1, transform:'scale(1)' }], { duration:320, easing:'ease-out', fill:'none' }).catch(() => {}); } }
+      if(!ringed && t >= T_HIT + 760){ ringed = true; try{ btlRing(to, col, false); }catch(_){} }
+      ctx.clearRect(R.L, R.T, R.W, R.H);
+      const ka = (t - T_HIT) / 1300;
+      for(const sg of cracks) rdCrackDraw(ctx, sg, Math.min(1, ka * 8) * to.width, .5 * Math.max(0, 1 - ka * 1.5), Math.max(0, 1 - Math.pow(Math.max(0, ka), 2)));
+      for(let i = shards.length - 1; i >= 0; i--){ const s = shards[i]; s.age += dt * 1000; if(s.age >= s.life){ shards.splice(i, 1); continue; }
+        const q = Math.max(0, s.age / s.life);
+        if(s.age > 0){ const d = Math.exp(-1.5 * dt); s.vy += 560 * dt; s.vx *= d; s.vy *= d; s.x += s.vx * dt; s.y += s.vy * dt; s.r += s.vr * dt; }
+        const sc = 1 + .3 * Math.sin(Math.min(1, q * 1.6) * Math.PI) - .14 * q, a = q < .55 ? 1 : Math.max(0, 1 - (q - .55) / .45);
+        ctx.save(); ctx.globalAlpha = a; ctx.translate(s.x, s.y); ctx.rotate(s.r); ctx.scale(sc, sc); ctx.drawImage(s.o.c, -s.o.ox, -s.o.oy, s.o.w, s.o.h); ctx.restore(); }
+      rdStep(ctx, F, dt, 1);   // cailloux
+      rdStep(ctx, F, dt, 0);   // poussière (recouvre la carte qui apparaît dessous)
+      rdStep(ctx, F, dt, 2);   // étincelles, onde de choc, éclair
+      if(flashA > .01){ ctx.globalCompositeOperation = 'lighter'; rdDot(ctx, cx, cy, to.width * .45, '255,140,80', .3 * flashA, 1); ctx.globalCompositeOperation = 'source-over'; flashA *= Math.exp(-dt * 12); }
+      if(t >= T_END && !shards.length && !rdBusy(F)) return false;
+      return t < T_END + 1200;
+    });
+  } finally {
+    els.forEach(e => e.remove()); if(cv) cv.remove();
+    if(un){ un.style.visibility = ''; }
+  }
+}
+BTL_CARD_FX['GATEKEEPER'] = { drop:btlGkArrive };
 function btlAiZeroDef(c){   // V0.05.62 : carte à 0 ATQ jouée par l'IA -- défend l'allié le plus blessé (même règle que aiZeroDef du serveur)
   if(btlNoDef(c)) return null;
   const l = btlTargetsFor(c, 'def').filter(t => t.hp < t.maxHp);
@@ -39889,7 +40103,7 @@ function btlDmWarm(){   // textures de DIMAVERSE préparées pendant un temps mo
 // (face visible pour celui qui l'obtient, de dos pour l'adversaire), parcourue d'arcs électriques, puis file dans la main de son joueur.
 // Rendu : UN canvas plein écran (dpr ≤ 1,5, mélange additif à l'intérieur du canvas seulement, aucun filtre CSS), éclairs en lignes brisées (déplacement du point milieu,
 // branches), trois passes par éclair (halo, lueur, cœur blanc). Sprites (impact, nuages) dessinés une fois. Hasard visuel seulement (Math.random), jamais les règles.
-var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
+var TRANSPORTEUR_POOL = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
 var BTL_TR_TEX = null;
 function btlTrTex(){   // sprites dessinés une fois : lueur d'impact, nuages d'orage (bruit périodique)
   if(BTL_TR_TEX) return BTL_TR_TEX;
@@ -40875,7 +41089,7 @@ var CARD_FX_TXT = (function(){
     'DIMAVERSE':[['passif','quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main.']],
     'TANDEEM':[['passif','à chaque carte Tech jouée (par n’importe quel joueur), gagne +2 DEF.']],
     'SEEKER':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],
-    'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']],
+    'NEUTRON':[['tank']], 'BEAST':[['tank']], 'CATER-PILLARD':[['tank']], 'MED-07':[['tank']], 'EXO-MKX':[['tank']], 'GATEKEEPER':[['tank']],
     'MOTOKO':[['tank'], ['percee']],
     'DELOK':[['percee']], 'TECHNOSORUS':[['percee']], 'HYPPER':[['tank']], 'DILUS':[['appel','pioche une carte.']], 'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']], 'SCOPT':[['percee']], 'LACRIUM':[['percee']], 'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']], 'FENCY':[['tank']], 'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']], 'AMALGAME':[['percee'], ['baroud','place MALGAME dans ta pioche.']], 'MALGAME':[['baroud','place MALAME dans ta pioche.']], 'MALAME':[['baroud','l’adversaire pioche une carte.']], 'GOTHIKA':[['appel','inflige 3 points d’attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite.']], 'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']], 'MORPHE':[['percee']], 'WHIPLASH':[['percee']], 'EXO-MKIV':[['percee']], 'EXO-MKV':[['percee']]
   };
@@ -40909,7 +41123,7 @@ var RD = { img:{} };
 function rdImg(src){ let o = RD.img[src]; if(o) return o.p; const im = new Image(); im.crossOrigin = 'anonymous'; o = RD.img[src] = { im, p:new Promise(res => { im.onload = () => res(im); im.onerror = () => res(null); }) }; im.src = src; return o.p; }
 async function rdSheet(S){ const im = await rdImg(S.src); if(!im){ const c = document.createElement('canvas'); c.width = c.height = 1; return c; }   // V0.05.86 : planche du bucket introuvable (hors ligne)
   if(im.decode) try{ await im.decode(); }catch(_){} return im; }
-function rdPre(){ try{ [BTL_RH2, BTL_DR2, BTL_TX2, BTL_TES2].forEach(S => rdImg(S.src).then(im => { if(im && im.decode) im.decode().catch(() => {}); })); }catch(_){} }
+function rdPre(){ try{ [BTL_RH2, BTL_DR2, BTL_TX2, BTL_TES2, BTL_GK].forEach(S => rdImg(S.src).then(im => { if(im && im.decode) im.decode().catch(() => {}); })); }catch(_){} }
 function rdGlow(rgb){ const k = 'g' + rgb; if(RD[k]) return RD[k]; const S = 64, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d'), gr = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
   gr.addColorStop(0, 'rgba(' + rgb + ',1)'); gr.addColorStop(.22, 'rgba(' + rgb + ',.6)'); gr.addColorStop(.55, 'rgba(' + rgb + ',.16)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)'); g.fillStyle = gr; g.fillRect(0, 0, S, S); return RD[k] = c; }
 function rdDot(ctx, x, y, r, rgb, a, sx){ if(a <= .01 || r <= .2) return; ctx.globalAlpha = Math.min(1, a); const s = sx || 1; ctx.drawImage(rdGlow(rgb), x - r * s, y - r, r * 2 * s, r * 2); ctx.globalAlpha = 1; }
@@ -42749,8 +42963,8 @@ function renderDefiPath(){
 // ---------- DÉFI (V0.04.65) : decks adverses ----------
 // Un deck de 20 cartes par carte de défi ET par palier (1-13). Chaque deck est codé en 20 caractères : un caractère = l'index de la carte dans DEFI_CARD_ORDER
 // (ordre FIGÉ : une nouvelle carte s'ajoute TOUJOURS à la fin). Le chef adverse est la carte du défi. Carte sans deck -> deck de secours (defiFallbackDeck).
-const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY"];
-const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$';   // V0.05.95 : 68 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY, « $ » = LOUZY)
+const DEFI_CARD_ORDER = ["CATER-PILLARD", "MED-07", "MOG-AI", "RHINO", "STAR-HUNTER", "BEAST", "GAPIX", "ARKHAUL", "EXO-MKX", "MORPHE", "BRI-KB-ROCK", "DOZEUR", "NEUTRON", "EXO-MKVII", "SHADOW", "BUZZY", "ZAPPAN", "EXO-MKIV", "HARKO", "GAZELLE", "TUNNELIER", "JIPASIS", "PRAWN", "EXO-MKV", "GRIEVER", "MOTOKO", "CONQUEST", "CHEIF 117", "MED-POD", "TOA2", "WHIPLASH", "DELOK", "TECHNOSORUS", "HYPPER", "DILUS", "KRIGER", "SCOPT", "DUMADED", "LACRIUM", "RAZOPS", "FENCY", "EXO-MKI", "AMALGAME", "GOTHIKA", "TORTUGA", "ELYSIUM", "SYLVERLAKE", "SCOOT", "POUNDER", "PITTY BELL", "SOSFOR", "GAST", "HAKILX", "SEEKER", "CASSIS", "TANDEEM", "DIMAVERSE", "PIGTAIL", "MARCH", "TRASH-BOT", "RYPEAL", "LE COMÈTEUR", "MAGNEMER", "LARVOTRON", "EL-DIABLO", "MATRIARCHE", "GOLDY", "LOUZY", "GATEKEEPER"];
+const DEFI_B36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$%';   // V0.06.02 : 69 cartes (« _ » = MAGNEMER, « ~ » = LARVOTRON, « ! » = EL-DIABLO, « * » = MATRIARCHE, « # » = GOLDY, « $ » = LOUZY, « % » = GATEKEEPER)
 const DEFI_DECKS = {
   "AMALGAME":["gNkhhSZZWjjLIIXiAAff", "gDDMMSaadZZLIiiAAFff", "JgQM8hSdZZejjIIAAFff", "OOgg3kkMhScdZeIIiAff", "ggUQQMMhhSZbjjIIiAff", "OO9ggkkDD0hSSZejjIIf", "OO4JJ6ggNDMMhdjIIAff", "OOK1ggQDMMhhSSciAAff", "OO4gg33kkCMMhSSZjIff", "OO496gg3QQkkMMSSIIAA", "OO44JJggEEDMM0SSjjIf", "OO44J166ggMMhSSjIIAA", "PP22GGTTOO4ggQQMMSjI"],
   "MOG-AI":["2O63NNQQkhhSccdZjIX7", "2J3QDHhhaccddZZWj7Ff", "2966UkDDHhhSZZWYbbIF", "22V33UQQND0hhcdZWWAA", "22JJ633UQNQDMMhhaacc", "2244VVJ9KgNQNkDDZZjF", "22OO4JJ633EUkkhhaadW", "22O44JJ9633NNkkDHci7", "22O4VVJ991663UNQQkHZ", "22OO44VVJJ996EQNDCZW", "22OO4VVJ996633NkkHBh", "22OO44VVJ996633Qk5HH", "PP22TOO44VVJ933kkDDh"],
@@ -42819,11 +43033,12 @@ const DEFI_DECKS = {
   "EL-DIABLO":["!QkDM88ZZeejLXXii77f", "!NkD00hhZeeWYbIXXiiF", "OJ!gQD558cZeeYIXXiiF", "4!!163QQ00acdeeYXiiA", "OVJ!!11D55C8hZZeeXii", "OO!!113kk588heXXii7F", "!!163EQD55CC8hdeeXiA", "OJJ!!1166R5CCB880hXX", "OOJ!!11g3EQk558800ee", "OOJJ!!116NQQ5CC8800e", "OOJJ!!11g3U55C8800hi", "O4J!!11R33k55CC8800e", "PP2GTT4JJ!!11635CC80"],
   "MATRIARCHE":["!QkDM*8ZZeejLXXii77f", "!NkD*0hhZeeWYbIXXiiF", "OJ!gQD*58cZeeYIXXiiF", "4*!163QQ00acdeeYXiiA", "OVJ*!11D55C8hZZeeXii", "OO*!113kk588heXXii7F", "*!163EQD55CC8hdeeXiA", "OJJ*!1166R5CCB880hXX", "OOJ*!11g3EQk558800ee", "OOJJ*!116NQQ5CC8800e", "OOJJ*!11g3U55C8800hi", "O4J*!11R33k55CC8800e", "PP2GTT4JJ*!11635CC80"],
   "GOLDY":["V#MBhadWWYYbbLLXi77A", "3#BBScceWWYYbbjLLXFf", "#UNMBBhccZYYbbLLIiAF", "RR##CMCBSaccZWYbjLLf", "##UQMMHBaacYYbbLLiiF", "OV9RRg##NDMaYYbbjLLi", "V9RR##DMMHBB0SWYYbLF", "VRR##UDMMHBB80acYYLL", "VVJ9RR##UMMBBadeYYLL", "VVJ996RRg##MMHBBYYbL", "VV99KRR##UNNMMBBYYbb", "VV9K6RR##NNMMBBYYbbL", "PP24VV9RR##MMBBYYbbL"],
-  "LOUZY":["$BdeYbjjLLIIXXAAFFff", "$B8aWYYbjjLLII77AAff", "E$HSSdYbjLLIIXiAAFff", "gEN$$BB0SSZbbLIIiAff", "OVJRgQ$$BjjLLIIXAAff", "O9ggEE$$SYbbjjIIXAAf", "OO4RggECC$$SSjLLIiff", "OOVJRRgE$$hSSYjjIAff", "OORggEE$$BhSScbjjIAf", "OO9KRRggU$$SSYYbjjIf", "OOJ9Rgg3EE$$BSYjjIAf", "OO4JRgg$$BBSSbbjIAAf", "PPGGTTOORggEE$$BBSSj"]
+  "LOUZY":["$BdeYbjjLLIIXXAAFFff", "$B8aWYYbjjLLII77AAff", "E$HSSdYbjLLIIXiAAFff", "gEN$$BB0SSZbbLIIiAff", "OVJRgQ$$BjjLLIIXAAff", "O9ggEE$$SYbbjjIIXAAf", "OO4RggECC$$SSjLLIiff", "OOVJRRgE$$hSSYjjIAff", "OORggEE$$BhSScbjjIAf", "OO9KRRggU$$SSYYbjjIf", "OOJ9Rgg3EE$$BSYjjIAf", "OO4JRgg$$BBSSbbjIAAf", "PPGGTTOORggEE$$BBSSj"],
+  "GATEKEEPER":["1Q5580hdZ%XXii77AAFf", "K155M88c%WWLXXii77AA", "K5C88SSZ%WWLIXXii7FF", "K55C0dZ%%jLIXii7AAFF", "OK155800d%%LLXii77FF", "JJ11RCC800c%%jLLii7A", "K11EU55C880S%%WLXi77", "4KK116N55880Sadd%%Li", "K11Rg35CC800S%%LX7AF", "OJJKK11CC880Sdd%%XFF", "JKK11N5CC800SSdd%%i7", "VKK11ECC8800SSd%%XAA", "PP2GTTKK11558SSdd%%F"]
 };
 // Difficulté par palier : k = multiplicateur de stats des cartes adverses, lHp/lDf = bonus PV/DEF du chef adverse, ai = niveau de jeu de l'IA (0-1), hand = cartes de départ en plus
 const DEFI_TIER_KNOBS = [{"k": 0.9, "lHp": 0, "lDf": 0, "ai": 0.0, "hand": 0}, {"k": 0.917, "lHp": 0, "lDf": 0, "ai": 0.1, "hand": 0}, {"k": 0.933, "lHp": 1, "lDf": 0, "ai": 0.2, "hand": 0}, {"k": 0.95, "lHp": 1, "lDf": 0, "ai": 0.3, "hand": 0}, {"k": 0.967, "lHp": 2, "lDf": 1, "ai": 0.4, "hand": 0}, {"k": 0.983, "lHp": 3, "lDf": 1, "ai": 0.5, "hand": 0}, {"k": 1.0, "lHp": 4, "lDf": 1, "ai": 0.6, "hand": 0}, {"k": 1.017, "lHp": 4, "lDf": 2, "ai": 0.7, "hand": 0}, {"k": 1.033, "lHp": 5, "lDf": 2, "ai": 0.8, "hand": 0}, {"k": 1.05, "lHp": 6, "lDf": 3, "ai": 0.9, "hand": 0}, {"k": 1.067, "lHp": 8, "lDf": 3, "ai": 1, "hand": 0}, {"k": 1.083, "lHp": 9, "lDf": 4, "ai": 1, "hand": 0}, {"k": 1.1, "lHp": 10, "lDf": 4, "ai": 1, "hand": 0}];
-const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR", "LOUZY": "PROK-IEM"};   // module adverse par carte de défi (au thème de son deck)
+const DEFI_MOD = {"CATER-PILLARD": "PROTO-SHIELD", "MED-07": "PROTO-SHIELD", "BEAST": "PROTO-SHIELD", "EXO-MKX": "PROTO-SHIELD", "NEUTRON": "PROTO-SHIELD", "HYPPER": "PROTO-SHIELD", "TUNNELIER": "PROTO-SHIELD", "ARKHAUL": "T-ARMS 09", "JIPASIS": "T-ARMS 09", "BUZZY": "T-ARMS 09", "BRI-KB-ROCK": "PROK-IEM", "MED-POD": "PROK-IEM", "MORPHE": "BAVURES", "EXO-MKIV": "BAVURES", "EXO-MKV": "BAVURES", "WHIPLASH": "BAVURES", "DELOK": "BAVURES", "TECHNOSORUS": "BAVURES", "SCOPT": "BAVURES", "GAPIX": "BAVURES", "EXO-MKVII": "BAVURES", "GAZELLE": "BAVURES", "STAR-HUNTER": "BAVURES", "RHINO": "BAVURES", "KRIGER": "BAVURES", "CONQUEST": "BAVURES", "GRIEVER": "PROK-IEM", "PRAWN": "PROK-IEM", "HARKO": "PROK-IEM", "DOZEUR": "SAPHYR", "DILUS": "SAPHYR", "CHEIF 117": "SAPHYR", "SHADOW": "SAPHYR", "DUMADED": "BAVURES", "LACRIUM": "BAVURES", "RAZOPS": "T-ARMS 09", "FENCY": "PROTO-SHIELD", "EXO-MKI": "PROK-IEM", "MOG-AI": "BAVURES", "ZAPPAN": "PROK-IEM", "MOTOKO": "BAVURES", "TOA2": "PROTO-SHIELD", "AMALGAME": "PROK-IEM", "GOTHIKA": "BAVURES", "TORTUGA": "PROTO-SHIELD", "ELYSIUM": "BAVURES", "SYLVERLAKE": "SAPHYR", "SCOOT": "BAVURES", "POUNDER": "BAVURES", "PITTY BELL": "BAVURES", "SOSFOR": "SAPHYR", "GAST": "BAVURES", "HAKILX": "PROTO-SHIELD", "SEEKER": "BAVURES", "CASSIS": "SAPHYR", "TANDEEM": "T-ARMS 09", "DIMAVERSE": "PROTO-SHIELD", "PIGTAIL": "PROK-IEM", "MARCH": "T-ARMS 09", "TRASH-BOT": "PROTO-SHIELD", "RYPEAL": "PROK-IEM", "LE COMÈTEUR": "BAVURES", "MAGNEMER": "PROK-IEM", "LARVOTRON": "PROTO-SHIELD", "EL-DIABLO": "PROTO-SHIELD", "MATRIARCHE": "PROTO-SHIELD", "GOLDY": "SAPHYR", "LOUZY": "PROK-IEM", "GATEKEEPER": "PROTO-SHIELD"};   // module adverse par carte de défi (au thème de son deck)
 const DEFI_MOD_T = {"DOZEUR": ["SAPHYR", "BAVURES", "PROTO-SHIELD", "SAPHYR", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5"], "DILUS": ["SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "SAPHYR", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET"], "CHEIF 117": ["SAPHYR", "T-ARMS 09", "PROK-IEM", "SAPHYR", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES"], "SHADOW": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"], "SYLVERLAKE": ["SAPHYR", "AZ-5", "ROCKET", "SAPHYR", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09"], "SOSFOR": ["SAPHYR", "ROCKET", "BAVURES", "SAPHYR", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM"], "GOLDY": ["SAPHYR", "PROK-IEM", "AZ-5", "SAPHYR", "ROCKET", "BAVURES", "PROTO-SHIELD", "T-ARMS 09", "PROK-IEM", "AZ-5", "ROCKET", "BAVURES", "PROTO-SHIELD"]};   // V0.05.06 : module adverse PAR PALIER pour les Défis SAPHYR (le reste suit DEFI_MOD)
 function defiDeckNames(focus, tier){
   const row = DEFI_DECKS[focus], str = row && row[tier - 1];
@@ -43000,6 +43215,7 @@ const DEFI_RESULT_ART_Y = {
   'MATRIARCHE': 13,   // V0.05.94 : cadrage calculé (tête visible)
   'GOLDY': 6,   // V0.05.94 : cadrage calculé (tête visible)
   'LOUZY': 60,   // V0.05.95 : cadrage calculé (tête visible)
+  'GATEKEEPER': 53,   // V0.06.02 : cadrage calculé (tête visible)
 };
 function defiResultArtPosY(name){ return DEFI_RESULT_ART_Y[name] != null ? DEFI_RESULT_ART_Y[name] : 50; }
 // Fin normale du combat (tous les ennemis vaincus -> endBattle(true) ; escouade anéantie -> false) --
