@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.03</title>
+<title>Projet MECA V0.06.04</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.03</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.04</b></div>
   </div>
 
     </div>
@@ -9905,9 +9905,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.03';
+var BUILD_VERSION = 'V0.06.04';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.04', items:[
+    'Nouveaux sons : les cartes et les Tech qui avaient une animation sans son à elles ont maintenant leurs propres sons (arrivées, effets, Baroud).',
+    'Nouveaux sons communs : soin, carte qui retourne dans la pioche, mélange de la pioche.',
+  ] },
   { v:'V0.06.03', items:[
     'Nouvelle carte RARE : KEEPER (3 ATQ / 4 DEF / 5 PV), char d’assaut des Enfers. TANK : l’adversaire doit le détruire avant d’attaquer tes autres cartes ou ton chef.',
     'Nouvelle carte ÉPIQUE : AKRYLIN (3 ATQ / 3 DEF / 5 PV), serpent de lave. PASSIF : tant qu’il est sur le champ de bataille, quand un joueur pioche une carte, l’autre en pioche une aussi (une par AKRYLIN ; main pleine : la carte est brûlée).',
@@ -12028,11 +12032,35 @@ var MUS = { ctx:null, last:'', susp:0, stop:0, tr:{
   menu:  { url:MUS_BASE + 'Musique%20Principale.mp3', buf:null, src:null, gain:null, failAt:0, busy:false },
   fight: { url:MUS_BASE + 'Musique%20Combats.mp3',    buf:null, src:null, gain:null, failAt:0, busy:false } } };
 // Sons de pose des cartes (V0.04.87) : un son par rareté, joués à l'impact de la carte sur son emplacement (joueur et adversaire), volume = EFFETS SONORES
-MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ akfill:'sfx-akfill.mp3', akburst:'sfx-akburst.mp3', akspit:'sfx-akspit.mp3', aksplat:'sfx-aksplat.mp3', gkfall:'sfx-gkfall.mp3', gkslam:'sfx-gkslam.mp3', lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
+MUS.sfx = { gain:null, buf:{}, failAt:0, busy:false, files:{ heal:'sfx-heal-7bfaa4e9.mp3', shuffle:'sfx-shuffle-f79aa0ba.mp3', reform:'sfx-reform-c4297b90.mp3', toPile:'sfx-toPile-01354b3e.mp3', akfill:'sfx-akfill.mp3', akburst:'sfx-akburst.mp3', akspit:'sfx-akspit.mp3', aksplat:'sfx-aksplat.mp3', gkfall:'sfx-gkfall.mp3', gkslam:'sfx-gkslam.mp3', lzgrab:'sfx-lzgrab.mp3', lzfree:'sfx-lzfree.mp3', coinrain:'sfx-coinrain.mp3', coinslide:'sfx-coinslide.mp3', fin:'sfx-fin.mp3', vap1:'sfx-vap1.mp3', vap2:'sfx-vap2.mp3', vap3:'sfx-vap3.mp3', vap4:'sfx-vap4.mp3', pio1:'sfx-pio1.mp3', pio2:'sfx-pio2.mp3', pio3:'sfx-pio3.mp3', dep1:'sfx-dep1.mp3', dep2:'sfx-dep2.mp3', dep3:'sfx-dep3.mp3', missile:'sfx-missile.mp3', die1:'sfx-die1.mp3', die2:'sfx-die2.mp3', atk1:'sfx-atk1.mp3', atk2:'sfx-atk2.mp3', atk3:'sfx-atk3.mp3', atk4:'sfx-atk4.mp3', rare:'CARTE%20RARE%20POSER.mp3', epique:'CARTE%20EPIQUE%20POSER.mp3', legendaire:'CARTE%20LEGENDAIRE%20POSER.mp3', ecarlate:'CARTE%20ECARLATE%20POSER.mp3', holo:'CARTE%20HOLO%20POSER.mp3', shield:'DEFENSE%20BOUCLIER.mp3', die3:'CARTE%20DETRUITE%203.mp3', click:'Musique%20appuie%20sur%20bouton.mp3', fab_rare:'FABRICATION%20CARTE%20RARE.mp3', fab_epique:'FABRICATION%20CARTE%20EPIQUE.mp3', fab_legendaire:'FABRICATION%20CARTE%20LEGENDAIRE.mp3', fab_ecarlate:'FABRICATION%20CARTE%20ECARLATE.mp3', get_epique:'FABRIQUE%20EPIQUE.mp3', get_legendaire:'FABRIQUE%20LEGENDAIRE.mp3', get_ecarlate:'FABRIQUE%20ECARLATE.mp3', get_holo:'FABRIQUE%20HOLO.mp3' } };
 MUS.sfx.emb = {};   // V0.05.70 : FIN, vapeur x4, pioche x3, déplacement d'attaque x3 (copiés ensuite dans le bucket, puis passés dans MUS.sfx.files)
 MUS.sfx.off = { pio1:.32, pio2:.06, pio3:.06, dep1:.28, dep2:.38, dep3:.64 };   // V0.05.70 : début de lecture (s) : on saute le blanc du début pour caler le bruit sur la carte
 MUS.sfx.pk = { pio1:.21, pio2:.23, pio3:.30 };    // V0.05.70 : instant du maximum de chaque son (s, après le blanc sauté)
-MUS.sfx.lvl = { missile:.5, dep1:1.57, dep2:.69 };   // V0.05.70 : dep1 +3,9 dB, dep2 -3,2 dB (les 3 sons de déplacement au même volume)   // niveau propre à chaque son (le fichier du missile est mixé très fort)
+MUS.sfx.lvl = { missile:.5, dep1:1.57, dep2:.69 };
+// V0.06.04 : sons propres des cartes (synthétisés), lus dans le bucket à la demande : au début du combat pour les cartes des decks connus,
+// sinon quand la carte est posée ou la Tech jouée (PvP, TRANSPORTEUR, CASSIS). Un son pas encore prêt part dès qu'il l'est (sauf s'il arrive trop tard).
+MUS.sfx.cfiles = { amarrive:'sfx-amarrive-46b356e0.mp3', arorb:'sfx-arorb-7b3b9e60.mp3', brparts:'sfx-brparts-4109fb92.mp3', bzshield:'sfx-bzshield-af153e1c.mp3', chjet:'sfx-chjet-7cebe86c.mp3', cmglitch:'sfx-cmglitch-aa8c5448.mp3', cmhole:'sfx-cmhole-85773d1e.mp3', cmimpact:'sfx-cmimpact-c28aa2b9.mp3', cmpulse:'sfx-cmpulse-d335b91d.mp3', cqarrive:'sfx-cqarrive-01218fbd.mp3', cqclash:'sfx-cqclash-eac164fb.mp3', csshow:'sfx-csshow-bcb96a9d.mp3', dlarrive:'sfx-dlarrive-78127be3.mp3', dmarrive:'sfx-dmarrive-3beceb7a.mp3', dmcard:'sfx-dmcard-5ebd331c.mp3', dmeject:'sfx-dmeject-91e8931d.mp3', duarrive:'sfx-duarrive-9767c5fd.mp3', dustrike:'sfx-dustrike-97ce4821.mp3', dzpush:'sfx-dzpush-dea65d65.mp3', edarrive:'sfx-edarrive-06d20c54.mp3', edsalvo:'sfx-edsalvo-83154d90.mp3', edstrike:'sfx-edstrike-66de0ece.mp3', elarrive:'sfx-elarrive-c31640a6.mp3', elx:'sfx-elx-bfe78ef8.mp3', exhit:'sfx-exhit-f2b9d36f.mp3', exshot:'sfx-exshot-06f3818e.mp3', exspark:'sfx-exspark-ef9cd346.mp3', gpfall:'sfx-gpfall-339addd4.mp3', gpimpact:'sfx-gpimpact-87e2e7a8.mp3', grlaunch:'sfx-grlaunch-55777be1.mp3', grslam:'sfx-grslam-80ddaf7c.mp3', gtarc:'sfx-gtarc-249396d8.mp3', gtarrive:'sfx-gtarrive-78a85e70.mp3', gtbranch:'sfx-gtbranch-c9c51eec.mp3', gzlaunch:'sfx-gzlaunch-da87c8b3.mp3', hebounce:'sfx-hebounce-1e660839.mp3', heseal:'sfx-heseal-449921b5.mp3', hkcoils:'sfx-hkcoils-49fa7b8d.mp3', hkstrike:'sfx-hkstrike-67843c9c.mp3', hrcall:'sfx-hrcall-bdc83a27.mp3', hrzap:'sfx-hrzap-a9918aa7.mp3', jpaegis:'sfx-jpaegis-7c9b2e44.mp3', jppulse:'sfx-jppulse-909af4e2.mp3', krgrapple:'sfx-krgrapple-85455441.mp3', lcarrive:'sfx-lcarrive-ccb7035b.mp3', lxboom:'sfx-lxboom-1629ea35.mp3', lxcrack:'sfx-lxcrack-ef0a0424.mp3', lxcrawl:'sfx-lxcrawl-60ed9bfb.mp3', lxdrop:'sfx-lxdrop-bac43ecf.mp3', lxegg:'sfx-lxegg-a5e467c5.mp3', lxhatch:'sfx-lxhatch-4df5471e.mp3', lxspit:'sfx-lxspit-8b6f40eb.mp3', lxsplat:'sfx-lxsplat-286391e3.mp3', lxstep:'sfx-lxstep-0d6ffb71.mp3', lxswell:'sfx-lxswell-14494145.mp3', mcbag:'sfx-mcbag-55e37fbe.mp3', mcburst:'sfx-mcburst-236135c3.mp3', mcplace:'sfx-mcplace-8ad6dabd.mp3', mganswer:'sfx-mganswer-459d1584.mp3', mgdrain:'sfx-mgdrain-a728011d.mp3', mgerupt:'sfx-mgerupt-89d426b0.mp3', mgfill:'sfx-mgfill-3c5c1089.mp3', moarrive:'sfx-moarrive-c95585d6.mp3', mogcry:'sfx-mogcry-972e0eb0.mp3', mparrive:'sfx-mparrive-5d59466d.mp3', mpfetch:'sfx-mpfetch-4c63ef13.mp3', mslboom:'sfx-mslboom-1fd5661e.mp3', mtbreak:'sfx-mtbreak-56cb31fa.mp3', mtengulf:'sfx-mtengulf-615b3ee7.mp3', mtrise:'sfx-mtrise-fa9a6dbf.mp3', mtshadow:'sfx-mtshadow-098f58f2.mp3', mtwings:'sfx-mtwings-5a001e91.mp3', pecharge:'sfx-pecharge-b7d6bec7.mp3', pgarrive:'sfx-pgarrive-7125ae0b.mp3', pgcable:'sfx-pgcable-0186f3a8.mp3', poimplant:'sfx-poimplant-47e84542.mp3', populse:'sfx-populse-a0bd9a1f.mp3', poshow:'sfx-poshow-0bfbef43.mp3', prammo:'sfx-prammo-3824172f.mp3', prpower:'sfx-prpower-2e06e22a.mp3', prshot:'sfx-prshot-d778fa7b.mp3', ptdrone:'sfx-ptdrone-c1f7ceab.mp3', rexarrive:'sfx-rexarrive-5111577f.mp3', rfecho:'sfx-rfecho-680b7dfb.mp3', rhcharge:'sfx-rhcharge-050d7598.mp3', rhhit:'sfx-rhhit-975e6300.mp3', ryarms:'sfx-ryarms-5c74d6ea.mp3', rysmash:'sfx-rysmash-108cab40.mp3', rzdrone:'sfx-rzdrone-9d564b77.mp3', sbdisk:'sfx-sbdisk-35d813a2.mp3', sbplug:'sfx-sbplug-d343b8e6.mp3', scarrive:'sfx-scarrive-ba984e43.mp3', shghost:'sfx-shghost-59477220.mp3', shleap:'sfx-shleap-acc502f4.mp3', skimpact:'sfx-skimpact-7508b9f0.mp3', skscope:'sfx-skscope-de8ebb6b.mp3', skshot:'sfx-skshot-1cd76418.mp3', slappel:'sfx-slappel-66e04f3f.mp3', slarrive:'sfx-slarrive-00163f8d.mp3', slborn:'sfx-slborn-10759ced.mp3', sldrop:'sfx-sldrop-0fd5bd64.mp3', spdome:'sfx-spdome-3e52cf5a.mp3', spfire:'sfx-spfire-89c0018f.mp3', sppress:'sfx-sppress-24c980c8.mp3', stcry:'sfx-stcry-0669c00f.mp3', tbmeal:'sfx-tbmeal-b1a194e3.mp3', tbpower:'sfx-tbpower-06e0ac87.mp3', tdlink:'sfx-tdlink-92e7596a.mp3', tgarrive:'sfx-tgarrive-ea05fc2a.mp3', tgwave:'sfx-tgwave-e7207cd7.mp3', tndrill:'sfx-tndrill-f2fc837b.mp3', tnhit:'sfx-tnhit-2fdc263a.mp3', toarrive:'sfx-toarrive-36f02105.mp3', toboom:'sfx-toboom-2f0bd48e.mp3', toshot:'sfx-toshot-ef0da198.mp3', toturret:'sfx-toturret-2ab1cf2a.mp3', trbolt:'sfx-trbolt-0ef158e4.mp3', trcharge:'sfx-trcharge-682860e0.mp3', trzap:'sfx-trzap-901ee0ff.mp3', wllasso:'sfx-wllasso-832fe0fe.mp3', zpkatana:'sfx-zpkatana-58b4d4a9.mp3' };
+MUS.sfx.ccards = { "MATRIARCHE":['mtshadow', 'mtwings', 'mtrise', 'mtengulf', 'mtbreak'], "BUZZY":['bzshield'], "ARKHAUL":['arorb'], "BRI-KB-ROCK":['brparts'], "AMALGAME":['amarrive'], "EL-DIABLO":['edarrive', 'edsalvo', 'edstrike'], "CHEIF 117":['chjet', 'prshot'], "PRAWN":['prshot'], "CONQUEST":['cqarrive', 'cqclash'], "DILUS":['dlarrive'], "CASSIS":['csshow'], "RHINO":['rhcharge', 'rhhit'], "GAPIX":['gpfall', 'gpimpact'], "EXO-MKVII":['exshot', 'exhit'], "GAZELLE":['gzlaunch', 'mslboom'], "GRIEVER":['grlaunch', 'mslboom', 'grslam'], "DOZEUR":['dzpush'], "ELYSIUM":['elarrive', 'elx'], "GOTHIKA":['gtarrive', 'gtarc', 'gtbranch'], "DIMAVERSE":['dmarrive', 'dmcard', 'dmeject'], "HAKILX":['hkcoils', 'hkstrike'], "KRIGER":['krgrapple'], "DUMADED":['duarrive', 'dustrike'], "HÉROS ENGAGÉ":['heseal', 'hebounce'], "LARVOTRON":['lxdrop', 'lxsplat', 'lxegg', 'lxcrack', 'lxhatch', 'lxcrawl', 'lxstep', 'lxswell', 'lxboom', 'lxspit'], "EXTERMINATION":['exspark'], "MAGNEMER":['mgfill', 'mgerupt', 'mganswer', 'mgdrain'], "MED-POD":['mparrive', 'mpfetch'], "HARKO":['hrcall', 'hrzap'], "JIPASIS":['jpaegis', 'jppulse'], "MOTOKO":['moarrive'], "LACRIUM":['lcarrive'], "PILE D’ÉNERGIE":['pecharge'], "LE COMÈTEUR":['cmglitch', 'cmhole', 'cmimpact', 'cmpulse'], "SHADOW":['shghost', 'shleap'], "POSITRON":['poimplant', 'poshow', 'populse'], "MARCH":['mcbag', 'mcburst', 'mcplace'], "RENFORTS":['rfecho'], "PRÉPARATION":['prammo', 'prpower'], "MOG-AI":['mogcry'], "STAR-HUNTER":['stcry'], "PIGTAIL":['pgarrive', 'pgcable'], "RYPEAL":['ryarms', 'rysmash'], "SCOPT":['scarrive'], "PITTY BELL":['ptdrone'], "RAZOPS":['rzdrone'], "TANDEEM":['tdlink'], "SABOTAGE":['sbdisk', 'sbplug'], "TOA2":['toarrive', 'toturret', 'toshot', 'toboom'], "SEEKER":['skscope', 'skshot', 'skimpact'], "TRANSPORTEUR":['trcharge', 'trzap', 'trbolt'], "SOUS PRESSION":['spdome', 'sppress', 'spfire'], "SYLVERLAKE":['slarrive', 'slappel', 'sldrop', 'slborn'], "TUNNELIER":['tndrill', 'tnhit'], "TECHNOSORUS":['rexarrive'], "TORTUGA":['tgarrive', 'tgwave'], "TRASH-BOT":['tbmeal', 'tbpower'], "ZAPPAN":['zpkatana'], "WHIPLASH":['wllasso'] };
+MUS.sfx.cpend = {};
+function musCardLoad(keys){
+  const m = MUS, f = m.sfx; if(!m.ctx || !keys || !keys.length) return Promise.resolve();
+  return Promise.all(keys.filter(k => f.cfiles[k] && !f.buf[k]).map(k => f.cpend[k] || (f.cpend[k] = fetch(MUS_BASE + f.cfiles[k])
+    .then(r => { if(!r.ok) throw new Error('son ' + r.status); return r.arrayBuffer(); }).then(b => m.ctx.decodeAudioData(b)).then(b => { f.buf[k] = b; })
+    .catch(() => {}).finally(() => { delete f.cpend[k]; }))));
+}
+function musCardKeys(names){ const f = MUS.sfx, out = new Set(); (names || []).forEach(n => (f.ccards[n] || []).forEach(k => out.add(k))); return [...out]; }
+// début de combat : on garde seulement les sons des cartes de ce combat (mémoire du téléphone), puis on charge ceux qui manquent
+function musCardWarm(names, reset){
+  const f = MUS.sfx, keys = musCardKeys(names);
+  if(reset){ const keep = new Set(keys); Object.keys(f.cfiles).forEach(k => { if(!keep.has(k) && f.buf[k]) delete f.buf[k]; }); }
+  return musCardLoad(keys);
+}
+function btlSnd(k, at){ try{ musSfx(k, at); }catch(_){} }
+function btlSfxNames(){
+  const out = new Set(); if(!BTL || !BTL.S) return [];
+  ['p', 'o'].forEach(sd => { const S = BTL.S[sd]; [S.leader].concat(S.pile || [], S.hand || [], S.slots || []).forEach(c => { if(c && c.name){ out.add(c.name); try{ out.add(btlFxN(c)); }catch(_){} } }); });
+  return [...out];
+}   // V0.05.70 : dep1 +3,9 dB, dep2 -3,2 dB (les 3 sons de déplacement au même volume)   // niveau propre à chaque son (le fichier du missile est mixé très fort)
 function musB64(b){ const bin = atob(b), u = new Uint8Array(bin.length); for(let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u.buffer; }
 async function musLoadSfx(){
   const m = MUS, f = m.sfx; if(!m.ctx || f.busy || Date.now() - f.failAt < 60000) return;
@@ -12048,7 +12076,10 @@ async function musLoadSfx(){
   finally{ f.busy = false; }
 }
 function musSfx(rar, at){   // at (V0.05.70) : départ différé de at secondes (programmé dans le moteur audio, précis)
-  const m = MUS, f = m.sfx; if(!m.ctx || !f.gain || !f.buf[rar] || document.hidden || (SETTINGS.vfx || 0) <= 0) return;
+  const m = MUS, f = m.sfx;
+  if(m.ctx && f.gain && !f.buf[rar] && f.cfiles && f.cfiles[rar] && !document.hidden && (SETTINGS.vfx || 0) > 0){   // V0.06.04 : son de carte pas encore chargé
+    const t0 = performance.now(), a0 = at > 0 ? at : 0; musCardLoad([rar]).then(() => { const late = (performance.now() - t0) / 1000; if(f.buf[rar] && late < a0 + .3) musSfx(rar, Math.max(0, a0 - late)); }); return; }
+  if(!m.ctx || !f.gain || !f.buf[rar] || document.hidden || (SETTINGS.vfx || 0) <= 0) return;
   const go = () => { f.gain.gain.value = Math.max(0, Math.min(1, SETTINGS.vfx / 100)); const so = m.ctx.createBufferSource(); so.buffer = f.buf[rar]; const lv = f.lvl && f.lvl[rar]; if(lv){ const g = m.ctx.createGain(); g.gain.value = lv; so.connect(g); g.connect(f.gain); } else so.connect(f.gain); so.start(at > 0 ? m.ctx.currentTime + at : 0, (f.off && f.off[rar]) || 0); };
   if(m.ctx.state === 'running') go(); else m.ctx.resume().then(go).catch(() => {});
   if(!musMode()){ clearTimeout(m.sfxT); m.sfxT = setTimeout(() => { if(!musMode()) musSync(); }, 2500 + (at > 0 ? at * 1000 : 0)); }   // V0.05.77 : remise en veille
@@ -25409,7 +25440,7 @@ async function btlGunShot(src, t){
   const mk = css => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; fx.appendChild(d); els.push(d); return d; };
   try{
     // flamme de bouche : cône + étoile + cœur blanc
-    const fl = mk('left:' + mx + 'px;top:' + (my - 9) + 'px;width:46px;height:18px;z-index:11;opacity:0;transform-origin:0 50%;transform:rotate(' + deg + 'deg);'
+    btlSnd('exshot'); const fl = mk('left:' + mx + 'px;top:' + (my - 9) + 'px;width:46px;height:18px;z-index:11;opacity:0;transform-origin:0 50%;transform:rotate(' + deg + 'deg);'
       + 'background:radial-gradient(ellipse at 0% 50%,#fff 0,#fff3b0 18%,#ffb43c 42%,rgba(255,110,20,.75) 66%,rgba(255,80,0,0) 100%);clip-path:polygon(0 38%,38% 0,100% 44%,100% 56%,38% 100%,0 62%);will-change:transform,opacity');
     btlAnim(fl, [{ transform:'rotate(' + deg + 'deg) scale(.2,.6)', opacity:0 }, { transform:'rotate(' + deg + 'deg) scale(1.1,1)', opacity:1, offset:.28 }, { transform:'rotate(' + deg + 'deg) scale(1.5,.7)', opacity:0 }], { duration:150, easing:'ease-out' }).catch(() => {});
     const star = mk('left:' + (mx - 17) + 'px;top:' + (my - 17) + 'px;width:34px;height:34px;z-index:12;opacity:0;will-change:transform,opacity;'
@@ -25436,7 +25467,7 @@ async function btlGunShot(src, t){
     await btlAnim(bi, [{ transform:'translateX(0)', opacity:1 }, { transform:'translateX(' + dist + 'px)', opacity:1 }], { duration:T, easing:'cubic-bezier(.3,.05,.95,.8)' });
     bo.remove();
     // impact : le trou dans la carte (fissures + bord brûlé), étincelles, fumée, secousse
-    const r1 = btlUnitRect(t), hs = Math.max(14, r1.width * .2);
+    btlSnd('exhit'); const r1 = btlUnitRect(t), hs = Math.max(14, r1.width * .2);
     const hole = document.createElement('div'); const lx = hx - r1.left, ly = hy - r1.top;
     hole.style.cssText = 'position:absolute;left:' + (lx - hs / 2) + 'px;top:' + (ly - hs / 2) + 'px;width:' + hs + 'px;height:' + hs + 'px;z-index:7;pointer-events:none;opacity:0;will-change:transform,opacity;transform:scale(.2)';
     let cr = ''; for(let i = 0; i < 8; i++){ const a = Math.random() * 6.283, l = 30 + Math.random() * 18; cr += '<line x1="50" y1="50" x2="' + (50 + Math.cos(a) * l).toFixed(1) + '" y2="' + (50 + Math.sin(a) * l).toFixed(1) + '"/>'; }
@@ -25473,7 +25504,7 @@ function btlDust(x, y, w, n, big){
 }
 // GAPIX : un robot-boule 3D (BTL_BALL : 24 images) tombe du ciel sur la carte, rebondit, soulève la poussière puis disparaît ; résolu à sa disparition
 async function btlBallDrop(t){
-  const B = BTL_BALL, fx = btlQ('#btlFx'), r = btlUnitRect(t), el = btlUnitEl(t);
+  btlSnd('gpfall'); const B = BTL_BALL, fx = btlQ('#btlFx'), r = btlUnitRect(t), el = btlUnitEl(t);
   const S = Math.max(70, r.width * 1.18), cx = r.left + r.width / 2, cy = r.top + r.height * .5, base = cy + S * .34;
   const FALL = Math.min(660, 430 + cy * .3), els = [];
   const mk = css => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; fx.appendChild(d); els.push(d); return d; };
@@ -25488,7 +25519,7 @@ async function btlBallDrop(t){
     // chute
     await btlAnim(e, [{ transform:'translateY(' + (-(cy + S)) + 'px)', opacity:1 }, { transform:'translateY(0)', opacity:1 }], { duration:FALL, easing:'cubic-bezier(.5,0,.95,.55)' });
     // premier impact
-    btlShake(el, 6); btlFlashEl(el, '#ffffff', .55, 260); btlRing(r, '#d9d3c7', false);
+    btlSnd('gpimpact'); btlShake(el, 6); btlFlashEl(el, '#ffffff', .55, 260); btlRing(r, '#d9d3c7', false);
     btlDust(cx, base, S, 14, true); btlParticles(cx, base, { n:9, color:'#cfc6b8', dist:50, dur:520, size:4, sq:true });
     btlAnim(sq, [{ transform:'scale(1,1)' }, { transform:'scale(1.15,.82)', offset:.32 }, { transform:'scale(.97,1.05)', offset:.66 }, { transform:'scale(1,1)' }], { duration:300, easing:'ease-out' }).catch(() => {});
     await btlSleep(70);
@@ -25602,7 +25633,7 @@ async function btlOrbFly(src, dst){
 }
 async function btlOrbHeal(src, t, amount){
   if(btlGone() || !t || t.hp <= 0 || amount <= 0) return;
-  const halo = btlHalo(t);
+  btlSnd('arorb'); const halo = btlHalo(t);
   try{ await btlOrbFly(src, t); }catch(e){ halo.stop(); throw e; }
   halo.stop();
   if(btlGone() || t.hp <= 0) return;
@@ -26315,6 +26346,7 @@ function btlStart(d){
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
   btlWarm();
   btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm(); btlMtWarm(); btlGdWarm(); btlAkWarm();
+  try{ musCardWarm(btlSfxNames(), true); }catch(_){}   // V0.06.04 : sons propres des cartes de ce combat
   btlCircuit();
   btlRenderPile('p', 0); btlRenderPile('o', 0); btlRenderMana(); btlRenderHand(); btlRenderOHand();
   ['p', 'o'].forEach(sd => { const c = BTL.S[sd].leader; btlPutCard(c); btlSlotOf(c).classList.add('lead-on'); });   // V0.04.66 : les chefs d'escouade sont déjà en place dès le lancement du combat (plus de sortie de pile)
@@ -27123,7 +27155,7 @@ function btlGhostEnter(c, u, to, col){
     { transform:'scale(.95)', opacity:1, offset:.86, easing:'cubic-bezier(.3,.8,.4,1)' },
     { transform:'scale(1)', opacity:1 }
   ], { duration:900 }).then(a => a.cancel(), () => {});
-  btlFlashEl(u, col, .85, 560);
+  btlSnd('shghost'); btlFlashEl(u, col, .85, 560);
   btlAfter(() => { if(!BTL) return; btlRing(to, col, false); btlParticles(cx, cy, { n:10, color:col, dist:58, dur:520, size:4, inward:true, spread:120 }); }, 200);
   btlAfter(() => { if(!BTL) return; btlFlashEl(u, '#ffffff', .75, 300); btlRing(to, '#ffffff', true); }, 610);
 }
@@ -27366,6 +27398,7 @@ function btlPlateTex(body, g, top){
 }
 async function btlPlay(side, c, si, fromRect, el){ try{ return await btlPlay0(side, c, si, fromRect, el); } finally { await btlTbFlush(); } }
 async function btlPlay0(side, c, si, fromRect, el){
+  try{ musCardWarm([c.name, btlFxN(c)]); }catch(_){}   // V0.06.04
   const S = BTL.S[side];
   if(side === 'p'){ const hi = S.hand.indexOf(c); if(hi >= 0) btlRec('P' + hi + si); }   // bande du joueur
   if(c.def && c.def.name === 'KRIGER' && typeof btlKrSprite === 'function') btlKrSprite();   // précharge le grappin 3D
@@ -28141,7 +28174,7 @@ async function btlHeal(t, amount, color, numCls){
   t.hp += real;
   const r = btlUnitRect(t), el = btlUnitEl(t);
   btlFloatNum(r, '+' + real, numCls || 'heal'); btlStatPop(el, 's-hp', '#4ade80');
-  btlRing(r, color, false); btlFlashEl(el, color, .8, 420);
+  btlSnd('heal'); btlRing(r, color, false); btlFlashEl(el, color, .8, 420);
   btlParticles(r.left + r.width / 2, r.top + r.height * .7, { n:9, color, dist:46, dur:760, size:5, rise:true, spread:220 });
   await btlTween(t, before, t.hp / t.maxHp * 100, 560);
 }
@@ -29439,7 +29472,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
     try{
       await btlSleep(1000);
       if(btlGone()) return;
-      btlBloom(mid, col); btlRing(mid, '#ffffff', false); btlAfter(() => { if(!btlGone()) btlRing(mid, col, false); }, 180);
+      btlSnd('reform'); btlBloom(mid, col); btlRing(mid, '#ffffff', false); btlAfter(() => { if(!btlGone()) btlRing(mid, col, false); }, 180);
       btlParticles(mc.x, mc.y, { n:24, color:col, dist:W * .85, dur:760, size:6, inward:true, spread:360 });
       btlParticles(mc.x, mc.y, { n:12, color:'#ffffff', dist:W * .55, dur:620, size:4, inward:true, spread:360 });
       await btlAnim(e, [{ transform:sc(.8), opacity:0 }, { transform:sc(1.05), opacity:1, offset:.62, easing:'cubic-bezier(.2,.8,.3,1)' }, { transform:sc(1), opacity:1 }], { duration:680, easing:'ease-out' });
@@ -29454,7 +29487,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
     } finally { e.remove(); }
   } else {
   const lift = { left:from.left - from.width * 0.05, top:from.top - 18, width:from.width * 1.1, height:from.height * 1.1 };
-  const dur = 1160;
+  btlSnd('toPile'); const dur = 1160;
   btlAnim(rot, [{ transform:'rotate(0deg)', offset:0 }, { transform:'rotate(0deg)', offset:.5 }, { transform:'rotate(90deg)', offset:.88 }, { transform:'rotate(90deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   if(face) btlAnim(rot.firstChild, [{ transform:'rotateY(180deg)', offset:0 }, { transform:'rotateY(180deg)', offset:.5 }, { transform:'rotateY(0deg)', offset:.8 }, { transform:'rotateY(0deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
   try{
@@ -29470,7 +29503,7 @@ async function btlHandToPile(side, c, fromRect){   // fromRect : la carte ne vie
   if(pvpOn()) S.pile.unshift(c); else { S.pile.push(c); btlShuffle(S.pile); }   // PvP : le serveur mélange, la prochaine carte est celle de la photo
   btlRenderPile(side, 0);
   // mélange : deux demi-paquets se séparent puis se rejoignent, deux fois
-  const pr = btlRect(pileEl), fx = btlQ('#btlFx'), halves = [];
+  btlSnd('shuffle'); const pr = btlRect(pileEl), fx = btlQ('#btlFx'), halves = [];
   [-1, 1].forEach(k => {
     const h = document.createElement('div'); h.className = 'btl-fly'; btlPlaceFixed(h, to); h.innerHTML = '<div class="btl-fl-in"><div class="btl-ff b">' + btlBackHtml(c.rar, c.side) + '</div></div>';
     h.style.zIndex = 30; const w = btlRotWrap(h); w.style.transform = 'rotate(90deg)'; fx.appendChild(h); halves.push(h);
@@ -29616,7 +29649,7 @@ function btlFxPickDmg(n, opt){ return async c => { const t = await btlChoose(c, 
 async function btlPrawnShot(c, tgtSide){
   const side = tgtSide || c.side, S = BTL.S[side]; if(!S.pile.length) return;
   const fx = btlQ('#btlFx'), slot = btlSlotOf(c), pileEl = btlQ(side === 'p' ? '#btlMPile' : '#btlOPile'); if(!slot || !pileEl) { await btlDraw(side); return; }
-  const sr = btlRect(slot), pr = btlPileFrom(pileEl), els = [];
+  btlSnd('prshot'); const sr = btlRect(slot), pr = btlPileFrom(pileEl), els = [];
   const sx = sr.left + sr.width / 2, sy = sr.top + sr.height / 2;
   const hx = pr.left + pr.width / 2, hy = pr.top + pr.height / 2;
   const up = hy < sy, mx = sx + (hx - sx) * .04, my = up ? sr.top + 4 : sr.bottom - 4;
@@ -29660,7 +29693,7 @@ BTL_CARD_FX['PRAWN'] = { early:true, baroud: async c => { await btlPrawnShot(c);
 BTL_CARD_FX['MOG-AI'] = { appel: async c => {
   const foe = BTL.S[btlOther(c.side)]; let t = foe.slots[c.slot];
   if(!t || t.hp <= 0) t = foe.leader;   // emplacement vide : attaque directe du chef d'escouade
-  await btlFxAttack(c, t);
+  btlSnd('mogcry'); await btlFxAttack(c, t);
 } };
 // ---- V0.05.94 (revue des animations) : SHADOW -- Appel « gagne 1 mana ». Avant : le cristal clignotait à peine. Maintenant l'ombre du fauve
 // (fumée sombre, crinière d'étincelles bleues, deux yeux qui brillent) bondit de la carte jusqu'au cristal gagné, qui s'allume dans un éclat.
@@ -29687,7 +29720,7 @@ async function btlShLeap(c){
   let hit = null, last = 0, hx = ax, hy = ay, px = null, py = null;
   // la carte se ramasse (petit recul) avant le bond
   const u = btlUnitEl(c); if(u) btlAnim(u, [{ transform:'scale(1)' }, { transform:'scale(.94) translateY(2%)', offset:.45 }, { transform:'scale(1.04)', offset:.7 }, { transform:'scale(1)' }], { duration:420, easing:'ease-out' }).catch(() => {});
-  try{ musSfx('dep2'); }catch(_){}
+  try{ btlSnd('shleap'); }catch(_){}
   let puff = false;
   try{
     await btlEdLoop(t => {
@@ -29745,7 +29778,7 @@ BTL_CARD_FX['SHADOW'] = { ghost:true, appel: async c => {   // entrée en fantô
 } };
 BTL_CARD_FX['BRI-KB-ROCK'] = { baroud: async c => {
   const L = BTL.S[c.side].leader; if(L.hp <= 0) return;
-  await btlEngineParts(c, L, 7);   // animation propre : pièces de moteur éjectées en cloche vers le chef, parties en fumée
+  btlSnd('brparts'); await btlEngineParts(c, L, 7);   // animation propre : pièces de moteur éjectées en cloche vers le chef, parties en fumée
   await btlHeal(L, 3, '#4ade80');   // V0.04.59 : soigne le chef d'escouade de 3 PV
 } };
 BTL_CARD_FX['GAPIX'] = { appel: btlFxPickDmg(2, { ball:true, arrow:'def' }) };   // animation propre : un robot-boule 3D tombe sur la cible
@@ -29801,14 +29834,14 @@ async function btlMissileDrop(src, t, opt){
       inner.style.transform = 'rotate(' + ang0 + 'deg) scale(.55)'; ox.style.opacity = '0';
       const fl = mk('left:' + (sx - 34) + 'px;top:' + (sy - 34) + 'px;width:68px;height:68px;border-radius:50%;z-index:22;opacity:0;background:radial-gradient(circle,#fff 0,rgba(255,236,170,.95) 22%,rgba(255,170,60,.5) 48%,rgba(255,130,30,0) 70%)');
       btlAnim(fl, [{ transform:'scale(.3)', opacity:1 }, { transform:'scale(1.5)', opacity:.9, offset:.4 }, { transform:'scale(2)', opacity:0 }], { duration:300, easing:'ease-out' }).catch(() => {});
-      musSfx('missile');   // V0.05.27 : tir depuis la carte (GRIEVER)
+      btlSnd('grlaunch');   // V0.05.27 : tir depuis la carte (GRIEVER)
       btlParticles(sx, sy, { n:12, color:'#ffc050', dist:60, dur:420, size:4, spread:140 });
       btlParticles(sx, sy, { n:8, color:'#3a3026', dist:46, dur:520, size:4.5, sq:true, spread:160 });
       btlSmoke(sx, sy, 30, 0); btlSmoke(sx, sy + 4, 24, 70); btlDust(sx, sy + 10, 70, 2, false);
       if(srcEl){ btlShake(srcEl, 5); btlFlashEl(srcEl, '#ffb43c', .8, 280); }
       await btlSleep(170);
     }
-    if(!arc) musSfx('missile');   // V0.05.27 : le missile part (GAZELLE : un son par missile de la salve)
+    if(!arc) btlSnd('gzlaunch');   // V0.05.27 : le missile part (GAZELLE : un son par missile de la salve)
     // chute accélérée, roulis du missile en images 3D, traînée de fumée
     await new Promise((res, rej) => {
       const t0 = btlClk(); let lastS = -1;
@@ -29857,7 +29890,7 @@ async function btlMissileDrop(src, t, opt){
     btlParticles(hx, hy, { n:10, color:'#6a4a2a', dist:r.width * .6, dur:560, size:3, sq:true, spread:40 });
     btlParticles(hx, hy, { n:6, color:'#fff3c8', dist:r.width * .9, dur:300, size:2.6 });
     btlSmoke(hx, hy - 4, r.width * .3, 50); btlSmoke(hx - 8, hy, r.width * .24, 130); btlSmoke(hx + 8, hy + 2, r.width * .24, 200);
-    btlShake(el, 5); btlFlashEl(el, '#ff8a2a', .9, 340);
+    btlSnd('mslboom'); btlShake(el, 5); btlFlashEl(el, '#ff8a2a', .9, 340);
     // le cratère : trou irrégulier au bord brûlé, fissures, liseré incandescent qui refroidit
     const hs = r.width * (.62 + Math.random() * .14);
     const hole = document.createElement('div'); const lx = hx - r.left, ly = hy - r.top;
@@ -29927,7 +29960,7 @@ function btlArcDraw(ctx, x, y, ang, len, jit, a){
 }
 async function btlLassoFx(c){
   if(btlGone() || !btlUnitEl(c)) return;
-  const fx = btlQ('#btlFx'), r = btlUnitRect(c), plate = btlRect(btlQ('#btlPlate')), foe = btlOther(c.side);
+  btlSnd('wllasso'); const fx = btlQ('#btlFx'), r = btlUnitRect(c), plate = btlRect(btlQ('#btlPlate')), foe = btlOther(c.side);
   const rows = BTL.S[foe].slots.map((_, i) => btlSlotEl(foe, i)).filter(Boolean).map(btlRect);
   const yT = rows.length ? rows[0].top + rows[0].height * .5 : plate.top + plate.height * .3, dirY = yT < r.top ? -1 : 1;
   const W = innerWidth, H = innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1), pcx = plate.left + plate.width / 2, pw = plate.width;
@@ -30012,7 +30045,7 @@ async function btlLassoFx(c){
 BTL_CARD_FX['WHIPLASH'] = { appel: async c => { await btlLassoFx(c); } };   // entrée animée (la carte garde sa Percée)
 BTL_CARD_FX['STAR-HUNTER'] = { appel: async c => {
   const foes = btlValidFoes(c.side), cards = foes.filter(t => !t.leader);
-  await btlFxAttack(c, btlRnd(cards.length ? cards : foes));
+  btlSnd('stcry'); await btlFxAttack(c, btlRnd(cards.length ? cards : foes));
 } };
 // ---- CONQUEST : arrivée = boule d'énergie qui grossit au-dessus de l'emplacement, éclair, explosion, carte électrisée en lévitation qui se pose ;
 //      effet = un vent soulève deux cartes ennemies qui s'entrechoquent (étincelles) puis retombent en subissant les dégâts ----
@@ -30116,7 +30149,7 @@ function btlCanvasFx(z){ const W = innerWidth, H = innerHeight, dpr = Math.min(2
 
 async function btlConqArrive(c, u, to, col){
   if(!u) return;
-  u.style.opacity = '0';
+  btlSnd('cqarrive'); u.style.opacity = '0';
   const { cv, ctx, W, H } = btlCanvasFx(30), plate = btlRect(btlQ('#btlPlate'));
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2, R = Math.max(to.width, to.height) * .5;
   const T_BOLT = 1450, T_BURST = 1540, T_UP = 1650, T_DESC = 2450, T_END = 3050, LIFT = Math.max(12, to.height * .17);
@@ -30244,7 +30277,7 @@ function btlGothSprite(){ if(!btlGothImg){ btlGothImg = new Image(); btlGothImg.
 async function btlGothArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
+  btlSnd('gtarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
   const SW = BTL_GOTHSWORD, img = btlGothSprite();
   if(!img.complete) await new Promise(r => { img.onload = img.onerror = r; });
   const useImg = img.naturalWidth > 0;   // image de l'épée absente (réseau, fichier non téléversé) : épée dessinée au trait, même emplacement
@@ -30420,12 +30453,12 @@ BTL_CARD_FX['GOTHIKA'] = { arrive: btlGothArrive, appel: async c => {   // 3 poi
   let nbP = [];
   await btlHit(c, t, 3, {
     strong:true,
-    shot:(src, tg) => { btlFlashEl(btlUnitEl(src), '#ffd27a', 1, 420); return btlGothArc(ctr(btlUnitRect(src)), [ctr(btlUnitRect(tg))], 760, { charge:300, w:4, branches:5 }); },
+    shot:(src, tg) => { btlSnd('gtarc'); btlFlashEl(btlUnitEl(src), '#ffd27a', 1, 420); return btlGothArc(ctr(btlUnitRect(src)), [ctr(btlUnitRect(tg))], 760, { charge:300, w:4, branches:5 }); },
     onHit:(tg, r1) => {
       if(tg.leader) return;   // le chef n'a pas de voisines
       const S = BTL.S[tg.side], from = ctr(r1), nb = [S.slots[tg.slot - 1], S.slots[tg.slot + 1]].filter(n => n && n.hp > 0);
       if(!nb.length) return;
-      const arc = btlSleep(220).then(() => btlGothArc(from, nb.map(n => ctr(btlUnitRect(n))), 560, { w:2.6, branches:2 }));   // l'arc se ramifie vers les voisines, une fois la cible touchée
+      const arc = btlSleep(220).then(() => { btlSnd('gtbranch'); return btlGothArc(from, nb.map(n => ctr(btlUnitRect(n))), 560, { w:2.6, branches:2 }); });   // l'arc se ramifie vers les voisines, une fois la cible touchée
       nbP = nb.map(n => btlHit(c, n, 1, { noRet:true, shot:() => arc }));
     }
   });
@@ -30505,7 +30538,7 @@ function btlScanDraw(ctx, S, t, a, apex, dt){
 }
 async function btlCheifArrive(c, u, to, col){
   if(!u) return;
-  u.style.opacity = '0';
+  btlSnd('chjet'); u.style.opacity = '0';
   const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), E = BTL_E1;
   const { cv, ctx, W, H } = btlCanvasFx(29);
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2, w = to.width, h = to.height, HOV = h * 1.0, SCF = 1.28;
@@ -30627,7 +30660,7 @@ async function btlCheifArrive(c, u, to, col){
 
 async function btlConqClash(a, b){   // un vent soulève deux cartes ennemies, elles s'entrechoquent deux fois (étincelles), puis retombent en subissant les dégâts
   const ea = btlUnitEl(a), eb = btlUnitEl(b); if(!ea || !eb) return;
-  const ra = btlUnitRect(a), rb = btlUnitRect(b), E = BTL_E1, plate = btlRect(btlQ('#btlPlate'));
+  btlSnd('cqclash'); const ra = btlUnitRect(a), rb = btlUnitRect(b), E = BTL_E1, plate = btlRect(btlQ('#btlPlate'));
   const ca = { x:ra.left + ra.width / 2, y:ra.top + ra.height / 2 }, cb = { x:rb.left + rb.width / 2, y:rb.top + rb.height / 2 };
   const dx = cb.x - ca.x, dy = cb.y - ca.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist, D0 = (ra.width + rb.width) / 2 * .93, mp = { x:(ca.x + cb.x) / 2, y:(ca.y + cb.y) / 2 };
   const cA = { x:mp.x - ux * D0 / 2 - ca.x, y:mp.y - uy * D0 / 2 - ca.y }, cB = { x:mp.x + ux * D0 / 2 - cb.x, y:mp.y + uy * D0 / 2 - cb.y };   // décalage de chaque carte au contact
@@ -30750,7 +30783,7 @@ function btlSmokeSprite(v){
 async function btlToaArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, { cv, ctx, W, H } = btlCanvasFx(30), sprs = [0, 1, 2, 3, 4].map(btlSmokeSprite);
+  btlSnd('toarrive'); const plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, { cv, ctx, W, H } = btlCanvasFx(30), sprs = [0, 1, 2, 3, 4].map(btlSmokeSprite);
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2, pl = { l:plate.left + 2, r:plate.right - 2, t:plate.top + 2, b:plate.bottom - 2 };
   const RMAX = Math.hypot(Math.max(cx - pl.l, pl.r - cx), Math.max(cy - pl.t, pl.b - cy)) + 230;
   const T_L0 = 2150, T_L1 = 4900, T_END = 5300, NP = 5, PP = (T_L1 - T_L0) / NP;
@@ -30838,7 +30871,7 @@ function btlTurDraw(ctx, B, ox, oy, Dsp, dz, yaw, spin, blur, alpha){   // dessi
 async function btlToaTurret(c, t, dmg){
   if(btlGone() || !t || t.hp <= 0) return;
   const B = BTL_TUR, img = await btlToaImg(); B.img = img;
-  const slotEl = btlSlotEl(c.side, c.slot); if(!slotEl) return;
+  btlSnd('toturret'); const slotEl = btlSlotEl(c.side, c.slot); if(!slotEl) return;
   const E = BTL_E1, plate = btlRect(btlQ('#btlPlate')), to = btlRect(slotEl), tr = btlUnitRect(t), tEl = btlUnitEl(t);
   const { cv, ctx, W, H } = btlCanvasFx(30);
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2, Dsp = to.width * 1.85, uu = Dsp / (2 * B.half), SP = B.sp, CP = .573576;
@@ -30959,7 +30992,7 @@ async function btlToaTurret(c, t, dmg){
         if(tm >= T_FIRE0 && fireEnd == null && !boom){
           const rate = 7 + 30 * sm(T_FIRE0, T_FIRE0 + 650, tm); acc += rate * dt;
           while(acc >= 1 && shots < SH && !stop){
-            acc -= 1; const i = shots++; lastShotT = tm; rec = Math.min(3.4, rec + 1.5); heat = Math.min(1, heat + .011);
+            acc -= 1; const i = shots++; if(!(i % 2)) btlSnd('toshot'); lastShotT = tm; rec = Math.min(3.4, rec + 1.5); heat = Math.min(1, heat + .011);
             const tp = tips().reduce((m, q) => q.zv > m.zv ? q : m), flAn = Math.atan2(mdy, mdx), rr_ = Math.random;
             flames.push({ t0:tm, a0:(rr_() - .5) * .1, L:64 + rr_() * 42, Wd:7 + rr_() * 5, j:Array.from({ length:14 }, () => rr_() * 2 - 1), ox:tp.x - mz.x, oy:tp.y - mz.y,
               pet:Array.from({ length:7 }, (_, q) => ({ a:(q < 5 ? (q - 2) * .5 : (q === 5 ? 2.5 : -2.5)) + (rr_() - .5) * .35, l:(q < 5 ? 13 : 8) + rr_() * 18 })) });
@@ -31065,7 +31098,7 @@ async function btlToaTurret(c, t, dmg){
           for(const m of minis){ const k = (tm - m.t0) / 260; if(k < 0 || k >= 1) continue; ctx.save(); ctx.globalCompositeOperation = 'lighter'; btlGlowDot(ctx, m.x, m.y, m.r * (.6 + k), '255,190,90', (1 - k) * .95); btlGlowDot(ctx, m.x, m.y, m.r * .5 * (1 - k * .5), '255,255,235', (1 - k)); ctx.restore(); }
           if(b >= 150){
             if(!fire.on){ fire.on = true;
-              btlShake(btlQ('#btlPlate'), 9); btlRing(to, '#ffb44a', false);
+              btlSnd('toboom'); btlShake(btlQ('#btlPlate'), 9); btlRing(to, '#ffb44a', false);
               btlSparkEmit(sparks, ex, ey, 46, 560, 760, null, 0, true); btlSparkEmit(sparks, ex, ey, 20, 300, 640, null, 0, false);
               for(let i = 0; i < 22; i++){ const a = Math.random() * 6.283, v = 140 + Math.random() * 340; debris.push({ x:ex, y:ey, vx:Math.cos(a) * v, vy:Math.sin(a) * v * .7 - 150, rot:Math.random() * 6.283, rv:(Math.random() - .5) * 22, s:2.6 + Math.random() * 4.6, age:0, life:800 + Math.random() * 600, k:Math.random() }); }
               for(let i = 0; i < 30; i++){ const a = Math.random() * 6.283, v = 40 + Math.random() * 130; parts.push({ x:ex + (Math.random() - .5) * uu * .5, y:ey + (Math.random() - .5) * uu * .4, vx:Math.cos(a) * v, vy:Math.sin(a) * v * .6 - 60 - Math.random() * 60, by:-26, drag:1.1, age:0, life:1100 + Math.random() * 900, s0:14, s1:52 + Math.random() * 46, pk:.7, rgb:[46 + (Math.random() * 22 | 0), 48 + (Math.random() * 22 | 0), 54 + (Math.random() * 22 | 0)], flat:1 }); }
@@ -31114,7 +31147,7 @@ async function btlMotArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
   const B = BTL_MOT; try{ await btlMotImg(); }catch(e){}
-  const E = BTL_E1, plate = btlRect(btlQ('#btlPlate')), { cv, ctx, W, H } = btlCanvasFx(30);
+  btlSnd('moarrive'); const E = BTL_E1, plate = btlRect(btlQ('#btlPlate')), { cv, ctx, W, H } = btlCanvasFx(30);
   const tint = (sp, rgba) => { const c2 = document.createElement('canvas'); c2.width = sp.width; c2.height = sp.height; const g = c2.getContext('2d'); g.drawImage(sp, 0, 0); g.globalCompositeOperation = 'source-atop'; g.fillStyle = rgba; g.fillRect(0, 0, c2.width, c2.height); return c2; };
   const sprs = [0, 1, 2, 3, 4].map(i => tint(btlSmokeSprite(i), 'rgba(16,22,46,.30)')), sprH = [0, 1, 2, 3, 4].map(i => tint(btlSmokeSprite(i), 'rgba(255,45,95,.62)'));
   const SP = B.sp, Dsp = to.width * 2.2, uu = Dsp / (2 * B.half), rnd = Math.random;
@@ -31280,7 +31313,7 @@ function btlWaterTile(){   // caustiques : lignes de lumière entrelacées, sans
 }
 async function btlDilusArrive(c, u, to, col){
   if(!u) return;
-  u.style.opacity = '0';
+  btlSnd('dlarrive'); u.style.opacity = '0';
   const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random;
   const plate = btlQ('#btlPlate'), slotEl = btlSlotOf(c), pr = btlRect(plate);
   const W = Math.round(pr.width), H = Math.round(pr.height), dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -31596,7 +31629,7 @@ async function btlKrigerGo(c, t, el){
   let phase = 'go', B0 = 0, raf = 0, last = 0, goRes, goRej, backRes, goSettled = false, tipLast = null;
   const t0 = performance.now();
   const nowT = () => window.__krT != null ? window.__krT : performance.now() - t0;
-  el.style.zIndex = 70;   // V0.05.17 : l'attaquant devant
+  btlSnd('krgrapple'); el.style.zIndex = 70;   // V0.05.17 : l'attaquant devant
   const pose = T => {   // position / échelle de la carte (décalage par rapport à sa case)
     if(phase === 'back'){
       const q = (T - B0) / BACK, p = cl(q / .8), e = 1 - Math.pow(1 - p, 3);
@@ -31740,7 +31773,7 @@ BTL_CARD_FX['KRIGER'] = { appel: async c => {   // grappin à chaîne planté da
 async function btlScoptArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random, TP = Math.PI * 2;
+  btlSnd('scarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), lerp = (a, b, t) => a + (b - a) * t, rnd = Math.random, TP = Math.PI * 2;
   const plate = btlQ('#btlPlate'), pr = btlRect(plate);
   const W = Math.round(pr.width), H = Math.round(pr.height), dpr = Math.min(2, window.devicePixelRatio || 1);
   const mkCv = z => { const cv = document.createElement('canvas'); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
@@ -31968,7 +32001,7 @@ function btlDumRigDraw(g, R, p, ext, lift, k, glow){
 async function btlDumadedArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), ez = x => x * x * (3 - 2 * x), TS = btlDumTS();
+  btlSnd('duarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), ez = x => x * x * (3 - 2 * x), TS = btlDumTS();
   const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), w = to.width, h = to.height, k = w / 84;
   const TC = btlCanvasFx(30), FC = btlCanvasFx(32), g = TC.ctx, f = FC.ctx, W = TC.W, H = TC.H;
   const P0 = { x:to.left + w / 2, y:to.top + h / 2 };
@@ -32096,7 +32129,7 @@ async function btlDumadedPassive(c){
   const t = btlRnd(cands); if(!t) return;
   if(btlLethal(t, 1)) btlXOn(t);
   btlFlashEl(btlUnitEl(c), '#ff5468', .8, 420);
-  const st = btlDumStrike(c, t);
+  btlSnd('dustrike'); const st = btlDumStrike(c, t);
   await st.impact;
   if(btlGone()) return;
   const r = btlUnitRect(t); btlParticles(r.left + r.width / 2, r.top + r.height / 2, { n:6, color:'#ff5468', dist:34, dur:420, size:4 });
@@ -32146,7 +32179,7 @@ function btlLacBlade(g, P, R, a0, a1, s, k, fade){
 async function btlLacriumArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), TS = btlDumTS(), rnd = Math.random;
+  btlSnd('lcarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), TS = btlDumTS(), rnd = Math.random;
   const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), w = to.width, h = to.height, k = w / 84;
   const FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H;
   const cx = to.left + w / 2, cy = to.top + h / 2, pcy = plate.top + plate.height / 2;
@@ -32340,7 +32373,7 @@ function btlPittySprite(){
 async function btlPittyPre(c, fromRect, to){
   const E = BTL_E1, TS = btlDumTS(), FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H;
   const A = await btlPittySprite(); if(!A.alb){ FC.cv.remove(); return; }
-  const R = A.R, IW = 710, IH = 500, GS = .84;                                // GS : échelle du modèle dans le canvas WebGL
+  btlSnd('ptdrone'); const R = A.R, IW = 710, IH = 500, GS = .84;                                // GS : échelle du modèle dans le canvas WebGL
   const plate = btlRect(btlQ('#btlPlate'));
   const DS = Math.max(180, Math.min(310, W * .74)), DH = DS * IH / IW;        // largeur / hauteur du drone à l'écran (échelle 1)
   const yMid = plate.top + plate.height * .42;
@@ -32439,7 +32472,7 @@ function btlDrFlame(g, nx, ny, roll, len, wid, p, now){
 }
 async function btlDroneFly(c, t){
   const B = BTL_DRONE, E = BTL_E1, sm = (a, b, x) => E.cl((x - a) / (b - a), 0, 1), sst = x => x * x * (3 - 2 * x), TS = btlDumTS(), rnd = Math.random;
-  const FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H, tr = btlUnitRect(t), im = btlDrSprite();
+  btlSnd('rzdrone'); const FC = btlCanvasFx(31), g = FC.ctx, W = FC.W, H = FC.H, tr = btlUnitRect(t), im = btlDrSprite();
   try{ if(im.decode) await im.decode(); }catch(_){}
   const DS = Math.max(80, Math.min(112, tr.width * 1.22)), tcx = tr.left + tr.width / 2;
   const hx = tcx, hy = Math.max(DS * .62, tr.top - DS * .56);                      // point de vol stationnaire au-dessus de la carte
@@ -32596,7 +32629,7 @@ function btlGlintStar(g, x, y, r, a, rot){
 }
 async function btlAmalArrive(c, u, to, col){
   if(!u) return;
-  u.style.opacity = '0';
+  btlSnd('amarrive'); u.style.opacity = '0';
   const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), TS = btlDumTS(), rnd = Math.random;
   const fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), plate = btlRect(plateEl), w = to.width, h = to.height, k = w / 84;
   const CS = btlCanvasFx(29), CF = btlCanvasFx(31), gs = CS.ctx, gf = CF.ctx, W = CS.W, H = CS.H;
@@ -32799,7 +32832,7 @@ function btlMedDraw(ctx, rope, t, slack, headGlow, alpha){   // dessine un câbl
 async function btlMedArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, { cv, ctx, W, H } = btlCanvasFx(31);
+  btlSnd('mparrive'); const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, { cv, ctx, W, H } = btlCanvasFx(31);
   const w = to.width, h = to.height, cx = to.left + w / 2, cy = to.top + h / 2, sg = c.side === 'p' ? -1 : 1, HOV = h * 1.32, edge = sg < 0 ? 'b' : 't';
   const wr = document.createElement('div');
   wr.style.cssText = 'position:fixed;left:0;top:0;width:' + w + 'px;height:' + h + 'px;z-index:30;pointer-events:none;transform-origin:50% 50%;will-change:transform';
@@ -32874,7 +32907,7 @@ BTL_CARD_FX['MED-POD'] = { arrive: btlMedArrive, baroud: async c => {
 async function btlMedFetch(c, n){
   const slotEl = btlSlotEl(c.side, c.slot), oppS = btlOther(c.side), pileEl = btlQ(oppS === 'p' ? '#btlMPile' : '#btlOPile');
   if(!slotEl || !pileEl){ btlPutCard(n); return false; }
-  const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, to = btlRect(slotEl), pr = btlPileFrom(pileEl), col = btlRarColor(n.rar);
+  btlSnd('mpfetch'); const fx = btlQ('#btlFx'), plate = btlRect(btlQ('#btlPlate')), E = BTL_E1, to = btlRect(slotEl), pr = btlPileFrom(pileEl), col = btlRarColor(n.rar);
   const { cv, ctx, W, H } = btlCanvasFx(31);
   const w = to.width, h = to.height, cx = to.left + w / 2, cy = to.top + h / 2, px = pr.left + pr.width / 2, py = pr.top + pr.height / 2, sc0 = pr.width / w;
   const above = py < cy, e0 = above ? 'r' : 'l', e1 = above ? 'b' : 't', dist = Math.hypot(px - cx, py - cy);
@@ -32949,7 +32982,7 @@ BTL_CARD_FX['CHEIF 117'] = { arrive: btlCheifArrive, appel: async c => { await b
 BTL_CARD_FX['DOZEUR'] = { appel: async c => {   // une carte au hasard de la main adverse retourne dans son deck (mélangé), puis l'adversaire pioche
   const oppS = btlOther(c.side), O = BTL.S[oppS];
   if(!O.hand.length) return;
-  await btlHandToPile(oppS, btlRnd(O.hand));
+  btlSnd('dzpush'); await btlHandToPile(oppS, btlRnd(O.hand));
   if(btlGone() || !btlOnField(c)) return;
   await btlDraw(oppS);
 } };
@@ -32987,7 +33020,7 @@ function btlRainRay(t){
       // impact : éclat bleu, flash de la carte, +1 ATQ
       if(!BTL || BTL.abort || t.hp <= 0) return;
       els.forEach(d => btlAnim(d, [{ opacity:1 }, { opacity:0 }], { duration:150 }).catch(() => {}));
-      btlSpark(r, '#6cc0ff', .9); btlFlashEl(el, '#58b0ff', .75, 280);
+      btlSnd('hrzap'); btlSpark(r, '#6cc0ff', .9); btlFlashEl(el, '#58b0ff', .75, 280);
       btlParticles(cx, cy, { n:6, color:'#8fd0ff', dist:34, dur:380, size:3.5, spread:30 });
       t.atk += 1; if(t.ultOn && t.base) t.base.atk += 1;
       btlFloatNum(r, '+1', 'atkup'); btlPaint(t);
@@ -32999,7 +33032,7 @@ function btlRainRay(t){
 BTL_CARD_FX['HARKO'] = { baroud: async c => {
   const n = Math.max(0, Math.round(c.atk)); if(!n) return;
   const allies = btlField(c.side).filter(x => x !== c); if(!allies.length) return;
-  btlRing(btlUnitRect(c), '#58b0ff', true); btlParticles(btlRect(btlSlotOf(c)).left + btlRect(btlSlotOf(c)).width / 2, btlRect(btlSlotOf(c)).top + btlRect(btlSlotOf(c)).height / 2, { n:8, color:'#58b0ff', dist:40, dur:420, size:4, inward:true, spread:80 });
+  btlSnd('hrcall'); btlRing(btlUnitRect(c), '#58b0ff', true); btlParticles(btlRect(btlSlotOf(c)).left + btlRect(btlSlotOf(c)).width / 2, btlRect(btlSlotOf(c)).top + btlRect(btlSlotOf(c)).height / 2, { n:8, color:'#58b0ff', dist:40, dur:420, size:4, inward:true, spread:80 });
   await btlSleep(160);
   const gap = Math.min(150, 1100 / n), ps = [];
   for(let i = 0; i < n; i++){ ps.push(btlRainRay(btlRnd(allies))); if(i < n - 1) await btlSleep(gap); }
@@ -33033,7 +33066,7 @@ function btlSlamLand(c, u, to, col){   // la carte s'écrase dans son emplacemen
     btlParticles(cx, cy + to.height * .3, { n:16, color:'#ffd9a0', dist:to.width * 1.1, dur:560, size:4, spread:170 });
     btlParticles(cx, cy + to.height * .3, { n:14, color:'#2a2c32', dist:to.width * .9, dur:620, size:5, sq:true, spread:180 });
     btlParticles(cx, cy, { n:10, color:col, dist:to.width * 1.2, dur:480, size:4 });
-    btlShake(btlQ('#btlPlate'), 8);
+    btlSnd('grslam'); btlShake(btlQ('#btlPlate'), 8);
     btlDust(cx, cy + to.height * .34, to.width * 1.7, 6, true);
     for(let i = 0; i < 46; i++){
       const sm = Math.random() < .42, px = cx + (Math.random() - .5) * to.width * .7, py = cy + to.height * (.1 + Math.random() * .3);
@@ -33062,7 +33095,7 @@ function btlAegisHtml(W, H, S){   // texture 3D rendue (verre biseauté, trame h
     '<path class="aw2" d="' + path + '" pathLength="1" fill="none" stroke="#bfeaff" stroke-width="2.2" stroke-linecap="round" stroke-dasharray=".035 .465" stroke-dashoffset="0"/></svg>';
 }
 function btlAegisPulse(t){   // pulsation bleue (halo qui respire + ondes) sur une carte soignée
-  const r = btlUnitRect(t), fx = btlQ('#btlFx'), a = document.createElement('div');
+  btlSnd('jppulse'); const r = btlUnitRect(t), fx = btlQ('#btlFx'), a = document.createElement('div');
   a.style.cssText = 'position:fixed;pointer-events:none;z-index:17;opacity:0;box-sizing:border-box;border-radius:9px;border:2px solid #a6e4ff;will-change:transform,opacity;' +
     'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;' +
     'box-shadow:0 0 18px 4px rgba(70,170,255,.85),inset 0 0 18px 3px rgba(120,205,255,.7);background:radial-gradient(circle,rgba(150,215,255,.38),rgba(60,140,255,.08) 72%)';
@@ -33073,7 +33106,7 @@ function btlAegisPulse(t){   // pulsation bleue (halo qui respire + ondes) sur u
 }
 async function btlAegisHeal(src, got){
   const side = src.side, rects = BTL.S[side].slots.map((_, i) => btlSlotEl(side, i)).concat([btlSlotEl(side, 'L')]).filter(Boolean).map(btlRect);   // les 3 emplacements + le chef
-  if(!rects.length) return;
+  btlSnd('jpaegis'); if(!rects.length) return;
   const L = Math.min(...rects.map(r => r.left)) - 6, Rr = Math.max(...rects.map(r => r.right)) + 6, T = Math.min(...rects.map(r => r.top)) - 6, Bt = Math.max(...rects.map(r => r.bottom)) + 6;
   const ZW = Rr - L, ZH = Bt - T, W = ZW + 6, S = Math.min(ZH * .62, ZW * .3), H = ZH + S * .95, fx = btlQ('#btlFx'), els = [];
   const mk = (css, html) => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; if(html) d.innerHTML = html; fx.appendChild(d); els.push(d); return d; };
@@ -33169,7 +33202,7 @@ async function btlKatanaStab(src, t, n){
     const trail = mk(inner, 'position:absolute;pointer-events:none;opacity:0;left:' + (-KW * .5) + 'px;top:' + (ty - 3) + 'px;width:' + (KW * .55) + 'px;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(255,130,30,0),rgba(255,170,70,.75) 70%,rgba(255,235,190,.9))');
     els.push(ox);
     const place = u => { const q = bz(u); ox.style.transform = 'translate(' + q.x.toFixed(2) + 'px,' + q.y.toFixed(2) + 'px)'; return q; };
-    place(0); inner.style.transform = 'rotate(' + A0 + 'deg) scale(.6)';
+    btlSnd('zpkatana'); place(0); inner.style.transform = 'rotate(' + A0 + 'deg) scale(.6)';
     // apparition : anneau de chaleur et braises à la place de la carte détruite
     btlRing(rs, '#ff9a3a', true); btlParticles(S.x, S.y, { n:8, color:'#ff9a3a', dist:40, dur:420, size:4, inward:true, spread:80 });
     await btlSleep(60);
@@ -33262,7 +33295,7 @@ async function btlShieldHeal(src, t, amount){
   const D = btlDomeMake(t), off = D.W * .62, ease = 'cubic-bezier(.2,.8,.25,1)';
   const [L, R] = D.halves, loops = [];
   try{
-    if(src && btlUnitEl(src)) btlFlashEl(btlUnitEl(src), '#7ff0c8', .75, 520);   // la source du soin
+    btlSnd('bzshield'); if(src && btlUnitEl(src)) btlFlashEl(btlUnitEl(src), '#7ff0c8', .75, 520);   // la source du soin
     await btlSleep(120);
     // 1) les deux demi-sphères se referment
     btlAnim(L, [{ transform:'translateX(' + (-off) + 'px) scale(.8)', opacity:0 }, { opacity:1, offset:.4 }, { transform:'translateX(0) scale(1)', opacity:1 }], { duration:480, easing:ease, fill:'forwards' });
@@ -33349,7 +33382,7 @@ const btlTortScatter = hx => hx.pl.slice().sort((a, b) => ((Math.sin(a.x * 12.98
 async function btlTortArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
+  btlSnd('tgarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
   const { cv, ctx, W, H } = btlCanvasFx(30), plate = btlQ('#btlPlate');
   const tw = to.width, th = to.height, k = tw / 84, cx = to.left + tw / 2, baseY = to.top + th * .97, hx = btlTortHex(to, true), Rd = hx.R * .92;
   const T_IMP = 560, T_OPEN0 = 640, T_CLOSE0 = 1120, STEP = 62, CDUR = 190, ODUR = 230, FALL = th * 1.6 + 28;
@@ -33429,7 +33462,7 @@ async function btlTortArrive(c, u, to, col){
 // EFFET DE FIN DE TOUR : une onde de lumière parcourt la carapace, plaque après plaque, du bord vers le centre ; au centre, +1 DEF (le « +1 » bleu s'élève au milieu de la carte)
 async function btlTortWave(c, onPeak){
   const to = btlUnitRect(c); if(!to) return;
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
+  btlSnd('tgwave'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
   const { cv, ctx, W, H } = btlCanvasFx(30), tw = to.width, k = tw / 84, hx = btlTortHex(to), Rd = hx.R * .92, seq = btlTortSpiral(hx);
   const T0 = 90, STEP = 50, T_PEAK = T0 + (seq.length - 1) * STEP, T_END = T_PEAK + 560, sparks = [];
   seq.forEach((p, i) => { p.t = T0 + i * STEP; });
@@ -33494,7 +33527,7 @@ function btlElysSwoosh(ctx, p0, p1, bend, head, tail, wMax, alpha){
 async function btlElysArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
+  btlSnd('elarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random;
   const slot = btlSlotOf(c), plate = btlQ('#btlPlate'), { cv, ctx } = btlCanvasFx(30);
   const tw = to.width, th = to.height, cx = to.left + tw / 2, cy = to.top + th / 2, m = tw * .34;
   // coup 1 : haut-gauche → bas-droite (rasant) ; coup 2 : haut-droite → bas-gauche (c'est lui qui tranche le cadre)
@@ -33555,7 +33588,7 @@ async function btlElysArrive(c, u, to, col){
 // Baroud : les deux lames se croisent en un X lumineux sur la carte responsable
 async function btlElysX(src, t){
   if(btlGone() || !btlOnField(t)) return;
-  const r = btlUnitRect(t), E = BTL_E1, sm = (a, b, x) => E.cl((x - a) / (b - a), 0, 1), rnd = Math.random;
+  btlSnd('elx'); const r = btlUnitRect(t), E = BTL_E1, sm = (a, b, x) => E.cl((x - a) / (b - a), 0, 1), rnd = Math.random;
   const { cv, ctx } = btlCanvasFx(32), w = r.width, h = r.height, cx = r.left + w / 2, cy = r.top + h / 2, m = w * .3;
   const A0 = { x:r.left - m, y:r.top - m }, A1 = { x:r.left + w + m, y:r.top + h + m }, B0 = { x:r.left + w + m, y:r.top - m }, B1 = { x:r.left - m, y:r.top + h + m };
   const bA = { x:w * .12, y:-h * .12 }, bB = { x:-w * .12, y:-h * .12 };
@@ -33610,7 +33643,7 @@ function btlSylvRrect(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y)
 async function btlSylvArrive(c, u, to, col){
   if(!u) return;
   u.style.opacity = '0';
-  const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random, back = k => { const c1 = 1.5, x = k - 1; return 1 + (c1 + 1) * x * x * x + c1 * x * x; };
+  btlSnd('slarrive'); const E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1), rnd = Math.random, back = k => { const c1 = 1.5, x = k - 1; return 1 + (c1 + 1) * x * x * x + c1 * x * x; };
   const { cv, ctx } = btlCanvasFx(31), plate = btlQ('#btlPlate'), fx = btlQ('#btlFx');
   const tw = to.width, th = to.height, L = to.left, T0 = to.top;
   const T_UP = [620, 930, 1240], UPD = 700, T_FULL = 2000, T_CRY0 = 2250, T_CRY1 = 2900, T_END = 3500;
@@ -33669,7 +33702,7 @@ async function btlSylvArrive(c, u, to, col){
 async function btlSylvAppel(c){
   if(btlGone() || !btlOnField(c)) return;
   const S = BTL.S[c.side], free = [0, 1, 2].filter(i => !S.slots[i]);
-  const from = btlRect(btlSlotOf(c)), E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
+  btlSnd('slappel'); const from = btlRect(btlSlotOf(c)), E = BTL_E1, sm = (a, b, t) => E.cl((t - a) / (b - a), 0, 1);
   const items = ['ANAKA', 'KOTAMA'].map((nm, i) => {
     const def = BTL_TOKEN_DEFS.find(d => d.name === nm), slot = free[i], it = { def, i, col:i ? '#e0a63a' : '#e0443a', rgb:i ? '255,190,70' : '255,90,70', delay:i * 400 };
     if(slot != null){ const n = btlMakeCard(c.side, def, def.rarity, c.level, false); n.playedTurn = BTL.turn; n.slot = slot; S.slots[slot] = n; it.n = n; it.to = btlRect(btlSlotEl(c.side, slot)); }
@@ -33689,7 +33722,7 @@ async function btlSylvAppel(c){
   });
   const born = it => {   // le jeton naît par une brève vague de verre
     const tr = it.to; btlSylvDrop(drops, tr.left + tr.width / 2, tr.top + tr.height * .5, 30, 140, 420, it.rgb, true);
-    waves.push({ t0:performance.now(), r:tr, rgb:it.rgb }); btlRing(tr, '#d6efff', false); btlShake(plate, 5);
+    btlSnd('slborn'); waves.push({ t0:performance.now(), r:tr, rgb:it.rgb }); btlRing(tr, '#d6efff', false); btlShake(plate, 5);
     btlPutCard(it.n); const u = btlUnitEl(it.n);
     if(u){ u.style.opacity = '0'; btlAnim(u, [{ opacity:0, transform:'scale(.55)', filter:'brightness(2.6)' }, { opacity:1, transform:'scale(1.06)', filter:'brightness(1.5)', offset:.55 }, { opacity:1, transform:'scale(1)', filter:'brightness(1)' }], { duration:520, easing:'cubic-bezier(.2,.8,.3,1)' }).then(() => { u.style.opacity = ''; }, () => { u.style.opacity = ''; }); }
     btlRenderArrows(); btlRefreshCan();
@@ -33707,7 +33740,7 @@ async function btlSylvAppel(c){
           const k = E.cl(lt / FL, 0, 1), p = E.inOut(k) * .35 + k * .65, q = 1 - p;
           const x = q * q * it.p0.x + 2 * q * p * it.pc.x + p * p * it.p2.x, y = q * q * it.p0.y + 2 * q * p * it.pc.y + p * p * it.p2.y;
           const sc = k < .3 ? .35 + .85 * E.outC(k / .3) : 1.2 - .5 * sm(.5, 1, k), rot = (it.i ? 1 : -1) * 360 * E.outC(k) * .9;
-          if(it.state === 0){ it.state = 1; btlSylvDrop(drops, cx0, cy0 - th * .2, 14, 100, 280, it.rgb, true); btlShake(plate, 3); }
+          if(it.state === 0){ it.state = 1; btlSnd('sldrop'); btlSylvDrop(drops, cx0, cy0 - th * .2, 14, 100, 280, it.rgb, true); btlShake(plate, 3); }
           it.el.style.opacity = k < .06 ? String(k / .06) : '1'; it.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sc.toFixed(3) + ') rotate(' + rot.toFixed(1) + 'deg)';
           it.hist.push({ x, y, t:lt }); while(it.hist.length && lt - it.hist[0].t > 340) it.hist.shift();
           ctx.save(); ctx.globalCompositeOperation = 'lighter'; it.hist.forEach(h => { const a = 1 - (lt - h.t) / 340; btlGlowDot(ctx, h.x, h.y, hs * .55 * a, it.rgb, .5 * a); }); ctx.restore();
@@ -34183,6 +34216,7 @@ async function btlTechRelease(h, c, g, rect, e){
 }
 // mise en scène : la carte vole au centre du plateau, s'illumine puis se dissout en étincelles vertes (celle de l'adversaire se retourne en vol)
 async function btlTechShow(side, c, from, el){
+  try{ musCardWarm([c.name, btlFxN(c)]); }catch(_){}   // V0.06.04
   const pl = btlRect(btlQ('#btlPlate')), w = Math.min(pl.width * .5, from.width * 1.6), h = w * BTL_RATIO, col = '#3dff6a';
   const to = { left:pl.left + pl.width / 2 - w / 2, top:pl.top + pl.height / 2 - h / 2, width:w, height:h };
   btlPlaceFixed(el, from);
@@ -34465,7 +34499,7 @@ BTL_TECH_FX['PILE D’ÉNERGIE'] = { mode:'none',
   run:async (s) => {
     BTL.pile[s] = (BTL.pile[s] || 0) + 2;
     const box = btlQ(s === 'p' ? '#btlMMana' : '#btlOMana'); if(!box) return;
-    box.classList.remove('pile-fx'); void box.offsetWidth; box.classList.add('pile-fx');
+    btlSnd('pecharge'); box.classList.remove('pile-fx'); void box.offsetWidth; box.classList.add('pile-fx');
     const r = btlRect(box), cx = r.left + r.width / 2, cy = r.top + r.height / 2, col = '#4dff86';
     for(let k = 0; k < 3; k++){
       btlAfter(() => { if(!BTL) return; btlParticles(cx, cy, { n:9, color:col, dist:56, dur:560, size:5, inward:true, spread:170 }); btlRing(r, col, true); }, k * 200);
@@ -34491,11 +34525,11 @@ async function btlEmblemStrike(t){
   e.style.cssText = 'position:fixed;pointer-events:none;z-index:32;opacity:0;will-change:transform,opacity;left:' + (cx - sz / 2) + 'px;top:' + (cy - sz / 2) + 'px;width:' + sz + 'px;height:' + sz + 'px;filter:drop-shadow(0 0 ' + Math.round(sz * .12) + 'px rgba(255,59,48,.9))';
   e.innerHTML = btlEmblemHtml(sz); btlQ('#btlFx').appendChild(e);
   try{
-    const lr = btlReticle(t, 'fx'); await btlSleep(240); if(lr) lr.off();
+    btlSnd('heseal'); const lr = btlReticle(t, 'fx'); await btlSleep(240); if(lr) lr.off();
     // le sceau s'abat sur la carte
     await btlAnim(e, [{ transform:'scale(3.3) rotate(-16deg)', opacity:0 }, { transform:'scale(2.9) rotate(-12deg)', opacity:1, offset:.2 }, { transform:'scale(1) rotate(0deg)', opacity:1 }], { duration:260, easing:'cubic-bezier(.55,0,.9,.45)' });
     // impact : onde, éclair, éclats, secousse de la carte et du plateau
-    musAtk();
+    
     btlRing(r, '#ff3b30', false); btlAfter(() => { if(BTL) btlRing(r, '#ffffff', false); }, 90);
     btlFlashEl(el, '#ffffff', .95, 460);
     btlParticles(cx, cy, { n:16, color:'#ff5a4a', dist:Math.max(r.width, 70) * .95, dur:560, size:6 });
@@ -34532,7 +34566,7 @@ async function btlBounce(t){
   const tgtEl = btlQ((o === 'p' ? '#btlHand' : '#btlOHand') + ' [data-uid="' + fresh.uid + '"]'), to = btlRect(tgtEl);
   const lift = { left:from.left - cw * .08, top:from.top - ch * .2, width:cw * 1.16, height:ch * 1.16 }, dur = 940;
   if(o !== 'p') btlAnim(rot.firstChild, [{ transform:'rotateY(180deg)', offset:0 }, { transform:'rotateY(180deg)', offset:.4 }, { transform:'rotateY(0deg)', offset:.88 }, { transform:'rotateY(0deg)', offset:1 }], { duration:dur, easing:'ease-in-out' }).catch(() => {});
-  btlRing({ left:cx - cw * .55, top:cy - cw * .55, width:cw * 1.1, height:cw * 1.1 }, col, true);
+  btlSnd('hebounce'); btlRing({ left:cx - cw * .55, top:cy - cw * .55, width:cw * 1.1, height:cw * 1.1 }, col, true);
   btlParticles(cx, cy, { n:10, color:col, dist:cw * .8, dur:520, size:5, inward:true, spread:360 });
   try{
     await btlAnim(e, [{ transform:btlXf(from, from), offset:0 }, { transform:btlXf(from, lift), offset:.22 }, { transform:btlXf(from, lift), offset:.34 }, { transform:btlXf(from, to), offset:1 }], { duration:dur, easing:'cubic-bezier(.4,.1,.25,1)' });
@@ -34574,7 +34608,7 @@ BTL_TECH_FX['RENFORTS'] = { mode:'none',
   cands:s => BTL.S[s].pile.length ? [btlTechSrc(s)] : [],
   run:async (s) => {
     if(btlGone()) return;
-    btlEchoPulse(s);
+    btlSnd('rfecho'); btlEchoPulse(s);
     await btlSleep(820);
     if(btlGone()) return;
     await btlDraw(s);
@@ -34604,7 +34638,7 @@ BTL_TECH_FX['PRÉPARATION'] = { mode:'ally',
     const lr = btlReticle(t, 'fx');
     try{
       for(let i = 0; i < 3; i++){
-        shots.push(btlAmmoShot(src, btlUnitRect(t), i));
+        btlSnd('prammo'); shots.push(btlAmmoShot(src, btlUnitRect(t), i));
         btlAfter(() => { if(!BTL || BTL.abort) return; const r = btlUnitRect(t); btlParticles(src.left + src.width / 2, src.top + src.height / 2, { n:5, color:'#ffb04a', dist:34, dur:320, size:3.5, spread:30 }); btlRing(r, '#ff8a2a', false); }, 560 + i * 150);
         await btlSleep(150);
       }
@@ -34612,7 +34646,7 @@ BTL_TECH_FX['PRÉPARATION'] = { mode:'ally',
     } finally { if(lr) lr.off(); }
     if(btlGone() || !btlOnField(t) || t.hp <= 0) return;
     const r = btlUnitRect(t), el = btlUnitEl(t), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    musAtk();
+    btlSnd('prpower');
     btlRing(r, '#ff6a1a', false); btlAfter(() => { if(BTL) btlRing(r, '#ffe0a0', false); }, 90);
     btlFlashEl(el, '#ff9a2a', .95, 520);
     btlParticles(cx, cy, { n:16, color:'#ff9a3a', dist:Math.max(r.width, 70) * .9, dur:560, size:5, sq:true });
@@ -34672,7 +34706,7 @@ async function btlPosImplant(s, t, tc){
   const orb = btlPosDiv('opacity:0;border-radius:50%;left:' + (ox - S / 2) + 'px;top:' + (oy - S / 2) + 'px;width:' + S + 'px;height:' + S + 'px;will-change:transform,opacity;'
     + 'background:radial-gradient(circle,#fff 0,#d2f4ff 22%,rgba(53,200,255,.9) 50%,rgba(53,200,255,0) 74%);box-shadow:0 0 22px 8px rgba(53,200,255,.5)', 32);
   const P = u => 'translate(' + dx * u + 'px,' + (dy * u + lift * Math.sin(Math.PI * u)) + 'px) scale(' + (1 - .35 * u) + ')';
-  musSfx('rare');
+  btlSnd('poimplant');
   for(let i = 1; i <= 6; i++) btlAfter(() => { if(!BTL || BTL.abort) return; const u = i / 7; btlParticles(ox + dx * u, oy + dy * u + lift * Math.sin(Math.PI * u), { n:3, color:col, dist:22, dur:380, size:4, spread:20 }); }, 560 * i / 7);
   await btlAnim(orb, [{ transform:P(0) + ' scale(.4)', opacity:0 }, { transform:P(.12), opacity:1, offset:.12 }, { transform:P(.5), opacity:1, offset:.5 }, { transform:P(.92), opacity:1, offset:.92 }, { transform:P(1), opacity:0 }],
     { duration:600, easing:'cubic-bezier(.35,.1,.55,1)' }).catch(e => { if(e === 'abort') throw e; });
@@ -34721,7 +34755,7 @@ async function btlPosShow(c){
   const wash = btlPosDiv('inset:0;opacity:0;background:radial-gradient(circle at 50% 50%,rgba(235,250,255,.95) 0,rgba(90,205,255,.55) 38%,rgba(40,120,255,0) 76%)', 35); els.push(wash);
   const cv = btlCanvasFx(33); els.push(cv.cv); const g = cv.ctx;
   const T_IN = 340, T_HOLD = 640, T_CH = 420, rnd = Math.random;
-  musSfx('epique');
+  btlSnd('poshow');
   btlAnim(dim, [{ opacity:0 }, { opacity:1 }], { duration:260, easing:'ease-out' }).catch(() => {});
   btlAnim(eM, [{ transform:'none', opacity:0 }, { transform:'none', opacity:1, offset:.001 }, { transform:btlXf(from, L), opacity:1 }], { duration:T_IN, easing:'cubic-bezier(.2,.8,.3,1)' }).catch(() => {});
   eT.style.transformOrigin = '50% 50%';
@@ -34789,7 +34823,7 @@ async function btlPosPulse(c, rv){
     hits.push({ x:r1.left + r1.width / 2, y:r1.top + r1.height / 2, t:tNow });
     tweens.push(btlTween(x, before, x.hp / x.maxHp * 100, 520));
   };
-  musAtk(); btlShake(btlQ('#btlPlate'), 7);
+  btlSnd('populse'); btlShake(btlQ('#btlPlate'), 7);
   try{
     btlAnim(wash, [{ opacity:0 }, { opacity:.8, offset:.12 }, { opacity:.25, offset:.45 }, { opacity:0 }], { duration:T_W, easing:'ease-out' }).catch(() => {});
     await btlHkLoop(T_W, (k, t) => {
@@ -34924,14 +34958,14 @@ async function btlSpDome(t, foe, dmg){
   const parts = [], cracks = [], bigR = Math.max(ra.width, ra.height) * 1.9, spent = { n:0 };
   let lastDf = t.df, lastCrack = 0, flashB = false, flashR = false, lastTT = 0;
   const spawn = (x, y, vx, vy, life, kind, size) => { if(parts.length < 90) parts.push({ x, y, vx, vy, age:0, life, kind, size }); };
-  musSfx('rare');
+  btlSnd('spdome');
   try{
     await btlHkLoop(T.exp, (u, tt) => {
       const dt = btlSpClamp(tt - lastTT, 1, 48); lastTT = tt;
       g.clearRect(lay.x0, lay.y0, lay.w, lay.h); g.globalCompositeOperation = 'source-over';
       const mixAll = btlSpClamp((tt - T.tint0) / (T.tint1 - T.tint0), 0, 1), inAll = btlSpClamp(tt / 260, 0, 1);
       if(!flashB && tt > 40){ flashB = true; btlFlashEl(el, '#4ab8ff', .7, 420); btlRing(ra, '#4ab8ff', false); }
-      if(!flashR && tt > T.tint0 + 160){ flashR = true; btlFlashEl(el, '#ff3a2a', .8, 480); btlShake(el, 3); musSfx('epique'); btlRing(ra, '#ff5a3a', true); }
+      if(!flashR && tt > T.tint0 + 160){ flashR = true; btlFlashEl(el, '#ff3a2a', .8, 480); btlShake(el, 3); btlSnd('sppress'); btlRing(ra, '#ff5a3a', true); }
       // 1re passe : alvéoles (opaques) ; 2e passe : lumière additive
       const alive = [];
       for(const c of cells){
@@ -34998,7 +35032,7 @@ async function btlSpDome(t, foe, dmg){
 // 2) la dernière alvéole explose (flash, onde de choc, étincelles) et tire un laser sur la carte ennemie ; la promesse se résout à l'impact (la suite des dégâts se joue pendant que la lumière retombe)
 function btlSpFire(dm, foe){
   return new Promise((resolve, reject) => {
-    dm.fired = true;
+    btlSnd('spfire'); dm.fired = true;
     const { lay, grid, R } = dm, g = lay.g, rb = btlUnitRect(foe), fx = rb.left + rb.width / 2, fy = rb.top + rb.height / 2, ox = grid.cx, oy = grid.cy;
     const ang = Math.atan2(fy - oy, fx - ox), ux = Math.cos(ang), uy = Math.sin(ang), len = Math.hypot(fx - ox, fy - oy), wB = Math.max(9, R * .75);
     const T_HIT = 85, T_END = 560, t0 = btlClk(), parts = [], bits = [];
@@ -35088,7 +35122,7 @@ BTL_CARD_FX['SEEKER'] = {
       c._skDone = true;
       const tr = btlUnitRect(t), cx = tr.left + tr.width / 2, cy = tr.top + tr.height / 2, VW = innerWidth, VH = innerHeight;
       // 1) pénombre : tout s'assombrit sauf la carte ciblée
-      const rx = tr.width * .92, ry = tr.height * .82;
+      btlSnd('skscope'); const rx = tr.width * .92, ry = tr.height * .82;
       const dark = mk('left:0;top:0;width:100vw;height:100vh;z-index:30;opacity:0;will-change:opacity;' +
         'background:radial-gradient(' + rx + 'px ' + ry + 'px at ' + cx + 'px ' + cy + 'px,rgba(4,7,14,0) 0,rgba(4,7,14,0) 58%,rgba(4,7,14,.62) 78%,rgba(3,5,10,.9) 100%)');
       const rim = mk('left:' + (tr.left - 3) + 'px;top:' + (tr.top - 3) + 'px;width:' + (tr.width + 6) + 'px;height:' + (tr.height + 6) + 'px;z-index:31;border-radius:9px;opacity:0;' +
@@ -35109,7 +35143,7 @@ BTL_CARD_FX['SEEKER'] = {
       btlAnim(scope, [{ filter:'none' }, { filter:'drop-shadow(0 0 4px #ff4d4d)' }], { duration:140 }).catch(() => {});
       await btlSleep(170);
       // 3) la balle : elle arrive du camp de SEEKER, en perspective (grosse près de l'écran, petite à l'impact), et perfore la carte
-      const hx = cx + (Math.random() - .5) * tr.width * .14, hy = cy + (Math.random() - .5) * tr.height * .12;
+      btlSnd('skshot'); const hx = cx + (Math.random() - .5) * tr.width * .14, hy = cy + (Math.random() - .5) * tr.height * .12;
       const sx = to.left + to.width / 2 + (hx < VW / 2 ? 1 : -1) * VW * .12, sy = c.side === 'p' ? VH + 40 : -40;
       const ang = Math.atan2(hy - sy, hx - sx), deg = ang * 180 / Math.PI, BW = Math.min(180, VW * .44), BH = BW / 4;
       musAtk();
@@ -35134,7 +35168,7 @@ BTL_CARD_FX['SEEKER'] = {
       await btlAnim(bul, [{ transform:'translate(0,0) rotate(' + deg + 'deg) scale(2.4)', easing:'cubic-bezier(.1,.75,.35,1)' }, { transform:'translate(' + dx * .74 + 'px,' + dy * .74 + 'px) rotate(' + deg + 'deg) scale(.78)', offset:.72, easing:'cubic-bezier(.6,0,1,1)' }, { transform:'translate(' + dx + 'px,' + dy + 'px) rotate(' + deg + 'deg) scale(.5)' }], { duration:T, easing:'linear' });
       bul.style.visibility = 'hidden';   // la balle est dans la carte
       // impact : trou net (bord éclaté, fissures fines), éclats qui ressortent derrière la carte, secousse
-      const tEl = btlUnitEl(t), r1 = btlUnitRect(t), hs = Math.max(16, r1.width * .26), lx = hx - r1.left, ly = hy - r1.top;
+      btlSnd('skimpact'); const tEl = btlUnitEl(t), r1 = btlUnitRect(t), hs = Math.max(16, r1.width * .26), lx = hx - r1.left, ly = hy - r1.top;
       let cr = ''; for(let i = 0; i < 7; i++){ const a = Math.random() * 6.283, l = 26 + Math.random() * 20; cr += '<line x1="50" y1="50" x2="' + (50 + Math.cos(a) * l).toFixed(1) + '" y2="' + (50 + Math.sin(a) * l).toFixed(1) + '"/>'; }
       const hole = document.createElement('div');
       hole.className = 'sk-hole';
@@ -35317,7 +35351,7 @@ function btlCsGain(c, n){ c.as = n; c.kw = (BTL_CARD_KW[n] || []).slice(); delet
 // ---- TANDEEM (V0.05.61) : PASSIF -- +2 DEF à chaque carte Tech jouée (par l'un ou l'autre joueur) ; affichage habituel d'un gain de DEF ----
 BTL_CARD_FX['TANDEEM'] = { passif:{ quand:'tech', run: async c => {
   if(!btlOnField(c) || c.hp <= 0) return;
-  await btlShieldAdd(c, 2, false, { num:{ dx:0, ty:.5 } });
+  btlSnd('tdlink'); await btlShieldAdd(c, 2, false, { num:{ dx:0, ty:.5 } });
 } } };
 // ---- PIGTAIL (V0.05.69) : BAROUD D'HONNEUR -- la prochaine utilisation du module de SON camp ne coûte pas de mana (une fois, non cumulable).
 //      Animation : un câble spiralé (« pigtail ») jaillit de la carte, se déroule jusqu'à la case du module de son camp (le chef s'il n'a pas de module) et s'y branche ----
@@ -35333,7 +35367,7 @@ function btlPigPath(x0, y0, x1, y1, amp, coils){
 }
 async function btlPigCable(c, side){
   BTL.modFree = BTL.modFree || { p:0, o:0 }; BTL.modFree[side] = 1;   // la règle d'abord (identique au noyau), l'affichage suit à l'arrivée du câble
-  const fx = btlQ('#btlFx'), mb = btlQ(side === 'p' ? '#btlMod' : '#btlOMod'), L = BTL.S[side].leader;
+  btlSnd('pgcable'); const fx = btlQ('#btlFx'), mb = btlQ(side === 'p' ? '#btlMod' : '#btlOMod'), L = BTL.S[side].leader;
   const tgtEl = (mb && !mb.hidden) ? mb : btlUnitEl(L), r0 = btlUnitRect(c), r1 = btlRect(tgtEl);
   if(!fx || !tgtEl || !r0.width || !r1.width){ btlModPaint(); btlRefreshCan(); return; }
   const x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height * .45, x1 = r1.left + r1.width / 2, y1 = r1.top + r1.height / 2;
@@ -35368,7 +35402,7 @@ async function btlPigCable(c, side){
 //      puis les câbles de son dos crépitent : petits arcs électriques cyan au-dessus de la carte ----
 async function btlPigArrive(c, u, to, col){
   if(!u) return;
-  const SP = BTL_TS / 2, rnd = Math.random, { cv, ctx } = btlCanvasFx(30);
+  btlSnd('pgarrive'); const SP = BTL_TS / 2, rnd = Math.random, { cv, ctx } = btlCanvasFx(30);
   const tw = to.width, th = to.height, cx = to.left + tw / 2, by = to.top + th * .9, ty = to.top + th * .06;
   const T = { HIT:170, ARC0:620, ARC1:1450, END:1900 }, drops = [], rings = [], sparks = []; let hit = false, lastArc = -1e9, arcs = [];
   const NEON = ['220,245,255', '160,235,255', '255,140,210', '120,200,255'];
@@ -35575,7 +35609,7 @@ async function btlMarchBag(c, side){
   setTimeout(() => { if(phase < 1){ phase = 1; place(L.x, L.y); P.rot = 0; P.sx = P.sy = 1; impact(); } }, D1 + 40);
   setTimeout(() => { if(phase < 2){ phase = 2; P.open = 1; P.rope = 1; P.glow = 1; P.sx = P.sy = 1; if(alive) btlMarchBagDraw(g, S, P); opened(); } }, D1 + D2 + D3 + D4 + 40);
   await pImp;
-  if(!btlGone()){ btlShake(btlQ('#btlPlate'), 2.4); btlParticles(L.x, L.y - S * .04, { n:14, color:'#c9a77a', dist:S * .42, dur:620, size:5, rise:true, spread:300 }); musSfx('pio2'); }
+  if(!btlGone()){ btlShake(btlQ('#btlPlate'), 2.4); btlParticles(L.x, L.y - S * .04, { n:14, color:'#c9a77a', dist:S * .42, dur:620, size:5, rise:true, spread:300 }); btlSnd('mcbag'); }
   await pOpen;
   const mouth = { x:L.x, y:L.y - S * .56 * .7 - S * .06 };   // bouche du sac (col, un peu au-dessus)
   if(!btlGone()){ btlRing({ left:mouth.x - S * .3, top:mouth.y - S * .1, width:S * .6, height:S * .2, right:mouth.x + S * .3, bottom:mouth.y + S * .1 }, '#7dfff4', false); }
@@ -35613,7 +35647,7 @@ async function btlMarchToCase(el, side, name){
   if(nb){ const r = btlRect(nb), col = btlRarColor(btlMarchRar(side)); btlRing(r, '#7dfff4', false); btlAfter(() => { if(BTL) btlRing(r, col, false); }, 160); btlFlashEl(nb, '#7dfff4', 1, 520);
     btlAnim(nb, [{ transform:'scale(1.5) rotateY(180deg)' }, { transform:'scale(.9) rotateY(0deg)', offset:.6 }, { transform:'scale(1)' }], { duration:420, easing:'cubic-bezier(.2,.8,.3,1)' }).then(a => a.cancel(), () => {});
     btlParticles(r.left + r.width / 2, r.top + r.height / 2, { n:12, color:'#7dfff4', dist:40, dur:520, size:4 }); }
-  musSfx('fin');
+  btlSnd('mcplace');
 }
 // ---------- écran de choix (joueur) : 3 cartes l'une sous l'autre, plein écran ----------
 function btlMarchRects(){ const VW = innerWidth, VH = innerHeight, top = Math.max(70, VH * .12), gap = 14, avail = VH - top - 24 - gap * 2, ch = Math.min(avail / 3, (VW - 32) * 506 / 900), cw = ch * 900 / 506, y0 = top + (avail - ch * 3) / 2;
@@ -35629,7 +35663,7 @@ function btlMarchPickUI(names, rar, from, rec){
     const R = btlMarchRects();
     const src = from || { x:VW / 2, y:VH * .92 };
     els.forEach((el, i) => btlMarchBurst(el, src, R[i], i));
-    musSfx('pio1');
+    btlSnd('mcburst');
     const pk = { done:false, march:true };
     const end = (i, rnd) => { if(pk.done) return; pk.done = true; if(BTL && BTL.pick === pk) BTL.pick = null; if(rec) btlRecDec(rnd ? 'r' : i); els.forEach(e => e.onpointerdown = null); res({ i, els, ov }); };
     pk.auto = () => { const n = btlRnd(names); end(names.indexOf(n), true); };   // chrono écoulé pendant le choix : tirage
@@ -35796,7 +35830,7 @@ function btlTbBeam(g, x0, y0, x1, y1, w0, w1){
 }
 async function btlTbMeal(c){
   const el = btlUnitEl(c); if(!el || !btlOnField(c)){ c._tbPend = 0; return; }
-  const fx = btlQ('#btlFx'), r = btlUnitRect(c), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2;
+  btlSnd('tbmeal'); const fx = btlQ('#btlFx'), r = btlUnitRect(c), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2;
   const R = W * .58, hy = cy + H * .3, hrx = R * 1.08, KP = .32, hry = hrx * KP, PHI = Math.asin(KP), CPH = Math.cos(PHI);
   const L = cx - R * 1.95, T = cy - H * .5 - R * 1.25, CW = R * 3.9, CH = hy + hry + R * .45 - T;
   const dpr = Math.min(2, window.devicePixelRatio || 1), els = [];
@@ -35862,7 +35896,7 @@ async function btlTbMeal(c){
       if(ev === 2 && t > BITE && t < CHEW && Math.random() < (lite ? .35 : .7) * dt / 16){ const s = Math.random() < .5 ? -1 : 1, a = .3 + Math.random() * 2.5; spark(cx + Math.cos(a) * ma * s * .9, ym + Math.sin(a) * mb, 2, .17, 2.4); if(Math.random() < .25) chunk(cx + (Math.random() - .5) * ma, ym + mb * .8, 1); }
       if(ev === 2 && t > DOWN0 + 60){ ev = 3; puff(gf, cx, hy, lite ? 4 : 7, .15, true); }
       if(ev === 3 && t >= RISE0){ ev = 4; risen = true; c._tbPend = Math.max(0, (c._tbPend || 0) - gain); btlPaintIn(gh, c); }
-      if(ev === 4 && t > RISE0 + 140){ ev = 5; try{ musSfx('shield'); }catch(_){} }
+      if(ev === 4 && t > RISE0 + 140){ ev = 5; try{ btlSnd('tbpower'); }catch(_){} }
       if(ev === 5 && t >= RISE1){ ev = 6; shown = true; btlTbReveal(c, gh, gain); }
       // ---------------- la copie de la carte
       if(t < BITE){
@@ -36267,7 +36301,7 @@ async function btlRyFx(c, card, full){
   const DEB = { u:['up', 'upD', .4], f:['fo', 'foD', .37], j:['joint', 'jointD', 1], c:['palm', 'palm', 1], h:['hook', 'hook', .34] };
   const drawDeb = (g, d, under) => { const Q = P(d.x, d.y, d.z), D = DEB[d.k], L = d.len * Q.s, w = D[2] === 1 ? L * .62 : L * D[2]; const W = D[2] === 1 ? w : L;
     g.save(); g.globalAlpha = Math.max(0, d.life); g.translate(Q.x, Q.y); g.rotate(d.a); g.drawImage(T[D[under ? 1 : 0]], -W / 2, -w / 2, W, w); g.restore(); };
-  musSfx('dep1');
+  btlSnd('ryarms');
   const loop = btlDmLoop(t => {
     tNow = t; for(let i = marks.length - 1; i >= 0; i--) if(t >= marks[i][0]){ marks[i][1](); marks.splice(i, 1); }
     if(lite && (++fr & 1)) return t < END + 260 || sparks.length > 0 || debris.length > 0 || booms.length > 0;
@@ -36278,7 +36312,7 @@ async function btlRyFx(c, card, full){
     wireK = wireQ(t); scanK = t < WIRE1 ? -1 : so(ez(WIRE1, SCAN1 - 40, t));
     flashK = t >= SCAN1 - 40 ? Math.max(0, 1 - Math.abs(t - (SCAN1 + 20)) / 120) : 0;
     for(const A of arms) if(!A.dead) pose(A, t);
-    for(let k = 0; k < PAIRS.length; k++){ if(t >= HIT[k] && !arms[PAIRS[k][0]].dead){ breakArm(arms[PAIRS[k][0]]); breakArm(arms[PAIRS[k][1]]); try{ musSfx('vap2'); }catch(_){} } }
+    for(let k = 0; k < PAIRS.length; k++){ if(t >= HIT[k] && !arms[PAIRS[k][0]].dead){ breakArm(arms[PAIRS[k][0]]); breakArm(arms[PAIRS[k][1]]); btlSnd('rysmash'); } }
     // ---- canvas du dessous : lumière du puits sur le plateau, puits, bras (partie enterrée puis partie à l'air), débris
     gb.clearRect(ox, oy, BW, BH);
     gb.globalCompositeOperation = 'lighter';
@@ -36540,7 +36574,7 @@ async function btlCmEnter(c, to, col){
     if(kit) kit.set(seq[0]);
     btlLights(c.rar, 1400);
     btlAnim(e, [{ transform:'scale(.62)', opacity:0, filter:'brightness(2.2) drop-shadow(0 0 22px #c63cff)' }, { transform:'scale(1.04)', opacity:1, offset:.7, filter:'brightness(1.2) drop-shadow(0 0 16px #c63cff)' }, { transform:'scale(1)', opacity:1, filter:'drop-shadow(0 0 10px #c63cff)' }], { duration:SHOW, easing:'cubic-bezier(.2,.8,.3,1)' }).catch(() => {});
-    try{ musSfx(c.rar || 'holo'); }catch(_){}
+    try{ musSfx(c.rar || 'holo'); }catch(_){} btlSnd('cmglitch');
     // canvas du trou noir (derrière la carte)
     const BW = Math.round(SW * 2.7), BH = Math.round(SW * 2.7), ox = Math.round(hx - BW / 2), oy = Math.round(hy - BH / 2), dpr = Math.min(1.5, window.devicePixelRatio || 1);
     cv = document.createElement('canvas'); cv.style.cssText = 'position:fixed;left:' + ox + 'px;top:' + oy + 'px;width:' + BW + 'px;height:' + BH + 'px;z-index:32;pointer-events:none;';
@@ -36580,7 +36614,7 @@ async function btlCmEnter(c, to, col){
       { transform:'scale(.86,1.08) rotate(-110deg) skewX(8deg)', opacity:1, offset:.35, filter:'brightness(1.3) drop-shadow(0 0 18px #ff3c8a)' },
       { transform:'scale(.34,.5) rotate(-330deg) skewX(18deg)', opacity:.95, offset:.75, filter:'brightness(1.8) drop-shadow(0 0 22px #c63cff)' },
       { transform:'scale(.02) rotate(-560deg) skewX(24deg)', opacity:0, filter:'brightness(3)' }], { duration:S1 - S0, easing:'cubic-bezier(.45,0,.85,.55)' });
-    try{ musSfx('vap2'); }catch(_){}
+    try{ btlSnd('cmhole'); }catch(_){}
     await swal;
     if(kit){ kit.done(); kit = null; } e.remove(); e = null;
     // météorite : la petite carte (image tirée au hasard) tombe du ciel sur son emplacement
@@ -36601,7 +36635,7 @@ async function btlCmEnter(c, to, col){
     // impact : flash, onde de choc sur tout le champ de bataille, fumée, cartes voisines secouées
     btlAnim(tr, [{ opacity:1 }, { opacity:0 }], { duration:160 }).then(() => tr.remove(), () => tr.remove());
     btlCmImpact(c, to, pr, lite);
-    try{ musSfx('dep1'); }catch(_){}
+    try{ btlSnd('cmimpact'); }catch(_){}
     await btlSleep(END - M1);
   } finally {
     if(kit) kit.done();
@@ -36728,7 +36762,7 @@ async function btlCmPulse(m, t){
     const parts = btlCmParts(14), N = 30, hb = Hc * .055, amp = Hc * .075;
     const flow = []; for(let i = 0; i < (lite ? 14 : 26); i++) flow.push({ f:Math.random(), v:.0011 + Math.random() * .0011, ph:Math.random() * 6.283, r:.6 + Math.random() * .6, s:.6 + Math.random() * .8 });
     let lt = 0, hit = false;
-    try{ musSfx('vap1'); }catch(_){}
+    try{ btlSnd('cmpulse'); }catch(_){}
     // filament : point et demi-épaisseur à la fraction f (0 = source, 1 = cible), ondulation organique (somme de sinus lents), extrémités fixes
     const wave = (f, tt) => { const env = Math.pow(Math.sin(Math.PI * f), .8); return amp * env * (.58 * Math.sin(f * 7.2 - tt * .017) + .3 * Math.sin(f * 14.5 + tt * .026) + .12 * Math.sin(f * 3.1 - tt * .008)); };
     const ptAt = (f, tt) => { const w = wave(f, tt); return [A.x + (B.x - A.x) * f + nxv * w, A.y + (B.y - A.y) * f + nyv * w]; };
@@ -36777,7 +36811,7 @@ async function btlCmPulse(m, t){
       }
       // impact : la carte Appel est saisie par la gravité (ondes elliptiques qui se resserrent, arcs qui tournent autour d'elle)
       if(head >= 1){
-        if(!hit){ hit = true; btlFlashEl(ut, '#d68aff', .9, 460); btlShake(ut, 3); try{ musSfx('vap2'); }catch(_){} }
+        if(!hit){ hit = true; btlFlashEl(ut, '#d68aff', .9, 460); btlShake(ut, 3); }
         const k = open * (1 - tail * .5), ti = tt - HEAD1, rx = rt.width * .5, ry = rt.height * .4;
         g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round';
         for(let i = 0; i < 3; i++){ const q = ((ti * .0022 + i / 3) % 1), s = 1.25 - q * .55;   // ondes qui convergent vers la carte
@@ -37160,7 +37194,7 @@ function btlMgLevMax(S){ return btlMgCover(S, S.R) + .1; }
 // ---- 1) crue : la lave jaillit des aérations et remplit le champ de bataille ; `put` est appelé quand la case de la carte est recouverte ----
 async function btlMgFill(S, slotRect, put){
   const LM = btlMgLevMax(S), D = 520;
-  btlMgTw(S, 'vh', 1, 120);
+  btlSnd('mgfill'); btlMgTw(S, 'vh', 1, 120);
   S.vents.forEach(v => { const [x, y] = btlMgPx(S, v); rdSparks(S.F, x, y, 5, 150, -Math.PI / 2, 2.6, { life:420, w:1.4, g:240, drag:2, rgb:'255,150,50' }); });
   const sp = setInterval(() => { if(!S.alive || S.u.lev > LM * .7) return; const v = S.vents[Math.random() * S.vents.length | 0], [x, y] = btlMgPx(S, v);
     rdSparks(S.F, x, y, 3, 110, null, 0, { life:360, w:1.3, g:200, drag:2.4, rgb:'255,170,60' }); }, 45);
@@ -37172,7 +37206,7 @@ async function btlMgFill(S, slotRect, put){
 }
 // ---- 2) bulles puis grosse bulle ; `out` reçoit le centre de l'explosion (pixels) ----
 async function btlMgErupt(S){
-  const R = S.R, cx = R.width / 200, cy = R.height / 200, W = R.width / 100, H = R.height / 100;
+  btlSnd('mgerupt'); const R = S.R, cx = R.width / 200, cy = R.height / 200, W = R.width / 100, H = R.height / 100;
   const N = S.F.lite ? 7 : 11;
   for(let i = 0; i < N; i++){ const q = i / (N - 1), ang = Math.random() * 6.283, d = (1 - q * .6) * (.55 + Math.random() * .45);
     const x = Math.max(.25, Math.min(W - .25, cx + Math.cos(ang) * d * W * .42)), y = Math.max(.25, Math.min(H - .25, cy + Math.sin(ang) * d * H * .42));
@@ -37193,12 +37227,12 @@ async function btlMgErupt(S){
   rdSparks(S.F, X, Y, 46, 420, null, 0, { life:820, w:2.2, g:520, drag:1.5, rgb:'255,170,60' });
   rdSparks(S.F, X, Y, 22, 260, null, 0, { life:620, w:1.4, g:300, drag:1.8, rgb:'255,230,140' });
   for(let i = 0; i < (S.F.lite ? 5 : 10); i++){ const a = Math.random() * 6.283; rdPuff(S.F, X + Math.cos(a) * rp * .5, Y + Math.sin(a) * rp * .4, rp * .7, rp * 2.2, 1300 + Math.random() * 500, { vx:Math.cos(a) * 40, vy:Math.sin(a) * 30 - 30, a:.4, kind:'k' }); }
-  try{ musSfx('pio2'); }catch(_){}
+  
   return { x:X, y:Y, r:rp };
 }
 // ---- 3) vidange : la lave repart par les aérations, qui restent rouges et fument un instant ----
 async function btlMgDrain(S, reveal){
-  const D = 560;
+  btlSnd('mgdrain'); const D = 560;
   S.u.adv = 0; btlMgTw(S, 'vh', .9, 200); btlMgTw(S, 'adv', .55, D, rdE.inC);
   const lv = btlMgTw(S, 'lev', -.35, D, k => k * k * (1.6 - .6 * k));
   if(reveal){ (async () => { const need = btlMgCover(S, reveal.r) - .25; while(S.alive && S.u.lev > need) await btlSleep(16); if(S.alive) reveal.fn(); })().catch(() => {}); }
@@ -37262,7 +37296,7 @@ async function btlMgAnswer(S, at, ans, give){
     const w = SW + (tr.width - SW) * s, h = SH + (tr.height - SH) * s;
     kf.push({ transform:'translate(' + (x - w / 2 - show.left) + 'px,' + (y - h / 2 - show.top) + 'px) scale(' + (w / SW) + ',' + (h / SH) + ') rotate(' + (Math.sin(s * Math.PI) * 8 * (bx < ax ? -1 : 1)).toFixed(2) + 'deg)', offset:q }); }
   e.style.transformOrigin = '0 0';
-  try{ musSfx('pio1'); }catch(_){}
+  try{ btlSnd('mganswer'); }catch(_){}
   await btlAnim(e, kf, { duration:360, easing:'linear' });
   } finally { clearInterval(drip); e.remove(); if(he) he.style.visibility = ''; }
   if(side === 'p') btlRenderHand(); else btlRenderOHand();
@@ -37552,7 +37586,7 @@ async function btlLxDroplet(c, from, to){
   try{
     const x0 = from.left + from.width / 2, y0 = from.top + from.height / 2, x1 = to.left + to.width / 2, y1 = to.bottom - to.height * .12;
     const D = 200, t0 = btlClk(), img = btlLxGooImg(), apex = Math.min(y0, y1) - Math.abs(y1 - y0) * .25 - 40;
-    try{ musSfx('vap1'); }catch(_){}
+    try{ btlSnd('lxdrop'); }catch(_){}
     await new Promise((res, rej) => {
       const tick = () => { if(!BTL || BTL.abort){ X.onFrame = null; rej('abort'); return; }
         const k = Math.min(1, (btlClk() - t0) / D), e = k * k * (3 - 2 * k), x = x0 + (x1 - x0) * e, y = (1 - e) * (1 - e) * y0 + 2 * (1 - e) * e * apex + e * e * y1;
@@ -37561,7 +37595,7 @@ async function btlLxDroplet(c, from, to){
         if(k >= 1){ X.onFrame = null; res(); return; } requestAnimationFrame(tick); };
       requestAnimationFrame(tick); });
     btlLxDrops(X, x1, y1, 12, 230, -Math.PI / 2, 2.6, { r:2.6, life:420, floor:to.bottom - 2 });
-    try{ musSfx('vap2'); }catch(_){}
+    try{ btlSnd('lxsplat'); }catch(_){}
   } finally { X.users--; }
 }
 // ---- 2) entrée : l'œuf se forme, se fissure, éclôt ; la carte sort ----
@@ -37644,22 +37678,22 @@ async function btlLxEgg(c, to, col){
   try{
     // la vase monte et tremble, puis durcit en coquille (de bas en haut)
     S.u.pud = 0; btlLxTw(S, 'pud', 1, 160);
-    try{ musSfx('vap3'); }catch(_){}
+    try{ btlSnd('lxegg'); }catch(_){}
     rdPuff(X.F, S.cx, to.bottom - 4, 10, 40, 900, { vy:-20, a:.35 });
     await btlLxTw(S, 'form', 1, 430, k => 1 - Math.pow(1 - k, 2.2));
     // l'œuf tremble deux fois (quelque chose bouge dedans)
     for(const a of [.07, -.09, .06, -.05, .1, -.08, 0]){ await btlLxTw(S, 'ang', a, 34, rdE.io); }
     await btlSleep(70);
     // fissures (lueur verdâtre)
-    try{ musSfx('atk1'); }catch(_){}
+    try{ btlSnd('lxcrack'); }catch(_){}
     btlLxTw(S, 'glow', 1, 200);
     await btlLxTw(S, 'crack', .6, 150, rdE.outC);
     for(const a of [-.06, .07, -.04, 0]) await btlLxTw(S, 'ang', a, 28, rdE.io);
-    try{ musSfx('atk3'); }catch(_){}
+    try{ btlSnd('lxcrack'); }catch(_){}
     await btlLxTw(S, 'crack', 1, 120, rdE.inC);
     // éclosion : le capuchon vole en éclats, vase qui gicle
     btlLxShards(S, X); S.u.open = 1; S.draw();   // le rendu du capuchon seul a remplacé l'image : on redessine tout de suite
-    try{ musSfx('vap4'); }catch(_){}
+    try{ btlSnd('lxhatch'); }catch(_){}
     btlShake(btlQ('#btlPlate'), 3);
     const rimY = S.yc + BTL_LX_G.VC * S.B;
     btlLxDrops(X, S.cx, rimY, 22, 380, -Math.PI / 2, 2.2, { r:3, life:700, floor:to.bottom + 4, up:120 });
@@ -37732,7 +37766,7 @@ async function btlLxCrawl(c, to, j){
   const steps = 4, D = 760, LAG = .045, t00 = btlClk();
   const gait = t => { t = Math.max(0, Math.min(1, t)); const k = t * steps, i = Math.min(steps - 1, Math.floor(k)), f = k - i; return (i + f * f * (3 - 2 * f)) / steps; };
   let stepN = -1, strand = null;
-  try{ musSfx('dep1'); }catch(_){}
+  try{ btlSnd('lxcrawl'); }catch(_){}
   try{
     await new Promise((res, rej) => { const tick = () => { if(!BTL || BTL.abort){ rej('abort'); return; }
       const T = Math.min(1, (btlClk() - t00) / D), tt = T * (1 + LAG * N);
@@ -37748,7 +37782,7 @@ async function btlLxCrawl(c, to, j){
       const last = trail.pts[trail.pts.length - 1]; if(!last || Math.hypot(tp[0] - last[0], tp[1] - last[1]) > 3) trail.pts.push(tp);
       shadow.style.transform = 'translate(' + (mid[0] - A[0]).toFixed(1) + 'px,' + (mid[1] - A[1]).toFixed(1) + 'px)';
       const sn = Math.floor(tt * steps);
-      if(sn !== stepN && sn < steps){ stepN = sn; try{ if(sn % 2) musSfx('vap' + (1 + (sn % 4))); }catch(_){}
+      if(sn !== stepN && sn < steps){ stepN = sn; try{ if(sn % 2) btlSnd('lxstep'); }catch(_){}
         const tailPt = () => { const r = strips[dir < 0 ? N - 1 : 0].getBoundingClientRect(); return strips[0].isConnected ? [r.left + r.width / 2, dir < 0 ? r.bottom - 2 : r.top + 2] : null; };
         const back = trail.pts[Math.max(0, trail.pts.length - 6)].slice(); X.st.push({ a:tailPt, b:() => back, L0:10, brk:3.2, w:2.6, sag:1, floor:null });
         btlLxDrops(X, tail[0], tail[1], 2, 40, dir < 0 ? Math.PI / 2 : -Math.PI / 2, 1, { r:2.2, life:360, splat:true }); }
@@ -37766,7 +37800,7 @@ async function btlLxBoom(c, fast){
   const glow = document.createElement('i'); glow.className = 'btl-lx-glow'; glow.style.cssText = 'left:' + (r.left - r.width * .3) + 'px;top:' + (r.top - r.height * .25) + 'px;width:' + r.width * 1.6 + 'px;height:' + r.height * 1.5 + 'px';
   btlQ('#btlFx').appendChild(glow);
   try{
-    try{ musSfx('vap3'); }catch(_){}
+    try{ btlSnd('lxswell'); }catch(_){}
     const SW = fast ? 240 : 440;   // gonflement (plus court quand elle meurt au combat)
     btlAnim(glow, [{ opacity:0, transform:'scale(.7)' }, { opacity:.55, transform:'scale(.9)', offset:.3 }, { opacity:.35, transform:'scale(.85)', offset:.5 }, { opacity:.9, transform:'scale(1.05)', offset:.8 }, { opacity:1, transform:'scale(1.15)' }], { duration:SW, easing:'ease-in' }).catch(() => {});
     const pops = setInterval(() => { if(!BTL || BTL.abort) return; btlLxDrops(X, r.left + r.width * (.15 + Math.random() * .7), r.top + r.height * (.2 + Math.random() * .6), 1, 70, -Math.PI / 2, 1.6, { r:2.4, life:420 }); }, 45);
@@ -37775,7 +37809,7 @@ async function btlLxBoom(c, fast){
       { transform:'scale(1.12) translate(-2px,-1px)', offset:.78 }, { transform:'scale(1.32)', filter:'brightness(1.9) sepia(.8) hue-rotate(45deg) saturate(3)' }], { duration:SW, easing:'ease-in' }); }
     finally { clearInterval(pops); }
     // l'explosion
-    try{ musSfx('die2'); musSfx('vap4'); }catch(_){}
+    try{ btlSnd('lxboom'); }catch(_){}
     u.style.opacity = '0';
     btlShake(btlQ('#btlPlate'), 6);
     rdRing(X.F, cx, cy, 8, r.width * 1.5, 480, 3, '180,230,110', .55); rdRing(X.F, cx, cy, 6, r.width * 1.05, 360, 2, '255,255,220', .55);
@@ -37795,7 +37829,7 @@ function btlLxSpit(src, t){
   const X = btlLxFx(); X.users++;
   const a = btlUnitRect(src), b = btlUnitRect(t), x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = b.left + b.width / 2, y1 = b.top + b.height / 2;
   const apex = Math.min(y0, y1) - 60 - Math.abs(x1 - x0) * .1, D = 260, t0 = btlClk(), img = btlLxGooImg();
-  try{ musSfx('vap2'); }catch(_){}
+  try{ btlSnd('lxspit'); }catch(_){}
   return new Promise((res, rej) => {
     const tick = () => { if(!BTL || BTL.abort){ X.onFrame = null; X.users--; rej('abort'); return; }
       const k = Math.min(1, (btlClk() - t0) / D), x = x0 + (x1 - x0) * k, y = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * apex + k * k * y1;
@@ -37805,7 +37839,7 @@ function btlLxSpit(src, t){
         btlLxDrops(X, x1, y1, 26, 420, null, 0, { r:3, life:520, g:700 });
         rdRing(X.F, x1, y1, 6, b.width * .8, 380, 2.5, '170,240,90', .6);
         for(let i = 0; i < 5; i++) rdPuff(X.F, x1 + (Math.random() - .5) * b.width * .7, y1 + (Math.random() - .5) * b.height * .5, 14, 54, 1300, { vy:-34, a:.42, delay:i * 60 });
-        try{ musSfx('vap1'); }catch(_){}
+        try{ btlSnd('lxsplat'); }catch(_){}
         X.users--; res(); return; }
       requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
@@ -37847,7 +37881,7 @@ BTL_CARD_FX['CASSIS'] = {
       if(!n){ btlPutCard(c); btlRing(to, col, false); musSfx(c.rar); return; }
       c._csDone = true;
       // 1) le noir tombe, rideaux de théâtre, la carte s'affiche en grand
-      const dark = mk('left:0;top:0;width:100vw;height:100vh;z-index:30;opacity:0;will-change:opacity;background:radial-gradient(120% 90% at 50% 46%,rgba(16,8,20,.78) 0,rgba(6,3,10,.93) 62%,rgba(2,1,4,.97) 100%)', '', 'cs-dark');
+      btlSnd('csshow'); const dark = mk('left:0;top:0;width:100vw;height:100vh;z-index:30;opacity:0;will-change:opacity;background:radial-gradient(120% 90% at 50% 46%,rgba(16,8,20,.78) 0,rgba(6,3,10,.93) 62%,rgba(2,1,4,.97) 100%)', '', 'cs-dark');
       A(dark, [{ opacity:0 }, { opacity:1 }], { duration:200, easing:'ease-out' });
       const T = btlCsTex(VW, VH), SXS = [VW * .14, VW * .5, VW * .86];
       const drape = side => mk((side < 0 ? 'left:0;' : 'right:0;') + 'top:0;width:' + T.DW + 'px;height:100vh;z-index:31;will-change:transform;' +
@@ -38390,7 +38424,7 @@ function btlDmLoop(fn){   // boucle image par image sur l'horloge du combat (btl
   const B0 = BTL; return new Promise((res, rej) => { const t0 = btlClk(); const tick = () => { if(!BTL || BTL.abort || (B0 && BTL !== B0)){ rej('abort'); return; } let go = false; try{ go = fn(btlClk() - t0); }catch(e){ rej(e); return; } if(go) requestAnimationFrame(tick); else res(); }; requestAnimationFrame(tick); });
 }
 async function btlDmArriveGL(c, to, col){
-  const VW = innerWidth, VH = innerHeight, G = btlDmGLInit(), fx = btlQ('#btlFx'), cv = G.cv;
+  btlSnd('dmarrive'); const VW = innerWidth, VH = innerHeight, G = btlDmGLInit(), fx = btlQ('#btlFx'), cv = G.cv;
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2, RS = Math.max(to.width, to.height) * .42;
   cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:31;pointer-events:none;';
   fx.appendChild(cv);
@@ -38412,7 +38446,7 @@ async function btlDmArriveGL(c, to, col){
         fl = document.createElement('div'); fl.className = 'btl-float'; btlPlaceFixed(fl, to); fl.style.zIndex = '34'; fl.innerHTML = btlSmallHtml(c); fx.appendChild(fl); try{ btlPaintIn(fl, c); }catch(_){}
         btlAnim(fl, [{ opacity:0, transform:'scale(.1) rotate(-25deg)', filter:'brightness(3)' }, { opacity:1, transform:'scale(1.16) rotate(3deg)', filter:'brightness(1.6)', offset:.62 }, { opacity:1, transform:'scale(1) rotate(0)', filter:'brightness(1)' }], { duration:440, easing:'cubic-bezier(.2,.8,.3,1)' })
           .then(() => { if(!BTL) return; btlPutCard(c); musSfx(c.rar); const un = btlUnitEl(c); if(un) btlFlashEl(un, '#c9a4ff', .9, 420); fl.style.opacity = '0'; }, () => {});
-        btlRing(to, '#b27cff', false);
+        btlSnd('dmcard'); btlRing(to, '#b27cff', false);
       }
       return t < END;
     });
@@ -38427,7 +38461,7 @@ async function btlDmArriveGL(c, to, col){
 // effet en WebGL : un trou noir à disque violet naît au centre du plateau dans un tourbillon de gaz, se déforme, éjecte la copie (onde de choc)
 // vers la main de l'adversaire, avale son gaz et s'effondre en un point blanc qui s'éteint. Même rendu en deux passes que l'arrivée.
 async function btlDmEjectGL(dm, dest, copy){
-  const VW = innerWidth, VH = innerHeight, G = btlDmGLInit(), fx = btlQ('#btlFx'), cv = G.cv, Q = BTL.S[dest];
+  btlSnd('dmeject'); const VW = innerWidth, VH = innerHeight, G = btlDmGLInit(), fx = btlQ('#btlFx'), cv = G.cv, Q = BTL.S[dest];
   const pl = btlQ('#btlPlate'), pr = pl ? btlRect(pl) : { left:0, top:VH * .25, width:VW, height:VH * .45 };
   const cx = pr.left + pr.width / 2, cy = pr.top + pr.height / 2, U = Math.min(VW, VH), RS = U * .085;
   const ez = (a, b, t) => Math.max(0, Math.min(1, (t - a) / (b - a))), so = x => x * x * (3 - 2 * x), eo = x => 1 - Math.pow(1 - x, 3), ei = x => x * x * x;
@@ -38661,7 +38695,7 @@ function btlEdCR(pts, s){                                                       
   return [cr(0), cr(1)];
 }
 async function btlEdArrive(c, to, col){
-  const st = btlEdStage(.5), fx = btlQ('#btlFx'), pl = btlQ('#btlPlate'), P = pl ? btlRect(pl) : { left:0, top:innerHeight * .25, width:innerWidth, height:innerHeight * .45 };
+  btlSnd('edarrive'); const st = btlEdStage(.5), fx = btlQ('#btlFx'), pl = btlQ('#btlPlate'), P = pl ? btlRect(pl) : { left:0, top:innerHeight * .25, width:innerWidth, height:innerHeight * .45 };
   const E = btlEdE, k = E.k, sm = x => x * x * (3 - 2 * x), w = to.width, h = to.height, cx = to.left + w / 2, cy = to.top + h / 2;
   const LIFT = h * .16, SC = 1.1, lw = w * SC + 8, lh = h * SC + 8, lcy = cy - LIFT;                    // contour : un peu plus grand que la carte, au-dessus de l'emplacement
   const rect = btlEdRect(cx, lcy, lw, lh, Math.min(lw, lh) * .12);
@@ -38847,7 +38881,7 @@ async function btlEdSalvo(d){
   const scx = r0.left + r0.width / 2, scy = r0.top + r0.height / 2;
   all.filter(x => btlLethal(x, N)).forEach(btlXOn);
   // la carte se soulève (copie au-dessus du métal ; l'originale est masquée le temps de l'effet)
-  const fl = document.createElement('div'); fl.style.pointerEvents = 'none'; btlPlaceFixed(fl, r0); fl.style.zIndex = '34'; fl.style.transformOrigin = '50% 60%';
+  btlSnd('edsalvo'); const fl = document.createElement('div'); fl.style.pointerEvents = 'none'; btlPlaceFixed(fl, r0); fl.style.zIndex = '34'; fl.style.transformOrigin = '50% 60%';
   fl.innerHTML = btlSmallHtml(d); try{ btlPaintIn(fl, d); }catch(_){}
   fl.style.filter = 'drop-shadow(0 16px 12px rgba(0,0,0,.6)) drop-shadow(0 0 10px rgba(255,40,30,.45))'; fx.appendChild(fl);
   if(u0) u0.style.visibility = 'hidden';
@@ -38929,7 +38963,7 @@ async function btlEdSalvo(d){
         for(let i = o.sp.length - 1; i >= 0; i--){ const p = o.sp[i]; p.age += dt; if(p.age >= p.life){ o.sp.splice(i, 1); continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.vy += .00045 * dt;
           blob(p.x, p.y, p.r * (1 - p.age / p.life), .9); }
       });
-      if(t >= T_HIT && t < T_HIT + 30 && !TL._snd){ TL._snd = 1; musAtk(); btlShake(btlQ('#btlPlate'), 6); }
+      if(t >= T_HIT && t < T_HIT + 30 && !TL._snd){ TL._snd = 1; btlSnd('edstrike'); btlShake(btlQ('#btlPlate'), 6); }
       st.draw(B, n, t, M, nm);
       return t < T_END || TL.some(o => o.sp.length);
     });
@@ -39100,7 +39134,7 @@ async function btlMtShadow(side){
   const cx0 = dir > 0 ? P.left - HL * .62 : P.left + P.width + HL * .62, cx1 = dir > 0 ? P.left + P.width + HL * .62 : P.left - HL * .62;
   const cy0 = dir > 0 ? P.top + P.height * 1.04 : P.top - P.height * .04, cy1 = cy0;
   const D = 1500;
-  try{ musSfx('vap1'); }catch(_){}
+  try{ btlSnd('mtshadow'); }catch(_){}
   try{
     btlAnim(dim, [{ opacity:0 }, { opacity:1, offset:.3 }, { opacity:1, offset:.62 }, { opacity:0 }], { duration:D, easing:'ease-in-out' }).catch(() => {});
     btlAnim(lava, [{ opacity:0 }, { opacity:0, offset:.55 }, { opacity:1, offset:.8 }, { opacity:0 }], { duration:D + 260, easing:'ease-in-out' }).catch(() => {});
@@ -39192,7 +39226,7 @@ async function btlMtArrive(c, to, col){
     fx.insertBefore(glow, fl); fx.insertBefore(shadow, fl);
     btlAnim(shadow, [{ opacity:0, transform:'scale(1.7)' }, { opacity:.35, transform:'scale(1.35)', offset:.5 }, { opacity:.7, transform:'scale(1)' }], { duration:D, easing:'ease-in' }).catch(() => {});
     btlAnim(glow, [{ opacity:0, transform:'scale(.6)' }, { opacity:.5, transform:'scale(.9)', offset:.6 }, { opacity:1, transform:'scale(1.05)' }], { duration:D, easing:'ease-in' }).catch(() => {});
-    const flaps = btlMtFlap(F.wings, 440, 3, 1);
+    btlSnd('mtwings'); const flaps = btlMtFlap(F.wings, 440, 3, 1);
     btlAnim(fl, [{ opacity:0 }, { opacity:1, offset:.14 }, { opacity:1 }], { duration:D, easing:'linear' }).catch(() => {});
     const kf = []; for(let i = 0; i <= 14; i++){ const q = i / 14, e = 1 - Math.pow(1 - q, 2.6), y = -D0 * (1 - e), x = Math.sin(q * Math.PI * 2.2) * to.width * .07 * (1 - q);
       kf.push({ transform:'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + (1 + .32 * (1 - e)).toFixed(3) + ') rotate(' + (Math.sin(q * Math.PI * 2.2 + .6) * 4 * (1 - q)).toFixed(2) + 'deg)', offset:q }); }
@@ -39240,7 +39274,7 @@ async function btlMtDie(c){
   const H = r.height * .3;
   btlAnim(glow, [{ opacity:0 }, { opacity:1 }], { duration:420, easing:'ease-out' }).catch(() => {});
   btlAnim(shd, [{ opacity:0, transform:'scale(.8)' }, { opacity:.8, transform:'scale(1.12)' }], { duration:420, easing:'ease-out' }).catch(() => {});
-  btlMtFlap(F.wings, 900, 2, .55).forEach(a => a.catch(() => {}));
+  btlSnd('mtrise'); btlMtFlap(F.wings, 900, 2, .55).forEach(a => a.catch(() => {}));
   await btlAnim(F.el, [{ transform:'none' }, { transform:'translateY(' + (-H).toFixed(1) + 'px) scale(1.08) rotateX(8deg)' }], { duration:420, easing:'cubic-bezier(.2,.8,.3,1)' });
   F.el.style.transform = 'translateY(' + (-H).toFixed(1) + 'px) scale(1.08)';
   btlAnim(F.el, [{ transform:'translateY(' + (-H).toFixed(1) + 'px) scale(1.08)' }, { transform:'translateY(' + (-H - 4).toFixed(1) + 'px) scale(1.08)' }, { transform:'translateY(' + (-H).toFixed(1) + 'px) scale(1.08)' }], { duration:900, iterations:Infinity, easing:'ease-in-out', fill:'none' });
@@ -39256,7 +39290,7 @@ async function btlMtBreak(c){
   try{
     st.F.wings.forEach((w, i) => { const sg = i ? 1 : -1; try{ w.getAnimations().forEach(a => a.cancel()); }catch(_){}
       btlAnim(w, [{ transform:'perspective(420px) rotateY(' + (sg * 10) + 'deg) rotateZ(' + (sg * -24) + 'deg)', opacity:1 }, { transform:'perspective(420px) translate(' + (sg * 26) + 'px,' + (r.height * .7).toFixed(0) + 'px) rotateY(' + (sg * 60) + 'deg) rotateZ(' + (sg * 70) + 'deg)', opacity:0 }], { duration:700, easing:'cubic-bezier(.5,0,.9,.5)' }).catch(() => {}); });
-    btlFlashEl(fl.firstChild, '#ff5a3a', .8, 420);
+    btlSnd('mtbreak'); btlFlashEl(fl.firstChild, '#ff5a3a', .8, 420);
     try{ musDie(); }catch(_){}
     const sh = [0, -3, 3, -4, 4, -5, 5, 0]; try{ fl.getAnimations().forEach(a => a.cancel()); }catch(_){}
     const base = fl.style.transform || '';
@@ -39344,11 +39378,11 @@ async function btlMtEngulf(list){
   const T_OOZE0 = 120, T_OOZE1 = 640, T_ENG0 = 560, T_ENG1 = 1080, T_DRAIN0 = 1300, T_DRAIN1 = 1700, T_END = 1760;
   let shook = 0, gone = false;
   try{
-    try{ musSfx('vap3'); }catch(_){}
+    try{ btlSnd('mtengulf'); }catch(_){}
     await btlEdLoop(t => {
       let n = 0;
       if(t < T_ENG0 && t - shook > 70){ shook = t; btlShake(pl, 2 + 3.5 * t / T_ENG0); if(Math.random() < .5) T.forEach(o => btlParticles(o.cx + (Math.random() - .5) * o.W, o.cy + o.Hh * .45, { n:3, color:'#7a6f66', dist:o.U * .4, dur:600, size:5, rise:true, spread:300 })); }
-      if(!gone && t >= T_ENG0 + 40){ gone = true; try{ musSfx('vap2'); }catch(_){} }
+      if(!gone && t >= T_ENG0 + 40){ gone = true; }
       T.forEach((o, j) => {
         const ooze = so(k(T_OOZE0 + j * 50, T_OOZE1, t)), eng = k(T_ENG0 + j * 40, T_ENG1, t), drain = so(k(T_DRAIN0, T_DRAIN1, t));
         // la carte : soulevée par la lave qui monte dessous, puis elle s'enfonce et disparaît sous la nappe
@@ -40545,7 +40579,7 @@ async function btlTrFx(side, card, full){
   const VW = innerWidth, VH = innerHeight, T = btlTrTex(), fx = btlQ('#btlFx'), els = [];
   const pl = btlQ('#btlPlate'), pr = pl ? btlRect(pl) : { left:0, top:VH * .22, width:VW, height:VH * .5 };
   const cx = pr.left + pr.width / 2, cy = pr.top + pr.height / 2, plEl = pl;
-  const mk = css => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; fx.appendChild(d); els.push(d); return d; };
+  btlSnd('trcharge'); const mk = css => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; fx.appendChild(d); els.push(d); return d; };
   const veil = mk('left:0;top:0;width:100vw;height:100vh;z-index:30;opacity:0;background:radial-gradient(120% 90% at 50% 30%,rgba(10,16,34,.55),rgba(2,4,12,.86))');
   const cloud = mk('left:-10vw;top:-4vh;width:120vw;height:46vh;z-index:30;opacity:0;background:url(' + T.cloud + ') 0 0/100% 100%;will-change:transform,opacity');
   const illum = mk('left:0;top:0;width:100vw;height:100vh;z-index:31;opacity:0;background:radial-gradient(110% 80% at 50% 20%,rgba(200,220,255,.55),rgba(120,150,255,.12) 70%,rgba(80,100,255,0))');
@@ -40587,7 +40621,7 @@ async function btlTrFx(side, card, full){
         const a = t - s.t0; if(a < 0 || a > 300) continue;
         if(!s.bolt){ s.bolt = btlTrBolt(s.x + (Math.random() - .5) * 120, -20, s.x, s.y, { w:1.8, branches:4 }); }
         if(a > 70 && !s.re){ s.re = true; s.bolt = btlTrBolt(s.x + (Math.random() - .5) * 120, -20, s.x, s.y, { w:1.6, branches:3 }); illumK = Math.max(illumK, .5); }
-        if(!s.hit){ s.hit = true; illumK = Math.max(illumK, .85); spark(s.x, s.y, 12, 1); rings.push({ x:s.x, y:s.y, t0:t, r:60, dur:260 }); if(plEl) btlShake(plEl, 2.2); }
+        if(!s.hit){ s.hit = true; illumK = Math.max(illumK, .85); spark(s.x, s.y, 12, 1); rings.push({ x:s.x, y:s.y, t0:t, r:60, dur:260 }); btlSnd('trzap'); if(plEl) btlShake(plEl, 2.2); }
         const k = a < 40 ? 1 : a < 70 ? .25 + .2 * Math.random() : a < 120 ? 1 - (a - 70) / 200 : Math.max(0, .75 - (a - 120) / 180) * (.7 + .3 * Math.random());
         btlTrDraw(g, s.bolt, k);
         const gk = Math.max(0, 1 - a / 300), gs = 90 + 50 * (1 - gk);
@@ -40611,7 +40645,7 @@ async function btlTrFx(side, card, full){
       }
       if(t >= BH && !big.hitDone){
         big.hitDone = true; illumK = 1; spark(cx, cy, 46, 2.2); rings.push({ x:cx, y:cy, t0:t, r:Math.max(VW, VH) * .75, dur:520, big:true });
-        if(plEl) btlShake(plEl, 8);
+        btlSnd('trbolt'); if(plEl) btlShake(plEl, 8);
       }
       flash.style.opacity = (t < BH ? 0 : t < BH + 30 ? ez(BH, BH + 30, t) : t < 1310 ? 1 : 1 - so(ez(1310, 1680, t))).toFixed(3);
       if(!cardEl && t >= CARD) showCard();
@@ -40715,7 +40749,7 @@ function btlExTex(){   // sprites dessinés une seule fois : halos teintés (24 
 }
 function btlExHue(T, h){ return T.hues[Math.round((((h % 360) + 360) % 360) / 15) % 24]; }
 async function btlExFx(side, t){
-  const VW = innerWidth, VH = innerHeight, X = btlExTex(), fx = btlQ('#btlFx'), els = [];
+  btlSnd('exspark'); const VW = innerWidth, VH = innerHeight, X = btlExTex(), fx = btlQ('#btlFx'), els = [];
   const pl = btlQ('#btlPlate'), pr = pl ? btlRect(pl) : { left:0, top:VH * .22, width:VW, height:VH * .5 };
   const el = btlUnitEl(t), r = btlUnitRect(t), W = r.width, H = r.height, cx = r.left + W / 2, cy = r.top + H / 2;
   const mk = css => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;pointer-events:none;' + css; fx.appendChild(d); els.push(d); return d; };
@@ -41171,7 +41205,7 @@ async function btlSabFx(side){
     goneRes();
   };
   const clean = () => { finish(); [wrap, flash, st1, st2, spk].forEach(x => x.remove()); if(BTL) BTL.sabAnim = 0; };
-  try{ musSfx('dep1'); }catch(_){}
+  try{ btlSnd('sbdisk'); }catch(_){}
   btlDmLoop(t => {
     const dt = Math.max(1, Math.min(50, t - lt)); lt = t;
     if(mon && t > 380){ lite = btlLdLiteOf(mon); mon = null; }
@@ -41217,7 +41251,7 @@ async function btlSabFx(side){
       }
     }
     // ---- branchement : éclair, étincelles, traits de lumière le long du bord, secousse, son ; puis les cristaux perdus
-    if(ev === 0 && t >= F1){ ev = 1; spark(lite ? 10 : 22); try{ musSfx('shield'); }catch(_){} btlShake(btlQ('#btlPlate'), 3); }
+    if(ev === 0 && t >= F1){ ev = 1; spark(lite ? 10 : 22); try{ btlSnd('sbplug'); }catch(_){} btlShake(btlQ('#btlPlate'), 3); }
     if(ev === 1 && t >= F1 + 60){ ev = 2; BTL.sabPend = null; btlRenderMana(); btlSabManaFx(side); }
     const fk = t > F1 ? Math.exp(-(t - F1) / 110) : 0;
     flash.style.opacity = fk.toFixed(3); flash.style.transform = 'scale(' + (.6 + .9 * (1 - fk)).toFixed(3) + ',' + (.5 + .3 * (1 - fk)).toFixed(3) + ')';
@@ -41603,7 +41637,7 @@ function rdLiteMon(){ const m = { dt:[], last:performance.now() }; m.tick = () =
 async function btlRhinoRun(c, t, lock){
   const S = BTL_RH2, img = await rdSheet(S);
   if(!BTL || BTL.abort) throw 'abort';
-  const r0 = btlRect(btlSlotOf(c)), r1 = btlUnitRect(t);
+  btlSnd('rhcharge'); const r0 = btlRect(btlSlotOf(c)), r1 = btlUnitRect(t);
   if(!img){ await btlBeam(r0, r1, 'atk'); return { done:Promise.resolve() }; }
   const mon = rdLiteMon(), F = rdFx();
   const SW = Math.max(112, Math.min(160, r0.width * 1.8)), SH = SW * S.h / S.w;
@@ -41704,7 +41738,7 @@ async function btlRhinoRun(c, t, lock){
         F.ln.push({ x:P.x + pxp * o - ux * SW * .3, y:P.y + pyp * o - uy * SW * .3, dx:ux, dy:uy, len:30 + Math.random() * 50, vx:-ux * 60, vy:-uy * 60, age:0, life:220, a:.5, w:1.1, rgb:'200,225,255' }); }
     }
     // ---- impact ----
-    if(t >= T2 && !hitAt){ hitAt = t; const Hp = s2s(A.horn[0], A.horn[1], x, y, sc), back = Math.atan2(-fwd.y, -fwd.x);
+    if(t >= T2 && !hitAt){ hitAt = t; btlSnd('rhhit'); const Hp = s2s(A.horn[0], A.horn[1], x, y, sc), back = Math.atan2(-fwd.y, -fwd.x);
       rdFlash(F, Hp.x, Hp.y, SW * .42, 380); flashA = 1; shake = 9;
       rdRing(F, Hp.x, Hp.y, 4, SW * .85, 380, 3.2, '255,240,215', 1); rdRing(F, Hp.x, Hp.y, 10, SW * 1.45, 680, 7, '210,170,120', .55);
       rdSparks(F, Hp.x, Hp.y, 34, 640, back, 2.4, { life:620, w:1.6 }); rdSparks(F, Hp.x, Hp.y, 18, 520, null, 0, { life:520 });
@@ -41750,7 +41784,7 @@ function btlDrillDrop(t){
   return new Promise(async (resolve, reject) => {
     const S = BTL_DR2; let img = null; try{ img = await rdSheet(S); }catch(_){}
     if(!BTL || BTL.abort){ reject('abort'); return; }
-    const r = btlUnitRect(t);
+    btlSnd('tndrill'); const r = btlUnitRect(t);
     if(!img){ btlBeam(r, r, 'fx', true).then(resolve, reject); return; }
     const mon = rdLiteMon(), F = rdFx();
     const w = Math.max(48, Math.min(80, r.width * .94)), h = w * S.h / S.w;
@@ -41787,7 +41821,7 @@ function btlDrillDrop(t){
           ctx.globalAlpha = holeA; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, hw, 0, 6.283); ctx.fill(); ctx.globalAlpha = 1; ctx.restore(); }
       }
       rdStep(ctx, F, dt, 0);
-      if(tt >= T1 && !hitDone){ hitDone = true;   // impact (même si une image a sauté toute la phase de forage)
+      if(tt >= T1 && !hitDone){ hitDone = true; btlSnd('tnhit');   // impact (même si une image a sauté toute la phase de forage)
           // impact : éclair, onde au sol, gerbe d'étincelles, éclats, poussière ; les fissures partent du point d'impact
           rdFlash(F, cx, hit, w * .55, 300); rdRing(F, cx, hit, 4, r.width * .95, 420, 3, '255,225,180', .42); rdRing(F, cx, hit, 8, r.width * 1.5, 640, 6, '190,160,120', .4);
           rdSparks(F, cx, hit, 30, 560, -Math.PI / 2, 2.6, { life:560, w:1.5 }); rdChunks(F, cx, hit, 10, 300, -Math.PI / 2, 2.4, { s:3.6, life:900, up:160, pal:[[70,74,64], [52,55,50], [120,116,100]] });
@@ -41842,7 +41876,7 @@ async function btlRexArrive(c, u, to, col){
   const S = BTL_TX2, img = await rdSheet(S);
   if(!BTL || BTL.abort){ u.style.opacity = ''; throw 'abort'; }
   if(!img){ u.style.opacity = ''; btlRing(to, col, false); return; }
-  const mon = rdLiteMon(), F = rdFx(), plate = btlQ('#btlPlate');
+  btlSnd('rexarrive'); const mon = rdLiteMon(), F = rdFx(), plate = btlQ('#btlPlate');
   const tw = to.width, th = to.height, cx = to.left + tw / 2, cy = to.top + th / 2;
   const SW = Math.max(170, Math.min(270, tw * 2.35)), SH = SW * S.h / S.w;
   const flip = cx < innerWidth / 2 ? -1 : 1;              // la tête vient du côté du centre du plateau
@@ -41938,7 +41972,7 @@ async function btlRexArrive(c, u, to, col){
 async function btlHkDrop(c, to, col){
   const S = BTL_TES2, img = await rdSheet(S);
   if(!BTL || BTL.abort) throw 'abort';
-  const fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), plate = btlRect(plateEl), VW = innerWidth, VH = innerHeight, rnd = Math.random, E = rdE;
+  btlSnd('hkcoils'); const fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), plate = btlRect(plateEl), VW = innerWidth, VH = innerHeight, rnd = Math.random, E = rdE;
   const cx = to.left + to.width / 2, cy = to.top + to.height / 2;
   const Hc = Math.min(to.height * 2.1, VH * .28), Wc = Hc * S.w / S.h, baseY = to.top + to.height * .99;
   const cxL = Math.max(Wc / 2 + 4, to.left - Wc * .26), cxR = Math.min(VW - Wc / 2 - 4, to.right + Wc * .26);
@@ -42016,7 +42050,7 @@ async function btlHkDrop(c, to, col){
       emp = { main, brs, side:[btlBoltPts(tl, { x:cx, y:cy }, 5, .4), btlBoltPts(tr, { x:cx, y:cy }, 5, .4)], t:t };
       btlAnim(flash, [{ opacity:0 }, { opacity:.25, offset:.2 }, { opacity:1 }], { duration:200, easing:'ease-in' }).then(() => {
         if(!BTL || BTL.abort) return;
-        btlPutCard(c); musSfx(c.rar); btlShake(plateEl, 8); [dim, wash].forEach(e => { e.getAnimations().forEach(a => a.cancel()); e.style.opacity = '0'; });
+        btlSnd('hkstrike'); btlPutCard(c); musSfx(c.rar); btlShake(plateEl, 8); [dim, wash].forEach(e => { e.getAnimations().forEach(a => a.cancel()); e.style.opacity = '0'; });
         btlRing(to, col, false); btlRing(to, '#9fd8ff', true);
         const u = btlUnitEl(c); if(u) btlFlashEl(u, '#9fd8ff', 1, 1100);
         emp.ring = btlClk() - t0;
