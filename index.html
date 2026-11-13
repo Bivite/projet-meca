@@ -9,7 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.04</title>
+<title>Projet MECA V0.06.05</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8847,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.04</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.05</b></div>
   </div>
 
     </div>
@@ -9905,9 +9905,15 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.04';
+var BUILD_VERSION = 'V0.06.05';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.05', items:[
+    'Nouvelle carte Tech : LA FORGE (2 mana). Vise une carte du terrain, la tienne ou celle de l\'adversaire (jamais un chef d\'escouade) : elle devient une carte au hasard de la rareté au-dessus (Rare → Épique → Légendaire → Écarlate → Holo). Une Holo devient une autre Holo au hasard (elle peut redevenir elle-même).',
+    'La nouvelle carte arrive neuve (PV pleins, sans les bonus ni les malus de l\'ancienne) et son effet d\'arrivée ne se déclenche pas. Si l\'ancienne carte avait déjà agi ce tour, la nouvelle ne peut pas agir ; une action prévue est annulée et son mana rendu.',
+    'Un marteau de forge en acier brossé, la face chauffée au rouge, s\'abat d\'un seul coup sur la carte : étincelles, fumée, et la nouvelle carte sort orange comme l\'acier chaud puis refroidit.',
+    'RYPEAL peut aussi fabriquer LA FORGE. L\'IA peut l\'avoir et la jouer, en Entraînement comme en Défi.',
+  ] },
   { v:'V0.06.04', items:[
     'Nouveaux sons : les cartes et les Tech qui avaient une animation sans son à elles ont maintenant leurs propres sons (arrivées, effets, Baroud).',
     'Nouveaux sons communs : soin, carte qui retourne dans la pioche, mélange de la pioche.',
@@ -12039,8 +12045,8 @@ MUS.sfx.pk = { pio1:.21, pio2:.23, pio3:.30 };    // V0.05.70 : instant du maxim
 MUS.sfx.lvl = { missile:.5, dep1:1.57, dep2:.69 };
 // V0.06.04 : sons propres des cartes (synthétisés), lus dans le bucket à la demande : au début du combat pour les cartes des decks connus,
 // sinon quand la carte est posée ou la Tech jouée (PvP, TRANSPORTEUR, CASSIS). Un son pas encore prêt part dès qu'il l'est (sauf s'il arrive trop tard).
-MUS.sfx.cfiles = { amarrive:'sfx-amarrive-46b356e0.mp3', arorb:'sfx-arorb-7b3b9e60.mp3', brparts:'sfx-brparts-4109fb92.mp3', bzshield:'sfx-bzshield-af153e1c.mp3', chjet:'sfx-chjet-7cebe86c.mp3', cmglitch:'sfx-cmglitch-aa8c5448.mp3', cmhole:'sfx-cmhole-85773d1e.mp3', cmimpact:'sfx-cmimpact-c28aa2b9.mp3', cmpulse:'sfx-cmpulse-d335b91d.mp3', cqarrive:'sfx-cqarrive-01218fbd.mp3', cqclash:'sfx-cqclash-eac164fb.mp3', csshow:'sfx-csshow-bcb96a9d.mp3', dlarrive:'sfx-dlarrive-78127be3.mp3', dmarrive:'sfx-dmarrive-3beceb7a.mp3', dmcard:'sfx-dmcard-5ebd331c.mp3', dmeject:'sfx-dmeject-91e8931d.mp3', duarrive:'sfx-duarrive-9767c5fd.mp3', dustrike:'sfx-dustrike-97ce4821.mp3', dzpush:'sfx-dzpush-dea65d65.mp3', edarrive:'sfx-edarrive-06d20c54.mp3', edsalvo:'sfx-edsalvo-83154d90.mp3', edstrike:'sfx-edstrike-66de0ece.mp3', elarrive:'sfx-elarrive-c31640a6.mp3', elx:'sfx-elx-bfe78ef8.mp3', exhit:'sfx-exhit-f2b9d36f.mp3', exshot:'sfx-exshot-06f3818e.mp3', exspark:'sfx-exspark-ef9cd346.mp3', gpfall:'sfx-gpfall-339addd4.mp3', gpimpact:'sfx-gpimpact-87e2e7a8.mp3', grlaunch:'sfx-grlaunch-55777be1.mp3', grslam:'sfx-grslam-80ddaf7c.mp3', gtarc:'sfx-gtarc-249396d8.mp3', gtarrive:'sfx-gtarrive-78a85e70.mp3', gtbranch:'sfx-gtbranch-c9c51eec.mp3', gzlaunch:'sfx-gzlaunch-da87c8b3.mp3', hebounce:'sfx-hebounce-1e660839.mp3', heseal:'sfx-heseal-449921b5.mp3', hkcoils:'sfx-hkcoils-49fa7b8d.mp3', hkstrike:'sfx-hkstrike-67843c9c.mp3', hrcall:'sfx-hrcall-bdc83a27.mp3', hrzap:'sfx-hrzap-a9918aa7.mp3', jpaegis:'sfx-jpaegis-7c9b2e44.mp3', jppulse:'sfx-jppulse-909af4e2.mp3', krgrapple:'sfx-krgrapple-85455441.mp3', lcarrive:'sfx-lcarrive-ccb7035b.mp3', lxboom:'sfx-lxboom-1629ea35.mp3', lxcrack:'sfx-lxcrack-ef0a0424.mp3', lxcrawl:'sfx-lxcrawl-60ed9bfb.mp3', lxdrop:'sfx-lxdrop-bac43ecf.mp3', lxegg:'sfx-lxegg-a5e467c5.mp3', lxhatch:'sfx-lxhatch-4df5471e.mp3', lxspit:'sfx-lxspit-8b6f40eb.mp3', lxsplat:'sfx-lxsplat-286391e3.mp3', lxstep:'sfx-lxstep-0d6ffb71.mp3', lxswell:'sfx-lxswell-14494145.mp3', mcbag:'sfx-mcbag-55e37fbe.mp3', mcburst:'sfx-mcburst-236135c3.mp3', mcplace:'sfx-mcplace-8ad6dabd.mp3', mganswer:'sfx-mganswer-459d1584.mp3', mgdrain:'sfx-mgdrain-a728011d.mp3', mgerupt:'sfx-mgerupt-89d426b0.mp3', mgfill:'sfx-mgfill-3c5c1089.mp3', moarrive:'sfx-moarrive-c95585d6.mp3', mogcry:'sfx-mogcry-972e0eb0.mp3', mparrive:'sfx-mparrive-5d59466d.mp3', mpfetch:'sfx-mpfetch-4c63ef13.mp3', mslboom:'sfx-mslboom-1fd5661e.mp3', mtbreak:'sfx-mtbreak-56cb31fa.mp3', mtengulf:'sfx-mtengulf-615b3ee7.mp3', mtrise:'sfx-mtrise-fa9a6dbf.mp3', mtshadow:'sfx-mtshadow-098f58f2.mp3', mtwings:'sfx-mtwings-5a001e91.mp3', pecharge:'sfx-pecharge-b7d6bec7.mp3', pgarrive:'sfx-pgarrive-7125ae0b.mp3', pgcable:'sfx-pgcable-0186f3a8.mp3', poimplant:'sfx-poimplant-47e84542.mp3', populse:'sfx-populse-a0bd9a1f.mp3', poshow:'sfx-poshow-0bfbef43.mp3', prammo:'sfx-prammo-3824172f.mp3', prpower:'sfx-prpower-2e06e22a.mp3', prshot:'sfx-prshot-d778fa7b.mp3', ptdrone:'sfx-ptdrone-c1f7ceab.mp3', rexarrive:'sfx-rexarrive-5111577f.mp3', rfecho:'sfx-rfecho-680b7dfb.mp3', rhcharge:'sfx-rhcharge-050d7598.mp3', rhhit:'sfx-rhhit-975e6300.mp3', ryarms:'sfx-ryarms-5c74d6ea.mp3', rysmash:'sfx-rysmash-108cab40.mp3', rzdrone:'sfx-rzdrone-9d564b77.mp3', sbdisk:'sfx-sbdisk-35d813a2.mp3', sbplug:'sfx-sbplug-d343b8e6.mp3', scarrive:'sfx-scarrive-ba984e43.mp3', shghost:'sfx-shghost-59477220.mp3', shleap:'sfx-shleap-acc502f4.mp3', skimpact:'sfx-skimpact-7508b9f0.mp3', skscope:'sfx-skscope-de8ebb6b.mp3', skshot:'sfx-skshot-1cd76418.mp3', slappel:'sfx-slappel-66e04f3f.mp3', slarrive:'sfx-slarrive-00163f8d.mp3', slborn:'sfx-slborn-10759ced.mp3', sldrop:'sfx-sldrop-0fd5bd64.mp3', spdome:'sfx-spdome-3e52cf5a.mp3', spfire:'sfx-spfire-89c0018f.mp3', sppress:'sfx-sppress-24c980c8.mp3', stcry:'sfx-stcry-0669c00f.mp3', tbmeal:'sfx-tbmeal-b1a194e3.mp3', tbpower:'sfx-tbpower-06e0ac87.mp3', tdlink:'sfx-tdlink-92e7596a.mp3', tgarrive:'sfx-tgarrive-ea05fc2a.mp3', tgwave:'sfx-tgwave-e7207cd7.mp3', tndrill:'sfx-tndrill-f2fc837b.mp3', tnhit:'sfx-tnhit-2fdc263a.mp3', toarrive:'sfx-toarrive-36f02105.mp3', toboom:'sfx-toboom-2f0bd48e.mp3', toshot:'sfx-toshot-ef0da198.mp3', toturret:'sfx-toturret-2ab1cf2a.mp3', trbolt:'sfx-trbolt-0ef158e4.mp3', trcharge:'sfx-trcharge-682860e0.mp3', trzap:'sfx-trzap-901ee0ff.mp3', wllasso:'sfx-wllasso-832fe0fe.mp3', zpkatana:'sfx-zpkatana-58b4d4a9.mp3' };
-MUS.sfx.ccards = { "MATRIARCHE":['mtshadow', 'mtwings', 'mtrise', 'mtengulf', 'mtbreak'], "BUZZY":['bzshield'], "ARKHAUL":['arorb'], "BRI-KB-ROCK":['brparts'], "AMALGAME":['amarrive'], "EL-DIABLO":['edarrive', 'edsalvo', 'edstrike'], "CHEIF 117":['chjet', 'prshot'], "PRAWN":['prshot'], "CONQUEST":['cqarrive', 'cqclash'], "DILUS":['dlarrive'], "CASSIS":['csshow'], "RHINO":['rhcharge', 'rhhit'], "GAPIX":['gpfall', 'gpimpact'], "EXO-MKVII":['exshot', 'exhit'], "GAZELLE":['gzlaunch', 'mslboom'], "GRIEVER":['grlaunch', 'mslboom', 'grslam'], "DOZEUR":['dzpush'], "ELYSIUM":['elarrive', 'elx'], "GOTHIKA":['gtarrive', 'gtarc', 'gtbranch'], "DIMAVERSE":['dmarrive', 'dmcard', 'dmeject'], "HAKILX":['hkcoils', 'hkstrike'], "KRIGER":['krgrapple'], "DUMADED":['duarrive', 'dustrike'], "HÉROS ENGAGÉ":['heseal', 'hebounce'], "LARVOTRON":['lxdrop', 'lxsplat', 'lxegg', 'lxcrack', 'lxhatch', 'lxcrawl', 'lxstep', 'lxswell', 'lxboom', 'lxspit'], "EXTERMINATION":['exspark'], "MAGNEMER":['mgfill', 'mgerupt', 'mganswer', 'mgdrain'], "MED-POD":['mparrive', 'mpfetch'], "HARKO":['hrcall', 'hrzap'], "JIPASIS":['jpaegis', 'jppulse'], "MOTOKO":['moarrive'], "LACRIUM":['lcarrive'], "PILE D’ÉNERGIE":['pecharge'], "LE COMÈTEUR":['cmglitch', 'cmhole', 'cmimpact', 'cmpulse'], "SHADOW":['shghost', 'shleap'], "POSITRON":['poimplant', 'poshow', 'populse'], "MARCH":['mcbag', 'mcburst', 'mcplace'], "RENFORTS":['rfecho'], "PRÉPARATION":['prammo', 'prpower'], "MOG-AI":['mogcry'], "STAR-HUNTER":['stcry'], "PIGTAIL":['pgarrive', 'pgcable'], "RYPEAL":['ryarms', 'rysmash'], "SCOPT":['scarrive'], "PITTY BELL":['ptdrone'], "RAZOPS":['rzdrone'], "TANDEEM":['tdlink'], "SABOTAGE":['sbdisk', 'sbplug'], "TOA2":['toarrive', 'toturret', 'toshot', 'toboom'], "SEEKER":['skscope', 'skshot', 'skimpact'], "TRANSPORTEUR":['trcharge', 'trzap', 'trbolt'], "SOUS PRESSION":['spdome', 'sppress', 'spfire'], "SYLVERLAKE":['slarrive', 'slappel', 'sldrop', 'slborn'], "TUNNELIER":['tndrill', 'tnhit'], "TECHNOSORUS":['rexarrive'], "TORTUGA":['tgarrive', 'tgwave'], "TRASH-BOT":['tbmeal', 'tbpower'], "ZAPPAN":['zpkatana'], "WHIPLASH":['wllasso'] };
+MUS.sfx.cfiles = { lfrise:'sfx-lfrise-715ebdcc.mp3', lfswing:'sfx-lfswing-2ccb2b7f.mp3', lfclang:'sfx-lfclang-9a147c4f.mp3', lfhiss:'sfx-lfhiss-e9920693.mp3', amarrive:'sfx-amarrive-46b356e0.mp3', arorb:'sfx-arorb-7b3b9e60.mp3', brparts:'sfx-brparts-4109fb92.mp3', bzshield:'sfx-bzshield-af153e1c.mp3', chjet:'sfx-chjet-7cebe86c.mp3', cmglitch:'sfx-cmglitch-aa8c5448.mp3', cmhole:'sfx-cmhole-85773d1e.mp3', cmimpact:'sfx-cmimpact-c28aa2b9.mp3', cmpulse:'sfx-cmpulse-d335b91d.mp3', cqarrive:'sfx-cqarrive-01218fbd.mp3', cqclash:'sfx-cqclash-eac164fb.mp3', csshow:'sfx-csshow-bcb96a9d.mp3', dlarrive:'sfx-dlarrive-78127be3.mp3', dmarrive:'sfx-dmarrive-3beceb7a.mp3', dmcard:'sfx-dmcard-5ebd331c.mp3', dmeject:'sfx-dmeject-91e8931d.mp3', duarrive:'sfx-duarrive-9767c5fd.mp3', dustrike:'sfx-dustrike-97ce4821.mp3', dzpush:'sfx-dzpush-dea65d65.mp3', edarrive:'sfx-edarrive-06d20c54.mp3', edsalvo:'sfx-edsalvo-83154d90.mp3', edstrike:'sfx-edstrike-66de0ece.mp3', elarrive:'sfx-elarrive-c31640a6.mp3', elx:'sfx-elx-bfe78ef8.mp3', exhit:'sfx-exhit-f2b9d36f.mp3', exshot:'sfx-exshot-06f3818e.mp3', exspark:'sfx-exspark-ef9cd346.mp3', gpfall:'sfx-gpfall-339addd4.mp3', gpimpact:'sfx-gpimpact-87e2e7a8.mp3', grlaunch:'sfx-grlaunch-55777be1.mp3', grslam:'sfx-grslam-80ddaf7c.mp3', gtarc:'sfx-gtarc-249396d8.mp3', gtarrive:'sfx-gtarrive-78a85e70.mp3', gtbranch:'sfx-gtbranch-c9c51eec.mp3', gzlaunch:'sfx-gzlaunch-da87c8b3.mp3', hebounce:'sfx-hebounce-1e660839.mp3', heseal:'sfx-heseal-449921b5.mp3', hkcoils:'sfx-hkcoils-49fa7b8d.mp3', hkstrike:'sfx-hkstrike-67843c9c.mp3', hrcall:'sfx-hrcall-bdc83a27.mp3', hrzap:'sfx-hrzap-a9918aa7.mp3', jpaegis:'sfx-jpaegis-7c9b2e44.mp3', jppulse:'sfx-jppulse-909af4e2.mp3', krgrapple:'sfx-krgrapple-85455441.mp3', lcarrive:'sfx-lcarrive-ccb7035b.mp3', lxboom:'sfx-lxboom-1629ea35.mp3', lxcrack:'sfx-lxcrack-ef0a0424.mp3', lxcrawl:'sfx-lxcrawl-60ed9bfb.mp3', lxdrop:'sfx-lxdrop-bac43ecf.mp3', lxegg:'sfx-lxegg-a5e467c5.mp3', lxhatch:'sfx-lxhatch-4df5471e.mp3', lxspit:'sfx-lxspit-8b6f40eb.mp3', lxsplat:'sfx-lxsplat-286391e3.mp3', lxstep:'sfx-lxstep-0d6ffb71.mp3', lxswell:'sfx-lxswell-14494145.mp3', mcbag:'sfx-mcbag-55e37fbe.mp3', mcburst:'sfx-mcburst-236135c3.mp3', mcplace:'sfx-mcplace-8ad6dabd.mp3', mganswer:'sfx-mganswer-459d1584.mp3', mgdrain:'sfx-mgdrain-a728011d.mp3', mgerupt:'sfx-mgerupt-89d426b0.mp3', mgfill:'sfx-mgfill-3c5c1089.mp3', moarrive:'sfx-moarrive-c95585d6.mp3', mogcry:'sfx-mogcry-972e0eb0.mp3', mparrive:'sfx-mparrive-5d59466d.mp3', mpfetch:'sfx-mpfetch-4c63ef13.mp3', mslboom:'sfx-mslboom-1fd5661e.mp3', mtbreak:'sfx-mtbreak-56cb31fa.mp3', mtengulf:'sfx-mtengulf-615b3ee7.mp3', mtrise:'sfx-mtrise-fa9a6dbf.mp3', mtshadow:'sfx-mtshadow-098f58f2.mp3', mtwings:'sfx-mtwings-5a001e91.mp3', pecharge:'sfx-pecharge-b7d6bec7.mp3', pgarrive:'sfx-pgarrive-7125ae0b.mp3', pgcable:'sfx-pgcable-0186f3a8.mp3', poimplant:'sfx-poimplant-47e84542.mp3', populse:'sfx-populse-a0bd9a1f.mp3', poshow:'sfx-poshow-0bfbef43.mp3', prammo:'sfx-prammo-3824172f.mp3', prpower:'sfx-prpower-2e06e22a.mp3', prshot:'sfx-prshot-d778fa7b.mp3', ptdrone:'sfx-ptdrone-c1f7ceab.mp3', rexarrive:'sfx-rexarrive-5111577f.mp3', rfecho:'sfx-rfecho-680b7dfb.mp3', rhcharge:'sfx-rhcharge-050d7598.mp3', rhhit:'sfx-rhhit-975e6300.mp3', ryarms:'sfx-ryarms-5c74d6ea.mp3', rysmash:'sfx-rysmash-108cab40.mp3', rzdrone:'sfx-rzdrone-9d564b77.mp3', sbdisk:'sfx-sbdisk-35d813a2.mp3', sbplug:'sfx-sbplug-d343b8e6.mp3', scarrive:'sfx-scarrive-ba984e43.mp3', shghost:'sfx-shghost-59477220.mp3', shleap:'sfx-shleap-acc502f4.mp3', skimpact:'sfx-skimpact-7508b9f0.mp3', skscope:'sfx-skscope-de8ebb6b.mp3', skshot:'sfx-skshot-1cd76418.mp3', slappel:'sfx-slappel-66e04f3f.mp3', slarrive:'sfx-slarrive-00163f8d.mp3', slborn:'sfx-slborn-10759ced.mp3', sldrop:'sfx-sldrop-0fd5bd64.mp3', spdome:'sfx-spdome-3e52cf5a.mp3', spfire:'sfx-spfire-89c0018f.mp3', sppress:'sfx-sppress-24c980c8.mp3', stcry:'sfx-stcry-0669c00f.mp3', tbmeal:'sfx-tbmeal-b1a194e3.mp3', tbpower:'sfx-tbpower-06e0ac87.mp3', tdlink:'sfx-tdlink-92e7596a.mp3', tgarrive:'sfx-tgarrive-ea05fc2a.mp3', tgwave:'sfx-tgwave-e7207cd7.mp3', tndrill:'sfx-tndrill-f2fc837b.mp3', tnhit:'sfx-tnhit-2fdc263a.mp3', toarrive:'sfx-toarrive-36f02105.mp3', toboom:'sfx-toboom-2f0bd48e.mp3', toshot:'sfx-toshot-ef0da198.mp3', toturret:'sfx-toturret-2ab1cf2a.mp3', trbolt:'sfx-trbolt-0ef158e4.mp3', trcharge:'sfx-trcharge-682860e0.mp3', trzap:'sfx-trzap-901ee0ff.mp3', wllasso:'sfx-wllasso-832fe0fe.mp3', zpkatana:'sfx-zpkatana-58b4d4a9.mp3' };
+MUS.sfx.ccards = { "LA FORGE":['lfrise', 'lfswing', 'lfclang', 'lfhiss'], "MATRIARCHE":['mtshadow', 'mtwings', 'mtrise', 'mtengulf', 'mtbreak'], "BUZZY":['bzshield'], "ARKHAUL":['arorb'], "BRI-KB-ROCK":['brparts'], "AMALGAME":['amarrive'], "EL-DIABLO":['edarrive', 'edsalvo', 'edstrike'], "CHEIF 117":['chjet', 'prshot'], "PRAWN":['prshot'], "CONQUEST":['cqarrive', 'cqclash'], "DILUS":['dlarrive'], "CASSIS":['csshow'], "RHINO":['rhcharge', 'rhhit'], "GAPIX":['gpfall', 'gpimpact'], "EXO-MKVII":['exshot', 'exhit'], "GAZELLE":['gzlaunch', 'mslboom'], "GRIEVER":['grlaunch', 'mslboom', 'grslam'], "DOZEUR":['dzpush'], "ELYSIUM":['elarrive', 'elx'], "GOTHIKA":['gtarrive', 'gtarc', 'gtbranch'], "DIMAVERSE":['dmarrive', 'dmcard', 'dmeject'], "HAKILX":['hkcoils', 'hkstrike'], "KRIGER":['krgrapple'], "DUMADED":['duarrive', 'dustrike'], "HÉROS ENGAGÉ":['heseal', 'hebounce'], "LARVOTRON":['lxdrop', 'lxsplat', 'lxegg', 'lxcrack', 'lxhatch', 'lxcrawl', 'lxstep', 'lxswell', 'lxboom', 'lxspit'], "EXTERMINATION":['exspark'], "MAGNEMER":['mgfill', 'mgerupt', 'mganswer', 'mgdrain'], "MED-POD":['mparrive', 'mpfetch'], "HARKO":['hrcall', 'hrzap'], "JIPASIS":['jpaegis', 'jppulse'], "MOTOKO":['moarrive'], "LACRIUM":['lcarrive'], "PILE D’ÉNERGIE":['pecharge'], "LE COMÈTEUR":['cmglitch', 'cmhole', 'cmimpact', 'cmpulse'], "SHADOW":['shghost', 'shleap'], "POSITRON":['poimplant', 'poshow', 'populse'], "MARCH":['mcbag', 'mcburst', 'mcplace'], "RENFORTS":['rfecho'], "PRÉPARATION":['prammo', 'prpower'], "MOG-AI":['mogcry'], "STAR-HUNTER":['stcry'], "PIGTAIL":['pgarrive', 'pgcable'], "RYPEAL":['ryarms', 'rysmash'], "SCOPT":['scarrive'], "PITTY BELL":['ptdrone'], "RAZOPS":['rzdrone'], "TANDEEM":['tdlink'], "SABOTAGE":['sbdisk', 'sbplug'], "TOA2":['toarrive', 'toturret', 'toshot', 'toboom'], "SEEKER":['skscope', 'skshot', 'skimpact'], "TRANSPORTEUR":['trcharge', 'trzap', 'trbolt'], "SOUS PRESSION":['spdome', 'sppress', 'spfire'], "SYLVERLAKE":['slarrive', 'slappel', 'sldrop', 'slborn'], "TUNNELIER":['tndrill', 'tnhit'], "TECHNOSORUS":['rexarrive'], "TORTUGA":['tgarrive', 'tgwave'], "TRASH-BOT":['tbmeal', 'tbpower'], "ZAPPAN":['zpkatana'], "WHIPLASH":['wllasso'] };
 MUS.sfx.cpend = {};
 function musCardLoad(keys){
   const m = MUS, f = m.sfx; if(!m.ctx || !keys || !keys.length) return Promise.resolve();
@@ -12938,6 +12944,7 @@ TECH_DEFS.push({ n:'SOUS PRESSION', cost:1, text:'Convertit la DEF d\'une carte 
 TECH_DEFS.push({ n:'TRANSPORTEUR', cost:0, text:'Vous obtenez une carte mécha aléatoire.', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/transporteur-art.webp' });   // V0.05.64
 TECH_DEFS.push({ n:'EXTERMINATION', cost:5, text:'Détruit une carte du terrain, sauf les chefs d\'escouade.', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/extermination-art.webp' });   // V0.05.79
 TECH_DEFS.push({ n:'SABOTAGE', cost:0, text:'Tu perds 2 mana tout de suite et à chaque tour. Tes attaques et défenses partent dès que tu les cibles.', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/sabotage-art.webp' });   // V0.05.81
+TECH_DEFS.push({ n:'LA FORGE', cost:2, text:'Change une carte du terrain (sauf les chefs) en une carte au hasard de la rareté au-dessus. Une Holo devient une Holo au hasard.', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/la-forge-art.webp' });   // V0.06.05
 TECH_DEFS.forEach(t => CHAR_DEFS.push(techDefMake(t)));
 // Classification automatique : chaque carte est rangée dans la catégorie
 // de sa statistique dominante (celle où elle se démarque le plus des autres cartes).
@@ -17655,7 +17662,7 @@ function specAt(ms){
   const n = w + 1;   // fermé (lundi 6 h -> mercredi 6 h) : on annonce la semaine suivante
   return { w:n, open:false, start:specUtc(SPEC_E0 + n * SPEC_WEEK), end:specUtc(SPEC_E0 + n * SPEC_WEEK + SPEC_OPEN), next:specUtc(SPEC_E0 + n * SPEC_WEEK), mode:specMode(n), key:'spec:' + n, deck:specDeck(n) };
 }
-var CARD_VIDS = {"AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS = {"LA FORGE":"vid/la-forge-8b0b66b1.mp4","AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW = { el:null, v:null, t:0, duck:0 };
 function cardVidUrl(name){ const p = CARD_VIDS[name]; return p ? CARD_VID_BASE + p : null; }
 function cardVidClose(){
@@ -26345,7 +26352,7 @@ function btlStart(d){
   BTL.bg = btlPickBg(); if(BTL.bg > 1) BTL.el.classList.add('bg' + BTL.bg);   // V0.05.75 : fond tiré au hasard
   document.body.classList.add('btl-on');   // le jeu en arrière-plan est masqué et mis en pause pendant le combat
   btlWarm();
-  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm(); btlMtWarm(); btlGdWarm(); btlAkWarm();
+  btlDmWarm(); btlCmWarm(); btlMgWarm(); btlLxWarm(); btlEdWarm(); btlMtWarm(); btlGdWarm(); btlAkWarm(); btlLfWarm();
   try{ musCardWarm(btlSfxNames(), true); }catch(_){}   // V0.06.04 : sons propres des cartes de ce combat
   btlCircuit();
   btlRenderPile('p', 0); btlRenderPile('o', 0); btlRenderMana(); btlRenderHand(); btlRenderOHand();
@@ -33893,7 +33900,7 @@ function aiTechPick(Y, fine, early){
   if(!ok.length) return null;
   if(!fine){
     if(Y.rnd() < 0.5) return null;
-    const c = ok[Math.floor(Y.rnd() * ok.length)], cs0 = Y.cands(c), cs = c.name === 'EXTERMINATION' ? cs0.filter(x => x.side === Y.foe) : cs0;   // V0.05.79 : même naïve, l'IA ne détruit pas ses propres cartes
+    const c = ok[Math.floor(Y.rnd() * ok.length)], cs0 = Y.cands(c), cs = c.name === 'EXTERMINATION' ? cs0.filter(x => x.side === Y.foe) : c.name === 'LA FORGE' ? cs0.filter(x => x.side === Y.side) : cs0;   // V0.05.79 : même naïve, l'IA ne détruit pas ses propres cartes (V0.06.05 : ni ne forge celles de l'adversaire)
     if(!cs.length) return null;
     return { c, t:Y.mode(c) === 'none' ? null : cs[Math.floor(Y.rnd() * cs.length)] };
   }
@@ -33920,6 +33927,9 @@ function aiTechPick(Y, fine, early){
     } else if(c.name === 'EXTERMINATION'){   // V0.05.79 : la carte ennemie la plus forte (ultime active comptée), si elle vaut les 5 mana
       const t = cs.filter(x => x.side === Y.foe).sort((a, b) => (Y.pwr(b) + (b.ultOn ? 12 : 0)) - (Y.pwr(a) + (a.ultOn ? 12 : 0)) || (a.slot - b.slot))[0];
       if(t) take(c, t, (Y.pwr(t) + (t.ultOn ? 12 : 0)) / 4 - 1.5);
+    } else if(c.name === 'LA FORGE'){   // V0.06.05 : sa carte de la plus haute rareté (Holo exclue), la plus forte à égalité
+      const t = cs.filter(x => x.side === Y.side && lfTier(x.name) < 4).sort((a, b) => (lfTier(b.name) - lfTier(a.name)) || (Y.pwr(b) - Y.pwr(a)) || (a.slot - b.slot))[0];
+      if(t) take(c, t, 1.5 + lfTier(t.name) / 2);
     } else if(c.name === 'SABOTAGE'){   // V0.05.81 : seulement quand 2 mana de ce tour ne serviraient à rien (cartes prêtes à agir comptées)
       take(c, null, mana - mine.filter(x => Y.canAct(x)).length >= 2 ? 1.5 : 0);
     } else if(c.name === 'SOUS PRESSION'){
@@ -36067,7 +36077,7 @@ BTL_CARD_FX['TRASH-BOT'] = { passif:{ quand:'mort', run: async () => {} } };   /
 //               (pinces, explosions, débris qui retombent dans le puits) ; 2020-2260 la trappe se referme
 //  Profondeur : petite perspective (z vers la caméra) ; ce qui est sous le plateau n'est visible que par le puits (assombri) ; lumière violette du puits sur le plateau.
 // =====================================================================================================
-var RYPEAL_TECHS = ["BARRAGES", "PILE D’ÉNERGIE", "HÉROS ENGAGÉ", "RENFORTS", "PRÉPARATION", "POSITRON", "SOUS PRESSION", "TRANSPORTEUR", "EXTERMINATION", "SABOTAGE"];
+var RYPEAL_TECHS = ["BARRAGES", "PILE D’ÉNERGIE", "HÉROS ENGAGÉ", "RENFORTS", "PRÉPARATION", "POSITRON", "SOUS PRESSION", "TRANSPORTEUR", "EXTERMINATION", "SABOTAGE", "LA FORGE"];   // V0.06.05 : LA FORGE
 var BTL_RY = { tex:null };
 function btlRyTex(){
   if(BTL_RY.tex) return BTL_RY.tex;
@@ -41311,6 +41321,300 @@ BTL_TECH_FX['EXTERMINATION'] = { mode:'ally', kill:true,
     if(btlGone() || !btlOnField(t)) return;
     t._exGone = true;   // déjà désintégrée : btlDie0 libère la case et joue le Baroud sans 2e animation
     await btlDie(t);
+  } };
+// ---------------------------------------------------------------------------------------------
+// V0.06.05 : LA FORGE (Tech) -- mise en scène. Un marteau de forge en acier brossé, en relief (CSS 3D : tête chanfreinée à 10 faces,
+// manche hexagonal, bague en laiton, poignée), sa face de frappe chauffée jaune-orange (le métal bleuit le long de la tête), s'élève
+// au-dessus de la carte visée, prend son élan puis s'abat d'un seul coup sur toute la carte : éclair, onde de choc, gerbes d'étincelles,
+// écailles de calamine incandescentes, fumée. La carte change sous le marteau ; quand il se relève, la nouvelle carte est orange comme
+// l'acier chauffé (≈ 1 s), puis refroidit (rouge sombre, vapeur) et redevient normale, avec un reflet de métal neuf.
+// Léger : ~30 faces CSS composées (seuls la transformation du groupe et l'opacité de l'ombrage des faces changent), un canvas pour
+// les particules (rd*), la carte chaude = 3 copies de la petite carte avec un filtre FIXE dont on ne change que l'opacité.
+// Unités de temps du combat (x BTL_TS) : 0-500 le marteau apparaît et prend son élan, 500-650 il s'abat, 650 impact (la carte change),
+// 830-1000 il se relève et disparaît, 830-1330 carte chauffée, 1330-1980 elle refroidit, 1960-2160 reflet. Rend la main à 2200.
+// btlLfFx(side, t, swap) : swap() remplace la carte (règle) et rend la nouvelle carte ; appelé à l'impact (ou à la fin si interrompu).
+// ---------------------------------------------------------------------------------------------
+var BTL_LF_TEX = null;
+function btlLfTex(){   // textures dessinées une fois : acier brossé (long / travers / manche), bout du marteau gravé
+  if(BTL_LF_TEX) return BTL_LF_TEX;
+  let sd = 90217; const rnd = () => { sd = sd + 0x6D2B79F5 | 0; let t = Math.imul(sd ^ sd >>> 15, 1 | sd); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; };
+  const brush = (w, h, base, vert, amp) => {
+    const [c, g] = mk(w, h); g.fillStyle = base; g.fillRect(0, 0, w, h);
+    const across = vert ? w : h, along = vert ? h : w;
+    for(let i = 0; i < across * 7; i++){
+      const p = rnd() * across, len = along * (.25 + rnd() * .9), s = rnd() * along - len * .2, a = (rnd() * amp).toFixed(3), th = .5 + rnd() * .9;
+      g.fillStyle = (rnd() < .52 ? 'rgba(255,255,255,' : 'rgba(0,0,0,') + a + ')';
+      if(vert) g.fillRect(p, s, th, len); else g.fillRect(s, p, len, th);
+    }
+    for(let i = 0; i < 7; i++){ g.strokeStyle = 'rgba(255,255,255,' + (.05 + rnd() * .08).toFixed(3) + ')'; g.lineWidth = .6; g.beginPath(); const x = rnd() * w, y = rnd() * h; g.moveTo(x, y); g.lineTo(x + (rnd() - .5) * w * .35, y + (rnd() - .5) * h * .35); g.stroke(); }
+    const lg = vert ? g.createLinearGradient(0, 0, w, 0) : g.createLinearGradient(0, 0, 0, h);   // léger arrondi des arêtes
+    lg.addColorStop(0, 'rgba(0,0,0,.18)'); lg.addColorStop(.08, 'rgba(255,255,255,.06)'); lg.addColorStop(.5, 'rgba(0,0,0,0)'); lg.addColorStop(.92, 'rgba(255,255,255,.05)'); lg.addColorStop(1, 'rgba(0,0,0,.2)');
+    g.fillStyle = lg; g.fillRect(0, 0, w, h);
+    return c.toDataURL('image/jpeg', .86);
+  };
+  const side = brush(256, 112, '#7f858c', false, .17), sideV = brush(112, 256, '#7f858c', true, .17), rod = brush(40, 256, '#585d64', true, .22);
+  // bout du marteau : brossage circulaire, gorge gravée, 4 rivets, enclume gravée au centre
+  const W = 176, H = 224, [c, g] = mk(W, H);
+  g.fillStyle = '#7b8188'; g.fillRect(0, 0, W, H);
+  for(let i = 0; i < 1100; i++){ const r = rnd() * Math.hypot(W, H) * .56, a0 = rnd() * 6.283, da = .2 + rnd() * .9;
+    g.strokeStyle = (rnd() < .5 ? 'rgba(255,255,255,' : 'rgba(0,0,0,') + (rnd() * .12).toFixed(3) + ')'; g.lineWidth = .6 + rnd() * .6; g.beginPath(); g.arc(W / 2, H / 2, r, a0, a0 + da); g.stroke(); }
+  const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+  g.lineWidth = 3.2; g.strokeStyle = 'rgba(0,0,0,.5)'; rr(22, 22, W - 44, H - 44, 14); g.stroke();
+  g.lineWidth = 1.4; g.strokeStyle = 'rgba(255,255,255,.3)'; rr(24, 24.5, W - 44, H - 44, 14); g.stroke();
+  [[36, 36], [W - 36, 36], [36, H - 36], [W - 36, H - 36]].forEach(([x, y]) => { const gr = g.createRadialGradient(x - 2.5, y - 3, .5, x, y, 8.5);
+    gr.addColorStop(0, '#f1f4f7'); gr.addColorStop(.45, '#959ba2'); gr.addColorStop(1, '#262a30'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, 7.5, 0, 6.283); g.fill(); g.strokeStyle = 'rgba(0,0,0,.55)'; g.lineWidth = 1; g.stroke(); });
+  const ax = W / 2, ay = H / 2 + 4, anvil = (dx, dy) => { g.beginPath(); g.moveTo(ax - 40 + dx, ay - 15 + dy); g.quadraticCurveTo(ax - 22 + dx, ay - 13 + dy, ax - 14 + dx, ay - 22 + dy);
+    g.lineTo(ax + 36 + dx, ay - 22 + dy); g.lineTo(ax + 36 + dx, ay - 9 + dy); g.lineTo(ax + 15 + dx, ay - 7 + dy); g.lineTo(ax + 10 + dx, ay + 10 + dy); g.lineTo(ax + 25 + dx, ay + 21 + dy);
+    g.lineTo(ax - 21 + dx, ay + 21 + dy); g.lineTo(ax - 8 + dx, ay + 10 + dy); g.lineTo(ax - 12 + dx, ay - 7 + dy); g.quadraticCurveTo(ax - 27 + dx, ay - 9 + dy, ax - 40 + dx, ay - 15 + dy); g.closePath(); };
+  g.fillStyle = 'rgba(255,255,255,.24)'; anvil(1, 1.6); g.fill(); g.fillStyle = 'rgba(16,19,23,.6)'; anvil(0, 0); g.fill();
+  const [hc, hg] = mk(160, 208), HW = 160, HH = 208, hr = hg.createRadialGradient(HW * .5, HH * .5, 0, HW * .5, HH * .5, Math.hypot(HW, HH) * .5);
+  hr.addColorStop(0, '#ffe7a2'); hr.addColorStop(.32, '#ffc452'); hr.addColorStop(.6, '#ff922a'); hr.addColorStop(.82, '#e2561a'); hr.addColorStop(1, '#8c2b0b');
+  hg.fillStyle = hr; hg.fillRect(0, 0, HW, HH);
+  for(let i = 0; i < 2600; i++){ const x = rnd() * HW, y = rnd() * HH, r = .4 + rnd() * 1.6, d = Math.hypot(x - HW / 2, y - HH / 2) / (HH * .6);   // grain du métal chaud
+    hg.fillStyle = rnd() < .55 ? 'rgba(150,40,6,' + (.12 + .25 * d * rnd()).toFixed(3) + ')' : 'rgba(255,250,215,' + (.1 + .2 * (1 - d) * rnd()).toFixed(3) + ')'; hg.fillRect(x, y, r, r); }
+  for(let i = 0; i < 26; i++){ const x = rnd() * HW, y = rnd() * HH, rr0 = 3 + rnd() * 9;   // écailles de calamine plus sombres
+    hg.fillStyle = 'rgba(110,30,6,' + (.18 + rnd() * .2).toFixed(3) + ')'; hg.beginPath(); for(let k = 0; k < 6; k++){ const a = k / 6 * 6.283 + rnd() * .5, q = rr0 * (.6 + rnd() * .5); k ? hg.lineTo(x + Math.cos(a) * q, y + Math.sin(a) * q) : hg.moveTo(x + Math.cos(a) * q, y + Math.sin(a) * q); } hg.closePath(); hg.fill(); }
+  return BTL_LF_TEX = { side, sideV, rod, end:c.toDataURL('image/jpeg', .88), hot:hc.toDataURL('image/jpeg', .9) };
+}
+// la nouvelle carte chauffée : 3 copies de la petite carte (blanc-jaune, orange, rouge sombre) + lueur ; seule l'opacité change ensuite
+function btlLfHot(un){
+  const box = document.createElement('div'); box.className = 'lf-hot';
+  box.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;border-radius:6%;';
+  const inner = un.innerHTML;
+  const layer = (filt, op) => { const d = document.createElement('div'); d.style.cssText = 'position:absolute;inset:0;opacity:' + op + ';filter:' + filt + ';will-change:opacity;'; d.innerHTML = inner; box.appendChild(d); return d; };
+  const R = layer('grayscale(1) sepia(1) saturate(6) hue-rotate(-24deg) brightness(.78) contrast(1.4)', 0);
+  const O = layer('grayscale(1) sepia(1) saturate(7.5) hue-rotate(-12deg) brightness(1.3) contrast(1.2)', 1);
+  const Wh = layer('grayscale(1) sepia(.55) saturate(3.2) brightness(2.15) contrast(.92)', 1);
+  const E = document.createElement('div');
+  E.style.cssText = 'position:absolute;inset:0;opacity:.95;will-change:opacity;background:radial-gradient(ellipse at 50% 52%,rgba(255,250,214,.82) 0,rgba(255,206,96,.46) 36%,rgba(255,128,34,.16) 68%,rgba(255,96,24,0) 100%);';
+  box.appendChild(E);
+  const Gl = document.createElement('div');   // reflet de métal neuf (bande claire qui traverse la carte)
+  Gl.style.cssText = 'position:absolute;left:-60%;top:-20%;width:45%;height:140%;opacity:0;will-change:transform,opacity;transform:translateX(0) rotate(18deg);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55) 45%,rgba(255,244,220,.75) 50%,rgba(255,255,255,.5) 55%,rgba(255,255,255,0));';
+  box.appendChild(Gl);
+  un.appendChild(box);
+  return { box, R, O, Wh, E, Gl };
+}
+function btlLfWarm(){   // V0.06.05 : comme btlAkWarm -- textures dessinées pendant un temps mort (PvP : deck adverse inconnu, on les prépare toujours)
+  if(!BTL || BTL_LF_TEX) return;
+  const has = !!(BTL.d && BTL.d.pvp) || ['p', 'o'].some(sd => BTL.S[sd].pile.concat(BTL.S[sd].hand, BTL.S[sd].slots).some(x => x && x.name === 'LA FORGE'));
+  if(!has) return;
+  const go = () => { try{ btlLfTex(); }catch(_){} };
+  if(window.requestIdleCallback) requestIdleCallback(go, { timeout:6000 }); else setTimeout(go, 2500);
+}
+async function btlLfFx(side, t, swap){
+  const fx = btlQ('#btlFx'), plateEl = btlQ('#btlPlate'), VW = innerWidth, VH = innerHeight;
+  const to = btlUnitRect(t), cx = to.left + to.width / 2, cy = to.top + to.height / 2, w = to.width, h = to.height, hw = w / 2, hh = h / 2;
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if(reduce){ const nc = swap(), un = nc && btlUnitEl(nc); if(un) await btlFlashEl(un, '#ff9a30', .9, 520); return; }
+  const T = btlLfTex(), E = btlEdE, els = [];
+  let cv = null, nc = null, hot = null, un = null;
+  try{
+    // ---------- géométrie (repère : centre de la carte, z vers la caméra, y vers le forgeron) ----------
+    const FW = w * 1.14, FH = h * 1.1, HL = FH * 1.4, CH = Math.min(FW, FH) * .11, HC = HL / 2, R = FH * 1.5, RH = FW * .115;
+    const fxx = FW / 2, fyy = FH / 2, PZ = Math.round(Math.max(VW, VH) * 1.05), OX = VW / 2, OY = VH / 2;
+    const dirZ = cy < VH * .5 ? 0 : 180;   // le marteau arrive du côté du centre de l'écran (place pour l'élan)
+    const W3 = document.createElement('div');
+    W3.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:35;opacity:0;perspective:' + PZ + 'px;perspective-origin:50% 50%;';
+    const GR = document.createElement('div');
+    GR.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;transform-origin:0 0;will-change:transform;';
+    W3.appendChild(GR);
+    const FACES = [], SPEC = 'linear-gradient(118deg,rgba(255,255,255,0) 22%,rgba(255,255,255,.5) 47%,rgba(255,255,255,.12) 58%,rgba(255,255,255,0) 72%)';
+    const face = (fw, fh, tf, bg, n, o) => {
+      o = o || {}; const e = document.createElement('i');
+      e.style.cssText = 'position:absolute;display:block;left:' + (-fw / 2).toFixed(2) + 'px;top:' + (-fh / 2).toFixed(2) + 'px;width:' + fw.toFixed(2) + 'px;height:' + fh.toFixed(2) + 'px;'
+        + 'backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:' + tf + ';background:' + bg + ';' + (o.clip ? 'clip-path:' + o.clip + ';-webkit-clip-path:' + o.clip + ';' : '');
+      let sh = null, sp = null, ht = null;
+      if(!o.emit){ sh = document.createElement('b'); sh.style.cssText = 'position:absolute;inset:0;background:#05070a;opacity:0;'; e.appendChild(sh);
+        sp = document.createElement('b'); sp.style.cssText = 'position:absolute;inset:0;opacity:0;background:' + (o.spec || SPEC) + ';'; e.appendChild(sp); }
+      if(o.heat){ ht = document.createElement('b'); ht.style.cssText = 'position:absolute;inset:0;background:' + o.heat + ';'; e.appendChild(ht); }
+      GR.appendChild(e); const f = { e, sh, sp, ht, n, k:o.k || 1, s0:-1, p0:-1, emit:!!o.emit }; FACES.push(f); return f;
+    };
+    const px = v => v.toFixed(2) + 'px';
+    const HEAT = d => 'linear-gradient(' + d + ',rgba(255,248,206,.97) 0%,rgba(255,214,112,.93) 5%,rgba(255,152,42,.86) 11%,rgba(232,86,16,.7) 18%,rgba(160,46,12,.5) 26%,rgba(122,74,48,.32) 33%,rgba(98,66,130,.26) 40%,rgba(58,94,162,.2) 47%,rgba(58,94,162,0) 56%)';
+    const OCT = (() => { const a = (CH / FW * 100).toFixed(2), b = (CH / FH * 100).toFixed(2); return 'polygon(' + a + '% 0,' + (100 - a) + '% 0,100% ' + b + '%,100% ' + (100 - b) + '%,' + (100 - a) + '% 100%,' + a + '% 100%,0 ' + (100 - b) + '%,0 ' + b + '%)'; })();
+    const HOTF = 'url(' + T.hot + ') center/100% 100% no-repeat';
+    const S2 = Math.SQRT1_2;
+    // tête
+    face(FW, FH, 'translate3d(0px,0px,' + px(HL) + ')', 'url(' + T.end + ') center/100% 100% no-repeat', [0, 0, 1], { clip:OCT });                 // bout (face arrière)
+    face(FW, FH, 'translate3d(0px,0px,0px) rotateY(180deg)', HOTF, [0, 0, -1], { clip:OCT, emit:true });                          // face de frappe chauffée
+    const sx = 'url(' + T.side + ') center/100% 100% no-repeat', sy = 'url(' + T.sideV + ') center/100% 100% no-repeat';
+    face(HL, FH - 2 * CH, 'translate3d(' + px(fxx) + ',0px,' + px(HC) + ') rotateY(90deg)', sx, [1, 0, 0], { heat:HEAT('to left') });
+    face(HL, FH - 2 * CH, 'translate3d(' + px(-fxx) + ',0px,' + px(HC) + ') rotateY(-90deg)', sx, [-1, 0, 0], { heat:HEAT('to right') });
+    face(FW - 2 * CH, HL, 'translate3d(0px,' + px(-fyy) + ',' + px(HC) + ') rotateX(90deg)', sy, [0, -1, 0], { heat:HEAT('to bottom') });
+    face(FW - 2 * CH, HL, 'translate3d(0px,' + px(fyy) + ',' + px(HC) + ') rotateX(-90deg)', sy, [0, 1, 0], { heat:HEAT('to top') });
+    const bw = CH * Math.SQRT2 + .8, bx = fxx - CH / 2, by = fyy - CH / 2;
+    face(HL, bw, 'translate3d(' + px(bx) + ',' + px(by) + ',' + px(HC) + ') rotateZ(45deg) rotateY(90deg)', sx, [S2, S2, 0], { heat:HEAT('to left'), k:1.05 });
+    face(HL, bw, 'translate3d(' + px(bx) + ',' + px(-by) + ',' + px(HC) + ') rotateZ(-45deg) rotateY(90deg)', sx, [S2, -S2, 0], { heat:HEAT('to left'), k:1.05 });
+    face(HL, bw, 'translate3d(' + px(-bx) + ',' + px(by) + ',' + px(HC) + ') rotateZ(-45deg) rotateY(-90deg)', sx, [-S2, S2, 0], { heat:HEAT('to right'), k:1.05 });
+    face(HL, bw, 'translate3d(' + px(-bx) + ',' + px(-by) + ',' + px(HC) + ') rotateZ(45deg) rotateY(-90deg)', sx, [-S2, -S2, 0], { heat:HEAT('to right'), k:1.05 });
+    // manche hexagonal (axe y, à la hauteur HC), bague en laiton contre la tête, poignée caoutchouc au bout
+    const hex = (y0, y1, r, bg, o) => { const len = y1 - y0, ym = (y0 + y1) / 2, a = r * Math.sqrt(3) / 2;
+      for(let i = 0; i < 6; i++){ const ang = 30 + i * 60, ph = ang * Math.PI / 180, nx = Math.sin(ph), nz = Math.cos(ph);
+        face(r + .7, len, 'translate3d(' + px(nx * a) + ',' + px(ym) + ',' + px(HC + nz * a) + ') rotateY(' + ang + 'deg)', bg, [nx, 0, nz], o); } };
+    const cap = (y, r, bg) => face(r * Math.sqrt(3), r * 2, 'translate3d(0px,' + px(y) + ',' + px(HC) + ') rotateX(-90deg)', bg, [0, 1, 0], { clip:'polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)' });
+    const yEnd = R + FH * .55, yCol = fyy + FH * .2;
+    hex(fyy - 3, yEnd - FH * .3, RH, 'url(' + T.rod + ') center/100% 100% no-repeat');
+    hex(fyy - 3, yCol, RH * 1.36, 'linear-gradient(180deg,#43474e 0%,#2a2d32 34%,#a9853f 40%,#ecd08a 45%,#8f6a2c 52%,#2c2f35 58%,#1d1f23 100%)', { spec:SPEC });
+    cap(yCol, RH * 1.36, 'radial-gradient(circle,#55595f,#2a2d32 70%,#1a1c20)');
+    hex(yEnd - FH * .32, yEnd, RH * 1.16, 'repeating-linear-gradient(180deg,#26282d 0px,#1a1b1f 4px,#0b0c0e 5px,#1d1f23 7px),#16181b');
+    cap(yEnd, RH * 1.16, 'radial-gradient(circle,#2c2e33,#121316 75%)');
+    // ombre du marteau sur le plateau, voile qui assombrit la scène autour de la carte
+    const dim = document.createElement('div');
+    dim.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:32;opacity:0;will-change:opacity;'
+      + 'background:radial-gradient(circle at ' + cx.toFixed(0) + 'px ' + cy.toFixed(0) + 'px,rgba(10,5,2,0) 0,rgba(10,5,2,0) ' + (w * .8).toFixed(0) + 'px,rgba(10,5,2,.62) ' + (w * 3.4).toFixed(0) + 'px,rgba(6,3,1,.78) 100%);';
+    const sh = document.createElement('div');
+    sh.style.cssText = 'position:fixed;left:' + (-FW * .75).toFixed(1) + 'px;top:' + (-FH * .75).toFixed(1) + 'px;width:' + (FW * 1.5).toFixed(1) + 'px;height:' + (FH * 1.5).toFixed(1) + 'px;pointer-events:none;z-index:33;opacity:0;will-change:transform,opacity;'
+      + 'background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.92) 0,rgba(0,0,0,.7) 38%,rgba(0,0,0,0) 70%);';
+    fx.appendChild(dim); fx.appendChild(sh); fx.appendChild(W3); els.push(dim, sh, W3);
+    // ---------- canvas des particules (au-dessus du marteau : lueurs, étincelles, fumée) ----------
+    const RC = rdCanvas(36); cv = RC.cv; const ctx = RC.ctx, F = rdFx(), mon = rdLiteMon();
+    // ---------- transformation du marteau : élévation th (autour du poignet), inclinaison tz, roulis ro ----------
+    const D2R = Math.PI / 180, LX = -.36, LY = -.56, LZ = .75, LN = Math.hypot(LX, LY, LZ), lx = LX / LN, ly = LY / LN, lz = LZ / LN;
+    const HN = Math.hypot(lx, ly, lz + 1), hx = lx / HN, hy = ly / HN, hz = (lz + 1) / HN;
+    const rot = (v, ax, a) => { const c = Math.cos(a), s = Math.sin(a), x = v[0], y = v[1], z = v[2];
+      return ax === 0 ? [x, y * c - z * s, y * s + z * c] : ax === 1 ? [x * c + z * s, y, -x * s + z * c] : [x * c - y * s, x * s + y * c, z]; };
+    const xn = (n, st) => rot(rot(rot(n, 1, st.ro), 0, -st.th), 2, st.tz);
+    const xp = (p, st) => { let v = [p[0], p[1] - R, p[2] - HC]; v = rot(rot(v, 1, st.ro), 0, -st.th); v = rot([v[0], v[1] + R, v[2] + HC], 2, st.tz); return [v[0] + cx, v[1] + cy, v[2]]; };
+    const proj = p => { const k = PZ / Math.max(60, PZ - p[2]); return [OX + (p[0] - OX) * k, OY + (p[1] - OY) * k, k]; };
+    const pose = (th, tilt, ro) => {
+      const st = { th:th * D2R, tz:(dirZ + tilt) * D2R, ro:ro * D2R };
+      GR.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0px) rotateZ(' + (dirZ + tilt).toFixed(2) + 'deg) translate3d(0px,' + px(R) + ',' + px(HC) + ') rotateX(' + (-th).toFixed(2) + 'deg) rotateY(' + ro.toFixed(2) + 'deg) translate3d(0px,' + px(-R) + ',' + px(-HC) + ')';
+      for(const f of FACES){ if(f.emit) continue; const n = xn(f.n, st); if(n[2] < -.04) continue;
+        const d = Math.max(0, n[0] * lx + n[1] * ly + n[2] * lz), so = Math.min(.9, (1 - (.24 + .76 * d)) * .95 * f.k), sp = Math.pow(Math.max(0, n[0] * hx + n[1] * hy + n[2] * hz), 28) * .6;
+        if(Math.abs(so - f.s0) > .012){ f.s0 = so; f.sh.style.opacity = so.toFixed(3); }
+        if(Math.abs(sp - f.p0) > .012){ f.p0 = sp; f.sp.style.opacity = sp.toFixed(3); } }
+      return st;
+    };
+    // ---------- temps ----------
+    const T_APP = 30, T_UP = 380, T_SW = 500, T_HIT = 650, T_LIFT = 830, T_GONE = 1000, T_HOT = 1330, T_COOL = 1980, T_GL = 1960, T_END = 2200;
+    let hit = false, last = 0, flash = 0, trail = [], s1 = false, s2 = false, s3 = false;
+    const doHit = () => {
+      hit = true; btlSnd('lfclang');
+      nc = swap(); un = nc && btlUnitEl(nc); if(un) hot = btlLfHot(un);
+      if(plateEl) btlShake(plateEl, Math.max(6, w * .09));
+      flash = 1; const M = Math.max(w, h);
+      rdRing(F, cx, cy, M * .55, M * 2.5, 600, 5, '255,166,64', .82);
+      rdRing(F, cx, cy, M * .5, M * 1.75, 400, 2.2, '255,236,190', .82);
+      // gerbes d'étincelles qui jaillissent de sous la tête, tout autour de la carte, et des quatre coins
+      const NS = 46;
+      for(let i = 0; i < NS; i++){ const a = i / NS * 6.283 + (Math.random() - .5) * .2, ca = Math.cos(a), sa = Math.sin(a), k = Math.min(fxx / Math.max(.01, Math.abs(ca)), fyy / Math.max(.01, Math.abs(sa)));
+        rdSparks(F, cx + ca * k, cy + sa * k, 1, i % 2 ? 620 : 380, a, .55, { life:i % 2 ? 760 : 520, g:420, w:i % 3 ? 1.5 : 2.1, drag:1.05 }); }
+      [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([qx, qy]) => rdSparks(F, cx + qx * fxx, cy + qy * fyy, 7, 760, Math.atan2(qy * fyy, qx * fxx), .45, { life:880, g:460, w:1.9, drag:1 }));
+      rdChunks(F, cx, cy, 16, 360, null, 0, { s:Math.max(2.2, w * .03), up:110, life:950, g:760, pal:[[42, 34, 30], [64, 52, 44], [28, 24, 22]], hot:.95 });   // écailles de calamine
+      // fumée : anneau qui roule au ras du plateau depuis les bords + volutes sombres
+      const NR = 14;
+      for(let i = 0; i < NR; i++){ const a = i / NR * 6.283 + Math.random() * .3, ca = Math.cos(a), sa = Math.sin(a), s0 = M * (.3 + Math.random() * .14), v = 130 + Math.random() * 110;
+        rdPuff(F, cx + ca * fxx * .9, cy + sa * fyy * .9, s0, s0 * (2.1 + Math.random() * .6), 900 + Math.random() * 320, { vx:ca * v, vy:sa * v * .85, a:.55, drag:2.4, kind:i % 3 ? 'k' : 'g', delay:Math.random() * 40 }); }
+      for(let i = 0; i < 4; i++){ const a = Math.random() * 6.283, s0 = M * (.4 + Math.random() * .15);
+        rdPuff(F, cx + Math.cos(a) * fxx * .5, cy + Math.sin(a) * fyy * .5, s0, s0 * 2.2, 1000 + Math.random() * 300, { vx:Math.cos(a) * 24, vy:-30 - Math.random() * 20, a:.45, drag:1.4, kind:'k', delay:120 + Math.random() * 60 }); }
+    };
+    pose(112, 26, -40);
+    await btlEdLoop(t => {
+      mon.tick(); if(!F.lite && mon.dt.length === 18 && mon.lite()) F.lite = true;
+      const dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t;
+      // ---- le marteau ----
+      let th = 0, tilt = 0, ro = 0, op = 1;
+      if(t < T_UP){ const k = E.o3(E.k(T_APP, T_UP, t)); th = 112 + 28 * k; tilt = 26 - 8 * k; ro = -40 + 10 * k; op = E.k(T_APP, T_APP + 150, t); }
+      else if(t < T_SW){ const k = E.io(E.k(T_UP, T_SW, t)); th = 140 + 7 * k + Math.sin(t * .9) * .5; tilt = 18 - k; ro = -30 + 2 * k; }
+      else if(t < T_HIT){ const k = Math.pow(E.k(T_SW, T_HIT, t), 2.4); th = 147 * (1 - k); tilt = 17 * (1 - k); ro = -28 * (1 - k); }
+      else if(t < T_LIFT){ th = t < T_HIT + 70 ? 7 * Math.sin(Math.PI * (t - T_HIT) / 70) : 0; }
+      else { const k = E.o3(E.k(T_LIFT, T_GONE, t)); th = 78 * k; tilt = -12 * k; op = 1 - E.k(T_LIFT + 90, T_GONE, t); }
+      if(!hit && t >= T_HIT){ th = 0; tilt = 0; ro = 0; }
+      if(t < T_GONE + 20) W3.style.opacity = op.toFixed(3); else if(W3.style.display !== 'none') W3.style.display = 'none';
+      dim.style.opacity = (t < T_COOL ? E.k(0, 150, t) : 1 - E.k(T_COOL, T_COOL + 200, t)).toFixed(3);
+      let st = null; if(t < T_GONE + 20) st = pose(th, tilt, ro);
+      if(!s1 && t >= T_APP){ s1 = true; btlSnd('lfrise'); }
+      if(!s2 && t >= T_SW){ s2 = true; btlSnd('lfswing'); }
+      if(!hit && t >= T_HIT) doHit();
+      if(!s3 && t >= T_HOT){ s3 = true; btlSnd('lfhiss'); }
+      // ombre portée de la tête sur le plateau
+      if(st){ const hc = xp([0, 0, HC], st), z = Math.max(0, hc[2] - HC), k = 1 + z / 260;
+        sh.style.transform = 'translate3d(' + hc[0].toFixed(1) + 'px,' + hc[1].toFixed(1) + 'px,0) rotate(' + (dirZ + tilt).toFixed(1) + 'deg) scale(' + k.toFixed(3) + ')';
+        sh.style.opacity = (op * Math.max(0, .78 - z / 420)).toFixed(3); }
+      // ---- dessin ----
+      ctx.clearRect(RC.L, RC.T, RC.W, RC.H);
+      rdStep(ctx, F, dt, 0); rdStep(ctx, F, dt, 1);
+      ctx.globalCompositeOperation = 'lighter';
+      if(st && op > .01){   // lueur de la face chauffée (plus forte quand elle regarde la caméra) + lumière chaude sur le plateau
+        const fc = proj(xp([0, 0, 0], st)), n = xn([0, 0, -1], st), fz = Math.max(0, n[2]), fl = .9 + .1 * Math.sin(t * .23) + .05 * Math.sin(t * .61);
+        if(fz > .02) rdDot(ctx, fc[0], fc[1], FW * fc[2] * (.75 + .3 * fz), '255,136,40', op * .34 * fz * fl, 1);
+        if(!hit && Math.random() < .35 && fz > .3) rdSparks(F, fc[0] + (Math.random() - .5) * FW * fc[2] * .6, fc[1] + (Math.random() - .5) * FH * fc[2] * .5, 1, 70, Math.PI / 2, 1.2, { life:420, g:260, w:1.1 });
+        if(t >= T_SW - 10 && t < T_HIT - 8 && fz > -.35){ trail.push([fc[0], fc[1], fc[2]]); if(trail.length > 6) trail.shift(); } else if(trail.length) trail.shift();
+      }
+      let clip = false;
+      if(st && op > .01){   // silhouette de la tête (enveloppe des deux bouts projetés) retirée des lueurs posées sur la carte
+        const P = []; [0, HL].forEach(z => [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { const q = proj(xp([a * fxx, b * fyy, z], st)); P.push([q[0], q[1]]); }));
+        P.sort((a, b) => a[0] - b[0] || a[1] - b[1]); const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]), lo = [], up = [];
+        P.forEach(q => { while(lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); });
+        for(let i = P.length - 1; i >= 0; i--){ const q = P[i]; while(up.length > 1 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+        const hull = lo.slice(0, -1).concat(up.slice(0, -1));
+        ctx.save(); ctx.beginPath(); ctx.rect(RC.L, RC.T, RC.W, RC.H); hull.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath(); ctx.clip('evenodd'); clip = true;
+        const n = xn([0, 0, -1], st), hc = xp([0, 0, HC], st), z = Math.max(0, hc[2] - HC), pool = op * Math.max(0, 1 - z / 300) * (.3 + .4 * Math.max(0, -n[2]));   // la tête chaude éclaire le plateau
+        if(pool > .01 && !hit) rdDot(ctx, hc[0], hc[1], FW * (1.3 + z / 160), '255,120,40', pool, 1);
+        if(trail.length > 1){ ctx.lineCap = 'round';   // traînée du métal chauffé pendant le coup
+          for(let i = 1; i < trail.length; i++){ const q = i / (trail.length - 1), a = trail[i - 1], b = trail[i];
+            ctx.strokeStyle = 'rgba(255,' + (140 + 70 * q | 0) + ',50,' + (.5 * q).toFixed(3) + ')'; ctx.lineWidth = FW * b[2] * .62 * q; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,240,200,' + (.3 * q).toFixed(3) + ')'; ctx.lineWidth = FW * b[2] * .14 * q; ctx.stroke(); } } }
+      if(flash > 0){ rdDot(ctx, cx, cy, Math.max(w, h) * 2.2, '255,170,80', flash * .45, 1); flash = Math.max(0, flash - dt * 1000 / 200); }
+      if(hit && t < T_LIFT + 60){   // lumière qui s'échappe de sous la tête : liseré incandescent autour de la case
+        const a = (t < T_HIT + 60 ? 1 : .55 + .1 * Math.sin(t * .3)) * (1 - E.k(T_LIFT, T_LIFT + 60, t)), gx = fxx * 1.02, gy = fyy * 1.02;
+        ctx.save(); ctx.translate(cx, cy); ctx.lineJoin = 'round';
+        [[14, '255,120,30', .22], [7, '255,170,60', .45], [2.4, '255,240,200', .8]].forEach(([lw, rgb, al]) => { ctx.strokeStyle = 'rgba(' + rgb + ',' + (al * a).toFixed(3) + ')'; ctx.lineWidth = lw; ctx.strokeRect(-gx, -gy, gx * 2, gy * 2); });
+        ctx.restore(); }
+      if(hit){ const kh = t < T_HOT ? 1 : 1 - E.k(T_HOT, T_COOL, t), glow = (t < T_LIFT ? 1 : .62 + .08 * Math.sin(t * .17)) * kh;   // la case rayonne
+        if(glow > .01) rdDot(ctx, cx, cy, Math.max(w, h) * 1.55, '255,' + (110 + 50 * (t < T_HOT ? 1 : 1 - E.k(T_HOT, T_HOT + 330, t)) | 0) + ',36', glow * .5, 1); }
+      if(clip) ctx.restore();
+      // ---- la nouvelle carte chauffée, puis refroidie ----
+      if(hit){
+        if(hot){
+          const wh = 1 - E.k(T_LIFT, T_LIFT + 200, t), o = 1 - E.k(T_HOT + 60, T_HOT + 300, t), r = Math.min(E.k(T_HOT, T_HOT + 220, t), 1 - E.k(T_HOT + 300, T_COOL, t)), e = t < T_HOT ? (.62 + .08 * Math.sin(t * .17)) * (t < T_LIFT + 200 ? 1.3 : 1) : .62 * (1 - E.k(T_HOT, T_HOT + 360, t));
+          hot.Wh.style.opacity = wh.toFixed(3); hot.O.style.opacity = o.toFixed(3); hot.R.style.opacity = Math.max(0, r).toFixed(3); hot.E.style.opacity = Math.min(1, e).toFixed(3);
+          const g = E.k(T_GL, T_GL + 200, t); if(g > 0 && g < 1){ hot.Gl.style.opacity = Math.sin(g * Math.PI).toFixed(3); hot.Gl.style.transform = 'translateX(' + (g * 330).toFixed(1) + '%) rotate(18deg)'; } else hot.Gl.style.opacity = '0';
+        }
+        if(t > T_LIFT && t < T_HOT + 200 && Math.random() < (F.lite ? .25 : .5))   // braises qui s'envolent de la carte
+          F.px.push({ x:cx + (Math.random() - .5) * w * .9, y:cy + (Math.random() - .5) * h * .9, vx:(Math.random() - .5) * 30, vy:-30 - Math.random() * 60, s:1.3 + Math.random() * 1.8, age:0, life:600 + Math.random() * 600, rgb:'255,' + (150 + Math.random() * 80 | 0) + ',60' });
+        if(t > T_LIFT && t < T_HOT && Math.random() < .06){ const a = Math.random() * 6.283, ca = Math.cos(a), sa = Math.sin(a), k = Math.min(hw / Math.max(.01, Math.abs(ca)), hh / Math.max(.01, Math.abs(sa)));   // crépitements
+          rdSparks(F, cx + ca * k, cy + sa * k, 2, 230, a, .8, { life:320, g:300, w:1 }); }
+        if(t > T_HOT && t < T_COOL - 120 && Math.random() < (F.lite ? .1 : .18)){ const s0 = w * (.22 + Math.random() * .12);   // vapeur du refroidissement
+          rdPuff(F, cx + (Math.random() - .5) * w * .8, cy + (Math.random() - .5) * h * .7, s0, s0 * 2.6, 900 + Math.random() * 300, { vx:(Math.random() - .5) * 20, vy:-38 - Math.random() * 30, a:.3, drag:.5, kind:'g' }); }
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      rdStep(ctx, F, dt, 2);
+      return t < T_END || (t < T_END + 400 && rdBusy(F));
+    });
+  } finally {
+    els.forEach(e => e.remove()); if(cv) cv.remove(); if(hot) hot.box.remove();
+    if(!nc) nc = swap();   // la règle s'applique même si l'animation est interrompue
+  }
+  return nc;
+}
+// ---- LA FORGE (Tech, V0.06.05) : 2 mana ; change une carte du terrain (alliée ou ennemie, jamais un chef) en une carte au hasard de la rareté au-dessus.
+// MÊMES RÈGLES que TECHS['LA FORGE'] dans meca_core.mjs (econ et pvp) : liste = TRANSPORTEUR_POOL (même ordre) filtrée par rareté ; Holo -> Holo (elle-même comprise) ;
+// carte neuve (même k), pas d'Appel ; garde « posée ce tour / a déjà agi » ; action prévue annulée (mana rendu) ; actions qui la visaient -> la nouvelle ; LOUZY : capsule rendue.
+const LF_TIERS = ['rare', 'epique', 'legendaire', 'ecarlate', 'holo'];
+function lfTier(n){ if(TRANSPORTEUR_POOL.indexOf(n) < 0) return -1; const d = CHAR_DEFS.find(x => x.name === n && !x.tech); return d ? LF_TIERS.indexOf(rarityOf(d)) : -1; }   // -1 : jeton (non ciblable)
+function lfPool(n){ const i = lfTier(n); if(i < 0) return []; const r = Math.min(4, i + 1); return TRANSPORTEUR_POOL.filter(x => lfTier(x) === r); }
+BTL_TECH_FX['LA FORGE'] = { mode:'ally',
+  cands:s => btlField(s).concat(btlField(btlOther(s))).filter(t => lfTier(t.name) >= 0),
+  run:async (s, t) => {
+    if(btlGone() || !t || !btlOnField(t)) return;
+    const n = btlRnd(lfPool(t.name)); if(!n) return;   // tirage des règles (même instant et même liste que le serveur)
+    const def = CHAR_DEFS.find(x => x.name === n && !x.tech); if(!def) return;
+    let nc = null;
+    const sw = () => {   // la règle : la carte est remplacée (appelé à l'impact du marteau, ou à la fin si l'animation est interrompue)
+      if(nc || !BTL || !btlOnField(t)) return nc;
+      const Q = BTL.S[t.side];
+      if(t.plan){ if(!btlLxFree(t, t.plan.kind)) BTL.mana[t.side]++; t.plan = null; }   // son action prévue est annulée, mana rendu
+      nc = btlMakeCard(t.side, def, rarityOf(def), 1, false, t.k || 1); nc.slot = t.slot; nc.playedTurn = t.playedTurn; if(t.actT != null) nc.actT = t.actT;
+      btlMarkOff(t, true); btlXOff(t);
+      Q.slots[t.slot] = nc; btlPutCard(nc);
+      ['p', 'o'].forEach(sd => BTL.S[sd].slots.forEach(x => { if(x && x.plan && x.plan.tgt === t.uid) x.plan.tgt = nc.uid; }));   // les actions qui la visaient visent la nouvelle carte
+      btlRenderMana(); btlRenderArrows(); btlRefreshCan(); btlFlameKick();
+      return nc;
+    };
+    try{ await btlLfFx(s, t, sw); } finally { sw(); }
+    if(t.lzHeld > 0 && BTL && !BTL.abort) await btlLzBaroud(t);   // V0.05.95 : une LOUZY changée rend sa capsule (comme détruite)
   } };
 async function btlTechUse(side, c, pre, fromRect, el, rep){ try{ return await btlTechUse0(side, c, pre, fromRect, el, rep); } finally { await btlTbFlush(); } }
 async function btlTechUse0(side, c, pre, fromRect, el, rep){
