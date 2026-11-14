@@ -129,7 +129,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.06</title>
+<title>Projet MECA V0.06.07</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -7812,6 +7812,8 @@
   .lg-art-img .lg-art-bg{ position:absolute; display:block; pointer-events:none; left:calc(var(--ax) - 6%); top:calc(var(--ay) - 5%); width:calc(var(--aw) + 12%); height:calc(var(--ah) + 10%); object-fit:cover; display:none; }
   .lg-art-img .lg-art-box{ position:absolute; left:var(--ax); top:var(--ay); width:var(--aw); height:var(--ah); display:flex; align-items:center; justify-content:center; pointer-events:none; }
   .lg-art-img .lg-art-fg{ flex:none; max-width:none; max-height:none; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  .lg-art-img .lg-art-fg.lg-fade{ opacity:0; transition:opacity .3s ease; }   /* V0.06.07 : image pas encore téléchargée : fondu à son arrivée */
+  .lg-art-img .lg-art-fg.lg-fade.ld{ opacity:1; }
   /* V0.05.41 : l'artwork passe SOUS le cadre. Avant, il était découpé par un tracé de 41 points posé entièrement à l'intérieur du hublot (anneau transparent d'environ 1,7 px visible entre l'artwork et le bord rond). Maintenant : pas de découpe, la boîte dépasse un peu du hublot (cf --ax/--ay/--aw/--ah) et le cadre, redessiné par-dessus (.lg-frame-glass, limité à la zone de l'artwork pour ne pas doubler le reste), cache le débord ; le cadre est opaque autour du hublot (mesuré). */
   .lg-layer:not(.f-tech) .lg-art-img{ z-index:-1; clip-path:none !important; }
   .lg-layer:not(.f-tech) .lg-art-img .lg-art-box{ overflow:hidden; }   /* V0.05.42 : artwork zoomé / décalé (WIN_BIG avec x) rogné à sa boîte, sinon il débordait du cadre */
@@ -8967,7 +8969,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.06</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.07</b></div>
   </div>
 
     </div>
@@ -10027,9 +10029,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.06';
+var BUILD_VERSION = 'V0.06.07';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.07', items:[
+    'Démarrage plus léger : à la première ouverture, le jeu ne télécharge plus à l\'avance les images des cartes que tu n\'as pas (environ 27 Mo de données en moins, démarrage plus rapide sur les téléphones lents). Tes cartes restent prêtes tout de suite.',
+    'Une carte que tu n\'as jamais vue (carte tirée au hasard en combat, carte de l\'adversaire) se charge dès qu\'elle entre en jeu ; en PvP, la carte adverse attend son image avant d\'arriver.',
+  ] },
   { v:'V0.06.06', items:[
     'Nouvel écran de chargement à l\'ouverture du jeu : une scène de combat de mechs, le logo SQUAD LOCK en haut et une jauge en bas qui suit le vrai chargement (pratique sur les téléphones lents).',
     'Quand tout est prêt, « TOUCHE POUR JOUER » apparaît : un toucher sur l\'écran et tu entres dans le jeu (la musique démarre en même temps).',
@@ -15099,7 +15105,8 @@ function lgLayerHtml(def, rar, ids, level, showTrophy, fxAs){
   // base64 inline) -- onerror bascule sur GREY_ART (toujours disponible, inline) si le réseau venait
   // à manquer, plutôt que l'icône "image cassée".
   const artSrc = winArt(def), artFocus = winFocus(def, true), artZoom = winZoom(def), artShift = winShift(def), artErr = `onerror="this.onerror=null;this.src='${GREY_ART}'"`;
-  const artHtml = `<div class="lg-art-img"><div class="lg-art-box"><img class="lg-art-fg" src="${artSrc}" alt="" style="object-position:50% ${artFocus}%;width:${artZoom}%;height:${artZoom}%;transform:translateX(${artShift}%)" ${artErr}></div></div>`;
+  const artFade = !!(window.__IMGOK && !__IMGOK.has(artSrc) && artSrc.indexOf('data:') !== 0);   // V0.06.07 : pas encore téléchargée : arrive en fondu
+  const artHtml = `<div class="lg-art-img"><div class="lg-art-box"><img class="lg-art-fg${artFade ? ' lg-fade' : ''}" src="${artSrc}" alt="" style="object-position:50% ${artFocus}%;width:${artZoom}%;height:${artZoom}%;transform:translateX(${artShift}%)" ${artErr}${artFade ? ' onload="artLd(this)"' : ''}></div></div>`;
   const isUltimateCert = showTrophy && defiUltimateEligible(def, rar, level);
   const isDefiCert = showTrophy && !isUltimateCert && defiTrophyEligible(def, rar, level);
   return `<div class="lg-layer f-${rar}">
@@ -15903,11 +15910,13 @@ function backWinHtml(res){
 var __IMGKEEP = [];   // images préchargées, gardées en mémoire pour toute la session
 // V0.05.39 : une image « prête » = téléchargée ET décodée. imgReady() ne charge chaque adresse qu'une fois ; econCardsReady() attend (au plus ms) les images des cartes qu'on va montrer, pour qu'elles apparaissent complètes.
 var __IMGP = {};
+var __IMGOK = new Set();   // V0.06.07 : images déjà chargées (une image pas encore là arrive en fondu dans les cadres de carte)
+function artLd(im){ try{ __IMGOK.add(im.src); im.classList.add('ld'); }catch(_){} }
 function imgReady(u){
   if(!u || typeof u !== 'string' || u.indexOf('data:') === 0) return Promise.resolve();
   return __IMGP[u] || (__IMGP[u] = new Promise(res => {
     const i = new Image(); i.decoding = 'async'; __IMGKEEP.push(i);
-    i.onload = () => { (i.decode ? i.decode() : Promise.resolve()).catch(() => {}).then(() => res()); };
+    i.onload = () => { __IMGOK.add(u); (i.decode ? i.decode() : Promise.resolve()).catch(() => {}).then(() => res()); };
     i.onerror = () => res();
     i.src = u;
   }));
@@ -15941,7 +15950,9 @@ function econCardsReady(items, ms){
     return Promise.race([Promise.all(uniq.map(imgReady)), new Promise(r => setTimeout(r, ms || 1400))]);
   }catch(_){ return Promise.resolve(); }
 }
+function isBotNav(){ try{ return !!navigator.webdriver && location.protocol !== 'file:'; }catch(_){ return false; } }   // V0.06.07 : navigateur automatique (capture de Vercel)
 function preloadBoosterBacks(){
+  if(isBotNav()) return;
   [BOOST_CARD_BACK].forEach(set => {
     Object.values(set).forEach(url => { const img = new Image(); __IMGKEEP.push(img); img.src = url; });
   });
@@ -15957,6 +15968,7 @@ preloadBoosterBacks();
 // icônes de navbar visibles dès l'écran d'accueil) : on les précharge donc tous au lancement, comme les
 // dos de boosters ci-dessus, pour éviter tout effet de pop-in la première fois qu'ils s'affichent.
 function preloadUiAssets(){
+  if(isBotNav()) return;
   const base = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/ui/';
   [
     'module-frame-rare.webp', 'module-frame-epique.webp', 'module-frame-legendaire.webp',
@@ -15976,6 +15988,7 @@ preloadUiAssets();
 // donc préchargés ici comme les visuels d'interface ci-dessus. BOOST_RES_IMG/CARDS_IMG/MODULES_IMG
 // (visuel plein des 3 types de boosters, case .boost-box + burst d'ouverture) suivent le même principe.
 function preloadMenuAssets(){
+  if(isBotNav()) return;
   const menuBase = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/';
   const boostBase = 'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/boosters/';
   [
@@ -15990,15 +16003,18 @@ function preloadMenuAssets(){
 preloadMenuAssets();
 function preloadGameArt(){
   try{ if(navigator.connection && navigator.connection.saveData) return; }catch(_){}
-  const seen = {}, first = [], mid = [], last = [];
+  if(isBotNav()) return;   // V0.06.07 : robots (capture de Vercel à chaque version) : rien à l'avance
+  const seen = preloadGameArt.seen || (preloadGameArt.seen = {}), first = [], mid = [], last = [];   // V0.06.07 : appelé au lancement puis à chaque connexion du compte : seulement ce qui manque
   const add = (list, u) => { if(typeof u === 'string' && u.indexOf('/card-assets/') > 0 && !seen[u]){ seen[u] = 1; list.push(u); } };
   try{ ['rare', 'epique', 'legendaire', 'ecarlate', 'holo'].forEach(r => frameUrlsOf(r).forEach(u => add(first, u))); add(first, TECH_FRAME_URL); }catch(_){}   // V0.05.39 : les cadres servent à CHAQUE carte (avant, ils étaient chargés en dernier)
-  try{ decks.forEach(dk => (dk.cards || []).forEach(k => { const e = sqEntry(k); if(e && e.def){ add(first, winArt(e.def)); add(first, e.def.art); add(first, e.def.artExt); add(first, e.def.artBig); } })); }catch(_){}
-  try{ CHAR_DEFS.forEach(d => { if(copiesOf(d) > 0){ add(first, winArt(d)); } }); }catch(_){}   // puis les cartes que le joueur possède
-  try{
+  const acct = typeof cloud !== 'undefined' && cloud.status === 'online';   // V0.06.07 : avant la réponse du compte, les decks sont ceux de départ du jeu : on attend
+  if(acct) try{ decks.forEach(dk => (dk.cards || []).forEach(k => { const e = sqEntry(k); if(e && e.def){ add(first, winArt(e.def)); add(first, e.def.art); add(first, e.def.artExt); add(first, e.def.artBig); } })); }catch(_){}
+  if(acct) try{ CHAR_DEFS.forEach(d => { if(copiesOf(d) > 0){ add(first, winArt(d)); } }); }catch(_){}   // puis les cartes que le joueur possède
+  if(!preloadGameArt.scanned) try{
+    preloadGameArt.scanned = 1;
     const src = document.documentElement.innerHTML;
     const re = /https:\/\/okrdywhctnlayyfltivc\.supabase\.co\/storage\/v1\/object\/public\/card-assets\/[A-Za-z0-9_\-\/.]+\.(?:webp|png|jpe?g)/g;
-    let m; while((m = re.exec(src))){ const u = m[0]; add(/\/(fx|raid)\//.test(u) ? last : (/-art-big\./.test(u) ? last : mid), u); }
+    let m; while((m = re.exec(src))){ const u = m[0]; if(/\/card-assets\/cards\//.test(u)) continue; add(/\/(fx|raid)\//.test(u) ? last : mid, u); }   // V0.06.07 : les cartes que le joueur n'a pas se chargent quand elles s'affichent (plus ~27 Mo à chaque 1re ouverture)
   }catch(_){}
   const q = first.concat(mid, last);
   let i = 0, run = 0;
@@ -16006,7 +16022,7 @@ function preloadGameArt(){
     if(window.BTL){ setTimeout(next, 3000); return; }          // jamais pendant un combat (réseau libre pour la partie)
     while(run < 6 && i < q.length){
       const img = new Image(); __IMGKEEP.push(img); run++;
-      img.onload = img.onerror = () => { run--; next(); };
+      img.onload = () => { __IMGOK.add(img.src); run--; next(); }; img.onerror = () => { run--; next(); };
       img.src = q[i++];
     }
   };
@@ -24472,11 +24488,15 @@ function pvpQueueEl(){
   return el;
 }
 function pvpQueueShow(on){ const el = pvpQueueEl(); el.hidden = !on; document.body.classList.toggle('pvq-on', !!on); }
+function pvpDeckWarm(deck){   // V0.06.07 : ma pioche PvP reste cachée jusqu'au tirage : ses images sont demandées dès l'entrée en file
+  try{ if(!deck || !deck.cards) return; deck.cards.concat(deck.leader ? [deck.leader] : []).forEach(n => { const x = CHAR_DEFS.find(y => y.name === n); if(x) imgReady(x.tech ? x.art : winArt(x)); }); }catch(_){}
+}
 async function pvpQueueOpen(d){
   if(BTL || PVPQ || PVPC || PVPS) return false;
   const deck = d.spec ? null : econBattleDeck(d);   // V0.05.89 : OPÉRATION SPÉCIALE -- deck imposé par le serveur
   if(!deck && !d.spec){ showToast('DECK INCOMPLET'); return false; }
   const Q = PVPQ = { d, deck, cancelled:false, ctl:new AbortController(), t0:Date.now() };
+  pvpDeckWarm(deck);
   pvpQueueShow(true);
   Q.joinP = pvpSend('queue_join', d.spec ? { spec:1 } : { deck });         // non interrompable : le serveur le traite de toute façon, l'annulation attend sa fin avant de quitter la file
   let r = await Q.joinP;
@@ -24524,6 +24544,7 @@ async function pvpQueueCancel(){
 var PVPS = false;
 async function pvpStartFromQueue(mid, d, deck){ PVPS = true; try{ return await pvpStartMatch(mid, d, deck); } finally { PVPS = false; pvpQueueShow(false); } }
 async function pvpStartMatch(mid, d, deck){
+  pvpDeckWarm(deck);
   if(BTL || PVPC){ pvpDbgErr('start', 0, 'combat déjà en cours'); return false; }   // V0.05.90 : jamais deux matchs en même temps
   let evs = [], more = true;
   while(more){
@@ -24796,6 +24817,10 @@ async function pvpPlanPhase(side){
 }
 
 // ---------- rejeu d'une action ----------
+function pvpArtWait(c){   // V0.06.07 : carte adverse jamais vue : on laisse 0,5 s au plus à son image pour arriver
+  try{ const d = c && c.def; if(!d) return Promise.resolve(); const u = d.tech ? d.art : winArt(d); if(!u || __IMGOK.has(u)) return Promise.resolve();
+    return Promise.race([imgReady(u), new Promise(r => setTimeout(r, 500))]); }catch(_){ return Promise.resolve(); }
+}
 async function pvpReplayAction(ev){
   const a = ev.a, side = a.s, S = BTL.S[side], P = PVPC, sn = pvpLast(ev);
   if(a.t === 'play'){
@@ -24813,6 +24838,7 @@ async function pvpReplayAction(ev){
     } else {
       const ph = S.hand.pop() || pvpHidden('o');
       c = pvpReal('o', nm, false); c.uid = ph.uid; S.hand.push(c);
+      await pvpArtWait(c);
       const he = btlQ('#btlOHand [data-uid="' + c.uid + '"]'); const r0 = he ? btlRect(he) : btlRect(btlQ('#btlOHand'));
       rect = { left:r0.left, top:r0.top, width:r0.width, height:r0.height };
       el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
@@ -24845,6 +24871,7 @@ async function pvpReplayAction(ev){
     } else {
       const ph = S.hand.pop() || pvpHidden('o');
       c = pvpReal('o', a.n, false); c.uid = ph.uid; S.hand.push(c);
+      await pvpArtWait(c);
       const he = btlQ('#btlOHand [data-uid="' + c.uid + '"]'); const r0 = he ? btlRect(he) : btlRect(btlQ('#btlOHand'));
       rect = { left:r0.left, top:r0.top, width:r0.width, height:r0.height };
       el = document.createElement('div'); el.className = 'btl-fly'; el.innerHTML = btlBackHtml(c.rar, c.side); btlQ('#btlFx').appendChild(el);
@@ -25147,7 +25174,8 @@ function btlValidFoes(side){
 const BTL_RATIO = 966 / 692;   // hauteur / largeur d'une grande carte
 
 // ---------- cartes ----------
-function btlMakeCard(side, def, rar, level, leader, k){ const c0 = btlMakeCard0(side, def, rar, level, leader, k); if(c0 && !leader && def && def.name === 'LARVOTRON') c0.own = side; return c0; }   // V0.05.87 : propriétaire de LARVOTRON
+const BTL_NEXT_ART = { 'AMALGAME':['MALGAME', 'MALAME'], 'MALGAME':['MALAME'] };   // V0.06.07 : cartes que celle-ci fera apparaître (chaîne d'AMALGAME) : images demandées avec la sienne
+function btlMakeCard(side, def, rar, level, leader, k){ const c0 = btlMakeCard0(side, def, rar, level, leader, k); if(c0 && !leader && def && def.name === 'LARVOTRON') c0.own = side; try{ if(c0 && def){ imgReady(def.tech || leader ? def.art : winArt(def)); (BTL_NEXT_ART[def.name] || []).forEach(n => { const x = CHAR_DEFS.find(y => y.name === n) || (typeof BTL_TOKEN_DEFS !== 'undefined' ? BTL_TOKEN_DEFS.find(y => y.name === n) : null); if(x) imgReady(winArt(x)); }); } }catch(_){}   /* V0.06.07 : image demandée dès que la carte existe (cartes tirées au hasard comprises) ; AMALGAME : aussi celles de sa chaîne */ return c0; }   // V0.05.87 : propriétaire de LARVOTRON
 function btlLxFree(c, kind){ return (!!c && btlFxN(c) === 'LARVOTRON' && kind === 'atk' && !c.off && !!c.own && c.own === c.side)   // V0.05.87 : LARVOTRON -- attaque gratuite chez celui qui l'a posé
   || (!!c && !!BTL && BTL.ev === 'percee' && kind === 'atk' && btlHas(c, 'percee') && c.playedTurn === BTL.turn)
   || (!!c && btlFxN(c) === 'GOLDY' && !c.off && btlHas(c, 'passif')); }   // V0.05.94 : GOLDY -- attaquer et défendre sans mana (même règle que gdFree du serveur)   // V0.05.89 : PERCÉE ÉCLAIR -- attaque gratuite le tour de la pose (même règle que evFree du serveur)
@@ -41727,6 +41755,7 @@ BTL_TECH_FX['LA FORGE'] = { mode:'ally',
     if(btlGone() || !t || !btlOnField(t)) return;
     const n = btlRnd(lfPool(t.name)); if(!n) return;   // tirage des règles (même instant et même liste que le serveur)
     const def = CHAR_DEFS.find(x => x.name === n && !x.tech); if(!def) return;
+    try{ imgReady(winArt(def)); }catch(_){}   // V0.06.07 : image de la nouvelle carte demandée dès le tirage (le marteau lui laisse le temps d'arriver)
     let nc = null;
     const sw = () => {   // la règle : la carte est remplacée (appelé à l'impact du marteau, ou à la fin si l'animation est interrompue)
       if(nc || !BTL || !btlOnField(t)) return nc;
@@ -45237,6 +45266,7 @@ async function connectCloud(){
     econRenderAll('full');
     if(!nmGateActive && !ECON.needName){ nameModalFirst = false; closeNameModal(true); }
     saveNow();
+    setTimeout(() => { try{ preloadGameArt(); }catch(_){} }, 1500);   // V0.06.07 : decks et cartes du joueur maintenant connus : leurs images à l'avance
     return true;
   }catch(e){
     cloud.status = 'error'; return false;
