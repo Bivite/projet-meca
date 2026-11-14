@@ -1,4 +1,124 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!-- V0.06.06 : écran de chargement (affiché dès les premiers octets du fichier, avant le reste du jeu). Image (zoom lent qui s'arrête) + logo en haut + barre en bas.
+     La barre avance seule pendant le téléchargement (transition CSS longue : elle continue même quand le téléphone est occupé),
+     puis suit les vraies étapes du démarrage : ldStep(p) (jeu lancé), ldConn()/ldNet() (connexion au serveur), ldTrack(img) (images du menu), ldReady() (jeu prêt : attend les images, 6 s au plus).
+     Une fois pleine : « TOUCHE POUR JOUER » ; le toucher (qui lance aussi la musique) fait disparaître l'écran. ldHide() le retire tout de suite. Tests automatiques (navigator.webdriver) : retiré dès qu'il est plein, sans toucher. -->
+<style id="ldCss">
+  /* écran plein, au-dessus de tout ; seules la transformation et l'opacité bougent */
+  #ldScr{ --ld-void:#050409; --ld-ink:#f2ecff; --ld-hot:#ffcf8a; --ld-ember:#ff6a1a;
+    position:fixed; inset:0; z-index:2147483000; overflow:hidden; background:var(--ld-void); color:var(--ld-ink);
+    font:700 11px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; opacity:1; transition:opacity .55s ease; contain:strict; user-select:none; -webkit-user-select:none; }
+  #ldScr.ld-out{ opacity:0; pointer-events:none; }
+  #ldScr .ld-bg{ position:absolute; inset:0; background:var(--ld-void) url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCAAwACADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDkIl3mGPtwM+holjKTGLacg4PqTT7JCzIB1z+IrRazH2iU+ZlEGct1Y/WiKcthtWepFpl06RyWby+XBKMNuGeai1BIzZxxhgShIOO9dP8A2RG2mgwpsLLuUsAScVz4jgWeNJdrGRth3E4UetOp7kbsUEpysirYMISZCw27s8jmtjTNRtGuHM43hzuVAO/YVjaeIsu0rEEr8noTSR2s3nNPAowvJOfums4zcTSUebU6qXV4mYM6SxuvRFB4FZGrW6gQzMwELtkhSC1RNqD3VmpYhM8E9SSKryk3G1BKXl7DHSqnU5tyacOXYrRSRmDBGGPSrNq5hg2xtnJIkGeorIikO3n68VKtwyucHFQ0UmX5USOIKgZmb7v+yKdYzz2IM8Cq7R8sHHC1XiuzuO9uQOMCo7m7RoyByxGKT10GnbVH/9k=) 58% 42% / cover no-repeat; }
+  #ldScr .ld-img{ position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; object-position:58% 42%;
+    opacity:0; transition:opacity .7s ease; transform:scale(1.02); animation:ldZoom 24s cubic-bezier(.3,.4,.45,1) forwards; }
+  #ldScr .ld-img.on{ opacity:1; }
+  @keyframes ldZoom{ to{ transform:scale(1.1); } }
+  #ldScr .ld-shade{ position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(5,4,9,.84) 0%, rgba(5,4,9,.42) 17%, rgba(5,4,9,0) 33%, rgba(5,4,9,0) 60%, rgba(5,4,9,.6) 80%, rgba(5,4,9,.92) 100%),
+               radial-gradient(ellipse at 50% 48%, rgba(0,0,0,0) 52%, rgba(0,0,0,.5) 100%); }
+  #ldScr .ld-logo{ position:absolute; left:50%; top:calc(env(safe-area-inset-top,0px) + 4.5vh); width:min(80vw,470px); height:auto; max-width:none; transform:translateX(-50%);
+    filter:drop-shadow(0 4px 0 #0b0911) drop-shadow(0 0 20px rgba(255,130,40,.38)); }
+  #ldScr .ld-foot{ position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 6vh); width:min(80vw,440px); transform:translateX(-50%);
+    display:flex; flex-direction:column; gap:9px; }
+  #ldScr .ld-row{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; text-shadow:0 1px 2px #000; }
+  #ldScr .ld-lbl{ letter-spacing:.22em; color:rgba(242,236,255,.88); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #ldScr .ld-pct{ letter-spacing:.06em; color:var(--ld-hot); font-variant-numeric:tabular-nums; }
+  /* jauge : piste vitrée graduée, remplissage d'acier chauffé, point incandescent en tête */
+  #ldScr .ld-track{ position:relative; height:10px; border-radius:5px; background:rgba(8,6,14,.74);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.15), 0 0 18px rgba(0,0,0,.6); overflow:hidden; }
+  #ldScr .ld-fill{ position:absolute; inset:0; transform-origin:0 50%; transform:scaleX(0); will-change:transform;
+    background:linear-gradient(90deg, #7a1f08 0%, #c8400e 30%, var(--ld-ember) 62%, #ffb347 88%, #fff2c8 100%); box-shadow:0 0 12px rgba(255,120,30,.75); }
+  /* point de tête : posé au bord droit d'un calque large comme la piste, que l'on glisse (en % : aucune mesure de la page) */
+  #ldScr .ld-run{ position:absolute; inset:0; transform:translateX(-100%); will-change:transform; }
+  #ldScr .ld-head{ position:absolute; top:50%; left:100%; width:22px; height:22px; margin:-11px 0 0 -11px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,250,225,.95) 0, rgba(255,190,90,.6) 35%, rgba(255,120,30,0) 70%); }
+  #ldScr .ld-ticks{ position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(90deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(10% - 1px), rgba(5,4,9,.55) calc(10% - 1px), rgba(5,4,9,.55) 10%),
+               linear-gradient(180deg, rgba(255,255,255,.22) 0, rgba(255,255,255,0) 55%); }
+  /* prêt : la jauge s'efface, « TOUCHE POUR JOUER » respire à sa place ; tout l'écran se touche */
+  #ldScr .ld-row, #ldScr .ld-track{ transition:opacity .35s ease; }
+  #ldScr .ld-tap{ position:absolute; left:0; right:0; bottom:0; text-align:center; font-size:16px; letter-spacing:.3em; color:#fff3dc;
+    text-shadow:0 0 12px rgba(255,140,40,.85), 0 1px 2px #000; opacity:0; pointer-events:none; }
+  #ldScr.ld-ready{ cursor:pointer; }
+  #ldScr.ld-ready .ld-row, #ldScr.ld-ready .ld-track{ opacity:0; }
+  #ldScr.ld-ready .ld-tap{ animation:ldTap 1.9s ease-in-out .35s infinite both; }
+  #ldScr:focus{ outline:none; }
+  @keyframes ldTap{ 0%, 100%{ opacity:.5; } 50%{ opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ #ldScr .ld-img{ animation:none; } #ldScr.ld-ready .ld-tap{ animation:none; opacity:1; } }
+</style>
+<div id="ldScr" role="progressbar" aria-label="Chargement du jeu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="ld-bg"><img class="ld-img" src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/loading-5c7b3c9f.webp" alt="" decoding="async" fetchpriority="high"></div>
+  <div class="ld-shade"></div>
+  <img class="ld-logo" src="https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/menu/hero-meca.webp" alt="Squad Lock" decoding="async" fetchpriority="high">
+  <div class="ld-foot">
+    <div class="ld-row"><span class="ld-lbl">CHARGEMENT DU JEU</span><span class="ld-pct">0 %</span></div>
+    <div class="ld-track"><div class="ld-fill"></div><div class="ld-ticks"></div><div class="ld-run"><div class="ld-head"></div></div></div>
+    <div class="ld-tap">TOUCHE POUR JOUER</div>
+  </div>
+</div>
+<script>
+(function(){
+  var S = document.getElementById('ldScr'); if(!S) return;
+  var F = S.querySelector('.ld-fill'), Hd = S.querySelector('.ld-run'), P = S.querySelector('.ld-pct'), L = S.querySelector('.ld-lbl'), I = S.querySelector('.ld-img');
+  var done = false, gone = false, lastTxt = -1, safety = 0, creepT = 0, tick = 0;
+  var base = 0, conn = 0, net = 0, imN = 0, imOk = 0, imWait = null;
+  function onImg(){ I.classList.add('on'); }
+  if(I.complete && I.naturalWidth) onImg(); else I.addEventListener('load', onImg);
+  // valeur affichée en ce moment (lue dans la transformation en cours : la transition tourne même quand le téléphone est occupé)
+  function now(){ try{ var m = getComputedStyle(F).transform; if(m && m !== 'none'){ var a = parseFloat(m.slice(m.indexOf('(') + 1)); if(a >= 0) return a; } }catch(e){} return 0; }
+  function go(p, dur, ease){ var tr = 'transform ' + dur + 's ' + ease; F.style.transition = Hd.style.transition = tr;
+    F.style.transform = 'scaleX(' + p.toFixed(4) + ')'; Hd.style.transform = 'translateX(' + ((p - 1) * 100).toFixed(2) + '%)'; }
+  function txt(){ var v = Math.round(now() * 100); if(v !== lastTxt){ lastTxt = v; P.textContent = v + ' %'; S.setAttribute('aria-valuenow', String(v)); } }
+  // pendant le téléchargement : avance seule jusqu'à 50 %, vite au début puis de plus en plus lentement
+  // (now() d'abord : la jauge doit avoir un style calculé, sinon la transition ne part pas et elle saute direct à 50 %)
+  requestAnimationFrame(function(){ if(base) return; now(); go(.5, 16, 'cubic-bezier(.12,.62,.3,1)'); });
+  tick = setInterval(txt, 120);
+  // étapes réelles : jeu lancé (ldStep), connexion au serveur (ldConn puis ldNet), images du menu (ldTrack). Chaque étape compte pour sa part ;
+  // la jauge ne recule jamais et, entre deux étapes, continue d'avancer doucement (le joueur voit que ça travaille).
+  function lbl(){ return net ? (imOk < imN ? 'CHARGEMENT DES IMAGES' : 'PRÉPARATION DU MENU') : conn ? 'CONNEXION AU SERVEUR' : 'PRÉPARATION DU JEU'; }
+  function upd(){
+    if(done || gone || !base) return;
+    var t = lbl(); if(L.textContent !== t) L.textContent = t;
+    var p = Math.min(.95, base + .2 * net + .2 * (imN ? imOk / imN : 0)); if(p <= now() + .004) return;
+    clearTimeout(creepT); go(p, .6, 'ease-out');
+    creepT = setTimeout(function(){ if(!done && !gone) go(Math.min(.95, p + .05), 12, 'cubic-bezier(.1,.55,.3,1)'); }, 650);
+  }
+  window.ldStep = function(p){
+    if(done || gone) return; if(p > base) base = p;
+    if(!safety) safety = setTimeout(function(){ window.ldDone(); }, 25000);   // filet : le jeu tourne mais n'a jamais dit « prêt »
+    upd();
+  };
+  window.ldConn = function(){ conn = 1; upd(); };
+  window.ldNet = function(){ conn = net = 1; upd(); };
+  window.ldTrack = function(img){   // images du menu : chacune fait avancer la jauge
+    if(done || gone || !img) return; imN++;
+    var f = function(){ imOk++; upd(); if(imWait && imOk >= imN) imWait(); };
+    if(img.complete) setTimeout(f, 0); else { img.addEventListener('load', f, { once:true }); img.addEventListener('error', f, { once:true }); }
+  };
+  window.ldReady = function(){   // le jeu est prêt : on attend encore les images du menu (6 s au plus)
+    if(done || gone) return;
+    var fin = function(){ imWait = null; window.ldDone(); };
+    if(imOk >= imN) return fin();
+    imWait = fin; setTimeout(function(){ if(imWait) fin(); }, 6000);
+  };
+  window.ldDone = function(){   // jauge pleine, puis « TOUCHE POUR JOUER » : le joueur entre quand il veut
+    if(done || gone) return; done = true; clearTimeout(safety); clearTimeout(creepT); L.textContent = 'PRÊT'; go(1, .45, 'ease-out');
+    if(navigator.webdriver){ window.ldHide(); return; }   // tests automatiques : pas de toucher
+    setTimeout(function(){
+      if(gone) return; clearInterval(tick); P.textContent = '100 %';
+      S.classList.add('ld-ready'); S.setAttribute('role', 'button'); S.setAttribute('aria-label', 'Touche pour jouer'); S.removeAttribute('aria-valuenow'); S.tabIndex = 0;
+      try{ S.focus({ preventScroll:true }); }catch(e){}
+      S.addEventListener('click', window.ldHide);
+      S.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); window.ldHide(); } });
+    }, 520);
+  };
+  window.ldHide = function(){ if(gone) return; gone = done = true; clearTimeout(safety); clearTimeout(creepT); clearInterval(tick); S.classList.add('ld-out');
+    setTimeout(function(){ if(S.parentNode) S.parentNode.removeChild(S); }, 650); };
+  // filet si le jeu ne démarre pas du tout (programme illisible) : la page a fini de charger mais personne n'a donné de nouvelles
+  window.addEventListener('load', function(){ setTimeout(function(){ if(!base) window.ldDone(); }, 20000); });
+})();
+</script>
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style id="tankIconCss">:root{ --tank-ico:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-e00a9e70326c.webp); }</style>
 <style id="baroudIconCss">:root{ --baroud-ico:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-66a1b6cfab95.webp); --passif-ico:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-438b2a7b2523.webp); --appel-ico:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-24d0d48d915e.webp); --percee-ico:url(https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/fx/fx-78c5f744e409.webp); }</style>
 <style id="noPowCss">.lg-pow, .lg-emb{display:none !important}</style>
@@ -9,7 +129,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.05</title>
+<title>Projet MECA V0.06.06</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -8847,7 +8967,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.05</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.06</b></div>
   </div>
 
     </div>
@@ -9109,6 +9229,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
 </div>
 
 <script>
+try{ ldStep(.55); }catch(_){}   // V0.06.06 : écran de chargement : le programme du jeu démarre
 // =====================================================================================================
 //  V0.05.65 — RAPPORT DE PLANTAGE
 //  1) Toute erreur non rattrapée (programme, tâche de fond, boucle du combat) ouvre une fenêtre avec un CODE (ex. E-JS-4K2QF), une explication
@@ -9189,6 +9310,7 @@ function crashSend(r){   // envoi au serveur (au mieux : jamais bloquant, jamais
   }catch(_){}
 }
 function crashShow(r){
+  try{ ldDone(); }catch(_){}   // V0.06.06
   if(CRASH.open){ CRASH.q.push(r); return; }
   if(!document.body){ CRASH.q.push(r); return; }
   CRASH.open = true;
@@ -9905,9 +10027,13 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.05';
+var BUILD_VERSION = 'V0.06.06';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.06', items:[
+    'Nouvel écran de chargement à l\'ouverture du jeu : une scène de combat de mechs, le logo SQUAD LOCK en haut et une jauge en bas qui suit le vrai chargement (pratique sur les téléphones lents).',
+    'Quand tout est prêt, « TOUCHE POUR JOUER » apparaît : un toucher sur l\'écran et tu entres dans le jeu (la musique démarre en même temps).',
+  ] },
   { v:'V0.06.05', items:[
     'Nouvelle carte Tech : LA FORGE (2 mana). Vise une carte du terrain, la tienne ou celle de l\'adversaire (jamais un chef d\'escouade) : elle devient une carte au hasard de la rareté au-dessus (Rare → Épique → Légendaire → Écarlate → Holo). Une Holo devient une autre Holo au hasard (elle peut redevenir elle-même).',
     'La nouvelle carte arrive neuve (PV pleins, sans les bonus ni les malus de l\'ancienne) et son effet d\'arrivée ne se déclenche pas. Si l\'ancienne carte avait déjà agi ce tour, la nouvelle ne peut pas agir ; une action prévue est annulée et son mana rendu.',
@@ -15856,7 +15982,7 @@ function preloadMenuAssets(){
     'hero-meca.webp', 'tile-tirage.webp', 'tile-labo.webp', 'tile-boost.webp', 'tile-shop.webp',
     'tile-daily.webp',
     'tile-trophies.webp', 'tile-tasks.webp', 'tile-cardmgmt.webp', 'tile-collection.webp',
-  ].forEach(name => { const img = new Image(); __IMGKEEP.push(img); img.src = menuBase + name; });
+  ].forEach(name => { const img = new Image(); __IMGKEEP.push(img); img.src = menuBase + name; try{ ldTrack(img); }catch(_){} });   // V0.06.06 : la jauge suit ces images
   ['visual-res.webp', 'visual-cards.webp', 'visual-modules.webp'].forEach(name => {
     const img = new Image(); __IMGKEEP.push(img); img.src = boostBase + name;
   });
@@ -45703,7 +45829,9 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
   // puis on lui demande son nouveau mot de passe.
   supaParseRecoveryHash();
   await supaRecoveryAdopt();
+  try{ ldConn(); }catch(_){}   // V0.06.06 : écran de chargement
   const connected = await connectCloud();
+  try{ ldNet(); }catch(_){}
   if(!connected){
     if(cloud.status === 'error'){
       // Compte relié mais serveur injoignable : on ne laisse pas jouer avec des données périmées
@@ -45714,6 +45842,7 @@ document.getElementById('optTutorialBtn').onclick = () => { document.getElementB
       if(nmRecoveryError) nmGateGoRecover(nmRecoveryError, true);   // lien périmé : on propose d'en demander un autre
     }
   } else econAfterBoot();
+  try{ ldReady(); }catch(_){}   // V0.06.06 : jeu prêt (fenêtre de compte, de serveur ou menu) : « TOUCHE POUR JOUER »
   // Le temps de jeu est compté par le serveur ; les équipes et réglages sont sauvegardés régulièrement et quand on quitte l'app
   setInterval(() => { if(!document.hidden) saveNow(); }, 60000);   // V0.05.77 : rien n'est envoyé si rien n'a changé
   document.addEventListener('visibilitychange', () => {
