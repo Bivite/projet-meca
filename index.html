@@ -129,7 +129,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.09</title>
+<title>Projet MECA V0.06.10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -5809,6 +5809,13 @@
     position:relative; width:100%; aspect-ratio:900/506;
   }
   .mod-card{cursor:pointer;}
+  /* V0.06.10 d : pentagone du chef du module (DECK > MODULES, fiche du module) */
+  .btl.mc-pw{ position:absolute; inset:auto; right:-2.5%; top:-5%; width:34%; height:auto; aspect-ratio:1312/1199; z-index:4; display:block; overflow:visible; background:none; padding:0;
+    pointer-events:none; touch-action:auto; filter:drop-shadow(0 3px 5px rgba(0,0,0,.65)); }
+  .btl.mc-pw::before, .btl.mc-pw::after{ content:none !important; display:none !important; }
+  .btl.mc-pw.big{ position:relative; left:auto; right:auto; top:auto; width:min(48%, 190px); margin:0 auto -4px; filter:drop-shadow(0 6px 12px rgba(0,0,0,.7)) drop-shadow(0 0 14px rgba(120,180,255,.25)); animation:mcPwIn .42s cubic-bezier(.2,1.3,.4,1) both; }
+  @keyframes mcPwIn{ from{ opacity:0; transform:translateY(-14px) scale(.86); } to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce){ .btl.mc-pw.big{ animation:none; } }
   /* Inclinaison 3D en modale (V0.02.36j, demande d'Alex) : ne porte que sur la carte elle-même, pas sur
      le texte/bouton en dessous -- transform + reflet appliqués à .mod-big uniquement (JS : voir
      "Carte MODULE" dans la section cardTilt). */
@@ -7841,6 +7848,10 @@
   .vs-name.o .vs-ul{ transform-origin:0 50%; background:linear-gradient(90deg,#ff5a46,rgba(255,90,70,0)); box-shadow:0 0 8px rgba(255,60,40,.6); }
   .vs-name.p{ text-align:right; }
   .vs-name.p .vs-ul{ transform-origin:100% 50%; background:linear-gradient(270deg,#58c8ff,rgba(88,200,255,0)); box-shadow:0 0 8px rgba(60,160,255,.6); }
+  .vs-name.vs-chief{ letter-spacing:.3em; }
+  .vs-name.vs-chief .vs-ul{ display:none; }
+  .vs-name.vs-chief.p b{ background:linear-gradient(180deg,#e2f6ff 0%,#7fd6ff 40%,#2fa8f0 60%,#9fe0ff 100%); -webkit-background-clip:text; background-clip:text; filter:drop-shadow(0 2px 0 #0d1a26) drop-shadow(0 0 9px rgba(60,170,255,.55)); }
+  .vs-name.vs-chief.o b{ background:linear-gradient(180deg,#fff4f1 0%,#ffb6a9 42%,#ff6a55 60%,#ffd2ca 100%); -webkit-background-clip:text; background-clip:text; filter:drop-shadow(0 2px 0 #1a0605) drop-shadow(0 0 5px rgba(0,0,0,.75)) drop-shadow(0 0 10px rgba(255,80,60,.5)); }
   .vs-vig{ position:fixed; inset:0; z-index:22; pointer-events:none; opacity:0;
     background:radial-gradient(125% 92% at 50% 50%, rgba(0,0,0,0) 48%, rgba(0,0,0,.62) 100%), repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, rgba(0,0,0,0) 1px 3px); }
   .vs-br{ position:absolute; inset:-9px; pointer-events:none; --c:#ff6a55;
@@ -7849,6 +7860,11 @@
     filter:drop-shadow(0 0 4px var(--c)); }
   .vs-mod.p .vs-br{ --c:#62ccff; }
   .vs-cvg{ mix-blend-mode:normal; }
+  .vs-ui .vs-mod{ z-index:1; }
+  .btl.vs-pw{ position:absolute; inset:auto; z-index:1; display:block; overflow:visible; background:none; padding:0; touch-action:none; opacity:0; pointer-events:none; will-change:transform,opacity; }
+  .btl.vs-pw::before, .btl.vs-pw::after{ content:none !important; display:none !important; }
+  .btl.vs-pw.o{ filter:drop-shadow(0 0 14px rgba(255,60,40,.45)) drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
+  .btl.vs-pw.p{ filter:drop-shadow(0 0 14px rgba(60,160,255,.5)) drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
 
   /* =================== CASES EN VERRE (V0.05.34) ===================
      Toutes les cases des menus (.mode-tile) : verre épais en relief.
@@ -8969,7 +8985,7 @@ body.bq-broken .boost-box.bq-on .bb-icon img{visibility:visible;}
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.09</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.10</b></div>
   </div>
 
     </div>
@@ -10029,9 +10045,15 @@ function econAfterBoot(){
 }
 
 // ---------- Mise à jour (changelog affiché à la connexion) ----------
-var BUILD_VERSION = 'V0.06.09';
+var BUILD_VERSION = 'V0.06.10';
 // Une entrée par version, la plus récente en premier. Reste simple : ce que les joueurs doivent comprendre.
 var CHANGELOG = [
+  { v:'V0.06.10', items:[
+    'Chaque module a maintenant son chef d\'escouade : BAVURES = BATOU, SAPHYR = VOSS, ROCKET = DORSAL, AZ-5 = ZARIA, PROK-IEM = KOVAL, T-ARMS 09 = MAJOR, PROTO-SHIELD = MARKOVF.',
+    'En combat, le pentagone du chef d\'escouade montre le portrait du chef de ton module (et celui du module adverse en face). Si le module change en cours de combat, le portrait suit.',
+    'Écran VS : le pentagone du chef prend la place de la carte module. La carte module arrive en grand devant lui, puis se range derrière, en bas à droite. Le nom du chef s\'affiche sous le nom du joueur.',
+    'DECK > MODULES : chaque module montre le pentagone de son chef en haut à droite. En plein écran, le pentagone est en haut et le module en dessous.',
+  ] },
   { v:'V0.06.09', items:[
     'Nouvelle carte Tech : LE MARAIS (2 mana). Elle place les 5 cartes PROGENITURE dans ta pioche, mélangées.',
     'Les 5 PROGENITURE sont des Tech qui n\'existent qu\'en combat. ALPHA (1 mana) : la jauge d\'ultime d\'une de tes cartes monte à 100 %. OMEGA (1 mana) : 2 dégâts à une carte adverse (jamais le chef d\'escouade). OFFENSIVE (0 mana) : +3 ATQ à une de tes cartes. DEFENSIVE (0 mana) : +3 DEF. VIE (0 mana) : +3 PV et +3 PV max.',
@@ -14113,6 +14135,7 @@ function openModuleModal(name, rar, level, opts){
   // tuile elle-même (cf renderModulesGrid()/.cx-copy-badge), pas le total toutes raretés/niveaux confondus.
   const nAtLevel = (modLevelDist(name, rar)[level] || 0);
   inner.innerHTML = `
+    ${modChiefHtml(def.name, 'big')}
     <div class="mod-big">${modCardFaceHtml(def, level, rar, { fx:true })}</div>
     ${nAtLevel > 1 ? `<div class="cx-lvl-tag-big">×${nAtLevel} exemplaires</div>` : ''}
     <div class="mod-desc" id="modDescText" hidden>${def.descFor(val)}</div>
@@ -18601,7 +18624,7 @@ document.querySelectorAll('#deckSwitch button').forEach(b => b.onclick = () => {
 function deckModTile(e, sel){
   const lvl = moduleLevel(e.def.name, e.rar);
   const fr = deckDraft ? deckBack(deckDraft, 'mod') : e.rar;   // V0.04.92 : encadré choisi dans le deck
-  return `<div class="mod-item"><div class="mod-card ${rarCls(fr)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, fr)}${e.count > 1 ? `<div class="cx-copy-badge">×${e.count}</div>` : ''}</div></div>`;
+  return `<div class="mod-item"><div class="mod-card ${rarCls(fr)}${sel ? ' deck-mod-sel' : ''}" data-name="${e.def.name}" data-rar="${e.rar}" data-level="${lvl}">${modCardFaceHtml(e.def, lvl, fr)}${modChiefHtml(e.def.name)}</div></div>`;
 }
 function deckResetSearch(){ deckBacksMode = false; const si = document.getElementById('deckSearchInput'); deckSearchQuery = ''; if(si && si.value) si.value = ''; const sc = document.querySelector('#deckView .search-clear'); if(sc) sc.hidden = true; }
 function deckModStacks(){
@@ -25301,8 +25324,23 @@ async function btlUltEnd(side){
 // petite carte : artwork au centre + 4 verres (ATK bleu, DEF vert, ULT % jaune, PV rouge) dans les carrés du cadre
 function btlFmtN(n){ n = Math.max(0, Math.round(n)); return n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n); }
 function btlStatHtml(cls, txt){ const L = String(txt).length; return '<div class="cbt-st ' + cls + '"><b class="' + (L >= 4 ? 'l4' : L === 3 ? 'l3' : L === 2 ? 'l2' : '') + (txt === '–' ? ' dash' : '') + '">' + txt + '</b></div>'; }
+// V0.06.10 : chef d'escouade propre à un module -- son portrait remplace l'artwork de la carte chef dans le pentagone
+var MODULE_CHIEF = { 'BAVURES':{ name:'BATOU', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-batou.webp' }, 'SAPHYR':{ name:'VOSS', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-voss.webp' }, 'ROCKET':{ name:'DORSAL', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-dorsal.webp' }, 'AZ-5':{ name:'ZARIA', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-zaria.webp' }, 'PROK-IEM':{ name:'KOVAL', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-koval.webp' }, 'T-ARMS 09':{ name:'MAJOR', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-major.webp' }, 'PROTO-SHIELD':{ name:'MARKOVF', art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/modules/chef-markovf.webp' } };
+function modChiefHtml(name, cls){   // V0.06.10 d : pentagone du chef d'un module, hors combat ('' si le module n'a pas de chef)
+  let mc = null, hp = 15, df = 10; try{ mc = (MODULE_CHIEF && MODULE_CHIEF[name]) || null; hp = BTL_CHIEF_HP; df = BTL_CHIEF_DEF; }catch(_){}
+  if(!mc) return '';
+  const ca = mc.art.replace(/[()\s'"]/g, ch => encodeURIComponent(ch));
+  return '<div class="btl mc-pw' + (cls ? ' ' + cls : '') + '"><div class="btl-unit"><div class="unit cbt chief"><i class="chief-fill has-art" style="--ca:url(' + ca + ')"></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(df)) + btlStatHtml('s4 s-hp', btlFmtN(hp)) + '</div></div></div>';
+}
+function btlModChief(side){ const m = BTL && BTL.mod && BTL.mod[side]; return (m && MODULE_CHIEF[m.name]) || null; }
+function btlChiefArt(c){ const mc = c && btlModChief(c.side); return mc ? mc.art : (c && c.def && c.def.art) || ''; }
+function btlChiefSync(){   // pentagones déjà dessinés : suit le module de chaque camp (montage, MARCH)
+  if(!BTL || !BTL.S) return;
+  ['p', 'o'].forEach(sd => { const L = BTL.S[sd] && BTL.S[sd].leader, u = L && btlUnitEl(L), f = u && u.querySelector('.chief-fill'); if(!f) return;
+    const ca = btlChiefArt(L).replace(/[()\s'"]/g, ch => encodeURIComponent(ch)); f.classList.toggle('has-art', !!ca); if(ca) f.style.setProperty('--ca', 'url(' + ca + ')'); else f.style.removeProperty('--ca'); });
+}
 function btlSmallHtml(c){
-  if(c.leader){ const ca = c.def && c.def.art ? c.def.art.replace(/[()\s'"]/g, ch => encodeURIComponent(ch)) : ''; return '<div class="unit cbt chief"><i class="chief-fill' + (ca ? ' has-art' : '') + '"' + (ca ? ' style="--ca:url(' + ca + ')"' : '') + '></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>'; }   // case pentagonale du chef : illustration du chef dans la case (V0.04.85), DEF à gauche, PV à droite
+  if(c.leader){ const ca = btlChiefArt(c) ? btlChiefArt(c).replace(/[()\s'"]/g, ch => encodeURIComponent(ch)) : ''; return '<div class="unit cbt chief"><i class="chief-fill' + (ca ? ' has-art' : '') + '"' + (ca ? ' style="--ca:url(' + ca + ')"' : '') + '></i><div class="cbt-ring"></div>' + btlStatHtml('s2 s-def', btlFmtN(c.df)) + btlStatHtml('s4 s-hp', btlFmtN(c.hp)) + '</div>'; }   // case pentagonale du chef : illustration du chef dans la case (V0.04.85), DEF à gauche, PV à droite
   const art = c._cmArt || winArt(c.def), af = c._cmArt ? 38 : winFocus(c.def);   // V0.05.84 : LE COMÈTEUR garde l'image tirée à son arrivée
   const kh = k => btlKwRaw(c, k), kwAny = ['tank', 'baroud', 'passif', 'appel', 'percee'].some(kh);
   return '<div class="unit cbt f-' + c.rar + (c.ultOn ? ' ult-on' : btlUltReady(c) ? ' ult-rdy' : '') + (c.off ? ' kw-off' : '') + btlCanCls(c) + '">' +
@@ -26247,6 +26285,24 @@ function btlVsIntro(){
       ui.appendChild(el); return el;
     };
     const mO = mkMod('o'), mP = mkMod('p');
+    // V0.06.10 c : le pentagone du chef prend la place de la carte module ; la carte arrive devant lui, puis se range derrière, en petit, en bas à droite
+    const pwM = Math.min(modW * .74, H * .25), phM = pwM * 1199 / 1312, SM = Math.min(.62, pwM * .75 / modW), vsTop = H / 2 - W * .58 / 190 * 50;
+    const mkPent = (side, mEl, t0) => {
+      const L = BTL.S && BTL.S[side] && BTL.S[side].leader; if(!mEl || !L || typeof btlModChief !== 'function' || !btlModChief(side)) return null;
+      const px = side === 'o' ? W * .04 : W - pwM - W * .04, py = (side === 'o' ? cyO : cyP) - phM / 2;
+      const el = document.createElement('div'); el.className = 'btl vs-pw ' + side;
+      el.style.cssText = 'width:' + pwM + 'px;height:' + phM + 'px;left:' + px + 'px;top:' + py + 'px';
+      el.innerHTML = '<div class="btl-unit">' + btlSmallHtml(L) + '</div>'; ui.appendChild(el);
+      const mh0 = mEl.offsetHeight || modH, mw = modW * SM, mh = mh0 * SM; mEl.style.left = '0px'; mEl.style.top = '0px';
+      // place finale de la carte (centre) : à cheval sur le bas droit du pentagone ; dans l'écran, et côté adversaire au-dessus des lettres VS
+      const cf = [Math.min(px + pwM * .62 + mw / 2, W - 4 - mw / 2), py + phM * .62 + mh / 2];
+      if(side === 'o') cf[1] = Math.min(cf[1], vsTop - 6 - mh / 2);
+      // point de passage hors du pentagone (pour passer derrière) : à droite si l'écran le permet, sinon dessous
+      const dx = (px + pwM + 4) - (cf[0] - mw / 2), dy = (py + phM + 4) - (cf[1] - mh / 2);
+      const c1 = (cf[0] + dx + mw / 2 <= W - 2) ? [cf[0] + dx, cf[1]] : [cf[0], cf[1] + Math.max(0, dy)];
+      return { el, m:mEl, t0, mh0, mw, mh, c0:[px + pwM / 2, py + phM / 2], c1, cf };
+    };
+    const pO = mkPent('o', mO, T.m0 + 900), pP = mkPent('p', mP, T.m0 + 1200);
     // noms
     const nmO = (BTL.d && BTL.d.tuto) ? TUTO_NAME_O.toUpperCase() : (BTL.d && BTL.d.pvp && BTL.d.pvp.names) ? String(BTL.d.pvp.names.o || 'ADVERSAIRE').toUpperCase() : (BTL.d && BTL.d.defi && BTL.d.defi.focus) ? String(BTL.d.defi.focus).toUpperCase() : VS_AI_NAMES[Math.floor(Math.random() * VS_AI_NAMES.length)], nmP = ((typeof player !== 'undefined' && player && player.name) ? player.name : 'JOUEUR').toUpperCase();
     const mkName = (side, txt) => {
@@ -26257,6 +26313,19 @@ function btlVsIntro(){
       ui.appendChild(el); return el;
     };
     const nO = mkName('o', nmO), nP = mkName('p', nmP);
+    if(pO){ const fs = parseFloat(nO.style.fontSize) || 20; nO.style.top = (cyO - phM / 2 - fs - 22) + 'px'; }
+    if(pP){ const r = W - (pP.cf[0] - pP.mw / 2) + 8, fs0 = parseFloat(nP.style.fontSize) || 20; nP.style.top = (cyP + phM / 2 + 12) + 'px'; nP.style.right = r + 'px'; nP.style.fontSize = Math.max(13, Math.min(fs0, (W - r - W * .04) / (nmP.length * 1.02))) + 'px'; }
+    // V0.06.10 : chef du module (BATOU pour BAVURES) sous le nom du joueur
+    const mkChief = (side, nm) => {
+      const mc = (typeof btlModChief === 'function') ? btlModChief(side) : null; if(!mc || !nm) return null;
+      const fs = parseFloat(nm.style.fontSize) || 20, cfs = Math.max(11, Math.round(fs * .62));
+      const el = document.createElement('div'); el.className = 'vs-name vs-chief ' + side;
+      el.innerHTML = '<b>' + String(mc.name).replace(/</g, '&lt;') + '</b><i class="vs-ul"></i>';
+      if(side === 'o'){ const t0 = parseFloat(nm.style.top) || 0; nm.style.top = (t0 - cfs - 14) + 'px'; el.style.cssText = 'font-size:' + cfs + 'px;left:' + (W * .04) + 'px;top:' + (t0 + fs + 5 - cfs) + 'px'; }
+      else el.style.cssText = 'font-size:' + cfs + 'px;right:' + (nm.style.right || (W * .04) + 'px') + ';top:' + ((parseFloat(nm.style.top) || 0) + fs + 18) + 'px';
+      ui.appendChild(el); return el;
+    };
+    const cO = mkChief('o', nO), cP = mkChief('p', nP);
     document.body.appendChild(base); document.body.appendChild(cv); document.body.appendChild(cvG); document.body.appendChild(vig); document.body.appendChild(ui);
     try{ if(document.fonts && document.fonts.load) document.fonts.load('900 24px Orbitron'); }catch(e){}
 
@@ -26484,10 +26553,25 @@ function btlVsIntro(){
         const sg = side === 'o' ? 1 : -1, pr = pin * (1 - pout) , dx = sg * -(W * .95) * (1 - pr), dy = sg * (H * .34) * (1 - pr);
         const bob = Math.sin(t / 700 + (side === 'o' ? 0 : 2)) * 3 * pin * (1 - pout);
         el.style.transform = 'translate3d(' + dx.toFixed(1) + 'px,' + (dy + bob).toFixed(1) + 'px,0)';
-        el.style.opacity = vsClamp(pr * 3.2, 0, 1);
+        el.style.opacity = vsClamp(pr * 3.2, 0, 1); el._mv = [dx, dy + bob, pr];
         const sh2 = el.querySelector('.vs-sh'); if(sh2){ const c2 = ((t - T.m0) % 2600) / 2600; sh2.style.transform = 'translateX(' + (-60 + 260 * c2).toFixed(1) + '%) skewX(-18deg)'; sh2.style.opacity = pin * (1 - pout) * .85; }
       };
-      modPos(mO, 'o', 0); modPos(mP, 'p', 130);
+      modPos(pO ? pO.el : mO, 'o', 0); modPos(pP ? pP.el : mP, 'p', 130);
+      const secPos = P => {
+        if(!P) return; const el = P.m, mv = P.el._mv || [0, 0, 0], u = t - P.t0;
+        if(u < 0){ el.style.opacity = 0; return; }
+        const a = vsProg(u, 0, 420), b = vsProg(u, 1000, 1450), c = vsProg(u, 1450, 1850), io = q => q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+        let x, y, sc;
+        if(u < 1000){ const e = 1 + 2.7 * Math.pow(a - 1, 3) + 1.7 * Math.pow(a - 1, 2); x = P.c0[0]; y = P.c0[1] - 2 * Math.sin(Math.max(0, u - 420) / 300); sc = .55 + .45 * e; }
+        else if(u < 1450){ const e = io(b); x = P.c0[0] + (P.c1[0] - P.c0[0]) * e; y = P.c0[1] + (P.c1[1] - P.c0[1]) * e; sc = 1 + (SM - 1) * e; }
+        else { const e = vsEo3(c); x = P.c1[0] + (P.cf[0] - P.c1[0]) * e; y = P.c1[1] + (P.cf[1] - P.c1[1]) * e; sc = SM; }
+        el.style.zIndex = u < 1450 ? 3 : 0;
+        el.style.transform = 'translate3d(' + (x - modW / 2 + mv[0]).toFixed(1) + 'px,' + (y - P.mh0 / 2 + mv[1]).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')';
+        el.style.opacity = (vsClamp(a * 2.5, 0, 1) * vsClamp(mv[2] * 3.2, 0, 1)).toFixed(3);
+        el.style.filter = u < 650 ? 'brightness(' + (1 + 1.3 * (1 - vsProg(u, 0, 650))).toFixed(3) + ')' : '';   // éclat d'arrivée, puis plus de filtre
+        const sh2 = el.querySelector('.vs-sh'); if(sh2){ const c2 = (u % 2600) / 2600; sh2.style.transform = 'translateX(' + (-60 + 260 * c2).toFixed(1) + '%) skewX(-18deg)'; sh2.style.opacity = (vsClamp(a * 2.5, 0, 1) * vsClamp(mv[2] * 3.2, 0, 1) * .85).toFixed(3); }
+      };
+      secPos(pO); secPos(pP);
       // noms
       const namePos = (el, delay) => {
         const pin = vsEo3(vsProg(t, T.n0 + delay, T.n0 + delay + 480)), pout = vsProg(t, T.nOut + delay * .4, T.nOut + delay * .4 + 280), pv = pin * (1 - pout);
@@ -26499,7 +26583,7 @@ function btlVsIntro(){
         el.style.opacity = vsClamp(pv * 1.6, 0, 1);
         el.lastChild.style.transform = 'scaleX(' + (vsEo3(vsProg(t, T.n0 + delay + 120, T.n0 + delay + 700)) * (1 - pout)).toFixed(3) + ')';
       };
-      namePos(nO, 0); namePos(nP, 110);
+      namePos(nO, 0); namePos(nP, 110); if(cO) namePos(cO, 220); if(cP) namePos(cP, 330);
     }
 
     const finish = () => { if(done) return; done = true; cancelAnimationFrame(raf); base.remove(); cv.remove(); cvG.remove(); vig.remove(); ui.remove(); if(BTL && BTL.vs === ctl) BTL.vs = null; if(!resolved){ resolved = true; resolve(); } };
@@ -35687,7 +35771,7 @@ function btlMarchSet(side, name, keepTurn){
     b.hidden = false;
     if(!had && !b._mchOn){ b._mchOn = true; b.addEventListener('pointerdown', btlModHoldDown); if(side === 'p') b.addEventListener('pointerdown', btlModDown); }   // case qui n'avait pas de module : gestes branchés une fois
   }
-  btlModPaint(); btlRefreshCan();
+  btlModPaint(); btlRefreshCan(); try{ btlChiefSync(); }catch(_){}   // V0.06.10 : chef du module
 }
 // ---------- le sac (canvas 2D, ombré « en relief ») ----------
 let BTL_MCH_TEX = null;
@@ -42520,6 +42604,7 @@ async function btlTechUse0(side, c, pre, fromRect, el, rep){
 // ou on touche le module puis la carte visée. Utilisation instantanée (pendant le tour, pas en fin de tour) ; le module se grise jusqu'au tour suivant.
 function btlModKind(def){ return def.mode === 'dmg' ? 'fx' : def.mode === 'heal' ? 'heal' : 'def'; }
 function btlModMount(){
+  try{ ['p', 'o'].forEach(sd => { const mc = btlModChief(sd); if(mc) imgReady(mc.art); }); setTimeout(() => { try{ btlChiefSync(); }catch(_){} }, 0); }catch(_){}   // V0.06.10 : chef du module
   ['p', 'o'].forEach(side => {
     const b = btlQ(side === 'p' ? '#btlMod' : '#btlOMod'), m = BTL && BTL.mod && BTL.mod[side];
     if(!b) return;
