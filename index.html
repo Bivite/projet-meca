@@ -79,7 +79,7 @@ window.addEventListener('load',function(){setTimeout(function(){if(!base)window.
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Projet MECA V0.06.14</title>
+<title>Projet MECA V0.06.15</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -866,7 +866,7 @@ window.addEventListener('load',function(){setTimeout(function(){if(!base)window.
       <button class="back-btn" id="playerBackBtn">‹ MENU</button>
     </header>
     <div id="playerSheet"></div>
-    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.14</b></div>
+    <div class="build-ver">PROJET MECA · BUILD <b>V0.06.15</b></div>
   </div>
 
     </div>
@@ -1827,8 +1827,16 @@ return;
 }
 checkChangelogOnLogin();
 }
-var BUILD_VERSION='V0.06.14';
+var BUILD_VERSION='V0.06.15';
 var CHANGELOG=[
+{v:'V0.06.15',items:[
+'Nouvelle carte ÉPIQUE : MELT (4 ATQ / 3 DEF / 5 PV), automate de combat des champs de lave. APPEL : inflige 1 point de dégâts à toutes les autres cartes du champ de bataille, alliées comme adverses (pas aux chefs d\'escouade). La DEF absorbe d\'abord.',
+'Son arrivée : MELT reste en lévitation au-dessus de sa case, le champ de bataille se fend en nervures de lave, la lave monte sous chaque carte (-1), puis le métal se ressoude et MELT se pose.',
+'MELT a son Défi, et TRANSPORTEUR, CASSIS, MAGNEMER et LA FORGE peuvent aussi le donner. L\'IA peut le jouer, en Entraînement comme en Défi.',
+'Nouvelle carte LÉGENDAIRE : CHAOS (4 ATQ / 2 DEF / 5 PV), automate du désordre. BAROUD D\'HONNEUR : les deux pioches s\'échangent, sans mélange. Chaque joueur pioche désormais dans celle de l\'adversaire et joue les cartes qu\'il en tire.',
+'Son arrivée : la carte glitche et apparaît à plusieurs endroits de l\'écran, de plus en plus près de sa case, puis s\'y fixe. Son Baroud : des explosions de fumée de craie aux couleurs pastel, suivies de glitchs, pendant que les deux pioches se croisent au-dessus du champ de bataille.',
+'CHAOS a son Défi, et TRANSPORTEUR, CASSIS, MAGNEMER et LA FORGE peuvent aussi le donner. L\'IA peut le jouer, en Entraînement comme en Défi.',
+]},
 {v:'V0.06.14',items:[
 'Nouvelle carte RARE : FL-1 (3 ATQ / 1 DEF / 5 PV), essaim de mouches de combat des marais rouges. PERCÉE : peut attaquer dès le tour où elle est posée.',
 'FL-1 a son Défi, et TRANSPORTEUR, CASSIS, MAGNEMER et LA FORGE peuvent aussi la donner. L\'IA peut la jouer, en Entraînement comme en Défi.',
@@ -3962,8 +3970,8 @@ MUS.sfx.emb={};
 MUS.sfx.off={pio1:.32,pio2:.06,pio3:.06,dep1:.28,dep2:.38,dep3:.64};
 MUS.sfx.pk={pio1:.21,pio2:.23,pio3:.30};
 MUS.sfx.lvl={missile:.5,dep1:1.57,dep2:.69};
-MUS.sfx.cfiles={muooze:'sfx-muooze-0603187a.mp3',mudrip:'sfx-mudrip-f0788112.mp3',muslide:'sfx-muslide-b6b759ac.mp3',mrwater:'sfx-mrwater-1eff6aac.mp3',mrgrow:'sfx-mrgrow-07f356b3.mp3',mregg:'sfx-mregg-25c1aca7.mp3',mrburst:'sfx-mrburst-dfee8e3d.mp3',mrcard:'sfx-mrcard-b287906b.mp3',mrcrumble:'sfx-mrcrumble-31a9de50.mp3',pgspit:'sfx-pgspit-a0ffcd03.mp3',pgsplat:'sfx-pgsplat-92ac9c02.mp3',rdgust:'sfx-rdgust-a706bb5a.mp3',rdglint:'sfx-rdglint-24582315.mp3',rdswing:'sfx-rdswing-9c127c25.mp3',rdboom:'sfx-rdboom-1db40ff7.mp3',lfrise:'sfx-lfrise-715ebdcc.mp3',lfswing:'sfx-lfswing-2ccb2b7f.mp3',lfclang:'sfx-lfclang-9a147c4f.mp3',lfhiss:'sfx-lfhiss-e9920693.mp3',amarrive:'sfx-amarrive-46b356e0.mp3',arorb:'sfx-arorb-7b3b9e60.mp3',brparts:'sfx-brparts-4109fb92.mp3',bzshield:'sfx-bzshield-af153e1c.mp3',chjet:'sfx-chjet-7cebe86c.mp3',cmglitch:'sfx-cmglitch-aa8c5448.mp3',cmhole:'sfx-cmhole-85773d1e.mp3',cmimpact:'sfx-cmimpact-c28aa2b9.mp3',cmpulse:'sfx-cmpulse-d335b91d.mp3',cqarrive:'sfx-cqarrive-01218fbd.mp3',cqclash:'sfx-cqclash-eac164fb.mp3',csshow:'sfx-csshow-bcb96a9d.mp3',dlarrive:'sfx-dlarrive-78127be3.mp3',dmarrive:'sfx-dmarrive-3beceb7a.mp3',dmcard:'sfx-dmcard-5ebd331c.mp3',dmeject:'sfx-dmeject-91e8931d.mp3',duarrive:'sfx-duarrive-9767c5fd.mp3',dustrike:'sfx-dustrike-97ce4821.mp3',dzpush:'sfx-dzpush-dea65d65.mp3',edarrive:'sfx-edarrive-06d20c54.mp3',edsalvo:'sfx-edsalvo-83154d90.mp3',edstrike:'sfx-edstrike-66de0ece.mp3',elarrive:'sfx-elarrive-c31640a6.mp3',elx:'sfx-elx-bfe78ef8.mp3',exhit:'sfx-exhit-f2b9d36f.mp3',exshot:'sfx-exshot-06f3818e.mp3',exspark:'sfx-exspark-ef9cd346.mp3',gpfall:'sfx-gpfall-339addd4.mp3',gpimpact:'sfx-gpimpact-87e2e7a8.mp3',grlaunch:'sfx-grlaunch-55777be1.mp3',grslam:'sfx-grslam-80ddaf7c.mp3',gtarc:'sfx-gtarc-249396d8.mp3',gtarrive:'sfx-gtarrive-78a85e70.mp3',gtbranch:'sfx-gtbranch-c9c51eec.mp3',gzlaunch:'sfx-gzlaunch-da87c8b3.mp3',hebounce:'sfx-hebounce-1e660839.mp3',heseal:'sfx-heseal-449921b5.mp3',hkcoils:'sfx-hkcoils-49fa7b8d.mp3',hkstrike:'sfx-hkstrike-67843c9c.mp3',hrcall:'sfx-hrcall-bdc83a27.mp3',hrzap:'sfx-hrzap-a9918aa7.mp3',jpaegis:'sfx-jpaegis-7c9b2e44.mp3',jppulse:'sfx-jppulse-909af4e2.mp3',krgrapple:'sfx-krgrapple-85455441.mp3',lcarrive:'sfx-lcarrive-ccb7035b.mp3',lxboom:'sfx-lxboom-1629ea35.mp3',lxcrack:'sfx-lxcrack-ef0a0424.mp3',lxcrawl:'sfx-lxcrawl-60ed9bfb.mp3',lxdrop:'sfx-lxdrop-bac43ecf.mp3',lxegg:'sfx-lxegg-a5e467c5.mp3',lxhatch:'sfx-lxhatch-4df5471e.mp3',lxspit:'sfx-lxspit-8b6f40eb.mp3',lxsplat:'sfx-lxsplat-286391e3.mp3',lxstep:'sfx-lxstep-0d6ffb71.mp3',lxswell:'sfx-lxswell-14494145.mp3',mcbag:'sfx-mcbag-55e37fbe.mp3',mcburst:'sfx-mcburst-236135c3.mp3',mcplace:'sfx-mcplace-8ad6dabd.mp3',mganswer:'sfx-mganswer-459d1584.mp3',mgdrain:'sfx-mgdrain-a728011d.mp3',mgerupt:'sfx-mgerupt-89d426b0.mp3',mgfill:'sfx-mgfill-3c5c1089.mp3',moarrive:'sfx-moarrive-c95585d6.mp3',mogcry:'sfx-mogcry-972e0eb0.mp3',mparrive:'sfx-mparrive-5d59466d.mp3',mpfetch:'sfx-mpfetch-4c63ef13.mp3',mslboom:'sfx-mslboom-1fd5661e.mp3',mtbreak:'sfx-mtbreak-56cb31fa.mp3',mtengulf:'sfx-mtengulf-615b3ee7.mp3',mtrise:'sfx-mtrise-fa9a6dbf.mp3',mtshadow:'sfx-mtshadow-098f58f2.mp3',mtwings:'sfx-mtwings-5a001e91.mp3',pecharge:'sfx-pecharge-b7d6bec7.mp3',pgarrive:'sfx-pgarrive-7125ae0b.mp3',pgcable:'sfx-pgcable-0186f3a8.mp3',poimplant:'sfx-poimplant-47e84542.mp3',populse:'sfx-populse-a0bd9a1f.mp3',poshow:'sfx-poshow-0bfbef43.mp3',prammo:'sfx-prammo-3824172f.mp3',prpower:'sfx-prpower-2e06e22a.mp3',prshot:'sfx-prshot-d778fa7b.mp3',ptdrone:'sfx-ptdrone-c1f7ceab.mp3',rexarrive:'sfx-rexarrive-5111577f.mp3',rfecho:'sfx-rfecho-680b7dfb.mp3',rhcharge:'sfx-rhcharge-050d7598.mp3',rhhit:'sfx-rhhit-975e6300.mp3',ryarms:'sfx-ryarms-5c74d6ea.mp3',rysmash:'sfx-rysmash-108cab40.mp3',rzdrone:'sfx-rzdrone-9d564b77.mp3',sbdisk:'sfx-sbdisk-35d813a2.mp3',sbplug:'sfx-sbplug-d343b8e6.mp3',scarrive:'sfx-scarrive-ba984e43.mp3',shghost:'sfx-shghost-59477220.mp3',shleap:'sfx-shleap-acc502f4.mp3',skimpact:'sfx-skimpact-7508b9f0.mp3',skscope:'sfx-skscope-de8ebb6b.mp3',skshot:'sfx-skshot-1cd76418.mp3',slappel:'sfx-slappel-66e04f3f.mp3',slarrive:'sfx-slarrive-00163f8d.mp3',slborn:'sfx-slborn-10759ced.mp3',sldrop:'sfx-sldrop-0fd5bd64.mp3',spdome:'sfx-spdome-3e52cf5a.mp3',spfire:'sfx-spfire-89c0018f.mp3',sppress:'sfx-sppress-24c980c8.mp3',stcry:'sfx-stcry-0669c00f.mp3',tbmeal:'sfx-tbmeal-b1a194e3.mp3',tbpower:'sfx-tbpower-06e0ac87.mp3',tdlink:'sfx-tdlink-92e7596a.mp3',tgarrive:'sfx-tgarrive-ea05fc2a.mp3',tgwave:'sfx-tgwave-e7207cd7.mp3',tndrill:'sfx-tndrill-f2fc837b.mp3',tnhit:'sfx-tnhit-2fdc263a.mp3',toarrive:'sfx-toarrive-36f02105.mp3',toboom:'sfx-toboom-2f0bd48e.mp3',toshot:'sfx-toshot-ef0da198.mp3',toturret:'sfx-toturret-2ab1cf2a.mp3',trbolt:'sfx-trbolt-0ef158e4.mp3',trcharge:'sfx-trcharge-682860e0.mp3',trzap:'sfx-trzap-901ee0ff.mp3',wllasso:'sfx-wllasso-832fe0fe.mp3',zpkatana:'sfx-zpkatana-58b4d4a9.mp3'};
-MUS.sfx.ccards={"MUCUS":['muooze','mudrip','muslide'],"LE MARAIS":['mrwater','mrgrow','mregg','mrburst','mrcard','mrcrumble'],"PROGENITURE ALPHA":['pgspit','pgsplat'],"PROGENITURE OMEGA":['pgspit','pgsplat'],"PROGENITURE OFFENSIVE":['pgspit','pgsplat'],"PROGENITURE DEFENSIVE":['pgspit','pgsplat'],"PROGENITURE VIE":['pgspit','pgsplat'],"RODEUR":['rdgust','rdglint','rdswing','rdboom'],"LA FORGE":['lfrise','lfswing','lfclang','lfhiss'],"MATRIARCHE":['mtshadow','mtwings','mtrise','mtengulf','mtbreak'],"BUZZY":['bzshield'],"ARKHAUL":['arorb'],"BRI-KB-ROCK":['brparts'],"AMALGAME":['amarrive'],"EL-DIABLO":['edarrive','edsalvo','edstrike'],"CHEIF 117":['chjet','prshot'],"PRAWN":['prshot'],"CONQUEST":['cqarrive','cqclash'],"DILUS":['dlarrive'],"CASSIS":['csshow'],"RHINO":['rhcharge','rhhit'],"GAPIX":['gpfall','gpimpact'],"EXO-MKVII":['exshot','exhit'],"GAZELLE":['gzlaunch','mslboom'],"GRIEVER":['grlaunch','mslboom','grslam'],"DOZEUR":['dzpush'],"ELYSIUM":['elarrive','elx'],"GOTHIKA":['gtarrive','gtarc','gtbranch'],"DIMAVERSE":['dmarrive','dmcard','dmeject'],"HAKILX":['hkcoils','hkstrike'],"KRIGER":['krgrapple'],"DUMADED":['duarrive','dustrike'],"HÉROS ENGAGÉ":['heseal','hebounce'],"LARVOTRON":['lxdrop','lxsplat','lxegg','lxcrack','lxhatch','lxcrawl','lxstep','lxswell','lxboom','lxspit'],"EXTERMINATION":['exspark'],"MAGNEMER":['mgfill','mgerupt','mganswer','mgdrain'],"MED-POD":['mparrive','mpfetch'],"HARKO":['hrcall','hrzap'],"JIPASIS":['jpaegis','jppulse'],"MOTOKO":['moarrive'],"LACRIUM":['lcarrive'],"PILE D’ÉNERGIE":['pecharge'],"LE COMÈTEUR":['cmglitch','cmhole','cmimpact','cmpulse'],"SHADOW":['shghost','shleap'],"POSITRON":['poimplant','poshow','populse'],"MARCH":['mcbag','mcburst','mcplace'],"RENFORTS":['rfecho'],"PRÉPARATION":['prammo','prpower'],"MOG-AI":['mogcry'],"STAR-HUNTER":['stcry'],"PIGTAIL":['pgarrive','pgcable'],"RYPEAL":['ryarms','rysmash'],"SCOPT":['scarrive'],"PITTY BELL":['ptdrone'],"RAZOPS":['rzdrone'],"TANDEEM":['tdlink'],"SABOTAGE":['sbdisk','sbplug'],"TOA2":['toarrive','toturret','toshot','toboom'],"SEEKER":['skscope','skshot','skimpact'],"TRANSPORTEUR":['trcharge','trzap','trbolt'],"SOUS PRESSION":['spdome','sppress','spfire'],"SYLVERLAKE":['slarrive','slappel','sldrop','slborn'],"TUNNELIER":['tndrill','tnhit'],"TECHNOSORUS":['rexarrive'],"TORTUGA":['tgarrive','tgwave'],"TRASH-BOT":['tbmeal','tbpower'],"ZAPPAN":['zpkatana'],"WHIPLASH":['wllasso']};
+MUS.sfx.cfiles={chglitch:'sfx-chglitch-24276f5d.mp3',chlock:'sfx-chlock-221d4a44.mp3',chpuff:'sfx-chpuff-1dca59ec.mp3',chswap:'sfx-chswap-2d6d2f59.mp3',mlcrack:'sfx-mlcrack-18a5cb87.mp3',mlsurge:'sfx-mlsurge-254d63c7.mp3',mlseal:'sfx-mlseal-8023858a.mp3',muooze:'sfx-muooze-0603187a.mp3',mudrip:'sfx-mudrip-f0788112.mp3',muslide:'sfx-muslide-b6b759ac.mp3',mrwater:'sfx-mrwater-1eff6aac.mp3',mrgrow:'sfx-mrgrow-07f356b3.mp3',mregg:'sfx-mregg-25c1aca7.mp3',mrburst:'sfx-mrburst-dfee8e3d.mp3',mrcard:'sfx-mrcard-b287906b.mp3',mrcrumble:'sfx-mrcrumble-31a9de50.mp3',pgspit:'sfx-pgspit-a0ffcd03.mp3',pgsplat:'sfx-pgsplat-92ac9c02.mp3',rdgust:'sfx-rdgust-a706bb5a.mp3',rdglint:'sfx-rdglint-24582315.mp3',rdswing:'sfx-rdswing-9c127c25.mp3',rdboom:'sfx-rdboom-1db40ff7.mp3',lfrise:'sfx-lfrise-715ebdcc.mp3',lfswing:'sfx-lfswing-2ccb2b7f.mp3',lfclang:'sfx-lfclang-9a147c4f.mp3',lfhiss:'sfx-lfhiss-e9920693.mp3',amarrive:'sfx-amarrive-46b356e0.mp3',arorb:'sfx-arorb-7b3b9e60.mp3',brparts:'sfx-brparts-4109fb92.mp3',bzshield:'sfx-bzshield-af153e1c.mp3',chjet:'sfx-chjet-7cebe86c.mp3',cmglitch:'sfx-cmglitch-aa8c5448.mp3',cmhole:'sfx-cmhole-85773d1e.mp3',cmimpact:'sfx-cmimpact-c28aa2b9.mp3',cmpulse:'sfx-cmpulse-d335b91d.mp3',cqarrive:'sfx-cqarrive-01218fbd.mp3',cqclash:'sfx-cqclash-eac164fb.mp3',csshow:'sfx-csshow-bcb96a9d.mp3',dlarrive:'sfx-dlarrive-78127be3.mp3',dmarrive:'sfx-dmarrive-3beceb7a.mp3',dmcard:'sfx-dmcard-5ebd331c.mp3',dmeject:'sfx-dmeject-91e8931d.mp3',duarrive:'sfx-duarrive-9767c5fd.mp3',dustrike:'sfx-dustrike-97ce4821.mp3',dzpush:'sfx-dzpush-dea65d65.mp3',edarrive:'sfx-edarrive-06d20c54.mp3',edsalvo:'sfx-edsalvo-83154d90.mp3',edstrike:'sfx-edstrike-66de0ece.mp3',elarrive:'sfx-elarrive-c31640a6.mp3',elx:'sfx-elx-bfe78ef8.mp3',exhit:'sfx-exhit-f2b9d36f.mp3',exshot:'sfx-exshot-06f3818e.mp3',exspark:'sfx-exspark-ef9cd346.mp3',gpfall:'sfx-gpfall-339addd4.mp3',gpimpact:'sfx-gpimpact-87e2e7a8.mp3',grlaunch:'sfx-grlaunch-55777be1.mp3',grslam:'sfx-grslam-80ddaf7c.mp3',gtarc:'sfx-gtarc-249396d8.mp3',gtarrive:'sfx-gtarrive-78a85e70.mp3',gtbranch:'sfx-gtbranch-c9c51eec.mp3',gzlaunch:'sfx-gzlaunch-da87c8b3.mp3',hebounce:'sfx-hebounce-1e660839.mp3',heseal:'sfx-heseal-449921b5.mp3',hkcoils:'sfx-hkcoils-49fa7b8d.mp3',hkstrike:'sfx-hkstrike-67843c9c.mp3',hrcall:'sfx-hrcall-bdc83a27.mp3',hrzap:'sfx-hrzap-a9918aa7.mp3',jpaegis:'sfx-jpaegis-7c9b2e44.mp3',jppulse:'sfx-jppulse-909af4e2.mp3',krgrapple:'sfx-krgrapple-85455441.mp3',lcarrive:'sfx-lcarrive-ccb7035b.mp3',lxboom:'sfx-lxboom-1629ea35.mp3',lxcrack:'sfx-lxcrack-ef0a0424.mp3',lxcrawl:'sfx-lxcrawl-60ed9bfb.mp3',lxdrop:'sfx-lxdrop-bac43ecf.mp3',lxegg:'sfx-lxegg-a5e467c5.mp3',lxhatch:'sfx-lxhatch-4df5471e.mp3',lxspit:'sfx-lxspit-8b6f40eb.mp3',lxsplat:'sfx-lxsplat-286391e3.mp3',lxstep:'sfx-lxstep-0d6ffb71.mp3',lxswell:'sfx-lxswell-14494145.mp3',mcbag:'sfx-mcbag-55e37fbe.mp3',mcburst:'sfx-mcburst-236135c3.mp3',mcplace:'sfx-mcplace-8ad6dabd.mp3',mganswer:'sfx-mganswer-459d1584.mp3',mgdrain:'sfx-mgdrain-a728011d.mp3',mgerupt:'sfx-mgerupt-89d426b0.mp3',mgfill:'sfx-mgfill-3c5c1089.mp3',moarrive:'sfx-moarrive-c95585d6.mp3',mogcry:'sfx-mogcry-972e0eb0.mp3',mparrive:'sfx-mparrive-5d59466d.mp3',mpfetch:'sfx-mpfetch-4c63ef13.mp3',mslboom:'sfx-mslboom-1fd5661e.mp3',mtbreak:'sfx-mtbreak-56cb31fa.mp3',mtengulf:'sfx-mtengulf-615b3ee7.mp3',mtrise:'sfx-mtrise-fa9a6dbf.mp3',mtshadow:'sfx-mtshadow-098f58f2.mp3',mtwings:'sfx-mtwings-5a001e91.mp3',pecharge:'sfx-pecharge-b7d6bec7.mp3',pgarrive:'sfx-pgarrive-7125ae0b.mp3',pgcable:'sfx-pgcable-0186f3a8.mp3',poimplant:'sfx-poimplant-47e84542.mp3',populse:'sfx-populse-a0bd9a1f.mp3',poshow:'sfx-poshow-0bfbef43.mp3',prammo:'sfx-prammo-3824172f.mp3',prpower:'sfx-prpower-2e06e22a.mp3',prshot:'sfx-prshot-d778fa7b.mp3',ptdrone:'sfx-ptdrone-c1f7ceab.mp3',rexarrive:'sfx-rexarrive-5111577f.mp3',rfecho:'sfx-rfecho-680b7dfb.mp3',rhcharge:'sfx-rhcharge-050d7598.mp3',rhhit:'sfx-rhhit-975e6300.mp3',ryarms:'sfx-ryarms-5c74d6ea.mp3',rysmash:'sfx-rysmash-108cab40.mp3',rzdrone:'sfx-rzdrone-9d564b77.mp3',sbdisk:'sfx-sbdisk-35d813a2.mp3',sbplug:'sfx-sbplug-d343b8e6.mp3',scarrive:'sfx-scarrive-ba984e43.mp3',shghost:'sfx-shghost-59477220.mp3',shleap:'sfx-shleap-acc502f4.mp3',skimpact:'sfx-skimpact-7508b9f0.mp3',skscope:'sfx-skscope-de8ebb6b.mp3',skshot:'sfx-skshot-1cd76418.mp3',slappel:'sfx-slappel-66e04f3f.mp3',slarrive:'sfx-slarrive-00163f8d.mp3',slborn:'sfx-slborn-10759ced.mp3',sldrop:'sfx-sldrop-0fd5bd64.mp3',spdome:'sfx-spdome-3e52cf5a.mp3',spfire:'sfx-spfire-89c0018f.mp3',sppress:'sfx-sppress-24c980c8.mp3',stcry:'sfx-stcry-0669c00f.mp3',tbmeal:'sfx-tbmeal-b1a194e3.mp3',tbpower:'sfx-tbpower-06e0ac87.mp3',tdlink:'sfx-tdlink-92e7596a.mp3',tgarrive:'sfx-tgarrive-ea05fc2a.mp3',tgwave:'sfx-tgwave-e7207cd7.mp3',tndrill:'sfx-tndrill-f2fc837b.mp3',tnhit:'sfx-tnhit-2fdc263a.mp3',toarrive:'sfx-toarrive-36f02105.mp3',toboom:'sfx-toboom-2f0bd48e.mp3',toshot:'sfx-toshot-ef0da198.mp3',toturret:'sfx-toturret-2ab1cf2a.mp3',trbolt:'sfx-trbolt-0ef158e4.mp3',trcharge:'sfx-trcharge-682860e0.mp3',trzap:'sfx-trzap-901ee0ff.mp3',wllasso:'sfx-wllasso-832fe0fe.mp3',zpkatana:'sfx-zpkatana-58b4d4a9.mp3'};
+MUS.sfx.ccards={"CHAOS":['chglitch','chlock','chpuff','chswap'],"MELT":['mlcrack','mlsurge','mlseal'],"MUCUS":['muooze','mudrip','muslide'],"LE MARAIS":['mrwater','mrgrow','mregg','mrburst','mrcard','mrcrumble'],"PROGENITURE ALPHA":['pgspit','pgsplat'],"PROGENITURE OMEGA":['pgspit','pgsplat'],"PROGENITURE OFFENSIVE":['pgspit','pgsplat'],"PROGENITURE DEFENSIVE":['pgspit','pgsplat'],"PROGENITURE VIE":['pgspit','pgsplat'],"RODEUR":['rdgust','rdglint','rdswing','rdboom'],"LA FORGE":['lfrise','lfswing','lfclang','lfhiss'],"MATRIARCHE":['mtshadow','mtwings','mtrise','mtengulf','mtbreak'],"BUZZY":['bzshield'],"ARKHAUL":['arorb'],"BRI-KB-ROCK":['brparts'],"AMALGAME":['amarrive'],"EL-DIABLO":['edarrive','edsalvo','edstrike'],"CHEIF 117":['chjet','prshot'],"PRAWN":['prshot'],"CONQUEST":['cqarrive','cqclash'],"DILUS":['dlarrive'],"CASSIS":['csshow'],"RHINO":['rhcharge','rhhit'],"GAPIX":['gpfall','gpimpact'],"EXO-MKVII":['exshot','exhit'],"GAZELLE":['gzlaunch','mslboom'],"GRIEVER":['grlaunch','mslboom','grslam'],"DOZEUR":['dzpush'],"ELYSIUM":['elarrive','elx'],"GOTHIKA":['gtarrive','gtarc','gtbranch'],"DIMAVERSE":['dmarrive','dmcard','dmeject'],"HAKILX":['hkcoils','hkstrike'],"KRIGER":['krgrapple'],"DUMADED":['duarrive','dustrike'],"HÉROS ENGAGÉ":['heseal','hebounce'],"LARVOTRON":['lxdrop','lxsplat','lxegg','lxcrack','lxhatch','lxcrawl','lxstep','lxswell','lxboom','lxspit'],"EXTERMINATION":['exspark'],"MAGNEMER":['mgfill','mgerupt','mganswer','mgdrain'],"MED-POD":['mparrive','mpfetch'],"HARKO":['hrcall','hrzap'],"JIPASIS":['jpaegis','jppulse'],"MOTOKO":['moarrive'],"LACRIUM":['lcarrive'],"PILE D’ÉNERGIE":['pecharge'],"LE COMÈTEUR":['cmglitch','cmhole','cmimpact','cmpulse'],"SHADOW":['shghost','shleap'],"POSITRON":['poimplant','poshow','populse'],"MARCH":['mcbag','mcburst','mcplace'],"RENFORTS":['rfecho'],"PRÉPARATION":['prammo','prpower'],"MOG-AI":['mogcry'],"STAR-HUNTER":['stcry'],"PIGTAIL":['pgarrive','pgcable'],"RYPEAL":['ryarms','rysmash'],"SCOPT":['scarrive'],"PITTY BELL":['ptdrone'],"RAZOPS":['rzdrone'],"TANDEEM":['tdlink'],"SABOTAGE":['sbdisk','sbplug'],"TOA2":['toarrive','toturret','toshot','toboom'],"SEEKER":['skscope','skshot','skimpact'],"TRANSPORTEUR":['trcharge','trzap','trbolt'],"SOUS PRESSION":['spdome','sppress','spfire'],"SYLVERLAKE":['slarrive','slappel','sldrop','slborn'],"TUNNELIER":['tndrill','tnhit'],"TECHNOSORUS":['rexarrive'],"TORTUGA":['tgarrive','tgwave'],"TRASH-BOT":['tbmeal','tbpower'],"ZAPPAN":['zpkatana'],"WHIPLASH":['wllasso']};
 MUS.sfx.cpend={};
 MUS.sfx.raw={};MUS.sfx.gen=0;MUS.sfx.dq=[];MUS.sfx.dqOn=false;MUS.sfx.urg=new Set();
 function musDecode(k,b){const f=MUS.sfx;return new Promise((res,rej)=>{const e={k,b,res,rej};if(f.urg.has(k))f.dq.unshift(e);else f.dq.push(e);musDecodeRun();});}
@@ -4338,6 +4346,8 @@ AKRYLIN:{pilot:'Aucun — serpent de métal forgé dans la lave',text:"Au fond d
 RODEUR:{pilot:'Aucun — ombre errante des terres brûlées',text:"On ne voit jamais RODEUR arriver. Un coup de vent froid traverse le champ de bataille, les cartes frémissent, et une ombre encapuchonnée passe sans un bruit. Une lueur blanche brille un instant sous sa capuche : sa proie est marquée. L'ombre revient alors comme un voile de tissu noir, se suspend au-dessus de sa cible et s'abat sur elle dans une explosion de feu. Quand la fumée retombe, il n'y a plus personne."},
 'FL-1':{pilot:'Aucun — essaim autonome des marais rouges',text:"FL-1 ne vole jamais seul. Au premier coup de tonnerre sur les marais rouges, des dizaines de mouches de combat mécaniques sortent de l'eau croupie, ailes cyan et roses grésillant sous la pluie. L'essaim rase la surface dans un nuage d'éclaboussures et fond sur sa cible avant même qu'on l'ait entendu bourdonner : à peine posé sur le champ de bataille, FL-1 attaque déjà."},
 MUCUS:{pilot:'Aucun — insecte de combat des marais rouges',text:"MUCUS ne chasse pas : il attend. Accroché aux branches mortes des marais rouges, sous la pluie et les éclairs, ce scarabée à carapace translucide suinte sans arrêt un mucus vert et glacé. Quand une machine passe sous lui, il se laisse tomber dessus et la noie dans sa bave. Le mucus coule dans les articulations, colle les blindages, éteint les moteurs : la machine engluée ne sait plus rien faire d'autre que se battre comme une simple carcasse."},
+MELT:{pilot:'Aucun — automate des fonderies volcaniques',text:"MELT est né dans le lit d'une coulée de lave, là où les fonderies abandonnées crachent encore leur feu. Sa carcasse noire, enchaînée et brûlante, ne refroidit jamais : sous ses plaques, le magma circule comme du sang. Quand il pose le pied sur un champ de bataille, le métal se fend sous lui et la lave remonte par les fissures. Elle brûle tout ce qui se tient là, amis comme ennemis, puis le sol se ressoude, comme si de rien n'était. MELT, lui, n'a rien senti."},
+CHAOS:{pilot:'Aucun — programme de combat corrompu',text:"Personne n'a construit CHAOS. Il est sorti tout seul d'une usine en ruine, le jour où son programme de combat s'est corrompu. Couvert de graffitis fluo, le crâne fendu d'un sourire, il saute d'un endroit à l'autre comme une image qui bugue. Il ne cherche pas à gagner : il veut que plus rien ne soit à sa place. Et quand on le détruit, c'est encore lui qui a le dernier mot : les escouades se retrouvent à piocher dans les cartes de l'ennemi."},
 RYPEAL:{pilot:'Aucun — atelier autonome « Ry-Peal »',text:"Dans les friches industrielles, quand les usines se sont tues, un atelier a continué à travailler. RYPEAL avance sur ses deux jambes, le dos hérissé de petits bras mécaniques qui ne s'arrêtent jamais : ils démontent, soudent, assemblent. Quand on l'abat, ses bras finissent le dernier objet commencé, le tendent à son camp, puis se retournent les uns contre les autres. Rien de l'atelier ne doit tomber aux mains de l'ennemi."},
 'TRASH-BOT':{pilot:'Aucun — programme de recyclage « Broyeur-7 »',text:"Dans les décharges sans fin sous les autoroutes suspendues, TRASH-BOT roule de tas en tas, la mâchoire ouverte. On l'a construit pour recycler les épaves ; personne n'a pensé à lui dire de s'arrêter. Chaque mécha qui tombe au combat finit entre ses dents : broyé, fondu, puis soudé à sa propre carcasse. Plus la bataille fait de victimes, plus il remonte du sol lourd, solide et affamé."},
 MARCH:{pilot:'Aucun — intelligence marchande « Toile »',text:"Sur la route de terre qui traverse le marché des terres basses, MARCH avance courbé sous son grand sac de toile. Personne ne sait ce qu'il y range : des pièces de méchas, des processeurs encore chauds, parfois un module entier arraché à une épave. Quand il pose son sac au milieu d'un combat, il en déballe trois et laisse son escouade choisir. Il ne fait jamais crédit, mais il ne repart jamais sans avoir vendu."},
@@ -4780,7 +4790,17 @@ artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-a
 ultName:"ENGLUEMENT",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
 base:{atk:14,def:20,hp:330},max:{atk:110,def:170,hp:1250},owned:false,seen:false,
 art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/mucus-art.webp',
-artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/mucus-art-ext.webp'}
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/mucus-art-ext.webp'},
+{name:"MELT",rarity:"epique",color:"#ff5a1f",shape:"block",role:"Destructeur — automate des champs de lave",
+ultName:"CŒUR DE MAGMA",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:38,def:24,hp:320},max:{atk:280,def:190,hp:1200},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/melt-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/melt-art-ext.webp'},
+{name:"CHAOS",rarity:"legendaire",color:"#c86bff",shape:"block",role:"Perturbateur — automate du désordre",
+ultName:"ERREUR 404",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:38,def:18,hp:310},max:{atk:280,def:140,hp:1180},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/chaos-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/chaos-art-ext.webp'}
 ];
 const BTL_TOKEN_DEFS=[
 {name:"MALGAME",rarity:"epique",color:"#d19a3c",shape:"MALGAME",role:"Colosse blessé — le géant en miettes",
@@ -4847,14 +4867,14 @@ return FX_FILTERS.map(([k,l])=>`<button type="button" class="filter-opt ${cur===
 const CARD_TIERS={
 holo:['MOTOKO','ZAPPAN','TOA2','MOG-AI','LE COMÈTEUR'],
 ecarlate:['DELOK','MED-07','MORPHE','GAPIX','GAZELLE','STAR-HUNTER','TUNNELIER','GRIEVER','AMALGAME','MAGNEMER','EL-DIABLO','MATRIARCHE'],
-legendaire:['CONQUEST','WHIPLASH','BEAST','SHADOW','CHEIF 117','NEUTRON','MED-POD','RHINO','EXO-MKVII','HAKILX','SEEKER','LARVOTRON','GOLDY','LOUZY','RODEUR'],
-epique:['PRAWN','EXO-MKV','DOZEUR','EXO-MKIV','CATER-PILLARD','EXO-MKX','SYLVERLAKE','CASSIS','DIMAVERSE','PIGTAIL','TRASH-BOT','RYPEAL','AKRYLIN','MUCUS'],
+legendaire:['CONQUEST','WHIPLASH','BEAST','SHADOW','CHEIF 117','NEUTRON','MED-POD','RHINO','EXO-MKVII','HAKILX','SEEKER','LARVOTRON','GOLDY','LOUZY','RODEUR','CHAOS'],
+epique:['PRAWN','EXO-MKV','DOZEUR','EXO-MKIV','CATER-PILLARD','EXO-MKX','SYLVERLAKE','CASSIS','DIMAVERSE','PIGTAIL','TRASH-BOT','RYPEAL','AKRYLIN','MUCUS','MELT'],
 rare:['ARKHAUL','JIPASIS','HARKO','BRI-KB-ROCK','BUZZY','TECHNOSORUS','HYPPER','DILUS','KRIGER','SCOPT','DUMADED','LACRIUM','RAZOPS','FENCY','EXO-MKI','GOTHIKA','TORTUGA','ELYSIUM','SCOOT','POUNDER','PITTY BELL','SOSFOR','GAST','TANDEEM','MARCH','GATEKEEPER','KEEPER','FL-1']
 };
 const CARD_STATS={
 'MOTOKO':[9,5,8],'ZAPPAN':[10,3,8],'TOA2':[6,8,9],'MOG-AI':[9,4,8],
 'DELOK':[8,3,7],'MED-07':[5,5,9],'MORPHE':[8,3,6],'GAPIX':[7,3,6],'GAZELLE':[7,4,7],'STAR-HUNTER':[8,3,7],'TUNNELIER':[4,7,8],'GRIEVER':[8,4,7],
-'CONQUEST':[4,6,6],'WHIPLASH':[6,3,6],'BEAST':[3,7,6],'SHADOW':[6,3,6],'CHEIF 117':[7,3,5],'NEUTRON':[3,6,7],'MED-POD':[3,5,6],'RHINO':[5,5,6],'EXO-MKVII':[5,3,6],'RODEUR':[4,2,5],'HAKILX':[4,6,7],'SEEKER':[5,3,6],'CASSIS':[4,4,6],'TANDEEM':[3,3,5],'DIMAVERSE':[0,5,8],'PIGTAIL':[4,4,6],'MARCH':[2,3,5],'TRASH-BOT':[1,2,4],'RYPEAL':[3,3,5],'LE COMÈTEUR':[8,4,8],'MAGNEMER':[5,4,7],'LARVOTRON':[6,3,6],'EL-DIABLO':[4,5,8],'MATRIARCHE':[5,4,6],'GOLDY':[4,4,6],'LOUZY':[3,3,5],'GATEKEEPER':[2,5,5],'KEEPER':[3,4,5],'FL-1':[3,1,5],'AKRYLIN':[3,3,5],'MUCUS':[2,3,5],
+'CONQUEST':[4,6,6],'WHIPLASH':[6,3,6],'BEAST':[3,7,6],'SHADOW':[6,3,6],'CHEIF 117':[7,3,5],'NEUTRON':[3,6,7],'MED-POD':[3,5,6],'RHINO':[5,5,6],'EXO-MKVII':[5,3,6],'RODEUR':[4,2,5],'HAKILX':[4,6,7],'SEEKER':[5,3,6],'CASSIS':[4,4,6],'TANDEEM':[3,3,5],'DIMAVERSE':[0,5,8],'PIGTAIL':[4,4,6],'MARCH':[2,3,5],'TRASH-BOT':[1,2,4],'RYPEAL':[3,3,5],'LE COMÈTEUR':[8,4,8],'MAGNEMER':[5,4,7],'LARVOTRON':[6,3,6],'EL-DIABLO':[4,5,8],'MATRIARCHE':[5,4,6],'GOLDY':[4,4,6],'LOUZY':[3,3,5],'GATEKEEPER':[2,5,5],'KEEPER':[3,4,5],'FL-1':[3,1,5],'AKRYLIN':[3,3,5],'MUCUS':[2,3,5],'MELT':[4,3,5],'CHAOS':[4,2,5],
 'PRAWN':[5,4,6],'EXO-MKV':[7,2,5],'DOZEUR':[4,4,6],'EXO-MKIV':[6,2,5],'CATER-PILLARD':[3,5,6],'EXO-MKX':[3,6,6],
 'ARKHAUL':[1,2,5],'JIPASIS':[1,3,5],'HARKO':[2,4,3],'BRI-KB-ROCK':[1,3,5],'BUZZY':[1,2,5],'TECHNOSORUS':[3,2,4],'HYPPER':[1,4,4],'DILUS':[2,3,4],'KRIGER':[3,3,3],'SCOPT':[4,2,3],'DUMADED':[2,3,5],'LACRIUM':[4,1,4],'RAZOPS':[2,4,4],'FENCY':[1,5,5],'EXO-MKI':[2,0,5],'AMALGAME':[6,3,7],'MALGAME':[4,3,6],'MALAME':[3,2,4],'GOTHIKA':[5,2,4],'TORTUGA':[1,3,5],'ELYSIUM':[4,1,3],'SCOOT':[3,1,4],'POUNDER':[4,2,5],'PITTY BELL':[3,1,4],'SOSFOR':[4,3,5],'GAST':[3,1,3],'SYLVERLAKE':[4,5,6],'ANAKA':[4,0,2],'KOTAMA':[4,0,2]
 };
@@ -5781,8 +5801,8 @@ function lgDigCls(n){const l=String(n).length;return l>=5?'l5':l===4?'l4':l===2?
 const WIN_KEEP={'TOA2':1,'RHINO':1,'DELOK':1,'WHIPLASH':1,'TUNNELIER':1};
 const WIN_FOCUS={'SHADOW':72,'MOG-AI':12,'CHEIF 117':8};
 const winArt=def=>(!def?GREY_ART:(WIN_KEEP[def.name]?(def.art||def.artExt):(def.artExt||def.art||def.artBig))||GREY_ART);
-const WIN_BIG={'MUCUS':{y:85},'FL-1':{y:75},'RODEUR':{y:37},'AKRYLIN':{y:0},'KEEPER':{y:18},'GATEKEEPER':{y:100},'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
-const WIN_SMALL={'MUCUS':77,'FL-1':71,'RODEUR':38,'AKRYLIN':0,'KEEPER':0,'GATEKEEPER':86,'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
+const WIN_BIG={'CHAOS':{y:38},'MELT':{y:7},'MUCUS':{y:85},'FL-1':{y:75},'RODEUR':{y:37},'AKRYLIN':{y:0},'KEEPER':{y:18},'GATEKEEPER':{y:100},'LOUZY':{y:100},'CATER-PILLARD':{y:15},'MED-07':{y:67,z:90},'MOG-AI':{y:0},'RHINO':{y:50},'STAR-HUNTER':{y:10,x:-12},'BEAST':{y:30},'GAPIX':{y:9},'ARKHAUL':{y:57,x:-3},'EXO-MKX':{y:10},'MORPHE':{y:20},'BRI-KB-ROCK':{y:61},'DOZEUR':{y:4},'NEUTRON':{y:7},'EXO-MKVII':{y:27},'SHADOW':{y:62},'BUZZY':{y:57},'ZAPPAN':{y:45},'EXO-MKIV':{y:1},'HARKO':{y:44},'GAZELLE':{y:10},'TUNNELIER':{y:50},'JIPASIS':{y:30},'EXO-MKV':{y:32},'GRIEVER':{y:28},'MOTOKO':{y:11},'CONQUEST':{y:16},'CHEIF 117':{y:5},'MED-POD':{y:0},'TOA2':{y:50},'WHIPLASH':{y:50},'DELOK':{y:50},'TECHNOSORUS':{y:44},'HYPPER':{y:39},'DILUS':{y:43},'KRIGER':{y:39},'SCOPT':{y:27},'DUMADED':{y:10},'LACRIUM':{y:29},'RAZOPS':{y:29},'FENCY':{y:21},'EXO-MKI':{y:1},'AMALGAME':{y:9},'GOTHIKA':{y:30},'TORTUGA':{y:51},'ELYSIUM':{y:37},'SYLVERLAKE':{y:61},'SCOOT':{y:30},'POUNDER':{y:66},'PITTY BELL':{y:50},'SOSFOR':{y:50},'GAST':{y:0},'HAKILX':{y:0},'SEEKER':{y:50},'CASSIS':{y:43},'TANDEEM':{y:67},'DIMAVERSE':{y:18},'PIGTAIL':{y:90},'MARCH':{y:91},'TRASH-BOT':{y:58},'RYPEAL':{y:78},'LE COMÈTEUR':{y:3},'MAGNEMER':{y:56},'LARVOTRON':{y:72},'EL-DIABLO':{y:45},'MATRIARCHE':{y:8},'GOLDY':{y:12},'PRAWN':{y:15,x:-12}};
+const WIN_SMALL={'CHAOS':6,'MELT':0,'MUCUS':77,'FL-1':71,'RODEUR':38,'AKRYLIN':0,'KEEPER':0,'GATEKEEPER':86,'LOUZY':100,'CATER-PILLARD':3,'MED-07':51,'MOG-AI':0,'RHINO':50,'STAR-HUNTER':0,'BEAST':15,'GAPIX':0,'ARKHAUL':42,'EXO-MKX':0,'MORPHE':8,'BRI-KB-ROCK':49,'DOZEUR':0,'NEUTRON':0,'EXO-MKVII':13,'SHADOW':49,'BUZZY':55,'ZAPPAN':32,'EXO-MKIV':0,'HARKO':28,'GAZELLE':3,'TUNNELIER':50,'JIPASIS':15,'EXO-MKV':17,'GRIEVER':15,'MOTOKO':14,'CONQUEST':2,'CHEIF 117':0,'MED-POD':0,'TOA2':50,'WHIPLASH':50,'DELOK':50,'TECHNOSORUS':28,'HYPPER':23,'DILUS':43,'KRIGER':23,'SCOPT':13,'DUMADED':13,'LACRIUM':30,'RAZOPS':28,'FENCY':7,'EXO-MKI':0,'AMALGAME':0,'GOTHIKA':23,'TORTUGA':51,'ELYSIUM':38,'SYLVERLAKE':46,'SCOOT':31,'POUNDER':25,'PITTY BELL':50,'SOSFOR':50,'GAST':0,'HAKILX':0,'SEEKER':45,'CASSIS':23,'TANDEEM':46,'DIMAVERSE':15,'PIGTAIL':82,'MARCH':87,'TRASH-BOT':55,'RYPEAL':63,'LE COMÈTEUR':7,'MAGNEMER':45,'LARVOTRON':54,'EL-DIABLO':34,'MATRIARCHE':7,'GOLDY':0,'PRAWN':8};
 const winFocus=(def,big)=>{const n=def&&def.name,b=big&&n&&WIN_BIG[n],sm=!big&&n&&WIN_SMALL[n];return b&&b.y!=null?b.y:(sm!=null&&sm!==false&&sm!==undefined&&sm!==''?sm:(n&&WIN_FOCUS[n]!=null?WIN_FOCUS[n]:50));};
 const winZoom=def=>{const b=def&&WIN_BIG[def.name];return b?Math.max(b.z||100,100+2*Math.abs(b.x||0)):100;};
 const winShift=def=>{const b=def&&WIN_BIG[def.name];return b&&b.x?b.x/winZoom(def)*100:0;};
@@ -7974,7 +7994,7 @@ if(open)return{w,open,start,end,next:end,mode:specMode(w),key:'spec:'+w,deck:spe
 const n=w+1;
 return{w:n,open:false,start:specUtc(SPEC_E0+n*SPEC_WEEK),end:specUtc(SPEC_E0+n*SPEC_WEEK+SPEC_OPEN),next:specUtc(SPEC_E0+n*SPEC_WEEK),mode:specMode(n),key:'spec:'+n,deck:specDeck(n)};
 }
-var CARD_VIDS={"MUCUS":"vid/mucus-0340bd00.mp4","LE MARAIS":"vid/le-marais-34b07035.mp4","RODEUR":"vid/rodeur-c92242db.mp4","LA FORGE":"vid/la-forge-8b0b66b1.mp4","AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS={"MELT":"vid/melt-ec8ad374.mp4","CHAOS":"vid/chaos-3e22c401.mp4","MUCUS":"vid/mucus-0340bd00.mp4","LE MARAIS":"vid/le-marais-34b07035.mp4","RODEUR":"vid/rodeur-c92242db.mp4","LA FORGE":"vid/la-forge-8b0b66b1.mp4","AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW={el:null,v:null,t:0,duck:0};
 function cardVidUrl(name){const p=CARD_VIDS[name];return p?CARD_VID_BASE+p:null;}
 function cardVidClose(){
@@ -22515,7 +22535,7 @@ const K={
 'CHEIF 117':['appel'],'GRIEVER':['appel'],'MOTOKO':['percee','tank'],'BEAST':['tank'],'TUNNELIER':['tank','appel'],
 'DELOK':['percee'],'TECHNOSORUS':['percee'],'HYPPER':['tank'],'DILUS':['appel'],'KRIGER':['appel'],'SCOPT':['percee'],'DUMADED':['passif'],'LACRIUM':['percee'],'RAZOPS':['appel'],'FENCY':['tank'],'EXO-MKI':['baroud'],'AMALGAME':['percee','baroud'],'GOTHIKA':['appel'],'TORTUGA':['tank','passif'],'MALGAME':['baroud'],'MALAME':['baroud'],'CATER-PILLARD':['tank'],'HARKO':['baroud'],'RHINO':['appel'],'ARKHAUL':['appel'],'JIPASIS':['appel'],
 'MED-07':['tank'],'DOZEUR':['appel'],'MORPHE':['percee'],'WHIPLASH':['percee'],'ZAPPAN':['baroud'],'ELYSIUM':['baroud'],'SYLVERLAKE':['appel'],'BUZZY':['passif'],
-'EXO-MKIV':['percee'],'EXO-MKV':['percee'],'EXO-MKVII':['appel'],'RODEUR':['appel'],'FL-1':['percee'],'MUCUS':['appel'],'EXO-MKX':['tank'],'HAKILX':['tank','passif'],'SEEKER':['appel'],'CASSIS':['appel'],'TANDEEM':['passif'],'DIMAVERSE':['passif'],'PIGTAIL':['baroud'],'MARCH':['appel'],'TRASH-BOT':['passif'],'RYPEAL':['baroud'],'LE COMÈTEUR':['percee','passif'],'MAGNEMER':['percee','appel'],'LARVOTRON':['percee','passif','baroud'],'EL-DIABLO':['tank','passif'],'MATRIARCHE':['appel','baroud'],'GOLDY':['passif'],'LOUZY':['appel','baroud'],'GATEKEEPER':['tank'],'KEEPER':['tank'],'AKRYLIN':['passif']
+'EXO-MKIV':['percee'],'EXO-MKV':['percee'],'EXO-MKVII':['appel'],'RODEUR':['appel'],'FL-1':['percee'],'MUCUS':['appel'],'MELT':['appel'],'CHAOS':['baroud'],'EXO-MKX':['tank'],'HAKILX':['tank','passif'],'SEEKER':['appel'],'CASSIS':['appel'],'TANDEEM':['passif'],'DIMAVERSE':['passif'],'PIGTAIL':['baroud'],'MARCH':['appel'],'TRASH-BOT':['passif'],'RYPEAL':['baroud'],'LE COMÈTEUR':['percee','passif'],'MAGNEMER':['percee','appel'],'LARVOTRON':['percee','passif','baroud'],'EL-DIABLO':['tank','passif'],'MATRIARCHE':['appel','baroud'],'GOLDY':['passif'],'LOUZY':['appel','baroud'],'GATEKEEPER':['tank'],'KEEPER':['tank'],'AKRYLIN':['passif']
 };
 Object.keys(K).forEach(n=>{BTL_CARD_KW[n]=K[n];});
 })();
@@ -23931,7 +23951,7 @@ const url=c=>c.toDataURL('image/png');
 BTL_CS_TEX={key,drape:url(dc),DW,valance:url(vc),VHh,nS,tTop:band*VHh-2,tassel:url(tc),TH,beam:url(bc),pool:url(pc),flare:url(fc),rays:url(rc)};
 return BTL_CS_TEX;
 }
-var CASSIS_POOL=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","HAKILX","SEEKER","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS"];
+var CASSIS_POOL=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","HAKILX","SEEKER","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS","MELT","CHAOS"];
 function btlFxN(c){return c&&(c.as||c.name);}
 function btlCsGain(c,n){c.as=n;c.kw=(BTL_CARD_KW[n]||[]).slice();delete c._big;}
 BTL_CARD_FX['TANDEEM']={passif:{quand:'tech',run:async c=>{
@@ -28755,7 +28775,7 @@ if(!has)return;
 const go=()=>{try{if(BTL)btlDmTex(innerWidth,innerHeight);}catch(_){}};
 if(window.requestIdleCallback)requestIdleCallback(go,{timeout:6000});else setTimeout(go,2500);
 }
-var TRANSPORTEUR_POOL=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","SCOOT","POUNDER","PITTY BELL","SOSFOR","GAST","HAKILX","SEEKER","CASSIS","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","LARVOTRON","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS"];
+var TRANSPORTEUR_POOL=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","SCOOT","POUNDER","PITTY BELL","SOSFOR","GAST","HAKILX","SEEKER","CASSIS","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","LARVOTRON","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS","MELT","CHAOS"];
 var BTL_TR_TEX=null;
 function btlTrTex(){
 if(BTL_TR_TEX)return BTL_TR_TEX;
@@ -30258,7 +30278,7 @@ const X={
 'DIMAVERSE':[['passif','quand un joueur joue une carte Tech, son adversaire en reçoit une copie dans sa main.']],
 'TANDEEM':[['passif','à chaque carte Tech jouée (par n’importe quel joueur), gagne +2 DEF.']],
 'SEEKER':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],
-'NEUTRON':[['tank']],'BEAST':[['tank']],'CATER-PILLARD':[['tank']],'MED-07':[['tank']],'EXO-MKX':[['tank']],'GATEKEEPER':[['tank']],'KEEPER':[['tank']],'FL-1':[['percee']],'MUCUS':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],'AKRYLIN':[['passif','tant qu’il est sur le champ de bataille, quand un joueur pioche une carte, l’autre en pioche une aussi.']],
+'NEUTRON':[['tank']],'BEAST':[['tank']],'CATER-PILLARD':[['tank']],'MED-07':[['tank']],'EXO-MKX':[['tank']],'GATEKEEPER':[['tank']],'KEEPER':[['tank']],'FL-1':[['percee']],'MUCUS':[['appel','désactive une carte ennemie ciblée : elle perd Tank, Percée, Baroud et Passif jusqu’à sa destruction.']],'MELT':[['appel','inflige 1 point de dégâts à toutes les autres cartes du champ de bataille, alliées comme adverses (pas aux chefs d’escouade).']],'CHAOS':[['baroud','les deux pioches s’échangent : chaque joueur pioche désormais dans celle de l’adversaire (sans mélange).']],'AKRYLIN':[['passif','tant qu’il est sur le champ de bataille, quand un joueur pioche une carte, l’autre en pioche une aussi.']],
 'MOTOKO':[['tank'],['percee']],
 'DELOK':[['percee']],'TECHNOSORUS':[['percee']],'HYPPER':[['tank']],'DILUS':[['appel','pioche une carte.']],'KRIGER':[['appel','attaque directement le chef d’escouade adverse.']],'SCOPT':[['percee']],'LACRIUM':[['percee']],'RAZOPS':[['appel','donne 3 DEF à une carte alliée ciblée.']],'FENCY':[['tank']],'EXO-MKI':[['baroud','rejoint la pioche adverse (mélangée).']],'AMALGAME':[['percee'],['baroud','place MALGAME dans ta pioche.']],'MALGAME':[['baroud','place MALAME dans ta pioche.']],'MALAME':[['baroud','l’adversaire pioche une carte.']],'GOTHIKA':[['appel','inflige 3 points d’attaque à une carte ennemie ciblée, et 1 point aux cartes situées juste à sa gauche et à sa droite.']],'DUMADED':[['passif','à chaque carte piochée, inflige 1 point de dégât à une carte au hasard, même alliée.']],'MORPHE':[['percee']],'WHIPLASH':[['percee']],'EXO-MKIV':[['percee']],'EXO-MKV':[['percee']]
 };
@@ -31002,6 +31022,395 @@ appel:async c=>{
 if(c._muDone)return;
 const t=await btlChoose(c,btlField(btlOther(c.side)).filter(x=>!x.off),'disable',0,{levit:true});
 if(t&&t.hp>0&&btlOnField(c)){await btlMuFx(null,t,null,null).catch(e=>{if(e==='abort')throw e;console.error(e);});await btlMuOff(t);}
+}
+};
+var BTL_ML={n:'MELT',noise:null,pent:[[.5,.02],[.98,.37],[.82,.98],[.18,.98],[.02,.37]]};
+function btlMlReduced(){return!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);}
+function btlMlTargets(c){return pvpSides().flatMap(sd=>BTL.S[sd].slots.filter(x=>x&&x!==c&&x.hp>0&&!x.dying));}
+function btlMlHitOne(c,x){
+const r1=btlUnitRect(x),el=btlUnitEl(x),before=x.hp/x.maxHp*100,dealt=Math.min(1,x.hp+Math.max(0,x.df)),ap=btlApplyDmg(x,1);
+btlShowDmg(x,r1,el,ap,false);
+btlAddEnergy(x,dealt);btlAddEnergy(c,dealt);
+return btlTween(x,before,x.hp/x.maxHp*100,520);
+}
+async function btlMlSettle(c,all){
+if(btlGone())return;
+const dead=all.filter(x=>x.hp<=0);
+all.filter(x=>x.hp>0).forEach(x=>{btlXOff(x);btlPaint(x);});
+dead.forEach(x=>{x._killer=c;if(!x._diePr)x._diePr=btlDie0(x,true);});
+await Promise.all(dead.map(x=>x._diePr));
+for(const x of dead){const f=BTL_CARD_FX[btlFxN(x)];if(f&&f.early&&f.baroud)continue;await btlTrigger('baroud',x);}
+}
+function btlMlCracks(W,H,ox,oy){
+const rnd=Math.random,P=[],D=Math.hypot(Math.max(ox,W-ox),Math.max(oy,H-oy));
+const jag=(x,y,base,len,w,depth)=>{
+const pts=[[x,y]];let a=base,L=0;
+while(L<len){
+const st=4+rnd()*6;a=base+(a-base)*.55+(rnd()-.5)*1.25;x+=Math.cos(a)*st;y+=Math.sin(a)*st;L+=st;pts.push([x,y]);
+if(x<-14||y<-14||x>W+14||y>H+14)break;
+if(depth<2&&L>18&&L<len-20&&rnd()<(depth?.06:.11))jag(x,y,a+(rnd()<.5?-1:1)*(.5+rnd()*.7),len*(.22+rnd()*.3),w*.55,depth+1);
+if(depth<3&&rnd()<.08)jag(x,y,a+(rnd()<.5?-1:1)*(.9+rnd()*.6),6+rnd()*10,w*.4,3);
+}
+P.push({pts,w,depth});
+};
+const nm=5+(rnd()<.5?1:0),a0=rnd()*6.283;
+for(let k=0;k<nm;k++)jag(ox,oy,a0+k/nm*6.283+(rnd()-.5)*.6,D*(.8+rnd()*.45),3.4+rnd()*1.4,0);
+const sp=50,nx=Math.ceil(W/sp)+1,ny=Math.ceil(H/sp)+1,G=[];
+for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)G.push([i*sp+(rnd()-.5)*sp*.7,j*sp+(rnd()-.5)*sp*.7]);
+const edge=(a,b)=>{const pts=[a.slice()],n=3;for(let k=1;k<n;k++){const f=k/n;pts.push([a[0]+(b[0]-a[0])*f+(rnd()-.5)*7,a[1]+(b[1]-a[1])*f+(rnd()-.5)*7]);}pts.push(b.slice());P.push({pts,w:.7+rnd()*.6,depth:4});};
+for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const a=G[j*nx+i];
+if(i<nx-1&&rnd()<.7)edge(a,G[j*nx+i+1]);
+if(j<ny-1&&rnd()<.7)edge(a,G[(j+1)*nx+i]);
+if(i<nx-1&&j<ny-1&&rnd()<.15)edge(a,G[(j+1)*nx+i+1]);}
+return{P,D};
+}
+function btlMlStroke(g,p,wk,wAdd){
+const pts=p.pts,n=pts.length;if(n<2)return;
+const parts=p.depth===4?1:3;
+for(let s=0;s<parts;s++){
+const i0=Math.floor(s*(n-1)/parts),i1=Math.ceil((s+1)*(n-1)/parts);if(i1<=i0)continue;
+g.lineWidth=Math.max(.5,p.w*wk*(1-s*.3))+wAdd;
+g.beginPath();g.moveTo(pts[i0][0],pts[i0][1]);for(let i=i0+1;i<=i1;i++)g.lineTo(pts[i][0],pts[i][1]);g.stroke();
+}
+}
+function btlMlLayers(W,H,dpr,C){
+const mk=()=>{const cv=document.createElement('canvas');cv.width=Math.ceil(W*dpr);cv.height=Math.ceil(H*dpr);const g=cv.getContext('2d');g.scale(dpr,dpr);g.lineCap='round';g.lineJoin='miter';g.miterLimit=3;return[cv,g];};
+const[gap,gg]=mk(),[lava,gl]=mk(),[glow,gw]=mk(),[cool,gc]=mk();
+const blur='filter'in gg,main=C.P.filter(p=>p.depth<4),net=C.P.filter(p=>p.depth===4);
+const blurred=(g,draw,px)=>{if(!blur){draw(g);return;}const[cv2,g2]=mk();draw(g2);
+g.save();g.setTransform(1,0,0,1,0,0);g.filter='blur('+(px*dpr)+'px)';g.drawImage(cv2,0,0);g.restore();};
+blurred(gg,g=>{g.strokeStyle='rgba(46,6,0,.75)';main.forEach(p=>btlMlStroke(g,p,2,12));g.strokeStyle='rgba(40,5,0,.45)';net.forEach(p=>btlMlStroke(g,p,2,6));},6);
+gg.strokeStyle='rgba(0,0,0,.6)';C.P.forEach(p=>{gg.save();gg.translate(1.3,1.7);btlMlStroke(gg,p,1,3.4);gg.restore();});
+gg.strokeStyle='rgba(205,212,225,.38)';C.P.forEach(p=>{gg.save();gg.translate(-.9,-1.1);btlMlStroke(gg,p,1,2.2);gg.restore();});
+gg.strokeStyle='#0e0402';C.P.forEach(p=>btlMlStroke(gg,p,1,2));
+gl.strokeStyle='#a01400';main.forEach(p=>btlMlStroke(gl,p,1,1.1));
+gl.strokeStyle='#ff4e00';main.forEach(p=>btlMlStroke(gl,p,.8,.3));
+gl.strokeStyle='#ffb33a';main.forEach(p=>btlMlStroke(gl,p,.42,0));
+gl.strokeStyle='#7a1000';net.forEach(p=>btlMlStroke(gl,p,1,.8));
+gl.strokeStyle='#d83400';net.forEach(p=>btlMlStroke(gl,p,.55,0));
+gl.strokeStyle='#fff3c4';main.forEach(p=>{if(p.depth<2)btlMlStroke(gl,p,.16,0);});
+gc.strokeStyle='#4a0e04';C.P.forEach(p=>btlMlStroke(gc,p,1,1.1));
+gc.strokeStyle='#7c2208';C.P.forEach(p=>btlMlStroke(gc,p,.35,0));
+blurred(gw,g=>{g.strokeStyle='rgba(255,84,10,.5)';main.forEach(p=>btlMlStroke(g,p,2.2,5));g.strokeStyle='rgba(230,50,0,.14)';net.forEach(p=>btlMlStroke(g,p,2,3));},5);
+if(!blur){gw.strokeStyle='rgba(255,100,20,.1)';main.forEach(p=>btlMlStroke(gw,p,3,14));}
+return{gap,lava,glow,cool};
+}
+function btlMlNoise(){
+if(BTL_ML.noise)return BTL_ML.noise;
+const S=96,cv=document.createElement('canvas');cv.width=cv.height=S;const g=cv.getContext('2d');
+g.fillStyle='rgba(120,20,0,.35)';g.fillRect(0,0,S,S);
+for(let i=0;i<60;i++){
+const x=Math.random()*S,y=Math.random()*S,r=4+Math.random()*12,hot=Math.random()<.55;
+for(const[dx,dy]of[[0,0],[S,0],[-S,0],[0,S],[0,-S]]){
+const rg=g.createRadialGradient(x+dx,y+dy,0,x+dx,y+dy,r);
+rg.addColorStop(0,hot?'rgba(255,240,170,.8)':'rgba(60,4,0,.7)');rg.addColorStop(1,hot?'rgba(255,200,80,0)':'rgba(60,4,0,0)');
+g.fillStyle=rg;g.fillRect(x+dx-r,y+dy-r,r*2,r*2);
+}
+}
+return(BTL_ML.noise=cv);
+}
+async function btlMlFx(c,to,fromRect){
+const els=[],u=btlUnitEl(c);
+try{return await btlMlFx0(c,to,fromRect,els);}
+finally{els.forEach(e=>e.remove());if(u)u.style.opacity='';}
+}
+async function btlMlFx0(c,to,fromRect,els){
+const plate=btlQ('#btlPlate'),pr=btlRect(plate),u=btlUnitEl(c),sr=to||btlUnitRect(c),fx=btlQ('#btlFx');
+const W=Math.ceil(pr.width),H=Math.ceil(pr.height),dpr=Math.min(2,window.devicePixelRatio||1);
+const ox=sr.left+sr.width/2-pr.left,oy=sr.top+sr.height/2-pr.top;
+const C=btlMlCracks(W,H,ox,oy),L=btlMlLayers(W,H,dpr,C),noise=btlMlNoise();
+const T={arrive:fromRect?330:220,crack:250,crackEnd:1000,hit:1060,seal:1320,sealEnd:1900,land:1820,end:2180};
+const cv=document.createElement('canvas');cv.width=Math.ceil(W*dpr);cv.height=Math.ceil(H*dpr);
+cv.style.cssText='position:fixed;left:'+pr.left+'px;top:'+pr.top+'px;width:'+W+'px;height:'+H+'px;pointer-events:none;z-index:29';fx.appendChild(cv);els.push(cv);
+const g=cv.getContext('2d'),tmp=document.createElement('canvas');tmp.width=cv.width;tmp.height=cv.height;const gt=tmp.getContext('2d'),pat=gt.createPattern(noise,'repeat');
+const hov={x:sr.left-sr.width*.04,y:sr.top-sr.height*.46,w:sr.width*1.08,h:sr.height*1.08};
+let cu=null;
+if(u){cu=u.cloneNode(true);cu.removeAttribute('id');
+cu.style.cssText='position:fixed;left:'+hov.x+'px;top:'+hov.y+'px;width:'+hov.w+'px;height:'+hov.h+'px;margin:0;z-index:34;pointer-events:none;opacity:0;transform-origin:50% 60%;will-change:transform,opacity;'+
+'filter:drop-shadow(0 18px 14px rgba(0,0,0,.6)) drop-shadow(0 6px 16px rgba(255,80,10,.55))';
+fx.appendChild(cu);els.push(cu);u.style.opacity='0';}
+const fr=fromRect&&fromRect.width>1?fromRect:null;
+const holes=()=>{const out=[];plate.querySelectorAll('.btl-unit').forEach(e=>{if(e===u||e.style.opacity==='0')return;const r=e.getBoundingClientRect();if(r.width>1)out.push([r.left-pr.left,r.top-pr.top,r.width,r.height,!!e.closest('.leader')]);});return out;};
+const tg=btlMlTargets(c),shots=tg.map(x=>{const r=btlUnitRect(x);return{x,cx:r.left+r.width/2-pr.left,cy:r.top+r.height/2-pr.top,w:r.width,h:r.height,done:false};});
+tg.filter(x=>btlLethal(x,1)).forEach(btlXOn);
+const embers=[],tweens=[],sm=(a,b,x)=>Math.max(0,Math.min(1,(x-a)/(b-a))),E=BTL_E1;
+let landed=false,hitDone=false,last=0;
+const sfx={};
+const snd=(k,at,tm)=>{if(!sfx[k]&&tm>=at){sfx[k]=1;btlSnd(k);}};
+const frame=(qq,tm)=>{
+const dt=Math.min(40,Math.max(0,tm-last));last=tm;
+snd('mlcrack',T.crack,tm);snd('mlsurge',T.hit-40,tm);snd('mlseal',T.seal,tm);
+if(cu&&!landed){
+let x=hov.x,y=hov.y,sc=1,rot=0,op=1;
+if(tm<T.arrive){const f=E.outC(sm(0,T.arrive,tm));
+if(fr){const s0=fr.width/hov.w;x=fr.left+(fr.width-hov.w)/2+(hov.x-fr.left-(fr.width-hov.w)/2)*f;y=fr.top+(fr.height-hov.h)/2+(hov.y-fr.top-(fr.height-hov.h)/2)*f-Math.sin(f*Math.PI)*hov.h*.3;sc=s0+(1-s0)*f;rot=(1-f)*(c.side==='p'?-8:8);op=E.cl(tm/60,0,1);}
+else{x=sr.left;y=sr.top+(hov.y-sr.top)*f;}
+}else if(tm<T.land){const b=tm-T.arrive;y=hov.y-Math.sin(b/260)*2.4+(tm>T.crack&&tm<T.sealEnd?Math.sin(tm/23)*.7:0);rot=Math.sin(b/410)*1.2;}
+else{const f=E.inOut(sm(T.land,T.end-60,tm)),s1=sr.width/hov.w;sc=1+(s1-1)*f+Math.sin(f*Math.PI)*.05;
+x=hov.x+(sr.left+sr.width/2-hov.x-hov.w/2)*f;y=hov.y+(sr.top+sr.height/2-hov.y-hov.h*.6+hov.h*.1*s1)*f;}
+if(tm>=T.end-60){landed=true;cu.style.opacity='0';if(u)u.style.opacity='';btlRing(sr,btlRarColor(c.rar),true);if(fr)musSfx(c.rar);btlFlashEl(u,'#ffb070',.45,380);btlShake(plate,3);}
+else{cu.style.opacity=String(op);cu.style.transform='translate('+(x-hov.x).toFixed(1)+'px,'+(y-hov.y).toFixed(1)+'px) rotate('+rot.toFixed(2)+'deg) scale('+sc.toFixed(3)+')';}
+}
+const open=E.outC(sm(T.crack,T.crackEnd,tm)),close=E.inOut(sm(T.seal,T.sealEnd,tm));
+const R=C.D*1.05*open*(1-close)+2,feather=46;
+const heat=sm(T.crack+120,T.crackEnd,tm)*(1-sm(T.seal,T.seal+380,tm)),surge=Math.exp(-Math.pow((tm-T.hit)/130,2));
+g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);
+if(R>3){
+gt.setTransform(1,0,0,1,0,0);gt.globalCompositeOperation='source-over';gt.globalAlpha=1;gt.clearRect(0,0,tmp.width,tmp.height);
+gt.globalAlpha=.9*(1-close*.9);gt.drawImage(L.gap,0,0);
+gt.globalAlpha=Math.min(1,heat*(1+surge*.5));gt.drawImage(L.lava,0,0);
+gt.globalAlpha=sm(T.seal-80,T.seal+380,tm)*(1-sm(T.sealEnd-260,T.sealEnd,tm));gt.drawImage(L.cool,0,0);
+if(heat>.02){gt.globalCompositeOperation='source-atop';gt.globalAlpha=.6*heat;
+if(pat){gt.setTransform(dpr,0,0,dpr,0,0);gt.translate((tm*.021)%96,(tm*.013)%96);gt.fillStyle=pat;gt.fillRect(-96,-96,W+192,H+192);gt.setTransform(1,0,0,1,0,0);}}
+gt.globalCompositeOperation='lighter';gt.globalAlpha=Math.min(1,heat*(.75+surge*.9));gt.drawImage(L.glow,0,0);
+gt.globalCompositeOperation='destination-in';gt.globalAlpha=1;
+const rg=gt.createRadialGradient(ox*dpr,oy*dpr,Math.max(0,R-feather)*dpr,ox*dpr,oy*dpr,R*dpr);
+rg.addColorStop(0,'rgba(0,0,0,1)');rg.addColorStop(1,'rgba(0,0,0,0)');gt.fillStyle=rg;gt.fillRect(0,0,tmp.width,tmp.height);
+gt.globalCompositeOperation='source-over';
+g.drawImage(tmp,0,0);
+g.setTransform(dpr,0,0,dpr,0,0);
+g.globalCompositeOperation='destination-out';g.fillStyle='#000';
+holes().forEach(([x,y,w,h,lead])=>{g.beginPath();
+if(lead)BTL_ML.pent.forEach(([a,b],i)=>g[i?'lineTo':'moveTo'](x+a*w,y+b*h));
+else if(g.roundRect)g.roundRect(x+2,y+2,w-4,h-4,6);else g.rect(x+2,y+2,w-4,h-4);
+g.fill();});
+g.globalCompositeOperation='source-over';
+}else g.setTransform(dpr,0,0,dpr,0,0);
+if(!hitDone&&tm>=T.hit){hitDone=true;btlShake(plate,5);
+shots.forEach(s=>{if(!btlOnField(s.x))return;const el=btlUnitEl(s.x);tweens.push(btlMlHitOne(c,s.x));if(el){btlFlashEl(el,'#ff7a1a',.85,420);btlShake(el,4);}
+for(let i=0;i<16;i++){const a=-Math.PI/2+(Math.random()-.5)*2.2,v=.05+Math.random()*.11;embers.push({x:s.cx+(Math.random()-.5)*s.w*.8,y:s.cy+s.h*(.2+Math.random()*.3),vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:1+Math.random()*2.2,life:500+Math.random()*500,age:0});}});}
+if(surge>.02)shots.forEach(s=>{const rg=g.createRadialGradient(s.cx,s.cy+s.h*.3,0,s.cx,s.cy+s.h*.3,s.w*.9);
+rg.addColorStop(0,'rgba(255,150,50,'+(.3*surge)+')');rg.addColorStop(1,'rgba(255,60,0,0)');g.globalCompositeOperation='lighter';g.fillStyle=rg;g.fillRect(s.cx-s.w,s.cy-s.h*.7,s.w*2,s.h*2);g.globalCompositeOperation='source-over';});
+if(heat>.3&&embers.length<90&&Math.random()<.55*heat){const p=C.P[Math.floor(Math.random()*C.P.length)],q=p.pts[Math.floor(Math.random()*p.pts.length)];
+if(q[2]<R-10)embers.push({x:q[0],y:q[1],vx:(Math.random()-.5)*.03,vy:-.03-Math.random()*.06,r:.8+Math.random()*1.6,life:600+Math.random()*700,age:0});}
+g.globalCompositeOperation='lighter';
+for(let i=embers.length-1;i>=0;i--){const p=embers[i];p.age+=dt;if(p.age>=p.life){embers.splice(i,1);continue;}
+p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy-=.00002*dt;const a=1-p.age/p.life;
+g.fillStyle='rgba(255,'+Math.round(150+90*a)+','+Math.round(60*a)+','+(.9*a)+')';g.beginPath();g.arc(p.x,p.y,p.r*(.5+.5*a),0,6.283);g.fill();}
+g.globalCompositeOperation='source-over';
+};
+try{
+if(btlMlReduced()){
+if(u)u.style.opacity='';
+if(fr){btlRing(sr,btlRarColor(c.rar),true);musSfx(c.rar);}
+tg.forEach(x=>{if(!btlOnField(x))return;tweens.push(btlMlHitOne(c,x));btlFlashEl(btlUnitEl(x),'#ff7a1a',.7,400);});
+await btlSleep(500);
+}else await btlHkLoop(T.end+40,(q,tm)=>frame(q,tm));
+await Promise.all(tweens);
+}finally{
+els.forEach(e=>e.remove());if(u)u.style.opacity='';
+if(fr&&!landed&&BTL&&!BTL.abort&&btlOnField(c)){btlRing(sr,btlRarColor(c.rar),true);musSfx(c.rar);}
+}
+return tg;
+}
+async function btlMlAppel(c,to,fromRect){
+const tg0=btlMlTargets(c),hp0=tg0.map(x=>x.hp+x.df);
+let tg=tg0;
+try{tg=await btlMlFx(c,to,fromRect);}
+catch(e){if(e==='abort')throw e;console.error(e);}
+tg0.forEach((x,i)=>{if(x.hp+x.df===hp0[i]&&x.hp>0)btlMlHitOne(c,x);});
+await btlMlSettle(c,tg0);
+}
+BTL_CARD_FX['MELT']={
+drop:async(c,to,col,fromRect)=>{
+btlPutCard(c);c._mlDone=true;
+await btlMlAppel(c,to,fromRect);
+},
+appel:async c=>{
+if(c._mlDone){c._mlDone=false;return;}
+if(!btlOnField(c))return;
+await btlMlAppel(c,null,null);
+}
+};
+var BTL_CH={n:'CHAOS',puffs:{},neon:['#9dff3a','#b44cff','#ff4fd8','#3af0ff','#ffe14a']};
+function btlChReduced(){return!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);}
+function btlChSwap(){
+const P=BTL.S.p.pile,O=BTL.S.o.pile,a=P.splice(0),b=O.splice(0);
+b.forEach(x=>{x.side='p';if(x.own)x.own='p';});
+a.forEach(x=>{x.side='o';if(x.own)x.own='o';});
+P.push(...b);O.push(...a);
+btlRenderPile('p');btlRenderPile('o');
+}
+function btlChCanvas(z){
+const W=innerWidth,H=innerHeight,dpr=Math.min(2,window.devicePixelRatio||1),cv=document.createElement('canvas');
+cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+cv.style.cssText='position:fixed;left:0;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none;z-index:'+z;
+btlQ('#btlFx').appendChild(cv);const g=cv.getContext('2d');g.scale(dpr,dpr);
+return{cv,g,W,H,dpr};
+}
+function btlChGlitchDraw(g,r,k,seed){
+if(k<=0)return;
+let s=seed*9301+49297;const R=()=>{s=(s*9301+49297)%233280;return s/233280;};
+const N=BTL_CH.neon,n=Math.round(6+10*k);
+g.save();g.globalCompositeOperation='lighter';
+for(let i=0;i<n;i++){
+const y=r.top+R()*r.height,h=1+R()*5*k,x=r.left-r.width*.15+R()*r.width*1.1,w=r.width*(.1+R()*.55);
+g.globalAlpha=(.25+R()*.5)*k;g.fillStyle=N[Math.floor(R()*N.length)];g.fillRect(x,y,w,h);
+}
+g.globalCompositeOperation='source-over';
+for(let i=0;i<n*.6;i++){
+const bs=3+R()*7,x=r.left+R()*r.width,y=r.top+R()*r.height;
+g.globalAlpha=.7*k;g.fillStyle=R()<.5?'#0b0b14':N[Math.floor(R()*N.length)];g.fillRect(x,y,bs*(1+R()*3),bs);
+}
+g.globalAlpha=.18*k;g.fillStyle='#fff';
+for(let y=r.top;y<r.top+r.height;y+=3)g.fillRect(r.left,y,r.width,1);
+g.restore();
+}
+function btlChGhost(u,r,z){
+const box=document.createElement('div');
+box.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;pointer-events:none;z-index:'+z+';opacity:0;will-change:transform,opacity';
+const sl=[];
+for(let i=0;i<4;i++){
+const c=u.cloneNode(true);c.removeAttribute('id');
+c.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;margin:0;transform:none;opacity:1;clip-path:inset('+(i*25)+'% 0 '+(100-(i+1)*25)+'% 0);will-change:transform';
+box.appendChild(c);sl.push(c);
+}
+btlQ('#btlFx').appendChild(box);
+return{box,sl};
+}
+function btlChGhostSet(G,x,y,sc,op,k,seed){
+let s=seed*7919+13;const R=()=>{s=(s*9301+49297)%233280;return s/233280;};
+G.box.style.opacity=op.toFixed(3);
+G.box.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) scale('+sc.toFixed(3)+')';
+G.box.style.filter=k>.05?'drop-shadow('+(-6*k).toFixed(1)+'px 0 0 rgba(255,40,140,.9)) drop-shadow('+(6*k).toFixed(1)+'px 0 0 rgba(40,255,230,.9))':'';
+G.sl.forEach(c=>{c.style.transform=k>.05?'translateX('+((R()-.5)*40*k).toFixed(1)+'px)':'none';});
+}
+async function btlChArrive(c,to,fromRect){
+const u=btlUnitEl(c);if(!u){btlPutCard(c);return;}
+const els=[];
+try{await btlChArrive0(c,to,fromRect,u,els);}
+finally{els.forEach(e=>e.remove());u.style.opacity='';}
+if(!BTL||BTL.abort)return;
+btlRing(to,btlRarColor(c.rar),true);musSfx(c.rar);btlFlashEl(u,'#d6a8ff',.55,360);
+}
+async function btlChArrive0(c,to,fromRect,u,els){
+const C=btlChCanvas(33),g=C.g,W=C.W,H=C.H,w=to.width,h=to.height;els.push(C.cv);
+u.style.opacity='0';
+const G=btlChGhost(u,to,34);els.push(G.box);
+const fr=fromRect&&fromRect.width>1?{x:fromRect.left+fromRect.width/2,y:fromRect.top+fromRect.height/2}:{x:W/2,y:c.side==='o'?-h:H};
+const tx=to.left+w/2,ty=to.top+h/2,spots=[],n=5;
+for(let i=0;i<n;i++){const f=(i+1)/(n+1),sp=(1-f)*.9;
+spots.push({x:E1lerp(fr.x,tx,f)+(Math.random()-.5)*W*sp,y:E1lerp(fr.y,ty,f)+(Math.random()-.5)*H*.55*sp,sc:.8+Math.random()*.7*(1-f),rot:(Math.random()-.5)*24*(1-f)});}
+spots.forEach(p=>{p.x=Math.max(w*.6,Math.min(W-w*.6,p.x));p.y=Math.max(h*.6,Math.min(H-h*.6,p.y));});
+spots.push({x:tx,y:ty,sc:1,rot:0});
+const T0=60,step=150,hold=100,end=T0+spots.length*step+260;
+let lastJ=-1;
+const frame=(q,tm)=>{
+g.clearRect(0,0,W,H);
+const j=Math.min(spots.length-1,Math.max(0,Math.floor((tm-T0)/step))),loc=tm-T0-j*step,p=spots[j];
+if(tm<T0)return;
+if(j!==lastJ){lastJ=j;btlSnd(j===spots.length-1?'chlock':'chglitch');}
+const fin=j===spots.length-1,spike=(Math.floor(tm/33)*7919%13)<4?.45:0,gk=fin?Math.max(0,1-(tm-T0-j*step)/260):Math.min(1,(loc<40?1:loc>hold?(loc-hold)/40+.5:.5)+spike);
+const vis=fin?1:(loc<hold+40?1:0),flick=gk>.5&&Math.random()<.3?.35:1;
+btlChGhostSet(G,p.x-tx,p.y-ty,p.sc,vis*flick,gk,Math.floor(tm/33));
+G.box.style.transform+=' rotate('+p.rot.toFixed(1)+'deg)';
+if(gk>.05)btlChGlitchDraw(g,{left:p.x-w*p.sc*.75,top:p.y-h*p.sc*.65,width:w*p.sc*1.5,height:h*p.sc*1.3},gk,Math.floor(tm/40)+j*17);
+};
+if(btlChReduced()){u.style.opacity='';await btlSleep(200);}
+else await btlHkLoop(end,frame);
+}
+function E1lerp(a,b,f){return a+(b-a)*f;}
+function btlChPuffSprite(col){
+if(BTL_CH.puffs[col])return BTL_CH.puffs[col];
+const S=96,cv=document.createElement('canvas');cv.width=cv.height=S;const g=cv.getContext('2d');
+const m=col.match(/\d+/g).map(Number),rgba=(k,a)=>'rgba('+m.map(v=>Math.round(Math.min(255,v*k))).join(',')+','+a+')';
+for(let i=0;i<9;i++){
+const a=Math.random()*6.283,d=S*(.05+Math.random()*.17),x=S/2+Math.cos(a)*d,y=S/2+Math.sin(a)*d,r=S*(.2+Math.random()*.14);
+const rg=g.createRadialGradient(x-r*.25,y-r*.3,0,x,y,r);
+rg.addColorStop(0,rgba(1.12,.9));rg.addColorStop(.55,rgba(1,.6));rg.addColorStop(1,rgba(.86,0));
+g.fillStyle=rg;g.beginPath();g.arc(x,y,r,0,6.283);g.fill();
+}
+const im=g.getImageData(0,0,S,S),d=im.data;
+for(let k=0;k<d.length;k+=4){if(!d[k+3])continue;const n=(Math.random()-.5)*46;d[k]=Math.max(0,Math.min(255,d[k]+n));d[k+1]=Math.max(0,Math.min(255,d[k+1]+n));d[k+2]=Math.max(0,Math.min(255,d[k+2]+n));
+d[k+3]=Math.max(0,Math.min(255,d[k+3]*(.75+Math.random()*.5)));}
+g.putImageData(im,0,0);
+return(BTL_CH.puffs[col]=cv);
+}
+function btlChPastel(){const h=Math.random()*360,s=70+Math.random()*20,l=76+Math.random()*8;
+const a=s/100*Math.min(l/100,1-l/100),f=n=>{const k=(n+h/30)%12;return Math.round(255*(l/100-a*Math.max(-1,Math.min(k-3,9-k,1))));};
+return'rgb('+f(0)+','+f(8)+','+f(4)+')';}
+function btlChPuff(x,y,sz,t0){
+const col=btlChPastel(),spr=btlChPuffSprite(col),parts=[];
+for(let i=0;i<34;i++){const a=Math.random()*6.283,v=(.12+Math.random()*.3)*sz/60;
+parts.push({a,v,r:sz*(.14+Math.random()*.2),g:1.8+Math.random()*1.8,life:900+Math.random()*700,d:Math.random()*40,rot:Math.random()*6.283});}
+const dust=[];for(let i=0;i<70;i++){const a=Math.random()*6.283,v=(.2+Math.random()*.5)*sz/60;dust.push({a,v,r:.7+Math.random()*1.8,life:350+Math.random()*600});}
+return{x,y,sz,t0,col,spr,parts,dust};
+}
+function btlChPuffDraw(g,P,tm){
+const t=tm-P.t0;if(t<0)return true;
+let alive=false;
+if(t<120){const f=t/120,rg=g.createRadialGradient(P.x,P.y,0,P.x,P.y,P.sz*(.5+f));
+rg.addColorStop(0,'rgba(255,255,255,'+(.75*(1-f))+')');rg.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=rg;g.fillRect(P.x-P.sz*1.6,P.y-P.sz*1.6,P.sz*3.2,P.sz*3.2);alive=true;}
+for(const p of P.parts){const u=t-p.d;if(u<0||u>p.life){if(u<0)alive=true;continue;}alive=true;
+const f=u/p.life,dist=p.v*260*(1-Math.exp(-u/130)),r=p.r*(1+(p.g-1)*(1-Math.exp(-u/260)));
+const x=P.x+Math.cos(p.a)*dist,y=P.y+Math.sin(p.a)*dist*.85+f*f*P.sz*.3-f*P.sz*.12;
+g.save();g.translate(x,y);g.rotate(p.rot+f*.6);g.globalAlpha=Math.min(1,u/40)*Math.pow(1-f,1.4)*.82;g.drawImage(P.spr,-r,-r,r*2,r*2);g.restore();}
+g.fillStyle=P.col;
+for(const d of P.dust){if(t>d.life)continue;alive=true;const f=t/d.life,dist=d.v*300*(1-Math.exp(-t/120));
+g.globalAlpha=(1-f)*.95;g.fillRect(P.x+Math.cos(d.a)*dist,P.y+Math.sin(d.a)*dist+f*f*22,d.r,d.r);}
+g.globalAlpha=1;
+return alive;
+}
+function btlChStack(side){
+const box=btlQ(side==='p'?'#btlMPile':'#btlOPile'),S=BTL.S[side],n=Math.min(6,Math.ceil(S.pile.length/3));
+const r=btlRect(box),w=52,h=Math.round(w*BTL_RATIO),el=document.createElement('div');
+const cx=r.left+r.width/2,cy=side==='p'?r.top+6:r.bottom-6;
+el.style.cssText='position:fixed;left:'+(cx-w/2)+'px;top:'+(cy-h/2)+'px;width:'+w+'px;height:'+h+'px;pointer-events:none;z-index:35;will-change:transform,opacity;transform-origin:50% 50%';
+let html='';
+for(let j=0;j<Math.max(1,n);j++)html+='<div style="position:absolute;inset:0;transform:translate('+(j*1.6)+'px,'+(-j*2.2)+'px);filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))">'+btlBackHtml('rare',side)+'</div>';
+el.innerHTML=html;btlQ('#btlFx').appendChild(el);
+return{el,cx,cy,w,h,box,n};
+}
+async function btlChBaroud(c,st){
+const lr=btlUnitRect(c),plate=btlQ('#btlPlate'),pr=btlRect(plate);
+if(btlChReduced()){st.swapped=true;btlChSwap();btlFlashEl(btlUnitEl(c),'#d6a8ff',.5,300);await btlSleep(300);return;}
+const els=st.els,C=btlChCanvas(33),g=C.g,W=C.W,H=C.H;els.push(C.cv);
+const T={lift:180,fly:360,land:1000,end:1500};
+const puffs=[btlChPuff(lr.left+lr.width/2,lr.top+lr.height/2,70,0)];
+for(let i=1;i<8;i++)puffs.push(btlChPuff(pr.left+pr.width*(.12+Math.random()*.76),pr.top+pr.height*(.08+Math.random()*.84),46+Math.random()*30,90+i*115+Math.random()*50));
+const glitches=puffs.map(p=>({t0:p.t0+70,x:p.x,y:p.y,done:false}));
+const A=btlChStack('p'),B=btlChStack('o');els.push(A.el,B.el);
+st.boxes=[A.box,B.box];A.box.style.visibility=B.box.style.visibility='hidden';
+const pcx=pr.left+pr.width/2,pcy=pr.top+pr.height/2;
+const path=(S,D,side)=>{const mx=pcx+side*pr.width*.26,my=pcy;return f=>{const u=1-f;
+return[u*u*S.cx+2*u*f*mx+f*f*D.cx,u*u*S.cy+2*u*f*my+f*f*D.cy];};};
+const pa=path(A,B,1),pb=path(B,A,-1);
+const sm=(a,b,x)=>Math.max(0,Math.min(1,(x-a)/(b-a))),E=BTL_E1;
+const frame=(q,tm)=>{
+g.clearRect(0,0,W,H);
+puffs.forEach(p=>{if(tm>=p.t0&&!p.snd){p.snd=1;btlSnd('chpuff');}btlChPuffDraw(g,p,tm);});
+glitches.forEach((z,i)=>{const d=tm-z.t0;if(d<0||d>150)return;const k=1-d/150;
+if(!z.done){z.done=true;btlSnd('chglitch');btlShake(plate,3);}
+btlChGlitchDraw(g,{left:z.x-90,top:z.y-40,width:180,height:80},k,Math.floor(tm/33)+i*31);});
+[[A,pa,1],[B,pb,-1]].forEach(([S,P,sd])=>{
+let x=S.cx,y=S.cy,sc=1,rot=0,op=1;
+if(tm<T.lift){const f=E.outC(sm(0,T.lift,tm));y=S.cy+(sd===1?-1:1)*f*S.h*.35;rot=f*sd*8;}
+else if(tm<T.land){const f=E.inOut(sm(T.fly,T.land,tm)),f0=sm(T.lift,T.fly,tm),q0=P(f);
+x=q0[0];y=q0[1]+(sd===1?-1:1)*S.h*.35*(1-f)*(1-f0*0);sc=1+Math.sin(f*Math.PI)*.7;rot=sd*(8+f*352);}
+else{const D=sd===1?B:A,f=E.outC(sm(T.land,T.land+160,tm));x=D.cx;y=D.cy;sc=1-.1*Math.sin(f*Math.PI);rot=0;op=1-sm(T.land+120,T.land+260,tm);}
+S.el.style.opacity=op.toFixed(3);
+S.el.style.transform='translate('+(x-S.cx).toFixed(1)+'px,'+(y-S.cy).toFixed(1)+'px) rotate('+rot.toFixed(1)+'deg) scale('+sc.toFixed(3)+')';
+if(tm>T.fly&&tm<T.land){const k=.35+.65*Math.abs(Math.sin(tm/37));if(Math.random()<.25)btlChGlitchDraw(g,{left:x-S.w*sc*.8,top:y-S.h*sc*.6,width:S.w*sc*1.6,height:S.h*sc*1.2},k*.6,Math.floor(tm/33)+(sd>0?3:7));}
+});
+if(!st.swapped&&tm>=T.land){st.swapped=true;btlChSwap();A.box.style.visibility=B.box.style.visibility='';btlSnd('chlock');
+[A.box,B.box].forEach(b=>btlRing(btlRect(b),'#d6a8ff',true));}
+};
+btlSnd('chswap');
+await btlHkLoop(T.end,frame);
+}
+BTL_CARD_FX['CHAOS']={
+drop:async(c,to,col,fromRect)=>{
+btlPutCard(c);
+try{await btlChArrive(c,to,fromRect);}catch(e){if(e==='abort')throw e;console.error(e);const u=btlUnitEl(c);if(u)u.style.opacity='';}
+},
+baroud:async c=>{
+const st={swapped:false,els:[],boxes:[]};
+try{await btlChBaroud(c,st);}
+catch(e){if(e==='abort')throw e;console.error(e);}
+finally{
+st.els.forEach(e=>e.remove());st.boxes.forEach(b=>{b.style.visibility='';});
+if(!st.swapped&&BTL&&!BTL.abort){st.swapped=true;btlChSwap();}
+}
 }
 };
 function btlPlateGen(G,dpr,sty){
@@ -32025,8 +32434,8 @@ openDefiLaunch(def,tier);
 };
 });
 }
-const DEFI_CARD_ORDER=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","SCOOT","POUNDER","PITTY BELL","SOSFOR","GAST","HAKILX","SEEKER","CASSIS","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","LARVOTRON","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS"];
-const DEFI_B36='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$%&+=@^';
+const DEFI_CARD_ORDER=["CATER-PILLARD","MED-07","MOG-AI","RHINO","STAR-HUNTER","BEAST","GAPIX","ARKHAUL","EXO-MKX","MORPHE","BRI-KB-ROCK","DOZEUR","NEUTRON","EXO-MKVII","SHADOW","BUZZY","ZAPPAN","EXO-MKIV","HARKO","GAZELLE","TUNNELIER","JIPASIS","PRAWN","EXO-MKV","GRIEVER","MOTOKO","CONQUEST","CHEIF 117","MED-POD","TOA2","WHIPLASH","DELOK","TECHNOSORUS","HYPPER","DILUS","KRIGER","SCOPT","DUMADED","LACRIUM","RAZOPS","FENCY","EXO-MKI","AMALGAME","GOTHIKA","TORTUGA","ELYSIUM","SYLVERLAKE","SCOOT","POUNDER","PITTY BELL","SOSFOR","GAST","HAKILX","SEEKER","CASSIS","TANDEEM","DIMAVERSE","PIGTAIL","MARCH","TRASH-BOT","RYPEAL","LE COMÈTEUR","MAGNEMER","LARVOTRON","EL-DIABLO","MATRIARCHE","GOLDY","LOUZY","GATEKEEPER","KEEPER","AKRYLIN","RODEUR","FL-1","MUCUS","MELT","CHAOS"];
+const DEFI_B36='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~!*#$%&+=@^|?';
 const DEFI_DECKS={
 "AMALGAME":["gNkhhSZZWjjLIIXiAAff","gDDMMSaadZZLIiiAAFff","JgQM8hSdZZejjIIAAFff","OOgg3kkMhScdZeIIiAff","ggUQQMMhhSZbjjIIiAff","OO9ggkkDD0hSSZejjIIf","OO4JJ6ggNDMMhdjIIAff","OOK1ggQDMMhhSSciAAff","OO4gg33kkCMMhSSZjIff","OO496gg3QQkkMMSSIIAA","OO44JJggEEDMM0SSjjIf","OO44J166ggMMhSSjIIAA","PP22GGTTOO4ggQQMMSjI"],
 "MOG-AI":["2O63NNQQkhhSccdZjIX7","2J3QDHhhaccddZZWj7Ff","2966UkDDHhhSZZWYbbIF","22V33UQQND0hhcdZWWAA","22JJ633UQNQDMMhhaacc","2244VVJ9KgNQNkDDZZjF","22OO4JJ633EUkkhhaadW","22O44JJ9633NNkkDHci7","22O4VVJ991663UNQQkHZ","22OO44VVJJ996EQNDCZW","22OO4VVJ996633NkkHBh","22OO44VVJ996633Qk5HH","PP22TOO44VVJ933kkDDh"],
@@ -32101,10 +32510,12 @@ const DEFI_DECKS={
 "AKRYLIN":["D58+SeeLLIIXXii77AFF","55C+eeWjjLIXXii77AFF","K13N5+aeeWLLXXii77AA","1CC8++SdeebXXiiAFFff","KK155MCH++hSeeLii7FF","K1Q588++aadeeYXXi77F","KK15C88++cdeeLXiiAAf","O99KK116588++SSeeXAF","11RUQ55CC88++dLLXi7A","49KK11655CC88++SSL77","OKK11RN5CC88++SSddeF","OOKK1155CC88++SSddLi","PPTTOKK1165C8++SSdLA"],
 "RODEUR":["OJ63kk=H80aZZXXi7AFF","OO3k=588hhZZeYLii77F","OJ63k=88hhZZjIXXi7AF","J6NQk==0hhZZeYIiiAff","O44K1QQk==8hSZZjIIXA","OO466R3QQk==50ZeYiAF","OO44JJKK1QQkk==880hb","O44JJKK6633Qk==C80eI","OO44VVJJ93Qkk==5C80i","OO44JKK1663EQkk==558","OO44JJ9KK1166gUQQ==8","OO44VJJKK16633Q==C8Z","PP22GTTOO44JJ66Q==00"],
 "FL-1":["9UNkHhaa@ZZWWYYjLAFF","9933UNHhSaa@ZZWWL77A","4VV93UUNHHa@ZZWYiAff","V6UUNDHaa@@ZZWWbjI7A","J1UUNNDHhhaa@@ZWWYLf","OOVVUNH0hhaa@@ZZWWI7","OO4VV99UNQkHSaa@@WAF","OVV3EUUNNkkHSa@@ZWWi","4VV96UUNNQkHhhSa@@WL","O4VVJ99K66g3UUNNHH@@","OOVVJ9966RgUUNQN@@WW","OO4VVJ99g3EUUNNHH@@W","PP22GO4VV991UUNQNH@@"],
-"MUCUS":["OJ63kk^H80aZZXXi7AFF","OO3k^588hhZZeYLii77F","OJ63k^88hhZZjIXXi7AF","J6NQk^^0hhZZeYIiiAff","O44K1QQk^^8hSZZjIIXA","OO466R3QQk^^50ZeYiAF","OO44JJKK1QQkk^^880hb","O44JJKK6633Qk^^C80eI","OO44VVJJ93Qkk^^5C80i","OO44JKK1663EQkk^^558","OO44JJ9KK1166gUQQ^^8","OO44VJJKK16633Q^^C8Z","PP22GTTOO44JJ66Q^^00"]
+"MUCUS":["OJ63kk^H80aZZXXi7AFF","OO3k^588hhZZeYLii77F","OJ63k^88hhZZjIXXi7AF","J6NQk^^0hhZZeYIiiAff","O44K1QQk^^8hSZZjIIXA","OO466R3QQk^^50ZeYiAF","OO44JJKK1QQkk^^880hb","O44JJKK6633Qk^^C80eI","OO44VVJJ93Qkk^^5C80i","OO44JKK1663EQkk^^558","OO44JJ9KK1166gUQQ^^8","OO44VJJKK16633Q^^C8Z","PP22GTTOO44JJ66Q^^00"],
+"MELT":["DMM|hacZZYYbbLLIIAAf","RkDM|ScZZWYYbbLLX7Af","OO6REM|8hSYYbbLLXX7f","JRR3EQMM||8aZZbbjLLF","46REkDM||hSeYYbbLL7A","K3EEkDDM||ZeYYbbLLAF","OJRR3EEQQNkMM||YbbLX","JJ9RRg33EEQM||ZYYbbL","OO4J996RREEDMM||YYbb","OO44RRgEEk55MM||YYbb","OO44JRRg3EEMM||aYYbb","OO4J66RR3EEMM||YYbLL","22O446RREEQMM||YbbLL"],
+"CHAOS":["?BdeYbjjLLIIXXAAFFff","?B8aWYYbjjLLII77AAff","E?HSSdYbjLLIIXiAAFff","gEN??BB0SSZbbLIIiAff","OVJRgQ??BjjLLIIXAAff","O9ggEE??SYbbjjIIXAAf","OO4RggECC??SSjLLIiff","OOVJRRgE??hSSYjjIAff","OORggEE??BhSScbjjIAf","OO9KRRggU??SSYYbjjIf","OOJ9Rgg3EE??BSYjjIAf","OO4JRgg??BBSSbbjIAAf","PPGGTTOORggEE??BBSSj"]
 };
 const DEFI_TIER_KNOBS=[{"k":0.9,"lHp":0,"lDf":0,"ai":0.0,"hand":0},{"k":0.917,"lHp":0,"lDf":0,"ai":0.1,"hand":0},{"k":0.933,"lHp":1,"lDf":0,"ai":0.2,"hand":0},{"k":0.95,"lHp":1,"lDf":0,"ai":0.3,"hand":0},{"k":0.967,"lHp":2,"lDf":1,"ai":0.4,"hand":0},{"k":0.983,"lHp":3,"lDf":1,"ai":0.5,"hand":0},{"k":1.0,"lHp":4,"lDf":1,"ai":0.6,"hand":0},{"k":1.017,"lHp":4,"lDf":2,"ai":0.7,"hand":0},{"k":1.033,"lHp":5,"lDf":2,"ai":0.8,"hand":0},{"k":1.05,"lHp":6,"lDf":3,"ai":0.9,"hand":0},{"k":1.067,"lHp":8,"lDf":3,"ai":1,"hand":0},{"k":1.083,"lHp":9,"lDf":4,"ai":1,"hand":0},{"k":1.1,"lHp":10,"lDf":4,"ai":1,"hand":0}];
-const DEFI_MOD={"CATER-PILLARD":"PROTO-SHIELD","MED-07":"PROTO-SHIELD","BEAST":"PROTO-SHIELD","EXO-MKX":"PROTO-SHIELD","NEUTRON":"PROTO-SHIELD","HYPPER":"PROTO-SHIELD","TUNNELIER":"PROTO-SHIELD","ARKHAUL":"T-ARMS 09","JIPASIS":"T-ARMS 09","BUZZY":"T-ARMS 09","BRI-KB-ROCK":"PROK-IEM","MED-POD":"PROK-IEM","MORPHE":"BAVURES","EXO-MKIV":"BAVURES","EXO-MKV":"BAVURES","WHIPLASH":"BAVURES","DELOK":"BAVURES","TECHNOSORUS":"BAVURES","SCOPT":"BAVURES","GAPIX":"BAVURES","EXO-MKVII":"BAVURES","GAZELLE":"BAVURES","STAR-HUNTER":"BAVURES","RHINO":"BAVURES","KRIGER":"BAVURES","CONQUEST":"BAVURES","GRIEVER":"PROK-IEM","PRAWN":"PROK-IEM","HARKO":"PROK-IEM","DOZEUR":"SAPHYR","DILUS":"SAPHYR","CHEIF 117":"SAPHYR","SHADOW":"SAPHYR","DUMADED":"BAVURES","LACRIUM":"BAVURES","RAZOPS":"T-ARMS 09","FENCY":"PROTO-SHIELD","EXO-MKI":"PROK-IEM","MOG-AI":"BAVURES","ZAPPAN":"PROK-IEM","MOTOKO":"BAVURES","TOA2":"PROTO-SHIELD","AMALGAME":"PROK-IEM","GOTHIKA":"BAVURES","TORTUGA":"PROTO-SHIELD","ELYSIUM":"BAVURES","SYLVERLAKE":"SAPHYR","SCOOT":"BAVURES","POUNDER":"BAVURES","PITTY BELL":"BAVURES","SOSFOR":"SAPHYR","GAST":"BAVURES","HAKILX":"PROTO-SHIELD","SEEKER":"BAVURES","CASSIS":"SAPHYR","TANDEEM":"T-ARMS 09","DIMAVERSE":"PROTO-SHIELD","PIGTAIL":"PROK-IEM","MARCH":"T-ARMS 09","TRASH-BOT":"PROTO-SHIELD","RYPEAL":"PROK-IEM","LE COMÈTEUR":"BAVURES","MAGNEMER":"PROK-IEM","LARVOTRON":"PROTO-SHIELD","EL-DIABLO":"PROTO-SHIELD","MATRIARCHE":"PROTO-SHIELD","GOLDY":"SAPHYR","LOUZY":"PROK-IEM","GATEKEEPER":"PROTO-SHIELD","KEEPER":"PROTO-SHIELD","AKRYLIN":"PROTO-SHIELD","RODEUR":"BAVURES","FL-1":"BAVURES","MUCUS":"BAVURES"};
+const DEFI_MOD={"CATER-PILLARD":"PROTO-SHIELD","MED-07":"PROTO-SHIELD","BEAST":"PROTO-SHIELD","EXO-MKX":"PROTO-SHIELD","NEUTRON":"PROTO-SHIELD","HYPPER":"PROTO-SHIELD","TUNNELIER":"PROTO-SHIELD","ARKHAUL":"T-ARMS 09","JIPASIS":"T-ARMS 09","BUZZY":"T-ARMS 09","BRI-KB-ROCK":"PROK-IEM","MED-POD":"PROK-IEM","MORPHE":"BAVURES","EXO-MKIV":"BAVURES","EXO-MKV":"BAVURES","WHIPLASH":"BAVURES","DELOK":"BAVURES","TECHNOSORUS":"BAVURES","SCOPT":"BAVURES","GAPIX":"BAVURES","EXO-MKVII":"BAVURES","GAZELLE":"BAVURES","STAR-HUNTER":"BAVURES","RHINO":"BAVURES","KRIGER":"BAVURES","CONQUEST":"BAVURES","GRIEVER":"PROK-IEM","PRAWN":"PROK-IEM","HARKO":"PROK-IEM","DOZEUR":"SAPHYR","DILUS":"SAPHYR","CHEIF 117":"SAPHYR","SHADOW":"SAPHYR","DUMADED":"BAVURES","LACRIUM":"BAVURES","RAZOPS":"T-ARMS 09","FENCY":"PROTO-SHIELD","EXO-MKI":"PROK-IEM","MOG-AI":"BAVURES","ZAPPAN":"PROK-IEM","MOTOKO":"BAVURES","TOA2":"PROTO-SHIELD","AMALGAME":"PROK-IEM","GOTHIKA":"BAVURES","TORTUGA":"PROTO-SHIELD","ELYSIUM":"BAVURES","SYLVERLAKE":"SAPHYR","SCOOT":"BAVURES","POUNDER":"BAVURES","PITTY BELL":"BAVURES","SOSFOR":"SAPHYR","GAST":"BAVURES","HAKILX":"PROTO-SHIELD","SEEKER":"BAVURES","CASSIS":"SAPHYR","TANDEEM":"T-ARMS 09","DIMAVERSE":"PROTO-SHIELD","PIGTAIL":"PROK-IEM","MARCH":"T-ARMS 09","TRASH-BOT":"PROTO-SHIELD","RYPEAL":"PROK-IEM","LE COMÈTEUR":"BAVURES","MAGNEMER":"PROK-IEM","LARVOTRON":"PROTO-SHIELD","EL-DIABLO":"PROTO-SHIELD","MATRIARCHE":"PROTO-SHIELD","GOLDY":"SAPHYR","LOUZY":"PROK-IEM","GATEKEEPER":"PROTO-SHIELD","KEEPER":"PROTO-SHIELD","AKRYLIN":"PROTO-SHIELD","RODEUR":"BAVURES","FL-1":"BAVURES","MUCUS":"BAVURES","MELT":"SAPHYR","CHAOS":"PROK-IEM"};
 const DEFI_MOD_T={"DOZEUR":["SAPHYR","BAVURES","PROTO-SHIELD","SAPHYR","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5"],"DILUS":["SAPHYR","PROTO-SHIELD","T-ARMS 09","SAPHYR","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET"],"CHEIF 117":["SAPHYR","T-ARMS 09","PROK-IEM","SAPHYR","AZ-5","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES"],"SHADOW":["SAPHYR","PROK-IEM","AZ-5","SAPHYR","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD"],"SYLVERLAKE":["SAPHYR","AZ-5","ROCKET","SAPHYR","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09"],"SOSFOR":["SAPHYR","ROCKET","BAVURES","SAPHYR","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM"],"GOLDY":["SAPHYR","PROK-IEM","AZ-5","SAPHYR","ROCKET","BAVURES","PROTO-SHIELD","T-ARMS 09","PROK-IEM","AZ-5","ROCKET","BAVURES","PROTO-SHIELD"]};
 function defiDeckNames(focus,tier){
 const row=DEFI_DECKS[focus],str=row&&row[tier-1];
@@ -32252,6 +32663,8 @@ const DEFI_RESULT_ART_Y={
 'RODEUR':31,
 'FL-1':60,
 'MUCUS':65,
+'MELT':3,
+'CHAOS':15,
 };
 function defiResultArtPosY(name){return DEFI_RESULT_ART_Y[name]!=null?DEFI_RESULT_ART_Y[name]:50;}
 document.getElementById('defiPathBackBtn').onclick=defiPathBack;
