@@ -1853,8 +1853,16 @@ return;
 }
 checkChangelogOnLogin();
 }
-var BUILD_VERSION='V0.06.36';
+var BUILD_VERSION='V0.06.37';
 var CHANGELOG=[
+{v:'V0.06.37',items:[
+'5 nouvelles cartes RARES, chacune avec son animation, ses sons, sa vidéo dans la collection et ses défis.',
+'RADAR (2 ATQ / 2 DEF / 4 PV) -- APPEL : regarde les 3 prochaines cartes de ta pioche et choisis celle que tu piocheras ensuite ; les autres repartent au hasard dans la pioche.',
+'MULET (1 ATQ / 4 DEF / 5 PV) -- PASSIF : au début de ton tour, la carte à sa droite gagne +1 DEF (gardé et cumulé).',
+'ÉCLAIREUR (3 ATQ / 2 DEF / 3 PV) -- PERCÉE : peut attaquer dès qu’il est posé, et chaque carte qu’il détruit te fait piocher 1 carte.',
+'RECYCLEUR (2 ATQ / 3 DEF / 4 PV) -- APPEL : une Tech que tu as déjà jouée dans ce combat revient au hasard dans ta pioche.',
+'DRONE-BOUCLIER (0 ATQ / 5 DEF / 4 PV) -- PASSIF : ne peut pas attaquer ; l’allié qu’il défend gagne +1 ATQ jusqu’à la fin du tour.',
+]},
 {v:'V0.06.36',items:[
 'Deck, mode FABRIQUER : une carte que tu ne possèdes pas s’affiche en noir et blanc aussi quand elle est ouverte en grand.',
 ]},
@@ -4486,6 +4494,11 @@ return`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="mech
   </svg>`;
 }
 const CHAR_LORE={
+'RADAR':{pilot:'Sgt. Ilya « Écho » Morozov',text:"Morozov n'a jamais aimé les surprises. Sa parabole capte tout ce qui bouge à des kilomètres, et son écran trie déjà la suite du combat avant que l'ennemi ne la connaisse. Avec lui, l'escouade choisit son prochain coup au lieu de le subir."},
+'MULET':{pilot:'Cpl. Nadia « Bât » Okafor',text:"Okafor conduit le MULET comme on conduit un camion de ravitaillement : lentement, sûrement, et toujours là où on l'attend. Dans ses caisses, des plaques de blindage d'avance, qu'elle boulonne sur le mécha voisin avant chaque assaut."},
+'ÉCLAIREUR':{pilot:'Lt. Kenji « Vif » Arakawa',text:"Arakawa court devant tout le monde, toujours. Chaque cible qu'il abat envoie ses données au reste de l'escouade, et le commandement en tire aussitôt sa prochaine carte. Rapide, fragile, et impossible à rattraper."},
+'RECYCLEUR':{pilot:'Sgt. Bruno « Ferraille » Lacaze',text:"Dans la casse de Lacaze, rien ne se perd : la pince arrache, le broyeur avale, et la chambre verte recrache des protocoles Tech comme neufs. Ce qui a déjà servi une fois servira encore."},
+'DRONE-BOUCLIER':{pilot:'Aucun — drone de protection autonome',text:"Le DRONE-BOUCLIER n'a pas d'arme : il a un bouclier. Il fonce devant l'allié menacé, déploie son mur d'hexagones et lui renvoie au passage une décharge d'énergie qui rend sa riposte plus mordante."},
 'BALISE':{pilot:'Aucun — balise autonome du réseau orbital',text:"Plantée au milieu des ruines, BALISE n'a ni arme ni pilote : juste un mât d'antennes et un œil cyan qui ne dort jamais. Elle capte, trie et relaie chaque ordre du réseau orbital. Tant qu'elle émet, les protocoles Tech de l'escouade s'exécutent plus vite et coûtent moins cher."},
 'FERRAILLEUR':{pilot:'Sgt. Marco « Boulon » Ferretti',text:"Ferretti a grandi dans les décharges de la périphérie, où chaque épave vaut quelque chose. Son mécha, rafistolé de pièces récupérées, broie ce qu'il touche. Et quand il finit lui-même à la casse, son noyau d'énergie sert encore : rien ne se perd chez les ferrailleurs."},
 'SENTINELLE-9':{pilot:'Aucun — unité de garde série S-9',text:"Neuf générations de logiciels de garde tournent dans la tête de SENTINELLE-9. Elle ne bouge pas, elle observe. Chaque coup porté à un allié est enregistré, analysé, et son œil rouge s'allume un peu plus fort : la riposte n'en sera que plus précise."},
@@ -5011,7 +5024,32 @@ artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-a
 ultName:"DÉTONATION EN CHAÎNE",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
 base:{atk:0,def:28,hp:320},max:{atk:0,def:200,hp:1200},owned:false,seen:false,
 art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/colibri-art.webp',
-artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/colibri-art-ext.webp'}
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/colibri-art-ext.webp'},
+{name:"RADAR",rarity:"rare",color:"#4dff8a",shape:"block",role:"Reconnaissance — mécha à parabole",
+ultName:"BALAYAGE TOTAL",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:22,def:18,hp:290},max:{atk:170,def:130,hp:1100},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/radar-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/radar-art-ext.webp'},
+{name:"MULET",rarity:"rare",color:"#d9a55a",shape:"block",role:"Soutien — porteur blindé à quatre pattes",
+ultName:"CONVOI BLINDÉ",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:14,def:30,hp:330},max:{atk:110,def:220,hp:1250},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/mulet-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/mulet-art-ext.webp'},
+{name:"ÉCLAIREUR",rarity:"rare",color:"#38e1ff",shape:"block",role:"Éclaireur — mécha léger de course",
+ultName:"PERCÉE ÉCLAIR",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:32,def:18,hp:280},max:{atk:230,def:130,hp:1050},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/eclaireur-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/eclaireur-art-ext.webp'},
+{name:"RECYCLEUR",rarity:"rare",color:"#5dff7a",shape:"block",role:"Logistique — mécha de recyclage",
+ultName:"RECYCLAGE TOTAL",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:22,def:26,hp:300},max:{atk:170,def:190,hp:1150},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/recycleur-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/recycleur-art-ext.webp'},
+{name:"DRONE-BOUCLIER",rarity:"rare",color:"#4ea8ff",shape:"block",role:"Protection — drone générateur de bouclier",
+ultName:"DÔME DE PROTECTION",ultMult:1.4,ultDesc:"Double toutes ses statistiques (ATQ, DEF, PV)",
+base:{atk:0,def:34,hp:300},max:{atk:0,def:240,hp:1150},owned:false,seen:false,
+art:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/drone-bouclier-art.webp',
+artExt:'https://okrdywhctnlayyfltivc.supabase.co/storage/v1/object/public/card-assets/cards/drone-bouclier-art-ext.webp'}
 ];
 const BTL_TOKEN_DEFS=[
 {name:"MALGAME",rarity:"epique",color:"#d19a3c",shape:"MALGAME",role:"Colosse blessé — le géant en miettes",
@@ -5080,7 +5118,7 @@ holo:['MOTOKO','ZAPPAN','TOA2','MOG-AI','LE COMÈTEUR'],
 ecarlate:['DELOK','MED-07','MORPHE','GAPIX','GAZELLE','STAR-HUNTER','TUNNELIER','GRIEVER','AMALGAME','MAGNEMER','EL-DIABLO','MATRIARCHE'],
 legendaire:['CONQUEST','WHIPLASH','BEAST','SHADOW','CHEIF 117','NEUTRON','MED-POD','RHINO','EXO-MKVII','HAKILX','SEEKER','LARVOTRON','GOLDY','LOUZY','RODEUR','CHAOS','DAMNATION'],
 epique:['PRAWN','EXO-MKV','DOZEUR','EXO-MKIV','CATER-PILLARD','EXO-MKX','SYLVERLAKE','CASSIS','DIMAVERSE','PIGTAIL','TRASH-BOT','RYPEAL','AKRYLIN','MUCUS','MELT','WATCHER','PITRA','EVEN'],
-rare:['ARKHAUL','JIPASIS','HARKO','BRI-KB-ROCK','BUZZY','TECHNOSORUS','HYPPER','DILUS','KRIGER','SCOPT','DUMADED','LACRIUM','RAZOPS','FENCY','EXO-MKI','GOTHIKA','TORTUGA','ELYSIUM','SCOOT','POUNDER','PITTY BELL','SOSFOR','GAST','TANDEEM','MARCH','GATEKEEPER','KEEPER','FL-1','BALISE','FERRAILLEUR','SENTINELLE-9','VOLT','COLIBRI']
+rare:['ARKHAUL','JIPASIS','HARKO','BRI-KB-ROCK','BUZZY','TECHNOSORUS','HYPPER','DILUS','KRIGER','SCOPT','DUMADED','LACRIUM','RAZOPS','FENCY','EXO-MKI','GOTHIKA','TORTUGA','ELYSIUM','SCOOT','POUNDER','PITTY BELL','SOSFOR','GAST','TANDEEM','MARCH','GATEKEEPER','KEEPER','FL-1','BALISE','FERRAILLEUR','SENTINELLE-9','VOLT','COLIBRI','RADAR','MULET','ÉCLAIREUR','RECYCLEUR','DRONE-BOUCLIER']
 };
 const CARD_STATS={
 'MOTOKO':[9,5,8],'ZAPPAN':[10,3,8],'TOA2':[6,8,9],'MOG-AI':[9,4,8],
@@ -5088,6 +5126,7 @@ const CARD_STATS={
 'CONQUEST':[4,6,6],'WHIPLASH':[6,3,6],'BEAST':[3,7,6],'SHADOW':[6,3,6],'CHEIF 117':[7,3,5],'NEUTRON':[3,6,7],'MED-POD':[3,5,6],'RHINO':[5,5,6],'EXO-MKVII':[5,3,6],'RODEUR':[4,2,5],'HAKILX':[4,6,7],'SEEKER':[5,3,6],'CASSIS':[4,4,6],'TANDEEM':[3,3,5],'DIMAVERSE':[0,5,8],'PIGTAIL':[4,4,6],'MARCH':[2,3,5],'TRASH-BOT':[1,2,4],'RYPEAL':[3,3,5],'LE COMÈTEUR':[8,4,8],'MAGNEMER':[5,4,7],'LARVOTRON':[6,3,6],'EL-DIABLO':[4,5,8],'MATRIARCHE':[5,4,6],'GOLDY':[4,4,6],'LOUZY':[3,3,5],'GATEKEEPER':[2,5,5],'KEEPER':[3,4,5],'FL-1':[3,1,5],'AKRYLIN':[3,3,5],'MUCUS':[2,3,5],'MELT':[4,3,5],'CHAOS':[4,2,5],'DAMNATION':[3,2,6],'WATCHER':[3,2,5],'PITRA':[3,3,5],'EVEN':[4,3,4],
 'PRAWN':[5,4,6],'EXO-MKV':[7,2,5],'DOZEUR':[4,4,6],'EXO-MKIV':[6,2,5],'CATER-PILLARD':[3,5,6],'EXO-MKX':[3,6,6],
 'BALISE':[1,3,5],'FERRAILLEUR':[3,2,4],'SENTINELLE-9':[2,4,4],'VOLT':[3,1,4],'COLIBRI':[0,3,4],
+'RADAR':[2,2,4],'MULET':[1,4,5],'ÉCLAIREUR':[3,2,3],'RECYCLEUR':[2,3,4],'DRONE-BOUCLIER':[0,5,4],
 'ARKHAUL':[1,2,5],'JIPASIS':[1,3,5],'HARKO':[2,4,3],'BRI-KB-ROCK':[1,3,5],'BUZZY':[1,2,5],'TECHNOSORUS':[3,2,4],'HYPPER':[1,4,4],'DILUS':[2,3,4],'KRIGER':[3,3,3],'SCOPT':[4,2,3],'DUMADED':[2,3,5],'LACRIUM':[4,1,4],'RAZOPS':[2,4,4],'FENCY':[1,5,5],'EXO-MKI':[2,0,5],'AMALGAME':[6,3,7],'MALGAME':[4,3,6],'MALAME':[3,2,4],'GOTHIKA':[5,2,4],'TORTUGA':[1,3,5],'ELYSIUM':[4,1,3],'SCOOT':[3,1,4],'POUNDER':[4,2,5],'PITTY BELL':[3,1,4],'SOSFOR':[4,3,5],'GAST':[3,1,3],'SYLVERLAKE':[4,5,6],'ANAKA':[4,0,2],'KOTAMA':[4,0,2]
 };
 const NEW_RARES_V0505=["SCOOT","POUNDER","PITTY BELL","SOSFOR","GAST"];
@@ -8204,7 +8243,7 @@ if(open)return{w,open,start,end,next:end,mode:specMode(w),key:'spec:'+w,deck:spe
 const n=w+1;
 return{w:n,open:false,start:specUtc(SPEC_E0+n*SPEC_WEEK),end:specUtc(SPEC_E0+n*SPEC_WEEK+SPEC_OPEN),next:specUtc(SPEC_E0+n*SPEC_WEEK),mode:specMode(n),key:'spec:'+n,deck:specDeck(n)};
 }
-var CARD_VIDS={"BALISE":"vid/balise-d3e5e73d.mp4","FERRAILLEUR":"vid/ferrailleur-f38e8abd.mp4","SENTINELLE-9":"vid/sentinelle-9-a2d0fd20.mp4","VOLT":"vid/volt-41510e99.mp4","COLIBRI":"vid/colibri-cbb5f810.mp4","EVEN":"vid/even-ef199cd4.mp4","PITRA":"vid/pitra-b79bbfab.mp4","DAMNATION":"vid/damnation-f13336f3.mp4","WATCHER":"vid/watcher-016ba8b9.mp4","MELT":"vid/melt-ec8ad374.mp4","CHAOS":"vid/chaos-3e22c401.mp4","MUCUS":"vid/mucus-0340bd00.mp4","LE MARAIS":"vid/le-marais-34b07035.mp4","RODEUR":"vid/rodeur-c92242db.mp4","LA FORGE":"vid/la-forge-8b0b66b1.mp4","AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
+var CARD_VIDS={"RADAR":"vid/radar-05c086d3.mp4","MULET":"vid/mulet-d7a7d644.mp4","ÉCLAIREUR":"vid/eclaireur-b7fd75ef.mp4","RECYCLEUR":"vid/recycleur-4644fe5c.mp4","DRONE-BOUCLIER":"vid/drone-bouclier-cd835125.mp4","BALISE":"vid/balise-d3e5e73d.mp4","FERRAILLEUR":"vid/ferrailleur-f38e8abd.mp4","SENTINELLE-9":"vid/sentinelle-9-a2d0fd20.mp4","VOLT":"vid/volt-41510e99.mp4","COLIBRI":"vid/colibri-cbb5f810.mp4","EVEN":"vid/even-ef199cd4.mp4","PITRA":"vid/pitra-b79bbfab.mp4","DAMNATION":"vid/damnation-f13336f3.mp4","WATCHER":"vid/watcher-016ba8b9.mp4","MELT":"vid/melt-ec8ad374.mp4","CHAOS":"vid/chaos-3e22c401.mp4","MUCUS":"vid/mucus-0340bd00.mp4","LE MARAIS":"vid/le-marais-34b07035.mp4","RODEUR":"vid/rodeur-c92242db.mp4","LA FORGE":"vid/la-forge-8b0b66b1.mp4","AKRYLIN":"vid/akrylin-c027be3b.mp4","GATEKEEPER":"vid/gatekeeper-21f0660f.mp4","LOUZY":"vid/louzy-121f2a9d.mp4","GOLDY":"vid/goldy-91b78c54.mp4","MATRIARCHE":"vid/matriarche-298a1eb2.mp4","EL-DIABLO":"vid/el-diablo-29e48ede.mp4","AMALGAME":"vid/amalgame-66ad476c.mp4","ARKHAUL":"vid/arkhaul-e6d45842.mp4","BARRAGES":"vid/barrages-07fc51fa.mp4","BRI-KB-ROCK":"vid/bri-kb-rock-95d2f1ef.mp4","BUZZY":"vid/buzzy-6c84f36d.mp4","CASSIS":"vid/cassis-46db0575.mp4","CHEIF 117":"vid/cheif-117-c3134bbf.mp4","CONQUEST":"vid/conquest-803b95f8.mp4","DILUS":"vid/dilus-9ef632eb.mp4","DIMAVERSE":"vid/dimaverse-9fbc3191.mp4","DOZEUR":"vid/dozeur-2f0815e6.mp4","DUMADED":"vid/dumaded-a65172e1.mp4","ELYSIUM":"vid/elysium-00a2a1fa.mp4","EXO-MKI":"vid/exo-mki-59ef3b4d.mp4","EXO-MKVII":"vid/exo-mkvii-d60ace9c.mp4","EXTERMINATION":"vid/extermination-4f67b994.mp4","GAPIX":"vid/gapix-ece1e66e.mp4","GAZELLE":"vid/gazelle-601d2305.mp4","GOTHIKA":"vid/gothika-13c2fdf8.mp4","GRIEVER":"vid/griever-0b641a85.mp4","HAKILX":"vid/hakilx-05ae6927.mp4","HARKO":"vid/harko-4ba37dd7.mp4","HÉROS ENGAGÉ":"vid/heros-engage-535a61a0.mp4","JIPASIS":"vid/jipasis-06b2e2bc.mp4","KRIGER":"vid/kriger-a335b96f.mp4","LACRIUM":"vid/lacrium-19c2fba6.mp4","LARVOTRON":"vid/larvotron-8d21e2c0.mp4","LE COMÈTEUR":"vid/le-cometeur-dfe4ffad.mp4","MAGNEMER":"vid/magnemer-0951f52e.mp4","MARCH":"vid/march-1d6b993d.mp4","MED-POD":"vid/med-pod-12295e8f.mp4","MOG-AI":"vid/mog-ai-d939a3f2.mp4","MOTOKO":"vid/motoko-cf8642ce.mp4","PIGTAIL":"vid/pigtail-5983a01e.mp4","PILE D’ÉNERGIE":"vid/pile-denergie-7f24f68a.mp4","PITTY BELL":"vid/pitty-bell-efb72c02.mp4","POSITRON":"vid/positron-5eb8ba0e.mp4","PRAWN":"vid/prawn-a1485653.mp4","PRÉPARATION":"vid/preparation-0c48fe58.mp4","RAZOPS":"vid/razops-fad98414.mp4","RENFORTS":"vid/renforts-560d2c61.mp4","RHINO":"vid/rhino-dd4c9e37.mp4","RYPEAL":"vid/rypeal-0d885b72.mp4","SABOTAGE":"vid/sabotage-cdd020eb.mp4","SCOPT":"vid/scopt-39575245.mp4","SEEKER":"vid/seeker-f43968df.mp4","SHADOW":"vid/shadow-ac7b1249.mp4","SOUS PRESSION":"vid/sous-pression-af420c07.mp4","STAR-HUNTER":"vid/star-hunter-bec65512.mp4","SYLVERLAKE":"vid/sylverlake-64a1f6c3.mp4","TANDEEM":"vid/tandeem-381a493b.mp4","TECHNOSORUS":"vid/technosorus-343b4a3d.mp4","TOA2":"vid/toa2-9a9dceca.mp4","TORTUGA":"vid/tortuga-de52c9ee.mp4","TRANSPORTEUR":"vid/transporteur-d12e04f4.mp4","TRASH-BOT":"vid/trash-bot-f63f42d7.mp4","TUNNELIER":"vid/tunnelier-fd1f9cec.mp4","WHIPLASH":"vid/whiplash-1615e697.mp4","ZAPPAN":"vid/zappan-ea9e409c.mp4"};
 var CVW={el:null,v:null,t:0,duck:0};
 function cardVidUrl(name){const p=CARD_VIDS[name];return p?CARD_VID_BASE+p:null;}
 function cardVidClose(){
@@ -15453,7 +15492,7 @@ await pvpPlanPhase(side);
 if(BTL.over||BTL.abort)return;
 BTL.phase='resolve';btlCancelInteractions();btlSetEnd(false);btlRefreshCan();
 await btlResolve(side);
-if(!BTL.over){await btlPassifs(side,'fin');await btlUltEnd(side);}
+if(!BTL.over){await btlPassifs(side,'fin');await btlUltEnd(side);btlDbEnd(side);}
 if(BTL&&!BTL.over&&!BTL.abort)await btlLxMove(side);
 if(!BTL.over){BTL.mana[side]=0;btlRenderMana();}
 if(!BTL.over&&!BTL.abort&&P.cur&&P.cur.over)await pvpFinish(P.cur.win,P.cur.why||'leader');
@@ -15592,6 +15631,14 @@ if(mode==='dmg')opt=Object.assign({xdmg:dmg},opt);
 return await btlPickTarget(c,cands,Object.assign({},opt,{ai:pick}));
 }
 async function pvpAsk(need){
+if(need.mode==='radar'){
+PVPC.asking=true;
+try{
+(PVPC.rdSeen=PVPC.rdSeen||[]).push(need.cands.slice());
+const ui=btlRdCards('p',need.cands.map(n=>pvpReal('p',n,false)),true);
+await ui.ready;const i=await ui.choose();ui.kill();return i;
+}finally{if(PVPC)PVPC.asking=false;}
+}
 if(need.mode==='module'){
 PVPC.asking=true;
 try{const sel=await btlMarchPickUI(need.cands,btlMarchRar('p'),null,false);(sel.els||[]).forEach(e=>e.remove());if(sel.ov)sel.ov.remove();return sel.i;}
@@ -15618,6 +15665,7 @@ for(let k=0;k<40&&P===PVPC&&(P.sending||P.replayBusy||P.q.length)&&BTL&&!BTL.ove
 if(P!==PVPC||!BTL||P.sending||P.replayBusy||P.q.length||BTL.over||BTL.phase!=='plan'||BTL.side!=='p')return false;
 if(typeof action==='function'){action=action();if(!action)return false;}
 P.sending=true;pvpLock(true);
+P.rdSeen=[];
 let ok=false;
 try{
 let dec=[];
@@ -18730,7 +18778,7 @@ if(BTL.over||BTL.abort)return;
 BTL.phase='resolve';btlCancelInteractions();btlSetEnd(false);btlRefreshCan();
 await btlResolve(side);
 if(!BTL||BTL.abort)return;
-if(!BTL.over){await btlPassifs(side,'fin');await btlUltEnd(side);}
+if(!BTL.over){await btlPassifs(side,'fin');await btlUltEnd(side);btlDbEnd(side);}
 if(BTL&&!BTL.over&&!BTL.abort)await btlLxMove(side);
 if(!BTL||BTL.abort)return;
 if(!BTL.over){BTL.mana[side]=0;btlRenderMana();}
@@ -18992,7 +19040,7 @@ btlQ('#btlBlur').classList.remove('on','catch');BTL.el.classList.remove('menu-on
 BTL.menu=null;
 }
 function btlTargetsFor(c,kind){
-if(kind==='atk'&&c.atk<=0)return[];
+if(kind==='atk'&&btlNoAtkC(c))return[];
 if(kind==='def'){
 const dead=btlPredict({skip:c,before:c.plan?c.plan.seq:Infinity});
 return btlAlly(c.side).filter(t=>t.hp>0&&t!==c&&!dead.has(t.uid)&&!btlDefBusy(t));
@@ -19308,7 +19356,7 @@ if(!BTL||BTL.phase!=='plan'||BTL.side!=='p'||BTL.tg||!btlOnField(c))return;
 const kind=dy<0?'atk':'def';
 if(!btlCanAct(c)){btlDeny('slots');return;}
 if(kind==='def'&&btlNoDef(c)){btlDeny('slots');return;}
-if(kind==='atk'&&c.atk<=0){btlDeny('slots');return;}
+if(kind==='atk'&&btlNoAtkC(c)){btlDeny('slots');return;}
 if(BTL.mana.p+(c.plan&&!btlLxFree(c,c.plan.kind)?1:0)<(btlLxFree(c,kind)?0:1)){btlDeny('mana');return;}
 const fz=BTL.fz;
 if(fz){if(fz.shown){btlFieldZoomHide(c);fz.shown=false;}if(fz.stop)fz.stop();BTL.fz=null;}
@@ -19523,6 +19571,7 @@ const lk=btlLock(c,t,'def',carry);await btlSleep(BTL.instNow?140:420);
 await btlBeam(btlRect(el),btlUnitRect(t),'def');
 lk.off();
 await btlShieldAdd(t,Math.max(0,Math.round(c.df)),true);
+await btlDbHook(c,t);
 }else{if(carry)carry.die(160);await btlLift(el);}
 await btlSettle(el);
 return;
@@ -20190,7 +20239,7 @@ e.style.left=Math.round(r.left+r.width/2)+'px';e.style.top=Math.round(r.top)+'px
 fx.appendChild(e);setTimeout(()=>e.remove(),1500);
 }
 async function btlDie0(c,defer){
-btlTbGain(c);
+btlTbGain(c);btlEcGain(c);
 btlEvBaroud(c);
 const el=btlUnitEl(c),slot=btlSlotOf(c);
 if(!el||!slot){const Q=BTL&&BTL.S[c.side];if(Q&&!c.leader&&Q.slots[c.slot]===c)Q.slots[c.slot]=null;return;}
@@ -25017,7 +25066,7 @@ for(const c of S.slots.slice()){
 if(BTL.over)return;
 if(!c||c.hp<=0||(BTL.mana.o<=0&&!btlLxFree(c,'atk'))||!btlCanAct(c))continue;
 let plan=null;
-if(c.atk<=0){const z=btlAiZeroDef(c);if(!z)continue;plan={kind:'def',tgt:z.uid,heal:false};}
+if(btlNoAtkC(c)){const z=btlAiZeroDef(c);if(!z)continue;plan={kind:'def',tgt:z.uid,heal:false};}
 else if(fine()){const d=aiFPlan(X,c);plan={kind:d.kind,tgt:d.tgt.uid,heal:false};}
 else{
 const allies=btlAlly(side).filter(t=>t.hp>0),foes=btlValidFoes('o');
@@ -26860,6 +26909,7 @@ if(!BTL_TB.ov&&!BTL_TB.warm){BTL_TB.warm=1;const w=()=>{try{btlTbOverlay();}catc
 }
 }
 async function btlTbFlush(){
+await btlEcFlush();
 if(!BTL||BTL.abort||!BTL.tbQ||!BTL.tbQ.size)return;
 if(BTL.over){BTL.tbQ.forEach(t=>{t._tbPend=0;if(btlOnField(t))btlPaint(t);});BTL.tbQ.clear();return;}
 const list=[...BTL.tbQ].filter(t=>!t._tbEat);list.forEach(t=>BTL.tbQ.delete(t));
@@ -32403,7 +32453,7 @@ if(side==='p')rec=btlRec('T'+hi+(usePre?btlRef(pre):'-'));
 t=usePre?pre:await btlChoose(btlTechSrc(side),cands,def.mode,def.n||0);
 if(!t){btlRecDrop(rec);return false;}
 }else if(side==='p')rec=btlRec('T'+hi+'-');
-S.hand=S.hand.filter(x=>x!==c);BTL.mana[side]-=btlTechCost(side,c);
+S.hand=S.hand.filter(x=>x!==c);BTL.mana[side]-=btlTechCost(side,c);btlTechUsedAdd(side,c);
 if(side==='p')btlRenderHand();else btlRenderOHand();
 btlRenderMana();btlRefreshCan();
 await(def.show?def.show(side,c,fromRect,el):btlTechShow(side,c,fromRect,el));
@@ -35398,6 +35448,386 @@ Object.assign(CARD_FX_TXT,{
 Object.assign(MUS.sfx.cfiles,{blrise:'sfx-blrise.mp3',blping:'sfx-blping.mp3',blpulse:'sfx-blpulse.mp3',blorb:'sfx-blorb.mp3',frcrack:'sfx-frcrack.mp3',frburst:'sfx-frburst.mp3',frgear:'sfx-frgear.mp3',frlock:'sfx-frlock.mp3',
 sneye:'sfx-sneye.mp3',snscan:'sfx-snscan.mp3',snup:'sfx-snup.mp3',vlcharge:'sfx-vlcharge.mp3',vlzap:'sfx-vlzap.mp3',vlshield:'sfx-vlshield.mp3',vlbreak:'sfx-vlbreak.mp3',cbboom:'sfx-cbboom.mp3'});
 Object.assign(MUS.sfx.ccards,{'BALISE':['blrise','blping','blpulse','blorb'],'FERRAILLEUR':['frcrack','frburst','frgear','frlock'],'SENTINELLE-9':['sneye','snscan','snup'],'VOLT':['vlcharge','vlzap','vlshield','vlbreak'],'COLIBRI':['cbboom']});
+function btlNoAtkC(c){return!c||c.atk<=0||(btlHas(c,'passif')&&btlFxN(c)==='DRONE-BOUCLIER');}
+function btlTechUsedAdd(side,c){if(!BTL)return;const U=BTL.techUsed||(BTL.techUsed={p:[],o:[]});U[side].push(c);}
+function btlRdScore(c){return c.tech?5:(c.atk|0)+(c.df|0)+(c.hp|0);}
+function btlRdAiPick(cards){let b=0;cards.forEach((c,i)=>{if(btlRdScore(c)>btlRdScore(cards[b]))b=i;});return b;}
+function btlRdTop(side){const P=BTL.S[side].pile,n=Math.min(3,P.length);return P.slice(P.length-n).reverse();}
+function btlRdApply(side,seen,i){
+const P=BTL.S[side].pile;P.splice(P.length-seen.length,seen.length);
+seen.forEach((c,k)=>{if(k===i)return;const pos=btlRnd(Array.from({length:P.length+1},(_,j)=>j));P.splice(pos,0,c);});
+P.push(seen[i]);
+}
+function btlEcGain(dead){
+const k=dead&&dead._killer;if(!BTL||!k||k===dead||k.side===dead.side||btlFxN(k)!=='ÉCLAIREUR'||!btlHas(k,'percee'))return;
+(BTL.ecQ||(BTL.ecQ=[])).push({side:k.side,k,at:btlSlotEl(dead.side,dead.slot)?btlRect(btlSlotEl(dead.side,dead.slot)):(dead._lr||null)});
+}
+async function btlEcFlush(){
+if(!BTL||BTL.abort||!BTL.ecQ||!BTL.ecQ.length)return;
+const Q=BTL.ecQ;BTL.ecQ=[];
+for(const q of Q){if(!BTL||BTL.over||BTL.abort)return;await btlEcFx(q);await btlDraw(q.side);}
+}
+async function btlDbHook(c,t){
+if(!c||!t||btlGone()||btlFxN(c)!=='DRONE-BOUCLIER'||!btlHas(c,'passif')||t.hp<=0)return;
+t.atk+=1;t.dbAtk=(t.dbAtk||0)+1;if(t.ultOn&&t.base)t.base.atk+=1;
+try{await btlDbFx(c,t);}catch(e){if(e==='abort')throw e;console.error(e);}
+if(btlOnField(t)){btlPaint(t);const el=btlUnitEl(t);if(el)el.classList.add('btl-db-on');}
+}
+function btlDbEnd(side){
+if(!BTL)return;
+['p','o'].forEach(s=>BTL.S[s].slots.concat([BTL.S[s].leader]).forEach(x=>{if(!x||!x.dbAtk)return;
+x.atk=Math.max(0,x.atk-x.dbAtk);x.dbAtk=0;const el=btlUnitEl(x);if(el){el.classList.remove('btl-db-on');btlPaint(x);btlStatPop(el,'s-atk','#ff9a2a');}}));
+}
+(function(){
+const css='.btl-db-on .cbt-st.s-atk{box-shadow:0 0 0 2px #ff9a2a,0 0 12px #ff8a1a,inset 0 0 6px #ffb45a;border-radius:50%;animation:btlDbOn 1.4s ease-in-out infinite}'
++'@keyframes btlDbOn{50%{box-shadow:0 0 0 2px #ffc070,0 0 18px #ff9a2a,inset 0 0 8px #ffd08a}}'
++'.btl-num.atkup{color:#ff9a2a;-webkit-text-stroke:.8px #ff9a2a;paint-order:stroke fill}'
++'.btl-rd-card{z-index:42}.btl-rd-card .btl-rd-holo{position:absolute;inset:-4px;border-radius:9px;pointer-events:none;border:1.5px solid rgba(80,255,150,.9);'
++'box-shadow:0 0 14px rgba(60,255,140,.75),inset 0 0 14px rgba(60,255,140,.35);background:repeating-linear-gradient(180deg,rgba(80,255,150,.10) 0 2px,transparent 2px 5px);animation:btlRdScan 1.1s linear infinite}'
++'@keyframes btlRdScan{to{background-position:0 25px}}.btl-rd-card.on .btl-rd-holo{border-color:#fff;box-shadow:0 0 22px #6dff9a,0 0 4px #fff,inset 0 0 18px rgba(120,255,170,.6)}'
++'.btl-rd-card.pick{pointer-events:auto;cursor:pointer}'
++'@media (prefers-reduced-motion:reduce){.btl-db-on .cbt-st.s-atk,.btl-rd-card .btl-rd-holo{animation:none}}';
+const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+})();
+function btlFlyCard(x,side,R,face){
+const e=document.createElement('div');e.className='btl-fly big';btlPlaceFixed(e,R);
+e.innerHTML='<div class="btl-fl-in"'+(face?' style="transform:rotateY(180deg)"':'')+'><div class="btl-ff a">'+(side==='p'||face?btlBigHtml(x):'')+'</div><div class="btl-ff b">'+btlBackHtml(x.rar,x.side)+'</div></div>';
+const rot=btlRotWrap(e);btlQ('#btlFx').appendChild(e);return{e,rot};
+}
+async function btlPileOut(o,R,side,faceUp,delay){
+const box=btlQ(side==='p'?'#btlMPile':'#btlOPile'),from=box?btlPileFrom(box):R,lift=btlPileLift(from,side),d=delay||0;
+btlPileEmerge(o.e,o.rot,side);
+{const z=getComputedStyle(o.e).zIndex;if(o.e._cw&&z&&z!=='auto')o.e._cw.style.zIndex=z;}
+btlAfter(()=>{if(o.e._cw)o.e._cw.style.clipPath='none';},d+760*.27);
+btlAnim(o.rot,[{transform:'rotate(90deg)'},{transform:'rotate(90deg)',offset:.25},{transform:'rotate(0deg)'}],{duration:760,delay:d,easing:'ease-in-out',fill:'both'}).catch(()=>{});
+if(faceUp)btlAnim(o.rot.firstChild,[{transform:'rotateY(0deg)'},{transform:'rotateY(0deg)',offset:.3},{transform:'rotateY(180deg)'}],{duration:760,delay:d,easing:'ease-in-out',fill:'both'}).catch(()=>{});
+await btlAnim(o.e,[{transform:btlXf(R,from)},{transform:btlXf(R,lift),offset:.25},{transform:btlXf(R,R)}],{duration:760,delay:d,easing:'cubic-bezier(.4,.1,.25,1)',fill:'both'});
+}
+async function btlPileIn(o,R,side){
+const box=btlQ(side==='p'?'#btlMPile':'#btlOPile');if(!box){o.e.remove();return;}
+const from=btlPileFrom(box),lift=btlPileLift(from,side),fl=o.rot.firstChild,faceNow=(()=>{try{return new DOMMatrix(getComputedStyle(fl).transform).m11<0;}catch(_){return false;}})();
+btlSnd('rdslide');
+btlAnim(o.rot,[{transform:'rotate(0deg)'},{transform:'rotate(90deg)'}],{duration:520,easing:'ease-in-out',fill:'both'}).catch(()=>{});
+btlAnim(fl,[{transform:'rotateY('+(faceNow?180:0)+'deg)'},{transform:'rotateY(0deg)'}],{duration:520,easing:'ease-in-out',fill:'both'}).catch(()=>{});
+await btlAnim(o.e,[{transform:btlXf(R,R)},{transform:btlXf(R,lift)}],{duration:520,easing:'cubic-bezier(.45,0,.3,1)',fill:'both'});
+const pl=btlRect(btlQ('#btlPlate')),vh=innerHeight,cw=document.createElement('div');
+cw.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;';
+cw.style.clipPath=side==='p'?'inset('+pl.bottom.toFixed(1)+'px 0 0 0)':'inset(0 0 '+(vh-pl.top).toFixed(1)+'px 0)';
+{const z=getComputedStyle(o.e).zIndex;if(z&&z!=='auto')cw.style.zIndex=z;}
+o.e.parentNode.insertBefore(cw,o.e);cw.appendChild(o.e);
+await btlAnim(o.e,[{transform:btlXf(R,lift)},{transform:btlXf(R,from)}],{duration:300,easing:'cubic-bezier(.5,0,.8,1)',fill:'both'});
+cw.remove();if(o.e._cw){o.e._cw.remove();o.e._cw=null;}
+btlFlashEl(box,'#6dff9a',.5,260);
+}
+function btlPileRect(side){const b=btlQ(side==='p'?'#btlMPile':'#btlOPile');return b?btlPileFrom(b):{left:innerWidth/2,top:innerHeight/2,width:1,height:1};}
+function btlRcCen(r){return{x:r.left+r.width/2,y:r.top+r.height/2};}
+async function btlRdAppel(c){
+if(btlGone()||!btlOnField(c))return;
+const side=c.side;
+if(pvpOn()&&side==='p'&&PVPC&&PVPC.rdSeen&&PVPC.rdSeen.length){
+const names=PVPC.rdSeen.shift(),P=BTL.S.p.pile;
+names.forEach((n,k)=>{const j=P.length-1-k;if(j>=0&&P[j].name!==n)P[j]=pvpReal('p',n,false);});
+}
+const seen=btlRdTop(side);if(!seen.length)return;
+let i=0,ui=null;
+const reduced=btlMlReduced();
+if(!reduced)await btlRdSweep(c);
+if(btlGone())return;
+try{
+ui=btlRdCards(side,seen,side==='p'&&!pvpOn());
+await ui.ready;
+if(pvpOn()){const e=pvpTapeNext(['c','r']);i=Math.min(e?(e.i|0):0,seen.length-1);}
+else if(side==='p'){i=await ui.choose();}
+else{i=btlRdAiPick(seen);await btlSleep(420);}
+}catch(e){if(e==='abort')throw e;console.error(e);}
+if(btlGone()){if(ui)ui.kill();return;}
+btlRdApply(side,seen,i);
+if(ui)await ui.out(i);else btlRenderPile(side,0);
+}
+async function btlRdSweep(c){
+const u=btlUnitEl(c),r=btlUnitRect(c),cx=r.left+r.width/2,cy=r.top+r.height/2,cw=r.width,TAU=BTL_RX.TAU,E=BTL_RX.E,sm=btlRxSm;
+const R=cw*2.6,K=.7;
+const sfx={},once=(k,key,tm,at)=>{if(!sfx[k]&&tm>=at){sfx[k]=1;btlSnd(key);}};
+const parts=[],blips=[];
+['p','o'].forEach(s=>BTL.S[s].slots.forEach(x=>{if(!x||x===c||x.hp<=0)return;const q=btlUnitRect(x),bx=q.left+q.width/2,by=q.top+q.height/2;
+if(Math.hypot(bx-cx,(by-cy)/K)<R*1.05)blips.push({x:bx,y:by,a:Math.atan2((by-cy)/K,bx-cx),hit:0,w:q.width});}));
+if(u)btlAnim(u,[{filter:'brightness(1)'},{filter:'brightness(1.35) drop-shadow(0 0 8px #4dff8a)',offset:.15},{filter:'brightness(1.15) drop-shadow(0 0 5px #4dff8a)',offset:.85},{filter:'brightness(1)'}],{duration:1300*BTL_TS,easing:'ease-in-out'}).catch(()=>{});
+await btlRxRun(1300,(C,tm,dt)=>{
+const g=C.g,on=Math.min(sm(0,160,tm),1-sm(1120,1300,tm));
+for(let k=0;k<3;k++)once('p'+k,'rdping',tm,k*300);
+once('s','rdsweep',tm,120);
+btlRxVignette(g,C.W,C.H,cx,cy,cw*1.2,.8*on);
+g.save();g.globalCompositeOperation='lighter';g.strokeStyle='rgba(80,255,140,'+(.22*on)+')';g.lineWidth=.8;
+for(let k=1;k<=3;k++){g.beginPath();g.ellipse(cx,cy,R*k/3,R*K*k/3,0,0,TAU);g.stroke();}
+g.beginPath();g.moveTo(cx-R,cy);g.lineTo(cx+R,cy);g.moveTo(cx,cy-R*K);g.lineTo(cx,cy+R*K);g.stroke();g.restore();
+for(let k=0;k<3;k++){const f=sm(k*300,k*300+820,tm);if(f<=0||f>=1)continue;
+const gw=r.width/2+f*R*.95,gh=r.height/2+f*R*K*.95,a=(1-f)*(1-f)*on,rr=Math.min(gw,gh)*.35;
+g.save();g.globalCompositeOperation='lighter';
+const path=()=>{g.beginPath();g.moveTo(cx-gw+rr,cy-gh);g.arcTo(cx+gw,cy-gh,cx+gw,cy+gh,rr);g.arcTo(cx+gw,cy+gh,cx-gw,cy+gh,rr);g.arcTo(cx-gw,cy+gh,cx-gw,cy-gh,rr);g.arcTo(cx-gw,cy-gh,cx+gw,cy-gh,rr);g.closePath();};
+g.strokeStyle='rgba(70,255,140,'+(.28*a)+')';g.lineWidth=9;path();g.stroke();
+g.strokeStyle='rgba(120,255,170,'+(.9*a)+')';g.lineWidth=2;path();g.stroke();
+g.strokeStyle='rgba(255,255,255,'+(.7*a)+')';g.lineWidth=.7;path();g.stroke();g.restore();
+if(f<.25)btlRxGlow(g,'80,255,140',cx,cy,cw*(.8+f*2),.5*(1-f*4));}
+if(tm>120&&tm<1250){const f=sm(120,1250,tm),ang=-Math.PI/2+E.inOut(f)*TAU*1.25,a0=on;
+g.save();g.globalCompositeOperation='lighter';
+for(let k=0;k<16;k++){const w=.045,aa=ang-k*w;g.fillStyle='rgba(60,255,130,'+(a0*.32*(1-k/16))+')';g.beginPath();g.moveTo(cx,cy);g.ellipse(cx,cy,R,R*K,0,aa-w,aa);g.closePath();g.fill();}
+g.strokeStyle='rgba(210,255,225,'+a0+')';g.lineWidth=1.6;g.beginPath();g.moveTo(cx,cy);g.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R*K);g.stroke();g.restore();
+blips.forEach(b=>{const d=((ang-b.a)%TAU+TAU)%TAU;if(d<.3&&!b.hit){b.hit=tm;btlRxEmit(parts,b.x,b.y,0,TAU,6,.05,{rgb:'120,255,170',life:360,g:0,k:'d',w:1.2});}});}
+blips.forEach(b=>{if(!b.hit)return;const f=sm(b.hit,b.hit+520,tm);if(f>=1)return;btlRxRing(g,b.x,b.y,b.w*(.3+.45*f),.7,'90,255,150',1-f,1.6);btlRxGlow(g,'90,255,150',b.x,b.y,b.w*.5,.45*(1-f));});
+btlRxGlow(g,'80,255,140',cx,cy,cw*(.75+.1*Math.sin(tm/50)),.35*on);
+btlRxParts(g,parts,dt);
+});
+}
+function btlRdCards(side,seen,interactive){
+const fx=btlQ('#btlFx'),VW=innerWidth,VH=innerHeight,n=seen.length;
+const W=Math.min((VW-56)/3*.92,VH*.27/BTL_RATIO),H=W*BTL_RATIO,gap=10,x0=(VW-(W*n+gap*(n-1)))/2,y=VH*.48-H/2;
+const R=seen.map((_,i)=>({left:x0+i*(W+gap),top:y,width:W,height:H}));
+const ov=document.createElement('div');ov.className='btl-mch-ov'+(interactive?'':' ro');ov.style.pointerEvents=interactive?'auto':'none';
+ov.innerHTML='<div class="mch-tt"><b style="color:#dfffe8;text-shadow:0 0 12px rgba(80,255,150,.8)">'+(interactive?'RADAR — CHOISIS TA PROCHAINE CARTE':side==='p'?'RADAR — TA PROCHAINE CARTE':'RADAR DE L\'ADVERSAIRE')+'</b><span>'+(interactive?'les autres repartent au hasard dans ta pioche':'les autres repartent au hasard dans la pioche')+'</span></div>';
+fx.appendChild(ov);
+btlAnim(ov,[{opacity:0},{opacity:1}],{duration:240,easing:'ease-out',fill:'both'}).catch(()=>{});
+const showFace=side==='p';
+btlRenderPile(side,-n);
+const fl=seen.map(x=>btlFlyCard(x,side,R[0],false));
+fl.forEach((o,i)=>{btlPlaceFixed(o.e,R[i]);o.e.classList.add('btl-rd-card');if(interactive)o.e.classList.add('pick');const h=document.createElement('i');h.className='btl-rd-holo';h.style.opacity='0';o.e.appendChild(h);o.h=h;});
+const ready=(async()=>{
+await Promise.all(fl.map((o,i)=>(async()=>{await btlSleep(i*150);btlSnd('rdcards');await btlPileOut(o,R[i],side,showFace,0);
+btlAnim(o.h,[{opacity:0},{opacity:1}],{duration:260,fill:'both'}).catch(()=>{});btlRing(R[i],'#6dff9a',false);})()));
+await btlSleep(160);
+})();
+let pk=null;
+const choose=()=>new Promise(res=>{
+if(BTL.timeUp){const k=btlRnd(seen.map((_,j)=>j));btlRecDec('r');res(k);return;}
+pk={done:false};
+const end=(k,rnd)=>{if(pk.done)return;pk.done=true;if(BTL&&BTL.pick===pk)BTL.pick=null;btlRecDec(rnd?'r':k);fl.forEach(o=>o.e.onpointerdown=null);res(k);};
+pk.auto=()=>end(btlRnd(seen.map((_,j)=>j)),true);
+pk.choose=k=>end(Math.max(0,Math.min(n-1,k|0)),false);
+BTL.pick=pk;
+fl.forEach((o,k)=>{o.e.onpointerdown=ev=>{ev.preventDefault();ev.stopPropagation();end(k,false);};});
+});
+const kill=()=>{fl.forEach(o=>{if(o.e._cw)o.e._cw.remove();o.e.remove();});ov.remove();btlRenderPile(side,0);};
+const out=async k=>{
+if(btlGone()){kill();return;}
+const sel=fl[k];
+btlSnd('rdlock');
+fl.forEach(o=>{if(o.h)btlAnim(o.h,[{opacity:1},{opacity:0}],{duration:220,easing:'ease-out',fill:'both'}).then(()=>o.h.remove(),()=>o.h.remove());});
+const up={left:R[k].left-W*.06,top:R[k].top-H*.08,width:W*1.12,height:H*1.12};
+btlAnim(sel.e,[{transform:btlXf(R[k],R[k])},{transform:btlXf(R[k],up)}],{duration:260,easing:'cubic-bezier(.3,.8,.3,1)',fill:'both'}).catch(()=>{});
+fl.forEach((o,j)=>{if(j!==k)btlAnim(o.e,[{opacity:1,filter:'brightness(1)'},{opacity:.75,filter:'brightness(.55) saturate(.6)'}],{duration:260,fill:'both'}).catch(()=>{});});
+await btlRdLock(up);
+btlAnim(ov,[{opacity:1},{opacity:0}],{duration:360,easing:'ease-in',fill:'both'}).then(()=>ov.remove(),()=>ov.remove());
+const others=fl.map((o,j)=>({o,j})).filter(z=>z.j!==k);
+await Promise.all(others.map((z,i)=>(async()=>{await btlSleep(i*140);
+btlAnim(z.o.e,[{opacity:.75,filter:'brightness(.55) saturate(.6)'},{opacity:1,filter:'brightness(1)'}],{duration:200,fill:'both'}).catch(()=>{});
+await btlPileIn(z.o,R[z.j],side);z.o.e.remove();})()));
+btlRenderPile(side,-1);
+const pileEl=btlQ(side==='p'?'#btlMPile':'#btlOPile');
+if(others.length){btlSnd('rdshuffle');if(pileEl)btlShake(pileEl,3);await btlSleep(260);}
+await btlPileIn(sel,up,side);sel.e.remove();btlRenderPile(side,0);
+if(pileEl){btlFlashEl(pileEl,'#6dff9a',.9,420);btlRing(btlRect(pileEl),'#6dff9a',false);}
+await btlSleep(220);
+};
+return{ready,choose,out,kill};
+}
+async function btlRdLock(r){
+if(btlMlReduced()){btlRing(r,'#6dff9a',false);await btlSleep(200);return;}
+const c=btlRcCen(r),E=BTL_RX.E,sm=btlRxSm,TAU=BTL_RX.TAU;
+await btlRxRun(420,(C,tm)=>{
+const g=C.g,f=E.outC(sm(0,260,tm)),a=1-sm(300,420,tm),m=1+(1-f)*.6,hw=r.width*.58*m,hh=r.height*.55*m,L=12;
+g.save();g.globalCompositeOperation='lighter';g.strokeStyle='rgba(120,255,170,'+a+')';g.lineWidth=2.2;
+[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy])=>{const x=c.x+sx*hw,y=c.y+sy*hh;g.beginPath();g.moveTo(x-sx*L,y);g.lineTo(x,y);g.lineTo(x,y-sy*L);g.stroke();});
+g.beginPath();g.arc(c.x,c.y,r.width*.2*m,0,TAU);g.stroke();g.beginPath();g.moveTo(c.x-r.width*.3,c.y);g.lineTo(c.x+r.width*.3,c.y);g.moveTo(c.x,c.y-r.width*.3);g.lineTo(c.x,c.y+r.width*.3);g.stroke();
+g.restore();btlRxGlow(g,'90,255,150',c.x,c.y,r.width*.9,.45*a);
+});
+}
+async function btlMuPassif(c){
+if(btlGone()||!btlOnField(c))return;
+const t=BTL.S[c.side].slots[c.slot+1];
+if(!t||t.hp<=0||t.dying)return;
+if(btlMlReduced()){await btlShieldAdd(t,1,false,{num:{dx:0,ty:.5}});return;}
+const r=btlUnitRect(c),tr=btlUnitRect(t),cw=r.width,TAU=BTL_RX.TAU,E=BTL_RX.E,sm=btlRxSm;
+const ax=r.left+cw/2,ay=r.top+r.height*.06,bx=tr.left+tr.width/2,by=tr.top+tr.height*.5;
+const parts=[],sfx={},once=(k,key,tm,at)=>{if(!sfx[k]&&tm>=at){sfx[k]=1;btlSnd(key);}};
+const PW=cw*.62,PH=cw*.4;
+const plate=(g,x,y,sc,rx,rz,a)=>{
+const w=PW*sc,h=PH*sc*Math.max(.12,Math.abs(Math.cos(rx))),face=Math.cos(rx)>=0,bev=Math.min(w,h)*.16;
+g.save();g.translate(x,y);g.rotate(rz);g.globalAlpha=a;
+g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(4,h*.7+6,w*.5,h*.18+2,0,0,TAU);g.fill();
+g.fillStyle='#2c3440';g.fillRect(-w/2,-h/2+3,w,h);
+let gr=g.createLinearGradient(0,-h/2,0,h/2);gr.addColorStop(0,face?'#f1f6fb':'#9aa6b3');gr.addColorStop(.45,face?'#9fb1c4':'#5d6876');gr.addColorStop(1,face?'#47566a':'#2a323c');
+g.fillStyle=gr;g.beginPath();g.moveTo(-w/2+bev,-h/2);g.lineTo(w/2-bev,-h/2);g.lineTo(w/2,-h/2+bev);g.lineTo(w/2,h/2-bev);g.lineTo(w/2-bev,h/2);g.lineTo(-w/2+bev,h/2);g.lineTo(-w/2,h/2-bev);g.lineTo(-w/2,-h/2+bev);g.closePath();g.fill();
+g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=1;g.beginPath();g.moveTo(-w/2+bev,-h/2+.5);g.lineTo(w/2-bev,-h/2+.5);g.stroke();
+g.strokeStyle='rgba(20,30,45,.8)';g.lineWidth=.8;g.strokeRect(-w*.36,-h*.28,w*.72,h*.56);
+g.fillStyle='#4ea8ff';g.fillRect(-w*.3,-h*.06,w*.6,Math.max(1.2,h*.1));
+[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy])=>{const rx2=sx*w*.42,ry2=sy*h*.34;const rg=g.createRadialGradient(rx2-1,ry2-1,0,rx2,ry2,2.6*sc);
+rg.addColorStop(0,'#fff');rg.addColorStop(1,'#4a5563');g.fillStyle=rg;g.beginPath();g.arc(rx2,ry2,2.2*sc,0,TAU);g.fill();});
+const sh=((performance.now()/6)%(w*2))-w;g.save();g.beginPath();g.rect(-w/2,-h/2,w,h);g.clip();
+const lg=g.createLinearGradient(sh-12,0,sh+12,0);lg.addColorStop(0,'rgba(255,255,255,0)');lg.addColorStop(.5,'rgba(255,255,255,.55)');lg.addColorStop(1,'rgba(255,255,255,0)');
+g.fillStyle=lg;g.fillRect(-w/2,-h/2,w,h);g.restore();
+g.restore();
+};
+const T={rise:460,fly0:480,hit:1000,end:1400};
+let added=null;
+btlFlashEl(btlUnitEl(c),'#ffb45a',.5,300);
+await btlRxRun(T.end,(C,tm,dt)=>{
+const g=C.g;
+once('o','muopen',tm,0);once('w','muwhoosh',tm,T.fly0);once('c','muclamp',tm,T.hit-10);
+const ej=sm(0,180,tm)*(1-sm(260,520,tm));if(ej>0){btlRxGlow(g,'255,200,120',ax,r.top,cw*.9,.7*ej);btlRxGlow(g,'160,210,255',ax,r.top,cw*.35,ej);
+g.save();g.globalCompositeOperation='lighter';const lg=g.createLinearGradient(r.left,0,r.right,0);lg.addColorStop(0,'rgba(255,200,120,0)');lg.addColorStop(.5,'rgba(255,230,180,'+(.9*ej)+')');lg.addColorStop(1,'rgba(255,200,120,0)');
+g.fillStyle=lg;g.fillRect(r.left,r.top-1.5,cw,3);g.restore();}
+if(tm>60&&tm<T.hit+260){
+let x=ax,y=ay,sc=.6,rx=0,rz=0,a=1;
+if(tm<T.fly0){const f=E.outC(sm(60,T.rise,tm));y=ay-f*cw*.55;sc=.55+.35*f;rx=f*Math.PI*1.6;a=Math.min(1,f*4);}
+else if(tm<T.hit){const f=E.inOut(sm(T.fly0,T.hit,tm));x=btlRxLerp(ax,bx,f);y=btlRxLerp(ay-cw*.55,by,f)-Math.sin(f*Math.PI)*cw*.5;sc=.9+.25*Math.sin(f*Math.PI);rx=Math.PI*1.6+f*Math.PI*2.4;rz=(1-f)*.5;
+if(Math.random()<.5)btlRxEmit(parts,x,y,Math.atan2(ay-by,ax-bx),.6,1,.05,{rgb:'150,200,255',life:260,g:0,k:'d',w:1});}
+else{const f=sm(T.hit,T.hit+260,tm);x=bx;y=by;sc=.95*(1+.12*Math.sin(f*Math.PI));rx=4*Math.PI;a=1-f;}
+btlRxGlow(g,'120,190,255',x,y,PW*.9*sc,.35*a);
+plate(g,x,y,sc,rx,rz,a);
+}
+if(!sfx.hitFx&&tm>=T.hit){sfx.hitFx=1;btlRxEmit(parts,bx,by,-Math.PI/2,TAU,22,.3,{rgb:'255,220,150',life:420});btlRxEmit(parts,bx,by,-Math.PI/2,2.2,6,.2,{k:'p',g:.001,life:600,sz:5});btlShake(btlUnitEl(t),3);
+added=btlShieldAdd(t,1,false,{num:{dx:0,ty:.5}});}
+if(tm>=T.hit){const f=sm(T.hit,T.hit+300,tm);btlRxRing(g,bx,by,tr.width*(.3+.5*f),.5,'120,190,255',1-f,2);}
+btlRxParts(g,parts,dt);
+});
+if(added)await added;else if(btlOnField(t))await btlShieldAdd(t,1,false,{num:{dx:0,ty:.5}});
+}
+async function btlEcFx(q){
+if(btlGone()||btlMlReduced())return;
+const k=q.k,onF=btlOnField(k),kr=onF?btlUnitRect(k):null,src=q.at||kr;if(!src)return;
+const pr=btlPileRect(q.side),s=btlRcCen(src),d=btlRcCen(pr),vx=kr?kr.left+kr.width/2:s.x,vy=kr?kr.top+kr.height*.3:s.y;
+const parts=[],E=BTL_RX.E,sm=btlRxSm,TAU=BTL_RX.TAU;
+btlSnd('ecdata');if(onF)btlFlashEl(btlUnitEl(k),'#38e1ff',.7,300);
+const pk=Array.from({length:9},(_,i)=>({t0:120+i*45,o:(Math.random()-.5)*60}));
+await btlRxRun(720,(C,tm,dt)=>{
+const g=C.g;
+if(onF){const f=1-sm(0,360,tm);btlRxGlow(g,'56,225,255',vx,vy,kr.width*(.4+.5*f),.9*f);
+g.save();g.globalCompositeOperation='lighter';const fl=g.createLinearGradient(vx-kr.width,0,vx+kr.width,0);fl.addColorStop(0,'rgba(56,225,255,0)');fl.addColorStop(.5,'rgba(160,240,255,'+(.8*f)+')');fl.addColorStop(1,'rgba(56,225,255,0)');
+g.fillStyle=fl;g.fillRect(vx-kr.width,vy-1,kr.width*2,2);g.restore();}
+pk.forEach(p=>{const f=sm(p.t0,p.t0+420,tm);if(f<=0||f>=1)return;const e=E.inOut(f),mx=(s.x+d.x)/2+p.o,my=Math.min(s.y,d.y)-60;
+const x=(1-e)*(1-e)*s.x+2*(1-e)*e*mx+e*e*d.x,y=(1-e)*(1-e)*s.y+2*(1-e)*e*my+e*e*d.y;
+g.save();g.globalCompositeOperation='lighter';g.fillStyle='rgba(190,245,255,.95)';g.fillRect(x-2.5,y-1.5,5,3);g.restore();btlRxGlow(g,'56,200,255',x,y,12,.8);
+if(Math.random()<.6)btlRxEmit(parts,x,y,0,TAU,1,.01,{rgb:'90,210,255',life:220,g:0,k:'d',w:1});});
+const fz=sm(520,720,tm);if(fz>0&&fz<1)btlRxRing(g,d.x,d.y,pr.width*(.3+.7*fz),.6,'56,225,255',1-fz,2);
+btlRxParts(g,parts,dt);
+});
+}
+async function btlRcAppel(c){
+if(btlGone()||!btlOnField(c))return;
+const side=c.side,U=(BTL.techUsed||(BTL.techUsed={p:[],o:[]}))[side];
+let card=null;
+if(U.length){card=btlRnd(U);U.splice(U.indexOf(card),1);const P=BTL.S[side].pile;const pos=btlRnd(Array.from({length:P.length+1},(_,j)=>j));card._big=null;P.splice(pos,0,card);}
+if(btlMlReduced()){btlFlashEl(btlUnitEl(c),card?'#5dff7a':'#888',.7,360);btlRenderPile(side,0);await btlSleep(300);return;}
+const r=btlUnitRect(c),cx=r.left+r.width/2,cy=r.top+r.height/2,cw=r.width,TAU=BTL_RX.TAU,E=BTL_RX.E,sm=btlRxSm;
+const parts=[],sfx={},once=(k,key,tm,at)=>{if(!sfx[k]&&tm>=at){sfx[k]=1;btlSnd(key);}};
+const end=card?900:1100,ok=!!card;
+if(ok)btlRenderPile(side,-1);
+btlFlashEl(btlUnitEl(c),'#5dff7a',.5,300);
+const VW=innerWidth,VH=innerHeight,W=Math.min(VW*.36,VH*.24/BTL_RATIO),H=W*BTL_RATIO,mid={left:(VW-W)/2,top:VH*.45-H/2,width:W,height:H},mc=btlRcCen(mid);
+await btlRxRun(end,(C,tm,dt)=>{
+const g=C.g;
+once('s','rcspin',tm,0);if(!ok)once('f','rcfail',tm,820);
+const on=E.outC(sm(0,220,tm)),fade=ok?1:1-sm(820,1100,tm),grey=ok?0:sm(700,900,tm),rgb=grey>.5?'150,160,155':'80,255,120';
+const R=cw*.62*on,rot=tm/170,tilt=.38;
+for(let k=0;k<3;k++){const a0=rot+k*TAU/3;
+for(let s=0;s<12;s++){const a=a0+s*.07,x=cx+Math.cos(a)*R,y=cy+Math.sin(a)*R*tilt,front=Math.sin(a)>0,w=(5+s*.35)*(front?1.1:.75);
+g.save();g.globalCompositeOperation='lighter';g.fillStyle='rgba('+rgb+','+((front?.85:.35)*fade*(s/12))+')';g.beginPath();g.arc(x,y,w*.45,0,TAU);g.fill();g.restore();}
+const ah=a0+12*.07,hx=cx+Math.cos(ah)*R,hy=cy+Math.sin(ah)*R*tilt,tx=-Math.sin(ah),ty=Math.cos(ah)*tilt,L=Math.hypot(tx,ty)||1,ux=tx/L,uy=ty/L;
+g.save();g.fillStyle='rgba('+(grey>.5?'200,210,205':'200,255,210')+','+fade+')';g.beginPath();g.moveTo(hx+ux*9,hy+uy*9);g.lineTo(hx-uy*7,hy+ux*7);g.lineTo(hx+uy*7,hy-ux*7);g.closePath();g.fill();g.restore();
+btlRxGlow(g,rgb,hx,hy,18,.7*fade);}
+btlRxGlow(g,rgb,cx,cy,cw*(.6+.2*Math.sin(tm/60)),.4*on*fade);
+if(ok&&tm>200&&tm<820&&Math.random()<.9){const a=Math.random()*TAU,dd=W*(1.1+Math.random()*.6);parts.push({x:mc.x+Math.cos(a)*dd,y:mc.y+Math.sin(a)*dd,vx:-Math.cos(a)*dd/340,vy:-Math.sin(a)*dd/340,life:330,age:0,w:1.4,rgb:'120,255,150',g:0,k:Math.random()<.3?'p':'s',rot:Math.random()*6,vr:.02,sz:4,col:'#2a5a34'});}
+if(ok){const f=sm(250,900,tm);btlRxGlow(g,'80,255,120',mc.x,mc.y,W*(.5+f*.6),.5*f);}
+btlRxParts(g,parts,dt);
+});
+if(!ok||btlGone())return;
+const fx=btlQ('#btlFx'),e=document.createElement('div');e.className='btl-fly big';btlPlaceFixed(e,mid);
+e.innerHTML='<div class="btl-fl-in" style="transform:rotateY(180deg)"><div class="btl-ff a">'+btlBigHtml(card)+'</div><div class="btl-ff b">'+btlBackHtml(card.rar,card.side)+'</div></div>';
+btlRotWrap(e);
+const sc=document.createElement('i');sc.style.cssText='position:absolute;inset:0;border-radius:6%;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(90,255,140,.35) 0 2px,transparent 2px 5px);mix-blend-mode:screen';
+e.appendChild(sc);fx.appendChild(e);
+btlSnd('rcbuild');
+try{
+await btlAnim(e,[{opacity:0,filter:'sepia(1) hue-rotate(70deg) saturate(4) brightness(1.6) blur(3px)',clipPath:'inset(100% -30% -30% -30%)'},
+{opacity:.9,filter:'sepia(1) hue-rotate(70deg) saturate(4) brightness(1.5) blur(0px)',clipPath:'inset(-30% -30% -30% -30%)',offset:.55},
+{opacity:1,filter:'none',clipPath:'inset(-30% -30% -30% -30%)'}],{duration:760,easing:'ease-out',fill:'both'});
+sc.remove();btlRing(mid,'#5dff7a',false);
+await btlSleep(260);
+const pileEl=btlQ(side==='p'?'#btlMPile':'#btlOPile');
+btlSnd('rcin');
+await btlPileIn({e,rot:e.querySelector('.btl-rot')},mid,side);
+e.remove();btlRenderPile(side,0);
+if(pileEl){btlFlashEl(pileEl,'#5dff7a',.9,420);btlShake(pileEl,3);btlRing(btlRect(pileEl),'#5dff7a',false);const pc=btlRcCen(btlPileRect(side));btlParticles(pc.x,pc.y,{n:12,color:'#5dff7a',dist:40,dur:520,size:4});}
+await btlSleep(240);
+}finally{if(e._cw)e._cw.remove();e.remove();btlRenderPile(side,0);}
+}
+async function btlDbFx(c,t){
+const tr=btlUnitRect(t),el=btlUnitEl(t);
+const up=()=>{if(!btlOnField(t))return;btlPaint(t);const u=btlUnitEl(t);if(u){btlStatPop(u,'s-atk','#ff9a2a');u.classList.add('btl-db-on');}btlFloatNum(tr,'+1','atkup',{dx:-.22,ty:.75});};
+if(btlMlReduced()){up();await btlSleep(300);return;}
+const r=btlOnField(c)?btlUnitRect(c):tr,TAU=BTL_RX.TAU,E=BTL_RX.E,sm=btlRxSm;
+const sx=r.left+r.width/2,sy=r.top+r.height*.3,tx=tr.left+tr.width/2,ty=tr.top+tr.height/2,dir=t.side==='p'?-1:1;
+const hx=tx,hy=ty+dir*tr.height*.62,cw=tr.width;
+const parts=[],sfx={},once=(k,key,tm,at)=>{if(!sfx[k]&&tm>=at){sfx[k]=1;btlSnd(key);}};
+const drone=(g,x,y,s,tm)=>{
+g.save();g.translate(x,y);
+g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(3,s*.9,s*1.1,s*.22,0,0,TAU);g.fill();
+[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>{const rx=a*s*.9,ry=b*s*.42;
+g.strokeStyle='#3c4654';g.lineWidth=2;g.beginPath();g.moveTo(0,0);g.lineTo(rx,ry);g.stroke();
+g.fillStyle='rgba(160,200,255,.25)';g.beginPath();g.ellipse(rx,ry,s*.42,s*.14,0,0,TAU);g.fill();
+g.strokeStyle='rgba(80,170,255,.9)';g.lineWidth=1.2;g.beginPath();g.ellipse(rx,ry,s*.42,s*.14,0,0,TAU);g.stroke();
+const bl=tm/18+a;g.strokeStyle='rgba(230,240,255,.6)';g.beginPath();g.moveTo(rx-Math.cos(bl)*s*.38,ry-Math.sin(bl)*s*.12);g.lineTo(rx+Math.cos(bl)*s*.38,ry+Math.sin(bl)*s*.12);g.stroke();});
+let gr=g.createRadialGradient(-s*.2,-s*.25,s*.05,0,0,s*.6);gr.addColorStop(0,'#ffffff');gr.addColorStop(.4,'#c9d3de');gr.addColorStop(1,'#3b4653');
+g.fillStyle=gr;g.beginPath();g.ellipse(0,0,s*.6,s*.34,0,0,TAU);g.fill();
+g.fillStyle='#a9c7ff';g.beginPath();g.ellipse(0,s*.02,s*.2,s*.12,0,0,TAU);g.fill();
+g.fillStyle='#ffb45a';[-1,1].forEach(a=>{g.beginPath();g.arc(a*s*.42,-s*.05,1.6,0,TAU);g.fill();});
+g.restore();btlRxGlow(g,'80,170,255',x,y,s*1.2,.7);btlRxGlow(g,'220,240,255',x,y+s*.02,s*.3,.9);
+};
+const cells=[];for(let q=-2;q<=2;q++)for(let rr=-1;rr<=1;rr++){const cx2=q*.3+(rr&1?.15:0),cy2=rr*.26;if(Math.abs(cx2)<.72)cells.push([cx2,cy2]);}
+const T={fly:340,sh0:300,sh:640,pulse0:720,pulse:300,end:1400};
+await btlRxRun(T.end,(C,tm,dt)=>{
+const g=C.g;
+once('f','dbfly',tm,0);once('s','dbshield',tm,T.sh0);once('p','dbpulse',tm,T.pulse0);
+const ff=E.outC(sm(0,T.fly,tm)),dx=btlRxLerp(sx,hx,ff),dy=btlRxLerp(sy,hy,ff)+Math.sin(tm/90)*2,ds=cw*.2;
+const sa=sm(T.sh0,T.sh0+240,tm)*(1-sm(T.end-320,T.end,tm));
+if(sa>0){const Rw=cw*1.05,Rh=cw*.62,oy=ty+dir*tr.height*.38;
+g.save();g.globalCompositeOperation='lighter';
+cells.forEach(([u,v],i)=>{const px=tx+u*Rw,py=oy+v*Rh*.5-dir*Math.abs(u)*Math.abs(u)*Rh*.5,wave=sm(T.sh0+Math.hypot(u,v)*260,T.sh0+Math.hypot(u,v)*260+200,tm),rr=cw*.13;
+if(wave<=0)return;const a=sa*wave;
+g.beginPath();for(let k=0;k<6;k++){const ang=k/6*TAU+Math.PI/6;g[k?'lineTo':'moveTo'](px+Math.cos(ang)*rr,py+Math.sin(ang)*rr*.82);}g.closePath();
+const hg=g.createLinearGradient(px,py-rr,px,py+rr);hg.addColorStop(0,'rgba(150,215,255,'+(.38*a)+')');hg.addColorStop(1,'rgba(40,120,255,'+(.16*a)+')');
+g.fillStyle=hg;g.fill();g.strokeStyle='rgba(150,220,255,'+(.95*a)+')';g.lineWidth=1.2;g.stroke();});
+const sw=((tm-T.sh0)/700)%1,lx=tx-Rw+sw*Rw*2;const lg=g.createLinearGradient(lx-20,0,lx+20,0);lg.addColorStop(0,'rgba(255,255,255,0)');lg.addColorStop(.5,'rgba(255,255,255,'+(.35*sa)+')');lg.addColorStop(1,'rgba(255,255,255,0)');
+g.fillStyle=lg;g.fillRect(tx-Rw,oy-Rh*.7,Rw*2,Rh*1.4);
+g.restore();btlRxGlow(g,'60,150,255',tx,oy,Rw*.9,.3*sa);}
+if(tm>=T.pulse0&&tm<T.pulse0+T.pulse+200){
+const f=sm(T.pulse0,T.pulse0+T.pulse,tm),ax=tr.left+tr.width*.28,ay=tr.top+tr.height*.82,e=E.inC(f),x=btlRxLerp(dx,ax,e),y=btlRxLerp(dy,ay,e);
+if(f<1){g.save();g.globalCompositeOperation='lighter';const lg=g.createLinearGradient(dx,dy,x,y);lg.addColorStop(0,'rgba(255,140,40,0)');lg.addColorStop(1,'rgba(255,200,120,.95)');
+g.strokeStyle=lg;g.lineWidth=3;g.lineCap='round';g.beginPath();g.moveTo(dx,dy);g.lineTo(x,y);g.stroke();g.restore();btlRxGlow(g,'255,150,40',x,y,16,1);}
+if(!sfx.pf&&f>=1){sfx.pf=1;up();btlRxEmit(parts,ax,ay,-Math.PI/2,TAU,16,.22,{rgb:'255,170,70',life:420});}
+}
+drone(g,dx,dy,ds,tm);
+btlRxParts(g,parts,dt);
+});
+if(!sfx.pf)up();
+}
+BTL_CARD_FX['RADAR']={appel:btlRdAppel};
+BTL_CARD_FX['MULET']={passif:{quand:'debut',run:btlMuPassif}};
+BTL_CARD_FX['ÉCLAIREUR']={};
+BTL_CARD_FX['RECYCLEUR']={appel:btlRcAppel};
+BTL_CARD_FX['DRONE-BOUCLIER']={passif:{quand:'defense',run:async()=>{}}};
+Object.assign(BTL_CARD_KW,{'RADAR':['appel'],'MULET':['passif'],'ÉCLAIREUR':['percee'],'RECYCLEUR':['appel'],'DRONE-BOUCLIER':['passif']});
+Object.assign(CARD_FX_TXT,{
+'RADAR':[['appel','regarde les 3 prochaines cartes de ta pioche et choisis celle que tu pioches en premier.']],
+'MULET':[['passif','au début de ton tour, la carte alliée à sa droite gagne +1 DEF.']],
+'ÉCLAIREUR':[['percee','s’il détruit une carte, tu pioches une carte.']],
+'RECYCLEUR':[['appel','une carte Tech que tu as déjà jouée (au hasard) retourne dans ta pioche.']],
+'DRONE-BOUCLIER':[['passif','ne peut pas attaquer. Quand il DÉFEND un allié, cet allié gagne aussi +1 ATQ jusqu’à la fin du tour.']]
+});
+Object.assign(MUS.sfx.cfiles,{rdping:'sfx-rdping.mp3',rdslide:'sfx-rdslide.mp3',rdsweep:'sfx-rdsweep.mp3',rdcards:'sfx-rdcards.mp3',rdlock:'sfx-rdlock.mp3',rdshuffle:'sfx-rdshuffle.mp3',
+muopen:'sfx-muopen.mp3',muwhoosh:'sfx-muwhoosh.mp3',muclamp:'sfx-muclamp.mp3',ecdata:'sfx-ecdata.mp3',rcspin:'sfx-rcspin.mp3',rcfail:'sfx-rcfail.mp3',rcbuild:'sfx-rcbuild.mp3',rcin:'sfx-rcin.mp3',
+dbfly:'sfx-dbfly.mp3',dbshield:'sfx-dbshield.mp3',dbpulse:'sfx-dbpulse.mp3'});
+Object.assign(MUS.sfx.ccards,{'RADAR':['rdping','rdslide','rdsweep','rdcards','rdlock','rdshuffle'],'MULET':['muopen','muwhoosh','muclamp'],'ÉCLAIREUR':['ecdata'],
+'RECYCLEUR':['rcspin','rcfail','rcbuild','rcin'],'DRONE-BOUCLIER':['dbfly','dbshield','dbpulse']});
 function btlPlateGen(G,dpr,sty){
 const S=dpr,W=G.W,H=G.H,EX=G.ext,Wd=Math.round(W*S),Hd=Math.round((H+EX)*S);
 let sd=20240611;const rnd=()=>{sd=sd+0x6D2B79F5|0;let t=Math.imul(sd^sd>>>15,1|sd);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
@@ -36641,7 +37071,7 @@ cv.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px;z-
 root.insertBefore(cv,root.firstChild);
 }catch(e){console.error(e);}
 }
-var DEFI_CH={"ARKHAUL":[{"k":"play","n":2},{"k":"heal","n":15},{"k":"draw","n":2},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":8,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"JIPASIS":[{"k":"play","n":2},{"k":"heal","n":15},{"k":"appel","n":3},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":8,"o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"HARKO":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"atk","n":4},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"BRI-KB-ROCK":[{"k":"play","n":2},{"k":"heal","n":9,"t":"Soigne {n} PV à ton chef avec le Baroud de BRI-KB-ROCK"},{"k":"def","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"deck"}],"BUZZY":[{"k":"play","n":2},{"k":"heal","n":6},{"k":"stay","n":4},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":5,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":2,"c":"field"}],"TECHNOSORUS":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"kill","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"lkill","n":1}],"HYPPER":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"def","n":4},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":8,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"alive"}],"DILUS":[{"k":"play","n":2},{"k":"appel","n":3,"t":"Pioche {n} cartes grâce à l’Appel de DILUS"},{"k":"draw","n":2},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"t":"Pioche {n} cartes grâce à DILUS dans un même combat et gagne-le","o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"KRIGER":[{"k":"play","n":2},{"k":"dmgL","n":6},{"k":"atk","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"dmgL","n":6,"o":1,"w":1},{"k":"lkill","n":1},{"k":"win","n":3,"c":"play"}],"SCOPT":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"dmg","n":12},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":4,"o":1,"w":1}],"DUMADED":[{"k":"play","n":2},{"k":"passif","n":6},{"k":"dmg","n":6},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"passif","n":5,"o":1,"w":1},{"k":"kill","n":1,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"LACRIUM":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"kill","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"RAZOPS":[{"k":"play","n":2},{"k":"shield","n":12},{"k":"def","n":3},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"shield","n":6,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"FENCY":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"stay","n":5},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":10,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"EXO-MKI":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"draw","n":2},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"GOTHIKA":[{"k":"play","n":2},{"k":"dmg","n":15},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1}],"TORTUGA":[{"k":"play","n":2},{"k":"shield","n":5,"t":"TORTUGA gagne {n} DEF grâce à son Passif"},{"k":"taken","n":12},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"dfMax","n":6,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"field"}],"ELYSIUM":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"dmg","n":10},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"SCOOT":[{"k":"play","n":2},{"k":"atk","n":5},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"POUNDER":[{"k":"play","n":2},{"k":"dmg","n":15},{"k":"taken","n":10},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"dmg","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PITTY BELL":[{"k":"play","n":2},{"k":"atk","n":5},{"k":"draw","n":2},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"atk","n":3,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":3,"o":1,"w":1}],"SOSFOR":[{"k":"play","n":2},{"k":"def","n":4},{"k":"kill","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"stay","n":6,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"GAST":[{"k":"play","n":2},{"k":"dmg","n":12},{"k":"die","n":2},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"atk","n":3,"o":1,"w":1},{"k":"kill","n":1,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"TANDEEM":[{"k":"play","n":2},{"k":"shield","n":8,"t":"TANDEEM gagne {n} DEF grâce aux cartes Tech jouées"},{"k":"def","n":4},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"shield","n":6,"t":"TANDEEM gagne {n} DEF grâce aux Tech dans un même combat et tu gagnes","o":1,"w":1},{"k":"dfMax","n":8,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"MARCH":[{"k":"play","n":2},{"k":"appel","n":3,"t":"Change de module {n} fois avec l’Appel de MARCH"},{"k":"draw","n":2},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"GATEKEEPER":[{"k":"play","n":2},{"k":"taken","n":15},{"k":"def","n":4},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":10,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"alive"}],"KEEPER":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"kill","n":2},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"FL-1":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"dmgL","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmgL","n":4,"o":1,"w":1},{"k":"lkill","n":1}],"PRAWN":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Pioche {n} cartes grâce au Baroud de PRAWN"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"EXO-MKV":[{"k":"play","n":3},{"k":"atk0","n":4},{"k":"kill","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"DOZEUR":[{"k":"play","n":3},{"k":"appel","n":4,"t":"Renvoie {n} cartes de la main adverse dans son deck avec DOZEUR"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"EXO-MKIV":[{"k":"play","n":3},{"k":"atk0","n":4},{"k":"dmg","n":20},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmg","n":10,"o":1,"w":1},{"k":"dmgL","n":6,"o":1,"w":1}],"CATER-PILLARD":[{"k":"play","n":3},{"k":"taken","n":20},{"k":"def","n":6},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":12,"o":1,"w":1},{"k":"stay","n":7,"w":1},{"k":"win","n":3,"c":"alive"}],"EXO-MKX":[{"k":"play","n":3},{"k":"taken","n":20},{"k":"kill","n":3},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":12,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"SYLVERLAKE":[{"k":"play","n":3},{"k":"appel","n":3},{"k":"kill","n":3,"of":["ANAKA","KOTAMA"],"t":"Détruis {n} cartes ennemies avec les jetons ANAKA et KOTAMA"},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"kill","n":2,"of":["ANAKA","KOTAMA"],"t":"Détruis {n} cartes ennemies avec ANAKA et KOTAMA dans un même combat et gagne-le","o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"CASSIS":[{"k":"play","n":3},{"k":"appel","n":4},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"DIMAVERSE":[{"k":"play","n":3},{"k":"passif","n":3,"t":"Donne {n} copies de Tech à l’adversaire avec DIMAVERSE"},{"k":"def","n":6},{"k":"taken","n":15},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"stay","n":8,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PIGTAIL":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Rends ton module gratuit {n} fois avec le Baroud de PIGTAIL"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"TRASH-BOT":[{"k":"play","n":3},{"k":"passif","n":6,"t":"Fais grandir TRASH-BOT {n} fois"},{"k":"kill","n":4},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atkMax","n":10,"o":1,"w":1},{"k":"passif","n":4,"t":"Fais grandir TRASH-BOT {n} fois dans un même combat et gagne-le","o":1,"w":1},{"k":"win","n":2,"c":"field"}],"RYPEAL":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Reçois {n} cartes Tech grâce au Baroud de RYPEAL"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"AKRYLIN":[{"k":"play","n":3},{"k":"passif","n":6},{"k":"draw","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"passif","n":4,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"field"}],"MUCUS":[{"k":"play","n":3},{"k":"fx","n":3,"t":"Désactive {n} cartes ennemies avec MUCUS"},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Désactive {n} cartes ennemies avec MUCUS dans un même combat et gagne-le","o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"MELT":[{"k":"play","n":3},{"k":"dmg","n":12},{"k":"kill","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"WATCHER":[{"k":"play","n":3},{"k":"fx","n":2,"t":"Devine juste {n} fois au jeu des 3 cartes de WATCHER"},{"k":"appel","n":4},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"fx","n":1,"t":"Devine juste avec WATCHER dans un combat et gagne-le","o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PITRA":[{"k":"play","n":3},{"k":"fx","n":3,"t":"Copie {n} effets avec l’Appel de PITRA"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Copie {n} effets avec PITRA dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"BALISE":[{"k":"play","n":2},{"k":"def","n":3},{"k":"stay","n":4},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"def","n":3,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":2,"c":"field"}],"FERRAILLEUR":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"atk","n":4},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"SENTINELLE-9":[{"k":"play","n":2},{"k":"passif","n":4},{"k":"kill","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"passif","n":4,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"VOLT":[{"k":"play","n":2},{"k":"appel","n":3},{"k":"dmg","n":12},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"lkill","n":1}],"COLIBRI":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"taken","n":12},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"EVEN":[{"k":"play","n":3},{"k":"dmg","n":15},{"k":"appel","n":4},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"dmg","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"CONQUEST":[{"k":"play","n":4},{"k":"appel","n":4},{"k":"draw","n":4},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"WHIPLASH":[{"k":"play","n":4},{"k":"atk0","n":6},{"k":"kill","n":5},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"BEAST":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"def","n":8},{"k":"combat","n":2,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":15,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":3,"c":"alive"}],"SHADOW":[{"k":"play","n":4},{"k":"appel","n":6},{"k":"kill","n":4},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"play","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":6,"o":1,"w":1}],"CHEIF 117":[{"k":"play","n":4},{"k":"appel","n":6,"t":"Pioche {n} cartes grâce à l’Appel de CHEIF 117"},{"k":"dmg","n":25},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"t":"Pioche {n} cartes grâce à CHEIF 117 dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"NEUTRON":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"kill","n":4},{"k":"combat","n":2,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":15,"o":1,"w":1},{"k":"def","n":4,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"MED-POD":[{"k":"play","n":4},{"k":"baroud","n":4},{"k":"atk","n":8},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"RHINO":[{"k":"play","n":4},{"k":"dmgL","n":20},{"k":"draw","n":4},{"k":"ult","n":2},{"k":"combat","n":2,"m":"T-ARMS 09"},{"k":"lkill","n":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"dmgL","n":10,"o":1,"w":1}],"EXO-MKVII":[{"k":"play","n":4},{"k":"dmg","n":30},{"k":"kill","n":6},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":3,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"dmg","n":12,"o":1,"w":1}],"HAKILX":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"stay","n":8},{"k":"combat","n":2,"m":"AZ-5"},{"k":"own","n":2},{"k":"stay","n":10,"w":1},{"k":"taken","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"SEEKER":[{"k":"play","n":4},{"k":"fx","n":4,"t":"Désactive {n} cartes ennemies avec SEEKER"},{"k":"kill","n":5},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Désactive {n} cartes ennemies avec SEEKER dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"LARVOTRON":[{"k":"play","n":4},{"k":"passif","n":6,"t":"LARVOTRON change de camp {n} fois"},{"k":"baroud","n":2},{"k":"atk","n":8},{"k":"combat","n":2,"a":"MATRIARCHE"},{"k":"passif","n":3,"t":"LARVOTRON change de camp {n} fois dans un même combat et tu gagnes","o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"GOLDY":[{"k":"play","n":4},{"k":"atk","n":10},{"k":"def","n":6},{"k":"combat","n":2,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"atk","n":4,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":3,"c":"field"}],"LOUZY":[{"k":"play","n":4},{"k":"appel","n":4,"t":"Bloque {n} fois 2 mana adverses avec l’Appel de LOUZY"},{"k":"stay","n":6},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"RODEUR":[{"k":"play","n":4},{"k":"dmg","n":30},{"k":"kill","n":6},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmg","n":12,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"CHAOS":[{"k":"play","n":4},{"k":"baroud","n":4,"t":"Échange les pioches {n} fois avec le Baroud de CHAOS"},{"k":"draw","n":4},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"DAMNATION":[{"k":"play","n":4},{"k":"baroud","n":4,"t":"Mets le feu {n} fois avec le Baroud de DAMNATION"},{"k":"kill","n":6,"t":"Détruis {n} cartes ennemies avec DAMNATION et son feu"},{"k":"dmg","n":30,"t":"Inflige {n} dégâts aux cartes ennemies avec DAMNATION et son feu"},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"kill","n":3,"t":"Détruis {n} cartes ennemies avec DAMNATION et son feu dans un même combat et gagne-le","o":1,"w":1},{"k":"baroud","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"DELOK":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"kill","n":8},{"k":"dmgL","n":15},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"MED-07":[{"k":"play","n":5},{"k":"taken","n":40},{"k":"def","n":10},{"k":"kill","n":5},{"k":"combat","n":2,"m":"AZ-5"},{"k":"taken","n":20,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":3,"c":"alive"}],"MORPHE":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"dmg","n":40},{"k":"kill","n":8},{"k":"combat","n":2,"m":"ROCKET"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"lkill","n":1}],"GAPIX":[{"k":"play","n":5},{"k":"dmg","n":40},{"k":"appel","n":8},{"k":"kill","n":8},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"GAZELLE":[{"k":"play","n":5},{"k":"dmg","n":40},{"k":"kill","n":8},{"k":"ult","n":3},{"k":"combat","n":2,"m":"ROCKET"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"STAR-HUNTER":[{"k":"play","n":5},{"k":"kill","n":10},{"k":"atk","n":12},{"k":"ult","n":3},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"TUNNELIER":[{"k":"play","n":5},{"k":"taken","n":40},{"k":"dmg","n":25},{"k":"def","n":10},{"k":"combat","n":2,"m":"AZ-5"},{"k":"taken","n":20,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":3,"c":"field"}],"GRIEVER":[{"k":"play","n":5},{"k":"appel","n":8,"t":"Déclenche {n} Barouds d’honneur avec l’Appel de GRIEVER"},{"k":"kill","n":8},{"k":"draw","n":5},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"kill","n":3,"o":1,"w":1},{"k":"atk","n":4,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"AMALGAME":[{"k":"play","n":5},{"k":"baroud","n":5},{"k":"play","n":3,"of":["MALGAME"],"t":"Joue MALGAME {n} fois"},{"k":"kill","n":8},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"play","n":1,"of":["MALGAME"],"t":"Joue MALGAME dans un combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"MAGNEMER":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"kill","n":8},{"k":"dmg","n":30},{"k":"combat","n":1,"a":"LE COMÈTEUR"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"EL-DIABLO":[{"k":"play","n":5},{"k":"passif","n":15},{"k":"kill","n":10},{"k":"taken","n":40},{"k":"combat","n":2,"a":"MATRIARCHE"},{"k":"passif","n":6,"o":1,"w":1},{"k":"kill","n":4,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"MATRIARCHE":[{"k":"play","n":5},{"k":"fx","n":3,"t":"Pioche {n} EL-DIABLO grâce à l’Appel de MATRIARCHE"},{"k":"baroud","n":5},{"k":"kill","n":8},{"k":"combat","n":2,"a":"EL-DIABLO"},{"k":"fx","n":1,"t":"Pioche EL-DIABLO grâce à MATRIARCHE dans un combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"MOTOKO":[{"k":"play","n":6},{"k":"atk0","n":9},{"k":"taken","n":45},{"k":"kill","n":12},{"k":"combat","n":3,"m":"AZ-5"},{"k":"kill","n":3,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":4,"c":"alive"}],"ZAPPAN":[{"k":"play","n":6},{"k":"baroud","n":6},{"k":"kill","n":12},{"k":"dmgL","n":20},{"k":"combat","n":3,"m":"PROK-IEM"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":10,"o":1,"w":1},{"k":"win","n":5,"c":"play"}],"TOA2":[{"k":"play","n":6},{"k":"taken","n":50},{"k":"baroud","n":6},{"k":"kill","n":12},{"k":"combat","n":3,"m":"PROTO-SHIELD"},{"k":"taken","n":25,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"field"}],"MOG-AI":[{"k":"play","n":6},{"k":"dmg","n":50},{"k":"dmgL","n":20},{"k":"kill","n":12},{"k":"combat","n":3,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1},{"k":"dmgL","n":10,"o":1,"w":1}],"LE COMÈTEUR":[{"k":"play","n":6},{"k":"passif","n":12,"t":"Rejoue {n} Appels grâce au Passif du COMÈTEUR"},{"k":"atk0","n":9},{"k":"kill","n":12},{"k":"combat","n":3,"a":"MAGNEMER"},{"k":"passif","n":4,"t":"Rejoue {n} Appels grâce au COMÈTEUR dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"alive"}]};
+var DEFI_CH={"ARKHAUL":[{"k":"play","n":2},{"k":"heal","n":15},{"k":"draw","n":2},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":8,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"JIPASIS":[{"k":"play","n":2},{"k":"heal","n":15},{"k":"appel","n":3},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":8,"o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"HARKO":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"atk","n":4},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"BRI-KB-ROCK":[{"k":"play","n":2},{"k":"heal","n":9,"t":"Soigne {n} PV à ton chef avec le Baroud de BRI-KB-ROCK"},{"k":"def","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"deck"}],"BUZZY":[{"k":"play","n":2},{"k":"heal","n":6},{"k":"stay","n":4},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"heal","n":5,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":2,"c":"field"}],"TECHNOSORUS":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"kill","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"lkill","n":1}],"HYPPER":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"def","n":4},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":8,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"alive"}],"DILUS":[{"k":"play","n":2},{"k":"appel","n":3,"t":"Pioche {n} cartes grâce à l’Appel de DILUS"},{"k":"draw","n":2},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"t":"Pioche {n} cartes grâce à DILUS dans un même combat et gagne-le","o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"KRIGER":[{"k":"play","n":2},{"k":"dmgL","n":6},{"k":"atk","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"dmgL","n":6,"o":1,"w":1},{"k":"lkill","n":1},{"k":"win","n":3,"c":"play"}],"SCOPT":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"dmg","n":12},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":4,"o":1,"w":1}],"DUMADED":[{"k":"play","n":2},{"k":"passif","n":6},{"k":"dmg","n":6},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"passif","n":5,"o":1,"w":1},{"k":"kill","n":1,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"LACRIUM":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"kill","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"RAZOPS":[{"k":"play","n":2},{"k":"shield","n":12},{"k":"def","n":3},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"shield","n":6,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"FENCY":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"stay","n":5},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":10,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"EXO-MKI":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"draw","n":2},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"GOTHIKA":[{"k":"play","n":2},{"k":"dmg","n":15},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1}],"TORTUGA":[{"k":"play","n":2},{"k":"shield","n":5,"t":"TORTUGA gagne {n} DEF grâce à son Passif"},{"k":"taken","n":12},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"dfMax","n":6,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"field"}],"ELYSIUM":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"dmg","n":10},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"SCOOT":[{"k":"play","n":2},{"k":"atk","n":5},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"POUNDER":[{"k":"play","n":2},{"k":"dmg","n":15},{"k":"taken","n":10},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"dmg","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PITTY BELL":[{"k":"play","n":2},{"k":"atk","n":5},{"k":"draw","n":2},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"atk","n":3,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":3,"o":1,"w":1}],"SOSFOR":[{"k":"play","n":2},{"k":"def","n":4},{"k":"kill","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"stay","n":6,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"GAST":[{"k":"play","n":2},{"k":"dmg","n":12},{"k":"die","n":2},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"atk","n":3,"o":1,"w":1},{"k":"kill","n":1,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"TANDEEM":[{"k":"play","n":2},{"k":"shield","n":8,"t":"TANDEEM gagne {n} DEF grâce aux cartes Tech jouées"},{"k":"def","n":4},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"shield","n":6,"t":"TANDEEM gagne {n} DEF grâce aux Tech dans un même combat et tu gagnes","o":1,"w":1},{"k":"dfMax","n":8,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"MARCH":[{"k":"play","n":2},{"k":"appel","n":3,"t":"Change de module {n} fois avec l’Appel de MARCH"},{"k":"draw","n":2},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"GATEKEEPER":[{"k":"play","n":2},{"k":"taken","n":15},{"k":"def","n":4},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":10,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"alive"}],"KEEPER":[{"k":"play","n":2},{"k":"taken","n":12},{"k":"kill","n":2},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"FL-1":[{"k":"play","n":2},{"k":"atk0","n":3},{"k":"dmgL","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmgL","n":4,"o":1,"w":1},{"k":"lkill","n":1}],"PRAWN":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Pioche {n} cartes grâce au Baroud de PRAWN"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"EXO-MKV":[{"k":"play","n":3},{"k":"atk0","n":4},{"k":"kill","n":4},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"DOZEUR":[{"k":"play","n":3},{"k":"appel","n":4,"t":"Renvoie {n} cartes de la main adverse dans son deck avec DOZEUR"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"EXO-MKIV":[{"k":"play","n":3},{"k":"atk0","n":4},{"k":"dmg","n":20},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"dmg","n":10,"o":1,"w":1},{"k":"dmgL","n":6,"o":1,"w":1}],"CATER-PILLARD":[{"k":"play","n":3},{"k":"taken","n":20},{"k":"def","n":6},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":12,"o":1,"w":1},{"k":"stay","n":7,"w":1},{"k":"win","n":3,"c":"alive"}],"EXO-MKX":[{"k":"play","n":3},{"k":"taken","n":20},{"k":"kill","n":3},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":12,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"SYLVERLAKE":[{"k":"play","n":3},{"k":"appel","n":3},{"k":"kill","n":3,"of":["ANAKA","KOTAMA"],"t":"Détruis {n} cartes ennemies avec les jetons ANAKA et KOTAMA"},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"kill","n":2,"of":["ANAKA","KOTAMA"],"t":"Détruis {n} cartes ennemies avec ANAKA et KOTAMA dans un même combat et gagne-le","o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"CASSIS":[{"k":"play","n":3},{"k":"appel","n":4},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"DIMAVERSE":[{"k":"play","n":3},{"k":"passif","n":3,"t":"Donne {n} copies de Tech à l’adversaire avec DIMAVERSE"},{"k":"def","n":6},{"k":"taken","n":15},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"stay","n":8,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PIGTAIL":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Rends ton module gratuit {n} fois avec le Baroud de PIGTAIL"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"TRASH-BOT":[{"k":"play","n":3},{"k":"passif","n":6,"t":"Fais grandir TRASH-BOT {n} fois"},{"k":"kill","n":4},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"atkMax","n":10,"o":1,"w":1},{"k":"passif","n":4,"t":"Fais grandir TRASH-BOT {n} fois dans un même combat et gagne-le","o":1,"w":1},{"k":"win","n":2,"c":"field"}],"RYPEAL":[{"k":"play","n":3},{"k":"baroud","n":3,"t":"Reçois {n} cartes Tech grâce au Baroud de RYPEAL"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"AKRYLIN":[{"k":"play","n":3},{"k":"passif","n":6},{"k":"draw","n":3},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"passif","n":4,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"field"}],"MUCUS":[{"k":"play","n":3},{"k":"fx","n":3,"t":"Désactive {n} cartes ennemies avec MUCUS"},{"k":"kill","n":3},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Désactive {n} cartes ennemies avec MUCUS dans un même combat et gagne-le","o":1,"w":1},{"k":"dmg","n":8,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"MELT":[{"k":"play","n":3},{"k":"dmg","n":12},{"k":"kill","n":3},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"WATCHER":[{"k":"play","n":3},{"k":"fx","n":2,"t":"Devine juste {n} fois au jeu des 3 cartes de WATCHER"},{"k":"appel","n":4},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"fx","n":1,"t":"Devine juste avec WATCHER dans un combat et gagne-le","o":1,"w":1},{"k":"play","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"PITRA":[{"k":"play","n":3},{"k":"fx","n":3,"t":"Copie {n} effets avec l’Appel de PITRA"},{"k":"draw","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Copie {n} effets avec PITRA dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"BALISE":[{"k":"play","n":2},{"k":"def","n":3},{"k":"stay","n":4},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"def","n":3,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":2,"c":"field"}],"FERRAILLEUR":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"atk","n":4},{"k":"combat","n":1,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"SENTINELLE-9":[{"k":"play","n":2},{"k":"passif","n":4},{"k":"kill","n":3},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"passif","n":4,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"VOLT":[{"k":"play","n":2},{"k":"appel","n":3},{"k":"dmg","n":12},{"k":"combat","n":1,"m":"BAVURES"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"lkill","n":1}],"COLIBRI":[{"k":"play","n":2},{"k":"baroud","n":2},{"k":"taken","n":12},{"k":"combat","n":1,"m":"AZ-5"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"RADAR":[{"k":"play","n":2},{"k":"appel","n":3},{"k":"kill","n":2},{"k":"combat","n":1,"m":"ROCKET"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"play"}],"MULET":[{"k":"play","n":2},{"k":"passif","n":4},{"k":"def","n":3},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"passif","n":3,"o":1,"w":1},{"k":"stay","n":6,"w":1},{"k":"win","n":2,"c":"alive"}],"ÉCLAIREUR":[{"k":"play","n":2},{"k":"kill","n":3},{"k":"atk0","n":2},{"k":"combat","n":1,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmg","n":10,"o":1,"w":1},{"k":"lkill","n":1}],"RECYCLEUR":[{"k":"play","n":2},{"k":"appel","n":3},{"k":"taken","n":10},{"k":"combat","n":1,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":2,"c":"field"}],"DRONE-BOUCLIER":[{"k":"play","n":2},{"k":"passif","n":4},{"k":"def","n":4},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"passif","n":3,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":2,"c":"alive"}],"EVEN":[{"k":"play","n":3},{"k":"dmg","n":15},{"k":"appel","n":4},{"k":"combat","n":1,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"dmg","n":8,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"play"}],"CONQUEST":[{"k":"play","n":4},{"k":"appel","n":4},{"k":"draw","n":4},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"WHIPLASH":[{"k":"play","n":4},{"k":"atk0","n":6},{"k":"kill","n":5},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"atk0","n":2,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"BEAST":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"def","n":8},{"k":"combat","n":2,"m":"AZ-5"},{"k":"own","n":2},{"k":"taken","n":15,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":3,"c":"alive"}],"SHADOW":[{"k":"play","n":4},{"k":"appel","n":6},{"k":"kill","n":4},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"play","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmgL","n":6,"o":1,"w":1}],"CHEIF 117":[{"k":"play","n":4},{"k":"appel","n":6,"t":"Pioche {n} cartes grâce à l’Appel de CHEIF 117"},{"k":"dmg","n":25},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"t":"Pioche {n} cartes grâce à CHEIF 117 dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1}],"NEUTRON":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"kill","n":4},{"k":"combat","n":2,"m":"PROTO-SHIELD"},{"k":"own","n":2},{"k":"taken","n":15,"o":1,"w":1},{"k":"def","n":4,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"MED-POD":[{"k":"play","n":4},{"k":"baroud","n":4},{"k":"atk","n":8},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"RHINO":[{"k":"play","n":4},{"k":"dmgL","n":20},{"k":"draw","n":4},{"k":"ult","n":2},{"k":"combat","n":2,"m":"T-ARMS 09"},{"k":"lkill","n":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"dmgL","n":10,"o":1,"w":1}],"EXO-MKVII":[{"k":"play","n":4},{"k":"dmg","n":30},{"k":"kill","n":6},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":3,"o":1,"w":1},{"k":"appel","n":2,"o":1,"w":1},{"k":"dmg","n":12,"o":1,"w":1}],"HAKILX":[{"k":"play","n":4},{"k":"taken","n":30},{"k":"stay","n":8},{"k":"combat","n":2,"m":"AZ-5"},{"k":"own","n":2},{"k":"stay","n":10,"w":1},{"k":"taken","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"SEEKER":[{"k":"play","n":4},{"k":"fx","n":4,"t":"Désactive {n} cartes ennemies avec SEEKER"},{"k":"kill","n":5},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"fx","n":2,"t":"Désactive {n} cartes ennemies avec SEEKER dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"LARVOTRON":[{"k":"play","n":4},{"k":"passif","n":6,"t":"LARVOTRON change de camp {n} fois"},{"k":"baroud","n":2},{"k":"atk","n":8},{"k":"combat","n":2,"a":"MATRIARCHE"},{"k":"passif","n":3,"t":"LARVOTRON change de camp {n} fois dans un même combat et tu gagnes","o":1,"w":1},{"k":"atk","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"GOLDY":[{"k":"play","n":4},{"k":"atk","n":10},{"k":"def","n":6},{"k":"combat","n":2,"m":"T-ARMS 09"},{"k":"own","n":2},{"k":"atk","n":4,"o":1,"w":1},{"k":"stay","n":8,"w":1},{"k":"win","n":3,"c":"field"}],"LOUZY":[{"k":"play","n":4},{"k":"appel","n":4,"t":"Bloque {n} fois 2 mana adverses avec l’Appel de LOUZY"},{"k":"stay","n":6},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"appel","n":2,"o":1,"w":1},{"k":"def","n":3,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"RODEUR":[{"k":"play","n":4},{"k":"dmg","n":30},{"k":"kill","n":6},{"k":"combat","n":2,"m":"BAVURES"},{"k":"own","n":2},{"k":"kill","n":2,"o":1,"w":1},{"k":"dmg","n":12,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"CHAOS":[{"k":"play","n":4},{"k":"baroud","n":4,"t":"Échange les pioches {n} fois avec le Baroud de CHAOS"},{"k":"draw","n":4},{"k":"combat","n":2,"m":"SAPHYR"},{"k":"own","n":2},{"k":"baroud","n":2,"o":1,"w":1},{"k":"kill","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"DAMNATION":[{"k":"play","n":4},{"k":"baroud","n":4,"t":"Mets le feu {n} fois avec le Baroud de DAMNATION"},{"k":"kill","n":6,"t":"Détruis {n} cartes ennemies avec DAMNATION et son feu"},{"k":"dmg","n":30,"t":"Inflige {n} dégâts aux cartes ennemies avec DAMNATION et son feu"},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"kill","n":3,"t":"Détruis {n} cartes ennemies avec DAMNATION et son feu dans un même combat et gagne-le","o":1,"w":1},{"k":"baroud","n":2,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"DELOK":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"kill","n":8},{"k":"dmgL","n":15},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"MED-07":[{"k":"play","n":5},{"k":"taken","n":40},{"k":"def","n":10},{"k":"kill","n":5},{"k":"combat","n":2,"m":"AZ-5"},{"k":"taken","n":20,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":3,"c":"alive"}],"MORPHE":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"dmg","n":40},{"k":"kill","n":8},{"k":"combat","n":2,"m":"ROCKET"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"lkill","n":1}],"GAPIX":[{"k":"play","n":5},{"k":"dmg","n":40},{"k":"appel","n":8},{"k":"kill","n":8},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"GAZELLE":[{"k":"play","n":5},{"k":"dmg","n":40},{"k":"kill","n":8},{"k":"ult","n":3},{"k":"combat","n":2,"m":"ROCKET"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmg","n":15,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"STAR-HUNTER":[{"k":"play","n":5},{"k":"kill","n":10},{"k":"atk","n":12},{"k":"ult","n":3},{"k":"combat","n":2,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"lkill","n":1}],"TUNNELIER":[{"k":"play","n":5},{"k":"taken","n":40},{"k":"dmg","n":25},{"k":"def","n":10},{"k":"combat","n":2,"m":"AZ-5"},{"k":"taken","n":20,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":3,"c":"field"}],"GRIEVER":[{"k":"play","n":5},{"k":"appel","n":8,"t":"Déclenche {n} Barouds d’honneur avec l’Appel de GRIEVER"},{"k":"kill","n":8},{"k":"draw","n":5},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"kill","n":3,"o":1,"w":1},{"k":"atk","n":4,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"AMALGAME":[{"k":"play","n":5},{"k":"baroud","n":5},{"k":"play","n":3,"of":["MALGAME"],"t":"Joue MALGAME {n} fois"},{"k":"kill","n":8},{"k":"combat","n":2,"m":"PROK-IEM"},{"k":"play","n":1,"of":["MALGAME"],"t":"Joue MALGAME dans un combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"MAGNEMER":[{"k":"play","n":5},{"k":"atk0","n":8},{"k":"kill","n":8},{"k":"dmg","n":30},{"k":"combat","n":1,"a":"LE COMÈTEUR"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":8,"o":1,"w":1},{"k":"win","n":3,"c":"alive"}],"EL-DIABLO":[{"k":"play","n":5},{"k":"passif","n":15},{"k":"kill","n":10},{"k":"taken","n":40},{"k":"combat","n":2,"a":"MATRIARCHE"},{"k":"passif","n":6,"o":1,"w":1},{"k":"kill","n":4,"o":1,"w":1},{"k":"win","n":3,"c":"field"}],"MATRIARCHE":[{"k":"play","n":5},{"k":"fx","n":3,"t":"Pioche {n} EL-DIABLO grâce à l’Appel de MATRIARCHE"},{"k":"baroud","n":5},{"k":"kill","n":8},{"k":"combat","n":2,"a":"EL-DIABLO"},{"k":"fx","n":1,"t":"Pioche EL-DIABLO grâce à MATRIARCHE dans un combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"play"}],"MOTOKO":[{"k":"play","n":6},{"k":"atk0","n":9},{"k":"taken","n":45},{"k":"kill","n":12},{"k":"combat","n":3,"m":"AZ-5"},{"k":"kill","n":3,"o":1,"w":1},{"k":"stay","n":10,"w":1},{"k":"win","n":4,"c":"alive"}],"ZAPPAN":[{"k":"play","n":6},{"k":"baroud","n":6},{"k":"kill","n":12},{"k":"dmgL","n":20},{"k":"combat","n":3,"m":"PROK-IEM"},{"k":"kill","n":3,"o":1,"w":1},{"k":"dmgL","n":10,"o":1,"w":1},{"k":"win","n":5,"c":"play"}],"TOA2":[{"k":"play","n":6},{"k":"taken","n":50},{"k":"baroud","n":6},{"k":"kill","n":12},{"k":"combat","n":3,"m":"PROTO-SHIELD"},{"k":"taken","n":25,"o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"field"}],"MOG-AI":[{"k":"play","n":6},{"k":"dmg","n":50},{"k":"dmgL","n":20},{"k":"kill","n":12},{"k":"combat","n":3,"m":"BAVURES"},{"k":"kill","n":3,"o":1,"w":1},{"k":"lkill","n":1},{"k":"dmgL","n":10,"o":1,"w":1}],"LE COMÈTEUR":[{"k":"play","n":6},{"k":"passif","n":12,"t":"Rejoue {n} Appels grâce au Passif du COMÈTEUR"},{"k":"atk0","n":9},{"k":"kill","n":12},{"k":"combat","n":3,"a":"MAGNEMER"},{"k":"passif","n":4,"t":"Rejoue {n} Appels grâce au COMÈTEUR dans un même combat et gagne-le","o":1,"w":1},{"k":"kill","n":3,"o":1,"w":1},{"k":"win","n":4,"c":"alive"}]};
 function defiChText(x,ch){
 const n=ch.n,pl=(s,p)=>n>1?p:s;
 const de=/^LE /.test(x)?'du '+x.slice(3):(/^[AEIOUÉÈ]/.test(x)?'d’'+x:'de '+x);
