@@ -1853,8 +1853,12 @@ return;
 }
 checkChangelogOnLogin();
 }
-var BUILD_VERSION='V0.06.37';
+var BUILD_VERSION='V0.06.38';
 var CHANGELOG=[
+{v:'V0.06.38',items:[
+'RÔDEUR : son Appel (5 dégâts à une carte adverse) ne se déclenchait plus depuis la V0.06.37. Corrigé.',
+'Téléphones qui peinent : les effets des dernières cartes rares sont dessinés plus légèrement.',
+]},
 {v:'V0.06.37',items:[
 '5 nouvelles cartes RARES, chacune avec son animation, ses sons, sa vidéo dans la collection et ses défis.',
 'RADAR (2 ATQ / 2 DEF / 4 PV) -- APPEL : regarde les 3 prochaines cartes de ta pioche et choisis celle que tu piocheras ensuite ; les autres repartent au hasard dans la pioche.',
@@ -34078,7 +34082,6 @@ die:c=>btlDmDie(c),
 baroud:c=>btlDmBaroud(c)
 };
 var BTL_WT={n:'WATCHER',spr:null,R:0,T:10000};
-function btlWtReduced(){return!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);}
 function btlWtSm(a,b,x){return Math.max(0,Math.min(1,(x-a)/(b-a)));}
 function btlWtSprites(Rc,dpr){
 if(BTL_WT.spr&&BTL_WT.R===Rc&&BTL_WT.dpr===dpr)return BTL_WT.spr;
@@ -35097,7 +35100,7 @@ const BTL_RX={E:BTL_E1,TAU:Math.PI*2};
 function btlRxSm(a,b,x){return Math.max(0,Math.min(1,(x-a)/(b-a)));}
 function btlRxLerp(a,b,f){return a+(b-a)*f;}
 function btlRxCv(els){
-const fx=btlQ('#btlFx'),W=window.innerWidth,H=window.innerHeight,dpr=Math.min(2,window.devicePixelRatio||1);
+const fx=btlQ('#btlFx'),W=window.innerWidth,H=window.innerHeight,dpr=document.documentElement.classList.contains('rl-lite')?1:Math.min(2,window.devicePixelRatio||1);
 const cv=document.createElement('canvas');cv.width=Math.ceil(W*dpr);cv.height=Math.ceil(H*dpr);
 cv.style.cssText='position:fixed;left:0;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none;z-index:31';fx.appendChild(cv);els.push(cv);
 const g=cv.getContext('2d');
@@ -35521,7 +35524,7 @@ btlFlashEl(box,'#6dff9a',.5,260);
 }
 function btlPileRect(side){const b=btlQ(side==='p'?'#btlMPile':'#btlOPile');return b?btlPileFrom(b):{left:innerWidth/2,top:innerHeight/2,width:1,height:1};}
 function btlRcCen(r){return{x:r.left+r.width/2,y:r.top+r.height/2};}
-async function btlRdAppel(c){
+async function btlRadarAppel(c){
 if(btlGone()||!btlOnField(c))return;
 const side=c.side;
 if(pvpOn()&&side==='p'&&PVPC&&PVPC.rdSeen&&PVPC.rdSeen.length){
@@ -35810,7 +35813,7 @@ btlRxParts(g,parts,dt);
 });
 if(!sfx.pf)up();
 }
-BTL_CARD_FX['RADAR']={appel:btlRdAppel};
+BTL_CARD_FX['RADAR']={appel:btlRadarAppel};
 BTL_CARD_FX['MULET']={passif:{quand:'debut',run:btlMuPassif}};
 BTL_CARD_FX['ÉCLAIREUR']={};
 BTL_CARD_FX['RECYCLEUR']={appel:btlRcAppel};
